@@ -21,7 +21,7 @@ Import BNF
 ----------
 
 Sample describes conversion of the BNF file into IronText based c# code.
-BnfLanguage demonstrates usage of DemandAttribute and used of the shared CtemScanner.
+BnfLanguage demonstrates usage of DemandAttribute and use of the shared CtemScanner.
 
 Nested Comments
 ---------------
