@@ -1,0 +1,19 @@
+﻿;; This file Represents all parsing features of S-expression parser.
+;; It is used for parser smoke test
+
+(def (fact n)
+  """
+  Factorial function.
+  For 0 returns 1.
+  For n returns n * fact(n - 1).
+  """
+	(if (= n 0)
+	    1
+		(* n (fact (- n 1)))))
+
+
+(assert (fact 0) (. = 1))
+(assert (fact 1) (. = 1))
+(assert (fact 2) (. = 2))
+(assert (fact 5) (. = 120))
+(assert (fact 6) (. = 720))

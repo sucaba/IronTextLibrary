@@ -1,0 +1,1 @@
+@MyArchiver.exe extract NightlyBuild.zip --output d:\MyWorkingDir

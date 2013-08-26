@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{67710639-99E3-411E-849F-D84D68ED7906}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IronText</RootNamespace>
+    <AssemblyName>IronText.Compiler</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <GenerateDerivedAssembly>On</GenerateDerivedAssembly>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DIAGNOSTICS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy|AnyCPU'">
+    <OutputPath>..\..\deploy\lib\net40\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Algorithm\DecisionTree\DecisionNodeKind.cs" />
+    <Compile Include="Algorithm\DecisionTree\DecisionTest.cs" />
+    <Compile Include="Algorithm\DecisionTree\DecisionTreeBuilder.cs" />
+    <Compile Include="Algorithm\DecisionTree\Nodes\ActionDecision.cs" />
+    <Compile Include="Algorithm\DecisionTree\Nodes\BranchDecision.cs" />
+    <Compile Include="Algorithm\DecisionTree\Nodes\Decision.cs" />
+    <Compile Include="Algorithm\DecisionTree\Nodes\DecisionProgramWriter.cs" />
+    <Compile Include="Algorithm\DecisionTree\Nodes\IDecisionProgramWriter.cs" />
+    <Compile Include="Algorithm\DecisionTree\Nodes\JumpTableDecision.cs" />
+    <Compile Include="Algorithm\DecisionTree\Nodes\RelationalBranchDecision.cs" />
+    <Compile Include="Algorithm\DecisionTree\Nodes\RelationalOperator.cs" />
+    <Compile Include="Algorithm\Functions.cs" />
+    <Compile Include="Algorithm\IntMaps\IIntFrequency.cs" />
+    <Compile Include="Algorithm\IntMaps\IMutableIntFrequency.cs" />
+    <Compile Include="Algorithm\IntMaps\IMutableIntMap.cs" />
+    <Compile Include="Algorithm\IntMaps\IMutableTable.cs" />
+    <Compile Include="Algorithm\IntMaps\MutableIntFrequency.cs" />
+    <Compile Include="Algorithm\IntMaps\MutableIntMap.cs" />
+    <Compile Include="Algorithm\IntMaps\MutableTable.cs" />
+    <Compile Include="Algorithm\IntMaps\UniformIntFrequency.cs" />
+    <Compile Include="Algorithm\Unicode\UnicodeFrequency.cs" />
+    <Compile Include="Algorithm\Unicode\UnicodeIntSetType.Ascii.cs" />
+    <Compile Include="Algorithm\Unicode\UnicodeIntSetType.cs" />
+    <Compile Include="Algorithm\Unicode\UnicodeIntSetType.Data.cs" />
+    <Compile Include="Automata\Lalr1\CanonicalLrDfaTable.cs" />
+    <Compile Include="Automata\Lalr1\ILrDfa.cs" />
+    <Compile Include="Automata\Lalr1\ILrParserTable.cs" />
+    <Compile Include="Automata\Lalr1\Lalr1Dfa.cs" />
+    <Compile Include="Automata\Lalr1\Lalr1Dfa.Diagnostics.cs" />
+    <Compile Include="Automata\Lalr1\LrTableOptimizations.cs" />
+    <Compile Include="Automata\Lalr1\ReductionModifiedLrDfaTable.cs" />
+    <Compile Include="Automata\Lalr1\TransitionKey.cs" />
+    <Compile Include="Automata\Regular\Alphabets\EquivalenceClassesAlphabet.cs" />
+    <Compile Include="Automata\Regular\Alphabets\RegularAlphabet.cs" />
+    <Compile Include="Automata\Regular\Dfas\DfaSerialization.cs" />
+    <Compile Include="Automata\Regular\Dfas\IDfaSerialization.cs" />
+    <Compile Include="Automata\Regular\Dfas\RegularToDfaAlgorithm.cs" />
+    <Compile Include="Automata\Regular\Dfas\RegularToTdfaAlgorithm.cs" />
+    <Compile Include="Automata\Regular\Dfas\TdfaData.cs" />
+    <Compile Include="Automata\Regular\RegularTrees\FirstPosGetter.cs" />
+    <Compile Include="Automata\Regular\RegularTrees\FollowPosBuilder.cs" />
+    <Compile Include="Automata\Regular\RegularTrees\LastPosGetter.cs" />
+    <Compile Include="Automata\Regular\RegularTrees\NullableGetter.cs" />
+    <Compile Include="Automata\Regular\RegularTrees\PosCounter.cs" />
+    <Compile Include="Automata\Regular\RegularTrees\PositionBuilder.cs" />
+    <Compile Include="Automata\Regular\RegularTrees\RegularPositionInfo.cs" />
+    <Compile Include="Automata\Regular\RegularTrees\RegularTree.cs" />
+    <Compile Include="Build\Attributes\DerivedAssemblyMarker.cs" />
+    <Compile Include="Build\DerivedAssembly\AssemblyDerivator.cs" />
+    <Compile Include="Build\DerivedAssembly\DerivedAssemblyProvider.cs" />
+    <Compile Include="Build\DerivedAssembly\IDerivedAssemblyBuildScenario.cs" />
+    <Compile Include="Build\DerivedAssembly\IDerivedBuilder.cs" />
+    <Compile Include="Build\DerivedAssembly\IMetadataSyntax.cs" />
+    <Compile Include="Build\DerivedAssembly\LoggerAdapter.cs" />
+    <Compile Include="Build\DerivedAssembly\LoggingAdapter.cs" />
+    <Compile Include="Build\DerivedAssembly\MetadataSyntaxAttribute.cs" />
+    <Compile Include="Build\Engine\AssemblyProviderBase.cs" />
+    <Compile Include="Build\Engine\BuildLogging.cs" />
+    <Compile Include="Build\Engine\ConsoleLogger.cs" />
+    <Compile Include="Build\Engine\DelegateProvider.cs" />
+    <Compile Include="Build\Engine\IExternalResource.cs" />
+    <Compile Include="Build\Engine\RequiredAssemblyProvider.cs" />
+    <Compile Include="Build\Engine\ResourceContext.cs" />
+    <Compile Include="Build\Engine\ResourceGetter.cs" />
+    <Compile Include="Build\MetadataSyntax\CompositeDerivedBuilder.cs" />
+    <Compile Include="Build\MetadataSyntax\TypesMetadataSyntax.cs" />
+    <Compile Include="LanguageLoader.cs" />
+    <Compile Include="Lib\IL\Backend\Cecil\CecilBackend.Main.cs" />
+    <Compile Include="Lib\IL\Backend\Cecil\CecilBackend.Private.cs" />
+    <Compile Include="Lib\IL\Backend\Cecil\CecilMethodNs.cs" />
+    <Compile Include="Lib\IL\Backend\Cecil\CecilResolutionScopeNs.cs" />
+    <Compile Include="Lib\IL\Backend\Cecil\CecilTypeNs.cs" />
+    <Compile Include="Lib\IL\Backend\Cecil\IGenericContext.cs" />
+    <Compile Include="Lib\IL\Backend\Cecil\RewriteScopeResolver.cs" />
+    <Compile Include="Lib\IL\Backend\ReflectionEmit\ILGeneratorBackend.cs" />
+    <Compile Include="Lib\IL\CilLanguage.cs" />
+    <Compile Include="Lib\IL\Generators\ArrayLoopGenerator.cs" />
+    <Compile Include="Lib\IL\Generators\ContiguousSwitchGenerator.cs" />
+    <Compile Include="Lib\IL\Generators\ILoopGenerator.cs" />
+    <Compile Include="Lib\IL\Generators\ImplementationGenerator.cs" />
+    <Compile Include="Lib\IL\Generators\ReadOnlyTableGenerator.cs" />
+    <Compile Include="Lib\IL\Generators\SparseSwitchGenerator.cs" />
+    <Compile Include="Lib\IL\Generators\StackGenerator.cs" />
+    <Compile Include="Lib\IL\Generators\SwitchGenerator.cs" />
+    <Compile Include="Lib\IL\IAssemblyReader.cs" />
+    <Compile Include="Lib\IL\IAssemblyResolverParameters.cs" />
+    <Compile Include="Lib\IL\IAssemblyWriter.cs" />
+    <Compile Include="Lib\IL\Tools\CachedMethod.cs" />
+    <Compile Include="Lib\IL\Tools\CachedMethodAssemblyProvider.cs" />
+    <Compile Include="Lib\IL\Tools\DynamicMethod2.cs" />
+    <Compile Include="Lib\IL\Tools\GeneratedAssemblyProvider.cs" />
+    <Compile Include="Lib\RegularAst\Ast.cs" />
+    <Compile Include="Lib\RegularAst\AstNodeWriter.cs" />
+    <Compile Include="Lib\RegularAst\IAstNodeVisitor.cs" />
+    <Compile Include="Lib\ScannerExpressions\Chr.cs" />
+    <Compile Include="Lib\ScannerExpressions\ScannerSyntax.cs" />
+    <Compile Include="MetadataCompiler\Bootstrap\BootstrapLanguage.cs" />
+    <Compile Include="MetadataCompiler\Bootstrap\BootstrapScanner.cs" />
+    <Compile Include="MetadataCompiler\CompiledLanguageProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\ContextBrowser.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\LanguageDataProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\ScannerDescriptor.cs" />
+    <Compile Include="MetadataCompiler\ILCompiler\ContextResolverCode.cs" />
+    <Compile Include="MetadataCompiler\ILCompiler\GrammarActionCode.cs" />
+    <Compile Include="MetadataCompiler\ILCompiler\GrammarActionGenerator.cs" />
+    <Compile Include="MetadataCompiler\ILCompiler\GrammarSerializer.cs" />
+    <Compile Include="MetadataCompiler\ILCompiler\LanguageDerivedBuilder.cs" />
+    <Compile Include="MetadataCompiler\ILCompiler\MergeActionCode.cs" />
+    <Compile Include="MetadataCompiler\ILCompiler\MergeActionGenerator.cs" />
+    <Compile Include="MetadataCompiler\ILCompiler\ScanActionCode.cs" />
+    <Compile Include="MetadataCompiler\ILCompiler\ScanModeMethods.cs" />
+    <Compile Include="MetadataCompiler\ILCompiler\ScannerGenerator.cs" />
+    <Compile Include="MetadataCompiler\ILCompiler\SwitchActionCode.cs" />
+    <Compile Include="MetadataCompiler\ILCompiler\SwitchFactoryGenerator.cs" />
+    <Compile Include="MetadataCompiler\ILCompiler\TermFactoryGenerator.cs" />
+    <Compile Include="MetadataCompiler\ILCompiler\TokenIdentitiesSerializer.cs" />
+    <Compile Include="MetadataCompiler\MetadataParsing\IMetadataCollector.cs" />
+    <Compile Include="MetadataCompiler\MetadataParsing\IScanDataCollector.cs" />
+    <Compile Include="MetadataCompiler\MetadataParsing\LanguageDefinition.cs" />
+    <Compile Include="MetadataCompiler\MetadataParsing\MetadataCollector.cs" />
+    <Compile Include="MetadataCompiler\MetadataParsing\MetadataException.cs" />
+    <Compile Include="MetadataCompiler\MetadataParsing\ScanDataCollector.cs" />
+    <Compile Include="MetadataCompiler\MetadataParsing\TokenCollection.cs" />
+    <Compile Include="MetadataCompiler\NamedLanguageProvider.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IronText.Build\IronText.Build.csproj">
+      <Project>{9A3078A1-1050-4164-B5D1-EDDA13237746}</Project>
+      <Name>IronText.Build</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Deps\cecil\Mono.Cecil.csproj">
+      <Project>{D68133BD-1E63-496E-9EDE-4FBDBF77B486}</Project>
+      <Name>Mono.Cecil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Deps\cecil\symbols\pdb\Mono.Cecil.Pdb.csproj">
+      <Project>{63E6915C-7EA4-4D76-AB28-0D7191EEA626}</Project>
+      <Name>Mono.Cecil.Pdb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IronText.Core\IronText.Core.csproj">
+      <Project>{97CFB776-52DE-40B1-854C-912C93A32AFA}</Project>
+      <Name>IronText.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Algorithm\Unicode\ucd2cs.py" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AfterBuild" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

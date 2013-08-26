@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>IronText</id>
+    <version>0.9.0.0</version>
+    <title>IronText</title>
+    <authors>Bogdan Kushnir</authors>
+    <owners></owners>
+    <description>
+        Iron Text is a library for rapid creation of parsers and interpreters using c#
+        without additional external tools.
+
+        The distinguishing features of the project are that:
+        - grammar and lexical rules are described entirely using .net type system with custom attributes
+        - allows parsing any context-free grammar including ambiguous ones
+        - supports vocabularies of tokens and rules which can be reused in different languages
+        - generic methods can be used as a 'template rules'
+        - allows defining language abstraction using interfaces and abstract classes
+          which can have multiple implementations for different parsing tasks.
+        - has built in error handling
+        - has built in line,column counting
+
+    </description>
+    <releaseNotes>
+    </releaseNotes>
+    <summary>
+        Iron Text is a library for rapid creation of parsers and interpreters using c#
+        without additional external tools.
+    </summary>
+    <language>en-US</language>
+    <projectUrl>https://nuget.org/packages/IronText</projectUrl>
+    <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon-50x50.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
+    <copyright>Copyright  2013</copyright>
+    <references></references>
+    <tags>parsing,DSL,parser,lexer,GLR,LALR1,interpreter,compiler</tags>
+  </metadata>
+  <files>
+    <file src="lib\" target="lib" />
+    <file src="tools\" target="tools" />
+    <file src="build\" target="build" />
+  </files>
+</package>

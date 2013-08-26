@@ -1,0 +1,378 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{97CFB776-52DE-40B1-854C-912C93A32AFA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IronText</RootNamespace>
+    <AssemblyName>IronText.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DIAGNOSTICS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>default</LangVersion>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsInferRequires>False</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestEnsures>False</CodeContractsSuggestEnsures>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>default</LangVersion>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Deploy\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\IronText.Core.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <LangVersion>default</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Algorithm\ArraySlice.cs" />
+    <Compile Include="Algorithm\Graphs\Graph.cs" />
+    <None Include="Algorithm\Graphs\TarjanSccAlgorithm.cs" />
+    <Compile Include="Algorithm\IntArrow.cs" />
+    <Compile Include="Algorithm\IntegerSets\BitSet.cs" />
+    <Compile Include="Algorithm\IntegerSets\BitSetBase.cs" />
+    <Compile Include="Algorithm\IntegerSets\BitSetType.cs" />
+    <Compile Include="Algorithm\IntegerSets\MutableBitSet.cs" />
+    <Compile Include="Algorithm\IntegerSets\IntervalIntSetBase.cs" />
+    <Compile Include="Algorithm\IntegerSets\IntPartition.cs" />
+    <Compile Include="Algorithm\IntegerSets\MutableIntervalIntSet.cs" />
+    <Compile Include="Algorithm\IntegerSets\IIntSet.cs" />
+    <Compile Include="Algorithm\IntegerSets\MutableIntSet.cs" />
+    <Compile Include="Algorithm\InheritanceSortHelper.cs" />
+    <Compile Include="Algorithm\IntegerSets\IntervalIntSet.cs" />
+    <Compile Include="Algorithm\IntInterval.cs" />
+    <Compile Include="Algorithm\IntegerSets\IntSetType.cs" />
+    <Compile Include="Algorithm\IntegerSets\SetOrthohonator.cs" />
+    <Compile Include="Algorithm\IntMaps\IIntMap.cs" />
+    <Compile Include="Algorithm\IntMaps\ITable.cs" />
+    <Compile Include="Algorithm\Sorting.cs" />
+    <Compile Include="Algorithm\IntegerSets\SparseIntSetType.cs" />
+    <Compile Include="Algorithm\TreeNode.cs" />
+    <Compile Include="Diagnostics\GvGraphView.cs" />
+    <Compile Include="Diagnostics\IGraphView.cs" />
+    <Compile Include="Build\IDerivedBuilderMetadata.cs" />
+    <Compile Include="Extensibility\Automata\DotItem.cs" />
+    <Compile Include="Extensibility\Automata\DotState.cs" />
+    <Compile Include="Extensibility\Automata\DotTransition.cs" />
+    <Compile Include="Extensibility\Automata\IDotItemSet.cs" />
+    <Compile Include="Extensibility\Automata\IMutableDotItemSet.cs" />
+    <Compile Include="Extensibility\Automata\IRegularAlphabet.cs" />
+    <Compile Include="Extensibility\Automata\ITdfaData.cs" />
+    <Compile Include="Extensibility\Automata\MutableDotItemSet.cs" />
+    <Compile Include="Extensibility\Automata\TdfaState.cs" />
+    <Compile Include="Extensibility\Automata\TdfaTransition.cs" />
+    <Compile Include="Extensibility\IMergeActionCode.cs" />
+    <Compile Include="Extensibility\ISingleTokenScanRule.cs" />
+    <Compile Include="Extensibility\LocalParseContext.cs" />
+    <Compile Include="Extensibility\MergeRule.cs" />
+    <Compile Include="Extensibility\Automata\ParserAction.cs" />
+    <Compile Include="Extensibility\Automata\ParserActionKind.cs" />
+    <Compile Include="Extensibility\ParserConflictInfo.cs" />
+    <Compile Include="Extensibility\Delegates.cs" />
+    <Compile Include="Extensibility\IContextResolverCode.cs" />
+    <Compile Include="Extensibility\IScanActionCode.cs" />
+    <Compile Include="Extensibility\ISwitchActionCode.cs" />
+    <Compile Include="Extensibility\ITokenPool.cs" />
+    <Compile Include="Extensibility\LanguageMetadataAttribute.cs" />
+    <Compile Include="Extensibility\ScanMode.cs" />
+    <Compile Include="Extensibility\ScannerUtils.cs" />
+    <Compile Include="Extensibility\ScanRule.cs" />
+    <Compile Include="Extensibility\SwitchRule.cs" />
+    <Compile Include="Extensibility\TokenNaming.cs" />
+    <Compile Include="Framework\Attributes\TokenCategory.cs" />
+    <Compile Include="Framework\Attributes\TokenCategoryAttribute.cs" />
+    <Compile Include="Framework\Attributes\Diagnostics\ParserGraphAttribute.cs" />
+    <Compile Include="Framework\Attributes\Diagnostics\ScannerGraphAttribute.cs" />
+    <Compile Include="Framework\Attributes\MergeAttribute.cs" />
+    <Compile Include="Framework\Attributes\ParseResultAttribute.cs" />
+    <Compile Include="Framework\Attributes\ParseGetAttribute.cs" />
+    <Compile Include="Framework\Attributes\Diagnostics\ScannerDocumentAttribute.cs" />
+    <Compile Include="Framework\Attributes\Diagnostics\DescribeParserStateMachineAttribute.cs" />
+    <Compile Include="Framework\Attributes\Diagnostics\GrammarDocumentAttribute.cs" />
+    <Compile Include="Framework\Attributes\VocabularyAttribute.cs" />
+    <Compile Include="Framework\Attributes\Precedence\BaseAssocAttribute.cs" />
+    <Compile Include="Framework\Attributes\Precedence\NonAssocAttribute.cs" />
+    <Compile Include="Framework\Attributes\Precedence\RightAssocAttribute.cs" />
+    <Compile Include="Framework\Attributes\Precedence\LeftAssocAttribute.cs" />
+    <Compile Include="Framework\Attributes\ScanAttribute.cs" />
+    <Compile Include="Framework\Attributes\LiteralAttribute.cs" />
+    <Compile Include="Framework\Attributes\LanguageServiceAttribute.cs" />
+    <Compile Include="Framework\ExistingLanguageLoader.cs" />
+    <Compile Include="Framework\IBootstrapLanguage.cs" />
+    <Compile Include="Framework\IInternalInitializable.cs" />
+    <Compile Include="Framework\ILanguageLoader.cs" />
+    <Compile Include="Framework\Interpreter.cs" />
+    <Compile Include="Framework\InterpreterT.cs" />
+    <Compile Include="Lib\Ctem\CtemScanner.cs" />
+    <Compile Include="Lib\Ctem\Num.cs" />
+    <Compile Include="Lib\Ctem\QStr.cs" />
+    <Compile Include="Lib\Shared\Scope\Def.cs" />
+    <Compile Include="Lib\Shared\Scope\DefFirstNs.cs" />
+    <Compile Include="Lib\Shared\Scope\Frame.cs" />
+    <Compile Include="Lib\Shared\Scope\IFrame.cs" />
+    <Compile Include="Lib\Shared\Scope\ListFrame.cs" />
+    <Compile Include="Lib\Shared\Scope\NsBase.cs" />
+    <Compile Include="Lib\Shared\Scope\OnDemandNs.cs" />
+    <Compile Include="Lib\Shared\Scope\Ref.cs" />
+    <Compile Include="Lib\Shared\Scope\ValueSlot.cs" />
+    <Compile Include="Lib\IL\Grammar\ArgsSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\AssemblyInfoSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\AssemblyRefSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\CallConvSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\CallKindSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\CilDocumentSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\CilPrimitives.cs" />
+    <Compile Include="Lib\IL\Grammar\CilSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\ClassAttrSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\ClassSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\CustomAttributesSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\EmitSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\FieldAttr.cs" />
+    <Compile Include="Lib\IL\Grammar\FieldAttrSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\ImplAttrSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\MethAttrSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\MethodNameSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\MethodReturnSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\ParamAttrSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\PInvAttrSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\Scopes\IMethodNs.cs" />
+    <Compile Include="Lib\IL\Grammar\Scopes\IResolutionScopeNs.cs" />
+    <Compile Include="Lib\IL\Grammar\Scopes\ITypeNs.cs" />
+    <Compile Include="Lib\IL\Grammar\Scopes\TypeSpec.cs" />
+    <Compile Include="Lib\IL\Grammar\Signatures.cs" />
+    <Compile Include="Lib\IL\Tokens\FieldSig.cs" />
+    <Compile Include="Lib\IL\Tokens\MethodSig.cs" />
+    <Compile Include="Lib\IL\Tokens\ParamAttr.cs" />
+    <Compile Include="Lib\IL\Tokens\ParamSig.cs" />
+    <Compile Include="Lib\IL\Tokens\TypeSig.cs" />
+    <Compile Include="Logging\ILogging.cs" />
+    <Compile Include="Logging\HLoc.cs" />
+    <Compile Include="Framework\IParsing.cs" />
+    <Compile Include="Framework\IScanning.cs" />
+    <Compile Include="Logging\LogEntry.cs" />
+    <Compile Include="Framework\Reactive\FinalReceiver.cs" />
+    <Compile Include="Framework\Associativity.cs" />
+    <Compile Include="Framework\Reflection\BnfRule.cs" />
+    <Compile Include="Framework\Precedence.cs" />
+    <Compile Include="Framework\ScanAction.cs" />
+    <Compile Include="Logging\LoggingKind.cs" />
+    <Compile Include="Logging\Severity.cs" />
+    <Compile Include="Framework\Attributes\ScanBaseAttribute.cs" />
+    <Compile Include="Framework\Attributes\RuleMethodAttribute.cs" />
+    <Compile Include="Framework\Attributes\SwitchAttribute.cs" />
+    <Compile Include="Framework\Attributes\DemandAttribute.cs" />
+    <Compile Include="Framework\Delegates.cs" />
+    <Compile Include="Extensibility\ITokenRefResolver.cs" />
+    <Compile Include="Extensibility\TokenDef.cs" />
+    <Compile Include="Extensibility\TokenRefResolver.cs" />
+    <Compile Include="Lib\Builtins.cs" />
+    <Compile Include="Lib\Numbers.cs" />
+    <Compile Include="Lib\Shared\Labels.cs" />
+    <Compile Include="Extensibility\IGrammarActionCode.cs" />
+    <Compile Include="Extensibility\ILanguageMetadata.cs" />
+    <Compile Include="Extensibility\MetadataParser.cs" />
+    <Compile Include="Framework\Attributes\StaticContextAttribute.cs" />
+    <Compile Include="Framework\Attributes\LanguageAttribute.cs" />
+    <Compile Include="Extensibility\LanguageName.cs" />
+    <Compile Include="Misc\Attributes.cs" />
+    <Compile Include="Misc\ExpressionUtils.cs" />
+    <Compile Include="Misc\PropertyComparer.cs" />
+    <Compile Include="Misc\ReflectionUtils.cs" />
+    <Compile Include="Extensibility\ParseRule.cs" />
+    <Compile Include="Framework\Attributes\LanguageContextAttribute.cs" />
+    <Compile Include="Framework\Attributes\UseTokenAttribute.cs" />
+    <Compile Include="Framework\Attributes\ParseAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Framework\Reactive\ISequence.cs" />
+    <Compile Include="Framework\Reactive\IReceiver.cs" />
+    <Compile Include="Runtime\ErrorRecovery\PanicModeErrorRecovery.cs" />
+    <Compile Include="Runtime\ErrorRecovery\ParserCorrectionModel.cs" />
+    <Compile Include="Runtime\CircularStack.cs" />
+    <Compile Include="Runtime\ITaggedStack.cs" />
+    <Compile Include="Runtime\IUndoable.cs" />
+    <Compile Include="Logging\ExceptionLogging.cs" />
+    <Compile Include="Logging\MemoryLogging.cs" />
+    <Compile Include="Logging\NullLogging.cs" />
+    <Compile Include="Logging\TextLogging.cs" />
+    <Compile Include="Runtime\Producers\NullProducer.cs" />
+    <Compile Include="Runtime\Producers\ReductionOrder.cs" />
+    <Compile Include="Runtime\ErrorRecovery\LocalCorrectionErrorRecovery.cs" />
+    <Compile Include="Runtime\ReductionPathQueue.cs" />
+    <Compile Include="Runtime\GLR\Reduction.cs" />
+    <Compile Include="Runtime\IReductionQueue.cs" />
+    <Compile Include="Runtime\IResourceAllocator.cs" />
+    <Compile Include="Runtime\IStackLookback.cs" />
+    <Compile Include="Runtime\ModifiedReduction.cs" />
+    <Compile Include="Runtime\Msg.cs" />
+    <Compile Include="Framework\ILanguage.cs" />
+    <Compile Include="Framework\LanguageBase.cs" />
+    <Compile Include="Runtime\ElkhoundGlrParser.cs" />
+    <Compile Include="Runtime\Delegates.cs" />
+    <Compile Include="Runtime\GraphStructuredStack\Gss.cs" />
+    <Compile Include="Runtime\GraphStructuredStack\GssReduceNode.cs" />
+    <Compile Include="Runtime\GraphStructuredStack\GssReducePath.cs" />
+    <Compile Include="Runtime\GraphStructuredStack\GssNode.cs" />
+    <Compile Include="Runtime\GraphStructuredStack\GssLink.cs" />
+    <Compile Include="Runtime\GraphStructuredStack\IGss.cs" />
+    <Compile Include="Runtime\IPushParser.cs" />
+    <Compile Include="Runtime\IScanner.cs" />
+    <Compile Include="Framework\Attributes\Diagnostics\LrGraph.cs" />
+    <Compile Include="Runtime\Producers\IGraphWriter.cs" />
+    <Compile Include="Runtime\Producers\ISppfNodeVisitor.cs" />
+    <Compile Include="Runtime\Producers\SppfEpsilonProducer.cs" />
+    <Compile Include="Runtime\Producers\SppfGraphWriter.cs" />
+    <Compile Include="Runtime\Producers\ActionEpsilonProducer.cs" />
+    <Compile Include="Runtime\ReductionQueue.cs" />
+    <Compile Include="Runtime\ResourceAllocator.cs" />
+    <Compile Include="Runtime\Producers\IProducer.cs" />
+    <Compile Include="Runtime\TaggedStack.cs" />
+    <Compile Include="Runtime\RnGlrParser.cs" />
+    <Compile Include="Runtime\ScanCursor.cs" />
+    <Compile Include="Runtime\Scanner.cs" />
+    <Compile Include="Framework\Reflection\BnfGrammar.cs" />
+    <Compile Include="Framework\Language.cs" />
+    <Compile Include="Extensibility\LanguageData.cs" />
+    <Compile Include="Lib\Raw.cs" />
+    <Compile Include="Runtime\DeterministicParser.cs" />
+    <Compile Include="Logging\Loc.cs" />
+    <Compile Include="Framework\SyntaxException.cs" />
+    <Compile Include="Algorithm\IntegerSets\IntSet.cs" />
+    <Compile Include="Extensibility\TokenRef.cs" />
+    <Compile Include="Runtime\ScannerEnumerator.cs" />
+    <Compile Include="Runtime\ServicesInitializer.cs" />
+    <Compile Include="Runtime\Producers\SppfProducer.cs" />
+    <Compile Include="Runtime\Producers\SppfNode.cs" />
+    <Compile Include="Runtime\Producers\ActionProducer.cs" />
+    <Compile Include="Runtime\StackLookback.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="doc\CILCompilation.md" />
+    <Content Include="doc\CilGrammar.md" />
+    <Content Include="doc\ClassesAsRules.md" />
+    <Content Include="doc\ConditionalProcessingAndMacros.md" />
+    <Content Include="doc\DelegateTokens.md" />
+    <Content Include="doc\Design.md" />
+    <Content Include="doc\Emitters.md" />
+    <Content Include="doc\FrontLanguageCompilation.md" />
+    <Content Include="doc\GenericRules.md" />
+    <Content Include="doc\Lexer.md" />
+    <Content Include="doc\LexerRefactoring.md" />
+    <Content Include="doc\MsBuildFunctionality.md" />
+    <Content Include="doc\Scope.md" />
+    <Content Include="doc\Sre.md" />
+    <Content Include="doc\StronglyNamedLanguageAssemblies.md" />
+    <Content Include="doc\ThisAsTokenTransforms.md" />
+    <Content Include="doc\TokenFactories.md" />
+    <Content Include="doc\TokenInheritance.md" />
+    <Content Include="doc\Transformation.md" />
+    <Content Include="doc\TupleAsInlineRule.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="doc\ScannerDefinitions.md" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!--
+  <PropertyGroup>
+    <SolutionDirectory>$(MSBuildProjectDirectory)\..\</SolutionDirectory>
+    <IronTextTasksDirectory>$(SolutionDirectory)IronText.MsBuild\bin\Debug\</IronTextTasksDirectory>
+  </PropertyGroup>
+  <Import Project="$(IronTextTasksDirectory)IronText.Tasks.Targets" />
+  -->
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

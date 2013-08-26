@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <IronTextTasksLib>IronText.MsBuild.dll</IronTextTasksLib>
+    </PropertyGroup>
+
+    <UsingTask TaskName="IronText.MsBuild.DeriveTask" AssemblyFile="$(IronTextTasksLib)" />
+
+    <ItemGroup>
+        <DeriveSourceAssembly Include="$(TargetPath)" />
+        <DerivedAssembly Include="@(DeriveSourceAssembly->'%(rootdir)%(directory)%(filename).Derived.dll')" />
+    </ItemGroup>
+    <Target Name="GenerateDerivedAssembly" AfterTargets="PrepareForRun" 
+        Inputs="@(DeriveSourceAssembly)"
+        Outputs="@(DerivedAssembly)"
+        Condition="'$(GenerateDerivedAssembly)'=='On'"
+        DependsOnTargets="CopyFilesToOutputDirectory">
+
+        <DeriveTask 
+            DerivatorTypeName="IronText.Build.AssemblyDerivator, IronText.Compiler"
+            SourceAssemblies="@(DeriveSourceAssembly)"
+            DerivedAssemblies="@(DerivedAssembly)" /> 
+    </Target>
+</Project>

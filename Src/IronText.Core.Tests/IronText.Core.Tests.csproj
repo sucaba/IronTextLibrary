@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{01785AF7-2D0C-42A2-B0F5-842C991E3BA1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IronText.Tests</RootNamespace>
+    <AssemblyName>IronText.Core.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DIAGNOSTICS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>default</LangVersion>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>default</LangVersion>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy|AnyCPU'">
+    <OutputPath>bin\Deploy\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\IronText.Core.Tests.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <LangVersion>default</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Moq, Version=4.0.10827.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Deps\moq\Moq.4.0.10827\NET40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>C:\Program Files (x86)\TestDriven.NET 3\NUnit\2.5\framework\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Algorithm\AlgorithmTest.cs" />
+    <Compile Include="Algorithm\BitSetTest.cs" />
+    <Compile Include="Algorithm\DecisionTreeBuilderTest.cs" />
+    <Compile Include="Algorithm\IntIntervalTest.cs" />
+    <Compile Include="Algorithm\MutableIntMapTest.cs" />
+    <Compile Include="Algorithm\Simulation\DfaSimulation.cs" />
+    <Compile Include="Algorithm\Simulation\DfaSimulationLexer.cs" />
+    <Compile Include="Algorithm\Simulation\IDfaSimulation.cs" />
+    <Compile Include="Algorithm\Simulation\ITdfaSimulation.cs" />
+    <Compile Include="Algorithm\Simulation\TdfaSimulation.cs" />
+    <Compile Include="Algorithm\Simulation\TdfaSimulationLexer.cs" />
+    <Compile Include="Algorithm\TdfaSimulationLexerTest.cs" />
+    <Compile Include="Algorithm\TopologicalSortTest.cs" />
+    <Compile Include="Algorithm\UnicodeFrequencyTest.cs" />
+    <Compile Include="Framework\BuildErrorTest.cs" />
+    <Compile Include="Framework\ErrorRecoveryTest.cs" />
+    <Compile Include="Framework\GlrTest.cs" />
+    <Compile Include="Algorithm\SetOrthohonatorTest.cs" />
+    <Compile Include="Algorithm\UnicodeIntSetTypeTest.cs" />
+    <Compile Include="Extensions\LanguageDescriptorTest.cs" />
+    <Compile Include="Extensions\TokenRefResolverTest.cs" />
+    <Compile Include="Framework\Attributes\ParseGetSetAttributeTest.cs" />
+    <Compile Include="Framework\Attributes\DanglingElseTest.cs" />
+    <Compile Include="Framework\Attributes\MetaAttributeTests.cs" />
+    <Compile Include="Framework\Attributes\OperatorPrecedenceTest.cs" />
+    <Compile Include="Framework\Attributes\ParseAttributeTest.cs" />
+    <Compile Include="Framework\Attributes\LanguageServiceAttributeTest.cs" />
+    <Compile Include="Framework\Attributes\ThisAsTokenAttributeTest.cs" />
+    <Compile Include="Framework\BnfGrammarTest.cs" />
+    <Compile Include="Framework\InheritanceTest.cs" />
+    <Compile Include="Framework\LineColumnHandlingTest.cs" />
+    <Compile Include="Framework\LocalContextsTest.cs" />
+    <Compile Include="Framework\MergeTest.cs" />
+    <Compile Include="Framework\ParseRuleMultiMethodsTest.cs" />
+    <Compile Include="Framework\Performance\Lalr1DfaPerformanceTest.cs" />
+    <Compile Include="Framework\ScanModesTest.cs" />
+    <Compile Include="Framework\ScannerApisUseCase.cs" />
+    <Compile Include="Framework\ScanSentinelTest.cs" />
+    <Compile Include="Framework\SolvingAmbiguities\SuffixPrefixShiftReduceTest.cs" />
+    <Compile Include="Framework\SppfProducerTest.cs" />
+    <Compile Include="Framework\StartRulesTest.cs" />
+    <Compile Include="Framework\LocalSyntaxPipingTest.cs" />
+    <Compile Include="Framework\TokenCollectionTest.cs" />
+    <Compile Include="Framework\Tokens\FastSequenceTest.cs" />
+    <Compile Include="Framework\UnsupportedGrammarTest.cs" />
+    <Compile Include="Lib\IL\CachedMethodTest.cs" />
+    <Compile Include="Lib\IL\Generators\ImplementationGeneratorTest.cs" />
+    <Compile Include="Lib\IL\Generators\SwitchFactoryGeneratorTest.cs" />
+    <Compile Include="Lib\IL\Generators\GrammarSerializerTest.cs" />
+    <Compile Include="Lib\IL\Generators\ReadOnlyTableGeneratorTest.cs" />
+    <Compile Include="Lib\IL\Generators\SwitchGeneratorTest.cs" />
+    <Compile Include="Lib\RegularExpressions\Scanners\ScannerSyntaxTest.cs" />
+    <Compile Include="Lib\Scope\NsBaseTest.cs" />
+    <Compile Include="Algorithm\IntervalIntSetTest.cs" />
+    <Compile Include="Performance\PublicPerformance.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IO\LocTest.cs" />
+    <Compile Include="Samples\CommandLineSampleTest.cs" />
+    <Compile Include="Samples\DynamicLinqTest.cs" />
+    <Compile Include="Samples\InheritanceGrammarRulesTest.cs" />
+    <Compile Include="MetadataCompiler\ParserActionEncodingTest.cs" />
+    <Compile Include="Framework\ScannerTest.cs" />
+    <Compile Include="Framework\MixedFeaturesTest.cs" />
+    <Compile Include="Algorithm\DfaSimulationLexerTest.cs" />
+    <Compile Include="Samples\DragonBookSamplesTest.cs" />
+    <Compile Include="Framework\EmptyRulesTest.cs" />
+    <Compile Include="Bootstrap\BootstrapLexerTest.cs" />
+    <Compile Include="Framework\ParserAbstractionTest.cs" />
+    <Compile Include="Samples\KeywordScannerTest.cs" />
+    <Compile Include="Samples\Re2cSampleTest.cs" />
+    <Compile Include="TestUtils\Bench.cs" />
+    <Compile Include="TestUtils\Collector.cs" />
+    <Compile Include="TestUtils\ProgramExecutor.cs" />
+    <Compile Include="DeploymentItemAttribute.cs" />
+    <Compile Include="TestUtils\StubTokenRefResolver.cs" />
+    <Compile Include="UseCases\ImplicitAstUseCase.cs" />
+    <Compile Include="UseCases\MatchExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Deps\cecil\Mono.Cecil.csproj">
+      <Project>{D68133BD-1E63-496E-9EDE-4FBDBF77B486}</Project>
+      <Name>Mono.Cecil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Deps\cecil\symbols\pdb\Mono.Cecil.Pdb.csproj">
+      <Project>{63E6915C-7EA4-4D76-AB28-0D7191EEA626}</Project>
+      <Name>Mono.Cecil.Pdb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IronText.Compiler\IronText.Compiler.csproj">
+      <Project>{67710639-99E3-411E-849F-D84D68ED7906}</Project>
+      <Name>IronText.Compiler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IronText.Core\IronText.Core.csproj">
+      <Project>{97CFB776-52DE-40B1-854C-912C93A32AFA}</Project>
+      <Name>IronText.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,1 @@
+@MyArchiver.exe test NightlyBuild.zip

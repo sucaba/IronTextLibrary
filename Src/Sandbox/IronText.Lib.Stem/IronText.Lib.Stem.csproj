@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E2856CBC-BFB0-4AD3-B421-897226BF17AC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IronText.Lib</RootNamespace>
+    <AssemblyName>IronText.Lib.Stem</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <GenerateDerivedAssembly>On</GenerateDerivedAssembly>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="NfaVM\Primitives.cs" />
+    <Compile Include="Sre\Chr.cs" />
+    <Compile Include="Sre\Stx.cs" />
+    <Compile Include="Sre\Sym.cs" />
+    <Compile Include="Stem\Attributes\ActorAttribute.cs" />
+    <Compile Include="Stem\Attributes\ClsAttribute.cs" />
+    <Compile Include="Stem\Attributes\OpnAttribute.cs" />
+    <Compile Include="NfaVM\Backend\BytecodeCompiler\NfaVMBytecodeBackend.cs" />
+    <Compile Include="NfaVM\Backend\ILCompiler\ILNfaCompiler.cs" />
+    <Compile Include="NfaVM\INfaVM.cs" />
+    <Compile Include="NfaVM\Runtime\PikeNfaVM.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegularAst\Backend\ILCompiler\RegularNfaVMCompiler.cs" />
+    <Compile Include="RegularAst\Backend\InMemoryNfaCompiler\FragmentBuilder.cs" />
+    <Compile Include="RegularAst\Backend\InMemoryNfaCompiler\Nfa.cs" />
+    <Compile Include="Sre\Grammar.cs" />
+    <Compile Include="Stem\StemScanner.cs" />
+    <Compile Include="Stem\Tokens\Num.cs" />
+    <Compile Include="Stem\Tokens\QStr.cs" />
+    <Compile Include="Stem\Tokens\Stx.cs" />
+    <Compile Include="Stem\Tokens\Sym.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\IronText.Compiler\IronText.Compiler.csproj">
+      <Project>{67710639-99E3-411E-849F-D84D68ED7906}</Project>
+      <Name>IronText.Compiler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\IronText.Core\IronText.Core.csproj">
+      <Project>{97CFB776-52DE-40B1-854C-912C93A32AFA}</Project>
+      <Name>IronText.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Sre\Readme.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

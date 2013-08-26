@@ -1,0 +1,16 @@
+﻿/*
+ * Sample grammar file
+ */
+
+start : foo bar
+      | bar foo
+      | /* Add Parse attribute to existing method instead of creating new one */ 
+        "prefix" foo bar
+      | /* Duplicate arg type test. Should cause automatic argument name generation */
+        "duplicate" foo foo
+      ;
+
+foo : "foo";
+
+bar : "bar";
+      

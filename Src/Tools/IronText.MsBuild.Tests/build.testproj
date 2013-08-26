@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+  <ItemGroup>
+    <!-- Definition assembly used to build derived assembly from -->
+    <DeriveSourceAssemblies Include="IronText.Core.dll" />
+    <DerivedAssemblies Include="IronText.Core.Derived.dll" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <SolutionDirectory>$(MSBuildProjectDirectory)\..\..\..\</SolutionDirectory>
+    <IronTextTasksDirectory>$(SolutionDirectory)IronText.MsBuild\bin\Debug\</IronTextTasksDirectory>
+  </PropertyGroup>
+  <!-- The only target is in imported targets file. It will invoke DeriveTask from IronText.Core.dll -->
+  <Import Project="$(IronTextTasksDirectory)\IronText.Tasks.Targets" />
+</Project>

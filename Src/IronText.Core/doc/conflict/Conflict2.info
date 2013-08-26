@@ -1,0 +1,107 @@
+﻿Found 1 conflicts
+--------------------------------------------------
+Conflict on token '[' between actions in state #3:
+  A -> 'aaa' •  |LA = {'['}
+  A -> 'aaa' • '[' 'asuffix' ']'  |LA = {'['}
+
+Action #1
+  Reduce on the rule:
+    A -> 'aaa'
+Action #2
+  Shift to the state I6:
+    A -> 'aaa' '[' • 'asuffix' ']'  |LA = {'['}
+--------------------------------------------------
+Language: Wasp.Tests.Framework.SolvingAmbiguities.SuffixPrefixShiftReduceTest+SuffixPrefixConflictLang
+
+Grammar:
+Terminals: $ 'aaa' '[' 'asuffix' ']' 'bprefix' 'bbb'
+Non-Terminals: <Start> Void A B
+Start Token: Void
+Rules:
+00: <Start> -> Void
+01: Void -> A B
+02: A -> 'aaa'
+03: A -> 'aaa' '[' 'asuffix' ']'
+04: B -> '[' 'bprefix' ']' 'bbb'
+
+State 0
+
+  <Start> -> • Void  |LA = {$}
+  Void -> • A B  |LA = {$}
+  A -> • 'aaa'  |LA = {'['}
+  A -> • 'aaa' '[' 'asuffix' ']'  |LA = {'['}
+
+  Void             shift and go to state 1
+  A             shift and go to state 2
+  'aaa'             shift and go to state 3
+
+State 1
+
+  <Start> -> Void •  |LA = {$}
+
+  $             accept
+
+
+State 2
+
+  Void -> A • B  |LA = {$}
+  B -> • '[' 'bprefix' ']' 'bbb'  |LA = {$}
+
+  B             shift and go to state 4
+  '['             shift and go to state 5
+
+State 3
+
+  A -> 'aaa' •  |LA = {'['}
+  A -> 'aaa' • '[' 'asuffix' ']'  |LA = {'['}
+
+  '['             reduce using rule 2
+
+State 4
+
+  Void -> A B •  |LA = {$}
+
+  $             reduce using rule 1
+
+State 5
+
+  B -> '[' • 'bprefix' ']' 'bbb'  |LA = {$}
+
+  'bprefix'             shift and go to state 7
+
+State 6
+
+  A -> 'aaa' '[' • 'asuffix' ']'  |LA = {'['}
+
+  'asuffix'             shift and go to state 8
+
+State 7
+
+  B -> '[' 'bprefix' • ']' 'bbb'  |LA = {$}
+
+  ']'             shift and go to state 9
+
+State 8
+
+  A -> 'aaa' '[' 'asuffix' • ']'  |LA = {'['}
+
+  ']'             shift and go to state 10
+
+State 9
+
+  B -> '[' 'bprefix' ']' • 'bbb'  |LA = {$}
+
+  'bbb'             shift and go to state 11
+
+State 10
+
+  A -> 'aaa' '[' 'asuffix' ']' •  |LA = {'['}
+
+  '['             reduce using rule 3
+
+State 11
+
+  B -> '[' 'bprefix' ']' 'bbb' •  |LA = {$}
+
+  $             reduce using rule 4
+
