@@ -31,4 +31,4 @@ Technical Details
 -----------------
 
 Parser: LALR1, RNGLR
-Scanner: RE2C like DFA compiled .net code
+Scanner: DFA compiled to a RE2C-like .net code
