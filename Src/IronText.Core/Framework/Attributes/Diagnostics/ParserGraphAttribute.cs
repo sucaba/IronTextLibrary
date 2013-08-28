@@ -20,7 +20,7 @@ namespace IronText.Framework
 
         private void WriteGvGraph(IReportData data)
         {
-            string path = Path.Combine(data.GetDestinationDirectory(), fileName);
+            string path = Path.Combine(data.DestinationDirectory, fileName);
 
             var graph = new LrGraph(data);
             graph.WriteGv(path);

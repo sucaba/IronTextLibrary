@@ -10,6 +10,8 @@ namespace IronText.Extensibility
     /// </summary>
     public interface IReportData
     {
+        string DestinationDirectory { get; }
+
         LanguageName Name { get; }
 
         BnfGrammar Grammar { get; }
@@ -20,18 +22,16 @@ namespace IronText.Extensibility
 
         ReadOnlyCollection<ScanMode> ScanModes { get; }
 
-        ITdfaData GetScanModeDfa(Type scanModeType);
-
         ReadOnlyCollection<DotState> ParserStates { get; }
 
-        string GetDestinationDirectory();
+        ReadOnlyCollection<ParserConflictInfo> ParserConflicts { get; }
+
+        ITdfaData GetScanModeDfa(Type scanModeType);
 
         ParserAction GetParserAction(int state, int token);
 
-        IEnumerable<ParserAction> GetAllParserActions(int state, int token);
-
-        ReadOnlyCollection<ParserConflictInfo> GetParserConflicts();
-
         IEnumerable<ParserAction> GetConflictActions(int conflictIndex, int count);
+
+        IEnumerable<ParserAction> GetAllParserActions(int state, int token);
     }
 }

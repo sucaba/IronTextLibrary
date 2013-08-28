@@ -23,9 +23,9 @@ namespace IronText.Framework
 
         private void WriteDocFiles(IReportData data)
         {
-            string path = Path.Combine(data.GetDestinationDirectory(), fileName);
+            string path = Path.Combine(data.DestinationDirectory, fileName);
 
-            var conflicts = data.GetParserConflicts();
+            var conflicts = data.ParserConflicts;
 
             using (var writer = new StreamWriter(path, false, Encoding.UTF8))
             {
@@ -52,8 +52,6 @@ namespace IronText.Framework
             output.WriteLine("Grammar:");
             output.Write(data.Grammar);
             output.WriteLine();
-
-            var conflicts = data.GetParserConflicts();
 
             for (int state = 0; state != data.ParserStateCount; ++state)
             {

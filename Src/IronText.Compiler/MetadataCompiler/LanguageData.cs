@@ -13,6 +13,8 @@ namespace IronText.MetadataCompiler
     /// </summary>
     internal class LanguageData : IReportData
     {
+        string IReportData.DestinationDirectory { get { return Name.SourceAssemblyDirectory; } }
+
         public LanguageName Name { get; set; }
 
         public BnfGrammar Grammar { get; set; }
@@ -56,9 +58,9 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        ReadOnlyCollection<ParserConflictInfo> IReportData.GetParserConflicts()
+        ReadOnlyCollection<ParserConflictInfo> IReportData.ParserConflicts
         {
-            return new ReadOnlyCollection<ParserConflictInfo>(Lalr1Conflicts);
+            get { return new ReadOnlyCollection<ParserConflictInfo>(Lalr1Conflicts); }
         }
 
         IEnumerable<ParserAction> IReportData.GetConflictActions(int conflictIndex, int count)
@@ -120,11 +122,5 @@ namespace IronText.MetadataCompiler
         public ITable<int>            Lalr1ParserActionTable;
         public int[]                  Lalr1ParserConflictActionTable;
         public ParserConflictInfo[]   Lalr1Conflicts;
-
-        public string GetDestinationDirectory()
-        {
-            string result = Name.SourceAssemblyDirectory;
-            return result;
-        }
     }
 }

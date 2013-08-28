@@ -21,7 +21,7 @@ namespace IronText.Framework
 
         private void WriteGrammarFile(IReportData data)
         {
-            string path = Path.Combine(data.GetDestinationDirectory(), fileName);
+            string path = Path.Combine(data.DestinationDirectory, fileName);
 
             using (var grammarFile = new StreamWriter(path, false, Encoding.UTF8))
             {

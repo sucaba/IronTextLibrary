@@ -21,7 +21,7 @@ namespace IronText.Framework
 
         private void WriteScannerFile(IReportData data)
         {
-            string path = Path.Combine(data.GetDestinationDirectory(), fileName);
+            string path = Path.Combine(data.DestinationDirectory, fileName);
 
             using (var file = new StreamWriter(path, false, Encoding.UTF8))
             {

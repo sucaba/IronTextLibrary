@@ -3,21 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using IronText.Algorithm;
+using System.Collections.ObjectModel;
 
 namespace IronText.Extensibility
 {
     public class ScanMode
     {
-        public Type ScanModeType;
+        private readonly List<ScanRule> scanRules = new List<ScanRule>();
+
+        internal ScanMode(Type scanModeType)
+        {
+            this.ScanModeType = scanModeType;
+            this.ScanRules = new ReadOnlyCollection<ScanRule>(this.scanRules);
+        }
+
+        public Type ScanModeType { get; private set; }
 
         // Ordered scan rules
-        public List<ScanRule> ScanRules;
+        public ReadOnlyCollection<ScanRule> ScanRules { get; private set; }
+
+
+        internal ScanRule AddLiteralRule(string literal)
+        {
+            var result = CreateImplicitLiteralScanRule(literal);
+            scanRules.Add(result);
+
+            return result;
+        }
+
+        internal void AddRule(ScanRule rule)
+        {
+            scanRules.Add(rule);
+        }
 
         internal void SortScanRules()
         {
             // Sort scan rules 
-            var sortedScanRules = ScanRules.Where(rule => rule.IsSortable).ToArray();
-            var nonSortedScanRules = ScanRules.Where(rule => !rule.IsSortable).ToArray();
+            var sortedScanRules = scanRules.Where(rule => rule.IsSortable).ToArray();
+            var nonSortedScanRules = scanRules.Where(rule => !rule.IsSortable).ToArray();
 
             // Sort fixed-text tokens to prioritize longest matches:
             Sorting.SpecializationSort(
@@ -26,16 +49,8 @@ namespace IronText.Extensibility
 
             // Sort rules in the same order as they appear in definition:
             Array.Sort(nonSortedScanRules, ScanRule.ComparePriority);
-            ScanRules.Clear();
-            ScanRules.AddRange(sortedScanRules.Concat(nonSortedScanRules));
-        }
-
-        public ScanRule AddLiteralRule(string literal)
-        {
-            var result = CreateImplicitLiteralScanRule(literal);
-            ScanRules.Add(result);
-
-            return result;
+            scanRules.Clear();
+            scanRules.AddRange(sortedScanRules.Concat(nonSortedScanRules));
         }
 
         private static ScanRule CreateImplicitLiteralScanRule(string literal)

@@ -21,7 +21,7 @@ namespace IronText.Framework
 
         private void WriteGvGraph(IReportData data)
         {
-            string path = Path.Combine(data.GetDestinationDirectory(), fileName);
+            string path = Path.Combine(data.DestinationDirectory, fileName);
 
             var modeType = data.ScanModes[0].ScanModeType;
             var dfa = data.GetScanModeDfa(modeType);

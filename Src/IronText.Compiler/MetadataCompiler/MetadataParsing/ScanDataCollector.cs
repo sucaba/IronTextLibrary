@@ -81,7 +81,7 @@ namespace IronText.MetadataCompiler
         public void AddScanRule(ScanRule rule)
         {
             var currentScanMode = processedScanModes.Peek();
-            currentScanMode.ScanRules.Add(rule);
+            currentScanMode.AddRule(rule);
             rule.Priority = rulePriority++;
 
             if (rule.NextModeType != null)
@@ -97,11 +97,7 @@ namespace IronText.MetadataCompiler
                 return;
             }
 
-            var scanMode = new ScanMode
-                {
-                    ScanModeType = modeType,
-                    ScanRules = new List<ScanRule>()
-                };
+            var scanMode = new ScanMode(modeType);
 
             allScanModes.Add(scanMode);
 
