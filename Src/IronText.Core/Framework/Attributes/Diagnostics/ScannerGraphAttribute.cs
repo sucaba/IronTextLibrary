@@ -14,17 +14,17 @@ namespace IronText.Framework
             this.fileName = fileName;
         }
 
-        public override IEnumerable<LanguageDataAction> GetLanguageDataActions()
+        public override IEnumerable<ReportBuilder> GetLanguageDataActions()
         {
             yield return WriteGvGraph;
         }
 
-        private void WriteGvGraph(LanguageData data)
+        private void WriteGvGraph(IReportData data)
         {
             string path = Path.Combine(data.GetDestinationDirectory(), fileName);
 
             var modeType = data.ScanModes[0].ScanModeType;
-            var dfa = data.ScanModeTypeToDfa[modeType];
+            var dfa = data.GetScanModeDfa(modeType);
             using (var graph = new GvGraphView(path))
             {
                 dfa.DescribeGraph(graph);

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace IronText.Extensibility
+﻿namespace IronText.Extensibility
 {
     /// <summary>
     /// Parser action builder contract
@@ -31,8 +29,8 @@ namespace IronText.Extensibility
     public delegate void SwitchActionBuilder(ISwitchActionCode code);
 
     /// <summary>
-    /// Custom action on LanguageData after it was built
+    /// Custom reporting action
     /// </summary>
-    /// <param name="data">istance of <see cref="LanguageData"/></param>
-    public delegate void LanguageDataAction(LanguageData data);
+    /// <param name="data">Language data for building various reports</param>
+    public delegate void ReportBuilder(IReportData data);
 }

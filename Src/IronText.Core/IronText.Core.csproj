@@ -128,7 +128,7 @@
     <Compile Include="Extensibility\Automata\MutableDotItemSet.cs" />
     <Compile Include="Extensibility\Automata\TdfaState.cs" />
     <Compile Include="Extensibility\Automata\TdfaTransition.cs" />
-    <Compile Include="Extensibility\ILanguageData.cs" />
+    <Compile Include="Extensibility\IReportData.cs" />
     <Compile Include="Extensibility\IMergeActionCode.cs" />
     <Compile Include="Extensibility\ISingleTokenScanRule.cs" />
     <Compile Include="Extensibility\LocalParseContext.cs" />
@@ -299,7 +299,6 @@
     <Compile Include="Runtime\Scanner.cs" />
     <Compile Include="Framework\Reflection\BnfGrammar.cs" />
     <Compile Include="Framework\Language.cs" />
-    <Compile Include="Extensibility\LanguageData.cs" />
     <Compile Include="Lib\Raw.cs" />
     <Compile Include="Runtime\DeterministicParser.cs" />
     <Compile Include="Logging\Loc.cs" />

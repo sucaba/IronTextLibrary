@@ -131,7 +131,7 @@ namespace IronText.MetadataCompiler
 
         public TokenRef Start { get; set; }
 
-        public LanguageDataAction[] LanguageDataActions { get; private set; }
+        public ReportBuilder[] LanguageDataActions { get; private set; }
 
         public TokenRefResolver TokenRefResolver { get; private set; }
 

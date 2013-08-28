@@ -74,7 +74,7 @@ namespace IronText.MetadataCompiler
             // Prepare language data for language assembly generation
             result = new LanguageData
             {
-                LanguageName        = languageName,
+                Name        = languageName,
                 IsAmbiguous         = isAmbiguous,
                 RootContextType     = languageName.DefinitionType,
                 Grammar             = grammar,

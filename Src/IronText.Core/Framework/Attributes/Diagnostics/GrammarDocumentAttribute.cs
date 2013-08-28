@@ -14,12 +14,12 @@ namespace IronText.Framework
             this.fileName = fileName;
         }
 
-        public override IEnumerable<LanguageDataAction> GetLanguageDataActions()
+        public override IEnumerable<ReportBuilder> GetLanguageDataActions()
         {
             yield return WriteGrammarFile;
         }
 
-        private void WriteGrammarFile(ILanguageData data)
+        private void WriteGrammarFile(IReportData data)
         {
             string path = Path.Combine(data.GetDestinationDirectory(), fileName);
 

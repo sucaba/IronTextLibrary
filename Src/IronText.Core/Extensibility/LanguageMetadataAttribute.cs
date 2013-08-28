@@ -61,9 +61,9 @@ namespace IronText.Extensibility
             return Enumerable.Empty<Type>();
         }
 
-        public virtual IEnumerable<LanguageDataAction> GetLanguageDataActions()
+        public virtual IEnumerable<ReportBuilder> GetLanguageDataActions()
         {
-            return Enumerable.Empty<LanguageDataAction>();
+            return Enumerable.Empty<ReportBuilder>();
         }
 
         public override bool Equals(object obj)

@@ -14,12 +14,12 @@ namespace IronText.Framework
             this.fileName = fileName;
         }
 
-        public override IEnumerable<LanguageDataAction> GetLanguageDataActions()
+        public override IEnumerable<ReportBuilder> GetLanguageDataActions()
         {
             yield return WriteScannerFile;
         }
 
-        private void WriteScannerFile(LanguageData data)
+        private void WriteScannerFile(IReportData data)
         {
             string path = Path.Combine(data.GetDestinationDirectory(), fileName);
 

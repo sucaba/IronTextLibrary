@@ -10,9 +10,9 @@ namespace IronText.Framework
     sealed class LrGraph
     {
         private readonly BnfGrammar     grammar;
-        private readonly ILanguageData data;
+        private readonly IReportData data;
 
-        public LrGraph(ILanguageData data)
+        public LrGraph(IReportData data)
         {
             this.data       = data;
             this.grammar    = data.Grammar;

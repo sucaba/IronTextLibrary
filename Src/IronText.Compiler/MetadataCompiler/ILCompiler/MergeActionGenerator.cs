@@ -8,7 +8,7 @@ using IronText.Lib.Shared;
 
 namespace IronText.MetadataCompiler
 {
-    public class MergeActionGenerator
+    internal class MergeActionGenerator
     {
         public MergeActionGenerator()
         {

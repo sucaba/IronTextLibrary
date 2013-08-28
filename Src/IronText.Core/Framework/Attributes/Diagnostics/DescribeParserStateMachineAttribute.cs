@@ -16,12 +16,12 @@ namespace IronText.Framework
             this.fileName = fileName;
         }
 
-        public override IEnumerable<LanguageDataAction> GetLanguageDataActions()
+        public override IEnumerable<ReportBuilder> GetLanguageDataActions()
         {
-            return new LanguageDataAction[] { WriteDocFiles };
+            return new ReportBuilder[] { WriteDocFiles };
         }
 
-        private void WriteDocFiles(ILanguageData data)
+        private void WriteDocFiles(IReportData data)
         {
             string path = Path.Combine(data.GetDestinationDirectory(), fileName);
 
@@ -43,9 +43,9 @@ namespace IronText.Framework
             }
         }
 
-        private void PrintTransitions(ILanguageData data, StreamWriter output)
+        private void PrintTransitions(IReportData data, StreamWriter output)
         {
-            string title = "Language: " + data.LanguageName.FullName;
+            string title = "Language: " + data.Name.FullName;
 
             output.WriteLine(title);
             output.WriteLine();
@@ -96,7 +96,7 @@ namespace IronText.Framework
             }
         }
 
-        private void PrintAction(ILanguageData data, int token, StreamWriter output, ParserAction action)
+        private void PrintAction(IReportData data, int token, StreamWriter output, ParserAction action)
         {
             output.Write(Indent);
             output.Write(data.Grammar.TokenName(token));
@@ -129,7 +129,7 @@ namespace IronText.Framework
             output.WriteLine();
         }
 
-        private void ReportConflict(ILanguageData data, ParserConflictInfo conflict, StreamWriter message)
+        private void ReportConflict(IReportData data, ParserConflictInfo conflict, StreamWriter message)
         {
             const string Indent = "  ";
 
@@ -150,7 +150,7 @@ namespace IronText.Framework
         }
 
         private StreamWriter DescribeAction(
-            ILanguageData data,
+            IReportData data,
             ParserAction action,
             StreamWriter output,
             string indent)
@@ -196,7 +196,7 @@ namespace IronText.Framework
         }
 
         private static StreamWriter DescribeState(
-            ILanguageData data,
+            IReportData data,
             int state,
             StreamWriter output,
             string indent)
@@ -205,7 +205,7 @@ namespace IronText.Framework
         }
 
         private static StreamWriter DescribeState(
-            ILanguageData data,
+            IReportData data,
             DotState state,
             StreamWriter output,
             string indent)
@@ -221,7 +221,7 @@ namespace IronText.Framework
         }
 
         private static StreamWriter DescribeItem(
-            ILanguageData data,
+            IReportData data,
             DotItem item,
             StreamWriter output,
             bool showLookaheads = true)
@@ -255,7 +255,7 @@ namespace IronText.Framework
             return output;
         }
 
-        private static StreamWriter DescribeRule(ILanguageData data, int ruleId, StreamWriter output)
+        private static StreamWriter DescribeRule(IReportData data, int ruleId, StreamWriter output)
         {
             var rule = data.Grammar.Rules[ruleId];
 

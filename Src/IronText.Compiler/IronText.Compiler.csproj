@@ -164,6 +164,7 @@
     <Compile Include="MetadataCompiler\ILCompiler\SwitchFactoryGenerator.cs" />
     <Compile Include="MetadataCompiler\ILCompiler\TermFactoryGenerator.cs" />
     <Compile Include="MetadataCompiler\ILCompiler\TokenIdentitiesSerializer.cs" />
+    <Compile Include="MetadataCompiler\LanguageData.cs" />
     <Compile Include="MetadataCompiler\MetadataParsing\IMetadataCollector.cs" />
     <Compile Include="MetadataCompiler\MetadataParsing\IScanDataCollector.cs" />
     <Compile Include="MetadataCompiler\MetadataParsing\LanguageDefinition.cs" />

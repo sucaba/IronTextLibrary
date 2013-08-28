@@ -5,7 +5,7 @@ using IronText.Lib.Shared;
 
 namespace IronText.MetadataCompiler
 {
-    public class GrammarActionGenerator
+    internal class GrammarActionGenerator
     {
         public GrammarActionGenerator()
         {

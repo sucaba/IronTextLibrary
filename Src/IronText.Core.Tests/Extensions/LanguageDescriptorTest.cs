@@ -77,9 +77,9 @@ namespace IronText.Tests.Extensibility
                 return Enumerable.Empty<KeyValuePair<TokenRef,Precedence>>();
             }
 
-            IEnumerable<LanguageDataAction> ILanguageMetadata.GetLanguageDataActions()
+            IEnumerable<ReportBuilder> ILanguageMetadata.GetLanguageDataActions()
             {
-                return Enumerable.Empty<LanguageDataAction>();
+                return Enumerable.Empty<ReportBuilder>();
             }
 
             public IEnumerable<MergeRule> GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
