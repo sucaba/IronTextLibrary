@@ -1,1 +1,1 @@
-﻿DynamicLinq interpreter sample
+﻿DynamicLinq compiler sample

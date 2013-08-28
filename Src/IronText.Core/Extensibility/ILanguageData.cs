@@ -17,6 +17,8 @@ namespace IronText.Extensibility
 
         ParserAction GetParserAction(int state, int token);
 
+        IEnumerable<ParserAction> GetAllParserActions(int state, int token);
+
         ReadOnlyCollection<ParserConflictInfo> GetParserConflicts();
 
         IEnumerable<ParserAction> GetConflictActions(int conflictIndex, int count);

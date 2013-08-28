@@ -27,6 +27,21 @@ namespace IronText.Extensibility
             return ParserAction.Decode(Lalr1ParserActionTable.Get(state, token));
         }
 
+        IEnumerable<ParserAction> ILanguageData.GetAllParserActions(int state, int token)
+        {
+            var cell = Lalr1ParserActionTable.Get(state, token);
+            var action = ParserAction.Decode(cell);
+            if (action != null && action.Kind == ParserActionKind.Conflict)
+            {
+                for (int i = 0; i != action.Size; ++i)
+                {
+                    yield return
+                        ParserAction.Decode(
+                            Lalr1ParserConflictActionTable[action.Value1 + i]);
+                }
+            }
+        }
+
         ReadOnlyCollection<ParserConflictInfo> ILanguageData.GetParserConflicts()
         {
             var resultList = new List<ParserConflictInfo>();

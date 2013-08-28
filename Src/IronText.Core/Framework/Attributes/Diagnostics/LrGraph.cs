@@ -10,16 +10,12 @@ namespace IronText.Framework
     sealed class LrGraph
     {
         private readonly BnfGrammar     grammar;
-        private readonly ITable<int>    transitions;
-        private readonly DotState[]     states;
-        private readonly int[]          contlictTable;
+        private readonly ILanguageData data;
 
-        public LrGraph(LanguageData data)
+        public LrGraph(ILanguageData data)
         {
-            this.grammar        = data.Grammar;
-            this.transitions    = data.Lalr1ParserActionTable;
-            this.states         = data.ParserStates;
-            this.contlictTable  = data.Lalr1ParserConflictActionTable;
+            this.data       = data;
+            this.grammar    = data.Grammar;
         }
 
         public void WriteGv(string path)
@@ -35,41 +31,21 @@ namespace IronText.Framework
             graph.BeginDigraph("LRFSM");
             //graph.SetGraphProperties(RankDir.LeftToRight);
 
-            for (int i = 0; i != states.Length; ++i)
+            int stateCount = data.ParserStates.Count;
+            int tokenCount = data.TokenCount;
+
+            for (int i = 0; i != stateCount; ++i)
             {
-                //graph.AddNode(i, label: i.ToString());
                 graph.AddNode(i, shape: Shape.Mrecord, label: StateToHtml(i));
             }
 
-            for (int i = 0; i != states.Length; ++i)
+            for (int i = 0; i != stateCount; ++i)
             {
-                for (int t = 0; t != grammar.TokenCount; ++t)
+                for (int t = 0; t != tokenCount; ++t)
                 {
-                    int cell = transitions.Get(i, t);
-                    var action = ParserAction.Decode(cell);
-                    if (action == null)
-                    {
-                        continue;
-                    }
-
-                    if (action.Kind == ParserActionKind.Shift)
+                    foreach (var action in data.GetAllParserActions(i, t))
                     {
                         graph.AddEdge(i, action.State, grammar.TokenName(t));
-                    }
-                    else if (action.Kind == ParserActionKind.Conflict)
-                    {
-                        int end = action.Value1 + action.Size;
-                        for (int c = action.Value1; c != end; ++c)
-                        {
-                            var conflictAction = ParserAction.Decode(this.contlictTable[c]);
-                            if (conflictAction.Kind == ParserActionKind.Shift)
-                            {
-                                graph.AddEdge(i, conflictAction.State, grammar.TokenName(t));
-
-                                // There can be only one shift in state with any input token
-                                break;
-                            }
-                        }
                     }
                 }
             }
@@ -80,7 +56,7 @@ namespace IronText.Framework
         private string StateToHtml(int i)
         {
             var output = new StringBuilder();
-            var state = states[i];
+            var state = data.ParserStates[i];
             output.AppendFormat(
                 @"
 <table border=""0"" cellborder=""0"" cellpadding=""3"" bgcolor=""white"">

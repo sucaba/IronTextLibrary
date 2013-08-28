@@ -19,7 +19,7 @@ namespace IronText.Framework
             yield return WriteGrammarFile;
         }
 
-        private void WriteGrammarFile(LanguageData data)
+        private void WriteGrammarFile(ILanguageData data)
         {
             string path = Path.Combine(data.GetDestinationDirectory(), fileName);
 
