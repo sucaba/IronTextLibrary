@@ -128,6 +128,7 @@
     <Compile Include="Extensibility\Automata\MutableDotItemSet.cs" />
     <Compile Include="Extensibility\Automata\TdfaState.cs" />
     <Compile Include="Extensibility\Automata\TdfaTransition.cs" />
+    <Compile Include="Extensibility\IBootstrapScanRule.cs" />
     <Compile Include="Extensibility\Reporting\IReportData.cs" />
     <Compile Include="Extensibility\IMergeActionCode.cs" />
     <Compile Include="Extensibility\ISingleTokenScanRule.cs" />
@@ -356,7 +357,10 @@
     <Reference Include="System" />
     <Reference Include="System.Web" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Extensibility\Parsing\" />
+    <Folder Include="Extensibility\Scanning\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="doc\ScannerDefinitions.md" />
   </ItemGroup>

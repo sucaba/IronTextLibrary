@@ -5,17 +5,19 @@ using System.Reflection;
 
 namespace IronText.Extensibility
 {
-    public abstract class ScanRule : IScanRule
+    internal abstract class ScanRule : IScanRule, IBootstrapScanRule
     {
         public MemberInfo DefiningMember { get; set; }
 
         public abstract IEnumerable<TokenRef[]> GetTokenRefGroups();
 
-        public bool IsSortable { get {  return LiteralText != null; } }
+        bool IScanRule.IsSortable { get {  return LiteralText != null; } }
 
         public string Pattern { get; set; }
 
         public string LiteralText { get; set; }
+
+        string IBootstrapScanRule.BootstrapRegexPattern { get { return BootstrapRegexPattern; } }
 
         internal string BootstrapRegexPattern { get; set; }
 
@@ -26,15 +28,17 @@ namespace IronText.Extensibility
         // for bootstrap
         internal bool ShouldSkip { get { return this is ISkipScanRule; } }
 
+        int IScanRule.Priority { get; set; }
+
         // for sorting
         internal int Priority { get; set; }
 
-        public static int ComparePriority(ScanRule x, ScanRule y)
+        public static int ComparePriority(IScanRule x, IScanRule y)
         {
             return x.Priority - y.Priority;
         }
 
-        public static bool IsMoreSpecialized(ScanRule x, ScanRule y)
+        public static bool IsMoreSpecialized(IScanRule x, IScanRule y)
         {
             var xRule = x as ISingleTokenScanRule;
             var yRule = y as ISingleTokenScanRule;
@@ -49,7 +53,7 @@ namespace IronText.Extensibility
         }
     }
 
-    public class SkipScanRule : ScanRule, ISkipScanRule
+    internal class SkipScanRule : ScanRule, ISkipScanRule
     {
         public SkipScanRule()
         {
@@ -67,7 +71,7 @@ namespace IronText.Extensibility
         }
     }
 
-    public class SingleTokenScanRule : ScanRule, ISingleTokenScanRule
+    internal class SingleTokenScanRule : ScanRule, ISingleTokenScanRule
     {
         public SingleTokenScanRule()
         {

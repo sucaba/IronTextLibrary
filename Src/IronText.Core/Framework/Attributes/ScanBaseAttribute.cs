@@ -30,7 +30,7 @@ namespace IronText.Framework
 
         internal string RegexPattern { get; set; }
 
-        public override IEnumerable<ScanRule> GetScanRules(ITokenPool tokenPool)
+        public override IEnumerable<IScanRule> GetScanRules(ITokenPool tokenPool)
         {
             var method = (MethodInfo)Member;
             var tokenType = method.ReturnType;

@@ -7,7 +7,7 @@ namespace IronText.MetadataCompiler
     {
         void AddMeta(ILanguageMetadata meta);
 
-        void AddScanRule(ScanRule rule);
+        void AddScanRule(IScanRule rule);
 
         void AddScanMode(Type modeType);
     }

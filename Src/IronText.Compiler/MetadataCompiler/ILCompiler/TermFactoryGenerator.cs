@@ -95,7 +95,7 @@ namespace IronText.MetadataCompiler
                 ;
         }
 
-        private int GetRuleResultId(ScanRule rule)
+        private int GetRuleResultId(IScanRule rule)
         {
             if (rule is ISkipScanRule)
             {

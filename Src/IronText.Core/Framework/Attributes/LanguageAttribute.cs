@@ -92,9 +92,9 @@ namespace IronText.Framework
             return Enumerable.Empty<MergeRule>();
         }
 
-        IEnumerable<ScanRule> ILanguageMetadata.GetScanRules(ITokenPool tokenPool)
+        IEnumerable<IScanRule> ILanguageMetadata.GetScanRules(ITokenPool tokenPool)
         {
-            return Enumerable.Empty<ScanRule>();
+            return Enumerable.Empty<IScanRule>();
         }
 
         public IEnumerable<Type> GetContextTypes()

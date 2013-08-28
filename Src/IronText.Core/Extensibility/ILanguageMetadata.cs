@@ -27,7 +27,7 @@ namespace IronText.Extensibility
 
         IEnumerable<SwitchRule> GetSwitchRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool);
 
-        IEnumerable<ScanRule> GetScanRules(ITokenPool tokenPool);
+        IEnumerable<IScanRule> GetScanRules(ITokenPool tokenPool);
 
         IEnumerable<Type> GetContextTypes();
 

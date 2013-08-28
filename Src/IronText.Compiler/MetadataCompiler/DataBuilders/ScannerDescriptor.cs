@@ -13,7 +13,7 @@ namespace IronText.MetadataCompiler
     {
         private readonly ILogging logging;
 
-        public static ScannerDescriptor FromScanRules(string name, IEnumerable<ScanRule> rules, ILogging logging)
+        public static ScannerDescriptor FromScanRules(string name, IEnumerable<IScanRule> rules, ILogging logging)
         {
             var result = new ScannerDescriptor(name, logging);
             foreach (var rule in rules)
@@ -24,7 +24,7 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        private readonly List<ScanRule> rules = new List<ScanRule>();
+        private readonly List<IScanRule> rules = new List<IScanRule>();
 
         public ScannerDescriptor(string name, ILogging logging) 
         { 
@@ -34,9 +34,9 @@ namespace IronText.MetadataCompiler
 
         public string Name { get; set; }
 
-        public ReadOnlyCollection<ScanRule> Rules { get { return rules.AsReadOnly(); } }
+        public ReadOnlyCollection<IScanRule> Rules { get { return rules.AsReadOnly(); } }
 
-        public void AddRule(ScanRule rule) { rules.Add(rule); }
+        public void AddRule(IScanRule rule) { rules.Add(rule); }
 
         public AstNode MakeAst()
         {
@@ -55,9 +55,12 @@ namespace IronText.MetadataCompiler
             bool first = true;
             foreach (var scanRule in descriptor.Rules)
             {
-                if (literalToAction != null && scanRule.LiteralText != null)
+                var asSingleTokenRule = scanRule as ISingleTokenScanRule;
+                if (asSingleTokenRule != null 
+                    && literalToAction != null 
+                    && asSingleTokenRule.LiteralText != null)
                 {
-                    literalToAction.Add(scanRule.LiteralText, i++);
+                    literalToAction.Add(asSingleTokenRule.LiteralText, i++);
                     continue;
                 }
 
@@ -105,9 +108,11 @@ namespace IronText.MetadataCompiler
 
             foreach (var scanRule in Rules)
             {
-                if (scanRule.LiteralText != null)
+                var asSingleTokenRule = scanRule as ISingleTokenScanRule;
+
+                if (asSingleTokenRule != null && asSingleTokenRule.LiteralText != null)
                 {
-                    if (scanRule.LiteralText == "")
+                    if (asSingleTokenRule.LiteralText == "")
                     {
                         logging.Write(
                             new LogEntry
@@ -116,7 +121,7 @@ namespace IronText.MetadataCompiler
                                 Message = string.Format(
                                             "Literal cannot be empty string.",
                                             scanRule),
-                                Member = scanRule.DefiningMember
+                                Member = asSingleTokenRule.DefiningMember
                             });
                     }
                 }

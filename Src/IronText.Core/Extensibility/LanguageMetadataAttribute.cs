@@ -51,9 +51,9 @@ namespace IronText.Extensibility
             return Enumerable.Empty<SwitchRule>();
         }
 
-        public virtual IEnumerable<ScanRule> GetScanRules(ITokenPool tokenPool)
+        public virtual IEnumerable<IScanRule> GetScanRules(ITokenPool tokenPool)
         {
-            return Enumerable.Empty<ScanRule>();
+            return Enumerable.Empty<IScanRule>();
         }
 
         public virtual IEnumerable<Type> GetContextTypes()

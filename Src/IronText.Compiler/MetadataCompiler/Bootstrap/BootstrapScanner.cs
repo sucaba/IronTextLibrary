@@ -49,7 +49,7 @@ namespace IronText.MetadataCompiler
             this.tokenRefResolver = tokenRefResolver;
             this.logging = logging;
 
-            var pattern = @"\G(?:" + string.Join("|", descriptor.Rules.Select(rule => "(" + rule.BootstrapRegexPattern + ")")) + ")";
+            var pattern = @"\G(?:" + string.Join("|", descriptor.Rules.Select(rule => "(" + GetPattern(rule) + ")")) + ")";
             this.regex = new Regex(pattern, RegexOptions.IgnorePatternWhitespace);
             this.text = textSource.ReadToEnd();
 
@@ -63,6 +63,11 @@ namespace IronText.MetadataCompiler
                     tokenFactories[i] = BuildTokenFactory((ISingleTokenScanRule)descriptor.Rules[i]);
                 }
             }
+        }
+
+        private static string GetPattern(IScanRule rule)
+        {
+            return ((IBootstrapScanRule)rule).BootstrapRegexPattern;
         }
 
         public IReceiver<Msg> Accept(IReceiver<Msg> visitor)

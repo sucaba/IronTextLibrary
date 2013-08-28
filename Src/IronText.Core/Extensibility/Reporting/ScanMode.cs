@@ -9,21 +9,20 @@ namespace IronText.Extensibility
 {
     public class ScanMode
     {
-        private readonly List<ScanRule> scanRules = new List<ScanRule>();
+        private readonly List<IScanRule> scanRules = new List<IScanRule>();
 
         internal ScanMode(Type scanModeType)
         {
             this.ScanModeType = scanModeType;
-            this.ScanRules = new ReadOnlyCollection<ScanRule>(this.scanRules);
+            this.ScanRules = new ReadOnlyCollection<IScanRule>(this.scanRules);
         }
 
         public Type ScanModeType { get; private set; }
 
         // Ordered scan rules
-        public ReadOnlyCollection<ScanRule> ScanRules { get; private set; }
+        public ReadOnlyCollection<IScanRule> ScanRules { get; private set; }
 
-
-        internal ScanRule AddLiteralRule(string literal)
+        internal IScanRule AddLiteralRule(string literal)
         {
             var result = CreateImplicitLiteralScanRule(literal);
             scanRules.Add(result);
@@ -31,7 +30,7 @@ namespace IronText.Extensibility
             return result;
         }
 
-        internal void AddRule(ScanRule rule)
+        internal void AddRule(IScanRule rule)
         {
             scanRules.Add(rule);
         }

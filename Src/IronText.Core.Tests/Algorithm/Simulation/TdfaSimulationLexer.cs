@@ -108,7 +108,7 @@ namespace IronText.Tests.Algorithm
 
                 var rule = descriptor.Rules[ruleIndex];
 
-                if (!rule.ShouldSkip)
+                if (!(rule is ISkipScanRule))
                 {
                     TokenFactoryDelegate tokenFactory = tokenFactories[ruleIndex];
 

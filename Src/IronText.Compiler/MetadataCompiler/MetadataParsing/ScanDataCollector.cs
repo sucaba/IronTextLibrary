@@ -78,7 +78,7 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        public void AddScanRule(ScanRule rule)
+        public void AddScanRule(IScanRule rule)
         {
             var currentScanMode = processedScanModes.Peek();
             currentScanMode.AddRule(rule);
@@ -117,9 +117,10 @@ namespace IronText.MetadataCompiler
                     .Except(
                         from mode in allScanModes
                         from rule in mode.ScanRules
-                        where rule is ISingleTokenScanRule
-                            && rule.LiteralText != null
-                        select rule.LiteralText)
+                        let singleTokenRule = (rule as ISingleTokenScanRule)
+                        where singleTokenRule != null
+                            && singleTokenRule.LiteralText != null
+                        select singleTokenRule.LiteralText)
                         .ToArray();
 
                 foreach (var literal in implicitLiterals)
@@ -132,5 +133,7 @@ namespace IronText.MetadataCompiler
 
             processedScanModes.Pop();
         }
+
+        public object singleTokenRule { get; set; }
     }
 }

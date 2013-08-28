@@ -52,9 +52,9 @@ namespace IronText.Tests.Extensibility
                 }
             }
 
-            public IEnumerable<ScanRule> GetScanRules(ITokenPool moduleBuilder)
+            public IEnumerable<IScanRule> GetScanRules(ITokenPool moduleBuilder)
             {
-                return Enumerable.Empty<ScanRule>();
+                return Enumerable.Empty<IScanRule>();
             }
 
             public IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, TokenCategory category)
