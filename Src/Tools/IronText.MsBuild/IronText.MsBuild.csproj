@@ -59,12 +59,6 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="IronText.ImportBefore.Common.props">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="IronText.ImportAfter.Common.targets">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\IronText.Build\IronText.Build.csproj">

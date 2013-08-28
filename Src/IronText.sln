@@ -29,8 +29,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MergeDerived", "Tools\Merge
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronText.MsBuild", "Tools\IronText.MsBuild\IronText.MsBuild.csproj", "{BA821C07-79DB-4DB6-8387-A6568340F787}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wasp.MsBuild.Tests", "Tools\IronText.MsBuild.Tests\Wasp.MsBuild.Tests.csproj", "{C0B6406E-5204-4B78-A9F7-DB5A122E328D}"
-EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = IronTextScheme2008.vsmdi
@@ -226,21 +224,6 @@ Global
 		{BA821C07-79DB-4DB6-8387-A6568340F787}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{BA821C07-79DB-4DB6-8387-A6568340F787}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{BA821C07-79DB-4DB6-8387-A6568340F787}.Release|x86.ActiveCfg = Release|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Deploy|Any CPU.Build.0 = Debug|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Deploy|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Deploy|Mixed Platforms.Build.0 = Debug|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Deploy|x86.ActiveCfg = Debug|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -248,7 +231,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D9CBA8CF-E607-435C-A500-978F4268D466} = {E23ABED4-958E-4729-B862-5E3F9642266E}
 		{BA821C07-79DB-4DB6-8387-A6568340F787} = {E23ABED4-958E-4729-B862-5E3F9642266E}
-		{C0B6406E-5204-4B78-A9F7-DB5A122E328D} = {E23ABED4-958E-4729-B862-5E3F9642266E}
 		{E2856CBC-BFB0-4AD3-B421-897226BF17AC} = {97513C57-FFB9-438B-AE05-55A459B7DF2A}
 		{E4BD2838-17F4-426A-BCAF-C04C0B530ED9} = {97513C57-FFB9-438B-AE05-55A459B7DF2A}
 	EndGlobalSection

@@ -21,17 +21,17 @@ namespace IronText.Framework
             return new LanguageDataAction[] { WriteDocFiles };
         }
 
-        private void WriteDocFiles(LanguageData data)
+        private void WriteDocFiles(ILanguageData data)
         {
             string path = Path.Combine(data.GetDestinationDirectory(), fileName);
 
-            var conflicts = GetParserConflicts(data);
+            var conflicts = data.GetParserConflicts();
 
             using (var writer = new StreamWriter(path, false, Encoding.UTF8))
             {
-                if (conflicts.Length != 0)
+                if (conflicts.Count != 0)
                 {
-                    writer.WriteLine("Found {0} conflicts", conflicts.Length);
+                    writer.WriteLine("Found {0} conflicts", conflicts.Count);
 
                     foreach (var conflict in conflicts)
                     {
@@ -43,7 +43,7 @@ namespace IronText.Framework
             }
         }
 
-        private void PrintTransitions(LanguageData data, StreamWriter output)
+        private void PrintTransitions(ILanguageData data, StreamWriter output)
         {
             string title = "Language: " + data.LanguageName.FullName;
 
@@ -53,9 +53,9 @@ namespace IronText.Framework
             output.Write(data.Grammar);
             output.WriteLine();
 
-            var conflicts = GetParserConflicts(data);
+            var conflicts = data.GetParserConflicts();
 
-            for (int state = 0; state != data.ParserStates.Length; ++state)
+            for (int state = 0; state != data.ParserStates.Count; ++state)
             {
                 output.Write("State ");
                 output.Write(state);
@@ -64,10 +64,10 @@ namespace IronText.Framework
                 DescribeState(data, state, output, Indent);
                 output.WriteLine();
 
-                int tokenCount = data.Lalr1ParserActionTable.ColumnCount;
+                int tokenCount = data.TokenCount;
                 for (int token = 0; token != tokenCount; ++token)
                 {
-                    var action = ParserAction.Decode(data.Lalr1ParserActionTable.Get(state, token));
+                    var action = data.GetParserAction(state, token);
                     if (action != null)
                     {
                         if (action.Kind == ParserActionKind.Conflict)
@@ -96,7 +96,7 @@ namespace IronText.Framework
             }
         }
 
-        private void PrintAction(LanguageData data, int token, StreamWriter output, ParserAction action)
+        private void PrintAction(ILanguageData data, int token, StreamWriter output, ParserAction action)
         {
             output.Write(Indent);
             output.Write(data.Grammar.TokenName(token));
@@ -129,7 +129,7 @@ namespace IronText.Framework
             output.WriteLine();
         }
 
-        private void ReportConflict(LanguageData data, ParserConflictInfo conflict, StreamWriter message)
+        private void ReportConflict(ILanguageData data, ParserConflictInfo conflict, StreamWriter message)
         {
             const string Indent = "  ";
 
@@ -150,7 +150,7 @@ namespace IronText.Framework
         }
 
         private StreamWriter DescribeAction(
-            LanguageData data,
+            ILanguageData data,
             ParserAction action,
             StreamWriter output,
             string indent)
@@ -196,7 +196,7 @@ namespace IronText.Framework
         }
 
         private static StreamWriter DescribeState(
-            LanguageData data,
+            ILanguageData data,
             int state,
             StreamWriter output,
             string indent)
@@ -205,7 +205,7 @@ namespace IronText.Framework
         }
 
         private static StreamWriter DescribeState(
-            LanguageData data,
+            ILanguageData data,
             DotState state,
             StreamWriter output,
             string indent)
@@ -221,7 +221,7 @@ namespace IronText.Framework
         }
 
         private static StreamWriter DescribeItem(
-            LanguageData data,
+            ILanguageData data,
             DotItem item,
             StreamWriter output,
             bool showLookaheads = true)
@@ -255,7 +255,7 @@ namespace IronText.Framework
             return output;
         }
 
-        private static StreamWriter DescribeRule(LanguageData data, int ruleId, StreamWriter output)
+        private static StreamWriter DescribeRule(ILanguageData data, int ruleId, StreamWriter output)
         {
             var rule = data.Grammar.Rules[ruleId];
 
@@ -271,36 +271,6 @@ namespace IronText.Framework
             return output;
         }
 
-        private ParserConflictInfo[] GetParserConflicts(LanguageData data)
-        {
-            var resultList = new List<ParserConflictInfo>();
-            for (int state = 0; state != data.ParserStates.Length; ++state)
-            {
-                for (int token = 0; token != data.Grammar.TokenCount; ++token)
-                {
-                    var cell = data.Lalr1ParserActionTable.Get(state, token);
-                    var action = ParserAction.Decode(cell);
-                    if (action != null && action.Kind == ParserActionKind.Conflict)
-                    {
-                        var item = new ParserConflictInfo
-                            {
-                                State = state,
-                                Token = token,
-                            };
-
-                        for (int i = 0; i != action.Size; ++i)
-                        {
-                            item.Actions.Add(
-                                ParserAction.Decode(
-                                    data.Lalr1ParserConflictActionTable[action.Value1 + i]));
-                        }
-
-                        resultList.Add(item);
-                    }
-                }
-            }
-
-            return resultList.ToArray();
-        }
+        
     }
 }
