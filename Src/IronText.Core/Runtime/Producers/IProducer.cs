@@ -1,7 +1,7 @@
 ﻿using IronText.Algorithm;
 using IronText.Framework;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     /// <summary>
     /// Represents abstract producer for parser results.

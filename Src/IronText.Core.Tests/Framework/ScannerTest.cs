@@ -4,7 +4,7 @@ using System.Linq;
 using IronText.Framework;
 using IronText.Lib;
 using IronText.Lib.Ctem;
-using IronText.Runtime;
+using IronText.Framework;
 using NUnit.Framework;
 
 namespace IronText.Tests.Syntax.Re2IL

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using IronText.Framework;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     using System.Diagnostics;
     using Token = System.Int32;

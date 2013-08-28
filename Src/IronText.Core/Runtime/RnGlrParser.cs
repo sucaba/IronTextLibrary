@@ -4,7 +4,7 @@ using IronText.Algorithm;
 using IronText.Diagnostics;
 using IronText.Framework;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     using IronText.Extensibility;
     using IronText.Logging;

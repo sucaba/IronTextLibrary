@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Logging;
-using IronText.Runtime;
+using IronText.Framework;
 
 namespace IronText.MetadataCompiler
 {

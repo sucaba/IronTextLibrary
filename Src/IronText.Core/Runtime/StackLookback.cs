@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     public static class StackLookback
     {

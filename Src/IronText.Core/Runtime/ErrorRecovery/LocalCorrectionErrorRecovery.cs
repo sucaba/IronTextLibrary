@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using IronText.Framework;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     using IronText.Logging;
     using Token = System.Int32;

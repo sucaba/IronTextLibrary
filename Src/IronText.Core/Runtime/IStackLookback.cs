@@ -1,5 +1,5 @@
 ﻿
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     public interface IStackLookback<T>
     {

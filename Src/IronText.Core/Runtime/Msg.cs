@@ -3,7 +3,7 @@
 using System;
 using IronText.Logging;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
 #if MSGCLASS
     public class Msg

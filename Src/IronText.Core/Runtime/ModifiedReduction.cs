@@ -1,6 +1,6 @@
 ﻿using IronText.Framework;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     struct ModifiedReduction
     { 

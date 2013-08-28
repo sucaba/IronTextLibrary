@@ -9,7 +9,7 @@ using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Logging;
 using IronText.MetadataCompiler;
-using IronText.Runtime;
+using IronText.Framework;
 
 namespace IronText.Tests.Algorithm
 {

@@ -3,7 +3,7 @@ using IronText.Extensibility;
 using IronText.Lib.Ctem;
 using IronText.Logging;
 using IronText.MetadataCompiler;
-using IronText.Runtime;
+using IronText.Framework;
 using IronText.Tests.TestUtils;
 using NUnit.Framework;
 

@@ -6,9 +6,9 @@ using System.Text;
 using IronText.Framework;
 using IronText.Automata.Lalr1;
 using System.Diagnostics;
-using IronText.Runtime;
+using IronText.Framework;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     using State = System.Int32;
     using RuleIndex = System.Int32;

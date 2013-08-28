@@ -6,7 +6,7 @@ using IronText.Diagnostics;
 using IronText.Framework;
 using IronText.Logging;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     public sealed class SppfNode
     {

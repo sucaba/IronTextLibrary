@@ -6,7 +6,7 @@ using IronText.Algorithm;
 using IronText.Diagnostics;
 using IronText.Framework;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     using State = System.Int32;
     using Token = System.Int32;

@@ -1,6 +1,6 @@
 ﻿using IronText.Logging;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     public interface ISppfNodeVisitor
     {

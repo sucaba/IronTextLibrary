@@ -7,7 +7,7 @@ using NUnit.Framework;
 using IronText.Framework;
 using System.IO;
 using System.Diagnostics;
-using IronText.Runtime;
+using IronText.Framework;
 
 namespace IronText.Tests.Performance
 {

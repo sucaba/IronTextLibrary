@@ -5,7 +5,7 @@ using System.Reflection;
 using IronText.Framework;
 using IronText.Misc;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     static class ServicesInitializer
     {

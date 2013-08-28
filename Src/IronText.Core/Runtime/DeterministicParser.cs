@@ -7,7 +7,7 @@ using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Logging;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     class DeterministicParser<TNode> : IPushParser
     {

@@ -49,5 +49,5 @@ rmdir /s /q %~dp0deploy\tools
 rmdir /s /q %~dp0deploy\build
 rmdir /s /q %~dp0deploy\content
 :: rmdir /s /q %~dp0deploy\content
-rmdir /s /q %~dp0Samples\packages\IronText.0.9.0.0
+for /d %%i in (%~dp0Samples\packages\IronText.*) do rmdir /s /q %%i
 del /s /q %~dp0install

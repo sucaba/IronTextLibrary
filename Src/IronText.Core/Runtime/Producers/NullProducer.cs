@@ -1,5 +1,5 @@
 ﻿
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     public class NullProducer<T> : IProducer<T>
     {

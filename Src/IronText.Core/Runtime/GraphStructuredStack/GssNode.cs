@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     using System.Diagnostics;
     using State = System.Int32;

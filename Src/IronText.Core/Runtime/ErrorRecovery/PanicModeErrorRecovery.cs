@@ -2,7 +2,7 @@
 using IronText.Framework;
 using IronText.Logging;
 
-namespace IronText.Runtime
+namespace IronText.Framework
 {
     class PanicModeErrorRecovery : IReceiver<Msg>
     {
