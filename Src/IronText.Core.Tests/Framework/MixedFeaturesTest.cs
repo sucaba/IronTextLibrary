@@ -5,7 +5,6 @@ using IronText.Framework;
 using IronText.Lib;
 using IronText.Lib.Ctem;
 using IronText.Lib.Shared;
-using IronText.Framework;
 using NUnit.Framework;
 
 namespace IronText.Tests.Framework

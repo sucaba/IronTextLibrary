@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using IronText.Build;
 using IronText.Extensibility;
-using IronText.Logging;
 
 namespace IronText.Framework
 {

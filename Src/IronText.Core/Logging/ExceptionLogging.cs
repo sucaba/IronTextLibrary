@@ -1,6 +1,5 @@
-﻿using IronText.Framework;
-
-namespace IronText.Logging
+﻿
+namespace IronText.Framework
 {
     sealed class ExceptionLogging : ILogging
     {

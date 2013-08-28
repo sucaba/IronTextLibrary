@@ -3,7 +3,6 @@ using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Lib.IL;
 using IronText.MetadataCompiler;
-using IronText.Framework;
 using Moq;
 using NUnit.Framework;
 

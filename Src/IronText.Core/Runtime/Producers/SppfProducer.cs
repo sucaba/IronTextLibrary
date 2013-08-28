@@ -1,6 +1,4 @@
 ﻿using IronText.Algorithm;
-using IronText.Framework;
-using IronText.Logging;
 
 namespace IronText.Framework
 {

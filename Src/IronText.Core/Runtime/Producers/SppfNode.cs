@@ -3,8 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using IronText.Diagnostics;
-using IronText.Framework;
-using IronText.Logging;
 
 namespace IronText.Framework
 {

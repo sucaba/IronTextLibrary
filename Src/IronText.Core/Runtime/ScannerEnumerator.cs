@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using IronText.Framework;
-using IronText.Logging;
 
 namespace IronText.Framework
 {

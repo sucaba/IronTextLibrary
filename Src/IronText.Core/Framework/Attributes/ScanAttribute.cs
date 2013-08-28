@@ -1,5 +1,4 @@
-﻿using IronText.Logging;
-namespace IronText.Framework
+﻿namespace IronText.Framework
 {
     public class ScanAttribute : ScanBaseAttribute
     {

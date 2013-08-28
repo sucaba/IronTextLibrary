@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using IronText.Framework;
-using IronText.Logging;
 using IronText.Misc;
 
 namespace IronText.Extensibility

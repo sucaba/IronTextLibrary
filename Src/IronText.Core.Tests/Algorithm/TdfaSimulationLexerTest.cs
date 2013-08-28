@@ -1,8 +1,7 @@
 ﻿using IronText.Extensibility;
-using IronText.Lib.Ctem;
-using IronText.Logging;
-using IronText.MetadataCompiler;
 using IronText.Framework;
+using IronText.Lib.Ctem;
+using IronText.MetadataCompiler;
 using IronText.Tests.TestUtils;
 using NUnit.Framework;
 

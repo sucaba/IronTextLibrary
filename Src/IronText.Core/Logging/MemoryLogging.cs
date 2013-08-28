@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace IronText.Logging
+namespace IronText.Framework
 {
     class MemoryLogging : ILogging
     {

@@ -3,11 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using IronText.Framework;
 
 namespace IronText.Framework
 {
-    using IronText.Logging;
     using Token = System.Int32;
 
     class LocalCorrectionErrorRecovery : IReceiver<Msg>

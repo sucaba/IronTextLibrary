@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using IronText.Framework;
 using IronText.Misc;
 
 namespace IronText.Framework

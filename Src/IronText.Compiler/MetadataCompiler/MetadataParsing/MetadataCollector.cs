@@ -2,7 +2,6 @@
 using System.Linq;
 using IronText.Extensibility;
 using IronText.Framework;
-using IronText.Logging;
 using IronText.Misc;
 
 namespace IronText.MetadataCompiler

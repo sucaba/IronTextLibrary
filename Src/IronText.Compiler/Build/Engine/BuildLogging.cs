@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Text;
-using IronText.Logging;
+using IronText.Framework;
 
 namespace IronText.Build
 {

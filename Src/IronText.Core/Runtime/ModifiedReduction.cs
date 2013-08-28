@@ -1,5 +1,4 @@
-﻿using IronText.Framework;
-
+﻿
 namespace IronText.Framework
 {
     struct ModifiedReduction

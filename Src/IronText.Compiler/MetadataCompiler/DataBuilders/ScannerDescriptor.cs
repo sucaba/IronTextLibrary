@@ -6,7 +6,6 @@ using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Lib.RegularAst;
 using IronText.Lib.ScannerExpressions;
-using IronText.Logging;
 
 namespace IronText.MetadataCompiler
 {

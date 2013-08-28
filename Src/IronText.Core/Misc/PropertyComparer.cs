@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace IronText.Misc
 {
-    public class PropertyComparer<T> : IEqualityComparer<T> where T : class
+    internal class PropertyComparer<T> : IEqualityComparer<T> where T : class
     {
         public static readonly IEqualityComparer<T> Default = new PropertyComparer<T>();
 

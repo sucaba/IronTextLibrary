@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using IronText.Logging;
+using IronText.Framework;
 
 namespace IronText.Lib.Stem
 {   

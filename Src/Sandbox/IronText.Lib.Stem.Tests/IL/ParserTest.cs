@@ -3,7 +3,6 @@ using System.IO;
 using IronText.Diagnostics;
 using IronText.Framework;
 using IronText.Lib.IL;
-using IronText.Framework;
 using IronText.Tests.Data;
 using IronText.Tests.TestUtils;
 using NUnit.Framework;

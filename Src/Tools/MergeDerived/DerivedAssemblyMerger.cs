@@ -5,7 +5,7 @@ using System.Reflection;
 using IronText.Build;
 using IronText.Framework;
 using IronText.Lib.IL;
-using IronText.Logging;
+using IronText.Framework;
 using IronText.Misc;
 
 namespace NDerive
@@ -77,10 +77,12 @@ namespace NDerive
         {
             foreach (var type in sourceAssembly.GetTypes())
             {
-                var attr = Attributes.First<IDerivedBuilderMetadata>(type);
-                if (attr != null && attr.IsIncludedInBuild(type))
+                foreach (IDerivedBuilderMetadata attr in type.GetCustomAttributes(typeof(IDerivedBuilderMetadata), false))
                 {
-                    yield return CreateBuilder(attr.BuilderType, type);
+                    if (attr.IsIncludedInBuild(type))
+                    {
+                        yield return CreateBuilder(attr.BuilderType, type);
+                    }
                 }
             }
         }

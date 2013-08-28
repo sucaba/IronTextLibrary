@@ -1,4 +1,4 @@
-﻿using IronText.Logging;
+﻿using IronText.Framework;
 using NUnit.Framework;
 
 namespace IronText.Tests.IO

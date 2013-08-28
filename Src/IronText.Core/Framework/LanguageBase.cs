@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using IronText.Logging;
 using IronText.Misc;
-using IronText.Framework;
 
 namespace IronText.Framework
 {

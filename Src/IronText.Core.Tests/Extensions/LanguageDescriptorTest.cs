@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using IronText.Extensibility;
 using IronText.Framework;
-using IronText.Logging;
 using IronText.MetadataCompiler;
 using NUnit.Framework;
 

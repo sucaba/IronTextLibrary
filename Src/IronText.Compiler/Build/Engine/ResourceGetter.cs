@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using IronText.Logging;
+using IronText.Framework;
 
 namespace IronText.Build
 {

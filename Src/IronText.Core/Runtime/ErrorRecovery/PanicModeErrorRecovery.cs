@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using IronText.Framework;
-using IronText.Logging;
 
 namespace IronText.Framework
 {

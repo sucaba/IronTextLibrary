@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Linq;
-using IronText.Framework;
-using IronText.Logging;
 
 namespace IronText.Framework
 {

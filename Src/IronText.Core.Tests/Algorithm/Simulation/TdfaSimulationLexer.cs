@@ -7,9 +7,7 @@ using IronText.Automata.Regular;
 using IronText.Diagnostics;
 using IronText.Extensibility;
 using IronText.Framework;
-using IronText.Logging;
 using IronText.MetadataCompiler;
-using IronText.Framework;
 
 namespace IronText.Tests.Algorithm
 {

@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using IronText.Algorithm;
 using IronText.Diagnostics;
-using IronText.Framework;
 
 namespace IronText.Framework
 {
     using IronText.Extensibility;
-    using IronText.Logging;
     using State = System.Int32;
     using Token = System.Int32;
 

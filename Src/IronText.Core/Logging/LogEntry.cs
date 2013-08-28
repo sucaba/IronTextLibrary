@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace IronText.Logging
+namespace IronText.Framework
 {
     public class LogEntry
     {

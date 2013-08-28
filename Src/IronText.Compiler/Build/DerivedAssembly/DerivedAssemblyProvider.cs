@@ -2,10 +2,10 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
+using IronText.Framework;
 using IronText.Lib.Ctem;
 using IronText.Lib.IL;
 using IronText.Lib.IL.Backend.Cecil;
-using IronText.Logging;
 
 namespace IronText.Build
 {

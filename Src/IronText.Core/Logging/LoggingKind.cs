@@ -1,5 +1,4 @@
-﻿
-namespace IronText.Logging
+﻿namespace IronText.Framework
 {
     public enum LoggingKind
     {

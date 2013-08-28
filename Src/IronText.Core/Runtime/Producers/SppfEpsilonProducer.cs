@@ -1,7 +1,4 @@
-﻿using IronText.Framework;
-using IronText.Logging;
-
-namespace IronText.Framework
+﻿namespace IronText.Framework
 {
     class SppfEpsilonProducer
     {

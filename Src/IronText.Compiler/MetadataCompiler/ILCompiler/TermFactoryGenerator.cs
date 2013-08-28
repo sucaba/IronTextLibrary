@@ -4,7 +4,6 @@ using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Lib.IL;
 using IronText.Lib.Shared;
-using IronText.Framework;
 
 namespace IronText.MetadataCompiler
 {

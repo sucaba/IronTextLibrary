@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace IronText.Misc
 {
-    public static class Attributes
+    internal static class Attributes
     {
         public static bool Exists(this ICustomAttributeProvider provider, Type attributeType)
         {
