@@ -20,17 +20,4 @@ namespace IronText.Extensibility
         int Priority { get; set; }
         bool IsSortable { get; }
     }
-
-    public interface ISkipScanRule : IScanRule
-    {
-    }
-
-    public interface ISingleTokenScanRule : IScanRule
-    {
-        string LiteralText { get; }
-
-        Type TokenType { get; }
-
-        TokenRef AnyTokenRef { get; }
-    }
 }

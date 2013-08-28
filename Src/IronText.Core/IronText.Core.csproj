@@ -131,9 +131,13 @@
     <Compile Include="Extensibility\IBootstrapScanRule.cs" />
     <Compile Include="Extensibility\Reporting\IReportData.cs" />
     <Compile Include="Extensibility\IMergeActionCode.cs" />
-    <Compile Include="Extensibility\ISingleTokenScanRule.cs" />
+    <Compile Include="Extensibility\Scanning\ISingleTokenScanRule.cs" />
     <Compile Include="Extensibility\LocalParseContext.cs" />
-    <Compile Include="Extensibility\MergeRule.cs" />
+    <Compile Include="Extensibility\Parsing\MergeRule.cs" />
+    <Compile Include="Extensibility\Scanning\IScanRule.cs" />
+    <Compile Include="Extensibility\Scanning\ISkipScanRule.cs" />
+    <Compile Include="Extensibility\Scanning\SingleTokenScanRule.cs" />
+    <Compile Include="Extensibility\Scanning\SkipScanRule.cs" />
     <Compile Include="Framework\ParserAction.cs" />
     <Compile Include="Framework\ParserActionKind.cs" />
     <Compile Include="Extensibility\Reporting\ParserConflictInfo.cs" />
@@ -145,7 +149,7 @@
     <Compile Include="Extensibility\LanguageMetadataAttribute.cs" />
     <Compile Include="Extensibility\Reporting\ScanMode.cs" />
     <Compile Include="Extensibility\ScannerUtils.cs" />
-    <Compile Include="Extensibility\ScanRule.cs" />
+    <Compile Include="Extensibility\Scanning\ScanRule.cs" />
     <Compile Include="Extensibility\SwitchRule.cs" />
     <Compile Include="Extensibility\TokenNaming.cs" />
     <Compile Include="Framework\Attributes\TokenCategory.cs" />
@@ -247,7 +251,7 @@
     <Compile Include="Misc\ExpressionUtils.cs" />
     <Compile Include="Misc\PropertyComparer.cs" />
     <Compile Include="Misc\ReflectionUtils.cs" />
-    <Compile Include="Extensibility\ParseRule.cs" />
+    <Compile Include="Extensibility\Parsing\ParseRule.cs" />
     <Compile Include="Framework\Attributes\LanguageContextAttribute.cs" />
     <Compile Include="Framework\Attributes\UseTokenAttribute.cs" />
     <Compile Include="Framework\Attributes\ParseAttribute.cs" />
@@ -357,10 +361,7 @@
     <Reference Include="System" />
     <Reference Include="System.Web" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensibility\Parsing\" />
-    <Folder Include="Extensibility\Scanning\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="doc\ScannerDefinitions.md" />
   </ItemGroup>
