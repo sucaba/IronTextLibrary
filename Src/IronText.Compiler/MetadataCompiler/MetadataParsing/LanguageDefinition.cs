@@ -109,7 +109,7 @@ namespace IronText.MetadataCompiler
 
             ContextTypes = allMetadata.SelectMany(m => m.GetContextTypes()).ToArray();
 
-            this.LanguageDataActions = allMetadata.SelectMany(m => m.GetLanguageDataActions()).ToArray();
+            this.LanguageDataActions = allMetadata.SelectMany(m => m.GetReportBuilders()).ToArray();
         }
 
         private void LinkRelatedTokens(List<ScanMode> allScanModes)

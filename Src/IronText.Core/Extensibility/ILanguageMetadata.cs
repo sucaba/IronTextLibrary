@@ -31,6 +31,6 @@ namespace IronText.Extensibility
 
         IEnumerable<Type> GetContextTypes();
 
-        IEnumerable<ReportBuilder> GetLanguageDataActions();
+        IEnumerable<ReportBuilder> GetReportBuilders();
     }
 }

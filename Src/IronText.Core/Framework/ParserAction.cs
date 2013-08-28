@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace IronText.Extensibility
+namespace IronText.Framework
 {
     [Serializable]
     [StructLayout(LayoutKind.Explicit)]

@@ -4,6 +4,7 @@ using IronText.Algorithm;
 using IronText.Framework;
 using System.Collections.ObjectModel;
 using IronText.Extensibility;
+using System.Linq;
 
 namespace IronText.MetadataCompiler
 {
@@ -22,6 +23,8 @@ namespace IronText.MetadataCompiler
         {
             get { return new ReadOnlyCollection<ScanMode>(ScanModes); }
         }
+
+        int IReportData.ParserStateCount { get { return ParserStates.Length; } }
 
         ReadOnlyCollection<DotState> IReportData.ParserStates
         {
@@ -55,34 +58,7 @@ namespace IronText.MetadataCompiler
 
         ReadOnlyCollection<ParserConflictInfo> IReportData.GetParserConflicts()
         {
-            var resultList = new List<ParserConflictInfo>();
-            for (int state = 0; state != ParserStates.Length; ++state)
-            {
-                for (int token = 0; token != Grammar.TokenCount; ++token)
-                {
-                    var cell = Lalr1ParserActionTable.Get(state, token);
-                    var action = ParserAction.Decode(cell);
-                    if (action != null && action.Kind == ParserActionKind.Conflict)
-                    {
-                        var item = new ParserConflictInfo
-                            {
-                                State = state,
-                                Token = token,
-                            };
-
-                        for (int i = 0; i != action.Size; ++i)
-                        {
-                            item.Actions.Add(
-                                ParserAction.Decode(
-                                    Lalr1ParserConflictActionTable[action.Value1 + i]));
-                        }
-
-                        resultList.Add(item);
-                    }
-                }
-            }
-
-            return new ReadOnlyCollection<ParserConflictInfo>(resultList);
+            return new ReadOnlyCollection<ParserConflictInfo>(Lalr1Conflicts);
         }
 
         IEnumerable<ParserAction> IReportData.GetConflictActions(int conflictIndex, int count)
@@ -105,17 +81,11 @@ namespace IronText.MetadataCompiler
                     var action = ParserAction.Decode(cell);
                     if (action != null && action.Kind == ParserActionKind.Conflict)
                     {
-                        var item = new ParserConflictInfo
-                            {
-                                State = state,
-                                Token = token,
-                            };
-
+                        var item = new ParserConflictInfo(state, token);
                         for (int i = 0; i != action.Size; ++i)
                         {
-                            item.Actions.Add(
-                                ParserAction.Decode(
-                                    Lalr1ParserConflictActionTable[action.Value1 + i]));
+                            item.AddAction(
+                                    Lalr1ParserConflictActionTable[action.Value1 + i]);
                         }
 
                         resultList.Add(item);
@@ -149,6 +119,7 @@ namespace IronText.MetadataCompiler
         // For reporting
         public ITable<int>            Lalr1ParserActionTable;
         public int[]                  Lalr1ParserConflictActionTable;
+        public ParserConflictInfo[]   Lalr1Conflicts;
 
         public string GetDestinationDirectory()
         {

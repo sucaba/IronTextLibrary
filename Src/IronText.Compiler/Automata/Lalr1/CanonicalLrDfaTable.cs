@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 using System.Diagnostics;
 using IronText.Algorithm;
 using IronText.Extensibility;
 using IronText.Framework;
+using System.Collections.ObjectModel;
 
 namespace IronText.Automata.Lalr1
 {
@@ -20,6 +22,11 @@ namespace IronText.Automata.Lalr1
             this.grammar = dfa.Grammar;
             FillDfaTable(dfa.States);
             BuildConflictTable();
+        }
+
+        public ParserConflictInfo[] Conflicts
+        {
+            get { return transitionToConflict.Values.ToArray(); }
         }
 
         public int[] GetConflictActionTable()
@@ -153,14 +160,14 @@ namespace IronText.Automata.Lalr1
                     var key = new TransitionKey(state, token);
                     if (!transitionToConflict.TryGetValue(key, out conflict))
                     {
-                        conflict = new ParserConflictInfo { State = state, Token = token };
+                        conflict = new ParserConflictInfo(state, token);
                         transitionToConflict[key] = conflict;
-                        conflict.Actions.Add(ParserAction.Decode(currentCell));
+                        conflict.AddAction(currentCell);
                     }
 
                     if (!conflict.Actions.Contains(action))
                     {
-                        conflict.Actions.Add(action);
+                        conflict.AddAction(action);
                     }
                 }
 

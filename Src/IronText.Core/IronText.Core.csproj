@@ -133,8 +133,8 @@
     <Compile Include="Extensibility\ISingleTokenScanRule.cs" />
     <Compile Include="Extensibility\LocalParseContext.cs" />
     <Compile Include="Extensibility\MergeRule.cs" />
-    <Compile Include="Extensibility\Automata\ParserAction.cs" />
-    <Compile Include="Extensibility\Automata\ParserActionKind.cs" />
+    <Compile Include="Framework\ParserAction.cs" />
+    <Compile Include="Framework\ParserActionKind.cs" />
     <Compile Include="Extensibility\ParserConflictInfo.cs" />
     <Compile Include="Extensibility\Delegates.cs" />
     <Compile Include="Extensibility\IContextResolverCode.cs" />

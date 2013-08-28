@@ -77,7 +77,7 @@ namespace IronText.Tests.Extensibility
                 return Enumerable.Empty<KeyValuePair<TokenRef,Precedence>>();
             }
 
-            IEnumerable<ReportBuilder> ILanguageMetadata.GetLanguageDataActions()
+            IEnumerable<ReportBuilder> ILanguageMetadata.GetReportBuilders()
             {
                 return Enumerable.Empty<ReportBuilder>();
             }

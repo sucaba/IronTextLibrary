@@ -13,7 +13,7 @@ namespace IronText.Framework
             this.fileName = fileName;
         }
 
-        public override IEnumerable<ReportBuilder> GetLanguageDataActions()
+        public override IEnumerable<ReportBuilder> GetReportBuilders()
         {
             yield return WriteGvGraph;
         }

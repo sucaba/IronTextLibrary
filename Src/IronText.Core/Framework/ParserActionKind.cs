@@ -1,5 +1,5 @@
 ﻿
-namespace IronText.Extensibility
+namespace IronText.Framework
 {
     public enum ParserActionKind : byte
     {

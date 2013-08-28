@@ -1,4 +1,6 @@
 ﻿using IronText.Algorithm;
+using System.Collections.ObjectModel;
+using IronText.Extensibility;
 
 namespace IronText.Automata.Lalr1
 {
@@ -7,5 +9,7 @@ namespace IronText.Automata.Lalr1
         ITable<int> GetParserActionTable();
 
         int[] GetConflictActionTable();
+
+        ParserConflictInfo[] Conflicts { get; }
     }
 }

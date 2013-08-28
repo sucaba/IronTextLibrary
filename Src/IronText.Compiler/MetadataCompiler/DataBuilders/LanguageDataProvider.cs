@@ -85,6 +85,7 @@ namespace IronText.MetadataCompiler
 
                 Lalr1ParserActionTable = lrTable.GetParserActionTable(),
                 Lalr1ParserConflictActionTable = lrTable.GetConflictActionTable(),
+                Lalr1Conflicts = lrTable.Conflicts,
 
                 TokenRefResolver    = tokenResolver,
 

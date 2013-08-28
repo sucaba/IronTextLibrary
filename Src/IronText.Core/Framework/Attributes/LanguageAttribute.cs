@@ -107,7 +107,7 @@ namespace IronText.Framework
             return Enumerable.Empty<SwitchRule>();
         }
 
-        public virtual IEnumerable<ReportBuilder> GetLanguageDataActions()
+        public virtual IEnumerable<ReportBuilder> GetReportBuilders()
         {
             return Enumerable.Empty<ReportBuilder>();
         }

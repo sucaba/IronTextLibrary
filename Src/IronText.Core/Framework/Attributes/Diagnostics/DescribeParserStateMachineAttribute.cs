@@ -16,7 +16,7 @@ namespace IronText.Framework
             this.fileName = fileName;
         }
 
-        public override IEnumerable<ReportBuilder> GetLanguageDataActions()
+        public override IEnumerable<ReportBuilder> GetReportBuilders()
         {
             return new ReportBuilder[] { WriteDocFiles };
         }
@@ -55,7 +55,7 @@ namespace IronText.Framework
 
             var conflicts = data.GetParserConflicts();
 
-            for (int state = 0; state != data.ParserStates.Count; ++state)
+            for (int state = 0; state != data.ParserStateCount; ++state)
             {
                 output.Write("State ");
                 output.Write(state);
@@ -72,11 +72,9 @@ namespace IronText.Framework
                     {
                         if (action.Kind == ParserActionKind.Conflict)
                         {
-                            var conflict = conflicts.First(c => c.State == state && c.Token == token);
-
                             output.Write(Indent);
                             output.WriteLine("conflict {");
-                            foreach (var caction in conflict.Actions)
+                            foreach (var caction in data.GetConflictActions(action.Value1, action.Size))
                             {
                                 PrintAction(data, token, output, caction);
                             }

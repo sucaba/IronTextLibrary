@@ -16,6 +16,8 @@ namespace IronText.Extensibility
 
         int TokenCount { get; }
 
+        int ParserStateCount { get; }
+
         ReadOnlyCollection<ScanMode> ScanModes { get; }
 
         ITdfaData GetScanModeDfa(Type scanModeType);
