@@ -43,7 +43,7 @@ namespace IronText.Tests.Extensibility
             {
                 foreach (var leftSide in leftSides.ToArray())
                 {
-                    yield return new ParseRule(this)
+                    yield return new ParseRule
                     {
                         Left = moduleBuilder.GetToken(typeof(void)),
                         Parts = new[] { moduleBuilder.GetToken(typeof(int)) },

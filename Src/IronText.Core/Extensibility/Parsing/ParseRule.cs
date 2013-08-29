@@ -6,20 +6,18 @@ namespace IronText.Extensibility
 {
     public sealed class ParseRule
     {
-        private readonly object identity;
-
         public TokenRef         Left;
         public TokenRef[]       Parts;
         public Type             InstanceDeclaringType;
+        public GrammarActionBuilder ActionBuilder;
         public bool             IsContextRule;
         public Precedence       Precedence;
-        public GrammarActionBuilder ActionBuilder;
+        internal ILanguageMetadata Owner;
 
         public int Index  { get; internal set; }
 
-        public ParseRule(object identity)
+        public ParseRule()
         {
-            this.identity = identity;
         }
 
         public override bool Equals(object obj)
@@ -33,7 +31,6 @@ namespace IronText.Extensibility
             return other != null
                 && object.Equals(Left, other.Left)
                 && Enumerable.SequenceEqual(Parts, other.Parts)
-                && object.Equals(identity, other.identity)
                 ;
         }
 

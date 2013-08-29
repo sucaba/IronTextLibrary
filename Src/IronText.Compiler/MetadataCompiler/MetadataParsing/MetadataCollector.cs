@@ -22,10 +22,10 @@ namespace IronText.MetadataCompiler
         private readonly List<ILanguageMetadata> allMetadata    = new List<ILanguageMetadata>();
         private readonly List<ParseRule>         allParseRules  = new List<ParseRule>();
         private readonly List<SwitchRule>        allSwitchRules = new List<SwitchRule>();
-        private readonly TokenCollection         allTokens      = new TokenCollection();
+        private readonly List<TokenRef>          allTokens      = new List<TokenRef>();
 
         private readonly ITokenPool              tokenPool;
-        private readonly ILogging logging;
+        private readonly ILogging                logging;
 
         public MetadataCollector(ITokenPool tokenPool, ILogging logging)
         {
@@ -37,7 +37,7 @@ namespace IronText.MetadataCompiler
 
         public List<ParseRule> AllParseRules { get { return allParseRules; } } 
 
-        public TokenCollection AllTokens { get { return allTokens; } } 
+        public List<TokenRef> AllTokens { get { return allTokens; } } 
 
         public void AddMeta(ILanguageMetadata meta)
         {
@@ -60,10 +60,10 @@ namespace IronText.MetadataCompiler
             }
 
             // Provide new rules
-            var newParseRules = meta.GetParseRules(allTokens, tokenPool);
+            var newParseRules = meta.GetParseRules(EnumerateSnapshot(allTokens), tokenPool);
             foreach (var parseRule in newParseRules)
             {
-                this.AddRule(parseRule);
+                this.AddRule(meta, parseRule);
             }
 
             // Provide new meta children
@@ -73,12 +73,23 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        public void AddRule(ParseRule parseRule)
+        private IEnumerable<T> EnumerateSnapshot<T>(IList<T> items)
         {
-            if (allParseRules.Contains(parseRule))
+            int count = items.Count;
+            for (int i = 0; i != count; ++i)
+            {
+                yield return items[i];
+            }
+        }
+
+        public void AddRule(ILanguageMetadata meta, ParseRule parseRule)
+        {
+            if (parseRule.Owner == meta || allParseRules.Any(r => r.Owner == meta && r.Equals(parseRule)))
             {
                 return;
             }
+
+            parseRule.Owner = meta;
 
             allParseRules.Add(parseRule);
 
@@ -117,7 +128,7 @@ namespace IronText.MetadataCompiler
                 var newParseRules = meta.GetParseRules(newTokens, tokenPool);
                 foreach (var parseRule in newParseRules)
                 {
-                    this.AddRule(parseRule);
+                    this.AddRule(meta, parseRule);
                 }
             }
 

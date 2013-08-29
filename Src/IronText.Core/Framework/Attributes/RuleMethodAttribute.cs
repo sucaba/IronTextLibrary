@@ -153,7 +153,7 @@ namespace IronText.Framework
 
             SubstituteRuleMask(tokenPool, method, parts, ruleMask);
 
-            var rule = new ParseRule(this)
+            var rule = new ParseRule
             {
                 Left          = left,
                 Parts         = parts.ToArray(),

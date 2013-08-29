@@ -171,7 +171,6 @@
     <Compile Include="MetadataCompiler\MetadataParsing\MetadataCollector.cs" />
     <Compile Include="MetadataCompiler\MetadataParsing\MetadataException.cs" />
     <Compile Include="MetadataCompiler\MetadataParsing\ScanDataCollector.cs" />
-    <Compile Include="MetadataCompiler\MetadataParsing\TokenCollection.cs" />
     <Compile Include="MetadataCompiler\NamedLanguageProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

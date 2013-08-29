@@ -71,7 +71,7 @@ namespace IronText.MetadataCompiler
                         startType.FullName));
             }
 
-            allParseRules = allParseRules.Distinct().ToList();
+            // allParseRules = allParseRules.Distinct().ToList();
 
             this.allMergeRules 
                 = allMetadata
