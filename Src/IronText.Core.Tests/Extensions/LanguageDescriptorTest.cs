@@ -44,11 +44,12 @@ namespace IronText.Tests.Extensibility
                 foreach (var leftSide in leftSides.ToArray())
                 {
                     yield return new ParseRule
-                    {
-                        Left = moduleBuilder.GetToken(typeof(void)),
-                        Parts = new[] { moduleBuilder.GetToken(typeof(int)) },
-                        ActionBuilder = code => { code.Emit(il => il.Ldnull().Ret()); }
-                    };
+                    (
+                        left : moduleBuilder.GetToken(typeof(void)),
+                        parts : new[] { moduleBuilder.GetToken(typeof(int)) },
+                        actionBuilder: code => { code.Emit(il => il.Ldnull().Ret()); },
+                        instanceDeclaringType : typeof(IMetadtaTest0)
+                    );
                 }
             }
 

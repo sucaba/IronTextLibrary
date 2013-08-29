@@ -4,21 +4,39 @@ using IronText.Framework;
 
 namespace IronText.Extensibility
 {
-    public sealed class ParseRule
+    public sealed class ParseRule : IEquatable<ParseRule>
     {
-        public TokenRef         Left;
-        public TokenRef[]       Parts;
-        public Type             InstanceDeclaringType;
-        public GrammarActionBuilder ActionBuilder;
-        public bool             IsContextRule;
-        public Precedence       Precedence;
-        internal ILanguageMetadata Owner;
-
-        public int Index  { get; internal set; }
-
-        public ParseRule()
+        public ParseRule(
+            TokenRef             left,
+            TokenRef[]           parts,
+            GrammarActionBuilder actionBuilder,
+            Type                 instanceDeclaringType,
+            bool                 isContextRule = false,
+            Precedence           precedence = null)
         {
+            this.Left                  = left;
+            this.Parts                 = parts;
+            this.ActionBuilder         = actionBuilder;
+            this.InstanceDeclaringType = instanceDeclaringType;
+            this.IsContextRule         = isContextRule;
+            this.Precedence            = precedence;
         }
+
+        public TokenRef Left { get; private set; }
+
+        public TokenRef[] Parts { get; private set; }
+
+        public Type InstanceDeclaringType { get; private set; }
+
+        public GrammarActionBuilder ActionBuilder { get; private set; }
+
+        public bool IsContextRule { get; private set; }
+
+        public Precedence Precedence { get; private set; }
+
+        internal ILanguageMetadata Owner { get; set; }
+
+        internal int Index  { get; set; }
 
         public override bool Equals(object obj)
         {

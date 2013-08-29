@@ -154,13 +154,13 @@ namespace IronText.Framework
             SubstituteRuleMask(tokenPool, method, parts, ruleMask);
 
             var rule = new ParseRule
-            {
-                Left          = left,
-                Parts         = parts.ToArray(),
-                InstanceDeclaringType = method.IsStatic ? null : method.DeclaringType,
-                IsContextRule = thisToken != null,
-                Precedence    = GetPrecedence(),
-                ActionBuilder =
+            (
+                left          : left,
+                parts         : parts.ToArray(),
+                instanceDeclaringType : method.IsStatic ? null : method.DeclaringType,
+                isContextRule : thisToken != null,
+                precedence    : GetPrecedence(),
+                actionBuilder :
                     code =>
                     {
                         // Load main module object (this)
@@ -210,7 +210,7 @@ namespace IronText.Framework
                                 return il;
                             });
                     }
-            };
+            );
 
             return new[] { rule };
         }

@@ -73,15 +73,6 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        private IEnumerable<T> EnumerateSnapshot<T>(IList<T> items)
-        {
-            int count = items.Count;
-            for (int i = 0; i != count; ++i)
-            {
-                yield return items[i];
-            }
-        }
-
         public void AddRule(ILanguageMetadata meta, ParseRule parseRule)
         {
             if (parseRule.Owner == meta || allParseRules.Any(r => r.Owner == meta && r.Equals(parseRule)))
@@ -139,6 +130,15 @@ namespace IronText.MetadataCompiler
                 {
                     this.AddMeta(meta);
                 }
+            }
+        }
+
+        private static IEnumerable<T> EnumerateSnapshot<T>(IList<T> items)
+        {
+            int count = items.Count;
+            for (int i = 0; i != count; ++i)
+            {
+                yield return items[i];
             }
         }
     }
