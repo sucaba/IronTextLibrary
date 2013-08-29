@@ -8,7 +8,7 @@ using IronText.Algorithm;
 namespace IronText.Framework
 {
     [Serializable]
-    public sealed partial class BnfGrammar
+    public sealed class BnfGrammar
     {
         // Special Tokens
         private const int SpecialTokenCount = 2;
@@ -16,7 +16,6 @@ namespace IronText.Framework
 
         private BitSetType tokenSet;
         private readonly List<TokenInfo> tokenInfos;
-        public readonly List<BnfRule>      Rules      = new List<BnfRule>();
         private readonly int InternalStartRuleId;
 
         // Augumented start token $start and EOI term '$'
@@ -36,7 +35,8 @@ namespace IronText.Framework
         private bool frozen;
 
         public BnfGrammar()
-        {
+        {   
+            Rules = new List<BnfRule>();
             tokenInfos = new List<TokenInfo>(PredefinedTokenCount);
             for (int i = PredefinedTokenCount; i != 0; --i)
             {
@@ -57,7 +57,9 @@ namespace IronText.Framework
 
             InternalStartRuleId = DefineRule(AugmentedStart, new[] { -1 });
         }
-        
+
+        public List<BnfRule> Rules { get; private set; }
+
         public BitSetType TokenSet 
         { 
             get 
@@ -121,7 +123,7 @@ namespace IronText.Framework
         /// Relation of values is non-determined for two mutally 
         /// dependent non-terms.
         /// </summary>
-        public int[] GetTokenComplexity()
+        internal int[] GetTokenComplexity()
         {
             var result = Enumerable.Repeat(-1, TokenCount).ToArray();
             var sortedTokens = Graph.ToplogicalSort(new [] { AugmentedStart }, GetDependantTokens).ToArray();
@@ -146,17 +148,17 @@ namespace IronText.Framework
             return result;
         }
 
-        public bool IsBeacon(int token)
+        internal bool IsBeacon(int token)
         {
             return (tokenInfos[token].Categories & TokenCategory.Beacon) != 0;
         }
 
-        public bool IsDontInsert(int token)
+        internal bool IsDontInsert(int token)
         {
             return (tokenInfos[token].Categories & TokenCategory.DoNotInsert) != 0;
         }
 
-        public bool IsDontDelete(int token)
+        internal bool IsDontDelete(int token)
         {
             return (tokenInfos[token].Categories & TokenCategory.DoNotDelete) != 0;
         }
@@ -170,11 +172,11 @@ namespace IronText.Framework
 
         public bool IsTerm(int token) { return tokenInfos[token].IsTerm; }
 
-        public TokenCategory GetTokenCategories(int token) { return tokenInfos[token].Categories; }
+        internal TokenCategory GetTokenCategories(int token) { return tokenInfos[token].Categories; }
 
-        public bool IsExternal(int token) { return (tokenInfos[token].Categories & TokenCategory.External) != 0; }
+        internal bool IsExternal(int token) { return (tokenInfos[token].Categories & TokenCategory.External) != 0; }
 
-        public bool IsNullable(int token) { return isNullable[token]; }
+        internal bool IsNullable(int token) { return isNullable[token]; }
 
         public bool IsPredefined(int token) { return 0 <= token && token < PredefinedTokenCount; }
 
@@ -204,7 +206,7 @@ namespace IronText.Framework
         /// <param name="left"></param>
         /// <param name="parts"></param>
         /// <returns>Rule ID or -1 if there is no such rule</returns>
-        public int FindRuleId(int left, int[] parts)
+        internal int FindRuleId(int left, int[] parts)
         {
             for (int i = 0; i != Rules.Count; ++i)
             {
@@ -247,7 +249,7 @@ namespace IronText.Framework
         }
 
         // TODO: Optmize
-        public IEnumerable<BnfRule> TokenRules(int token)
+        internal IEnumerable<BnfRule> TokenRules(int token)
         {
             var result = this.Rules.Where(r => r.Left == token).ToArray();
             if (result.Length == 0)
@@ -269,7 +271,7 @@ namespace IronText.Framework
         /// <param name="tokenChain"></param>
         /// <param name="output"></param>
         /// <returns><c>true</c> if chain is nullable, <c>false</c> otherwise</returns>
-        public bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output)
+        internal bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output)
         {
             bool result = true;
 
@@ -290,7 +292,7 @@ namespace IronText.Framework
             return result;
         }
 
-        public bool IsTailNullable(int[] tokens, int startIndex)
+        internal bool IsTailNullable(int[] tokens, int startIndex)
         {
             bool result = true;
 
@@ -308,12 +310,12 @@ namespace IronText.Framework
             return result;
         }
 
-        public int FirstNonNullableCount(IEnumerable<int> tokens)
+        internal int FirstNonNullableCount(IEnumerable<int> tokens)
         {
             return TrimRightNullable(tokens).Count();
         }
 
-        public IEnumerable<int> TrimRightNullable(IEnumerable<int> tokens)
+        internal IEnumerable<int> TrimRightNullable(IEnumerable<int> tokens)
         {
             return tokens.Reverse().SkipWhile(IsNullable).Reverse();
         }
