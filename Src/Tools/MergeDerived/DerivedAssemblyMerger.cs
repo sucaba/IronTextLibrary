@@ -5,7 +5,6 @@ using System.Reflection;
 using IronText.Build;
 using IronText.Framework;
 using IronText.Lib.IL;
-using IronText.Framework;
 using IronText.Misc;
 
 namespace NDerive

@@ -47,8 +47,8 @@ namespace IronText.Tests.Samples
         [GrammarDocument("DynamicLinq.gram")]
         [ScannerDocument("DynamicLinq.scan")]
         [DescribeParserStateMachine("DynamicLinq.info")]
-        [LeftAssoc(1, ">")]
-        [LeftAssoc(10, ".")]
+        [Precedence(">", 1)]
+        [Precedence(".", 10)]
         public class DynamicLinq
         {
             private readonly Dictionary<string, Expression> scope = new Dictionary<string, Expression>();

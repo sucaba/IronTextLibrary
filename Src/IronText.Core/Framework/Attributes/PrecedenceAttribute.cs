@@ -4,25 +4,32 @@ using IronText.Extensibility;
 
 namespace IronText.Framework
 {
-    public abstract class BaseAssocAttribute : LanguageMetadataAttribute
+    [AttributeUsage(AttributeTargets.Class|AttributeTargets.Interface, AllowMultiple=true)]
+    public class PrecedenceAttribute : LanguageMetadataAttribute
     {
-        public BaseAssocAttribute(int value, string term)
+        public PrecedenceAttribute(string term, int value, Associativity assoc = Associativity.Left)
         {
             this.TermText = term;
             this.TermType = null;
             this.PrecedenceValue = value;
+            this.Associativity = assoc;
         }
 
-        public BaseAssocAttribute(int value, Type term)
+        public PrecedenceAttribute(Type term, int value, Associativity assoc = Associativity.Left)
         {
             this.TermText = null;
             this.TermType = term;
             this.PrecedenceValue = value;
+            this.Associativity = assoc;
         }
 
         public string TermText { get; private set; }
+
         public Type TermType { get; private set; }
-        public int PrecedenceValue { get; private set; }
+
+        public int PrecedenceValue { get; set; }
+
+        public Associativity Associativity { get; set; }
 
         public override IEnumerable<KeyValuePair<TokenRef,Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
         {
@@ -38,9 +45,7 @@ namespace IronText.Framework
 
             yield return new KeyValuePair<TokenRef,Precedence>(
                 token,
-                new Precedence(PrecedenceValue, GetAssoc()));
+                new Precedence(PrecedenceValue, Associativity));
         }
-
-        protected abstract Associativity GetAssoc();
     }
 }

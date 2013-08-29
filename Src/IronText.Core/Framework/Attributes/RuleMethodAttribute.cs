@@ -12,7 +12,7 @@ namespace IronText.Framework
     {
         public int Precedence { get; set; }
 
-        public Associativity Assoc { get; set; }
+        public Associativity Associativity { get; set; }
 
         protected virtual MethodInfo Method
         {
@@ -21,9 +21,9 @@ namespace IronText.Framework
 
         private Precedence GetPrecedence()
         {
-            if (Precedence != 0 || Assoc != Associativity.None)
+            if (Precedence != 0 || Associativity != Associativity.None)
             {
-                return new Precedence(Precedence, Assoc);
+                return new Precedence(Precedence, Associativity);
             }
 
             return null;

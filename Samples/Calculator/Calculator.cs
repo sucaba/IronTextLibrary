@@ -5,13 +5,13 @@ using IronText.Framework;
 namespace Calculator
 {
     [Language]
-    [NonAssoc(0, "=")]
-    [LeftAssoc(1, "-")]
-    [LeftAssoc(1, "+")]
-    [LeftAssoc(2, "*")]
-    [LeftAssoc(2, "/")]
-    [LeftAssoc(2, "%")]
-    [RightAssoc(10, "^")]
+    [Precedence("=", 0, Associativity.None)]
+    [Precedence("-", 1)]
+    [Precedence("+", 1)]
+    [Precedence("*", 2)]
+    [Precedence("/", 2)]
+    [Precedence("%", 2)]
+    [Precedence("^", 10, Associativity.Right)]
     // [DescribeParserStateMachine("Calculator.info")]
     // [ParserGraph("Calculator.gv")]
     public class Calculator

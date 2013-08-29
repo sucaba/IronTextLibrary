@@ -17,6 +17,7 @@ namespace IronText.Tests.Framework
             Assert.AreEqual(4, Eval("8 / 4 * 2"));
             Assert.AreEqual(7, Eval("3 + 2 2"));
             Assert.AreEqual(8, Eval("3 + 2 2 + 1"));
+            Assert.AreEqual(8, Eval("2 2 2"));
         }
 
         private int Eval(string input)
@@ -43,21 +44,22 @@ namespace IronText.Tests.Framework
         }
 
         [Language]
-        [LeftAssoc(0, "+")]
-        [LeftAssoc(1, "*")]
-        [LeftAssoc(1, "/")]
-        [RightAssoc(2, "^")]
-        [NonAssoc(1, typeof(Num))]
+        [Precedence("+", 0)]
+        [Precedence("*", 1)]
+        [Precedence("/", 1)]
+        [Precedence("^", 2, Associativity.Right)]
+        [Precedence(typeof(Num), 1)]
         [DescribeParserStateMachine("OperatorPrecedenceLang.info")]
         public class OperatorPrecedenceLang
         {
-            public int Result { get; [Parse] set; }
+            [ParseResult]
+            public int Result { get; set; }
 
             [Parse(null, "+", null)]
             public int Plus(int x, int y) { return x + y; }
 
             [Parse(null, "*", null)]
-            [Parse(Assoc = Associativity.Left, Precedence = 1)]
+            [Parse(Associativity.Left, Precedence = 1)]
             public int Multiply(int x, int y) { return x * y; }
 
             [Parse(null, "/", null)]

@@ -163,10 +163,7 @@
     <Compile Include="Framework\Attributes\Diagnostics\DescribeParserStateMachineAttribute.cs" />
     <Compile Include="Framework\Attributes\Diagnostics\GrammarDocumentAttribute.cs" />
     <Compile Include="Framework\Attributes\VocabularyAttribute.cs" />
-    <Compile Include="Framework\Attributes\Precedence\BaseAssocAttribute.cs" />
-    <Compile Include="Framework\Attributes\Precedence\NonAssocAttribute.cs" />
-    <Compile Include="Framework\Attributes\Precedence\RightAssocAttribute.cs" />
-    <Compile Include="Framework\Attributes\Precedence\LeftAssocAttribute.cs" />
+    <Compile Include="Framework\Attributes\PrecedenceAttribute.cs" />
     <Compile Include="Framework\Attributes\ScanAttribute.cs" />
     <Compile Include="Framework\Attributes\LiteralAttribute.cs" />
     <Compile Include="Framework\Attributes\LanguageServiceAttribute.cs" />

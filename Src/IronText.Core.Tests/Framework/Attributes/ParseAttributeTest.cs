@@ -41,7 +41,7 @@ namespace IronText.Tests.Framework.Attributes
         [DescribeParserStateMachine("ParseAttributeTestLang.info")]
         [ParserGraph("ParseAttributeTestLang.gv")]
         [ScannerDocument("ParseAttributeTestLang.scan")]
-        [NonAssoc(2, "else")]
+        [Precedence("else", 2, Associativity.None)]
         public class ParseAttributeTestLang : CtemScanner
         {
             public Stmt Result { get; [Parse] set; }

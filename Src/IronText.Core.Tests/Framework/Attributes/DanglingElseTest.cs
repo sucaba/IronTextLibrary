@@ -27,8 +27,8 @@ namespace IronText.Core.Tests.Framework.Attributes
 
         [Language]
         [DescribeParserStateMachine("DanglingElseLang.info")]
-        [NonAssoc(0, "then")]
-        [NonAssoc(1, "else")]
+        [Precedence("then", 0, Associativity.None)]
+        [Precedence("else", 1, Associativity.None)]
         public class DanglingElseLang
         {
             public Stmt Result { get; [Parse] set; }

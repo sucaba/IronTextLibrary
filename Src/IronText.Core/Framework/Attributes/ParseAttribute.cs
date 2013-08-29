@@ -8,6 +8,25 @@ namespace IronText.Framework
     [AttributeUsage(AttributeTargets.Method, AllowMultiple=true)]
     public class ParseAttribute : RuleMethodAttribute
     {
+        public ParseAttribute(int precedence, params string[] keywordMask) 
+            : this(keywordMask)
+        {
+            this.Precedence = precedence;
+        }
+
+        public ParseAttribute(Associativity assoc, params string[] keywordMask) 
+            : this(keywordMask)
+        {
+            this.Associativity = assoc;
+        }
+
+        public ParseAttribute(int precedence, Associativity assoc, params string[] keywordMask) 
+            : this(keywordMask)
+        {
+            this.Precedence = precedence;
+            this.Associativity = assoc;
+        }
+
         public ParseAttribute(params string[] keywordMask) 
         {
             this.KeywordMask = keywordMask ?? new string[0];

@@ -2,19 +2,21 @@
 
 namespace IronText.Framework
 {
-    public class Precedence
+    public sealed class Precedence
     {
         public const int Min = -1;
         public const int Max = int.MaxValue;
-
-        public readonly int           Value;
-        public readonly Associativity Assoc;
 
         public Precedence(int value, Associativity assoc)
         {
             this.Value = value;
             this.Assoc = assoc;
         }
+
+        public int Value { get; private set; }
+
+        public Associativity Assoc { get; private set; }
+
 
         public static bool IsReduce(Precedence rulePrecedence, Precedence shiftPrecedence)
         {

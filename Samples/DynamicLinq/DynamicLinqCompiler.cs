@@ -7,8 +7,8 @@ using IronText.Framework;
 namespace Samples
 {
     [Language]
-    [LeftAssoc(1, ">")]
-    [LeftAssoc(10, ".")]
+    [Precedence(">", 1)]
+    [Precedence(".", 10)]
     public class DynamicLinqCompiler
     {
         private readonly Dictionary<string, Expression> scope = new Dictionary<string, Expression>();
@@ -48,12 +48,12 @@ namespace Samples
         public Expression Result { get; set; }
 
         [Parse("from", null, "in", null)]
-        public QueryablePipeline From(string variable, Expression source)
+        public Pipeline From(string variable, Expression source)
         {
             var elementType = GetElementType(source.Type);
 
 
-            var result = new QueryablePipeline
+            var result = new Pipeline
                             {
                                 Variable = variable,
                                 QueryableExpr = source,
@@ -80,7 +80,7 @@ namespace Samples
         }
 
         [Parse(null, "where", null)]
-        public QueryablePipeline Where(QueryablePipeline pipeline, Expression condExpr)
+        public Pipeline Where(Pipeline pipeline, Expression condExpr)
         {
             var predicateType = typeof(Func<,>).MakeGenericType(pipeline.ElementType, typeof(bool));
 
@@ -89,7 +89,7 @@ namespace Samples
                                 condExpr,
                                 pipeline.Parameter);
 
-            return new QueryablePipeline
+            return new Pipeline
             {
                 QueryableExpr =
                     Expression.Call(
@@ -105,7 +105,7 @@ namespace Samples
         }
 
         [Parse(null, "select", null)]
-        public Expression FromSelect(QueryablePipeline pipeline, Expression expression)
+        public Expression FromSelect(Pipeline pipeline, Expression expression)
         {
             var inElementType = pipeline.ElementType;
             var outElementType = expression.Type;
@@ -212,7 +212,7 @@ namespace Samples
             return null;
         }
 
-        public class QueryablePipeline
+        public class Pipeline
         {
             public string Variable;
             public Expression QueryableExpr;
