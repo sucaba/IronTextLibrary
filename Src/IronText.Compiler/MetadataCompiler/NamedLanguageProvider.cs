@@ -70,7 +70,7 @@ namespace IronText.MetadataCompiler
 
             provider = new CompiledLanguageProvider(
                 languageName,
-                new DerivedAssemblyProvider(languageName.SourceAssembly, null));
+                new DerivedAssemblyProvider(languageName.SourceAssembly, null, null));
 
             if (!ResourceContext.Instance.CanLoadOrBuild(provider))
             {

@@ -6,7 +6,11 @@ namespace IronText.Build
 {
     public class Derived
     {
-        public void Execute(ILogger logger, string sourceAssemblyPath, string derivatorClassName, string derivedPath)
+        public void Execute(
+            ILogger logger,
+            string sourceAssemblyPath,
+            string derivatorClassName,
+            string derivedPath)
         {
             var sourceAssembly = Assembly.LoadFrom(sourceAssemblyPath);
 
@@ -22,9 +26,14 @@ namespace IronText.Build
                     }
 
                     IDerivator derivator = (IDerivator)Activator.CreateInstance(derivatorType);
-                    derivator.Execute(logger, sourceAssembly, derivedPath);
+                    derivator.Execute(logger, sourceAssembly, derivedPath, GetDir(derivatorType.Assembly));
                 },
                 Path.GetDirectoryName(sourceAssemblyPath));
+        }
+
+        private string GetDir(Assembly assembly)
+        {
+            return Path.GetDirectoryName(new Uri(assembly.CodeBase).LocalPath);
         }
 
         private void ResolveAssemblyByDir(Action action, string dir)

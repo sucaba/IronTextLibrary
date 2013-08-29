@@ -38,20 +38,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IronText.Build">
-      <HintPath>..\packages\IronText.0.9.0.0\lib\net40\IronText.Build.dll</HintPath>
-    </Reference>
-    <Reference Include="IronText.Compiler">
-      <HintPath>..\packages\IronText.0.9.0.0\lib\net40\IronText.Compiler.dll</HintPath>
-    </Reference>
     <Reference Include="IronText.Core">
       <HintPath>..\packages\IronText.0.9.0.0\lib\net40\IronText.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>..\packages\IronText.0.9.0.0\lib\net40\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Pdb">
-      <HintPath>..\packages\IronText.0.9.0.0\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>

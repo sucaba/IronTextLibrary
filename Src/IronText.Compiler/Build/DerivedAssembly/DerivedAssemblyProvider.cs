@@ -15,11 +15,17 @@ namespace IronText.Build
         private readonly ReadOnlyCollection<IExternalResource> _sources;
         private readonly string sourcePath;
         private readonly string derivedPath;
+        private readonly string[] resourceDirs;
 
-        public DerivedAssemblyProvider(Assembly sourceAssembly, string derivedPath)
+        public DerivedAssemblyProvider(
+            Assembly sourceAssembly,
+            string derivedPath,
+            string[] resourceDirs)
             : base(new AssemblyName(sourceAssembly.GetName().Name + ".Derived"))
         {
             this.sourceAssembly = sourceAssembly;
+            this.resourceDirs = resourceDirs;
+
             _sources = new ReadOnlyCollection<IExternalResource>(
                         new [] { new RequiredAssemblyProvider(sourceAssembly.GetName()) });
 
@@ -52,6 +58,21 @@ namespace IronText.Build
 
             ((IAssemblyResolverParameters)context).AddSearchDirectory(
                 Path.GetDirectoryName(derivedPath));
+
+            if (resourceDirs != null)
+            {
+                foreach (var resourceDir in resourceDirs)
+                {
+                    logging.Write(
+                        new LogEntry 
+                        {
+                            Severity = Severity.Verbose,
+                            Message = "Using additional assembly search directory: " + resourceDir,
+                        });
+                    ((IAssemblyResolverParameters)context).AddSearchDirectory(
+                        resourceDir);
+                }
+            }
 
             var cilDocument = context
             .BeginDocument()
