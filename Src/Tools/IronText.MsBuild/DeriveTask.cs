@@ -7,6 +7,9 @@ namespace IronText.MsBuild
 {
     public class DeriveTask : AppDomainIsolatedTask
     {
+        public const string ManagedDerivatorName = "Managed";
+        public const string ManagedDerivatorTypeName = "IronText.Build.AssemblyDerivator, IronText.Compiler";
+
         public DeriveTask()
         {
             this.SourceAssemblies = new ITaskItem[0];
@@ -14,7 +17,7 @@ namespace IronText.MsBuild
         }
 
         [Required]
-        public string DerivatorTypeName { get; set; }
+        public string DerivatorNames { get; set; }
 
         [Required]
         public ITaskItem[] SourceAssemblies { get; set; }
@@ -42,18 +45,19 @@ namespace IronText.MsBuild
             Log.LogMessage(MessageImportance.Low, "Deriving from {0} source assemblies", SourceAssemblies.Length);
 
             bool result = true;
-            foreach (var sourceItem in SourceAssemblies)
-            for (int i = 0; i != SourceAssemblies.Length; ++i)
-            {
-                var sourcePath = SourceAssemblies[i].ItemSpec;
-                var derivedPath = DerivedAssemblies[i].ItemSpec;
-                result = ExecuteOne(sourcePath, derivedPath) && result;
-            }
+            var derivatorNames = DerivatorNames.Split(new [] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var derivatorName in derivatorNames)
+                for (int i = 0; i != SourceAssemblies.Length; ++i)
+                {
+                    var sourcePath = SourceAssemblies[i].ItemSpec;
+                    var derivedPath = DerivedAssemblies[i].ItemSpec;
+                    result = ExecuteOne(sourcePath, derivedPath, derivatorName) && result;
+                }
 
             return result;
         }
 
-        public bool ExecuteOne(string sourcePath, string derivedPath)
+        public bool ExecuteOne(string sourcePath, string derivedPath, string derivatorName)
         {
             Log.LogMessage(MessageImportance.Low, "Deriving from {0}", sourcePath);
 
@@ -62,7 +66,7 @@ namespace IronText.MsBuild
                 var derived = new Derived();
                 derived.Execute(
                     new MsBuildTaskLogger(this.Log), 
-                    sourcePath, DerivatorTypeName, derivedPath);
+                    sourcePath, GetDerivatorTypeName(derivatorName), derivedPath);
                 return true;
             }
             catch (Exception e)
@@ -76,6 +80,16 @@ namespace IronText.MsBuild
                 this.Log.LogErrorFromException(error, true);
                 return false;
             }
+        }
+
+        private string GetDerivatorTypeName(string derivatorName)
+        {
+            switch (derivatorName)
+            {
+                case ManagedDerivatorName: return ManagedDerivatorTypeName;
+            }
+
+            return derivatorName;
         }
     }
 }

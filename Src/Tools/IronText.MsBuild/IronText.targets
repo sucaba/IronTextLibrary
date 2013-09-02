@@ -13,11 +13,11 @@
     <Target Name="GenerateDerivedAssembly" AfterTargets="PrepareForRun" 
         Inputs="@(DeriveSourceAssembly)"
         Outputs="@(DerivedAssembly)"
-        Condition="'$(GenerateDerivedAssembly)'=='On'"
+        Condition="'$(DerivedBuild)' != ''"
         DependsOnTargets="CopyFilesToOutputDirectory">
 
         <DeriveTask 
-            DerivatorTypeName="IronText.Build.AssemblyDerivator, IronText.Compiler"
+            DerivatorNames="$(DerivedBuild)"
             SourceAssemblies="@(DeriveSourceAssembly)"
             DerivedAssemblies="@(DerivedAssembly)" /> 
     </Target>

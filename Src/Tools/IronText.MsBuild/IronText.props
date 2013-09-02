@@ -11,5 +11,6 @@
       .Derived.dll;
       .Derived.pdb
     </AllowedReferenceRelatedFileExtensions>
+    <DerivedBuild>Managed</DerivedBuild>
   </PropertyGroup>
 </Project>
