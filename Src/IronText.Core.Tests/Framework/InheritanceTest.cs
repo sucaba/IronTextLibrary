@@ -26,14 +26,21 @@ namespace IronText.Tests.Framework
         }
 
         [Test]
-        public void ThisAsTokenInMainLangMethods()
+        public void InheritedLanguageModuleProvidesStaticRuleMethods()
+        {
+            var target = new MainLang();
+            Language.Parse(target, "staticBaseLang");
+        }
+
+        [Test]
+        public void DemandRuleInMainLang()
         {
             var target = new MainLang();
             Language.Parse(target, "mainLang loop1 loop1 end");
         }
 
         [Test]
-        public void BaseThisAsTokenClassProvidesRuleMethods()
+        public void DemandRuleInBase()
         {
             var target = new MainLang();
             Language.Parse(target, "mainLang loop1Base loop1Base endBase");
@@ -89,6 +96,9 @@ namespace IronText.Tests.Framework
 
             [Parse("baseLang")]
             public ResultOf<BaseLang> ParseBaseLang() { return null; }
+
+            [Parse("staticBaseLang")]
+            public static ResultOf<BaseLang> StaticBaseLang() { return null; }
         }
 
         [Language]

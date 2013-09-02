@@ -34,6 +34,11 @@ namespace IronText.Extensibility
                 GetMemberMetadata(parent, result, member);
             }
 
+            if (type.BaseType != null)
+            {
+                result.AddRange(EnumerateAndBind(parent, type.BaseType));
+            }
+
             result.AddRange(
                 type
                     .GetInterfaces()
