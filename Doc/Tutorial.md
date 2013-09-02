@@ -65,7 +65,7 @@ public class MyLang
     [ParseResult]
     public int Result { get; set; } 
 
-    // Scans one-or more decimal digit
+    // Scans one-or-more decimal digit
     [Scan("digit+")]
     public int Integer(string text) { return int.Parse(text); }
 }
@@ -197,9 +197,9 @@ public class MyConfig
     public Dictionary<string,object> Pair(
             Dictionary<string,object> items,
             string name,
-            object value) 
+            Variant variant) 
     {
-        items.Add(name, value)
+        items.Add(name, variant.Value)
         return items;
     }
 
@@ -207,16 +207,16 @@ public class MyConfig
     public string Name(string text) { return text; }
 
     [Scan("quot ~quot* quot")]
-    public object QuotedString(string text)
+    public Variant QuotedString(string text)
     { 
-        return new QStr(text.Substring(1, text.Length - 2)); 
+        return new Variant(text.Substring(1, text.Length - 2));
     }
 
     [Scan("digit+ '.' digit* | '.' digit+")]
-    public object Double(string text) { return double.Parse(text); }
+    public Variant Double(string text) { return new Variant(double.Parse(text)); }
 
     [Scan("digit+")]
-    public object Integer(string text) { return int.Parse(text); }
+    public Variant Integer(string text) { return new Variant(int.Parse(text)); }
 
     [Scan("blank+")]
     public void Blank() { }
@@ -228,6 +228,14 @@ public class QStr
     public SQStr(string text) { this.Text = text; }
 
     public string Text { get; private set; }
+}
+
+// Wraps any config value
+public class Variant
+{
+    public Variant(object value) { this.Value = value; }
+
+    public Value { get; private set; }
 }
 
 ```
