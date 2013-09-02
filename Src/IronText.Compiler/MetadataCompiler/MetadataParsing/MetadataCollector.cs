@@ -19,7 +19,8 @@ namespace IronText.MetadataCompiler
     */
     class MetadataCollector : IMetadataCollector
     {
-        private readonly List<ILanguageMetadata> allMetadata    = new List<ILanguageMetadata>();
+        private readonly List<ILanguageMetadata> validMetadata    = new List<ILanguageMetadata>();
+        private readonly List<ILanguageMetadata> invalidMetadata    = new List<ILanguageMetadata>();
         private readonly List<ParseRule>         allParseRules  = new List<ParseRule>();
         private readonly List<SwitchRule>        allSwitchRules = new List<SwitchRule>();
         private readonly List<TokenRef>          allTokens      = new List<TokenRef>();
@@ -33,7 +34,9 @@ namespace IronText.MetadataCompiler
             this.logging = logging;
         }
 
-        public List<ILanguageMetadata> AllMetadata { get { return allMetadata; } } 
+        public bool HasInvalidData { get { return invalidMetadata.Count != 0; } }
+
+        public List<ILanguageMetadata> AllMetadata { get { return validMetadata; } } 
 
         public List<ParseRule> AllParseRules { get { return allParseRules; } } 
 
@@ -41,17 +44,20 @@ namespace IronText.MetadataCompiler
 
         public void AddMeta(ILanguageMetadata meta)
         {
-            if (allMetadata.Contains(meta, PropertyComparer<ILanguageMetadata>.Default))
+            if (validMetadata.Contains(meta, PropertyComparer<ILanguageMetadata>.Default)
+                ||
+                invalidMetadata.Contains(meta, PropertyComparer<ILanguageMetadata>.Default))
             {
                 return; 
             }
 
             if (!meta.Validate(logging))
             {
+                invalidMetadata.Add(meta);
                 return;
             }
 
-            allMetadata.Add(meta);
+            validMetadata.Add(meta);
 
             // Provide new explicitly used tokens
             foreach (var token in meta.GetTokensInCategory(tokenPool, TokenCategory.ExplicitlyUsed))
@@ -114,7 +120,7 @@ namespace IronText.MetadataCompiler
 
             // Provide new rules from existing meta
             var newTokens = new[] { token };
-            foreach (var meta in allMetadata)
+            foreach (var meta in validMetadata)
             {
                 var newParseRules = meta.GetParseRules(newTokens, tokenPool);
                 foreach (var parseRule in newParseRules)

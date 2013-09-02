@@ -18,6 +18,8 @@ namespace IronText.MetadataCompiler
 
         public LanguageDefinition(Type startType, ILogging logging)
         {
+            this.IsValid = true;
+
             ITokenPool tokenPool = this;
 
             var startMeta = MetadataParser.EnumerateAndBind(startType);
@@ -40,6 +42,11 @@ namespace IronText.MetadataCompiler
             foreach (var meta in startMeta)
             {
                 collector.AddMeta(meta);
+            }
+
+            if (collector.HasInvalidData)
+            {
+                this.IsValid = false;
             }
 
             // collector.AddMeta(new InheritanceMetadata());
@@ -102,6 +109,11 @@ namespace IronText.MetadataCompiler
 
             var scanDataCollector = new ScanDataCollector(terminals, this, logging);
             scanDataCollector.AddScanMode(startType);
+            if (scanDataCollector.HasInvalidData)
+            {
+                this.IsValid = false;
+            }
+
             allScanModes = scanDataCollector.ScanModes;
             LinkRelatedTokens(allScanModes);
 
@@ -111,6 +123,8 @@ namespace IronText.MetadataCompiler
 
             this.LanguageDataActions = allMetadata.SelectMany(m => m.GetReportBuilders()).ToArray();
         }
+
+        public bool IsValid { get; private set; }
 
         private void LinkRelatedTokens(List<ScanMode> allScanModes)
         {

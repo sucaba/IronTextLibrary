@@ -34,6 +34,12 @@ namespace IronText.MetadataCompiler
                 });
 
             var definition = new LanguageDefinition(languageName.DefinitionType, logging);
+            if (!definition.IsValid)
+            {
+                result = null;
+                return false;
+            }
+
             var tokenResolver = definition.TokenRefResolver;
 
             List<List<GrammarActionBuilder>> ruleActionBuilders;

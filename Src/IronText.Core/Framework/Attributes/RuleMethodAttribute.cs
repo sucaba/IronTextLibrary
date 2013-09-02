@@ -10,6 +10,8 @@ namespace IronText.Framework
 {
     public abstract class RuleMethodAttribute : LanguageMetadataAttribute
     {
+        private bool isValid;
+
         public int Precedence { get; set; }
 
         public Associativity Associativity { get; set; }
@@ -29,10 +31,25 @@ namespace IronText.Framework
             return null;
         }
 
+        public override bool Validate(ILogging logging)
+        {
+            isValid = 
+                ValidateAllGenericArgsAreUsed(Method.GetGenericArguments().ToList(), Method.ReturnType, logging)
+                &&
+                base.Validate(logging);
+
+            return isValid;
+        }
+
         protected abstract TokenRef[] DoGetRuleMask(MethodInfo methodInfo, ITokenPool tokenPool);
 
         public override IEnumerable<ParseRule> GetParseRules(IEnumerable<TokenRef> tokens, ITokenPool tokenPool)
         {
+            if (!isValid)
+            {
+                return Enumerable.Empty<ParseRule>();
+            }
+
             return tokens.SelectMany(token => GetExpansionRules(token, tokenPool)).ToArray();
         }
 
@@ -266,6 +283,52 @@ namespace IronText.Framework
                 if (i != maskLength)
                 {
                     ++i;
+                }
+            }
+        }
+
+        private bool ValidateAllGenericArgsAreUsed(
+            List<Type> usedTypes,
+            Type       compositeType,
+            ILogging   logging)
+        {
+            DeleteUsedGenericArgs(usedTypes, compositeType, logging);
+            if (usedTypes.Count != 0)
+            {
+                logging.Write(
+                    new LogEntry 
+                    {
+                        Severity = Severity.Error,
+                        Message = "One or more generic arguments cannot be deduced from the method result type.",
+                        Member = Method
+                    });
+                return false;
+            }
+
+            return true;
+        }
+
+        private static void DeleteUsedGenericArgs(
+            List<Type> usedTypes,
+            Type type,
+            ILogging logging)
+        {
+            if (type.IsGenericParameter)
+            {
+                usedTypes.Remove(type);
+            }
+            else if (type.ContainsGenericParameters)
+            {
+                if (type.IsArray)
+                {
+                    DeleteUsedGenericArgs(usedTypes, type.GetElementType(), logging);
+                }
+                else
+                {
+                    foreach (var paramType in type.GetGenericArguments())
+                    {
+                        DeleteUsedGenericArgs(usedTypes, paramType, logging);
+                    }
                 }
             }
         }

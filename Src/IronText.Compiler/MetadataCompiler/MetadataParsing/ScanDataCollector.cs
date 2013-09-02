@@ -9,7 +9,8 @@ namespace IronText.MetadataCompiler
 {
     class ScanDataCollector : IScanDataCollector
     {
-        private readonly List<ILanguageMetadata> allMetadata;
+        private readonly List<ILanguageMetadata> validMetadata;
+        private readonly List<ILanguageMetadata> invalidMetadata;
         private readonly List<ScanMode>          allScanModes;
         private readonly List<TokenRef>          terminals;
         private readonly ITokenPool              tokenPool;
@@ -25,7 +26,8 @@ namespace IronText.MetadataCompiler
             ILogging logging)
         {
             this.logging = logging;
-            this.allMetadata  = new List<ILanguageMetadata>();
+            this.validMetadata  = new List<ILanguageMetadata>();
+            this.invalidMetadata  = new List<ILanguageMetadata>();
             this.allScanModes = new List<ScanMode>();
             this.terminals    = new List<TokenRef>(terminals);
             this.voidTerm = tokenPool.ScanSkipToken;
@@ -36,21 +38,26 @@ namespace IronText.MetadataCompiler
             processedScanModes = new Stack<ScanMode>();
         }
 
+        public bool HasInvalidData { get { return invalidMetadata.Count != 0; } }
+
         public List<ScanMode> ScanModes { get { return allScanModes; } }
 
         public void AddMeta(ILanguageMetadata meta)
         {
-            if (allMetadata.Contains(meta, PropertyComparer<ILanguageMetadata>.Default))
+            if (validMetadata.Contains(meta, PropertyComparer<ILanguageMetadata>.Default)
+                ||
+                invalidMetadata.Contains(meta, PropertyComparer<ILanguageMetadata>.Default))
             {
                 return;
             }
 
             if (!meta.Validate(logging))
             {
+                invalidMetadata.Add(meta);
                 return;
             }
 
-            allMetadata.Add(meta);
+            validMetadata.Add(meta);
 
             foreach (var scanRule in meta.GetScanRules(tokenPool))
             {

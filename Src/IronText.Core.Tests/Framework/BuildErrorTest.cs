@@ -1,4 +1,4 @@
-﻿#if false
+﻿# if false
 using NUnit.Framework;
 using IronText.Framework;
 namespace IronText.Tests.Framework
@@ -17,6 +17,15 @@ namespace IronText.Tests.Framework
         {
             [Parse]
             void All(string s);
+
+            [Parse]
+            void All(int x);
+
+            [Parse]
+            int BadTemplate<T>(T token);
+
+            [Literal("foo")]
+            string Foo();
 
             [Scan("'x' *")]
             string NullableScanPattern();
