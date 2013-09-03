@@ -121,10 +121,10 @@ Step 4: Named integer values
 
 ParseAttribute can specify literal-mask which is
 a list of string values.  They can be either
-- nulls for argument placeholders 
+- nulls (method argument placeholders) 
 
 or 
-- constant strings for literals.
+- constant strings (literals).
 
 Trailing null items in literal-mask are optional.
 

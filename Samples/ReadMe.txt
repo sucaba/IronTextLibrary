@@ -1,8 +1,8 @@
 Calculator
 ----------
 
-Sample for parsing and execution of basic 
-arithmetic operations along with some math functions.
+Sample for parsing and executing basic arithmetic 
+operations along with some math functions.
 
 
 MyArchiver
