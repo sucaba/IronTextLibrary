@@ -84,6 +84,7 @@ namespace IronText.MetadataCompiler
                 IsAmbiguous         = isAmbiguous,
                 RootContextType     = languageName.DefinitionType,
                 Grammar             = grammar,
+                GrammarAnalysis     = new BnfGrammarAnalysis(grammar),
                 ParserStates        = parserDfa.States,
                 StateToSymbolTable  = parserDfa.GetStateToSymbolTable(),
                 ParserActionTable   = parserTable.GetParserActionTable(),

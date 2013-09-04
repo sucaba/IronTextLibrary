@@ -107,34 +107,6 @@ namespace IronText.Framework
             this.MaxRuleSize = Rules.Select(r => r.Parts.Length).Max();
         }
 
-        private IEnumerable<int> GetDependantTokens(int token)
-        {
-            foreach (var rule in GetProductionRules(token))
-            {
-                foreach (int part in rule.Parts)
-                {
-                    yield return part;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Fewer values are less dependent to higher values 
-        /// Relation of values is non-determined for two mutally 
-        /// dependent non-terms.
-        /// </summary>
-        internal int[] GetTokenComplexity()
-        {
-            var result = Enumerable.Repeat(-1, TokenCount).ToArray();
-            var sortedTokens = Graph.ToplogicalSort(new [] { AugmentedStart }, GetDependantTokens).ToArray();
-            for (int i = 0; i != sortedTokens.Length; ++i)
-            {
-                result[sortedTokens[i]] = i;
-            }
-
-            return result;
-        }
-
         public int DefineToken(string name, TokenCategory categories = TokenCategory.None)
         {
             Debug.Assert(!frozen);

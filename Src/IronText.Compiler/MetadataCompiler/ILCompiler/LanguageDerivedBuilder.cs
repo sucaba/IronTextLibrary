@@ -388,7 +388,7 @@ namespace IronText.MetadataCompiler
             
             var resultLoc = emit.Locals.Generate().GetRef();
             var itemLoc = emit.Locals.Generate().GetRef();
-            var table = data.Grammar.GetTokenComplexity();
+            var table = data.GrammarAnalysis.GetTokenComplexity();
 
             emit = emit
                 .Local(resultLoc.Def, emit.Types.Import(typeof(int[])))

@@ -19,6 +19,8 @@ namespace IronText.MetadataCompiler
 
         public BnfGrammar Grammar { get; set; }
 
+        public BnfGrammarAnalysis GrammarAnalysis { get; set; }
+
         public int TokenCount { get { return Lalr1ParserActionTable.ColumnCount; } }
 
         ReadOnlyCollection<ScanMode> IReportData.ScanModes
