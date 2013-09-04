@@ -34,6 +34,8 @@ namespace IronText.Framework
 
             public static readonly FieldInfo parserConflictActions = ExpressionUtils.GetField((LanguageBase lang) => lang.parserConflictActions);
 
+            public static readonly FieldInfo tokenComplexity = ExpressionUtils.GetField((LanguageBase lang) => lang.tokenComplexity);
+
             public static readonly FieldInfo createDefaultContext = ExpressionUtils.GetField((LanguageBase lang) => lang.createDefaultContext);
         }
 
@@ -49,6 +51,7 @@ namespace IronText.Framework
         protected LanguageName           name;
         protected int[]                  stateToSymbol;
         protected int[]                  parserConflictActions;
+        protected int[]                  tokenComplexity;
         private ResourceAllocator        allocator;
         protected Func<object>           createDefaultContext;
 
@@ -130,6 +133,7 @@ namespace IronText.Framework
             {
                 return new RnGlrParser<TNode>(
                     grammar,
+                    tokenComplexity,
                     getParserAction,
                     stateToSymbol,
                     parserConflictActions,

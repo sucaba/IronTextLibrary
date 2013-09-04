@@ -22,6 +22,7 @@ namespace IronText.MetadataCompiler
         private const string GetParserActionMethodName          = "GetParserAction";
         private const string CreateStateToSymbolMethodName      = "CreateStateToSymbol";
         private const string CreateParserActionConflictsMethodName = "CreateParserActionConflicts";
+        private const string CreateTokenComplexityTableMethodName = "CreateTokenComplexity";
         private const string CreateDefaultContextMethodName     = "InternalCreateDefaultContext";
 
         private readonly LanguageData data;
@@ -87,6 +88,7 @@ namespace IronText.MetadataCompiler
                     .Do(BuildMethod_CreateExternalToken)
                     .Do(BuildMethod_CreateStateToSymbol)
                     .Do(BuildMethod_CreateParserActionConflicts)
+                    .Do(BuildMethod_CreateTokenComplexityTable)
                     .Do(BuildMethod_CreateDefaultContext)
                     .Do(Build_Ctor)
                 .EndClass()
@@ -251,7 +253,7 @@ namespace IronText.MetadataCompiler
             var generator = new TokenIdentitiesSerializer(data.TokenRefResolver);
 
             return context
-                .Method().Public.Static
+                .Method().Private.Static
                         .Returning(context.Types.Import(LanguageBase.Fields.tokenKeyToId.FieldType))
                         .Named(CreateTokenKeyToIdMethodName)
                     .BeginArgs()
@@ -270,7 +272,7 @@ namespace IronText.MetadataCompiler
                                     il => il.Ldarg(1));
 
             var args = context.Method()
-                              .Public.Static
+                              .Private.Static
                               .Returning(context.Types.Int32)
                               .Named(GetParserActionMethodName)
                               .BeginArgs();
@@ -292,7 +294,7 @@ namespace IronText.MetadataCompiler
         {
             return context
                 .Method()
-                      .Public.Static
+                      .Private.Static
                       .Returning(context.Types.Object)
                       .Named(CreateDefaultContextMethodName)
                       .BeginArgs()
@@ -325,7 +327,7 @@ namespace IronText.MetadataCompiler
 
             return context
                 .Method()   
-                    .Public.Static
+                    .Private.Static
                     .Returning(context.Types.Import(typeof(BnfGrammar)))
                     .Named(CreateGrammarMethodName)
                         .BeginArgs()
@@ -340,7 +342,7 @@ namespace IronText.MetadataCompiler
         {
             var emit = context
                         .Method()
-                            .Public.Static
+                            .Private.Static
                             .Returning(context.Types.Import(typeof(int[])))
                             .Named(CreateParserActionConflictsMethodName)
                                 .BeginArgs()
@@ -373,11 +375,48 @@ namespace IronText.MetadataCompiler
                 .EndBody();
         }
 
+        private ClassSyntax BuildMethod_CreateTokenComplexityTable(ClassSyntax context)
+        {
+            var emit = context
+                        .Method()
+                            .Private.Static
+                            .Returning(context.Types.Import(typeof(int[])))
+                            .Named(CreateTokenComplexityTableMethodName)
+                                .BeginArgs()
+                                .EndArgs()
+                        .BeginBody();
+            
+            var resultLoc = emit.Locals.Generate().GetRef();
+            var itemLoc = emit.Locals.Generate().GetRef();
+            var table = data.Grammar.GetTokenComplexity();
+
+            emit = emit
+                .Local(resultLoc.Def, emit.Types.Import(typeof(int[])))
+                .Ldc_I4(table.Length)
+                .Newarr(emit.Types.Import(typeof(int)))
+                .Stloc(resultLoc)
+                ;
+
+            for (int i = 0; i != table.Length; ++i)
+            {
+                emit
+                    .Ldloc(resultLoc)
+                    .Ldc_I4(i)
+                    .Ldc_I4(table[i])
+                    .Stelem_I4();
+            }
+
+            return emit
+                    .Ldloc(resultLoc)
+                    .Ret()
+                .EndBody();
+        }
+
         private ClassSyntax BuildMethod_CreateStateToSymbol(ClassSyntax context)
         {
             var emit = context
                         .Method()
-                            .Public.Static
+                            .Private.Static
                             .Returning(context.Types.Import(typeof(int[])))
                             .Named(CreateStateToSymbolMethodName)
                                 .BeginArgs()
@@ -478,6 +517,20 @@ namespace IronText.MetadataCompiler
                         .EndArgs()
                     ))
                 .Stfld(LanguageBase.Fields.parserConflictActions)
+
+                // Init token complexity table
+                .Ldarg(0)
+                .Call(emit.Methods.Method(
+                    _=>_
+                        .StartSignature
+                        .Returning(emit.Types.Import(typeof(int[])))
+                        .DecaringType(declaringTypeRef)
+                        .Named(CreateTokenComplexityTableMethodName)
+                        .BeginArgs()
+                        .EndArgs()
+                    ))
+                .Stfld(LanguageBase.Fields.tokenComplexity)
+
 
                 // Init external token factory
                 .Ldarg(0)

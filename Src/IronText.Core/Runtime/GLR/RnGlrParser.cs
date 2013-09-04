@@ -32,6 +32,7 @@ namespace IronText.Framework
 
         public RnGlrParser(
             BnfGrammar          grammar,
+            int[]               tokenComplexity,
             TransitionDelegate  transition,
             Token[]             stateToPriorToken,
             int[]               conflictActionsTable,
@@ -40,6 +41,7 @@ namespace IronText.Framework
             ILogging            logging)
             : this(
                 grammar,
+                tokenComplexity,
                 transition,
                 stateToPriorToken,
                 conflictActionsTable,
@@ -52,6 +54,7 @@ namespace IronText.Framework
 
         private RnGlrParser(
             BnfGrammar          grammar,
+            int[]               tokenComplexity,
             TransitionDelegate  transition,
             Token[]             stateToPriorToken,
             int[]               conflictActionsTable,
@@ -61,7 +64,7 @@ namespace IronText.Framework
             Gss<T>              gss)
         {
             this.grammar              = grammar;
-            this.tokenComplexity      = grammar.GetTokenComplexity();
+            this.tokenComplexity      = tokenComplexity;
             this.transition           = transition;
             this.stateToPriorToken    = stateToPriorToken;
             this.conflictActionsTable = conflictActionsTable;
@@ -400,6 +403,7 @@ namespace IronText.Framework
         {
             var result = new RnGlrParser<T>(
                             grammar,
+                            tokenComplexity,
                             transition,
                             stateToPriorToken,
                             conflictActionsTable,
