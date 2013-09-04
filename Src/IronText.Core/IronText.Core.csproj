@@ -93,8 +93,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Algorithm\ArraySlice.cs" />
-    <Compile Include="Algorithm\Graphs\Graph.cs" />
-    <None Include="Algorithm\Graphs\TarjanSccAlgorithm.cs" />
     <Compile Include="Algorithm\IntArrow.cs" />
     <Compile Include="Algorithm\IntegerSets\BitSet.cs" />
     <Compile Include="Algorithm\IntegerSets\BitSetBase.cs" />
