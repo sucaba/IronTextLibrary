@@ -21,8 +21,7 @@ public class Program
         try
         {
             Language.Parse(context, "foo");
-            Console.WriteLine(context.Result);
-
+            Console.WriteLine(context.Result); 
             // Should print 'foo'
         }
         catch (SyntaxException e)
@@ -34,7 +33,7 @@ public class Program
     [Language]
     public class MyLang
     {
-        // In case of success setter will be invoked with a final result of parsing.
+        // In case of success, setter will be invoked with a final result of parsing.
         // Getter is optional.
         [ParseResult]
         public string Result { get; set; } 

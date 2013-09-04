@@ -171,12 +171,7 @@ namespace IronText.Framework
 
         public void WriteGraph(IGraphView view, BnfGrammar grammar, int[] stateToSymbol)
         {
-            var allAccessibleByLayer = Graph
-                      .AllVertexes(
-                        front,
-                        state => state.Links.Select(link => link.LeftNode))
-                      .GroupBy(state => state.Layer);
-
+            var allAccessibleByLayer = GetAllNodes().GroupBy(state => state.Layer);
 
             var layers = Enumerable
                             .Range(0, currentLayer + 1)
@@ -242,6 +237,20 @@ namespace IronText.Framework
             }
 
             view.EndDigraph();
+        }
+
+        private List<GssNode<T>> GetAllNodes()
+        {
+            var result = new List<GssNode<T>>(front);
+
+            for (int i = 0; i != result.Count; ++i)
+            {
+                var item = result[i];
+                var f = item.Links.Select(l => l.LeftNode).Except(result);
+                result.AddRange(f);
+            }
+
+            return result;
         }
 
         public void BeginEdit()

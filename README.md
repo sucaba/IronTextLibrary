@@ -30,5 +30,6 @@ Checkout samples on https://github.com/sucaba/IronTextLibrary
 Technical Details
 -----------------
 
-Parser: LALR1, RNGLR
-Scanner: DFA compiled to a RE2C-like .net code
+Parser: LALR1, RNGLR.
+
+Scanner: DFA compiled to a RE2C-like .net code.
