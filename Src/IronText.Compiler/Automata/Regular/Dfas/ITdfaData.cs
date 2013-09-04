@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using IronText.Algorithm;
 using IronText.Diagnostics;
+using IronText.Extensibility;
 
-namespace IronText.Extensibility
+namespace IronText.Automata.Regular
 {
-    public interface ITdfaData
+    public interface ITdfaData : IScannerAutomata
     {
         IRegularAlphabet Alphabet { get; }
 

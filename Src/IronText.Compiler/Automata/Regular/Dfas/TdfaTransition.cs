@@ -1,6 +1,6 @@
 ﻿using IronText.Algorithm;
 
-namespace IronText.Extensibility
+namespace IronText.Automata.Regular
 {
     public struct TdfaTransition
     {

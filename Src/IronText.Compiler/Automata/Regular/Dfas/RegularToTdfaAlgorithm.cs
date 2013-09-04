@@ -89,7 +89,7 @@ namespace IronText.Automata.Regular
                 }
                 else
                 {
-                    newlineState = new TdfaState();
+                    newlineState = new TdfaState(data);
                     data.AddState(newlineState);
                     newlineState.Tunnel      = newlineTransition.To;
                     newlineState.IsAccepting = to.IsAccepting;
@@ -140,7 +140,7 @@ namespace IronText.Automata.Regular
                 {
                     state = next;
 
-                    var newStateInfo = new TdfaState();
+                    var newStateInfo = new TdfaState(data);
                     int newState = data.AddState(newStateInfo);
                     data.DeleteTransition(from: previous, symbol: symbols.Current);
                     data.AddTransition(
@@ -171,7 +171,7 @@ namespace IronText.Automata.Regular
             // extend the path
             for (; hasSymbol; hasSymbol = symbols.MoveNext())
             {
-                var newStateInfo = new TdfaState();
+                var newStateInfo = new TdfaState(data);
                 int newState = data.AddState(newStateInfo);
                 data.AddTransition(
                         from: previous,

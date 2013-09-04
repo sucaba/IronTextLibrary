@@ -5,6 +5,7 @@ using IronText.Framework;
 using System.Collections.ObjectModel;
 using IronText.Extensibility;
 using System.Linq;
+using IronText.Automata.Regular;
 
 namespace IronText.MetadataCompiler
 {
@@ -35,7 +36,7 @@ namespace IronText.MetadataCompiler
             get { return new ReadOnlyCollection<DotState>(ParserStates); }
         }
 
-        ITdfaData IReportData.GetScanModeDfa(Type scanModeType)
+        IScannerAutomata IReportData.GetScanModeDfa(Type scanModeType)
         {
             return ScanModeTypeToDfa[scanModeType];
         }

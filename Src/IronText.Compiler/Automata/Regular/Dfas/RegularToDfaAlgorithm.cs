@@ -21,7 +21,7 @@ namespace IronText.Automata.Regular
 
             data = new TdfaData(alphabet); 
 
-            data.AddState(new TdfaState { Positions = regTree.FirstPos });
+            data.AddState(new TdfaState(data) { Positions = regTree.FirstPos });
 
             foreach (var st in data.EnumerateStates())
             {
@@ -79,7 +79,7 @@ namespace IronText.Automata.Regular
                         int Uindex = data.IndexOfState(U);
                         if (Uindex < 0)
                         {
-                            Uindex = data.AddState(new TdfaState { Positions = U });
+                            Uindex = data.AddState(new TdfaState(data) { Positions = U });
                         }
 
                         data.AddTransition(from: Sindex, symbol: symbol, to: Uindex);

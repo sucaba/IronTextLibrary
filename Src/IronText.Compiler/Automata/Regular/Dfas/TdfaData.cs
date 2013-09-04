@@ -3,10 +3,13 @@ using System.Diagnostics;
 using IronText.Algorithm;
 using IronText.Diagnostics;
 using IronText.Extensibility;
+using System.Collections.ObjectModel;
 
 namespace IronText.Automata.Regular
 {
-    public sealed class TdfaData : ITdfaData
+    public sealed class TdfaData 
+        : ITdfaData
+        , IScannerAutomata
     {
         public static readonly SparseIntSetType StateSetType = SparseIntSetType.Instance;
         public static readonly SparseIntSetType PositionSetType = SparseIntSetType.Instance;
@@ -25,7 +28,15 @@ namespace IronText.Automata.Regular
 
         public int StateCount { get { return Dstates.Count; } }
 
-        public TdfaState GetState(int state) { return Dstates[state]; }
+        public TdfaState GetState(int state) 
+        {
+            if (state < 0)
+            {
+                return null;
+            }
+
+            return Dstates[state]; 
+        }
 
         public IEnumerable<TdfaTransition> EnumerateIncoming(int destState)
         {
@@ -132,5 +143,13 @@ namespace IronText.Automata.Regular
             view.EndDigraph();
         }
 
+        ReadOnlyCollection<IScannerState> IScannerAutomata.States
+        {
+            get 
+            {
+                return new ReadOnlyCollection<IScannerState>(
+                            (IList<IScannerState>)(IList<TdfaState>)this.Dstates);
+            }
+        }
     }
 }

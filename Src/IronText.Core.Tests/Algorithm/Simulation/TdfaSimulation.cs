@@ -1,4 +1,5 @@
 ﻿using IronText.Extensibility;
+using IronText.Automata.Regular;
 
 namespace IronText.Tests.Algorithm
 {

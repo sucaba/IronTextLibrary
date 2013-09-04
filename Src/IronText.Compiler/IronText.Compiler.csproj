@@ -85,9 +85,14 @@
     <Compile Include="Automata\Regular\Alphabets\RegularAlphabet.cs" />
     <Compile Include="Automata\Regular\Dfas\DfaSerialization.cs" />
     <Compile Include="Automata\Regular\Dfas\IDfaSerialization.cs" />
+    <Compile Include="Automata\Regular\Dfas\IRegularAlphabet.cs" />
+    <Compile Include="Automata\Regular\Dfas\ITdfaData.cs" />
     <Compile Include="Automata\Regular\Dfas\RegularToDfaAlgorithm.cs" />
     <Compile Include="Automata\Regular\Dfas\RegularToTdfaAlgorithm.cs" />
+    <Compile Include="Automata\Regular\Dfas\ScannerTransition.cs" />
     <Compile Include="Automata\Regular\Dfas\TdfaData.cs" />
+    <Compile Include="Automata\Regular\Dfas\TdfaState.cs" />
+    <Compile Include="Automata\Regular\Dfas\TdfaTransition.cs" />
     <Compile Include="Automata\Regular\RegularTrees\FirstPosGetter.cs" />
     <Compile Include="Automata\Regular\RegularTrees\FollowPosBuilder.cs" />
     <Compile Include="Automata\Regular\RegularTrees\LastPosGetter.cs" />

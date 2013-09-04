@@ -26,7 +26,7 @@ namespace IronText.Extensibility
 
         ReadOnlyCollection<ParserConflictInfo> ParserConflicts { get; }
 
-        ITdfaData GetScanModeDfa(Type scanModeType);
+        IScannerAutomata GetScanModeDfa(Type scanModeType);
 
         ParserAction GetParserAction(int state, int token);
 
