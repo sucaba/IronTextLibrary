@@ -1,9 +1,10 @@
 ﻿using IronText.Algorithm;
 using IronText.Framework;
+using System.Collections.Generic;
 
 namespace IronText.Extensibility
 {
-    public struct DotItem
+    public class DotItem : IParserDotItem
     {
         public readonly BnfRule Rule;
         public readonly int Pos;
@@ -46,6 +47,16 @@ namespace IronText.Extensibility
         public override string ToString()
         {
             return string.Format("(Rule={0} Pos={1} LAs={2})", Rule.Id, Pos, Lookaheads);
+        }
+
+        BnfRule IParserDotItem.Rule { get { return Rule; } }
+
+        int IParserDotItem.Position { get { return Pos; } }
+
+
+        IEnumerable<int> IParserDotItem.Lookaheads
+        {
+            get { return Lookaheads; }
         }
     }
 }

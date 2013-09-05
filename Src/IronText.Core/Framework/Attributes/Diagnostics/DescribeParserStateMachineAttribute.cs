@@ -23,9 +23,11 @@ namespace IronText.Framework
 
         private void WriteDocFiles(IReportData data)
         {
+            var automata = data.ParserAutomata;
+
             string path = Path.Combine(data.DestinationDirectory, fileName);
 
-            var conflicts = data.ParserConflicts;
+            var conflicts = automata.Conflicts;
 
             using (var writer = new StreamWriter(path, false, Encoding.UTF8))
             {
@@ -53,38 +55,41 @@ namespace IronText.Framework
             output.Write(data.Grammar);
             output.WriteLine();
 
-            for (int state = 0; state != data.ParserStateCount; ++state)
+            int stateCount = data.ParserAutomata.States.Count;
+
+            foreach (var state in data.ParserAutomata.States)
             {
                 output.Write("State ");
-                output.Write(state);
+                output.Write(state.Index);
                 output.WriteLine();
                 output.WriteLine();
                 DescribeState(data, state, output, Indent);
                 output.WriteLine();
 
-                int tokenCount = data.TokenCount;
-                for (int token = 0; token != tokenCount; ++token)
+                foreach (var transition in state.Transitions)
                 {
-                    var action = data.GetParserAction(state, token);
-                    if (action != null)
-                    {
-                        if (action.Kind == ParserActionKind.Conflict)
-                        {
-                            output.Write(Indent);
-                            output.WriteLine("conflict {");
-                            foreach (var caction in data.GetConflictActions(action.Value1, action.Size))
-                            {
-                                PrintAction(data, token, output, caction);
-                            }
+                    var actions = transition.Actions;
+                    int count = actions.Count();
 
-                            output.Write(Indent);
-                            output.WriteLine("}");
-                            output.WriteLine();
-                        }
-                        else
+                    if (count == 0)
+                    {
+                    }
+                    else if (count > 1)
+                    {
+                        output.Write(Indent);
+                        output.WriteLine("conflict {");
+                        foreach (var action in actions)
                         {
-                            PrintAction(data, token, output, action);
+                            PrintAction(data, transition.Token, output, action);
                         }
+
+                        output.Write(Indent);
+                        output.WriteLine("}");
+                        output.WriteLine();
+                    }
+                    else
+                    {
+                        PrintAction(data, transition.Token, output, actions.Single());
                     }
                 }
 
@@ -94,6 +99,11 @@ namespace IronText.Framework
 
         private void PrintAction(IReportData data, int token, StreamWriter output, ParserAction action)
         {
+            if (action == null || action.Kind == ParserActionKind.Fail)
+            {
+                return;
+            }
+
             output.Write(Indent);
             output.Write(data.Grammar.TokenName(token));
             output.Write("             ");
@@ -197,16 +207,16 @@ namespace IronText.Framework
             StreamWriter output,
             string indent)
         {
-            return DescribeState(data, data.ParserStates[state], output, indent);
+            return DescribeState(data, data.ParserAutomata.States[state], output, indent);
         }
 
         private static StreamWriter DescribeState(
             IReportData data,
-            DotState state,
+            IParserState state,
             StreamWriter output,
             string indent)
         {
-            foreach (var item in state.Items)
+            foreach (var item in state.DotItems)
             {
                 output.Write(indent);
                 DescribeItem(data, item, output);
@@ -218,7 +228,7 @@ namespace IronText.Framework
 
         private static StreamWriter DescribeItem(
             IReportData data,
-            DotItem item,
+            IParserDotItem item,
             StreamWriter output,
             bool showLookaheads = true)
         {
@@ -227,7 +237,7 @@ namespace IronText.Framework
             output.Write(" ->");
             for (int i = 0; i != rule.Parts.Length; ++i)
             {
-                if (item.Pos == i)
+                if (item.Position == i)
                 {
                     output.Write(" •");
                 }
@@ -236,7 +246,7 @@ namespace IronText.Framework
                 output.Write(data.Grammar.TokenName(rule.Parts[i]));
             }
 
-            if (item.Pos == rule.Parts.Length)
+            if (item.Position == rule.Parts.Length)
             {
                 output.Write(" •");
             }

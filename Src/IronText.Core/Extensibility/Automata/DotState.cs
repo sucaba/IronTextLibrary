@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using IronText.Algorithm;
 using IronText.Framework;
+using System.Collections.ObjectModel;
 
 namespace IronText.Extensibility
 {

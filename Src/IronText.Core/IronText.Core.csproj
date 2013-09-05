@@ -122,6 +122,10 @@
     <Compile Include="Extensibility\Automata\DotTransition.cs" />
     <Compile Include="Extensibility\Automata\IDotItemSet.cs" />
     <Compile Include="Extensibility\Automata\IMutableDotItemSet.cs" />
+    <Compile Include="Extensibility\Reporting\IParserAutomata.cs" />
+    <Compile Include="Extensibility\Reporting\IParserDotItem.cs" />
+    <Compile Include="Extensibility\Reporting\IParserState.cs" />
+    <Compile Include="Extensibility\Reporting\IParserTransition.cs" />
     <Compile Include="Extensibility\Reporting\IScannerAutomata.cs" />
     <Compile Include="Extensibility\Reporting\IScannerTransition.cs" />
     <Compile Include="Extensibility\Reporting\IScannerState.cs" />

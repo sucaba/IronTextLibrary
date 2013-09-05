@@ -14,8 +14,6 @@ namespace IronText.MetadataCompiler
     /// </summary>
     internal class LanguageData : IReportData
     {
-        string IReportData.DestinationDirectory { get { return Name.SourceAssemblyDirectory; } }
-
         public LanguageName Name { get; set; }
 
         public BnfGrammar Grammar { get; set; }
@@ -24,56 +22,30 @@ namespace IronText.MetadataCompiler
 
         public int TokenCount { get { return Lalr1ParserActionTable.ColumnCount; } }
 
-        ReadOnlyCollection<ScanMode> IReportData.ScanModes
-        {
-            get { return new ReadOnlyCollection<ScanMode>(ScanModes); }
-        }
+        public bool                   IsAmbiguous;
+        public Type                   RootContextType;
 
-        int IReportData.ParserStateCount { get { return ParserStates.Length; } }
+        public DotState[]             ParserStates;
 
-        ReadOnlyCollection<DotState> IReportData.ParserStates
-        {
-            get { return new ReadOnlyCollection<DotState>(ParserStates); }
-        }
+        internal ITokenRefResolver    TokenRefResolver; 
 
-        IScannerAutomata IReportData.GetScanModeDfa(Type scanModeType)
-        {
-            return ScanModeTypeToDfa[scanModeType];
-        }
+        // Rule ID -> ActionBuilder
+        public GrammarActionBuilder[][] RuleActionBuilders;
+        public MergeRule[]            MergeRules;
+        public SwitchRule[]           SwitchRules;
+        public LocalParseContext[]    LocalParseContexts;
+        
+        public ScanMode[]             ScanModes;
+        public Dictionary<Type, ITdfaData>  ScanModeTypeToDfa;
 
-        ParserAction IReportData.GetParserAction(int state, int token)
-        {
-            return ParserAction.Decode(Lalr1ParserActionTable.Get(state, token));
-        }
+        public ITable<int>            ParserActionTable;
+        public int[]                  ParserConflictActionTable;
+        public int[]                  StateToSymbolTable;
 
-        IEnumerable<ParserAction> IReportData.GetAllParserActions(int state, int token)
-        {
-            var cell = Lalr1ParserActionTable.Get(state, token);
-            var action = ParserAction.Decode(cell);
-            if (action != null && action.Kind == ParserActionKind.Conflict)
-            {
-                for (int i = 0; i != action.Size; ++i)
-                {
-                    yield return
-                        ParserAction.Decode(
-                            Lalr1ParserConflictActionTable[action.Value1 + i]);
-                }
-            }
-        }
-
-        ReadOnlyCollection<ParserConflictInfo> IReportData.ParserConflicts
-        {
-            get { return new ReadOnlyCollection<ParserConflictInfo>(Lalr1Conflicts); }
-        }
-
-        IEnumerable<ParserAction> IReportData.GetConflictActions(int conflictIndex, int count)
-        {
-            for (int i = 0; i != count; ++i)
-            {
-                yield return ParserAction.Decode(
-                    Lalr1ParserConflictActionTable[conflictIndex + i]);
-            }
-        }
+        // For reporting
+        public ITable<int>            Lalr1ParserActionTable;
+        public int[]                  Lalr1ParserConflictActionTable;
+        public ParserConflictInfo[]   Lalr1Conflicts;
 
         private ParserConflictInfo[] GetParserConflicts(IReportData data)
         {
@@ -101,29 +73,21 @@ namespace IronText.MetadataCompiler
             return resultList.ToArray();
         }
 
-        public bool                   IsAmbiguous;
-        public Type                   RootContextType;
+        string IReportData.DestinationDirectory { get { return Name.SourceAssemblyDirectory; } }
 
-        public DotState[]             ParserStates;
+        ReadOnlyCollection<ScanMode> IReportData.ScanModes
+        {
+            get { return new ReadOnlyCollection<ScanMode>(ScanModes); }
+        }
 
-        internal ITokenRefResolver    TokenRefResolver; 
+        IScannerAutomata IReportData.GetScanModeDfa(Type scanModeType)
+        {
+            return ScanModeTypeToDfa[scanModeType];
+        }
 
-        // Rule ID -> ActionBuilder
-        public GrammarActionBuilder[][] RuleActionBuilders;
-        public MergeRule[]            MergeRules;
-        public SwitchRule[]           SwitchRules;
-        public LocalParseContext[]    LocalParseContexts;
-        
-        public ScanMode[]             ScanModes;
-        public Dictionary<Type, ITdfaData>  ScanModeTypeToDfa;
-
-        public ITable<int>            ParserActionTable;
-        public int[]                  ParserConflictActionTable;
-        public int[]                  StateToSymbolTable;
-
-        // For reporting
-        public ITable<int>            Lalr1ParserActionTable;
-        public int[]                  Lalr1ParserConflictActionTable;
-        public ParserConflictInfo[]   Lalr1Conflicts;
+        IParserAutomata IReportData.ParserAutomata
+        {
+            get { return new ParserAutomata(this); }
+        }
     }
 }

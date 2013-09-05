@@ -31,22 +31,23 @@ namespace IronText.Framework
             graph.BeginDigraph("LRFSM");
             //graph.SetGraphProperties(RankDir.LeftToRight);
 
-            int stateCount = data.ParserStates.Count;
+            int stateCount = data.ParserAutomata.States.Count;
             int tokenCount = data.TokenCount;
 
-            for (int i = 0; i != stateCount; ++i)
+            foreach (var state in data.ParserAutomata.States)
             {
-                graph.AddNode(i, shape: Shape.Mrecord, label: StateToHtml(i));
+                graph.AddNode(state.Index, shape: Shape.Mrecord, label: StateToHtml(state.Index));
             }
 
-            for (int i = 0; i != stateCount; ++i)
+            foreach (var state in data.ParserAutomata.States)
             {
-                for (int t = 0; t != tokenCount; ++t)
+                foreach (var transition in state.Transitions)
                 {
-                    foreach (var action in data.GetAllParserActions(i, t))
+                    foreach (var action in transition.Actions)
                     {
-                        graph.AddEdge(i, action.State, grammar.TokenName(t));
+                        graph.AddEdge(state.Index, action.State, grammar.TokenName(transition.Token));
                     }
+
                 }
             }
 
@@ -56,7 +57,7 @@ namespace IronText.Framework
         private string StateToHtml(int i)
         {
             var output = new StringBuilder();
-            var state = data.ParserStates[i];
+            var state = data.ParserAutomata.States[i];
             output.AppendFormat(
                 @"
 <table border=""0"" cellborder=""0"" cellpadding=""3"" bgcolor=""white"">
@@ -64,7 +65,7 @@ namespace IronText.Framework
                 StateName(i));
             int limit = 20;
 
-            foreach (var item in state.Items)
+            foreach (var item in state.DotItems)
             {
                 if (0 == limit--)
                 {
@@ -81,7 +82,7 @@ namespace IronText.Framework
 
                 for (int k = 0; k != rule.Parts.Length; ++k)
                 {
-                    if (item.Pos == k)
+                    if (item.Position == k)
                     {
                         output.Append("&bull;");
                     }
@@ -89,7 +90,7 @@ namespace IronText.Framework
                     output.Append(" ").Append(TokenToHtml(rule.Parts[k]));
                 }
 
-                if (item.Pos == rule.Parts.Length)
+                if (item.Position == rule.Parts.Length)
                 {
                     output.Append("&bull;");
                 }

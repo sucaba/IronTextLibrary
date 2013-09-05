@@ -18,20 +18,10 @@ namespace IronText.Extensibility
 
         int TokenCount { get; }
 
-        int ParserStateCount { get; }
-
         ReadOnlyCollection<ScanMode> ScanModes { get; }
-
-        ReadOnlyCollection<DotState> ParserStates { get; }
-
-        ReadOnlyCollection<ParserConflictInfo> ParserConflicts { get; }
 
         IScannerAutomata GetScanModeDfa(Type scanModeType);
 
-        ParserAction GetParserAction(int state, int token);
-
-        IEnumerable<ParserAction> GetConflictActions(int conflictIndex, int count);
-
-        IEnumerable<ParserAction> GetAllParserActions(int state, int token);
+        IParserAutomata ParserAutomata { get; }
     }
 }

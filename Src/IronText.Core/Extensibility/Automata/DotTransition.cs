@@ -1,4 +1,5 @@
 ﻿using IronText.Algorithm;
+using System.Collections.Generic;
 
 namespace IronText.Extensibility
 {

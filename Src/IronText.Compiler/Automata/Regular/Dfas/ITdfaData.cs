@@ -21,8 +21,6 @@ namespace IronText.Automata.Regular
 
         void AddTransition(int from, int symbol, int to);
 
-        void DescribeGraph(IGraphView view);
-
         void DeleteTransition(int from, int symbol);
 
         IEnumerable<TdfaTransition> EnumerateIncoming(int state);
