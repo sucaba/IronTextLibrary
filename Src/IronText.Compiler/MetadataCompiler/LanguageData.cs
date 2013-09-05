@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using IronText.Extensibility;
 using System.Linq;
 using IronText.Automata.Regular;
+using IronText.Automata.Lalr1;
 
 namespace IronText.MetadataCompiler
 {
@@ -47,31 +48,6 @@ namespace IronText.MetadataCompiler
         public int[]                  Lalr1ParserConflictActionTable;
         public ParserConflictInfo[]   Lalr1Conflicts;
 
-        private ParserConflictInfo[] GetParserConflicts(IReportData data)
-        {
-            var resultList = new List<ParserConflictInfo>();
-            for (int state = 0; state != ParserStates.Length; ++state)
-            {
-                for (int token = 0; token != Grammar.TokenCount; ++token)
-                {
-                    var cell = Lalr1ParserActionTable.Get(state, token);
-                    var action = ParserAction.Decode(cell);
-                    if (action != null && action.Kind == ParserActionKind.Conflict)
-                    {
-                        var item = new ParserConflictInfo(state, token);
-                        for (int i = 0; i != action.Size; ++i)
-                        {
-                            item.AddAction(
-                                    Lalr1ParserConflictActionTable[action.Value1 + i]);
-                        }
-
-                        resultList.Add(item);
-                    }
-                }
-            }
-
-            return resultList.ToArray();
-        }
 
         string IReportData.DestinationDirectory { get { return Name.SourceAssemblyDirectory; } }
 

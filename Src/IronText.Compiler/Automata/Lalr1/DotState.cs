@@ -5,7 +5,7 @@ using IronText.Algorithm;
 using IronText.Framework;
 using System.Collections.ObjectModel;
 
-namespace IronText.Extensibility
+namespace IronText.Automata.Lalr1
 {
     public sealed class DotState
     {

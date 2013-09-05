@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace IronText.Extensibility
+namespace IronText.Automata.Lalr1
 {
     public sealed class MutableDotItemSet 
         : IDotItemSet

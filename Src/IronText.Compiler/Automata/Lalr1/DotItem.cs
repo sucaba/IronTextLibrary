@@ -1,8 +1,9 @@
 ﻿using IronText.Algorithm;
 using IronText.Framework;
 using System.Collections.Generic;
+using IronText.Extensibility;
 
-namespace IronText.Extensibility
+namespace IronText.Automata.Lalr1
 {
     public class DotItem : IParserDotItem
     {

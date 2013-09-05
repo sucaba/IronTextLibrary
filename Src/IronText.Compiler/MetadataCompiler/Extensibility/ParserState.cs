@@ -5,6 +5,7 @@ using System.Text;
 using IronText.Extensibility;
 using System.Collections.ObjectModel;
 using IronText.Framework;
+using IronText.Automata.Lalr1;
 
 namespace IronText.MetadataCompiler
 {

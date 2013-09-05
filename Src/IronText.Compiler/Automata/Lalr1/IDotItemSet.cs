@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace IronText.Extensibility
+namespace IronText.Automata.Lalr1
 {
     public interface IDotItemSet 
         : IEnumerable<DotItem>
