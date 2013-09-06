@@ -26,12 +26,11 @@ namespace IronText.Automata.Lalr1
 
         private DotState[] states;
 
-        public Lalr1Dfa(BnfGrammar grammar, LrTableOptimizations optimizations)
+        public Lalr1Dfa(BnfGrammarAnalysis analysis, LrTableOptimizations optimizations)
         {
+            this.grammar = analysis.Grammar;
             this.optimizations = optimizations;
             this.TokenSet = grammar.TokenSet;
-
-            this.grammar = grammar;
 
             BuildLalr1States();
 

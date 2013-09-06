@@ -5,7 +5,7 @@ using System.Text;
 using IronText.Framework;
 using IronText.Algorithm;
 
-namespace IronText.MetadataCompiler
+namespace IronText.Automata.Lalr1
 {
     /// <summary>
     /// Prebuilds various tables related to <see cref="IronText.Framework.BnfGrammar"/>
@@ -18,6 +18,8 @@ namespace IronText.MetadataCompiler
         {
             this.grammar = grammar;
         }
+
+        public BnfGrammar Grammar { get { return grammar; } } 
 
         /// <summary>
         /// Fewer values are less dependent to higher values 

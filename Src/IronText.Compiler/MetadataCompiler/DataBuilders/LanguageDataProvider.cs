@@ -44,6 +44,7 @@ namespace IronText.MetadataCompiler
 
             List<List<GrammarActionBuilder>> ruleActionBuilders;
             var grammar = BuildGrammar(definition, out ruleActionBuilders);
+            var grammarAnalysis = new BnfGrammarAnalysis(grammar);
 
             foreach (SwitchRule switchRule in definition.SwitchRules)
             {
@@ -54,7 +55,7 @@ namespace IronText.MetadataCompiler
             }
 
             // Build parsing tables
-            ILrDfa parserDfa = new Lalr1Dfa(grammar, LrTableOptimizations.Default);
+            ILrDfa parserDfa = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.Default);
 
             ILrParserTable lrTable = new CanonicalLrDfaTable(parserDfa);
             bool isAmbiguous 
@@ -65,7 +66,7 @@ namespace IronText.MetadataCompiler
 #if !ELKHOUND
             if (isAmbiguous)
             {
-                parserDfa = new Lalr1Dfa(grammar, LrTableOptimizations.None);
+                parserDfa = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.None);
                 lrTable = new CanonicalLrDfaTable(parserDfa);
                 parserTable = new ReductionModifiedLrDfaTable(parserDfa);
             }
@@ -84,7 +85,7 @@ namespace IronText.MetadataCompiler
                 IsAmbiguous         = isAmbiguous,
                 RootContextType     = languageName.DefinitionType,
                 Grammar             = grammar,
-                GrammarAnalysis     = new BnfGrammarAnalysis(grammar),
+                GrammarAnalysis     = grammarAnalysis,
                 ParserStates        = parserDfa.States,
                 StateToSymbolTable  = parserDfa.GetStateToSymbolTable(),
                 ParserActionTable   = parserTable.GetParserActionTable(),
