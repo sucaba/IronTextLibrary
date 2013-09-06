@@ -37,19 +37,5 @@ namespace IronText.Extensibility
         {
             return x.Priority - y.Priority;
         }
-
-        public static bool IsMoreSpecialized(IScanRule x, IScanRule y)
-        {
-            var xRule = x as ISingleTokenScanRule;
-            var yRule = y as ISingleTokenScanRule;
-            if (yRule == null)
-            {
-                return xRule != null;
-            }
-
-            var xText = xRule.LiteralText;
-            var yText = yRule.LiteralText;
-            return xText != null && yText != null && xText.StartsWith(yText);
-        }
     }
 }

@@ -9,7 +9,7 @@ namespace IronText.Extensibility
 {
     public class ScanMode
     {
-        private readonly List<IScanRule> scanRules = new List<IScanRule>();
+        internal readonly List<IScanRule> scanRules = new List<IScanRule>();
 
         internal ScanMode(Type scanModeType)
         {
@@ -33,23 +33,6 @@ namespace IronText.Extensibility
         internal void AddRule(IScanRule rule)
         {
             scanRules.Add(rule);
-        }
-
-        internal void SortScanRules()
-        {
-            // Sort scan rules 
-            var sortedScanRules = scanRules.Where(rule => rule.IsSortable).ToArray();
-            var nonSortedScanRules = scanRules.Where(rule => !rule.IsSortable).ToArray();
-
-            // Sort fixed-text tokens to prioritize longest matches:
-            Sorting.SpecializationSort(
-                sortedScanRules,
-                ScanRule.IsMoreSpecialized);
-
-            // Sort rules in the same order as they appear in definition:
-            Array.Sort(nonSortedScanRules, ScanRule.ComparePriority);
-            scanRules.Clear();
-            scanRules.AddRange(sortedScanRules.Concat(nonSortedScanRules));
         }
 
         private static ScanRule CreateImplicitLiteralScanRule(string literal)
