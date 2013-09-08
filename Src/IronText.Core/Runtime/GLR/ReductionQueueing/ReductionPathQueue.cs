@@ -85,11 +85,12 @@ namespace IronText.Framework
 
         private bool GoesBefore(GssReducePath<T> x, GssReducePath<T> y)
         {
-            if (x.LeftNode.Layer > y.LeftNode.Layer)
+            int diff = x.LeftNode.Layer - y.LeftNode.Layer;
+            if (diff > 0)
             {
                 return true;
             }
-            else if (x.LeftNode.Layer < y.LeftNode.Layer)
+            else if (diff < 0)
             {
                 return false;
             }

@@ -18,7 +18,7 @@ namespace IronText.Framework
         private readonly List<TokenInfo> tokenInfos;
         private readonly int InternalStartRuleId;
 
-        // Augumented start token $start and EOI term '$'
+        // Predefined tokens
         public const int NoToken               = -1;
         private const int EpsilonToken         = 0;
         public const int PropogatedToken       = 1;
