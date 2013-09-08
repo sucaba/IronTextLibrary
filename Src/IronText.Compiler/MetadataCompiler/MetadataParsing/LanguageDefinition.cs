@@ -121,7 +121,7 @@ namespace IronText.MetadataCompiler
 
             ContextTypes = allMetadata.SelectMany(m => m.GetContextTypes()).ToArray();
 
-            this.LanguageDataActions = allMetadata.SelectMany(m => m.GetReportBuilders()).ToArray();
+            this.ReportBuilders = allMetadata.SelectMany(m => m.GetReportBuilders()).ToArray();
         }
 
         public bool IsValid { get; private set; }
@@ -145,7 +145,7 @@ namespace IronText.MetadataCompiler
 
         public TokenRef Start { get; set; }
 
-        public ReportBuilder[] LanguageDataActions { get; private set; }
+        public ReportBuilder[] ReportBuilders { get; private set; }
 
         public TokenRefResolver TokenRefResolver { get; private set; }
 

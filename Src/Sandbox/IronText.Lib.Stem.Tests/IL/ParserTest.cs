@@ -124,7 +124,7 @@ namespace IronText.Stem.Tests.Lib.IL
         }
     }
 
-    [Language]
+    [Language(LanguageFlags.AllowNonDeterministic)]
     [GrammarDocument("Cil.gram")]
     [ScannerDocument("Cil.scan")]
     [ParserGraph("Cil_Parser.gv")]

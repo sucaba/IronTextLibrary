@@ -23,7 +23,7 @@ namespace IronText.MetadataCompiler
 
         public int TokenCount { get { return Lalr1ParserActionTable.ColumnCount; } }
 
-        public bool                   IsAmbiguous;
+        public bool                   IsDeterministic;
         public Type                   RootContextType;
 
         public DotState[]             ParserStates;

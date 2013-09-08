@@ -97,7 +97,7 @@ namespace IronText.Tests.Framework
             where T : class
         {
             var lang = Language.Get(typeof(T));
-            Assert.IsTrue(lang.IsAmbiguous);
+            Assert.IsFalse(lang.IsDeterministic);
 
             using (var interpreter = new Interpreter<T>(context) { LogKind = LoggingKind.Collection })
             using (var reader = new StringReader(input))

@@ -10,7 +10,7 @@ namespace IronText.Tests.Framework.Attributes
         [Test]
         public void Test()
         {
-            Assert.IsFalse(Language.Get(typeof(ParseAttributeTestLang)).IsAmbiguous);
+            Assert.IsTrue(Language.Get(typeof(ParseAttributeTestLang)).IsDeterministic);
 
             Language.Parse(
                 new ParseAttributeTestLang(),

@@ -27,7 +27,7 @@ namespace IronText.MetadataCompiler
             this.allocator = new ResourceAllocator(data.Grammar);
         }
 
-        public bool IsAmbiguous { get { return data.IsAmbiguous; } }
+        public bool IsDeterministic { get { return data.IsDeterministic; } }
 
         public LanguageName Name { get { return name; } }
 

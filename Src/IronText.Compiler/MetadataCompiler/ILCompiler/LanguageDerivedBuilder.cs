@@ -475,8 +475,8 @@ namespace IronText.MetadataCompiler
 
             emit
                 .Ldarg(0)
-                .Ldc_I4(data.IsAmbiguous ? 1 : 0)
-                .Stfld(LanguageBase.Fields.isAmbiguous);
+                .Ldc_I4(data.IsDeterministic ? 1 : 0)
+                .Stfld(LanguageBase.Fields.isDeterministic);
 
             return emit
                 // Init grammar

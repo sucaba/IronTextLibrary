@@ -238,7 +238,7 @@ namespace IronText.Tests.Performance
         {
         }
 
-        [Language]
+        [Language(LanguageFlags.AllowNonDeterministic)]
         public class GlrPerfLang
         {
             [Parse]

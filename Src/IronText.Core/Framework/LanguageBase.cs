@@ -10,7 +10,7 @@ namespace IronText.Framework
     {
         public static class Fields
         {
-            public static readonly FieldInfo isAmbiguous     = ExpressionUtils.GetField((LanguageBase lang) => lang.isAmbiguous);
+            public static readonly FieldInfo isDeterministic = ExpressionUtils.GetField((LanguageBase lang) => lang.isDeterministic);
 
             public static readonly FieldInfo grammar         = ExpressionUtils.GetField((LanguageBase lang) => lang.grammar);
 
@@ -39,7 +39,7 @@ namespace IronText.Framework
             public static readonly FieldInfo createDefaultContext = ExpressionUtils.GetField((LanguageBase lang) => lang.createDefaultContext);
         }
 
-        protected internal bool          isAmbiguous;
+        protected internal bool          isDeterministic;
         protected BnfGrammar             grammar;
         protected TransitionDelegate     getParserAction;
         protected Dictionary<object,int> tokenKeyToId;
@@ -61,7 +61,7 @@ namespace IronText.Framework
             this.merge = (int token, object x, object y, object context, IStackLookback<Msg> stackLookback) => y;
         }
 
-        public bool IsAmbiguous { get { return isAmbiguous; } }
+        public bool IsDeterministic { get { return isDeterministic; } }
 
         public void Init()
         {
@@ -129,19 +129,7 @@ namespace IronText.Framework
 
         public IPushParser CreateParser<TNode>(IProducer<TNode> producer, ILogging logging)
         {
-            if (isAmbiguous)
-            {
-                return new RnGlrParser<TNode>(
-                    grammar,
-                    tokenComplexity,
-                    getParserAction,
-                    stateToSymbol,
-                    parserConflictActions,
-                    producer,
-                    allocator,
-                    logging);
-            }
-            else
+            if (isDeterministic)
             {
                 return new DeterministicParser<TNode>(
                     producer,
@@ -153,6 +141,18 @@ namespace IronText.Framework
 #endif
                     , logging
                     );
+            }
+            else
+            {
+                return new RnGlrParser<TNode>(
+                    grammar,
+                    tokenComplexity,
+                    getParserAction,
+                    stateToSymbol,
+                    parserConflictActions,
+                    producer,
+                    allocator,
+                    logging);
             }
         }
 

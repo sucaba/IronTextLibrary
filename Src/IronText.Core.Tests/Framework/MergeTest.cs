@@ -48,7 +48,7 @@ namespace IronText.Tests.Framework
             }
         }
 
-        [Language]
+        [Language(LanguageFlags.AllowNonDeterministic)]
         [ParserGraph("SAdBLang.gv")]
         public class SAdBLang
         {
@@ -99,7 +99,7 @@ namespace IronText.Tests.Framework
         public interface A { }
         public interface B { }
 
-        [Language]
+        [Language(LanguageFlags.AllowNonDeterministic)]
         public class NondeterministicCalc2
         {
             public readonly List<double> Results = new List<double>();

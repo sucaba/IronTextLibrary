@@ -160,7 +160,7 @@ namespace IronText.Tests.Framework
             B B();
         }
 
-        [Language]
+        [Language(LanguageFlags.AllowNonDeterministic)]
         [ParserGraph("RecursiveTree.gv")]
         public interface RecursiveTree
         {
@@ -177,7 +177,7 @@ namespace IronText.Tests.Framework
             S Sempty();
         }
 
-        [Language]
+        [Language(LanguageFlags.AllowNonDeterministic)]
         [ParserGraph("ShareBranchNodesWithTree.gv")]
         public interface ShareBranchNodesWithTree
         {

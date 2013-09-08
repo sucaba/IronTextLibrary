@@ -10,6 +10,7 @@ namespace IronText.Tests.Framework
         public void TestParse()
         {
             Language.Get(typeof(BuildErrorsLang));
+            Language.Get(typeof(NonDeterministicBuildErrorsLang));
         }
 
         [Language]
@@ -32,6 +33,14 @@ namespace IronText.Tests.Framework
 
             [Literal("")]
             string NullableLiteral();
+        }
+
+        [Language]
+        public interface NonDeterministicBuildErrorsLang
+        {
+            [Parse("foo")]
+            [Parse("foo")]
+            void All();
         }
     }
 }

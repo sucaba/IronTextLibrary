@@ -9,7 +9,10 @@ namespace IronText.Framework
 
         BnfGrammar  Grammar { get; }
 
-        bool IsAmbiguous { get; }
+        /// <summary>
+        /// Determines whether parsing algorithm being used is deterministic.
+        /// </summary>
+        bool IsDeterministic { get; }
 
         object CreateDefaultContext();
 

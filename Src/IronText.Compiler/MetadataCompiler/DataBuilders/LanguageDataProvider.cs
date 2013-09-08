@@ -8,6 +8,7 @@ using IronText.Build;
 using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Misc;
+using System.Text;
 
 namespace IronText.MetadataCompiler
 {
@@ -40,6 +41,8 @@ namespace IronText.MetadataCompiler
                 return false;
             }
 
+            var reportBuilders = new List<ReportBuilder>(definition.ReportBuilders);
+
             var tokenResolver = definition.TokenRefResolver;
 
             List<List<GrammarActionBuilder>> ruleActionBuilders;
@@ -58,32 +61,68 @@ namespace IronText.MetadataCompiler
             ILrDfa parserDfa = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.Default);
 
             ILrParserTable lrTable = new CanonicalLrDfaTable(parserDfa);
-            var langAttr = Attributes.First<LanguageAttribute>(languageName.DefinitionType);
-            bool isAmbiguous 
-                =  (langAttr.Flags & LanguageFlags.ForceNonDeterministic) == LanguageFlags.ForceNonDeterministic
-                || lrTable.GetConflictActionTable().Length > 0;
+            var flags = Attributes.First<LanguageAttribute>(languageName.DefinitionType).Flags;
+            bool hasConflicts = lrTable.GetConflictActionTable().Length > 0;
+            bool isDeterministic;
+            bool success;
+
+            switch (flags & LanguageFlags.ParserAlgorithmMask)
+            {
+                case LanguageFlags.ForceDeterministic:
+                    success = !hasConflicts;
+                    isDeterministic = true;
+
+                    if (hasConflicts)
+                    {
+                        success = false;
+                        reportBuilders.Add(
+                            reportData =>
+                            {
+                                var messageBuilder = new ConflictMessageBuilder(reportData);
+                                messageBuilder.Write(logging);
+                            });
+                    }
+                    else
+                    {
+                        success = true;
+                    }
+
+                    break;
+                case LanguageFlags.ForceNonDeterministic:
+                    success     = true;
+                    isDeterministic = false;
+                    break;
+                default:
+#if DEBUG
+                    throw new InvalidOperationException(
+                        "Internal error: unsupported language flags: " + (int)flags);
+#endif
+                case LanguageFlags.AllowNonDeterministic:
+                    success     = true;
+                    isDeterministic = !hasConflicts;
+                    break;
+            }
 
             ILrParserTable parserTable;
-#if !ELKHOUND
-            if (isAmbiguous)
-            {
-                parserDfa = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.None);
-                lrTable = new CanonicalLrDfaTable(parserDfa);
-                parserTable = new ReductionModifiedLrDfaTable(parserDfa);
-            }
-            else
-#endif
+
+            if (isDeterministic)
             {
                 parserTable = lrTable;
+            }
+            else
+            {
+                parserDfa   = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.None);
+                lrTable     = new CanonicalLrDfaTable(parserDfa);
+                parserTable = new ReductionModifiedLrDfaTable(parserDfa);
             }
 
             var localParseContexts = CollectLocalContexts(grammar, parserDfa, definition.ParseRules);
 
-            // Prepare language data for language assembly generation
+            // Prepare language data for the language assembly generation
             result = new LanguageData
             {
-                Name        = languageName,
-                IsAmbiguous         = isAmbiguous,
+                Name                = languageName,
+                IsDeterministic     = isDeterministic,
                 RootContextType     = languageName.DefinitionType,
                 Grammar             = grammar,
                 GrammarAnalysis     = grammarAnalysis,
@@ -143,21 +182,34 @@ namespace IronText.MetadataCompiler
                     result.ScanModeTypeToDfa[scanMode.ScanModeType] = data;
                 }
 
-                foreach (var dataAction in definition.LanguageDataActions)
+                foreach (var reportBuilder in reportBuilders)
                 {
-                    dataAction(result);
+                    reportBuilder(result);
                 }
             }
 
-            logging.Write(
-                new LogEntry
-                {
-                    Severity = Severity.Verbose,
-                    Member = languageName.DefinitionType,
-                    Message = string.Format("Done LanguageData build for {0}", languageName.FullName)
-                });
+            if (success)
+            {
+                logging.Write(
+                    new LogEntry
+                    {
+                        Severity = Severity.Verbose,
+                        Member = languageName.DefinitionType,
+                        Message = string.Format("Done LanguageData build for {0}", languageName.FullName)
+                    });
+            }
+            else
+            {
+                logging.Write(
+                    new LogEntry
+                    {
+                        Severity = Severity.Error,
+                        Member = languageName.DefinitionType,
+                        Message = string.Format("Failed building LanguageData for {0}", languageName.FullName)
+                    });
+            }
 
-            return true;
+            return success;
         }
 
         private static BnfGrammar BuildGrammar(
