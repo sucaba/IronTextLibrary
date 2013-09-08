@@ -7,7 +7,6 @@ using NUnit.Framework;
 using IronText.Framework;
 using System.IO;
 using System.Diagnostics;
-using IronText.Framework;
 
 namespace IronText.Tests.Performance
 {
@@ -234,7 +233,7 @@ namespace IronText.Tests.Performance
             public F FE(E e) { return null; }
         }
 
-        [Language(forceGlr:true)]
+        [Language(LanguageFlags.ForceNonDeterministic)]
         public class Lalr1PerfLangAsGlr : Lalr1PerfLang
         {
         }

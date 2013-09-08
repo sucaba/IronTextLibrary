@@ -129,6 +129,7 @@
     <Compile Include="Extensibility\Scanning\ISkipScanRule.cs" />
     <Compile Include="Extensibility\Scanning\SingleTokenScanRule.cs" />
     <Compile Include="Extensibility\Scanning\SkipScanRule.cs" />
+    <Compile Include="Framework\Attributes\LanguageFlags.cs" />
     <Compile Include="Framework\ParserAction.cs" />
     <Compile Include="Framework\ParserActionKind.cs" />
     <Compile Include="Extensibility\Reporting\ParserConflictInfo.cs" />

@@ -121,7 +121,7 @@ namespace IronText.Tests.Framework
             }
         }
 
-        [Language(forceGlr: true)]
+        [Language(LanguageFlags.ForceNonDeterministic)]
         [ParserGraph("NondeterministicCalcForTree.gv")]
         public class NondeterministicCalcForTree
         {
@@ -137,7 +137,7 @@ namespace IronText.Tests.Framework
             public double Number() { return 3; }
         }
 
-        [Language(forceGlr: true)]
+        [Language(LanguageFlags.ForceNonDeterministic)]
         [ParserGraph("RightNullableWithTree.gv")]
         public interface RightNullableWithTree
         {

@@ -170,7 +170,7 @@ namespace IronText.Tests.Framework
             public void Blank() { }
         }
 
-        [Language(forceGlr:true)]
+        [Language(LanguageFlags.ForceNonDeterministic)]
         [ParserGraph("AmbRecoveryLang.gv")]
         public class AmbRecoveryLang : RecoveryLang
         {

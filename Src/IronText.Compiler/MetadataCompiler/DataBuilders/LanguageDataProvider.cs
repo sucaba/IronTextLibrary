@@ -58,8 +58,9 @@ namespace IronText.MetadataCompiler
             ILrDfa parserDfa = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.Default);
 
             ILrParserTable lrTable = new CanonicalLrDfaTable(parserDfa);
+            var langAttr = Attributes.First<LanguageAttribute>(languageName.DefinitionType);
             bool isAmbiguous 
-                =  Attributes.First<LanguageAttribute>(languageName.DefinitionType).ForceGlr
+                =  (langAttr.Flags & LanguageFlags.ForceNonDeterministic) == LanguageFlags.ForceNonDeterministic
                 || lrTable.GetConflictActionTable().Length > 0;
 
             ILrParserTable parserTable;

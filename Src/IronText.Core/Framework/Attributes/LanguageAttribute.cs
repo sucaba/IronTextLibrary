@@ -15,11 +15,15 @@ namespace IronText.Framework
     {
         private Type type;
         private ILanguageMetadata parent;
-        internal bool ForceGlr;
 
         public LanguageAttribute() { }
 
-        internal LanguageAttribute(bool forceGlr) { this.ForceGlr = forceGlr; }
+        public LanguageAttribute(LanguageFlags flags) 
+        {
+            this.Flags = flags;
+        }
+
+        public LanguageFlags Flags { get; set; }
 
         public virtual bool Validate(ILogging logging) { return true; }
 
