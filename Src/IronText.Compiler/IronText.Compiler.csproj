@@ -119,7 +119,6 @@
     <Compile Include="Build\DerivedAssembly\IDerivedAssemblyBuildScenario.cs" />
     <Compile Include="Build\DerivedAssembly\IDerivedBuilder.cs" />
     <Compile Include="Build\DerivedAssembly\IMetadataSyntax.cs" />
-    <Compile Include="Build\DerivedAssembly\LoggerAdapter.cs" />
     <Compile Include="Build\DerivedAssembly\LoggingAdapter.cs" />
     <Compile Include="Build\DerivedAssembly\MetadataSyntaxAttribute.cs" />
     <Compile Include="Build\Engine\AssemblyProviderBase.cs" />

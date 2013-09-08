@@ -44,12 +44,13 @@ namespace IronText.MetadataCompiler
             logging.Write(
                 new LogEntry
                 {
-                    Severity = Severity.Message,
+                    Severity = Severity.Warning,
                     Member   = data.Name.DefinitionType,
                     Message  = string.Format(
-                        "Consider using {0} flag in {1}.",
-                        Enum.GetName(typeof(LanguageFlags), LanguageFlags.AllowNonDeterministic),
-                        typeof(LanguageAttribute).Name)
+                        "Consider using [{0}({1}.{2})] or changing token and/or rule precedences to fix errors.",
+                        typeof(LanguageAttribute).Name,
+                        typeof(LanguageFlags).Name,
+                        Enum.GetName(typeof(LanguageFlags), LanguageFlags.AllowNonDeterministic))
                 });
         }
 
@@ -68,7 +69,7 @@ namespace IronText.MetadataCompiler
                 DescribeState(message, conflict.State);
                 for (int i = 0; i != conflict.Actions.Count; ++i)
                 {
-                    message.WriteLine("Action #{0}", i);
+                    message.WriteLine("Action #{0}:", i + 1);
                     DescribeAction(message, conflict.Actions[i]);
                 }
 
@@ -110,7 +111,7 @@ namespace IronText.MetadataCompiler
             {
                 if (item.Position == i)
                 {
-                    output.Write(" •");
+                    output.Write(" .>");
                 }
 
                 output.Write(" ");
@@ -119,7 +120,7 @@ namespace IronText.MetadataCompiler
 
             if (item.Position == rule.Parts.Length)
             {
-                output.Write(" •");
+                output.Write(" .>");
             }
 
             if (showLookaheads)
@@ -153,7 +154,6 @@ namespace IronText.MetadataCompiler
                     message.WriteLine("Shift-Reduce on the rule:");
                     ++message.Indent;
                     DescribeRule(message, action.Rule);
-                    message.WriteLine();
                     --message.Indent;
                     break;
                 case ParserActionKind.Reduce:
@@ -163,9 +163,11 @@ namespace IronText.MetadataCompiler
                     --message.Indent;
                     break;
                 case ParserActionKind.Accept:
-                    message.WriteLine("Accept.");
+                    message.Write("Accept.");
                     break;
             }
+
+            message.WriteLine();
         }
 
         private void DescribeRule(IndentedTextWriter output, int ruleId)

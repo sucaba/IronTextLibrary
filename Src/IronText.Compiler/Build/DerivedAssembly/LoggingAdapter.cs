@@ -1,4 +1,6 @@
 ﻿using IronText.Framework;
+using System.Text;
+using System;
 
 namespace IronText.Build
 {
@@ -15,22 +17,23 @@ namespace IronText.Build
 
         public void Write(LogEntry entry)
         {
+            var msg = MemberContext(entry) + entry.Message;
             switch (entry.Severity)
             {
                 case Severity.Error:
                     ++errorCount;
-                    logger.LogError(entry.Message);
+                    logger.LogError(msg);
                     break;
                 case Severity.Message:
                     ++warningCount;
-                    logger.LogMessage(entry.Message);
+                    logger.LogMessage(msg);
                     break;
                 case Severity.Verbose:
-                    logger.LogVerbose(entry.Message);
+                    logger.LogVerbose(msg);
                     break;
                 case Severity.Warning:
                 default:
-                    logger.LogWarning(entry.Message);
+                    logger.LogWarning(msg);
                     break;
             }
         }
@@ -53,6 +56,32 @@ namespace IronText.Build
 
         public void WriteTotal()
         {
+        }
+
+        private static string MemberContext(LogEntry entry)
+        {
+            if (entry.Member == null)
+            {
+                return "";
+            }
+
+            return FormatMember(entry.Member) + ": ";
+        }
+
+        private static string FormatMember(System.Reflection.MemberInfo memberInfo)
+        {
+            var output = new StringBuilder();
+            var asType = memberInfo as Type;
+            if (asType != null)
+            {
+                output.Append(asType.FullName);
+            }
+            else
+            {
+                var type = memberInfo.DeclaringType;
+                output.Append(type.FullName).Append("::").Append(memberInfo.Name);
+            }
+            return output.ToString();
         }
     }
 }
