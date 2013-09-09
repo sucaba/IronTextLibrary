@@ -47,7 +47,5 @@ del /s /q *.VisualState.xml
 rmdir /s /q %~dp0deploy\lib
 rmdir /s /q %~dp0deploy\tools
 rmdir /s /q %~dp0deploy\build
-rmdir /s /q %~dp0deploy\content
-:: rmdir /s /q %~dp0deploy\content
 for /d %%i in (%~dp0Samples\packages\IronText.*) do rmdir /s /q %%i
 del /s /q %~dp0install
