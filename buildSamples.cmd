@@ -1,4 +1,4 @@
-xcopy /e /y /i %~dp0deploy %~dp0Samples\packages\IronText.0.9.0.0
+xcopy /e /y /i %~dp0deploy %~dp0Samples\packages\IronText.0.9.1.0
 
 rem %~dp0deploy\nuget install IronText -Source %~dp0install  -OutputDirectory %~dp0Samples\packages
 

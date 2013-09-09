@@ -27,3 +27,8 @@ Nested Comments
 ---------------
 
 Demo for scanning nested comments using scan-modes feature.
+
+MyConfigParser
+--------------
+
+Sample config file parser corresponding Doc\Tutorial10min.md.
