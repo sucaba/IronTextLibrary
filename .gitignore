@@ -29,7 +29,7 @@ x64/
 *.meta
 *.obj
 *.pch
-*.pdb
+# *.pdb - causes folders ending with .PDB to be ignore
 *.pgc
 *.pgd
 *.rsp
