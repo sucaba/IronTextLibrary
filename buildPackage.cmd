@@ -18,4 +18,5 @@ pushd %~dp0deploy\lib\net40
 
 popd
 
+mkdir %~dp0install
 %~dp0deploy\NuGet.exe pack %~dp0deploy\Package.nuspec -OutputDirectory install
