@@ -6,6 +6,10 @@ Introduction
 
 ### What is Iron Text Library? ###
 
+IronText is a DSL and Programming Language implementation library for .Net with
+remarkably low learning threshold and at the same time powerful enough to
+parse any context-free language.
+
 ### Why Yet-Another-Compiler-Compiler ? ###
 
 There are so many parser, scanner generators and libraries around that it would
@@ -39,7 +43,6 @@ digit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "0";
 ```
 
 with a corresponding IronText definition:
-
 ```csharp                                
 [Language]                                     
 public interface ICalculator                                       
@@ -59,8 +62,8 @@ public interface ICalculator
     [Scan("digit+")]                                                 
     int Number(string text);
 }                                                
-                                           
-public abstract class Expr { }             
+
+public abstract class Expr { }
 ```
 Note: Both EBNF-specification and IronText snippet are incomplete and are used
 for demonstration purposes only. Missing elements are related to operator precedence
@@ -96,8 +99,8 @@ to code by-hand. But what if you need to
 1. process more complex language 
 2. start with a simple language and be able grow it
 3. maintain it with a minimal extra cost
-4. reuse language elements and logic in a family of languages, derive languages
-   from existing ones
+4. reuse language elements and logic in a family of languages
+5. derive languages from existing ones
 6. have the same approach for building simple and complex languages
    and still  
 7. keep language creation and maintenance low enough to encorage using
@@ -136,7 +139,7 @@ single experienced developer which is rather risky decision for big products.
 So again, what to do if such problems are unwanted?
 
 Another choice would be to use one on the parsing libraries. These allow
-developer to specify and maintain language within a source code of the
+developer to specify and maintain language within a source code of a
 programming language without external specifications.  
 Practical examples of such libraries are:
 
@@ -169,7 +172,7 @@ context-free language, including ambiguous one.
 
 Second issue is fixed by using annotations (.Net attributes) instead of
 expressions and operator overloading. Later allows to make language grammars
-similar to a typical Object-Oriented API represented by interfaces and classes
+similar to a typical Object-Oriented API represented by interfaces, classes
 and their members. With IronText approach developer can think of his language
 specification as a Text API i.e. API which is invoked though the text.
 
@@ -179,7 +182,7 @@ support of reflection, annotations and VM-code generation.
 
 ### Features ###
 
-- Syntax and lexical rules are described entirely using .net type system with
+- Syntax and lexical rules are described entirely using .Net type system with
   custom attributes
 
 - Supports any context-free language including ambiguous ones
@@ -217,7 +220,7 @@ the current context of the input. Examples of such elements are
 
     - delimiters: (, ), {, }, [, ]
     - numbers: 1234, 0xfa, 3.14
-    - quoted strings: "hellow world"
+    - quoted strings: "hello world"
     - keywords: if, while, begin, end
     - identifiers: myvar
     etc. 
@@ -261,10 +264,11 @@ developers.
 Defining Language
 -----------------
 
-Language in Iron Text is represented by any public interface or class marked with
-*LanguageAttribute*.
 
 ### Language Definition Type ###
+
+Language in Iron Text is represented by any public interface or class marked
+with *LanguageAttribute*. 
 
 Definition type is used as a definition for parse and scan rules and at the
 same time it is used as a runtime instance for executing parse and scan
@@ -457,3 +461,138 @@ Example:
 List<Option> Options { get; set; }
 ```
 
+Scanner Regular Expressions (SRE)
+---------------------------------
+
+SRE was designed to be readable enough inside c# strings
+and at the same time comprehensive enough in generated
+language documentation.
+
+### Primitives ###
+
+<table>
+<tr>
+    <td>.</td>                 <td>Any character</td>
+</tr>
+<tr>
+    <td>'x'</td>               <td>Single character</td>
+</tr>
+<tr>
+    <td>'hello \r\nworld'</td> <td>Quoted string</td>
+</tr>
+<tr>
+    <td>[abcdef]</td>          <td>Character enumeration</td>
+</tr>
+<tr>
+    <td>'0'..'9'</td>          <td>Character range</td>
+</tr>
+</table>
+
+### Predefined Character Sets ###
+
+<table>
+<tr>
+    <td>alnum</td> <td>ASCII alphabet and numbers</td>
+</tr>
+<tr>
+    <td>alpha</td> <td>ASCII alphabet</td>
+</tr>
+<tr>
+    <td>blank</td> <td>SPACE (0x32) and TAB (0x09) characters</td>
+</tr>
+<tr>
+    <td>digit</td> <td>Decimal digits</td>
+</tr>
+<tr>
+    <td>esc</td> <td>Backslash character '\'</td>
+</tr>
+<tr>
+    <td>hex</td> <td>Hexadecimal digits: '0'..'9', 'a'-'f', 'A'-'F'</td>
+</tr>
+<tr>
+    <td>print</td> <td>ASCII printable characters</td>
+</tr>
+<tr>
+    <td>quot</td> <td>Double quote '"'</td>
+</tr>
+<tr>
+    <td>zero</td> <td>Zero-character '\0'</td>
+</tr>
+</table>
+
+### Operators ###
+
+Operators sorted by ascending precedence:
+
+<table>
+<tr>
+    <th>Operator</th> <th>Meaning</th>
+</tr>
+<tr>
+    <td>... | ...</td> <td>alternative</td>
+</tr>
+<tr>
+    <td>... ...</td> <td>sequence</td>
+</tr>
+<tr>
+    <td>... *</td> <td>zero or more</td>
+</tr>
+<tr>
+    <td>... +</td> <td>one or more</td>
+</tr>
+<tr>
+    <td>... ?</td> <td>optional</td>
+</tr>
+<tr>
+    <td>( ... )</td> <td>grouped expressions</td>
+</tr>
+<tr>
+    <td>~ ...</td> <td>complemented character set</td>
+</tr>
+</table>
+
+
+### Full SRE Grammar ###
+
+```
+Regexp -> Branch
+Regexp -> Regexp '|' Branch
+Branch -> 
+Branch -> Piece[]
+Piece[] -> Piece
+Piece -> Piece '?'
+Piece -> Piece '*'
+Piece -> Piece '+'
+Piece -> '(' Regexp ')'
+Piece -> QStr
+Piece -> IntSet
+IntSet -> '~' IntSet
+IntSet -> '~' '(' CompositeIntSet ')'
+CompositeIntSet -> IntSet
+CompositeIntSet -> CompositeIntSet '|' IntSet
+Piece[] -> Piece Piece
+Piece[] -> Piece Piece Piece
+Piece[] -> Piece Piece Piece Piece List<Piece>
+List<Piece> -> 
+List<Piece> -> List<Piece> Piece
+IntSet -> Chr '..' Chr
+IntSet -> Chr
+IntSet -> CharEnumeration
+IntSet -> 'alnum'
+IntSet -> 'alpha'
+IntSet -> 'blank'
+IntSet -> 'digit'
+IntSet -> 'esc'
+IntSet -> 'hex'
+IntSet -> 'print'
+IntSet -> 'quot'
+IntSet -> 'zero'
+IntSet -> '.'
+
+Chr -> ['] (~['\\] | [\\] .) [']
+QStr -> ['] ~['\\]* ( [\\] .  ~['\\]* )* [']
+CharEnumeration -> '[' ~[\]\\]* ( [\\] . ~[\]\\]* )* ']'
+Integer -> digit+
+void -> '\r'? '\n'
+void -> blank+
+```
