@@ -97,13 +97,12 @@ possible because such languages are relatively simple and are straightforward
 to code by-hand. But what if you need to 
 
 1. process more complex language 
-2. start with a simple language and be able grow it
+2. start with a simple language and be able grow it witout limitations
 3. maintain it with a minimal extra cost
 4. reuse language elements and logic in a family of languages
-5. derive languages from existing ones
-6. have the same approach for building simple and complex languages
-   and still  
-7. keep language creation and maintenance low enough to encorage using
+5. derive languages from existing ones  
+and still  
+6. keep language creation and maintenance low enough to encorage using
    [Language-oriented
    programming](http://en.wikipedia.org/wiki/Language-oriented_programming) in
    your product.
@@ -113,7 +112,7 @@ corresponding libraries. For instance, there are plenty of XML, JSON and HTML
 libraries around. Another solution is to use programming language with powerful
 enough metaprogramming features. This way metaprogramming constructs like
 macros and monads can be used to create hosted version of your language.
-Examples of such languages include:
+Examples of such powerful programming languages include:
 
 - Lisp, Scheme, Clojure (macros)
 - Haskell, F# (monads)
@@ -138,7 +137,7 @@ While second is relatively easy to deal with, the first is typically bound to a
 single experienced developer which is rather risky decision for big products.
 So again, what to do if such problems are unwanted?
 
-Another choice would be to use one on the parsing libraries. These allow
+Another choice would be to use one of the parsing libraries. These allow
 developer to specify and maintain language within a source code of a
 programming language without external specifications.  
 Practical examples of such libraries are:
@@ -222,7 +221,7 @@ the current context of the input. Examples of such elements are
     - numbers: 1234, 0xfa, 3.14
     - quoted strings: "hello world"
     - keywords: if, while, begin, end
-    - identifiers: myvar
+    - identifiers: myvar  
     etc. 
 
     Some elements do not cause creation of terminal tokens, instead they
@@ -460,6 +459,252 @@ Example:
 [ParseResult("{", null, "}")]
 List<Option> Options { get; set; }
 ```
+
+Advanced Features
+-----------------
+
+### Language Services ###
+
+Language services are services which framework can assign to the properties of
+a language type annotated using *LanguageService* attribute. There are only
+three services:
+1. IScanning - available from a scan-rule actions.
+2. IParsing - available from a parse-rule actions.
+3. ILogging - available during entire parsing process.
+
+Example:
+```csharp
+[Language]
+public class MyLang
+{
+    [LanguageService]
+    public IScanning Scanning { get; set; }
+
+    [LanguageService]
+    public IParsing Parsing { get; set; }
+
+    [LanguageService]
+    public ILogging Logging { get; set; }
+
+    ...
+
+    [Parse("when", null, null)]
+    [Obsolete]
+    public WhenExpr When(Expr cond, Stmt stmt)
+    {
+        Logging.Write(
+            new LogEntry
+            {
+                Severity  = Severity.Error,
+                HLocation = Parsing.HLocation,
+                Message   = "When expression is obsolete. You should rewrite it using if-statement.",
+            });
+
+        return new StubWhenExpr();
+    }
+
+    ...
+
+    [Scan("',' | '.'")]
+    public Delimiter Delimiters(string text)
+    {
+        if (text == ",")
+        {
+            // Emit warning
+            Logging.Write(
+                new LogEntry
+                {
+                    Severity  = Severity.Warning,
+                    HLocation = Scanning.HLocation,
+                    Message   = "Commas are obsolete.",
+                });
+
+            // Token will not be delivered to a parser.
+            // All commas will be ignored.
+            Scanning.Skip();
+        }
+
+        return null;
+    }
+
+    ...
+}
+
+public interface Delimiter { }
+```
+
+### Vocabularies and Contexts ###
+
+*Vocabulary* is a container for syntax and lexical elements similar to one
+defined by the *LanguageAttribute*. Difference is that vocabulary does not
+cause language creation, hence cannot be used directly for parsing. The only
+purpose of *vocabulary* is to hold elements which can be reused in other
+languages or vocabularies.
+
+Vocabulary is defined using *VocabularyAttribute* with a public interface or
+class. Vocabulary can be used in other language or vocabulary by using
+*SubContextAttribute* annotating public property.
+
+Example:
+```csharp
+// Vocabulary responsible for variable
+// definition and reference.
+[Vocabulary]
+public interface IVariableScope
+{
+    // Variable reference
+    [Parse]
+    VarRef Ref(string variableName);
+
+    // Variable definition
+    [Parse]
+    VarDef Def(string variableName);
+}
+
+[Language]
+public interface MyScript
+{
+    ...
+
+    // Should return non-null instance!
+    [SubContext]
+    IVariableScope Scope { get; }
+
+    [Parse]
+    Expr VariableRefExpr(VarRef ref);
+
+    [Parse(null, "=", null)]
+    Stmt Assignment(VarDef def, Expr rhe);
+
+    ...
+}
+```
+
+It is also possible to define vocabulary using static-class and use it by
+annotating destination language or vocabulary with *StaticContextAttribute*.
+Static contexts may be useful for defining general purpose elements and
+primitive elements of language which do not depend on the context.
+
+Example:
+```csharp
+
+// Defines template-rule for parsing list of any items.
+[Vocabulary]
+public static class Collections
+{
+    [Parse]
+    public static List<T> Empty<T>() 
+    { 
+        return new List<T>();
+    }
+
+    [Parse]
+    public static List<T> List<T>(List<T> items, T newItem)
+    {
+        items.Add(newItem);
+        return items;
+    }
+}
+
+// Parses list of integers
+[Language]
+[StaticContext(typeof(Collections))]
+public class IntegerList
+{
+    [ParseResult]
+    public List<int> Result { get; set; }
+
+    [Scan("digit+")]
+    public int Integer(string text) { return int.Parse(text); }
+
+    [Scan("blank+")]
+    public void Blank() {}
+}
+```
+
+### Scanner Modes ###
+
+Language which is able to parse nested comments without recursive parser rules:
+
+```csharp
+[Language]
+public class NestedCommentSyntax
+{
+    [ParseResult] 
+    public string Result { get; set; }
+
+    [LanguageService]
+    public IScanning Scanning { get; set; }
+
+    [Literal("/*")]
+    public void BeginComment(out CommentMode mode)
+    {
+        mode = new CommentMode(this, Scanning);
+    }
+}
+
+[Vocabulary]
+public class CommentMode
+{
+    private StringBuilder comment;
+    private readonly NestedCommentSyntax exit;
+    private int nestLevel;
+    private IScanning scanning;
+
+    public CommentMode(NestedCommentSyntax exit, IScanning scanning)
+    {
+        this.scanning = scanning;
+        this.exit = exit;
+        this.comment = new StringBuilder();
+
+        BeginComment();
+    }
+
+    [Literal("/*")]
+    public void BeginComment()
+    {
+        ++nestLevel;
+        Console.WriteLine("increased comment nest level to {0}", nestLevel);
+        comment.Append("/*");
+    }
+
+    [Scan("(~[*/] | '*' ~'/' | '/' ~'*') +")]
+    public void Text(string text)
+    {
+        comment.Append(text);
+    }
+
+    // Note: Typically comments are ignored in languages. In such case
+    //       'EndComment()' method should return 'void' and 'scanning.Skip()'
+    //       call is surplus.
+    [Literal("*/")]
+    public string EndComment(out NestedCommentSyntax mode)
+    {
+        comment.Append("*/");
+
+        --nestLevel;
+        Console.WriteLine("decreased comment nest level to {0}", nestLevel);
+        if (nestLevel == 0)
+        {
+            mode = exit;
+            return comment.ToString();
+        }
+        else
+        {
+            mode = null;            // null mode means don't change current mode.
+            scanning.Skip();        // scanner should skip current token value 
+            return null;            // Ignored token value
+        }
+    }
+}
+```
+
+### Demands ###
+
+
+### Local Contexts ###
+
+### Metadata Extensibility and Reporting ###
 
 Scanner Regular Expressions (SRE)
 ---------------------------------
