@@ -7,7 +7,7 @@ Introduction
 ### What is Iron Text Library? ###
 
 IronText is a DSL and Programming Language implementation library for .Net with
-a remarkably low learning threshold/meaintenance and at the same time powerful
+a remarkably low learning/meaintenance threshold and at the same time powerful
 enough to parse any context-free language.
 
 ### Why Yet-Another-Compiler-Compiler ? ###
