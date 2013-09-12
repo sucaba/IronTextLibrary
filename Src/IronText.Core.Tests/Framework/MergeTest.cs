@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 namespace IronText.Tests.Framework
 {
+    // TODO: Test resolving reduce-reduce conflicts
     [TestFixture]
     public class MergeTest
     {
@@ -48,7 +49,7 @@ namespace IronText.Tests.Framework
                 interp.Parse("2 3"); 
                 Assert.AreEqual(6, interp.Context.Result.Value);
 
-                // Alot of ambiguities:
+                // A lot of ambiguities:
                 interp.Parse("1+-+6/3"); 
                 Assert.AreEqual(-1, interp.Context.Result.Value);
 #if false

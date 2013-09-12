@@ -7,7 +7,7 @@ Introduction
 ### What is Iron Text Library? ###
 
 IronText is a DSL and Programming Language implementation library for .Net with
-a remarkably low learning/meaintenance threshold and at the same time powerful
+a remarkably low learning/maintenance threshold and at the same time powerful
 enough to parse any context-free language.
 
 ### Why Yet-Another-Compiler-Compiler ? ###
@@ -885,8 +885,8 @@ public class CommentMode
 
 ### Default Context Implementation ###
 
-When Interpeter class is created without context instance, it will create
-default context instance. 
+When Interpeter instance is created without context instance, it will create
+its own default context instance. 
 
 When language definition type is interface, abstract class then IronText
 compiler will generate a factory for default context instances along with a
