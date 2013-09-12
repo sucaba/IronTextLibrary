@@ -1,5 +1,5 @@
-Iron Text Library User Guide
-============================
+Iron Text Library v1.0. User Guide
+==================================
 
 Introduction
 ------------
@@ -43,7 +43,7 @@ digit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "0";
 ```
 
 with a corresponding IronText definition:
-```csharp                                
+```cs
 [Language]                                     
 public interface ICalculator                                       
 {                                                     
@@ -75,7 +75,7 @@ Also, in runtime, processing of the following calculator code:
 ```
 will be equivalent to this c# code:
 
-```csharp
+```cs
 ICalculator calc = ...; // parser or interpreter backend
 calc.Result = 
     calc.Plus(
@@ -103,9 +103,9 @@ to code by-hand. But what if you need to
 5. derive languages from existing ones  
 and still  
 6. keep language creation and maintenance low enough to encorage using
-   [Language-oriented
-   programming](http://en.wikipedia.org/wiki/Language-oriented_programming) in
-   your product.
+   [Language-oriented programming][LOP] in your product.
+
+[LOP]: http://en.wikipedia.org/wiki/Language-oriented_programming
 
 Possible solution to 1 and 3 may be in using existing languages and
 corresponding libraries. For instance, there are plenty of XML, JSON and HTML
@@ -157,17 +157,14 @@ learning-maintenance threshold is lowered because of help from IDE and
 compiler. However implementations of such libraries typically suffer from the 
 
 1. parser algorithm limitations (LL, LALR1)
-2. expression-specifications tend to be verbose, hence difficult to read
+2. verobse, hence difficult to read expression-specifications
 
 IronText also belongs to the category of parsing libraries and fixes these
 issues.
 
 First one is fixed by incorporating powerful [GLR][] algorithm along with
 [LALR(1)][] (for simpler languages).  This way IronText allows to define any
-context-free language, including ambiguous one.
-
-[GLR]: http://en.wikipedia.org/wiki/GLR_parser
-[LALR(1)]: http://en.wikipedia.org/wiki/LALR_parser
+context-free language, including ambiguous ones.
 
 Second issue is fixed by using annotations (.Net attributes) instead of
 expressions and operator overloading. Later allows to make language grammars
@@ -276,7 +273,7 @@ semantic action-methods. Methods and properties of a language-defining type may
 language may reference language vocabularies (see below).
 
 Example:
-```csharp
+```cs
 [Language]
 public interface IMyLanguage
 {
@@ -295,7 +292,7 @@ with standard 'System.Text.RegularExpressions.Regex' class. For more SRE
 details see below.
 
 Example:
-```csharp
+```cs
 [Language]
 public class MyCommandLine
 {
@@ -336,12 +333,12 @@ rule.
 *LiteralAttribute* can be replaced with a *ScanAttribute* holding
 a single-quoted literal as follows:
 
-```csharp
+```cs
 [Literal("foo")]
 FooTerm Foo();
 ```
 can be replaced with:
-```csharp
+```cs
 [Scan("'foo'")]
 FooTerm Foo();
 ```
@@ -368,7 +365,7 @@ priorities longer one.
 does not produce any terminal tokens. These rules are called skip lexical rules.
 
 Example:
-```csharp
+```cs
 [Scan("'/*' (~'*'* | '*' ~'/')* '*/'")]
 void MultiLineComment() { }
 
@@ -391,7 +388,7 @@ tokens).  Literal-mask can contain nulls which correspond to method arguments
 in left-to-right order. Trailing nulls in literal mask are optional.
 
 Example:
-```csharp
+```cs
 [Language]
 public interface IMyScript
 {
@@ -418,7 +415,7 @@ with a void-method. Since these rules produce "no result", there is nothing to
 continue with and parsing process stops.
 
 Example:
-```csharp
+```cs
 [Language]
 public interface IMyCommandLine
 {
@@ -431,7 +428,7 @@ In most cases, parser consumer also wants to have some sort of access to a
 final parsing result. Because .Net property setters are also methods returning
 'void', following is a good coding pattern for such situation:
 
-```csharp
+```cs
 List<Option> Options { get; [Parse] set; }
 ```
 
@@ -443,7 +440,7 @@ Because this coding pattern is a bit difficult to read (it is difficult to find
 attribute at a glance), there is also *ParseResultAttribute* which is syntactic
 sugar for the preceding code:
 
-```csharp
+```cs
 [ParseResult]
 List<Option> Options { get; set; }
 ```
@@ -454,11 +451,127 @@ with no final parse rules.
 
 Similarly to *ParseAttribute*, the *ParseResultAttribute* can accept literal-mask.
 Example:
-```csharp
+```cs
 // Options are surrownded by curly braces.
 [ParseResult("{", null, "}")]
 List<Option> Options { get; set; }
 ```
+
+Parsing Non-Deterministic Languages
+-----------------------------------
+
+In formal grammar theory, the deterministic context-free grammars ([DCFG][]s) are a
+proper subset of the context-free grammars. They are the subset of context-free
+grammars that can be derived from deterministic pushdown automata, and they
+generate the deterministic context-free languages. 
+
+In context of IronText capabilities we will narrow definition of deterministic
+grammar to a [LALR(1)][] grammars. All such grammars can be handled by the IronText
+LALR1-automata.
+
+In computer science, an [ambiguous grammar][AG] is a formal grammar for which
+there exists a string that can have more than one leftmost derivation, while an
+unambiguous grammar is a formal grammar for which every valid string has a
+unique leftmost derivation. 
+
+All other grammars are teated by IronText as an non-deterministic grammars.
+
+### Nondeterministic and Ambiguous Grammars ###
+
+TODO:
+
+### Semantic Action Coding Style: Functional vs Side-Effects ###
+
+TODO:
+
+### Merging Ambiguities ###
+
+Methods annotated with *MergeAttribute* can help in solving syntactic
+ambiguities in ambiguous grammars. Once parser finds  a second way to combine
+the same sequence of tokens, it will call merge method with 2 arguments. First
+argument corresponds to the old non-token value and second is a new value of
+this token. Because reductions in GLR parser always happen before shifts, you
+can think of the first as a reduce choice and about second a shift choice.
+
+
+Example of resolving operator precedence in runtime:
+```cs
+[Language]
+public class AmbiguousCalculator
+{
+    [ParseResult]
+    public Expr Result { get; set; }
+
+    [Parse(null, "+", null)]
+    public Expr Plus(Expr x, Expr y)
+    {
+        return new Expr(x + y, precedence: 1, accoc: Associativity.Left);
+    }
+
+    [Parse(null, "/", null)]
+    public Expr Div(Expr x, Expr y)
+    {
+        return new Expr(x / y, precedence: 2, accoc: Associativity.Left);
+    }
+
+    [Parse]
+    public Expr Constant(double value)
+    {
+        return new Expr(value, 10, Associativity.Left);
+    }
+
+    // Resolve operator precedence problems in runtime
+    [Merge]
+    public Expr MergeExpr(Expr reduceFirst, Expr shiftFirst)
+    {
+        // High precedence rule should be reduced first: left child in tree
+        // and low precedence rule should be reduced last: parent in tree.
+        // Merge method should return tree with a lowest precedence.
+        if (reduceFirst.Precedence < shiftFirst.Precedence)
+        {
+            return reduceFirst;
+        }
+        if (reduceFirst.Precedence > shiftFirst.Precedence)
+        {
+            return shiftFirst;
+        }
+
+        switch (reduceFirst.Associativity)
+        {
+            case Associativity.Left: return reduceFirst;
+            case Associativity.Right: return shiftFirst;
+            default:
+                throw new InvalidOperationException("Unable to resolve ambiguity.");
+        }
+    }
+    
+    [Scan("digit+ ('.' digit*)? | '.' digit+")]
+    public double Real(string text)
+    {
+        return double.Parse(text);
+    }
+}
+
+public class Expr
+{
+    public int           Precedence;
+    public double        Value;
+    public Associativity Associativity;
+
+    public Expr(
+        double        value,
+        int           precedence,
+        Associativity assoc)
+    {
+        ...
+    }
+}
+```
+
+Using this language, input: `2+8/2` can be interpreted in two ways:  
+- `(2 + 8) / 2` - precedence of `/` is 2, topmost parse-tree node has higher precedence
+- `2 + (8 / 2)` - precedence of `+` is 1, topmost parse-tree node has lower precedence
+
 
 Advanced Features
 -----------------
@@ -473,7 +586,7 @@ three services:
 3. ILogging - available during entire parsing process.
 
 Example:
-```csharp
+```cs
 [Language]
 public class MyLang
 {
@@ -546,7 +659,7 @@ class. Vocabulary can be used in other language or vocabulary by using
 *SubContextAttribute* annotating public property.
 
 Example:
-```csharp
+```cs
 // Vocabulary responsible for variable
 // definition and reference.
 [Vocabulary]
@@ -586,7 +699,7 @@ Static contexts may be useful for defining general purpose elements and
 primitive elements of language which do not depend on the context.
 
 Example:
-```csharp
+```cs
 
 // Defines template-rule for parsing list of any items.
 [Vocabulary]
@@ -626,7 +739,7 @@ public class IntegerList
 
 Language which is able to parse nested comments without recursive parser rules:
 
-```csharp
+```cs
 [Language]
 public class NestedCommentSyntax
 {
@@ -841,3 +954,8 @@ Integer -> digit+
 void -> '\r'? '\n'
 void -> blank+
 ```
+
+[GLR]:     http://en.wikipedia.org/wiki/GLR_parser
+[LALR(1)]: http://en.wikipedia.org/wiki/LALR_parser
+[DCFG]:    http://en.wikipedia.org/wiki/Deterministic_context-free_grammar
+[AG]:      http://en.wikipedia.org/wiki/Ambiguous_grammar

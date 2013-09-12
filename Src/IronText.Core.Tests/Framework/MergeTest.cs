@@ -31,20 +31,32 @@ namespace IronText.Tests.Framework
         }
 
         [Test]
-        public void CanProduceMultipleResults()
+        public void ResolvingAmbiguities()
         {
-            var lang = Language.Get(typeof(NondeterministicCalc2));
-            using (var interp = new Interpreter<NondeterministicCalc2>(
-                    new NondeterministicCalc2(mergeToOlder: true)))
+            using (var interp = new Interpreter<AmbiguousCalculator>())
             {
-                interp.Parse("3^3^3");
-                Assert.AreEqual(1, interp.Context.Results.Count, "Results should be merged");
-                Assert.AreEqual(19683.0, interp.Context.Results[0]);
+                interp.Parse("2+8/2");
+                Assert.AreEqual(6, interp.Context.Result.Value);
 
-                interp.Context = new NondeterministicCalc2(mergeToOlder: false);
-                interp.Parse("3^3^3");
-                Assert.AreEqual(1, interp.Context.Results.Count, "Results should be merged");
-                Assert.AreEqual(7625597484987.0, interp.Context.Results[0]);
+                interp.Parse("8/4/2");
+                Assert.AreEqual(1, interp.Context.Result.Value);
+
+                interp.Parse("2+3"); // can be interpreted as a "2 * (+3)"
+                Assert.AreEqual(5, interp.Context.Result.Value);
+
+                // Check that implicit multiplication works
+                interp.Parse("2 3"); 
+                Assert.AreEqual(6, interp.Context.Result.Value);
+
+                // Alot of ambiguities:
+                interp.Parse("1+-+6/3"); 
+                Assert.AreEqual(-1, interp.Context.Result.Value);
+#if false
+                using (var g = new GvGraphView("expr.tmp.gv"))
+                {
+                    interp.BuildTree("1+-+6/3").WriteGraph(g, interp.Grammar, true);
+                }
+#endif
             }
         }
 
@@ -100,41 +112,105 @@ namespace IronText.Tests.Framework
         public interface B { }
 
         [Language(LanguageFlags.AllowNonDeterministic)]
-        public class NondeterministicCalc2
+#if false
+        [DescribeParserStateMachine("NondeterministicCalc3.info")]
+        [ScannerDocument("NondeterministicCalc3.scan")]
+        [ScannerGraph("NondeterministicCalc3_Scanner.gv")]
+#endif
+        public class AmbiguousCalculator
         {
-            public readonly List<double> Results = new List<double>();
+            [ParseResult]
+            public Expr Result { get; set; }
 
-            private readonly bool mergeToOlder;
-
-            public NondeterministicCalc2(bool mergeToOlder)
+            [Parse(null, "+", null)]
+            public Expr Plus(Expr x, Expr y)
             {
-                this.mergeToOlder = mergeToOlder;
+                return new Expr(x.Value + y.Value, precedence: 1, assoc: Associativity.Left);
+            }
+
+            [Parse("+", null)]
+            public Expr UnaryPlus(Expr x)
+            {
+                return new Expr(x.Value, precedence: 3, assoc: Associativity.Left);
+            }
+
+            [Parse("-", null)]
+            public Expr UnaryMinus(Expr x)
+            {
+                return new Expr(-x.Value, precedence: 3, assoc: Associativity.Right);
+            }
+
+            [Parse(null, "*", null)]    // explicit multiplication
+            [Parse]                     // implicit multiplication
+            public Expr Mult(Expr x, Expr y)
+            {
+                return new Expr(x.Value * y.Value, precedence: 2, assoc: Associativity.Left);
+            }
+
+            [Parse(null, "/", null)]
+            public Expr Div(Expr x, Expr y)
+            {
+                return new Expr(x.Value / y.Value, precedence: 2, assoc: Associativity.Left);
             }
 
             [Parse]
-            public void AddResult(double e)
+            public Expr Constant(double value)
             {
-                Debug.WriteLine("AddResult({0})", e);
-                Results.Add(e);
+                return new Expr(value, precedence: 10);
+            }
+            
+            // Resolve operator precedence problems in runtime
+            [Merge]
+            public Expr MergeExpr(Expr reduceFirst, Expr shiftFirst)
+            {
+                // High precedence rule should be reduced first: left child in tree
+                // and low precedence rule should be reduced last: parent in tree.
+                // Merge method should return tree with a lowest precedence.
+                if (reduceFirst.Precedence < shiftFirst.Precedence)
+                {
+                    return reduceFirst;
+                }
+                if (reduceFirst.Precedence > shiftFirst.Precedence)
+                {
+                    return shiftFirst;
+                }
+
+                switch (reduceFirst.Associativity)
+                {
+                    case Associativity.Left: return reduceFirst;
+                    case Associativity.Right: return shiftFirst;
+                    default:
+                        throw new InvalidOperationException("Unable to resolve ambiguity.");
+                }
             }
 
-            [Parse(null, "^", null)]
-            public double Pow(double e1, double e2) { return Math.Pow(e1, e2); }
+            [Scan("digit+ ('.' digit*)? | '.' digit+")]
+            public double Real(string text) { return double.Parse(text); }
 
-            [Parse("3")]
-            public double Number() { return 3; }
+            [Scan("blank+")]
+            public void Blank() {}
+        }
 
-            [Merge]
-            public double Merge(double oldValue, double newValue)
+        public class Expr
+        {
+            public readonly int Precedence;
+            public readonly double Value;
+            public readonly Associativity Associativity;
+
+            public Expr(double value, int precedence, Associativity assoc = Associativity.Left)
             {
-                if (mergeToOlder)
-                {
-                    return oldValue;
-                }
-                else
-                {
-                    return newValue;
-                }
+                this.Value = value;
+                this.Precedence = precedence;
+                this.Associativity = assoc;
+            }
+
+            public override string ToString()
+            {
+                return string.Format(
+                    "Expr(value={0}, prec={1}, assoc={2})",
+                    Value,
+                    Precedence,
+                    Enum.GetName(typeof(Associativity), Associativity));
             }
         }
     }
