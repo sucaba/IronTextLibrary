@@ -7,8 +7,8 @@ Introduction
 ### What is Iron Text Library? ###
 
 IronText is a DSL and Programming Language implementation library for .Net with
-remarkably low learning threshold and at the same time powerful enough to
-parse any context-free language.
+a remarkably low learning threshold/meaintenance and at the same time powerful
+enough to parse any context-free language.
 
 ### Why Yet-Another-Compiler-Compiler ? ###
 
@@ -281,6 +281,67 @@ public interface IMyLanguage
 }
 ```
 
+### Using Language ###
+
+Example of parsing string content:
+```cs
+IMyLanguage context = ...; // backend
+Language.Parse(context, "2+2"); // Throws on the first error, ignores warnings and messages
+```
+
+Example of parsing from a TextReader:
+```cs
+IMyLanguage context = ...; // backend
+string path = "Example1.calc";
+Language.Parse(context, new StreamReader(path), path);
+```
+
+Example of parsing string content and show error messages in console:
+```cs
+IMyLanguage context = ...; // backend
+using (var interp = new Interpreter<IMyLanguage>(context))
+{
+    interp.LogKind = LoggingKind.ConsoleOut;
+    if (interp.Parse("2+2"))
+    {
+        Console.WriteLine("Success!");
+    }
+    else
+    {
+        Console.WriteLine(
+            "====== Errors: {0}, Warnings: {1} ======",
+            interp.ErrorCount,
+            interp.WarningCount);
+    }
+}
+```
+
+Example demostrates more advanced Interpreter class functionality:  
+- Parsing from a TextReader
+- Redirect error messages to console
+- Build parse tree. Actually it is more powerful construct called Shared Packed
+  Parse Forest (SPPF).
+- Visit parse tree
+- Tokenize from TextReader
+
+```cs
+IMyLanguage context = ...; // backend
+string path = "Example1.calc";
+using (var interp = new Interpreter<IMyLanguage>(context))
+{
+    interp.LogKind = LoggingKind.ConsoleOut;
+    interp.Parse(new StreamReader(path), path);
+
+    SppfNode tree = interp.BuildTree(new StreamReader(path), path);
+    tree.Accept(new MySPPFVisitor());
+
+    foreach (Msg token in interp.Scan(new StreamReader(path), path))
+    {
+        Console.WriteLine(token.Value);
+    }
+}
+```
+
 ### Defining Lexical Rules ###
 
 *ScanAttribute* and *LiteralAttribute* represent regular-expression and literal-matching
@@ -361,7 +422,7 @@ priorities longer one.
 
 ### Skip Scan Rules ###
 
-*Literal-* or *ScanAttribute* defined on a void method builds lexical rule which
+*Literal-* or *ScanAttribute* defined on a void method builds a lexical rule which
 does not produce any terminal tokens. These rules are called skip lexical rules.
 
 Example:
@@ -407,6 +468,10 @@ can be defined either implicitly or explicitly.
 
 Additionally *ParseAttribute* can accept precedence and
 associativity options [See Precedence].
+
+### Template Parsing Rules ###
+
+TODO:
 
 ### Final Parse Rules ###
 
@@ -480,7 +545,7 @@ All other grammars are teated by IronText as an non-deterministic grammars.
 
 TODO:
 
-### Semantic Action Coding Style: Functional vs Side-Effects ###
+### Semantic Actions Approach: Functional vs Side-Effects ###
 
 TODO:
 
@@ -524,8 +589,8 @@ public class AmbiguousCalculator
     [Merge]
     public Expr MergeExpr(Expr reduceFirst, Expr shiftFirst)
     {
-        // High precedence rule should be reduced first: left child in tree
-        // and low precedence rule should be reduced last: parent in tree.
+        // High precedence rule should be reduced first: left child in parse tree
+        // and low precedence rule should be reduced last: parent in parse tree.
         // Merge method should return tree with a lowest precedence.
         if (reduceFirst.Precedence < shiftFirst.Precedence)
         {
@@ -814,10 +879,48 @@ public class CommentMode
 
 ### Demands ###
 
-
 ### Local Contexts ###
 
 ### Metadata Extensibility and Reporting ###
+
+### Default Context Implementation ###
+
+When Interpeter class is created without context instance, it will create
+default context instance. 
+
+When language definition type is interface, abstract class then IronText
+compiler will generate a factory for default context instances along with a
+classes implementing abstract types. All abstract methods will be implemented
+as follows:  
+- method returning reference-token will return nulls 
+- method returning value-token will return default-value
+- method returning demand-token will return default non-null instances of demand-token type.
+- SubContext property will return non-null instance of vocabulary
+
+When language definition type is not abstract then factory will contain simply
+invocation of the default constructor. 
+
+When default constructor is not available framework will report a build-time
+error.
+
+Example demonstrates Interpeter with default context implementation.
+```cs
+[Language]
+public interface IMyLanguage
+{
+    ...
+}
+
+...
+
+// Actual implementation for IMyLanguage is not specified
+using (var interp = new Interpeter<IMyLanguage>())
+{
+    if (!interp.Parse("foo"))
+    {
+    }
+}
+```
 
 Scanner Regular Expressions (SRE)
 ---------------------------------
