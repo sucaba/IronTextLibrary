@@ -13,10 +13,7 @@ namespace IronText.Framework
     {
         protected ScanBaseAttribute() 
         {
-            Action = ScanAction.Emit;
         }
-
-        public ScanAction Action { get; set; }
 
         /// <summary>
         /// Raw text

@@ -22,7 +22,7 @@ Features
 - Syntax and lexical rules are described entirely using .Net type system with
   custom attributes
 
-- Supports any context-free language including ambiguous ones
+- Supports any context-free language including languages defined by ambiguous grammars
 
 - Supports vocabularies of lexical and syntax rules which can be reused in
   different languages

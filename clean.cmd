@@ -37,6 +37,8 @@ rmdir /s /q Samples\NestedComments\bin
 rmdir /s /q Samples\NestedComments\obj
 rmdir /s /q Samples\ImportBnf\bin
 rmdir /s /q Samples\ImportBnf\obj
+rmdir /s /q Samples\MyConfigParser\bin
+rmdir /s /q Samples\MyConfigParser\obj
 
 
 del /s /q *.user

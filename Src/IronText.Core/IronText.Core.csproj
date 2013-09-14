@@ -216,7 +216,6 @@
     <Compile Include="Framework\Associativity.cs" />
     <Compile Include="Framework\Reflection\BnfRule.cs" />
     <Compile Include="Framework\Precedence.cs" />
-    <Compile Include="Framework\ScanAction.cs" />
     <Compile Include="Logging\LoggingKind.cs" />
     <Compile Include="Logging\Severity.cs" />
     <Compile Include="Framework\Attributes\ScanBaseAttribute.cs" />
