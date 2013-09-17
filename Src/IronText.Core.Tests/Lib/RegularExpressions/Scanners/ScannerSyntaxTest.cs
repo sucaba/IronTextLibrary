@@ -13,6 +13,8 @@ namespace IronText.Tests.Lib.ScannerExpressions
         [Test]
         public void FirstTest()
         {
+            Parse(@"u0020");
+            Parse(@"U0010ffff");
             Parse(@".");
             Parse(@"';' ~[\r\n]*");
             Parse(@"'\r\n'");

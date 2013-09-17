@@ -38,17 +38,21 @@ namespace IronText.Tests.Syntax.Re2IL
             int WHILE = lang.Identify(typeof(WhileKwd));
             int IF = lang.Identify(typeof(IfKwd));
             int SPECSYM = lang.Identify(typeof(SpecSymb));
+            int GRAVEACCENTA = lang.Identify(typeof(GraveAccentA));
+            int SURROGATE1 = lang.Identify(typeof(Surrogate1));
 
-            var tokenSample = new Dictionary<int, string>
+            var tokenSample = new Dictionary<int, string[]>
             {
-                { ID,    "foo"},
-                { OPN,   "(" },
-                { CLS,   ")" },
-                { NUM,   "123" },
-                { QSTR,  "\"bar\"" },
-                { WHILE, "while" },
-                { IF,    "if" },
-                { SPECSYM, "%" },
+                { ID,    new [] { "foo"}},
+                { OPN,   new [] { "(" } },
+                { CLS,   new [] { ")" } },
+                { NUM,   new [] { "123" } },
+                { QSTR,  new [] { "\"bar\"" } },
+                { WHILE, new [] { "while" } },
+                { IF,    new [] { "if" } },
+                { SPECSYM, new [] { "%" } },
+                { GRAVEACCENTA, new [] { "\u00C0" , "\u0060A" } },
+                { SURROGATE1, new [] { "\U0010FFFF" } },
             };
 
             var tokens = new int[] {
@@ -59,7 +63,9 @@ namespace IronText.Tests.Syntax.Re2IL
                         ID,
                         WHILE,
                         IF,
-                        SPECSYM
+                        SPECSYM,
+                        GRAVEACCENTA,
+                        SURROGATE1
             };
 
             AssertScanned(";", new int[0]);
@@ -68,23 +74,26 @@ namespace IronText.Tests.Syntax.Re2IL
 
             // Single token parsing
             foreach (var token in tokens)
-            {
-                AssertScanned(tokenSample[token], new [] { token });
-            }
+                foreach (var sample in tokenSample[token])
+                {
+                    AssertScanned(sample, new [] { token });
+                }
 
             Predicate<int> IsKeyword = t => t == IF || t == WHILE;
 
             // Pairwise tests
             foreach (var leftToken in tokens)
-                foreach (var rightToken in tokens)
-                {
-                    bool needSeparator = (leftToken == ID || leftToken == NUM || IsKeyword(leftToken))
-                                      && (rightToken == ID || rightToken == NUM || IsKeyword(rightToken));
-                    string separator = needSeparator ? " " : "";
-                    AssertScanned(
-                        tokenSample[leftToken] + separator + tokenSample[rightToken],
-                        new [] { leftToken, rightToken });
-                }
+            foreach (var leftSample in tokenSample[leftToken])
+            foreach (var rightToken in tokens)
+            foreach (var rightSample in tokenSample[rightToken])
+            {
+                bool needSeparator = (leftToken == ID || leftToken == NUM || IsKeyword(leftToken))
+                                  && (rightToken == ID || rightToken == NUM || IsKeyword(rightToken));
+                string separator = needSeparator ? " " : "";
+                AssertScanned(
+                    leftSample + separator + rightSample,
+                    new [] { leftToken, rightToken });
+            }
 
             // Test errors:
             string[] invalidInputs = { ",", " ,", "+", "1", "1 ", " 1" };
@@ -143,6 +152,8 @@ namespace IronText.Tests.Syntax.Re2IL
         [UseToken(typeof(IfKwd))]
         [UseToken(typeof(WhileKwd))]
         [UseToken(typeof(SpecSymb))]
+        [UseToken(typeof(GraveAccentA))]
+        [UseToken(typeof(Surrogate1))]
         [UseToken("(")]
         [UseToken(")")]
         public class MyMiniLexer
@@ -184,10 +195,23 @@ namespace IronText.Tests.Syntax.Re2IL
             {
                 return QStr.Parse(buffer, start, length);
             }
+
+            // Two ways to represent A with a grave accent on top
+            [Scan("u00c0")]
+            [Scan("u00C0")]
+            [Scan("u0060 'A'")]
+            public GraveAccentA GraveAccent(string text) { return null; }
+
+            // Surrogate sample
+            [Scan("U0010ffff")]
+            [Scan("U0010FFFF")]
+            public Surrogate1 Surrogate1(string text) { return null; }
         }
 
         public interface IfKwd { }
         public interface WhileKwd { }
         public interface SpecSymb { }
+        public interface Surrogate1 { }
+        public interface GraveAccentA { }
     }
 }
