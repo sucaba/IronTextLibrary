@@ -539,7 +539,7 @@ there exists a string that can have more than one leftmost derivation, while an
 unambiguous grammar is a formal grammar for which every valid string has a
 unique leftmost derivation. 
 
-All other grammars are teated by IronText as an non-deterministic grammars.
+All other grammars are treated by IronText as non-deterministic grammars.
 
 ### Nondeterministic and Ambiguous Grammars ###
 

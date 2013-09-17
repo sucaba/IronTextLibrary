@@ -188,7 +188,7 @@ namespace Samples
         {
             var parameters = method.Parameters.OfType<CodeParameterDeclarationExpression>();
 
-            string baseArgName = ToCamelCase(tokenName);
+            string baseArgName = "arg" + method.Parameters.Count;
 
             string argName = baseArgName;
             var argType = GetTokenType(tokenName);

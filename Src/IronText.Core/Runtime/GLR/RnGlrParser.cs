@@ -176,7 +176,6 @@ namespace IronText.Framework
             return ParserAction.GetKind(cell) == ParserActionKind.Accept;
         }
 
-        // Initialy enqueue shifts and reduces
         private void Actor(Msg item)
         {
             foreach (var w in gss.Front)
@@ -233,7 +232,6 @@ namespace IronText.Framework
                     N[Tuple.Create(X, c)] = z;
                 }
 
-                // In deterministic case w should be null
                 bool stateAlreadyExists = gss.GetFrontNode(l) != null;
                 if (stateAlreadyExists)
                 {
