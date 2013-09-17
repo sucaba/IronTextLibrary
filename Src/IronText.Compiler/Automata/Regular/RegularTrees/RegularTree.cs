@@ -47,12 +47,11 @@ namespace IronText.Automata.Regular
         {
             var result = Positions.Select(node => node.Characters);
 
-            // Ensure that new line symbol does not belong to any
-            // equivalence classes:
-            if (result.Any(cset => cset.Contains(UnicodeIntSetType.NewLine)))
+            // Ensure that new line characters have separate equivalence classes
+            if (result.Any(cset => cset.Contains(UnicodeIntSetType.AsciiNewLine)))
             {
                 var setType = result.First().SetType;
-                var newLine = new [] { setType.Of(UnicodeIntSetType.NewLine) };
+                var newLine = new [] { setType.Of(UnicodeIntSetType.AsciiNewLine) };
                 result = result.Union(newLine);
             }
 

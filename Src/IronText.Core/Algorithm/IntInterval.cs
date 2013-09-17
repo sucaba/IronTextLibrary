@@ -249,9 +249,9 @@ namespace IronText.Algorithm
             if (ch == '\b') { return "\\b"; }
             if (ch == ' ') { return "<SPACE>"; }
 
-            if (char.IsControl((char)ch) || ch >= 0xffff)
+            if (char.IsWhiteSpace((char)ch) || ch < 0x20 || ch > 0x7f)
             {
-                return string.Format("0x{0:X}", ch);
+                return string.Format("U-{0:X4}", ch);
             }
             else
             {

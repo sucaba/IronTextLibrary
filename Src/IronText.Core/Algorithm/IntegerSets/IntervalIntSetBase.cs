@@ -159,7 +159,7 @@ namespace IronText.Algorithm
 
         public override IntSet Complement(IntSet vocabulary0)
         {
-            var vocabulary = vocabulary0 as IntervalIntSet;
+            var vocabulary = vocabulary0 as IntervalIntSetBase;
             if (vocabulary == null)
             {
                 throw new ArgumentException("Unsupported set type:" + vocabulary0, "vocabulary");
@@ -197,6 +197,14 @@ namespace IronText.Algorithm
             }
 
             UpdateHash();
+        }
+
+        public override void RemoveAll(IntSet other)
+        {
+            var complemented = (IntervalIntSetBase)other.Complement(this);
+            this.intervals = complemented.intervals;
+            this.bounds = complemented.bounds;
+            this.hash = complemented.hash;
         }
 
         public override void Add(Int value)
@@ -254,6 +262,45 @@ namespace IronText.Algorithm
                 }
             }
         }
+
+#if false
+        // TODO: Performance in set differences
+        private void Remove(IntInterval otherInterval)
+        {
+            // TODO: BOUNDS update at the end
+            if (bounds.Intersects(otherInterval))
+            {
+                bounds = IntInterval.Empty;
+
+                bool notDone = false;
+                for (int i = 0; i != intervals.Count && notDone; ++i)
+                {
+                    var interval = intervals[i];
+                    var rel = interval.RelationTo(otherInterval);
+                    switch (rel)
+                    {
+                        case IntIntervalRelation.Contained:
+                            intervals.RemoveAt(i);
+                            continue;
+                        case IntIntervalRelation.Contains:
+                            intervals[i] = interval.Before(otherInterval);
+                            intervals.Insert(i + 1, interval.After(otherInterval));
+                            return;
+                        case IntIntervalRelation.OverlapFirst:
+                            intervals[i] = interval.Before(otherInterval);
+                            ++i;
+                            continue;
+                        case IntIntervalRelation.OverlapLast:
+                            intervals[i] = interval.After(otherInterval);
+                            return;
+                        default:
+                            ++i;
+                            continue;
+                    }
+                }
+            }
+        }
+#endif
 
         public override void Add(IntInterval newInterval)
         {

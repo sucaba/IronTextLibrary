@@ -16,6 +16,11 @@ namespace IronText.Automata.Regular
         private static readonly SparseIntSetType PositionSetType = SparseIntSetType.Instance;
         private readonly ITdfaData data;
         private IntSet ambiguous;
+        private static readonly IntSet NewLines = UnicodeIntSetType.Instance.Of(
+            UnicodeIntSetType.AsciiNewLine,
+            UnicodeIntSetType.NextLineChar,
+            UnicodeIntSetType.LineSeparatorChar,
+            UnicodeIntSetType.ParagraphSeparatorChar);
 
         // 1. build full RegularTree (don't build first, following for positions)
         // 2. build regular alphabet (equivalense classes)
@@ -23,7 +28,10 @@ namespace IronText.Automata.Regular
         // 4. build non-literal TdfaData
         public RegularToTdfaAlgorithm(RegularTree noConstRegTree, Dictionary<string,Action> literalToAction)
         {
-            var alphabet = new EquivalenceClassesAlphabet(noConstRegTree.GetEquivalenceCsets());
+            var equivClasses = noConstRegTree
+                                .GetEquivalenceCsets()
+                                .Union(new [] { NewLines });
+            var alphabet = new EquivalenceClassesAlphabet(equivClasses);
 
             foreach (var literal in literalToAction.Keys)
             {
@@ -63,12 +71,12 @@ namespace IronText.Automata.Regular
                 ExtendAutomatonWithLiteral(pair.Key, pair.Value);
             }
 
-            var newline = alphabet.Encode(UnicodeIntSetType.NewLine);
+            var newlines = alphabet.Encode(NewLines);
 
             // Add new line handling
             foreach (var state in data.EnumerateStates())
             {
-                var i = state.Outgoing.FindIndex(t => t.Symbols.Contains(newline));
+                var i = state.Outgoing.FindIndex(t => t.HasAnySymbol(newlines));
                 if (i < 0)
                 {
                     continue;
@@ -77,13 +85,12 @@ namespace IronText.Automata.Regular
                 var newlineTransition = state.Outgoing[i];
                 var to = data.GetState(newlineTransition.To);
                 
-
                 TdfaState newlineState;
                 if (to.IsNewline)
                 {
                     continue;
                 }
-                else if (data.EnumerateIncoming(to.Index).All(t => t.HasSingleSymbol(newline)))
+                else if (data.EnumerateIncoming(to.Index).All(t => t.HasSingleSymbolFrom(newlines)))
                 {
                     newlineState = to;
                 }
@@ -95,8 +102,8 @@ namespace IronText.Automata.Regular
                     newlineState.IsAccepting = to.IsAccepting;
                     newlineState.Action      = to.Action;
 
-                    data.DeleteTransition(state.Index, newline);
-                    data.AddTransition(state.Index, newline, newlineState.Index);
+                    data.DeleteTransition(state.Index, newlines);
+                    data.AddTransition(state.Index, newlines, newlineState.Index);
                 }
 
                 newlineState.IsNewline = true;

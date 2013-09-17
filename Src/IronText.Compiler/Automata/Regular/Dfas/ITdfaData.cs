@@ -21,7 +21,11 @@ namespace IronText.Automata.Regular
 
         void AddTransition(int from, int symbol, int to);
 
+        void AddTransition(int from, IntSet symbols, int to);
+
         void DeleteTransition(int from, int symbol);
+
+        void DeleteTransition(int from, IntSet symbols);
 
         IEnumerable<TdfaTransition> EnumerateIncoming(int state);
     }

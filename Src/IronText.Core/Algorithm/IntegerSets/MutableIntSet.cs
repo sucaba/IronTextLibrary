@@ -10,8 +10,7 @@ namespace IronText.Algorithm
         public abstract void Add(IntInterval interval);
         public abstract void Remove(Int value);
         public abstract void AddAll(IntSet other);
-        // TODO:
-        // public abstract bool RemoveAll(IntSet other);
+        public abstract void RemoveAll(IntSet other);
 
         /// <summary>
         /// Removes and returns any element from set

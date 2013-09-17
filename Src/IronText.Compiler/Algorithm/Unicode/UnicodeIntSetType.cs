@@ -7,7 +7,11 @@ namespace IronText.Algorithm
     /// </summary>
     public partial class UnicodeIntSetType : SparseIntSetType
     {
-        public const int UnicodeMaxValue = 0x10FFFF;
+        public const int UnicodeMaxValue     = 0x10FFFF;
+
+        public const char NextLineChar           = '\u0085';
+        public const char LineSeparatorChar      = '\u2028';
+        public const char ParagraphSeparatorChar = '\u2029';
 
         public static readonly new UnicodeIntSetType Instance = new UnicodeIntSetType();
 
@@ -53,7 +57,6 @@ namespace IronText.Algorithm
 
         public override int MaxValue { get { return 0x10FFFF; } }
         public IntSet Of(string text) { return Of(text.Select(ch => (int)ch)); }
-
 
         /// <summary>
         ///     Uppercase letter. Signified by the Unicode designation "Lu" (letter, uppercase).

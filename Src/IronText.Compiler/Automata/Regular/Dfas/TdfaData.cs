@@ -54,35 +54,46 @@ namespace IronText.Automata.Regular
 
         public void AddTransition(int from, int symbol, int to)
         {
+            AddTransition(from, Alphabet.SymbolSetType.Of(symbol), to);
+        }
+
+        public void AddTransition(int from, IntSet symbols, int to)
+        {
             var outgoing = Dstates[from].Outgoing;
             foreach (var transition in outgoing)
             {
                 if (transition.To == to)
                 {
-                    transition.Symbols.Add(symbol);
+                    transition.Symbols.AddAll(symbols);
                     return;
                 }
             }
 
-            outgoing.Add(new TdfaTransition(from, Alphabet.SymbolSetType.Of(symbol).EditCopy(), to));
+            outgoing.Add(new TdfaTransition(from, symbols.EditCopy(), to));
         }
 
         public void DeleteTransition(int from, int symbol)
         {
+            DeleteTransition(from, Alphabet.SymbolSetType.Of(symbol));
+        }
+
+        public void DeleteTransition(int from, IntSet cset)
+        {
             var outgoing = Dstates[from].Outgoing;
-            for (int i = 0; i != outgoing.Count; ++i)
+            for (int i = 0; i != outgoing.Count;)
             {
                 var transition = outgoing[i];
-                if (transition.Symbols.Contains(symbol))
+                if (transition.Symbols.Overlaps(cset))
                 {
-                    transition.Symbols.Remove(symbol);
+                    transition.Symbols.RemoveAll(cset);
                     if (transition.Symbols.IsEmpty)
                     {
                         outgoing.RemoveAt(i);
+                        continue;
                     }
-
-                    break;
                 }
+
+                ++i;
             }
         }
 

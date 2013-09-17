@@ -85,6 +85,23 @@ namespace IronText.Algorithm
             }
         }
 
+        public override void RemoveAll(IntSet other)
+        {
+            var casted = (BitSetBase)other;
+            var otherWords = casted.words;
+            int otherLength = otherWords.Length;
+            int len = words.Length;
+            if (len < otherLength)
+            {
+                throw new InvalidOperationException("Insufficient bit set size. Other set is larger");
+            }
+
+            for (int i = 0; i != otherLength; ++i)
+            {
+                words[i] &= ~otherWords[i];
+            }
+        }
+
         public override IntSet CompleteAndDestroy()
         {
             var result = new BitSet(setType, words);

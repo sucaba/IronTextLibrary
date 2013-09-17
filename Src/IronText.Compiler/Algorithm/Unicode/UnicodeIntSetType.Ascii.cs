@@ -6,8 +6,8 @@ namespace IronText.Algorithm
         public const int AsciiMinValue = 0x00;
         public const int AsciiMaxValue = 0x7F;
 
-        public const int NewLine        = 0x0A;
-        public const int CarriageReturn = 0x0D;
+        public const int AsciiNewLine   = 0x0A;
+        public const int AsciiCarriageReturn = 0x0D;
 
         public static readonly IntInterval AsciiInterval = new IntInterval(AsciiMinValue, AsciiMaxValue);
 
