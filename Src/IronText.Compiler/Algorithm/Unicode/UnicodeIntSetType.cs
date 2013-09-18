@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System;
 
 namespace IronText.Algorithm
 {
@@ -56,6 +57,7 @@ namespace IronText.Algorithm
         }
 
         public override int MaxValue { get { return 0x10FFFF; } }
+
         public IntSet Of(string text) { return Of(text.Select(ch => (int)ch)); }
 
         /// <summary>

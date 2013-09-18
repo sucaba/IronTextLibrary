@@ -13,6 +13,9 @@ namespace IronText.Tests.Lib.ScannerExpressions
         [Test]
         public void FirstTest()
         {
+            Parse(@"Zs");
+            Parse(@"Co");
+            Parse(@"Lm");
             Parse(@"u0020");
             Parse(@"U0010ffff");
             Parse(@".");
@@ -42,6 +45,7 @@ namespace IronText.Tests.Lib.ScannerExpressions
             Assert.Throws<SyntaxException>(() => Parse("*"), "Expected misplaced star operator");
             Assert.Throws<SyntaxException>(() => Parse("+"), "Expected misplaced plus operator");
             Assert.Throws<SyntaxException>(() => Parse("?"), "Expected misplaced optional operator");
+            Assert.Throws<SyntaxException>(() => Parse("Cx"), "Expected unknown identifier error");
         }
 
         private void Parse(string input)

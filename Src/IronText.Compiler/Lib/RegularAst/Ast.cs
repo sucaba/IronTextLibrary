@@ -9,6 +9,11 @@ namespace IronText.Lib.RegularAst
     {
         public static readonly AstNode Empty = new CatNode(new AstNode[0]);
 
+        public static AstNode Stub
+        {
+            get { return CharSetNode.Create('\0'); }
+        }
+
         public static AstNode Cat(IEnumerable<AstNode> children) 
         {
             return new CatNode(children); 

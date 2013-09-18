@@ -146,11 +146,20 @@ namespace IronText.MetadataCompiler
             return false;
         }
 
-        private static AstNode GetAst(string pattern)
+        private AstNode GetAst(string pattern)
         {
             var context = new ScannerSyntax();
-            AstNode root = Language.Parse(context, pattern).Result.Node;
-            return root;
+            using (var interp = new Interpreter<ScannerSyntax>(context))
+            {
+                interp.CustomLog = this.logging;
+                if (!interp.Parse(pattern))
+                {
+                    return AstNode.Stub;
+                }
+
+                AstNode root = context.Result.Node;
+                return root;
+            }
         }
 
         private static bool IsNullable(AstNode root)

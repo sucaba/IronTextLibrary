@@ -20,6 +20,17 @@ namespace IronText.Lib.ScannerExpressions
     {
         private static readonly UnicodeIntSetType IntSet = UnicodeIntSetType.Instance;
 
+        public ScannerSyntax()
+        {
+            Logging = ExceptionLogging.Instance;
+        }
+
+        [LanguageService]
+        public ILogging Logging { get; set; }
+
+        [LanguageService]
+        public IParsing Parsing { get; set; }
+
         [ParseResult]
         public Regexp Result { get; set; }
 
@@ -181,7 +192,7 @@ namespace IronText.Lib.ScannerExpressions
 
         [Scan(@"'[' ~[\]\\]* ( [\\] . ~[\]\\]* )* ']'",
               @"\[ (?: [^\]\\]* (?: \\ . [^\]\\]*)*) \]")]
-        public CharEnumeration CharClass(char[] buffer, int start, int length) 
+        public CharEnumeration CharEnum(char[] buffer, int start, int length) 
         {
             return CharEnumeration.Parse(buffer, start, length);
         }
@@ -189,31 +200,14 @@ namespace IronText.Lib.ScannerExpressions
         [Scan(
             @"'u' hex {4}",
             @"u [0-9a-fA-F]{4}")]
-        public QStr UnicodeCharByCode(string text) 
+        public Chr UnicodeCharByCode(string text) 
         {
-            int ch = (Hex(text[1]) << 12)
-                   + (Hex(text[2]) << 8)
-                   + (Hex(text[3]) << 4)
-                   + Hex(text[4])
+            int ch = (Chr.Hex(text[1]) << 12)
+                   + (Chr.Hex(text[2]) << 8)
+                   + (Chr.Hex(text[3]) << 4)
+                   + Chr.Hex(text[4])
                    ;
-            return new QStr(new string((char)ch, 1));
-        }
-
-        [Scan(
-            @"'U' hex {8}",
-            @"U [0-9a-fA-F]{8}")]
-        public QStr UnicodeSurrogateByCode(string text) 
-        {
-            int value = (Hex(text[1]) << 28)
-                      + (Hex(text[2]) << 24)
-                      + (Hex(text[3]) << 20)
-                      + (Hex(text[4]) << 16)
-                      + (Hex(text[5]) << 12)
-                      + (Hex(text[6]) << 8)
-                      + (Hex(text[7]) << 4)
-                      + Hex(text[8])
-                      ;
-            return new QStr(char.ConvertFromUtf32(value));
+            return new Chr((char)ch);
         }
 
         [Parse("alnum")]  public IntSet Alphanumeric() { return IntSet.AsciiAlnum; }
@@ -236,50 +230,63 @@ namespace IronText.Lib.ScannerExpressions
 
         [Parse(".")]      public IntSet Any() { return IntSet.All; }
 
+        [Parse]           
+        public IntSet UnicodeName(string name)
+        { 
+            var result = IntSet.GetUnicodeCategory(name);
+            if (result == null)
+            {
+                var entry = new LogEntry
+                    {
+                        Severity  = Severity.Error,
+                        Message   = string.Format("Invalid unicode category '{0}'.", name),
+                    };
+                entry.Location  = Parsing.Location;
+                entry.HLocation = Parsing.HLocation;
+
+                Logging.Write(entry);
+                return IntSet.Empty;
+            }
+
+            return result;
+        }
+
+        [Scan(
+            @"'U' hex {8}",
+            @"U [0-9a-fA-F]{8}")]
+        public QStr UnicodeSurrogateByCode(string text) 
+        {
+            int value = (Chr.Hex(text[1]) << 28)
+                      + (Chr.Hex(text[2]) << 24)
+                      + (Chr.Hex(text[3]) << 20)
+                      + (Chr.Hex(text[4]) << 16)
+                      + (Chr.Hex(text[5]) << 12)
+                      + (Chr.Hex(text[6]) << 8)
+                      + (Chr.Hex(text[7]) << 4)
+                      + Chr.Hex(text[8])
+                      ;
+            return new QStr(char.ConvertFromUtf32(value));
+        }
+
+        [Scan(
+            @"alpha alnum+",
+            @"[A-Za-z] [A-Za-z0-9]+")]
+        public string Identifier(string name) { return name; }
+
         [Scan(
             "digit+",
             @"[0-9]+")]
         public Integer Integer(string text) { return new Integer(int.Parse(text)); }
 
         [Scan(
-            @"'\r'? '\n'",
-            @"\r? \n")]
+            @"'\r'? '\n' | u0085 | u2028 | u2029",
+            @"\r? \n | \u0085 | \u2028 | \u2029")]
         public void NewLine() { }
 
         [Scan(
             @"blank+",
             @"[ \t]+")]
         public static void WhiteSpace() { }
-
-        private static int Hex(char ch)
-        {
-            switch (ch)
-            {
-                case '0': return 0x0;
-                case '1': return 0x1;
-                case '2': return 0x2;
-                case '3': return 0x3;
-                case '4': return 0x4;
-                case '5': return 0x5;
-                case '6': return 0x6;
-                case '7': return 0x7;
-                case '8': return 0x8;
-                case '9': return 0x9;
-                case 'A':
-                case 'a': return 0xa;
-                case 'B':
-                case 'b': return 0xb;
-                case 'C':
-                case 'c': return 0xc;
-                case 'D':
-                case 'd': return 0xd;
-                case 'E':
-                case 'e': return 0xe;
-                case 'F':
-                case 'f': return 0xf;
-                default: return -1;
-            }
-        }
     }
     
     public class Regexp 

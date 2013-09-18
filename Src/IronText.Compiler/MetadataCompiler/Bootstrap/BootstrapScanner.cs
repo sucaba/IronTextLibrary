@@ -218,10 +218,17 @@ namespace IronText.MetadataCompiler
             }
 
             var m = type.GetMethod(
+                        "BootstrapParse",
+                        BindingFlags.Static | BindingFlags.Public,
+                        null, new[] { typeof(string) },
+                        null)
+                     ??
+                     type.GetMethod(
                         "Parse",
                         BindingFlags.Static | BindingFlags.Public,
                         null, new[] { typeof(string) },
-                        null);
+                        null)
+                     ;
             return m;
         }
     }

@@ -78,6 +78,7 @@
     <Compile Include="Algorithm\Unicode\UnicodeIntSetType.Ascii.cs" />
     <Compile Include="Algorithm\Unicode\UnicodeIntSetType.cs" />
     <Compile Include="Algorithm\Unicode\UnicodeIntSetType.Data.cs" />
+    <Compile Include="Algorithm\Unicode\UnicodeIntSetType.Disp.cs" />
     <Compile Include="Automata\Lalr1\CanonicalLrDfaTable.cs" />
     <Compile Include="Automata\Lalr1\DotItem.cs" />
     <Compile Include="Automata\Lalr1\DotState.cs" />

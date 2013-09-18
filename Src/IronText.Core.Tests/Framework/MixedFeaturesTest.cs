@@ -6,6 +6,7 @@ using IronText.Lib;
 using IronText.Lib.Ctem;
 using IronText.Lib.Shared;
 using NUnit.Framework;
+using IronText.Algorithm;
 
 namespace IronText.Tests.Framework
 {
@@ -16,6 +17,13 @@ namespace IronText.Tests.Framework
         public void StaticMethodTest()
         {
             Assert.AreEqual(555, Eval("555"));
+
+            var spaces = string.Join(
+                            "",
+                            UnicodeIntSetType.Instance.SpaceSeparator.Select(
+                                ord => char.ToString((char)ord)));
+            Assert.AreEqual(555, Eval(spaces + "555" + spaces));
+            Assert.AreEqual(555, Eval( "/* prefix */ 555 // suffix" + spaces));
         }
 
         [Test]
