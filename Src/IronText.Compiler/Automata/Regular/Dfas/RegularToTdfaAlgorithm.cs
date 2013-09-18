@@ -7,6 +7,7 @@ namespace IronText.Automata.Regular
 {
     using Action = System.Int32;
     using State = System.Int32;
+    using System;
 
     public class RegularToTdfaAlgorithm
     {
@@ -47,7 +48,7 @@ namespace IronText.Automata.Regular
             this.data = initialDfa.Data;
 
 #if false
-            using (var view = new GvGraphView(Guid.NewGuid() + ".gv"))
+            using (var view = new IronText.Diagnostics.GvGraphView(Guid.NewGuid() + ".gv"))
             {
                 data.DescribeGraph(view);
             }
@@ -219,7 +220,7 @@ namespace IronText.Automata.Regular
             {
                 foreach (var transition in S.Outgoing)
                 {
-                    predCount[transition.To] += 1; 
+                    predCount[transition.To] += transition.Symbols.Count;
                 }
             }
 

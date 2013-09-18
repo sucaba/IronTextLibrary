@@ -43,7 +43,7 @@ namespace IronText.Tests.Syntax.Re2IL
 
             var tokenSample = new Dictionary<int, string[]>
             {
-                { ID,    new [] { "foo"}},
+                { ID,    new [] { "foo", "xhile", "whilee"}},
                 { OPN,   new [] { "(" } },
                 { CLS,   new [] { ")" } },
                 { NUM,   new [] { "123" } },
@@ -166,7 +166,7 @@ namespace IronText.Tests.Syntax.Re2IL
             [Scan(@"';' ~[\r\n]*")]
             public void LineComment() { }
 
-            [Scan("digit digit+")]
+            [Scan("digit {2,}")]
             public Num Number(string token) { return new Num(token); }
 
             // Two literals on the same method
@@ -183,7 +183,7 @@ namespace IronText.Tests.Syntax.Re2IL
             [Scan("'$'")]
             public SpecSymb SpecSymb() { return null; }
 
-            [Scan("alpha alnum*")]
+            [Scan("alpha alnum{0,10}")]
             public string Identifier(string token) { return token; }
 
             [Scan(@"

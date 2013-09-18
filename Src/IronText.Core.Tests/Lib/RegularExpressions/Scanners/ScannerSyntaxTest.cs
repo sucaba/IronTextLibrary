@@ -16,6 +16,9 @@ namespace IronText.Tests.Lib.ScannerExpressions
             Parse(@"u0020");
             Parse(@"U0010ffff");
             Parse(@".");
+            Parse(@".{12}");
+            Parse(@".{12,}");
+            Parse(@".{12,300}");
             Parse(@"';' ~[\r\n]*");
             Parse(@"'\r\n'");
             Parse(@"[ \t]+");

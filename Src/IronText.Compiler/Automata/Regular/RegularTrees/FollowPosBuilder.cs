@@ -58,12 +58,14 @@ namespace IronText.Automata.Regular
                     node.Inner);
             }
 
-            node.Inner.Accept(this, posOffset);
 
             return this;
         }
 
-        public void FillFollowPos(int posOffset, List<RegularPositionInfo> positions, IEnumerable<AstNode> children)
+        public void FillFollowPos(
+            int                       posOffset,
+            List<RegularPositionInfo> positions,
+            IEnumerable<AstNode>      children)
         {
             int leftOffset = posOffset;
             for (int i = 1; i < children.Count(); ++i)

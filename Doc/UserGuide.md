@@ -947,6 +947,12 @@ language documentation.
 <tr>
     <td>'0'..'9'</td>          <td>Character range</td>
 </tr>
+<tr>
+    <td>u00C0</td>          <td>Unicode character</td>
+</tr>
+<tr>
+    <td>U0010abcd</td>      <td>Unicode surrogate. Represented as a 2-character string</td>
+</tr>
 </table>
 
 ### Predefined Character Sets ###
@@ -996,13 +1002,22 @@ Operators sorted by ascending precedence:
     <td>... ...</td> <td>sequence</td>
 </tr>
 <tr>
-    <td>... *</td> <td>zero or more</td>
+    <td>... *</td> <td>previous atom should appear zero or more times</td>
 </tr>
 <tr>
-    <td>... +</td> <td>one or more</td>
+    <td>... +</td> <td>previous atom should appear one or more times</td>
 </tr>
 <tr>
-    <td>... ?</td> <td>optional</td>
+    <td>... ?</td> <td>previous atom is optional</td>
+</tr>
+<tr>
+    <td>... {N,M}</td> <td>repeat previous atom from N to M times inclusively</td>
+</tr>
+<tr>
+    <td>... {N,}</td> <td>repeat previous atom at minimum N times</td>
+</tr>
+<tr>
+    <td>... {N}</td> <td>repeat previous atom exactly N times</td>
 </tr>
 <tr>
     <td>( ... )</td> <td>grouped expressions</td>

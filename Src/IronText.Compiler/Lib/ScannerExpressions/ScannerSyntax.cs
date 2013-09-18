@@ -68,6 +68,28 @@ namespace IronText.Lib.ScannerExpressions
             return new Piece { Node = RepeatNode.OneOrMore(atom.Node) }; 
         }
 
+        [Parse(null, "{", null, "}")]
+        public Piece RepeatTimes(Piece atom, Integer timesInteger)
+        {
+            int times = timesInteger.Value;
+            return new Piece { Node = new RepeatNode(atom.Node, times, times) }; 
+        }
+
+        [Parse(null, "{", null, ",", null, "}")]
+        public Piece RepeatRangeTimes(Piece atom, Integer minTimes, Integer maxTimes)
+        {
+            int min = minTimes.Value;
+            int max = maxTimes.Value;
+            return new Piece { Node = new RepeatNode(atom.Node, min, max) }; 
+        }
+
+        [Parse(null, "{", null, ",", "}")]
+        public Piece RepeatMinTimes(Piece atom, Integer minTimes)
+        {
+            int min = minTimes.Value;
+            return new Piece { Node = new RepeatNode(atom.Node, min, int.MaxValue) }; 
+        }
+
         [Parse("(", null, ")")]
         public Piece Piece(Regexp regexp) 
         {
@@ -165,7 +187,7 @@ namespace IronText.Lib.ScannerExpressions
         }
 
         [Scan(
-            @"'u' hex hex hex hex",
+            @"'u' hex {4}",
             @"u [0-9a-fA-F]{4}")]
         public QStr UnicodeCharByCode(string text) 
         {
@@ -178,7 +200,7 @@ namespace IronText.Lib.ScannerExpressions
         }
 
         [Scan(
-            @"'U' hex hex hex hex  hex hex hex hex",
+            @"'U' hex {8}",
             @"U [0-9a-fA-F]{8}")]
         public QStr UnicodeSurrogateByCode(string text) 
         {

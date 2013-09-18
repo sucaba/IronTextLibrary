@@ -2,6 +2,7 @@
 using System.Linq;
 using IronText.Algorithm;
 using IronText.Lib.RegularAst;
+using System;
 
 namespace IronText.Automata.Regular
 {
@@ -37,18 +38,28 @@ namespace IronText.Automata.Regular
 
         public IntSet Visit(RepeatNode node, int posOffset)
         {
-            if (node.Inner.Accept(NullableGetter.Instance) || node.MinCount == 0)
-            {
-                return LastPos(
-                    posOffset,
-                    Enumerable.Repeat(node.Inner, node.InnerCompilationCount));
-            }
+            int innerPosCount = PosCounter.Of(node.Inner);
 
             var result = SparseIntSetType.Instance.Mutable();
-            for (int i = node.MinCount - 1; i != node.InnerCompilationCount; ++i)
+
+            // Traverse optional + last repetitions
+            int compilationCount = node.InnerCompilationCount;
+            int minCount = Math.Max(node.MinCount, 1);
+            for (int i = minCount - 1; i != compilationCount; ++i)
             {
-                int offset = posOffset + PosCounter.Of(node.Inner) * i;
+                int offset = posOffset + innerPosCount * i;
                 result.AddAll(node.Inner.Accept(this, offset));
+            }
+
+            bool isInnerNullable = node.Inner.Accept(NullableGetter.Instance);
+            if (isInnerNullable)
+            {
+                // Traverse forced but nullable repetitions
+                for (int i = 0; i != node.MinCount; ++i)
+                {
+                    int offset = posOffset + innerPosCount * i;
+                    result.AddAll(node.Inner.Accept(this, offset));
+                }
             }
 
             return result.CompleteAndDestroy();

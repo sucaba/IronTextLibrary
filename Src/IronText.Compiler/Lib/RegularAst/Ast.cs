@@ -178,6 +178,5 @@ namespace IronText.Lib.RegularAst
         }
 
         internal int InnerCompilationCount { get { return MaxCount == int.MaxValue ? MinCount + 1 : MaxCount; } }
-        private int OptionalCompilationCount { get { return MaxCount == int.MaxValue ? 1 : MaxCount - MinCount; } }
     }
 }
