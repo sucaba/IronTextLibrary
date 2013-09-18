@@ -953,6 +953,9 @@ language documentation.
 <tr>
     <td>U0010abcd</td>      <td>Unicode surrogate. Represented as a 2-character string</td>
 </tr>
+<tr>
+    <td>Zs</td>             <td>Unicode case-sensitive category name</td>
+</tr>
 </table>
 
 ### Predefined Character Sets ###
@@ -1031,45 +1034,76 @@ Operators sorted by ascending precedence:
 ### Full SRE Grammar ###
 
 ```
-Regexp -> Branch
-Regexp -> Regexp '|' Branch
-Branch -> 
-Branch -> Piece[]
-Piece[] -> Piece
-Piece -> Piece '?'
-Piece -> Piece '*'
-Piece -> Piece '+'
-Piece -> '(' Regexp ')'
-Piece -> QStr
-Piece -> IntSet
-IntSet -> '~' IntSet
-IntSet -> '~' '(' CompositeIntSet ')'
-CompositeIntSet -> IntSet
-CompositeIntSet -> CompositeIntSet '|' IntSet
-Piece[] -> Piece Piece
-Piece[] -> Piece Piece Piece
-Piece[] -> Piece Piece Piece Piece List<Piece>
-List<Piece> -> 
-List<Piece> -> List<Piece> Piece
-IntSet -> Chr '..' Chr
-IntSet -> Chr
-IntSet -> CharEnumeration
-IntSet -> 'alnum'
-IntSet -> 'alpha'
-IntSet -> 'blank'
-IntSet -> 'digit'
-IntSet -> 'esc'
-IntSet -> 'hex'
-IntSet -> 'print'
-IntSet -> 'quot'
-IntSet -> 'zero'
-IntSet -> '.'
+01: void -> Regexp
+02: Regexp -> Branch
+03: Branch -> 
+04: Branch -> Piece[]
+05: Piece[] -> Piece
+06: Piece -> Piece '?'
+07: Piece -> Piece '*'
+08: Piece -> Piece '+'
+09: Piece -> Piece '{' Integer '}'
+10: Piece -> Piece '{' Integer ',' Integer '}'
+11: Piece -> Piece '{' Integer ',' '}'
+12: Piece -> '(' Regexp ')'
+13: Piece -> 'action' '(' Integer ')'
+14: Piece -> QStr
+15: Piece -> IntSet
+16: IntSet -> '~' IntSet
+17: IntSet -> '~' '(' CompositeIntSet ')'
+18: CompositeIntSet -> IntSet
+19: CompositeIntSet -> CompositeIntSet '|' IntSet
+20: IntSet -> Chr '..' Chr
+21: IntSet -> Chr
+22: IntSet -> CharEnumeration
+23: IntSet -> 'alnum'
+24: IntSet -> 'alpha'
+25: IntSet -> 'blank'
+26: IntSet -> 'digit'
+27: IntSet -> 'esc'
+28: IntSet -> 'hex'
+29: IntSet -> 'print'
+30: IntSet -> 'quot'
+31: IntSet -> 'zero'
+32: IntSet -> '.'
+33: IntSet -> $id
+34: Piece[] -> Piece Piece
+35: Piece[] -> Piece Piece Piece
+36: Piece[] -> Piece Piece Piece Piece List<Piece>
+37: List<Piece> -> 
+38: List<Piece> -> List<Piece> Piece
+39: Regexp -> Regexp '|' Branch
 
+'?' -> '?'
+'*' -> '*'
+'+' -> '+'
+'{' -> '{'
+'}' -> '}'
+',' -> ','
+'(' -> '('
+')' -> ')'
+'action' -> 'action'
+'~' -> '~'
+'|' -> '|'
+'..' -> '..'
+'alnum' -> 'alnum'
+'alpha' -> 'alpha'
+'blank' -> 'blank'
+'digit' -> 'digit'
+'esc' -> 'esc'
+'hex' -> 'hex'
+'print' -> 'print'
+'quot' -> 'quot'
+'zero' -> 'zero'
+'.' -> '.'
 Chr -> ['] (~['\\] | [\\] .) [']
 QStr -> ['] ~['\\]* ( [\\] .  ~['\\]* )* [']
 CharEnumeration -> '[' ~[\]\\]* ( [\\] . ~[\]\\]* )* ']'
+Chr -> 'u' hex {4}
+QStr -> 'U' hex {8}
+$id -> alpha alnum+
 Integer -> digit+
-void -> '\r'? '\n'
+void -> '\r'? '\n' | u0085 | u2028 | u2029
 void -> blank+
 ```
 
