@@ -176,40 +176,6 @@ namespace IronText.Lib.ScannerExpressions
             return IntSet.Of(item.Characters);
         }
 
-        [Scan(@"['] (~['\\] | [\\] .) [']",
-              @"['] (?: [^'\\] | [\\] .) [']")]
-        public Chr Char(char[] buffer, int start, int length)
-        {
-            return Chr.Parse(buffer, start, length);
-        }
-
-        [Scan(@"['] ~['\\]* ( [\\] .  ~['\\]* )* [']",
-              @"['] (?: [^'\\]* (?: \\ . [^'\\]*)*) [']")]
-        public QStr SingleQuotedString(char[] buffer, int start, int length)
-        {
-            return QStr.Parse(buffer, start, length); 
-        }
-
-        [Scan(@"'[' ~[\]\\]* ( [\\] . ~[\]\\]* )* ']'",
-              @"\[ (?: [^\]\\]* (?: \\ . [^\]\\]*)*) \]")]
-        public CharEnumeration CharEnum(char[] buffer, int start, int length) 
-        {
-            return CharEnumeration.Parse(buffer, start, length);
-        }
-
-        [Scan(
-            @"'u' hex {4}",
-            @"u [0-9a-fA-F]{4}")]
-        public Chr UnicodeCharByCode(string text) 
-        {
-            int ch = (Chr.Hex(text[1]) << 12)
-                   + (Chr.Hex(text[2]) << 8)
-                   + (Chr.Hex(text[3]) << 4)
-                   + Chr.Hex(text[4])
-                   ;
-            return new Chr((char)ch);
-        }
-
         [Parse("alnum")]  public IntSet Alphanumeric() { return IntSet.AsciiAlnum; }
 
         [Parse("alpha")]  public IntSet Alphabetic() { return IntSet.AsciiAlpha; }
@@ -251,10 +217,44 @@ namespace IronText.Lib.ScannerExpressions
             return result;
         }
 
+        [Scan(@"['] (~['\\] | [\\] .) [']",
+              @"['] (?: [^'\\] | [\\] .) [']")]
+        public Chr Char(char[] buffer, int start, int length)
+        {
+            return Chr.Parse(buffer, start, length);
+        }
+
+        [Scan(@"['] ~['\\]* ( [\\] .  ~['\\]* )* [']",
+              @"['] (?: [^'\\]* (?: \\ . [^'\\]*)*) [']")]
+        public QStr SingleQuotedString(char[] buffer, int start, int length)
+        {
+            return QStr.Parse(buffer, start, length); 
+        }
+
+        [Scan(@"'[' ~[\]\\]* ( [\\] . ~[\]\\]* )* ']'",
+              @"\[ (?: [^\]\\]* (?: \\ . [^\]\\]*)*) \]")]
+        public CharEnumeration CharEnum(char[] buffer, int start, int length) 
+        {
+            return CharEnumeration.Parse(buffer, start, length);
+        }
+
+        [Scan(
+            @"'u' hex {4}",
+            @"u [0-9a-fA-F]{4}")]
+        public static Chr UnicodeCharByCode(string text) 
+        {
+            int ch = (Chr.Hex(text[1]) << 12)
+                   + (Chr.Hex(text[2]) << 8)
+                   + (Chr.Hex(text[3]) << 4)
+                   + Chr.Hex(text[4])
+                   ;
+            return new Chr((char)ch);
+        }
+
         [Scan(
             @"'U' hex {8}",
             @"U [0-9a-fA-F]{8}")]
-        public QStr UnicodeSurrogateByCode(string text) 
+        public static QStr UnicodeSurrogateByCode(string text) 
         {
             int value = (Chr.Hex(text[1]) << 28)
                       + (Chr.Hex(text[2]) << 24)
@@ -271,17 +271,17 @@ namespace IronText.Lib.ScannerExpressions
         [Scan(
             @"alpha alnum+",
             @"[A-Za-z] [A-Za-z0-9]+")]
-        public string Identifier(string name) { return name; }
+        public static string Identifier(string name) { return name; }
 
         [Scan(
             "digit+",
             @"[0-9]+")]
-        public Integer Integer(string text) { return new Integer(int.Parse(text)); }
+        public static Integer Integer(string text) { return new Integer(int.Parse(text)); }
 
         [Scan(
             @"'\r'? '\n' | u0085 | u2028 | u2029",
             @"\r? \n | \u0085 | \u2028 | \u2029")]
-        public void NewLine() { }
+        public static void NewLine() { }
 
         [Scan(
             @"blank+",
