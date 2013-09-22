@@ -1,4 +1,3 @@
-/*
 using System;
 using System.Collections.Generic;
 using IronText.Framework;
@@ -7,9 +6,6 @@ namespace Calculator
 {
 
     [Language]
-    [Precedence]
-*/
-    [Precedence(   1   )]
     [Precedence("=", 0, Associativity.None)]
     [Precedence("+", 1)]
     [Precedence("*", 2)]
@@ -96,4 +92,4 @@ namespace Calculator
             }
         }
     }
-//}
+}

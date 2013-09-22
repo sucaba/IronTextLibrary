@@ -118,7 +118,7 @@ namespace CSharpParser
         CsDelegateType DelegateType(CsTypeName typeName);
 
         [Parse("<", null, ">")]
-        CsTypeArgumentList TypeArguments(CsTypeArgument[] typeArgs);
+        CsTypeArgumentList TypeArguments(CsCommaList<CsTypeArgument> typeArgs);
 
         [Parse]
         CsTypeArgument TypeArgument(CsType type);

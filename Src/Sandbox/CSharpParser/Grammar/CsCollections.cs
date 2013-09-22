@@ -68,6 +68,12 @@ namespace CSharpParser
             return new CsOptCommaList<T>();
         }
 
+        [Parse]
+        public static CsOptCommaList<T> OptCommaList<T>(T value) 
+        {
+            return new CsOptCommaList<T> { value };
+        }
+
         [Parse(null, ",", null)]
         public static CsOptCommaList<T> CommaList<T>(CsOptCommaList<T> list, T item) 
         { 

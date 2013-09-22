@@ -134,7 +134,7 @@ namespace CSharpParser
         [Parse]
         CsClassMemberDeclaration ClassMemberDeclaration(CsTypeDeclaration decl);
 
-        [Parse(null, null, "const", null, null)]
+        [Parse(null, null, "const", null, null, ";")]
         CsConstantDeclaration ConstantDeclaration(
                 Opt<CsAttributes>                  attributes,
                 CsOptList<CsConstantModifier>      modifiers,
@@ -148,11 +148,11 @@ namespace CSharpParser
         [Parse("private")]
         CsConstantModifier ConstantModifier();
 
-        [Parse]
+        [Parse(null, null, null, null, ";")]
         CsFieldDeclaration FieldDeclaration(
-                Opt<CsAttributes>       attributes,
-                CsOptList<CsFieldModifiers>  modifiers,
-                CsType                         type,
+                Opt<CsAttributes>                 attributes,
+                CsOptList<CsFieldModifiers>       modifiers,
+                CsType                            type,
                 CsCommaList<CsVariableDeclarator> declarators);
 
         [Parse("new")]
@@ -237,7 +237,7 @@ namespace CSharpParser
                 Opt<CsParameterModifier> modfier,
                 CsType                   type,
                 CsIdentifier             id,
-                CsDefaultArgument        defaultArgument);
+                Opt<CsDefaultArgument>   defaultArgument);
 
         [Parse]
         CsDefaultArgument DefaultArgument(CsExpression expression);

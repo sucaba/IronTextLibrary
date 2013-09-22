@@ -54,7 +54,7 @@ namespace CSharpParser
         CsEmbeddedStatement EmbeddedStatement(CsYieldStatement statement);
 
         [Parse("{", null, "}")]
-        CsBlock Block(CsList<CsStatement> statements);
+        CsBlock Block(CsOptList<CsStatement> statements);
 
         [Parse(";")]
         CsEmptyStatement EmptyStatement();

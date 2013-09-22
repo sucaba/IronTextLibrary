@@ -7,7 +7,7 @@ namespace IronText.Diagnostics
     /// <summary>
     /// GraphWizard file writer
     /// </summary>
-    internal class GvGraphView : IDisposable, IGraphView
+    public class GvGraphView : IDisposable, IGraphView
     {
         private StreamWriter writer;
 

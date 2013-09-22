@@ -24,13 +24,17 @@ rmdir /s /q Sandbox\IronText.Lib.Stem\bin
 rmdir /s /q Sandbox\IronText.Lib.Stem\obj
 rmdir /s /q Sandbox\IronText.Lib.Stem.Tests\bin
 rmdir /s /q Sandbox\IronText.Lib.Stem.Tests\obj
+rmdir /s /q Sandbox\CSharpParser\bin
+rmdir /s /q Sandbox\CSharpParser\obj
+rmdir /s /q Sandbox\CSharpParser.Tests\bin
+rmdir /s /q Sandbox\CSharpParser.Tests\obj
 
 popd
 
 rmdir /s /q Samples\Calculator\bin
 rmdir /s /q Samples\Calculator\obj
-rmdir /s /q Samples\CSharpParser\bin
-rmdir /s /q Samples\CSharpParser\obj
+:: rmdir /s /q Samples\CSharpParser\bin
+:: rmdir /s /q Samples\CSharpParser\obj
 rmdir /s /q Samples\MyArchiver\bin
 rmdir /s /q Samples\MyArchiver\obj
 rmdir /s /q Samples\DynamicLinq\bin

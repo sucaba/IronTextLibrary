@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using IronText.Misc;
@@ -58,7 +59,7 @@ namespace IronText.Framework
         public LanguageBase(LanguageName name) 
         { 
             this.name = name;
-            this.merge = (int token, object x, object y, object context, IStackLookback<Msg> stackLookback) => y;
+            this.merge = DefaultMerge;
         }
 
         public bool IsDeterministic { get { return isDeterministic; } }
@@ -191,6 +192,28 @@ namespace IronText.Framework
                 result = -1;
             }
 
+            return result;
+        }
+
+        private object DefaultMerge(
+            int                 token,
+            object              alt1,
+            object              alt2,
+            object              context,
+            IStackLookback<Msg> stackLookback)
+        {
+            var result = alt2;
+#if true
+            Debug.WriteLine("------------------------------");
+            Debug.WriteLine(
+                "Default merging of token {0} values in state {1}:",
+                (object)grammar.TokenName(token),
+                stackLookback.GetParentState());
+            Debug.WriteLine("  '{0}'", alt1);
+            Debug.WriteLine(" and");
+            Debug.WriteLine("  '{0}'", alt2);
+            Debug.WriteLine(" into the value: '{0}'", (object)result);
+#endif
             return result;
         }
     }

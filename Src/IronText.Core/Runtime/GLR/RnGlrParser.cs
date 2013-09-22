@@ -144,34 +144,61 @@ namespace IronText.Framework
 
                 gss.Undo(0); // restore state before the current input token
 
-                var message = new StringBuilder();
-                message
-                    .Append("Unexpected token ")
-                    .Append(grammar.TokenName(item.Id))
-                    ;
-                int frontCount = gss.Front.Count();
-                if (frontCount == 1)
                 {
-                    message.Append(" in state: ").Append(gss.Front.Single().State);
-                }
-                else
-                {
-                    message.Append(" in states: {");
+                    var message = new StringBuilder();
+                    message
+                        .Append("Unexpected token ")
+                        .Append(grammar.TokenName(item.Id))
+                        .Append(" in state stacks: {");
+                    bool firstStack = true;
                     foreach (var node in gss.Front)
                     {
-                        message.Append(node.State).Append(", ");
+                        if (firstStack)
+                        {
+                            firstStack = false;
+                        }
+                        else
+                        {
+                            message.Append(", ");
+                        }
+
+                        message.Append("[");
+                        var n = node;
+                        bool firstState = true;
+                        while (true)
+                        {
+                            if (firstState)
+                            {
+                                firstState = false;
+                            }
+                            else
+                            {
+                                message.Append(", ");
+                            }
+
+                            message.Append(n.State);
+                            if (n.State == 0)
+                            {
+                                break;
+                            }
+
+                            n = n.PrevLink.LeftNode;
+                        }
+
+                        message.Append("]");
                     }
 
                     message.Append("}");
-                }
 
-                logging.Write(
-                    new LogEntry
-                    {
-                        Severity = Severity.Verbose,
-                        Location = item.Location,
-                        Message = message.ToString()
-                    });
+                    logging.Write(
+                        new LogEntry
+                        {
+                            Severity = Severity.Verbose,
+                            Location = item.Location,
+                            HLocation = item.HLocation,
+                            Message = message.ToString()
+                        });
+                }
 
                 return RecoverFromError(item);
             }

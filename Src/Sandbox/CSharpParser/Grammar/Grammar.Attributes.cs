@@ -67,10 +67,8 @@ namespace CSharpParser
 
         [Parse]
         CsPositionalArgument PositionalArgument(
-                CsLiteral literal
-                //Opt<CsArgumentName>             name,
-                //CsAttributeArgumentExpression   expression
-                );
+                Opt<CsArgumentName>             name,
+                CsAttributeArgumentExpression   expression);
 
         [Parse(null, "=", null)]
         CsNamedArgument NamedArgument(
