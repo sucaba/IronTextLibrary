@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronText.Core", "IronText.Core\IronText.Core.csproj", "{97CFB776-52DE-40B1-854C-912C93A32AFA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronText.Core.Tests", "IronText.Core.Tests\IronText.Core.Tests.csproj", "{01785AF7-2D0C-42A2-B0F5-842C991E3BA1}"
@@ -192,23 +192,21 @@ Global
 		{E4BD2838-17F4-426A-BCAF-C04C0B530ED9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{E4BD2838-17F4-426A-BCAF-C04C0B530ED9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E4BD2838-17F4-426A-BCAF-C04C0B530ED9}.Release|x86.ActiveCfg = Release|Any CPU
-		{D9CBA8CF-E607-435C-A500-978F4268D466}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{D9CBA8CF-E607-435C-A500-978F4268D466}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{D9CBA8CF-E607-435C-A500-978F4268D466}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{D9CBA8CF-E607-435C-A500-978F4268D466}.Debug|x86.ActiveCfg = Debug|x86
-		{D9CBA8CF-E607-435C-A500-978F4268D466}.Debug|x86.Build.0 = Debug|x86
+		{D9CBA8CF-E607-435C-A500-978F4268D466}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9CBA8CF-E607-435C-A500-978F4268D466}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9CBA8CF-E607-435C-A500-978F4268D466}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D9CBA8CF-E607-435C-A500-978F4268D466}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D9CBA8CF-E607-435C-A500-978F4268D466}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{D9CBA8CF-E607-435C-A500-978F4268D466}.Deploy|Any CPU.ActiveCfg = Deploy|Any CPU
 		{D9CBA8CF-E607-435C-A500-978F4268D466}.Deploy|Any CPU.Build.0 = Deploy|Any CPU
-		{D9CBA8CF-E607-435C-A500-978F4268D466}.Deploy|Mixed Platforms.ActiveCfg = Release|x86
-		{D9CBA8CF-E607-435C-A500-978F4268D466}.Deploy|Mixed Platforms.Build.0 = Release|x86
-		{D9CBA8CF-E607-435C-A500-978F4268D466}.Deploy|x86.ActiveCfg = Release|x86
-		{D9CBA8CF-E607-435C-A500-978F4268D466}.Deploy|x86.Build.0 = Release|x86
-		{D9CBA8CF-E607-435C-A500-978F4268D466}.Release|Any CPU.ActiveCfg = Release|x86
-		{D9CBA8CF-E607-435C-A500-978F4268D466}.Release|Any CPU.Build.0 = Release|x86
+		{D9CBA8CF-E607-435C-A500-978F4268D466}.Deploy|Mixed Platforms.ActiveCfg = Deploy|Any CPU
+		{D9CBA8CF-E607-435C-A500-978F4268D466}.Deploy|Mixed Platforms.Build.0 = Deploy|Any CPU
+		{D9CBA8CF-E607-435C-A500-978F4268D466}.Deploy|x86.ActiveCfg = Deploy|Any CPU
+		{D9CBA8CF-E607-435C-A500-978F4268D466}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9CBA8CF-E607-435C-A500-978F4268D466}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D9CBA8CF-E607-435C-A500-978F4268D466}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D9CBA8CF-E607-435C-A500-978F4268D466}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{D9CBA8CF-E607-435C-A500-978F4268D466}.Release|x86.ActiveCfg = Release|x86
-		{D9CBA8CF-E607-435C-A500-978F4268D466}.Release|x86.Build.0 = Release|x86
+		{D9CBA8CF-E607-435C-A500-978F4268D466}.Release|x86.ActiveCfg = Release|Any CPU
 		{BA821C07-79DB-4DB6-8387-A6568340F787}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BA821C07-79DB-4DB6-8387-A6568340F787}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA821C07-79DB-4DB6-8387-A6568340F787}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

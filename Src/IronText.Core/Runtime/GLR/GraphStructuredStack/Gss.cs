@@ -296,7 +296,6 @@ namespace IronText.Framework
             this.currentLayer -= inputCount;
             this.currentStage = 0;
 
-            history.Clear();
             history.Push(null);
 
             UpdateDeterministicDepths();

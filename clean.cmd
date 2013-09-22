@@ -29,6 +29,8 @@ popd
 
 rmdir /s /q Samples\Calculator\bin
 rmdir /s /q Samples\Calculator\obj
+rmdir /s /q Samples\CSharpParser\bin
+rmdir /s /q Samples\CSharpParser\obj
 rmdir /s /q Samples\MyArchiver\bin
 rmdir /s /q Samples\MyArchiver\obj
 rmdir /s /q Samples\DynamicLinq\bin

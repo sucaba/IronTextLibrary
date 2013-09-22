@@ -6,22 +6,17 @@ using IronText.Framework;
 
 namespace CSharpParser
 {
-    public class CsCommaList<T> : List<T> { }
-    public class CsDotList<T> : List<T> { }
-    public class CsList<T> : List<T> { }
-    public class CsOptList<T> : List<T> { }
+    public class CsCommaList<T>    : List<T> { }
+    public class CsDotList<T>      : List<T> { }
+    public class CsList<T>         : List<T> { }
+    public class CsOptList<T>      : List<T> { }
     public class CsOptCommaList<T> : List<T> { }
 
     public class Opt<T> 
     {
-        public Opt()
-        {
-        }
+        public Opt() { }
 
-        public Opt(T value)
-        {
-            this.Value = value;
-        }
+        public Opt(T value) { this.Value = value; }
 
         public T Value { get; private set; }
     }
@@ -53,7 +48,6 @@ namespace CSharpParser
             list.Add(value);
             return list;
         }
-
 
         [Parse]
         public static CsCommaList<T> CommaList<T>(T item) 

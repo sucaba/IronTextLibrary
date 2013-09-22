@@ -17,7 +17,6 @@ namespace CSharpParser
 
             var path = args[0];
             using (var interp = new Interpreter<ICsGrammar>())
-            using (var input = new StreamReader(path))
             {
                 TestLoad(timer, path, interp);
 
@@ -26,9 +25,13 @@ namespace CSharpParser
                 for (int i = 0; i != 10; ++i)
                 {
                     timer.Reset();
-                    timer.Start();
-                    interp.Parse(input, path);
-                    timer.Stop();
+                    using (var input = new StreamReader(path))
+                    {
+                        timer.Start();
+                        interp.Parse(input, path);
+                        timer.Stop();
+                    }
+
                     Console.WriteLine(
                         "{1}(1,1): message : Parsing time={0}sec",
                         timer.Elapsed.TotalSeconds,

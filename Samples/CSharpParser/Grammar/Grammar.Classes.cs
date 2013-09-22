@@ -10,8 +10,8 @@ namespace CSharpParser
     {
         [Parse(null, null, null, "class")]
         CsClassDeclaration ClassDeclaration(
-                Opt<CsAttributes>     attributes,
-                CsOptList<CsClassModifier> modifiers,
+                Opt<CsAttributes>            attributes,
+                CsOptList<CsClassModifier>   modifiers,
                 Opt<CsPartial>               partial,
                 CsIdentifier                 identifier,
                 Opt<CsTypeParameterList>     typeParameters,
@@ -136,7 +136,7 @@ namespace CSharpParser
 
         [Parse(null, null, "const", null, null)]
         CsConstantDeclaration ConstantDeclaration(
-                Opt<CsAttributes>             attributes,
+                Opt<CsAttributes>                  attributes,
                 CsOptList<CsConstantModifier>      modifiers,
                 CsType                             type,
                 CsCommaList<CsConstantDeclarator>  declarators);
@@ -502,7 +502,7 @@ namespace CSharpParser
 
         [Parse(null, null, null, "(", ")", null)]
         CsStaticConstructorDeclaration StaticConstructorDeclaration(
-            Opt<CsAttributes>        attributes,
+            Opt<CsAttributes>               attributes,
             CsStaticConstructorModifiers    modifiers,
             CsIdentifier                    id,
             CsStaticConstructorBody         body);
@@ -522,9 +522,9 @@ namespace CSharpParser
         [Parse(null, null, "~", null, "(", ")", null)]
         CsDestructorDeclaration DestructorDeclaration(
                 Opt<CsAttributes>    attributes,
-                Opt<CsExtern>               externModifier,
-                CsIdentifier                id,
-                CsDestructorBody            body);
+                Opt<CsExtern>        externModifier,
+                CsIdentifier         id,
+                CsDestructorBody     body);
 
         [Parse]
         CsDestructorBody DestructorBody(CsBlock block);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using IronText.Algorithm;
 using IronText.Diagnostics;
@@ -8,6 +9,7 @@ namespace IronText.Framework
     using IronText.Extensibility;
     using State = System.Int32;
     using Token = System.Int32;
+    using System.Text;
 
     sealed class RnGlrParser<T> : IPushParser
     {
@@ -140,15 +142,36 @@ namespace IronText.Framework
                     return null;
                 }
 
-#if false
+                gss.Undo(0); // restore state before the current input token
+
+                var message = new StringBuilder();
+                message
+                    .Append("Unexpected token ")
+                    .Append(grammar.TokenName(item.Id))
+                    ;
+                int frontCount = gss.Front.Count();
+                if (frontCount == 1)
+                {
+                    message.Append(" in state: ").Append(gss.Front.Single().State);
+                }
+                else
+                {
+                    message.Append(" in states: {");
+                    foreach (var node in gss.Front)
+                    {
+                        message.Append(node.State).Append(", ");
+                    }
+
+                    message.Append("}");
+                }
+
                 logging.Write(
                     new LogEntry
                     {
-                        Severity = Severity.Error,
+                        Severity = Severity.Verbose,
                         Location = item.Location,
-                        Message = "Unexpected token " + grammar.TokenName(item.Id)
+                        Message = message.ToString()
                     });
-#endif
 
                 return RecoverFromError(item);
             }
@@ -449,10 +472,6 @@ namespace IronText.Framework
             {
                 gss.Undo(1);
                 result = result.Next(priorInput);
-            }
-            else
-            {
-                gss.Undo(0);
             }
 
             return result.Next(currentInput);
