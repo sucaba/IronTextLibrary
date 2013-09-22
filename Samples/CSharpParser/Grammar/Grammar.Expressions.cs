@@ -9,7 +9,25 @@ namespace CSharpParser
     public partial interface ICsGrammar
     {
         [Parse]
-        CsVariableReference VariableReference();
+        CsLiteral Literal(CsBoolean literal);
+
+        [Parse]
+        CsLiteral Literal(CsInteger literal);
+
+        [Parse]
+        CsLiteral Literal(CsReal literal);
+
+        [Parse]
+        CsLiteral Literal(CsChar literal);
+
+        [Parse]
+        CsLiteral Literal(CsString literal);
+
+        [Parse]
+        CsLiteral Literal(CsNull literal);
+
+        [Parse]
+        CsVariableReference VariableReference(CsExpression expression);
 
         [Parse]
         CsArgumentList ArgumentList(CsArgument arg);
@@ -18,10 +36,10 @@ namespace CSharpParser
         CsArgumentList ArgumentList(CsArgumentList list, CsArgument arg);
 
         [Parse]
-        CsArgument Argument(CsArgumentValue val);
+        CsArgument Argument(Opt<CsArgumentName> name, CsArgumentValue val);
 
-        [Parse(null, ":", null)]
-        CsArgument Argument(CsIdentifier name, CsArgumentValue val);
+        [Parse(null, ":")]
+        CsArgumentName ArgumentName(CsIdentifier id);
 
         [Parse]
         CsArgumentValue ArgumentValue(CsExpression expression);
@@ -98,14 +116,20 @@ namespace CSharpParser
         [Parse("(", null, ")")]
         CsParenthesizedExpression ParenthesizedExpression(CsExpression expression);
 
-        [Parse(null, ".", null)]
-        CsMemberAccess MemberAccess(CsPrimaryExpression expression, Opt<CsTypeArgumentList> argList);
+        [Parse(null, ".", null, null)]
+        CsMemberAccess MemberAccess(
+            CsPrimaryExpression     expression,
+            CsIdentifier            member,
+            Opt<CsTypeArgumentList> argList);
+
+        [Parse(null, ".", null, null)]
+        CsMemberAccess MemberAccess(
+            CsPredefinedType type,
+            CsIdentifier            member,
+            Opt<CsTypeArgumentList> argList);
 
         [Parse(null, ".", null)]
-        CsMemberAccess MemberAccess(CsPredefinedType type, Opt<CsTypeArgumentList> argList);
-
-        [Parse(null, ".", null)]
-        CsMemberAccess MemberAccess(CsQualifiedAliasMember alias, Opt<CsTypeArgumentList> argList);
+        CsMemberAccess MemberAccess(CsQualifiedAliasMember alias, CsIdentifier id);
 
         [Parse("bool")]
         [Parse("byte")]
@@ -163,7 +187,7 @@ namespace CSharpParser
         CsObjectOrCollectionInitializer ObjectOrCollectionInitializer(CsCollectionInitializer initializer);
 
         [Parse("{", null, "}")]
-        CsObjectInitializer ObjectInitializer(Opt<CsCommaList<CsMemberInitializer>> initializer);
+        CsObjectInitializer ObjectInitializer(CsOptCommaList<CsMemberInitializer> initializer);
 
         [Parse("{", null, ",", "}")]
         CsObjectInitializer ObjectInitializer(CsCommaList<CsMemberInitializer> initializer);
@@ -191,7 +215,7 @@ namespace CSharpParser
         CsArrayCreationExpression ArrayCreationExpression(
                 CsNonArrayType               type,
                 CsCommaList<CsExpression>    expressionList,
-                Opt<CsList<CsRankSpecifier>> rankSpecifiers,
+                CsOptList<CsRankSpecifier> rankSpecifiers,
                 Opt<CsArrayInitializer>      arrayInitializer);
 
         [Parse("new", null, null)]
@@ -215,7 +239,7 @@ namespace CSharpParser
 
         [Parse("{", null, "}")]
         CsAnonymousObjectInitializer AnonymousObjectInitializer(
-            Opt<CsCommaList<CsMemberDeclarator>> declarators);
+            CsOptCommaList<CsMemberDeclarator> declarators);
 
         [Parse("{", null, ",", "}")]
         CsAnonymousObjectInitializer AnonymousObjectInitializer(
@@ -466,7 +490,7 @@ namespace CSharpParser
 
         [Parse("(", null, ")")]
         CsExplicitAnonymousFunctionSignature ExplicitAnonymousFunctionSignature(
-                Opt<CsCommaList<CsExplicitAnonymousFunctionParameter>> parmeterList);
+                CsOptCommaList<CsExplicitAnonymousFunctionParameter> parmeterList);
 
         [Parse]
         CsExplicitAnonymousFunctionParameter ExplicitAnonymousFunctionParameter(
@@ -480,7 +504,7 @@ namespace CSharpParser
 
         [Parse("(", null, ")")]
         CsImplicitAnonymousFunctionSignature ImplicitAnonymousFunctionSignature(
-                Opt<CsCommaList<CsImplicitAnonymousFunctionParameter>> parameters);
+                CsOptCommaList<CsImplicitAnonymousFunctionParameter> parameters);
 
         [Parse]
         CsImplicitAnonymousFunctionSignature ImplicitAnonymousFunctionSignature(
@@ -507,7 +531,7 @@ namespace CSharpParser
 
         [Parse]
         CsQueryBody QueryBody(
-                Opt<CsList<CsQueryBodyClause>>  queryBodyClauses, 
+                CsOptList<CsQueryBodyClause>  queryBodyClauses, 
                 CsSelectOrGroupClause           selectOrGroup,
                 Opt<CsQueryContinuation>        continuation);
 
@@ -540,7 +564,8 @@ namespace CSharpParser
                 Opt<CsType>  type,
                 CsIdentifier identifier,
                 CsExpression expression1,
-                CsExpression expression2);
+                CsExpression expression2,
+                CsExpression expression3);
 
         [Parse("join", null, null, "in", null, "on", null, "equals", null, "into", null)]
         CsJoinIntoClause JoinIntoClause(
@@ -548,6 +573,7 @@ namespace CSharpParser
                 CsIdentifier identifier1,
                 CsExpression expression1,
                 CsExpression expression2,
+                CsExpression expression3,
                 CsIdentifier identifier2);
 
         [Parse]
@@ -570,7 +596,9 @@ namespace CSharpParser
         CsSelectClause SelectClause(CsExpression expression);
 
         [Parse("group", null, "by", null)]
-        CsGroupClause GroupClause();
+        CsGroupClause GroupClause(
+            CsExpression expression1,
+            CsExpression expression2);
 
         [Parse("into", null, null)]
         CsQueryContinuation QueryContinuation(

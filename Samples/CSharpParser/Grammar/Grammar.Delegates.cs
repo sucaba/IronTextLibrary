@@ -6,16 +6,16 @@ using IronText.Framework;
 
 namespace CSharpParser
 {
-    public interface ICsDelegates
+    public partial interface ICsGrammar
     {
         [Parse(null, null, "delegate", null, null, null, "(", null, ")", null, ";")]
         CsDelegateDeclaration DelegateDeclaration(
-                Opt<CsList<CsAttribute>>        attributes,
-                Opt<CsList<CsDelegateModifier>> modifiers,
+                Opt<CsAttributes>        attributes,
+                CsOptList<CsDelegateModifier> modifiers,
                 CsReturnType                    returnType,
                 CsIdentifier                    id,
                 Opt<CsVariantTypeParameterList> typeParams,
                 Opt<CsFormalParameterList>      formalParams,
-                Opt<CsList<CsTypeParameterConstraintClause>> typeParameterConstraints);
+                CsOptList<CsTypeParameterConstraintClause> typeParameterConstraints);
     }
 }

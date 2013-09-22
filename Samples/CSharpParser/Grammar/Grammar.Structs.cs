@@ -10,13 +10,13 @@ namespace CSharpParser
     {
         [Parse(null, null, null, "struct", null, null, null, null, null, ";")]
         CsStructDeclaration StructDeclaration(
-                Opt<CsList<CsAttribute>>      attributes,
-                Opt<CsList<CsStructModifier>> modifier,
+                Opt<CsAttributes>      attributes,
+                CsOptList<CsStructModifier> modifier,
                 Opt<CsPartial>                partial,
                 CsIdentifier                  id,
                 Opt<CsTypeParameterList>      typeParameters,
                 Opt<CsStructInterfaces>       interfaces,
-                Opt<CsList<CsTypeParameterConstraintClause>> typeParameterConstraints,
+                CsOptList<CsTypeParameterConstraintClause> typeParameterConstraints,
                 CsStructBody                  body);
 
 
@@ -32,7 +32,7 @@ namespace CSharpParser
 
         [Parse("{", null, "}")]
         CsStructBody StructBody(
-                Opt<CsList<CsStructMemberDeclaration>> declarations);
+                CsOptList<CsStructMemberDeclaration> declarations);
 
         [Parse]
         CsStructMemberDeclaration StructMemberDeclaration(

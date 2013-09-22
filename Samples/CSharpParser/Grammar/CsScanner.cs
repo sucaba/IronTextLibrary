@@ -6,6 +6,7 @@ using IronText.Framework;
 
 namespace CSharpParser
 {
+    [Vocabulary]
     public class CsScanner
     {
         [Scan(@"'//' ~('\r' | '\n' | u0085 | u2028 | u2029)*")]
@@ -19,22 +20,6 @@ namespace CSharpParser
 
         [Scan("(Zs | '\t' | u000B | u000C)+")]
         public void WhiteSpace() { }
-
-        [Scan("digit+ ('.' digit+)?  | '.' digit+")]
-        public CsNumber Number(string token) { return null; }
-
-        [Scan(
-            @"
-            quot 
-                ~(quot | esc)*
-                (esc . ~(quot | esc)* )*
-            quot
-            ")]
-        public CsString Str(char[] buffer, int start, int length)
-        {
-            return null;
-        }
-
         [Scan(@"
                 '@'?
                 ('_' | Lu | Ll | Lt | Lm | Lo | Nl)
@@ -62,9 +47,9 @@ namespace CSharpParser
 
         [Scan(@"['] 
                 ( ~(u0027 | u005c | '\n')
-                | '\' ['""\0abfnrtv]
-                | '\' hex {1,4}
-                | '\' 'u' hex {4}
+                | esc ['""\\0abfnrtv]
+                | esc hex {1,4}
+                | esc 'u' hex {4}
                 )
                 [']")]
         public CsChar Char(string text) { return null; } 
@@ -72,9 +57,9 @@ namespace CSharpParser
         [Scan(@"
                 quot
                 ( ~(quot | u005c | '\n')
-                | '\' ['""\0abfnrtv]
-                | '\' hex {1,4}
-                | '\' 'u' hex {4}
+                | '\\' ['""\\0abfnrtv]
+                | '\\' hex {1,4}
+                | '\\' 'u' hex {4}
                 )*
                 quot
               ")]
@@ -86,7 +71,7 @@ namespace CSharpParser
         [Literal("null")]
         public CsNull Null() { return null; }
 
-        [Scan("','+")]
+        [Scan("',' {2,}")]
         public CsDimSeparators DimSeparators() { return null; }
 
     #region Typed keywords
@@ -102,6 +87,9 @@ namespace CSharpParser
 
         [Literal("new")]
         public CsNew NewKeyword() { return null; }
+
+        [Literal(".")]
+        public CsDot Dot() { return null; }
     #endregion
     }
 }

@@ -19,6 +19,7 @@ namespace CSharpParser
     public interface CsAnonymousObjectInitializer { }
     public interface CsArgument { }
     public interface CsArgumentList { }
+    public interface CsArgumentName { }
     public interface CsArgumentValue { }
     public interface CsArrayCreationExpression { }
     public interface CsArrayInitializer { }
@@ -79,6 +80,7 @@ namespace CSharpParser
     public interface CsDestructorDeclaration { }
     public interface CsDimSeparators { }
     public interface CsDoStatement { }
+    public interface CsDot { }
     public interface CsElementAccess { }
     public interface CsElementInitializer { }
     public interface CsEmbeddedStatement { }

@@ -149,7 +149,7 @@ namespace CSharpParser
                 CsSwitchBlock block);
 
         [Parse("{", null, "}")]
-        CsSwitchBlock SwitchBlock(Opt<CsList<CsSwitchSection>> sections);
+        CsSwitchBlock SwitchBlock(CsOptList<CsSwitchSection> sections);
 
         [Parse]
         CsSwitchSection SwitchSection(
@@ -266,11 +266,11 @@ namespace CSharpParser
         [Parse]
         CsCatchClauses CatchClauses(
                 CsList<CsSpecificCatchClause>     specific,
-                Opt<CsList<CsGeneralCatchClause>> general);
+                CsOptList<CsGeneralCatchClause> general);
 
         [Parse]
         CsCatchClauses CatchClauses(
-                Opt<CsList<CsSpecificCatchClause>> specific,
+                CsOptList<CsSpecificCatchClause> specific,
                 CsList<CsGeneralCatchClause>       general);
 
         [Parse("catch", "(", null, null, ")", null)]

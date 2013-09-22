@@ -12,14 +12,18 @@ namespace CSharpParser
 
         [Parse]
         CsNamespaceOrTypeName NamespaceOrTypeName(
-                CsIdentifier          name, 
-                CsTypeArgumentList       typeArgs);
+                CsIdentifier            name, 
+                Opt<CsTypeArgumentList> typeArgs);
 
         [Parse(null, ".", null)]
         CsNamespaceOrTypeName NamespaceOrTypeName(
-                CsNamespaceOrTypeName declaring,
-                CsIdentifier          identifier,
-                CsTypeArgumentList       typeArgs);
+                CsNamespaceOrTypeName   declaring,
+                CsIdentifier            identifier,
+                Opt<CsTypeArgumentList> typeArgs);
+
+        [Parse]
+        CsNamespaceOrTypeName NamespaceOrTypeName(
+            CsQualifiedAliasMember qualifiedAliasMember);
 
         [Parse]
         CsType Type(CsValueType valueType);

@@ -6,7 +6,7 @@ using IronText.Framework;
 
 namespace CSharpParser
 {
-    public interface ICsAttributes
+    public partial interface ICsGrammar
     {
         [Parse]
         CsGlobalAttributes GlobalAttributes(
@@ -28,7 +28,8 @@ namespace CSharpParser
         [Parse("[", null, null, "]")]
         [Parse("[", null, null, ",", "]")]
         CsAttributeSection AttributeSection(
-                Opt<CsAttributeTargetSpecifier> specifier);
+                Opt<CsAttributeTargetSpecifier> specifier,
+                CsCommaList<CsAttribute>        attributes);
 
         [Parse(null, ":")]
         CsAttributeTargetSpecifier AttributeTargetSpecifier(
@@ -53,8 +54,9 @@ namespace CSharpParser
 
         [Parse("(", null, ")")]
         CsAttributeArguments AttributeArguments(
-                Opt<CsCommaList<CsPositionalArgument>> args);
+                CsOptCommaList<CsPositionalArgument> args);
 
+#if false
         [Parse("(", null, ",", null, ")")]
         CsAttributeArguments AttributeArguments(
                 CsCommaList<CsPositionalArgument> args,
@@ -63,11 +65,14 @@ namespace CSharpParser
         [Parse("(", null, ")")]
         CsAttributeArguments AttributeArguments(
                 CsCommaList<CsNamedArgument>      namedArgs);
+#endif
 
         [Parse]
         CsPositionalArgument PositionalArgument(
-                Opt<CsList<CsAttribute>>        attributes,
-                CsAttributeArgumentExpression   expression);
+                CsLiteral literal
+                //Opt<CsArgumentName>             name,
+                //CsAttributeArgumentExpression   expression
+                );
 
         [Parse(null, "=", null)]
         CsNamedArgument NamedArgument(

@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Grammar\CsPreprocessor.cs" />
+    <None Include="Grammar\ICsTokenizer.cs" />
     <Compile Include="Grammar\Grammar.Arrays.cs" />
     <Compile Include="Grammar\Grammar.Attributes.cs" />
     <Compile Include="Grammar\Grammar.cs" />
@@ -60,15 +61,13 @@
     <Compile Include="Grammar\Grammar.Statements.cs" />
     <Compile Include="Grammar\Grammar.Structs.cs" />
     <Compile Include="Grammar\Grammar.Types.cs" />
-    <Compile Include="Grammar\Grammar.Scanner.cs" />
+    <Compile Include="Grammar\CsScanner.cs" />
     <Compile Include="Grammar\Grammar.Tokens.cs" />
-    <Compile Include="MyLang.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Grammar\CsCollections.cs" />
-    <None Include="app.config" />
     <Compile Include="Grammar\Grammar.Classes.cs" />
     <None Include="packages.config" />
   </ItemGroup>

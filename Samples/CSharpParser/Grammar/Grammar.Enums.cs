@@ -10,8 +10,8 @@ namespace CSharpParser
     {
         [Parse(null, null, "enum", null, null, null)]
         CsEnumDeclaration EnumDeclaration(
-                Opt<CsList<CsAttribute>>     attributes,
-                Opt<CsList<CsEnumModifier>>  modifiers,
+                Opt<CsAttributes>     attributes,
+                CsOptList<CsEnumModifier>  modifiers,
                 CsIdentifier                 id,
                 Opt<CsEnumBase>              enumBase,
                 CsEnumBody                   body,
@@ -22,7 +22,7 @@ namespace CSharpParser
 
         [Parse("{", null, "}")]
         CsEnumBody EnumBody(
-                Opt<CsCommaList<CsEnumMemberDeclaration>> declarations);
+                CsOptCommaList<CsEnumMemberDeclaration> declarations);
 
         [Parse("{", null, ",", "}")]
         CsEnumBody EnumBody(
@@ -37,12 +37,12 @@ namespace CSharpParser
 
         [Parse]
         CsEnumMemberDeclaration EnumMemberDeclaration(
-                Opt<CsList<CsAttribute>>     attributes,
+                Opt<CsAttributes>     attributes,
                 CsIdentifier                 id);
 
         [Parse(null, null, "=", null)]
         CsEnumMemberDeclaration EnumMemberDeclaration(
-                Opt<CsList<CsAttribute>>     attributes,
+                Opt<CsAttributes>     attributes,
                 CsIdentifier                 id,
                 CsConstantExpression         constantExpression);
     }

@@ -10,13 +10,13 @@ namespace CSharpParser
     {
         [Parse(null, null, null, "interface", null, null, null, null, null, null)]
         CsInterfaceDeclaration InterfaceDeclaration(
-                Opt<CsList<CsAttribute>>         attributes,
-                Opt<CsList<CsInterfaceModifier>> modifiers,
+                Opt<CsAttributes>         attributes,
+                CsOptList<CsInterfaceModifier> modifiers,
                 Opt<CsPartial>                   partial,
                 CsIdentifier                     id,
                 Opt<CsVariantTypeParameterList>  typeParams,
                 Opt<CsInterfaceBase>             interfaceBase,
-                Opt<CsList<CsTypeParameterConstraintClause>> typeParamsConstraints,
+                CsOptList<CsTypeParameterConstraintClause> typeParamsConstraints,
                 CsInterfaceBody                  body,
                 Opt<CsSemicolon>                 semi);
 
@@ -33,7 +33,7 @@ namespace CSharpParser
 
         [Parse]
         CsVariantTypeParameter VariantTypeParameter(
-                Opt<CsList<CsAttribute>>  attributes,
+                Opt<CsAttributes>  attributes,
                 Opt<CsVarianceAnnotation> variance,
                 CsTypeParameter           typeParam);
 
@@ -47,7 +47,7 @@ namespace CSharpParser
 
         [Parse("{", null, "}")]
         CsInterfaceBody InterfaceBody(
-                Opt<CsList<CsInterfaceMemberDeclaration>> declarations);
+                CsOptList<CsInterfaceMemberDeclaration> declarations);
 
         [Parse]
         CsInterfaceMemberDeclaration InterfaceMemberDeclaration(
@@ -67,17 +67,17 @@ namespace CSharpParser
 
         [Parse(null, null, null, null, null, "(", null, ")", null, ";")]
         CsInterfaceMethodDeclaration InterfaceMethodDeclaration(
-                Opt<CsList<CsAttribute>>   attributes,
+                Opt<CsAttributes>   attributes,
                 Opt<CsNew>                 @new,
                 CsReturnType               returnType,
                 CsIdentifier               identifier,
                 CsTypeParameterList        typeParams,
                 Opt<CsFormalParameterList> formalParams,
-                Opt<CsList<CsTypeParameterConstraintClause>> typeParameterConstraints);
+                CsOptList<CsTypeParameterConstraintClause> typeParameterConstraints);
 
         [Parse(null, null, null, null, "{", null, "}")]
         CsInterfacePropertyDeclaration InterfacePropertyDeclaration(
-                Opt<CsList<CsAttribute>>   attributes,
+                Opt<CsAttributes>   attributes,
                 Opt<CsNew>                 @new,
                 CsType                     type,
                 CsIdentifier               id,
@@ -85,32 +85,32 @@ namespace CSharpParser
 
         [Parse(null, "get", ";")]
         CsInterfaceAccessors InterfaceAccessorsGet(
-                Opt<CsList<CsAttribute>>   attributes);
+                Opt<CsAttributes>   attributes);
 
         [Parse(null, "set", ";")]
         CsInterfaceAccessors InterfaceAccessorsSet(
-                Opt<CsList<CsAttribute>>   attributes);
+                Opt<CsAttributes>   attributes);
 
         [Parse(null, "get", ";", null, "set", ";")]
         CsInterfaceAccessors InterfaceAccessorsGetSet(
-                Opt<CsList<CsAttribute>>   getterAttributes,
-                Opt<CsList<CsAttribute>>   setterAttributes);
+                Opt<CsAttributes>   getterAttributes,
+                Opt<CsAttributes>   setterAttributes);
 
         [Parse(null, "set", ";", null, "get", ";")]
         CsInterfaceAccessors InterfaceAccessorsSetGet(
-                Opt<CsList<CsAttribute>>   setterAttributes,
-                Opt<CsList<CsAttribute>>   getterAttributes);
+                Opt<CsAttributes>   setterAttributes,
+                Opt<CsAttributes>   getterAttributes);
 
         [Parse(null, null, "event", null, null, ";")]
         CsInterfaceEventDeclaration InterfaceEventDeclaration(
-                Opt<CsList<CsAttribute>>   attributes,
+                Opt<CsAttributes>   attributes,
                 Opt<CsNew>                 @new,
                 CsType                     type,
                 CsIdentifier               id);
 
         [Parse(null, null, null, "this", "[", null, "]", "{", null, "}")]
         CsInterfaceIndexerDeclaration InterfaceIndexerDeclaration(
-                Opt<CsList<CsAttribute>>   attributes,
+                Opt<CsAttributes>   attributes,
                 Opt<CsNew>                 @new,
                 CsType                     type,
                 CsFormalParameterList      formalParams,

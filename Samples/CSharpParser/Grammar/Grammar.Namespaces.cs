@@ -10,10 +10,10 @@ namespace CSharpParser
     {
         [Parse]
         CsCompilationUnit CompilationUnit(
-                Opt<CsList<CsExternAliasDirective>>        externAliasDirectives,
-                Opt<CsList<CsUsingDirective>>              usingDirectives,
-                Opt<CsGlobalAttributes>                    globalAttributes,
-                Opt<CsList<CsNamespaceMemberDeclaration>>  nsMemberDeclarations);
+                CsOptList<CsExternAliasDirective>        externAliasDirectives,
+                CsOptList<CsUsingDirective>              usingDirectives,
+                Opt<CsGlobalAttributes>                  globalAttributes,
+                CsOptList<CsNamespaceMemberDeclaration>  nsMemberDeclarations);
 
         [Parse("namespace", null, null)]
         [Parse("namespace", null, null, ";")]
@@ -27,11 +27,11 @@ namespace CSharpParser
         [Parse]
         CsQualifiedIdentifier QualifiedIdentifier(CsDotList<CsIdentifier> identifiers);
 
-        [Parse("{", null, "}")]
+        [Parse("{", null, null, null, "}")]
         CsNamespaceBody NamespaceBody(
-                Opt<CsList<CsExternAliasDirective>>        externAliasDirectives,
-                Opt<CsList<CsUsingDirective>>              usingDirectives,
-                Opt<CsList<CsNamespaceMemberDeclaration>>  nsMemberDeclarations);
+                CsOptList<CsExternAliasDirective>        externAliasDirectives,
+                CsOptList<CsUsingDirective>              usingDirectives,
+                CsOptList<CsNamespaceMemberDeclaration>  nsMemberDeclarations);
 
         [Parse("extern", "alias", null)]
         CsExternAliasDirective ExternAliasDirective(
@@ -43,12 +43,12 @@ namespace CSharpParser
         [Parse]
         CsUsingDirective UsingDirective(CsUsingNamespaceDirective directive);
 
-        [Parse("using", null, "=", null)]
+        [Parse("using", null, "=", null, ";")]
         CsUsingAliasDirective UsingAliasDirective(
                 CsIdentifier          identifier,
                 CsNamespaceOrTypeName namespaceOrTypeName);
 
-        [Parse("using", null)]
+        [Parse("using", null, ";")]
         CsUsingNamespaceDirective UsingNamespaceDirective(
                 CsNamespaceName       namespaceName);
 
