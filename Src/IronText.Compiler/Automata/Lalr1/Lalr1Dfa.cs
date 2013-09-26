@@ -252,16 +252,14 @@ namespace IronText.Automata.Lalr1
                 {
                     var itemSet = result[i].Items;
 
-                    // TODO: Enumerate only tokens relative to the itemSet.
-                    //       It should be significantly shorter than entire token set
-                    foreach (var token in grammar.EnumerateTokens())
+                    foreach (var token in GetOutTokens(itemSet))
                     {
                         var nextStateItems = GoTo(itemSet, token);
-                        // TOOD: Remove lookaheads from the LR0 logic
+
                         CollectClosureLookaheads(nextStateItems, grammar);
                         if (nextStateItems.Count == 0)
                         {
-                            continue;
+                            throw new InvalidOperationException("Internal error: next state cannot be empty");
                         }
 
                         var nextState = result.Find(state => state.Items.Equals(nextStateItems));
@@ -284,6 +282,17 @@ namespace IronText.Automata.Lalr1
             StateSet = new BitSetType(result.Count);
 
             return result.ToArray();
+        }
+
+        private IEnumerable<int> GetOutTokens(IDotItemSet itemSet)
+        {
+            foreach (var item in itemSet)
+            {
+                if (!item.IsReduce)
+                {
+                    yield return item.NextToken;
+                }
+            }
         }
 
         private MutableDotItemSet GoTo(IEnumerable<DotItem> itemSet, int token)

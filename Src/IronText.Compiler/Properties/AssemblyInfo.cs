@@ -35,3 +35,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("IronText.Core.Tests")]
+
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("CSharpParser.Tests")]

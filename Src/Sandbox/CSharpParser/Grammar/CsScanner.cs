@@ -20,6 +20,7 @@ namespace CSharpParser
 
         [Scan("(Zs | '\t' | u000B | u000C)+")]
         public void WhiteSpace() { }
+
         [Scan(@"
                 '@'?
                 ('_' | Lu | Ll | Lt | Lm | Lo | Nl)

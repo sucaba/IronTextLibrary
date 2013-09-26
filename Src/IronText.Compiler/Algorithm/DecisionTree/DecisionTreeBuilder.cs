@@ -6,7 +6,7 @@ namespace IronText.Algorithm
     public class DecisionTreeBuilder
     {
         public int MaxLinearCount = 3;
-        public const double SwitchCost = 7;
+        public const double SwitchCost = 10;
         public const double BranchCost = 3;
         public const int SwitchElementCountThreashold = 1024;
         public const double SwitchDensityThreashold = 0.5;

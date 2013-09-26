@@ -9,13 +9,15 @@ using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Misc;
 using System.Text;
+using IronText.Algorithm;
 
 namespace IronText.MetadataCompiler
 {
-    class LanguageDataProvider : ResourceGetter<LanguageData>
+    internal class LanguageDataProvider : ResourceGetter<LanguageData>
     {
         private readonly LanguageName languageName;
         private readonly bool         bootstrap;
+        private ILogging              logging;
 
         public LanguageDataProvider(LanguageName name, bool bootstrap)
         {
@@ -26,15 +28,17 @@ namespace IronText.MetadataCompiler
 
         private bool Build(ILogging logging, out LanguageData result)
         {
-            logging.Write(
-                new LogEntry
-                {
-                    Severity = Severity.Verbose,
-                    Member = languageName.DefinitionType,
-                    Message = string.Format("Started LanguageData build for {0}", languageName.FullName)
-                });
+            this.logging = logging;
 
-            var definition = new LanguageDefinition(languageName.DefinitionType, logging);
+            LanguageDefinition definition = null;
+
+            WithTimeLogging(
+                () =>
+                {
+                    definition = new LanguageDefinition(languageName.DefinitionType, logging);
+                },
+                "parsing language definition");
+                
             if (!definition.IsValid)
             {
                 result = null;
@@ -58,7 +62,14 @@ namespace IronText.MetadataCompiler
             }
 
             // Build parsing tables
-            ILrDfa parserDfa = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.Default);
+            ILrDfa parserDfa = null;
+
+            WithTimeLogging(
+                () =>
+                {
+                    parserDfa = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.Default);
+                },
+                "building LALR1 DFA");
 
             ILrParserTable lrTable = new CanonicalLrDfaTable(parserDfa);
             var flags = Attributes.First<LanguageAttribute>(languageName.DefinitionType).Flags;
@@ -111,7 +122,12 @@ namespace IronText.MetadataCompiler
             }
             else
             {
-                parserDfa   = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.None);
+                WithTimeLogging(
+                    () =>
+                    {
+                        parserDfa = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.None);
+                    },
+                    "rebuilding non-optmized LALR1 DFA");
                 lrTable     = new CanonicalLrDfaTable(parserDfa);
                 parserTable = new ReductionModifiedLrDfaTable(parserDfa);
             }
@@ -128,7 +144,7 @@ namespace IronText.MetadataCompiler
                 GrammarAnalysis     = grammarAnalysis,
                 ParserStates        = parserDfa.States,
                 StateToSymbolTable  = parserDfa.GetStateToSymbolTable(),
-                ParserActionTable   = parserTable.GetParserActionTable(),
+                ParserActionTable   = new SparseTable<int>(parserTable.GetParserActionTable()),
                 ParserConflictActionTable = parserTable.GetConflictActionTable(),
 
                 Lalr1ParserActionTable = lrTable.GetParserActionTable(),
@@ -149,18 +165,7 @@ namespace IronText.MetadataCompiler
                 result.ScanModeTypeToDfa = new Dictionary<Type, ITdfaData>();
                 foreach (ScanMode scanMode in result.ScanModes)
                 {
-                    var descr = ScannerDescriptor.FromScanRules(
-                                                scanMode.ScanModeType.FullName,
-                                                scanMode.ScanRules,
-                                                logging);
-                    ITdfaData data;
-#if false
-                    var regTree2 = new RegularTree(descr.MakeAst());
-                    data = new RegularToDfaAlgorithm(regTree2).Data;
-#else
-                    var literalToAction = new Dictionary<string,int>();
-                    var ast = descr.MakeAst(literalToAction);
-                    if (ast == null)
+                    if (!BuildScanModeDfa(logging, result, scanMode))
                     {
                         logging.Write(
                             new LogEntry
@@ -174,42 +179,39 @@ namespace IronText.MetadataCompiler
 
                         return false;
                     }
-
-                    var regTree2 = new RegularTree(ast);
-                    data = new RegularToTdfaAlgorithm(regTree2, literalToAction).Data;
-#endif
-
-                    result.ScanModeTypeToDfa[scanMode.ScanModeType] = data;
                 }
+            }
 
+            if (!bootstrap)
+            {
                 foreach (var reportBuilder in reportBuilders)
                 {
                     reportBuilder(result);
                 }
             }
 
-            if (success)
+            return success;
+        }
+
+        private static bool BuildScanModeDfa(ILogging logging, LanguageData result, ScanMode scanMode)
+        {
+            var descr = ScannerDescriptor.FromScanRules(
+                                        scanMode.ScanModeType.FullName,
+                                        scanMode.ScanRules,
+                                        logging);
+            ITdfaData data;
+            var literalToAction = new Dictionary<string, int>();
+            var ast = descr.MakeAst(literalToAction);
+            if (ast == null)
             {
-                logging.Write(
-                    new LogEntry
-                    {
-                        Severity = Severity.Verbose,
-                        Member = languageName.DefinitionType,
-                        Message = string.Format("Done LanguageData build for {0}", languageName.FullName)
-                    });
-            }
-            else
-            {
-                logging.Write(
-                    new LogEntry
-                    {
-                        Severity = Severity.Error,
-                        Member = languageName.DefinitionType,
-                        Message = string.Format("Failed building LanguageData for {0}", languageName.FullName)
-                    });
+                return false;
             }
 
-            return success;
+            var regTree2 = new RegularTree(ast);
+            data = new RegularToTdfaAlgorithm(regTree2, literalToAction).Data;
+            result.ScanModeTypeToDfa[scanMode.ScanModeType] = data;
+
+            return true;
         }
 
         private static BnfGrammar BuildGrammar(
@@ -379,7 +381,36 @@ namespace IronText.MetadataCompiler
 
         public override string ToString()
         {
-            return "data for " + languageName.DefinitionType.FullName + " language definition";
+            return "LanguageData for " + languageName.DefinitionType.FullName;
+        }
+
+        private void WithTimeLogging(Action action, string activityName)
+        {
+            Verbose("Started {0} for {1}", activityName, languageName.Name);
+
+            try
+            {
+                action();
+            }
+            catch
+            {
+                Verbose("Failed {0} for {1}", activityName, languageName.Name);
+            }
+            finally
+            {
+                Verbose("Done {0} for {1}", activityName, languageName.Name);
+            }
+        }
+
+        private void Verbose(string fmt, params object[] args)
+        {
+            logging.Write(
+                new LogEntry
+                {
+                    Severity = Severity.Verbose,
+                    Member = languageName.DefinitionType,
+                    Message = string.Format(fmt, args)
+                });
         }
     }
 }

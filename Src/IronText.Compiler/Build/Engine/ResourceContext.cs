@@ -42,7 +42,7 @@ namespace IronText.Build
                     Verbose("Resource '{0}' does not exist.", resource);
                 }
 
-                Verbose("Building resource '{0}' ...", resource);
+                Verbose("Started building resource '{0}' ...", resource);
 
                 foreach (var source in resource.Sources)
                 {
@@ -66,6 +66,8 @@ namespace IronText.Build
                 {
                     buildStack.Pop();
                 }
+
+                Verbose("Done building resource '{0}'", resource);
             }
 
             return true;

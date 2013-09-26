@@ -15,15 +15,15 @@ namespace IronText.MetadataCompiler
         new meta  => can provide new explicitly used tokens
         new rule  => can provide new tokens
         new token => can provide new rules from existing meta
-        new token => can provide new meta (ThisAsTokenAttribute)
+        new token => can provide new meta (DemandAttribute)
     */
     class MetadataCollector : IMetadataCollector
     {
-        private readonly List<ILanguageMetadata> validMetadata    = new List<ILanguageMetadata>();
-        private readonly List<ILanguageMetadata> invalidMetadata    = new List<ILanguageMetadata>();
-        private readonly List<ParseRule>         allParseRules  = new List<ParseRule>();
-        private readonly List<SwitchRule>        allSwitchRules = new List<SwitchRule>();
-        private readonly List<TokenRef>          allTokens      = new List<TokenRef>();
+        private readonly List<ILanguageMetadata> validMetadata   = new List<ILanguageMetadata>();
+        private readonly List<ILanguageMetadata> invalidMetadata = new List<ILanguageMetadata>();
+        private readonly List<ParseRule>         allParseRules   = new List<ParseRule>();
+        private readonly List<SwitchRule>        allSwitchRules  = new List<SwitchRule>();
+        private readonly List<TokenRef>          allTokens       = new List<TokenRef>();
 
         private readonly ITokenPool              tokenPool;
         private readonly ILogging                logging;
@@ -129,7 +129,7 @@ namespace IronText.MetadataCompiler
                 }
             }
 
-            // Provide new meta (ThisAsTokenAttribute)
+            // Provide new meta (DemandAttribute)
             if (!token.IsLiteral)
             {
                 foreach (var meta in MetadataParser.EnumerateAndBind(token.TokenType))

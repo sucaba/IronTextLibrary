@@ -26,7 +26,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;DIAGNOSTICS</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -71,6 +71,7 @@
     <Compile Include="Algorithm\IntMaps\MutableIntFrequency.cs" />
     <Compile Include="Algorithm\IntMaps\MutableIntMap.cs" />
     <Compile Include="Algorithm\IntMaps\MutableTable.cs" />
+    <Compile Include="Algorithm\IntMaps\SparseTable.cs" />
     <Compile Include="Algorithm\IntMaps\UniformIntFrequency.cs" />
     <Compile Include="Algorithm\Sorting.cs" />
     <Compile Include="Algorithm\TreeNode.cs" />

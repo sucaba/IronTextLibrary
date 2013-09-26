@@ -133,6 +133,11 @@ namespace IronText.Build
             return RetrieveLinkerTimestamp(filePath);
         }
 
+        public override string ToString()
+        {
+            return Path.GetFileName(new Uri(AssemblyName.CodeBase).LocalPath);
+        }
+
         /// <summary>
         /// Retrieves the linker timestamp.
         /// </summary>

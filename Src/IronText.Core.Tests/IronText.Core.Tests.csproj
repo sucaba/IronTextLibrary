@@ -69,6 +69,7 @@
     <Compile Include="Algorithm\BitSetTest.cs" />
     <Compile Include="Algorithm\DecisionTreeBuilderTest.cs" />
     <Compile Include="Algorithm\IntIntervalTest.cs" />
+    <Compile Include="Algorithm\IntMaps\SparseTableTest.cs" />
     <Compile Include="Algorithm\MutableIntMapTest.cs" />
     <Compile Include="Algorithm\Simulation\DfaSimulation.cs" />
     <Compile Include="Algorithm\Simulation\DfaSimulationLexer.cs" />
