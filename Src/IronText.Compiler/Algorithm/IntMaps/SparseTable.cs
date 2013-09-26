@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -9,9 +10,12 @@ namespace IronText.Algorithm
     public class SparseTable<T> : ITable<T> where T : IEquatable<T>
     {
         // index -> row
-        private int[] check;
+        private List<int> check;
+
         // index -> element
-        private T[] info;
+        private List<T> info;
+
+
         // row -> row start index
         private int[] row2offset;
         private readonly int columnCount;
@@ -48,8 +52,8 @@ namespace IronText.Algorithm
                 }
             }
 
-            this.info = info.ToArray();
-            this.check = check.ToArray();
+            this.info = info;
+            this.check = check;
 #if DIAGNOSTICS
             double gain = (4 * rowCount * columnCount - 4 * 2 * info.Count - 4 * row2offset.Length)
                      / (double)(4 * rowCount * columnCount);
@@ -62,6 +66,12 @@ namespace IronText.Algorithm
                 gain * 100.0);
 #endif
         }
+
+        public ReadOnlyCollection<T>   Info { get { return new ReadOnlyCollection<T>(info); } }
+
+        public ReadOnlyCollection<int> Check { get { return new ReadOnlyCollection<int>(check); } }
+
+        public ReadOnlyCollection<int> RowToOffset { get { return new ReadOnlyCollection<int>(row2offset); } }
 
         private int GetFitIndex(List<T> info, ITable<T> table, int r)
         {

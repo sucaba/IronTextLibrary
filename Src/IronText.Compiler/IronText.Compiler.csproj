@@ -144,6 +144,7 @@
     <Compile Include="Lib\IL\CilLanguage.cs" />
     <Compile Include="Lib\IL\Generators\ArrayLoopGenerator.cs" />
     <Compile Include="Lib\IL\Generators\ContiguousSwitchGenerator.cs" />
+    <Compile Include="Lib\IL\Generators\SparseReadOnlyTableGenerator.cs" />
     <Compile Include="Lib\IL\Generators\ILoopGenerator.cs" />
     <Compile Include="Lib\IL\Generators\ImplementationGenerator.cs" />
     <Compile Include="Lib\IL\Generators\ReadOnlyTableGenerator.cs" />

@@ -144,7 +144,7 @@ namespace IronText.MetadataCompiler
                 GrammarAnalysis     = grammarAnalysis,
                 ParserStates        = parserDfa.States,
                 StateToSymbolTable  = parserDfa.GetStateToSymbolTable(),
-                ParserActionTable   = new SparseTable<int>(parserTable.GetParserActionTable()),
+                ParserActionTable   = parserTable.GetParserActionTable(),
                 ParserConflictActionTable = parserTable.GetConflictActionTable(),
 
                 Lalr1ParserActionTable = lrTable.GetParserActionTable(),
