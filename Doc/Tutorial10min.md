@@ -128,7 +128,7 @@ or
 Trailing null items in literal-mask are optional.
 
 Note: 
-Empty string-literals are not allowed. 
+Empty-string literals are not allowed. 
 They will cause build-time errors.
 
 

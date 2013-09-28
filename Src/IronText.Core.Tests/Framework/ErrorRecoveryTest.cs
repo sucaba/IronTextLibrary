@@ -10,11 +10,17 @@ namespace IronText.Tests.Framework
     public class ErrorRecoveryTest
     {
         [Datapoints]
-        public static readonly ILanguage[] Languages = 
+        public static ILanguage[] Languages
         {
-            Language.Get(typeof(RecoveryLang)),
-            Language.Get(typeof(AmbRecoveryLang)),
-        };
+            get
+            {
+                return new[]
+                    {
+                        Language.Get(typeof(RecoveryLang)),
+                        Language.Get(typeof(AmbRecoveryLang)),
+                    };
+            }
+        }
 
         private RecoveryLang context;
         private int errorCount;

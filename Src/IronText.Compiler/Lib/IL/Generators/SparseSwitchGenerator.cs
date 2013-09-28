@@ -116,7 +116,7 @@ namespace IronText.Lib.IL.Generators
             }
         }
 
-        public void JumpTable(Decision labelNode, int startElement, ActionDecision[] elementToAction)
+        public void JumpTable(Decision labelNode, int startElement, Decision[] elementToAction)
         {
             emit
                 .Label(GetNodeLabel(labelNode).Def)

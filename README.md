@@ -27,7 +27,7 @@ Features
 - Supports vocabularies of lexical and syntax rules which can be reused in
   different languages
 
-- Generic methods can be used as a 'template rules'
+- Generic methods can be used as 'template rules'
 
 - Allows defining language abstraction using interfaces and abstract classes
   which can have multiple implementations for different parsing tasks.

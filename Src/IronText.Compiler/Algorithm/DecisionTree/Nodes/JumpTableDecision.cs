@@ -6,17 +6,17 @@ namespace IronText.Algorithm
     {
         private readonly ArraySlice<DecisionTest> tests;
         private readonly int startElement;
-        private readonly ActionDecision[] elementToAction;
-        private readonly Dictionary<int, ActionDecision> leafDecisions;
+        private readonly Decision[] elementToAction;
+        private readonly Dictionary<int, Decision> leafDecisions;
 
         public JumpTableDecision(ArraySlice<DecisionTest> tests)
         {
             this.tests = tests;
             this.startElement = tests.Array[tests.Offset].Interval.First;
             int elementCount = tests.Array[tests.Offset + tests.Count - 1].Interval.Last - startElement + 1;
-            this.elementToAction = new ActionDecision[elementCount];
+            this.elementToAction = new Decision[elementCount];
 
-            this.leafDecisions = new Dictionary<int, ActionDecision>();
+            this.leafDecisions = new Dictionary<int, Decision>();
             foreach (var test in tests)
             {
                 if (!leafDecisions.ContainsKey(test.Action))

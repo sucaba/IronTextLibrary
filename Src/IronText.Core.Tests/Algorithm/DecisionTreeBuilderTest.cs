@@ -9,6 +9,25 @@ namespace IronText.Tests.Algorithm
     public class DecisionTreeBuilderTest
     {
         [Test]
+        public void TestSameActionUnification()
+        {
+            var frequency = new UniformIntFrequency(new IntInterval(-100, 100));
+
+            const int DefaultValue = -1;
+            var elementToAction = new MutableIntMap<int>();
+            elementToAction.DefaultValue = DefaultValue;
+            elementToAction.Set(new IntArrow<int>(1, 1));
+            elementToAction.Set(new IntArrow<int>(2, 49, 1));
+            elementToAction.Set(new IntArrow<int>(50, 1));
+            elementToAction.Set(new IntArrow<int>(51, 100, 1));
+
+            var target = new DecisionTreeBuilder(-100);
+            var bounds = new IntInterval(int.MinValue, int.MaxValue);
+            var node = target.BuildBalanced(elementToAction, bounds, frequency);
+            PrintProgram(node);
+        }
+
+        [Test]
         public void TestBalanced()
         {
             var frequency = new MutableIntFrequency();

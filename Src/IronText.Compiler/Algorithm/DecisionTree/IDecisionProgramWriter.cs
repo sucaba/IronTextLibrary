@@ -9,6 +9,6 @@ namespace IronText.Algorithm
         
         void CondJump(Decision labelNode, RelationalOperator op, int operand, Decision destination);
 
-        void JumpTable(Decision labelNode, int startElement, ActionDecision[] elementToAction);
+        void JumpTable(Decision labelNode, int startElement, Decision[] elementToAction);
     }
 }

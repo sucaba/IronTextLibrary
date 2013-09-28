@@ -44,7 +44,7 @@ namespace IronText.Algorithm
                 .AppendLine();
         }
 
-        public void JumpTable(Decision labelNode, int startElement, ActionDecision[] elementToAction)
+        public void JumpTable(Decision labelNode, int startElement, Decision[] elementToAction)
         {
             PutLabel(labelNode);
 
