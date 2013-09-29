@@ -3,7 +3,7 @@ using System.Text;
 
 namespace IronText.Algorithm
 {
-    public class DecisionProgramWriter : IDecisionProgramWriter
+    public class DecisionProgramWriter : IDecisionVisitor
     {
         private readonly StringBuilder output;
         private int labelGen;
@@ -13,46 +13,37 @@ namespace IronText.Algorithm
             this.output = output;
         }
 
-        public void Action(Decision labelNode, int action)
+        public void Visit(ActionDecision node)
         {
-            PutLabel(labelNode);
+            PutLabel(node);
 
             output
-                .AppendFormat("action({0})", action)
+                .AppendFormat("action({0})", node.Action)
                 .AppendLine();
         }
 
-        public void Jump(Decision labelNode, Decision destination)
+        public void Visit(RelationalBranchDecision decision)
         {
-            PutLabel(labelNode);
-
-            output
-                .AppendFormat("goto {0}", GetLabelText(destination))
-                .AppendLine();
-        }
-
-        public void CondJump(Decision labelNode, RelationalOperator op, int operand, Decision destination)
-        {
-            PutLabel(labelNode);
+            PutLabel(decision);
 
             output
                 .AppendFormat(
                     "if (x {0} {1}) goto {2}",
-                    op.GetOpeatorText(),
-                    operand,
-                    GetLabelText(destination))
+                    decision.Operator.Negate().GetOpeatorText(),
+                    decision.Operand,
+                    GetLabelText(decision.Right))
                 .AppendLine();
         }
 
-        public void JumpTable(Decision labelNode, int startElement, Decision[] elementToAction)
+        public void Visit(JumpTableDecision decision)
         {
-            PutLabel(labelNode);
+            PutLabel(decision);
 
             output
                 .AppendFormat(
                     "switch -{0} ({1})",
-                    startElement,
-                    string.Join(",", elementToAction.Select(GetLabelText)))
+                    decision.StartElement,
+                    string.Join(",", decision.ElementToAction.Select(GetLabelText)))
                 .AppendLine();
         }
 

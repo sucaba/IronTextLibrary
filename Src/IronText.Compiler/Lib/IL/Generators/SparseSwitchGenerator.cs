@@ -7,7 +7,7 @@ using IronText.Lib.Shared;
 
 namespace IronText.Lib.IL.Generators
 {
-    class SparseSwitchGenerator : SwitchGenerator, IDecisionProgramWriter
+    class SparseSwitchGenerator : SwitchGenerator, IDecisionVisitor
     {
         private SwitchGeneratorAction action;
         private List<Ref<Labels>>     labels;
@@ -74,36 +74,28 @@ namespace IronText.Lib.IL.Generators
             this.emit = emit;
             this.ldvalue = ldvalue;
             this.labels = new List<Ref<Labels>>(64);
-            node.PrintProgram(this);
+            node.Accept(this);
 
             // Debug.Write(node);
         }
 
-        void IDecisionProgramWriter.Action(Decision labelNode, int action)
+        void IDecisionVisitor.Visit(ActionDecision decision)
         {
-            emit.Label(GetNodeLabel(labelNode).Def);
+            emit.Label(GetNodeLabel(decision).Def);
 
-            this.action(emit, action);
+            this.action(emit, decision.Action);
         }
 
-        void IDecisionProgramWriter.Jump(Decision labelNode, Decision destination)
+        void IDecisionVisitor.Visit(RelationalBranchDecision decision)
         {
             emit
-                .Label(GetNodeLabel(labelNode).Def)
-
-                .Br(GetNodeLabel(destination));
-        }
-
-        void IDecisionProgramWriter.CondJump(Decision labelNode, RelationalOperator op, int operand, Decision destination)
-        {
-            emit
-                .Label(GetNodeLabel(labelNode).Def)
+                .Label(GetNodeLabel(decision).Def)
                 .Do(ldvalue)
-                .Ldc_I4(operand)
+                .Ldc_I4(decision.Operand)
                 ;
 
-            var label = GetNodeLabel(destination);
-            switch (op)
+            var label = GetNodeLabel(decision.Right);
+            switch (decision.Operator.Negate())
             {
                 case RelationalOperator.Equal:          emit.Beq(label);    break;
                 case RelationalOperator.NotEqual:       emit.Bne_Un(label); break;
@@ -116,14 +108,14 @@ namespace IronText.Lib.IL.Generators
             }
         }
 
-        public void JumpTable(Decision labelNode, int startElement, Decision[] elementToAction)
+        public void Visit(JumpTableDecision decision)
         {
             emit
-                .Label(GetNodeLabel(labelNode).Def)
+                .Label(GetNodeLabel(decision).Def)
                 .Do(ldvalue)
-                .Ldc_I4(startElement)
+                .Ldc_I4(decision.StartElement)
                 .Sub()
-                .Switch(elementToAction.Select(GetNodeLabel).ToArray())
+                .Switch(decision.ElementToAction.Select(GetNodeLabel).ToArray())
                 ;
         }
 

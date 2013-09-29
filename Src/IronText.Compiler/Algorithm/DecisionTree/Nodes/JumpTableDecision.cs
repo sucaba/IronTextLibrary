@@ -31,18 +31,22 @@ namespace IronText.Algorithm
             }
         }
 
+        public int StartElement { get { return startElement; } }
+
+        public Decision[] ElementToAction { get { return elementToAction; } }
+
         public override int Decide(int value)
         {
             value -= startElement;
             return elementToAction[value].Decide(value);
         }
 
-        public override void PrintProgram(IDecisionProgramWriter program)
+        public override void Accept(IDecisionVisitor program)
         {
-            program.JumpTable(this, startElement, elementToAction);
+            program.Visit(this);
             foreach (var action in leafDecisions.Values)
             {
-                action.PrintProgram(program);
+                action.Accept(program);
             }
         }
     }

@@ -53,7 +53,7 @@
     <Compile Include="Algorithm\DecisionTree\Nodes\BranchDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\Decision.cs" />
     <Compile Include="Algorithm\DecisionTree\DecisionProgramWriter.cs" />
-    <Compile Include="Algorithm\DecisionTree\IDecisionProgramWriter.cs" />
+    <Compile Include="Algorithm\DecisionTree\IDecisionVisitor.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\JumpTableDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalBranchDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalOperator.cs" />

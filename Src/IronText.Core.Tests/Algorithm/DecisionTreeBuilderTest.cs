@@ -136,7 +136,7 @@ namespace IronText.Tests.Algorithm
         private void PrintProgram(Decision nodes)
         {
             StringBuilder output = new StringBuilder();
-            nodes.PrintProgram(new DecisionProgramWriter(output));
+            nodes.Accept(new DecisionProgramWriter(output));
             Debug.WriteLine(output);
         }
 

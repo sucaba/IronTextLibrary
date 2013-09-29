@@ -15,9 +15,9 @@ namespace IronText.Algorithm
             return Action;
         }
 
-        public override void PrintProgram(IDecisionProgramWriter program)
+        public override void Accept(IDecisionVisitor program)
         {
-            program.Action(this, Action);
+            program.Visit(this);
         }
     }
 }

@@ -23,11 +23,11 @@ namespace IronText.Algorithm
             return Right.Decide(value);
         }
 
-        public override void PrintProgram(IDecisionProgramWriter program)
+        public override void Accept(IDecisionVisitor program)
         {
-            program.CondJump(this, Operator.Negate(), Operand, Right);
-            Left.PrintProgram(program);
-            Right.PrintProgram(program);
+            program.Visit(this);
+            Left.Accept(program);
+            Right.Accept(program);
         }
 
         private bool Test(int value)

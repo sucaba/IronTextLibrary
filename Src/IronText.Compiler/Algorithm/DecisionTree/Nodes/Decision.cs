@@ -8,12 +8,12 @@ namespace IronText.Algorithm
 
         public abstract int Decide(int value);
 
-        public abstract void PrintProgram(IDecisionProgramWriter program);
+        public abstract void Accept(IDecisionVisitor program);
 
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            this.PrintProgram(new DecisionProgramWriter(output));
+            this.Accept(new DecisionProgramWriter(output));
             return output.ToString();
         }
     }
