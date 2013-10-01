@@ -5,8 +5,8 @@ namespace IronText.Framework
 
     sealed class ReductionQueue<T> : IReductionQueue<T>
     {
-        private readonly Queue<Reduction<T>> reductions = new Queue<Reduction<T>>();
-        private readonly Queue<GssReducePath<T>> pendingPaths = new Queue<GssReducePath<T>>();
+        private readonly Queue<Reduction<T>> reductions = new Queue<Reduction<T>>(10);
+        private readonly Queue<GssReducePath<T>> pendingPaths = new Queue<GssReducePath<T>>(10);
 
         public ReductionQueue()
         {

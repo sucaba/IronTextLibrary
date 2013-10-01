@@ -39,17 +39,24 @@ namespace CSharpParser.Tests
         }
 
         [Test]
-        public void BigTest()
+        public void BigRecognizerTest()
         {
             string path = "Sample2.cs";
             Test(path, TestFlags.RunRecognizer, 3);
         }
 
         [Test]
+        public void BigTest()
+        {
+            string path = "Sample2.cs";
+            Test(path, TestFlags.All, 3);
+        }
+
+        [Test]
         public void ProfilableRecognizeTest()
         {
             string path = "Sample1.cs";
-            Test(path, TestFlags.RunSppfBuilder, repeatCount:1000);
+            Test(path, TestFlags.RunRecognizer, repeatCount:1);
         }
 
         private void Test(string path, TestFlags flags = TestFlags.All, int repeatCount = 3)

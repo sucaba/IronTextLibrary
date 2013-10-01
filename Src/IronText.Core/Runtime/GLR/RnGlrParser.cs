@@ -114,9 +114,9 @@ namespace IronText.Framework
             foreach (var frontNode in gss.Front)
             {
                 var shift = GetShift(frontNode.State, item.Id);
-                if (shift.HasValue)
+                if (shift >= 0)
                 {
-                    Q.Enqueue(new PendingShift(frontNode, shift.Value));
+                    Q.Enqueue(new PendingShift(frontNode, shift));
                 }
             }
 
@@ -353,17 +353,9 @@ namespace IronText.Framework
             return action.State;
         }
 
-        private IEnumerable<ModifiedReduction> GetReductions(State state, Token token)
+        private int GetShift(State state, Token token)
         {
-            var result = new List<ModifiedReduction>();
-            int? shift;
-            GetParserActions(state, token, out shift, result);
-            return result;
-        }
-
-        private int? GetShift(State state, Token token)
-        {
-            int? shift = null;
+            int shift = -1;
 
             ParserAction action = GetDfaCell(state, token);
             switch (action.Kind)
@@ -371,50 +363,29 @@ namespace IronText.Framework
                 case ParserActionKind.Shift:
                     shift = action.State;
                     break;
-                case ParserActionKind.Accept:
-                    accepted = true;
-                    break;
                 case ParserActionKind.Conflict:
                     foreach (ParserAction conflictAction in GetConflictActions(action.Value1, action.Value2))
                     {
-                        switch (conflictAction.Kind)
+                        if (conflictAction.Kind == ParserActionKind.Shift)
                         {
-                            case ParserActionKind.Shift:
-                                shift = conflictAction.State;
-                                break;
-                            case ParserActionKind.Reduce:
-                                break;
+                            shift = conflictAction.State;
+                            break;
                         }
                     }
-
                     break;
             }
 
             return shift;
         }
 
-        private bool GetParserActions(State state, Token token, out int? shift, List<ModifiedReduction> reductions)
+        private IEnumerable<ModifiedReduction> GetReductions(State state, Token token)
         {
-            shift = null;
-
             ParserAction action = GetDfaCell(state, token);
-            if (action == null)
-            {
-                return false;
-            }
-
             switch (action.Kind)
             {
-                case ParserActionKind.Shift:
-                    shift = action.State;
-                    break;
                 case ParserActionKind.Reduce:
-                    if (reductions != null)
-                    {
-                        var rule = grammar.Rules[action.Rule];
-                        reductions.Add(new ModifiedReduction(rule, action.Size));
-                    }
-
+                    var rule = grammar.Rules[action.Rule];
+                    yield return new ModifiedReduction(rule, action.Size);
                     break;
                 case ParserActionKind.Accept:
                     accepted = true;
@@ -422,26 +393,14 @@ namespace IronText.Framework
                 case ParserActionKind.Conflict:
                     foreach (ParserAction conflictAction in GetConflictActions(action.Value1, action.Value2))
                     {
-                        switch (conflictAction.Kind)
+                        if (conflictAction.Kind == ParserActionKind.Reduce)
                         {
-                            case ParserActionKind.Shift:
-                                shift = conflictAction.State;
-                                break;
-                            case ParserActionKind.Reduce:
-                                if (reductions != null)
-                                {
-                                    var crule = grammar.Rules[conflictAction.Rule];
-                                    reductions.Add(new ModifiedReduction(crule, conflictAction.Size));
-                                }
-
-                                break;
+                            var crule = grammar.Rules[conflictAction.Rule];
+                            yield return new ModifiedReduction(crule, conflictAction.Size);
                         }
                     }
-
                     break;
             }
-
-            return true;
         }
 
         private IEnumerable<ParserAction> GetConflictActions(int start, short count)
@@ -455,9 +414,7 @@ namespace IronText.Framework
 
         private ParserAction GetDfaCell(State state, Token token)
         {
-            int cell = transition(state, token);
-            var result = ParserAction.Decode(cell);
-            return result;
+            return ParserAction.Decode(transition(state, token));
         }
 
         struct PendingShift

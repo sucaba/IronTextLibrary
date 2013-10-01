@@ -267,6 +267,7 @@ namespace Calculator
             }
         }
     }
+
     [Language]
     [Precedence("=", 0, Associativity.None)]
     [Precedence("+", 1)]
@@ -354,6 +355,7 @@ namespace Calculator
             }
         }
     }
+
     [Language]
     [Precedence("=", 0, Associativity.None)]
     [Precedence("+", 1)]

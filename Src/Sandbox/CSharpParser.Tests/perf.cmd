@@ -10,9 +10,6 @@ set Nunit=C:\Program Files (x86)\TestDriven.NET 3\NUnit\2.5\nunit-console-x86.ex
 set TestName=CSharpParser.Tests.BasicTest.ProfilableRecognizeTest
 set OUTPUTPATH=CSharpParsingTest.vsp
 
-:: set TestName=CSharpParser.Tests.BasicTest.BigTest
-:: set OUTPUTPATH=CSharpParsingTest_Big.vsp
-
 pushd %~dp0
 
 :: Run test to build derived DLLs
@@ -23,7 +20,9 @@ pushd %~dp0
 %command% "%VSInstr%" CSharpParser.Tests.dll 
 
 :: Initialize the .NET Framework profiling environment variables.
-%command% call "%VSPerfClrEnv%" /tracegclife
+%command% call "%VSPerfClrEnv%" /traceon
+::/traceon
+::/tracegclife
 
 :: Start the profiler. 
 %command% "%VSPerfCmd%" /start:trace /output:%OUTPUTPATH%
