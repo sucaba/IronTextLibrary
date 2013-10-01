@@ -36,25 +36,20 @@ namespace IronText.Framework
             Debug.Assert(rightLink != null);
 
             int tail = size == 0 ? 0 : 1;
-            foreach (var path in GssReducePath<T>.GetAll(
-                                    rightLink.LeftNode,
-                                    size - tail,
-                                    tail,
-                                    rule,
-                                    rightLink))
-            {
-                InternalEnqueue(path);
-            }
+            GssReducePath<T>.GetAll(
+                rightLink.LeftNode,
+                size - tail,
+                tail,
+                rule,
+                rightLink,
+                InternalEnqueue);
         }
 
         public void Enqueue(GssNode<T> rightNode, BnfRule rule, int size)
         {
             if (size == 0)
             {
-                foreach (var path in GssReducePath<T>.GetAll(rightNode, 0, 0, rule, null))
-                {
-                    InternalEnqueue(path);
-                }
+                GssReducePath<T>.GetAll(rightNode, 0, 0, rule, null, InternalEnqueue);
             }
             else
             {

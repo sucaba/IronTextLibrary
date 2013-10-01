@@ -60,10 +60,13 @@ namespace IronText.Framework
                 var size = r.Size;
 
                 int tail = (r.Size != 0 && r.RightLink != null) ? 1 : 0;
-                foreach (var path in GssReducePath<T>.GetAll(r.RightNode, size - tail, tail, r.Rule, r.RightLink))
-                {
-                    pendingPaths.Enqueue(path);
-                }
+                GssReducePath<T>.GetAll(
+                    r.RightNode,
+                    size - tail,
+                    tail,
+                    r.Rule,
+                    r.RightLink,
+                    pendingPaths.Enqueue);
             }
 
             return pendingPaths.Dequeue();

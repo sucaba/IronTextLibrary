@@ -24,7 +24,7 @@ namespace IronText.Framework
         private readonly Gss<T>               gss;
         private readonly Queue<PendingShift>  Q = new Queue<PendingShift>(4);
         private readonly IReductionQueue<T>   R;
-        private readonly Dictionary<Tuple<Token,int>,T> N = new Dictionary<Tuple<Token,int>,T>();
+        private readonly Dictionary<long,T> N = new Dictionary<long,T>();
         private readonly T[]                  nodeBuffer;
         private readonly int[]                tokenComplexity;
 
@@ -269,8 +269,8 @@ namespace IronText.Framework
 
                     int c = u.Layer;
                     T currentValue;
-                    // TODO: Performance. Choose better collection
-                    if (N.TryGetValue(Tuple.Create(X, c), out currentValue))
+                    var Nkey = GetNKey(X, c);
+                    if (N.TryGetValue(Nkey, out currentValue))
                     {
                         z = producer.Merge(currentValue, Λ, (IStackLookback<T>)u);
                     }
@@ -279,7 +279,7 @@ namespace IronText.Framework
                         z = Λ;
                     }
 
-                    N[Tuple.Create(X, c)] = z;
+                    N[Nkey] = z;
                 }
 
                 bool stateAlreadyExists = gss.GetFrontNode(l) != null;
@@ -332,7 +332,7 @@ namespace IronText.Framework
         private void Shifter(Msg item)
         {
             var z = producer.CreateLeaf(item);
-            N[Tuple.Create(item.Id, gss.CurrentLayer)] = z;
+            N[GetNKey(item.Id, gss.CurrentLayer)] = z;
 
             while (Q.Count != 0)
             {
@@ -363,8 +363,33 @@ namespace IronText.Framework
 
         private int? GetShift(State state, Token token)
         {
-            int? shift;
-            GetParserActions(state, token, out shift, null);
+            int? shift = null;
+
+            ParserAction action = GetDfaCell(state, token);
+            switch (action.Kind)
+            {
+                case ParserActionKind.Shift:
+                    shift = action.State;
+                    break;
+                case ParserActionKind.Accept:
+                    accepted = true;
+                    break;
+                case ParserActionKind.Conflict:
+                    foreach (ParserAction conflictAction in GetConflictActions(action.Value1, action.Value2))
+                    {
+                        switch (conflictAction.Kind)
+                        {
+                            case ParserActionKind.Shift:
+                                shift = conflictAction.State;
+                                break;
+                            case ParserActionKind.Reduce:
+                                break;
+                        }
+                    }
+
+                    break;
+            }
+
             return shift;
         }
 
@@ -502,6 +527,11 @@ namespace IronText.Framework
             }
 
             return result.Next(currentInput);
+        }
+
+        private static long GetNKey(long X, int c)
+        {
+            return (X << 32) + c;
         }
     }
 }

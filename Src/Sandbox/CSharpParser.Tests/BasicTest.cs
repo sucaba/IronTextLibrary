@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using IronText.Diagnostics;
 using IronText.Framework;
@@ -40,14 +42,14 @@ namespace CSharpParser.Tests
         public void BigTest()
         {
             string path = "Sample2.cs";
-            Test(path);
+            Test(path, TestFlags.RunRecognizer, 3);
         }
 
         [Test]
         public void ProfilableRecognizeTest()
         {
             string path = "Sample1.cs";
-            Test(path, TestFlags.RunRecognizer, repeatCount:3);
+            Test(path, TestFlags.RunSppfBuilder, repeatCount:1000);
         }
 
         private void Test(string path, TestFlags flags = TestFlags.All, int repeatCount = 3)

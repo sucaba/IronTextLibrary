@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace IronText.Framework
 {
@@ -15,36 +16,41 @@ namespace IronText.Framework
             this.Links = links;
         }
 
-        public static GssReducePath<T>[] GetAll(
+        public static void GetAll(
             GssNode<T> rightNode,
             int        size,
             int        tail,
             BnfRule    rule,
-            GssLink<T> rightLink)
+            GssLink<T> rightLink,
+            Action<GssReducePath<T>> action)
         {
-            var result = GetAll(rightNode, size, tail);
-            int i = result.Length;
-            while (i-- != 0)
-            {
-                result[i].Rule = rule;
-                result[i].Size = size + tail;
-
-                if (tail != 0)
+             GetAll(
+                rightNode,
+                size,
+                tail,
+                path =>
                 {
-                    result[i].Links[size] = rightLink;
-                }
-            }
+                    path.Rule = rule;
+                    path.Size = size + tail;
 
-            return result;
+                    if (tail != 0)
+                    {
+                        path.Links[size] = rightLink;
+                    }
+
+                    action(path);
+                });
         }
 
-        private static GssReducePath<T>[] GetAll(GssNode<T> rightNode, int size, int tail)
+        private static void GetAll(
+            GssNode<T> rightNode,
+            int size,
+            int tail,
+            Action<GssReducePath<T>> action)
         {
-            GssReducePath<T>[] result;
-
             if (size == 0)
             {
-                result = new [] { new GssReducePath<T>(rightNode, new GssLink<T>[tail]) };
+                action( new GssReducePath<T>(rightNode, new GssLink<T>[tail]) );
             }
             else if (size <= rightNode.DeterministicDepth)
             {
@@ -60,7 +66,7 @@ namespace IronText.Framework
                     node = link.LeftNode;
                 }
 
-                result = new [] { new GssReducePath<T>(node, links) };
+                action( new GssReducePath<T>(node, links) );
             }
             else
             {
@@ -101,14 +107,11 @@ namespace IronText.Framework
                 }
 
                 int count = front.Count;
-                result = new GssReducePath<T>[count];
                 for (int i = 0; i != count; ++i)
                 {
-                    result[i] = new GssReducePath<T>(front[i].LeftNode, frontPaths[i]);
+                    action( new GssReducePath<T>(front[i].LeftNode, frontPaths[i]) );
                 }
             }
-
-            return result;
         }
 
         public void CopyDataTo(T[] buffer)
