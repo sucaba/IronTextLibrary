@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using IronText.Extensibility;
 using IronText.Framework;
 
@@ -114,6 +115,8 @@ namespace IronText.MetadataCompiler
                 this.IsValid = false;
             }
 
+            CheckAllScanRulesDefined(scanDataCollector.UndefinedTerminals, startType, logging);
+
             allScanModes = scanDataCollector.ScanModes;
             LinkRelatedTokens(allScanModes);
 
@@ -122,6 +125,38 @@ namespace IronText.MetadataCompiler
             ContextTypes = allMetadata.SelectMany(m => m.GetContextTypes()).ToArray();
 
             this.ReportBuilders = allMetadata.SelectMany(m => m.GetReportBuilders()).ToArray();
+        }
+
+        private void CheckAllScanRulesDefined(List<TokenRef> undefinedTerminals, Type member, ILogging logging)
+        {
+            if (undefinedTerminals.Count == 0)
+            {
+                return;
+            }
+
+            var message = new StringBuilder("Undefined scan or parse rules for tokens: ");
+            bool first = true;
+            foreach (var term in undefinedTerminals)
+            {
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    message.Append(", ");
+                }
+
+                message.Append(term.TokenType.Name);
+            }
+
+            logging.Write(
+                new LogEntry
+                {
+                    Severity = Severity.Error,
+                    Message  = message.ToString(),
+                    Member   = member,
+                });
         }
 
         public bool IsValid { get; private set; }

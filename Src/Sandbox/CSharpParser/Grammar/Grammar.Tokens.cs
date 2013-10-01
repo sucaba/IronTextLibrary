@@ -229,7 +229,6 @@ namespace CSharpParser
     public interface CsSelectClause { }
     public interface CsSelectionStatement { }
     public interface CsSelectOrGroupClause { }
-    public interface CsSemi { }
     public interface CsSemicolon { }
     public interface CsSetAccessorDeclaration { }
     public interface CsShiftExpression { }

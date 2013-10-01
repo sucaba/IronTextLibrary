@@ -15,7 +15,7 @@ namespace CSharpParser
                 CsIdentifier                 id,
                 Opt<CsEnumBase>              enumBase,
                 CsEnumBody                   body,
-                Opt<CsSemi>                  semi);
+                Opt<CsSemicolon>             semi);
 
         [Parse(":", null)]
         CsEnumBase EnumBase(CsIntegralType type);

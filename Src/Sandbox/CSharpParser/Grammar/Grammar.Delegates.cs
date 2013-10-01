@@ -17,5 +17,12 @@ namespace CSharpParser
                 Opt<CsVariantTypeParameterList> typeParams,
                 Opt<CsFormalParameterList>      formalParams,
                 CsOptList<CsTypeParameterConstraintClause> typeParameterConstraints);
+
+        [Parse("new")]
+        [Parse("public")]
+        [Parse("protected")]
+        [Parse("internal")]
+        [Parse("private")]
+        CsDelegateModifier DelegateModifier();
     }
 }

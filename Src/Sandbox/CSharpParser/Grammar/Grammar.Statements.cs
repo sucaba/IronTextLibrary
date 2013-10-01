@@ -75,6 +75,12 @@ namespace CSharpParser
                 CsLocalVariableType                    type,
                 CsCommaList<CsLocalVariableDeclarator> declarators);
 
+        [Parse("var")]
+        CsLocalVariableType LocalVariableType();
+
+        [Parse]
+        CsLocalVariableType LocalVariableType(CsType type);
+
         [Parse]
         CsLocalVariableDeclarator LocalVariableDeclarator(
                 CsIdentifier identifier);

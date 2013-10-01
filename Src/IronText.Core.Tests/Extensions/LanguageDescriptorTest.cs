@@ -14,7 +14,7 @@ namespace IronText.Tests.Extensibility
         [Test]
         public void LanguageDescriptorCollectDataFromTypeMetadata()
         {
-            ILogging logging = ExceptionLogging.Instance;
+            ILogging logging = new MemoryLogging();
             var target = new LanguageDefinition(typeof(IMetadtaTest0), logging);
             ITokenPool tokenPool = target;
             Assert.AreEqual(tokenPool.GetToken(typeof(void)), target.Start);

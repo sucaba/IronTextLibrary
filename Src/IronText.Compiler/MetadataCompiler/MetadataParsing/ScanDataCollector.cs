@@ -32,11 +32,27 @@ namespace IronText.MetadataCompiler
             this.allScanModes = new List<ScanMode>();
             this.terminals    = new List<TokenRef>(terminals);
             this.voidTerm = tokenPool.ScanSkipToken;
-            this.terminals.Add(voidTerm);
+            //this.terminals.Add(voidTerm);
 
             this.tokenPool    = tokenPool;
 
             processedScanModes = new Stack<ScanMode>();
+        }
+
+        public List<TokenRef> UndefinedTerminals
+        {
+            get
+            {
+                return 
+                    terminals
+                    .Except(
+                        allScanModes
+                        .SelectMany(mode => mode.ScanRules)
+                        .SelectMany(rule => rule.GetTokenRefGroups())
+                        .SelectMany(tokens => tokens)
+                        .Distinct())
+                    .ToList();
+            }
         }
 
         public bool HasInvalidData { get { return invalidMetadata.Count != 0; } }
