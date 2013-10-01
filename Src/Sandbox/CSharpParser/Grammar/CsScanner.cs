@@ -26,7 +26,22 @@ namespace CSharpParser
                 ('_' | Lu | Ll | Lt | Lm | Lo | Nl)
                 (Pc | Lu | Ll | Lt | Lm | Lo | Nl | Nd | Mn | Mc | Cf)*
                ")]
-        public CsIdentifier Identifier(string text) { return null; }
+        public string Identifier(string text) { return text; }
+
+        [Parse]
+        public CsIdentifier NameIdentifier(string name) { return null; }
+
+        [Parse("var")]
+        [Parse("assembly")]
+        [Parse("module")]
+        [Parse("field")]
+        [Parse("event")]
+        [Parse("method")]
+        [Parse("param")]
+        [Parse("property")]
+        [Parse("return")]
+        [Parse("type")]
+        public CsIdentifier KeywordIdentifier() { return null; }
 
         [Literal("true")]
         public CsBoolean BooleanTrue(string text) { return null; }
