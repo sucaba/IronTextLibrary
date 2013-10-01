@@ -1,5 +1,4 @@
-﻿
-namespace IronText.Algorithm
+﻿namespace IronText.Algorithm
 {
     public interface IDecisionVisitor
     {

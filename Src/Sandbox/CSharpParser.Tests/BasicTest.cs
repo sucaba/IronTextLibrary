@@ -44,13 +44,13 @@ namespace CSharpParser.Tests
         }
 
         [Test]
-        public void ProfilableTest()
+        public void ProfilableRecognizeTest()
         {
-            string path = "Sample0.cs";
-            Test(path);
+            string path = "Sample1.cs";
+            Test(path, TestFlags.RunRecognizer, repeatCount:3);
         }
 
-        private void Test(string path)
+        private void Test(string path, TestFlags flags = TestFlags.All, int repeatCount = 3)
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
@@ -60,81 +60,88 @@ namespace CSharpParser.Tests
                 interp.LogKind = LoggingKind.ConsoleOut;
                 TestLoad(timer, path, interp);
 
-                //int tokenCount = interp.Scan(input, path).Count();
-                //Console.WriteLine("token count = {0}", tokenCount);
-                for (int i = 0; i != 3; ++i)
+                using (var input = new StreamReader(path))
                 {
-                    using (var input = new StreamReader(path))
+                    for (int i = 0; i != repeatCount; ++i)
                     {
-                        input.BaseStream.Seek(0, SeekOrigin.Begin);
-                        timer.Reset();
-                        timer.Start();
-                        input.ReadToEnd();
-                        timer.Stop();
+                        if ((flags & TestFlags.RunFileRead) == TestFlags.RunFileRead)
+                        {
+                            input.BaseStream.Seek(0, SeekOrigin.Begin);
+                            timer.Reset();
+                            timer.Start();
+                            input.ReadToEnd();
+                            timer.Stop();
 
-                        Console.WriteLine(
-                            "{1}(1,1): message : Read      time={0}sec",
-                            timer.Elapsed.TotalSeconds,
-                            path);
+                            Console.WriteLine(
+                                "{1}(1,1): message : Read      time={0}sec",
+                                timer.Elapsed.TotalSeconds,
+                                path);
+                        }
 
-                        input.BaseStream.Seek(0, SeekOrigin.Begin);
-                        timer.Reset();
-                        timer.Start();
-                        interp.Scan(input, path).Count();
-                        timer.Stop();
+                        if ((flags & TestFlags.RunScanner) == TestFlags.RunScanner)
+                        {
+                            input.BaseStream.Seek(0, SeekOrigin.Begin);
+                            timer.Reset();
+                            timer.Start();
+                            int tokenCount = interp.Scan(input, path).Count();
+                            timer.Stop();
 
-                        Console.WriteLine(
-                            "{1}(1,1): message : Scan      time={0}sec",
-                            timer.Elapsed.TotalSeconds,
-                            path);
+                            Console.WriteLine(
+                                "{1}(1,1): message : Scan      time={0}sec // token count = {2}",
+                                timer.Elapsed.TotalSeconds,
+                                path,
+                                tokenCount);
+                        }
 
-                        input.BaseStream.Seek(0, SeekOrigin.Begin);
-                        timer.Reset();
-                        timer.Start();
-                        interp.Recognize(input, path);
-                        timer.Stop();
+                        if ((flags & TestFlags.RunRecognizer) == TestFlags.RunRecognizer)
+                        {
+                            input.BaseStream.Seek(0, SeekOrigin.Begin);
+                            timer.Reset();
+                            timer.Start();
+                            interp.Recognize(input, path);
+                            timer.Stop();
 
-                        Console.WriteLine(
-                            "{1}(1,1): message : Recognize time={0}sec",
-                            timer.Elapsed.TotalSeconds,
-                            path);
+                            Console.WriteLine(
+                                "{1}(1,1): message : Recognize time={0}sec",
+                                timer.Elapsed.TotalSeconds,
+                                path);
+                        }
 
-                        input.BaseStream.Seek(0, SeekOrigin.Begin);
-                        timer.Reset();
-                        timer.Start();
-                        interp.Parse(input, path);
-                        timer.Stop();
+                        if ((flags & TestFlags.RunParser) == TestFlags.RunParser)
+                        {
+                            input.BaseStream.Seek(0, SeekOrigin.Begin);
+                            timer.Reset();
+                            timer.Start();
+                            interp.Parse(input, path);
+                            timer.Stop();
 
-                        Console.WriteLine(
-                            "{1}(1,1): message : Parse     time={0}sec",
-                            timer.Elapsed.TotalSeconds,
-                            path);
+                            Console.WriteLine(
+                                "{1}(1,1): message : Parse     time={0}sec",
+                                timer.Elapsed.TotalSeconds,
+                                path);
+                        }
 
-                        input.BaseStream.Seek(0, SeekOrigin.Begin);
-                        timer.Reset();
-                        timer.Start();
-                        interp.BuildTree(input, path);
-                        timer.Stop();
+                        if ((flags & TestFlags.RunSppfBuilder) == TestFlags.RunSppfBuilder)
+                        {
+                            input.BaseStream.Seek(0, SeekOrigin.Begin);
+                            timer.Reset();
+                            timer.Start();
+                            interp.BuildTree(input, path);
+                            timer.Stop();
 
-                        Console.WriteLine(
-                            "{1}(1,1): message : BuildTree time={0}sec",
-                            timer.Elapsed.TotalSeconds,
-                            path);
+                            Console.WriteLine(
+                                "{1}(1,1): message : BuildTree time={0}sec",
+                                timer.Elapsed.TotalSeconds,
+                                path);
+                        }
                     }
-#if false
-                    var tree = interp.BuildTree(input, path);
-                    using (IGraphView graph = new GvGraphView(Path.ChangeExtension(path, "sppf.gv")))
-                    {
-                        tree.WriteGraph(graph, interp.Grammar, false);
-                    }
-#endif
                 }
             }
         }
 
         private static void TestLoad(Stopwatch timer, string path, Interpreter<ICsGrammar> interp)
         {
-            interp.Parse("");
+            interp.Parse("[assembly:foo]");
             timer.Stop();
             if (timer.ElapsedMilliseconds > 1000)
             {
@@ -143,6 +150,16 @@ namespace CSharpParser.Tests
                     timer.Elapsed.TotalSeconds,
                     path);
             }
+        }
+
+        enum TestFlags
+        {
+            RunFileRead     = 0x01,
+            RunScanner      = 0x02,
+            RunRecognizer   = 0x04,
+            RunParser       = 0x08,
+            RunSppfBuilder  = 0x10,
+            All             = 0xff,
         }
     }
 }

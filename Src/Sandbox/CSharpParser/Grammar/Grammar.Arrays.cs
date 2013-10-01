@@ -22,6 +22,6 @@ namespace CSharpParser
                 CsCommaList<CsVariableInitializer> initialziers);
 
         [Parse]
-        CsNonArrayType NonArrayType();
+        CsNonArrayType NonArrayType(CsType type);
     }
 }

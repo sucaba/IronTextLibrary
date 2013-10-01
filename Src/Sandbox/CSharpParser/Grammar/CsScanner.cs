@@ -72,8 +72,8 @@ namespace CSharpParser
         [Literal("null")]
         public CsNull Null() { return null; }
 
-        [Scan("',' {2,}")]
-        public CsDimSeparators DimSeparators() { return null; }
+        [Parse]
+        public CsDimSeparators DimSeparators(CsCommas commas) { return null; }
 
     #region Typed keywords
 

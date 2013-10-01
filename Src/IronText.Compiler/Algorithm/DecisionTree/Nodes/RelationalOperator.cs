@@ -26,7 +26,7 @@ namespace IronText.Algorithm
                 case RelationalOperator.GreaterOrEqual: return ">=";
             }
 
-            throw new InvalidOperationException("Not supported operand");
+            throw new InvalidOperationException("Not supported operator");
         }
 
         public static RelationalOperator Negate(this RelationalOperator op)

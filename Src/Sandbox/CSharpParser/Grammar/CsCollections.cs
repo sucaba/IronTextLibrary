@@ -62,6 +62,7 @@ namespace CSharpParser
             return list;
         }
 
+        // TODO: This rule can cause incorrect reductions if followed by a ','-rule reduction
         [Parse]
         public static CsOptCommaList<T> OptCommaList<T>() 
         {
