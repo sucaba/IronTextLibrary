@@ -61,12 +61,18 @@ namespace IronText.Lib.IL.Generators
         {
             this.action = action;
 
+            var platformInfo = new DecisionTreePlatformInfo(
+                                    branchCost:            7,
+                                    switchCost:            3,
+                                    maxSwitchElementCount: 1024,
+                                    minSwitchDensity:      0.5);
+
 #if false
-            var decisionTree = new DecisionTreeBuilder(intMap.DefaultValue) { MaxLinearCount = this.MaxLinearCount };
-            var node = decisionTree.BuildBinaryTree(intMap.Enumerate().ToArray());
+            var decisionTree = new BinaryDecisionTreeBuilder(intMap.DefaultValue, platformInfo);
+            var node = decisionTree.Build(intMap.Enumerate().ToArray());
 #else
-            var decisionTree = new DecisionTreeBuilder(-1);
-            var node = decisionTree.BuildBalanced(
+            var decisionTree = new DecisionTreeBuilder(-1, platformInfo);
+            var node = decisionTree.Build(
                     intMap,
                     possibleBounds,
                     frequency);

@@ -230,9 +230,7 @@ namespace IronText.Framework
         {
             foreach (var w in gss.Front)
             {
-                var stateReductions = GetReductions(w.State, item.Id);
-
-                foreach (var red in stateReductions)
+                foreach (var red in GetReductions(w.State, item.Id))
                 {
                     R.Enqueue(w, red.Rule, red.Size);
                 }

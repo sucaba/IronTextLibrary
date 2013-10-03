@@ -8,6 +8,13 @@ namespace IronText.Tests.Algorithm
     [TestFixture]
     public class DecisionTreeBuilderTest
     {
+        private readonly DecisionTreePlatformInfo platformInfo = 
+                            new DecisionTreePlatformInfo(
+                                    maxLinearCount:        3,
+                                    branchCost:            7,
+                                    switchCost:            3,
+                                    maxSwitchElementCount: 1024,
+                                    minSwitchDensity:      0.5);
         [Test]
         public void TestSameActionUnification()
         {
@@ -21,9 +28,9 @@ namespace IronText.Tests.Algorithm
             elementToAction.Set(new IntArrow<int>(50, 1));
             elementToAction.Set(new IntArrow<int>(51, 100, 1));
 
-            var target = new DecisionTreeBuilder(-100);
+            var target = new DecisionTreeBuilder(-100, platformInfo);
             var bounds = new IntInterval(int.MinValue, int.MaxValue);
-            var node = target.BuildBalanced(elementToAction, bounds, frequency);
+            var node = target.Build(elementToAction, bounds, frequency);
             PrintProgram(node);
         }
 
@@ -45,9 +52,9 @@ namespace IronText.Tests.Algorithm
             elementToAction.Set(new IntArrow<int>(50, 3));
             elementToAction.Set(new IntArrow<int>(51, 100, 4));
 
-            var target = new DecisionTreeBuilder(-100);
+            var target = new DecisionTreeBuilder(-100, platformInfo);
             var bounds = new IntInterval(int.MinValue, int.MaxValue);
-            var node = target.BuildBalanced(elementToAction, bounds, frequency);
+            var node = target.Build(elementToAction, bounds, frequency);
             PrintProgram(node);
 
             Assert.AreEqual(-1, node.Decide(int.MinValue) );
@@ -60,76 +67,6 @@ namespace IronText.Tests.Algorithm
             Assert.AreEqual(4, node.Decide(100) );
             Assert.AreEqual(-1, node.Decide(200) );
             Assert.AreEqual(-1, node.Decide(bounds.Last) );
-        }
-
-        [Test]
-        public void Test0()
-        {
-            var intArrows = 
-                new []
-                {
-                    new IntArrow<int>(0, 10),
-                    new IntArrow<int>(2, 20),
-                    new IntArrow<int>(5, 10, 30),
-                };
-
-            const int DefaultValue = -1;
-
-            var target = new DecisionTreeBuilder(DefaultValue);
-            var node = target.BuildBinaryTree(intArrows);
-            PrintProgram(node);
-
-            Assert.AreEqual(DefaultValue, Eval(node, -1));
-            Assert.AreEqual(10, Eval(node, 0));
-            Assert.AreEqual(DefaultValue, Eval(node, 1));
-            Assert.AreEqual(20, Eval(node, 2));
-            Assert.AreEqual(DefaultValue, Eval(node, 3));
-            Assert.AreEqual(DefaultValue, Eval(node, 4));
-            Assert.AreEqual(30, Eval(node, 5));
-            Assert.AreEqual(30, Eval(node, 10));
-            Assert.AreEqual(DefaultValue, Eval(node, 11));
-        }
-
-        [Test]
-        public void SingleValueInterval()
-        {
-            var intArrows = 
-                new []
-                {
-                    new IntArrow<int>(0, 10),
-                };
-
-            const int DefaultValue = -1;
-
-            var target = new DecisionTreeBuilder(DefaultValue);
-            var node = target.BuildBinaryTree(intArrows);
-            PrintProgram(node);
-
-            Assert.AreEqual(DefaultValue, Eval(node, -1));
-            Assert.AreEqual(10, Eval(node, 0));
-            Assert.AreEqual(DefaultValue, Eval(node, 1));
-        }
-
-        [Test]
-        public void SingleInterval()
-        {
-            var intArrows = 
-                new []
-                {
-                    new IntArrow<int>(0, 5, 10),
-                };
-
-            const int DefaultValue = -1;
-
-            var target = new DecisionTreeBuilder(DefaultValue);
-            var node = target.BuildBinaryTree(intArrows);
-            PrintProgram(node);
-
-            Assert.AreEqual(DefaultValue, Eval(node, -1));
-            Assert.AreEqual(10, Eval(node, 0));
-            Assert.AreEqual(10, Eval(node, 3));
-            Assert.AreEqual(10, Eval(node, 5));
-            Assert.AreEqual(DefaultValue, Eval(node, 6));
         }
 
         [Conditional("DEBUG")]

@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Algorithm\AlgorithmTest.cs" />
     <Compile Include="Algorithm\BitSetTest.cs" />
+    <Compile Include="Algorithm\BinaryDecisionTreeBuilderTest.cs" />
     <Compile Include="Algorithm\DecisionTreeBuilderTest.cs" />
     <Compile Include="Algorithm\IntIntervalTest.cs" />
     <Compile Include="Algorithm\IntMaps\SparseTableTest.cs" />

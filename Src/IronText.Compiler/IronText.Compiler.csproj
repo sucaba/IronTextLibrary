@@ -47,8 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\DecisionTree\BinaryDecisionTreeBuilder.cs" />
     <Compile Include="Algorithm\DecisionTree\DecisionTest.cs" />
     <Compile Include="Algorithm\DecisionTree\DecisionTreeBuilder.cs" />
+    <Compile Include="Algorithm\DecisionTree\DecisionTreePlatformInfo.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\ActionDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\BranchDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\Decision.cs" />
