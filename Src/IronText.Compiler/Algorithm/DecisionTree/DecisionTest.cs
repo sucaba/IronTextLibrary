@@ -1,7 +1,7 @@
 ﻿
 namespace IronText.Algorithm
 {
-    public class DecisionTest
+    internal class DecisionTest
     {
         public DecisionTest(IntInterval interval, int action, double elementProbability)
         {

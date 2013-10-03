@@ -33,6 +33,9 @@ namespace IronText.Algorithm
                     decision.Operand,
                     GetLabelText(decision.Right))
                 .AppendLine();
+
+            decision.Left.Accept(this);
+            decision.Right.Accept(this);
         }
 
         public void Visit(JumpTableDecision decision)

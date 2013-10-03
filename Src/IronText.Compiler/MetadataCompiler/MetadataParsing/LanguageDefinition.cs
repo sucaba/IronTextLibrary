@@ -153,7 +153,7 @@ namespace IronText.MetadataCompiler
             logging.Write(
                 new LogEntry
                 {
-                    Severity = Severity.Error,
+                    Severity = Severity.Warning,
                     Message  = message.ToString(),
                     Member   = member,
                 });

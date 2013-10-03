@@ -9,7 +9,7 @@ namespace IronText.Algorithm
         private readonly Decision[] elementToAction;
         private readonly Dictionary<int, Decision> leafDecisions;
 
-        public JumpTableDecision(ArraySlice<DecisionTest> tests)
+        internal JumpTableDecision(ArraySlice<DecisionTest> tests)
         {
             this.tests = tests;
             this.startElement = tests.Array[tests.Offset].Interval.First;
@@ -35,6 +35,8 @@ namespace IronText.Algorithm
 
         public Decision[] ElementToAction { get { return elementToAction; } }
 
+        public ICollection<Decision> LeafDecisions { get { return leafDecisions.Values; } }
+
         public override int Decide(int value)
         {
             value -= startElement;
@@ -44,10 +46,6 @@ namespace IronText.Algorithm
         public override void Accept(IDecisionVisitor program)
         {
             program.Visit(this);
-            foreach (var action in leafDecisions.Values)
-            {
-                action.Accept(program);
-            }
         }
     }
 }

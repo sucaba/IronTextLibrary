@@ -112,6 +112,9 @@ namespace IronText.Lib.IL.Generators
                 default:
                     throw new InvalidOperationException("Not supported operator");
             }
+
+            decision.Left.Accept(this);
+            decision.Right.Accept(this);
         }
 
         public void Visit(JumpTableDecision decision)
@@ -123,6 +126,11 @@ namespace IronText.Lib.IL.Generators
                 .Sub()
                 .Switch(decision.ElementToAction.Select(GetNodeLabel).ToArray())
                 ;
+
+            foreach (var action in decision.LeafDecisions)
+            {
+                action.Accept(this);
+            }
         }
 
         private Ref<Labels> GetNodeLabel(Decision node)

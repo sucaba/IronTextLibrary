@@ -26,8 +26,6 @@ namespace IronText.Algorithm
         public override void Accept(IDecisionVisitor program)
         {
             program.Visit(this);
-            Left.Accept(program);
-            Right.Accept(program);
         }
 
         private bool Test(int value)
