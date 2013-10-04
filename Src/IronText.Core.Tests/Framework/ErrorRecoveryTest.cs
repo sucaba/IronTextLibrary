@@ -10,14 +10,14 @@ namespace IronText.Tests.Framework
     public class ErrorRecoveryTest
     {
         [Datapoints]
-        public static ILanguage[] Languages
+        public static Type[] LanguageDefs
         {
             get
             {
                 return new[]
                     {
-                        Language.Get(typeof(RecoveryLang)),
-                        Language.Get(typeof(AmbRecoveryLang)),
+                        typeof(RecoveryLang),
+                        typeof(AmbRecoveryLang),
                     };
             }
         }
@@ -38,15 +38,19 @@ namespace IronText.Tests.Framework
         }
 
         [Theory]
-        public void PositiveParseTest(ILanguage lang)
+        public void PositiveParseTest(Type langDef)
         {
+            var lang = Language.Get(langDef);
+
             Parse(lang, "{ callFunc(); { callFunc(); callFunc () ; } callFunc(); }");
             AssertErrors(0, 0);
         }
 
         [Theory]
-        public void ScannerErrorRecovery(ILanguage lang)
+        public void ScannerErrorRecovery(Type langDef)
         {
+            var lang = Language.Get(langDef);
+
             Parse(lang, "{ $\n $ $callFunc(); }");
             AssertErrors(0, 3);
 
@@ -57,30 +61,38 @@ namespace IronText.Tests.Framework
         }
 
         [Theory]
-        public void TailScannerErrorRecovery(ILanguage lang)
+        public void TailScannerErrorRecovery(Type langDef)
         {
+            var lang = Language.Get(langDef);
+
             Parse(lang, "callF");
             AssertErrors(0, 1);
         }
 
         [Theory]
-        public void LocalCorrections(ILanguage lang)
+        public void LocalCorrections(Type langDef)
         {
+            var lang = Language.Get(langDef);
+
             // 3 local error corrections: insert, replace, delete
             Parse(lang, "{ callFunc); \n callFunc((; \n callFunc() \n  callFunc; \n } ");
             AssertErrors(0, 3);
         }
 
         [Theory]
-        public void LocalCorrectionWithBeacon(ILanguage lang)
+        public void LocalCorrectionWithBeacon(Type langDef)
         {
+            var lang = Language.Get(langDef);
+            
             Parse(lang, "{ callFunc() beacon callFunc } ");
             AssertErrors(0, 2);
         }
 
         [Theory]
-        public void TailLocalCorrections(ILanguage lang)
+        public void TailLocalCorrections(Type langDef)
         {
+            var lang = Language.Get(langDef);
+
             Parse(lang, "{ callFunc();");
             AssertErrors(0, 1);
 
@@ -91,8 +103,10 @@ namespace IronText.Tests.Framework
         }
 
         [Theory]
-        public void ErrorProductionRecovery(ILanguage lang)
+        public void ErrorProductionRecovery(Type langDef)
         {
+            var lang = Language.Get(langDef);
+
             Parse(lang,  "{ callFunc callFunc callFunc callFunc callFunc callFunc } ");
             AssertErrors(1, 0);
 
@@ -103,15 +117,19 @@ namespace IronText.Tests.Framework
         }
 
         [Theory]
-        public void PanicModeRecovery(ILanguage lang)
+        public void PanicModeRecovery(Type langDef)
         {
+            var lang = Language.Get(langDef);
+
             Parse(lang, "callFunc callFunc callFunc callFunc callFunc beacon");
             AssertErrors(0, 1);
         }
 
         [Theory]
-        public void AllLevelsRecovery(ILanguage lang)
+        public void AllLevelsRecovery(Type langDef)
         {
+            var lang = Language.Get(langDef);
+
             var context = new RecoveryLang();
 
             Assert.IsTrue(lang.Grammar.IsBeacon(lang.Identify("beacon")));

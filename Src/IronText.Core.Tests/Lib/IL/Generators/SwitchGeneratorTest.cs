@@ -64,7 +64,7 @@ namespace IronText.Tests.Lib.IL.Generators
         }
 
         [Test, Sequential]
-        public void _1_GenerateBinarySearchMap()
+        public void _1_GenerateDecisionSearchMap()
         {
             Func<int, int, IntInterval> getInterval;
             IntArrow<int>[] intervalToValue;

@@ -62,8 +62,8 @@ namespace IronText.Lib.IL.Generators
             this.action = action;
 
             var platformInfo = new DecisionTreePlatformInfo(
-                                    branchCost:            7,
-                                    switchCost:            3,
+                                    branchCost:            3,
+                                    switchCost:            8,
                                     maxSwitchElementCount: 1024,
                                     minSwitchDensity:      0.5);
 
@@ -71,16 +71,18 @@ namespace IronText.Lib.IL.Generators
             var decisionTree = new BinaryDecisionTreeBuilder(intMap.DefaultValue, platformInfo);
             var node = decisionTree.Build(intMap.Enumerate().ToArray());
 #else
-            var decisionTree = new DecisionTreeBuilder(-1, platformInfo);
-            var node = decisionTree.Build(
+            this.builder = new DecisionTreeBuilder(intMap.DefaultValue, platformInfo);
+            var node = builder.Build(
                     intMap,
                     possibleBounds,
                     frequency);
 #endif
             this.emit = emit;
             this.ldvalue = ldvalue;
-            this.labels = new List<Ref<Labels>>(64);
-            node.Accept(this);
+            this.labels = new List<Ref<Labels>>();
+
+            PlanCode(node);
+            GenerateCode();
 
             // Debug.Write(node);
         }
@@ -88,7 +90,6 @@ namespace IronText.Lib.IL.Generators
         void IDecisionVisitor.Visit(ActionDecision decision)
         {
             emit.Label(GetNodeLabel(decision).Def);
-
             this.action(emit, decision.Action);
         }
 
@@ -113,8 +114,9 @@ namespace IronText.Lib.IL.Generators
                     throw new InvalidOperationException("Not supported operator");
             }
 
-            decision.Left.Accept(this);
-            decision.Right.Accept(this);
+            GenerateCodeOrJump(decision.Left);
+
+            IntermediateGenerateCode();
         }
 
         public void Visit(JumpTableDecision decision)
@@ -126,23 +128,69 @@ namespace IronText.Lib.IL.Generators
                 .Sub()
                 .Switch(decision.ElementToAction.Select(GetNodeLabel).ToArray())
                 ;
+            // default case:
+            GenerateCodeOrJump(builder.DefaultActionDecision);
 
-            foreach (var action in decision.LeafDecisions)
+            foreach (var leaf in decision.LeafDecisions)
             {
-                action.Accept(this);
+                PlanCode(leaf);
             }
+
+            IntermediateGenerateCode();
         }
 
-        private Ref<Labels> GetNodeLabel(Decision node)
+        private Ref<Labels> GetNodeLabel(Decision decision)
         {
-            if (!node.Label.HasValue)
+            if (!decision.Label.HasValue)
             {
-                node.Label = labels.Count;
+                decision.Label = labels.Count;
                 labels.Add(emit.Labels.Generate().GetRef());
+
+                PlanCode(decision);
             }
 
-            return labels[node.Label.Value];
+            return labels[decision.Label.Value];
         }
 
+        private int generationIndex = 0;
+        private readonly List<Decision> knownDecisions = new List<Decision>();
+        private DecisionTreeBuilder builder;
+
+        private void PlanCode(Decision decision)
+        {
+            if (!knownDecisions.Contains(decision))
+            {
+                knownDecisions.Add(decision);
+            }
+        }
+
+        private void GenerateCodeOrJump(Decision decision)
+        {
+            int index = knownDecisions.IndexOf(decision);
+            if (index < 0)
+            {
+                knownDecisions.Insert(generationIndex++, decision);
+                decision.Accept(this);
+            }
+            else
+            {
+                emit.Br(GetNodeLabel(decision));
+            }
+        }
+
+        private void IntermediateGenerateCode()
+        {
+            GenerateCode();
+        }
+
+        private void GenerateCode()
+        {
+            for (; generationIndex != knownDecisions.Count; )
+            {
+                var decision = knownDecisions[generationIndex];
+                ++generationIndex;
+                decision.Accept(this);
+            }
+        }
     }
 }

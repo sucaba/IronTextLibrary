@@ -7,12 +7,18 @@ namespace IronText.Algorithm
     {
         private readonly int defaultAction;
         private readonly DecisionTreePlatformInfo platform;
+        private readonly Dictionary<int,ActionDecision> actionIdToDecision = new Dictionary<int,ActionDecision>();
 
         public DecisionTreeBuilder(int defaultAction, DecisionTreePlatformInfo platform)
         {
             this.defaultAction = defaultAction;
+            this.actionIdToDecision[defaultAction] = new ActionDecision(defaultAction);
             this.platform = platform;
         }
+
+        public ICollection<ActionDecision> ActionDecisions { get { return actionIdToDecision.Values; } }
+
+        public ActionDecision DefaultActionDecision { get { return actionIdToDecision[defaultAction]; } }
 
         public Decision Build(
             IIntMap<int>  outcomeArrows,
@@ -36,7 +42,7 @@ namespace IronText.Algorithm
         {
             if (S.Count == 1)
             {
-                return new ActionDecision(S.ElementAt(0).Action);
+                return GetActionDecision(S.ElementAt(0).Action);
             }
 
             Normalize(S);
@@ -48,6 +54,18 @@ namespace IronText.Algorithm
             {
                 return GenCond(S);
             }
+        }
+
+        private ActionDecision GetActionDecision(int id)
+        {
+            ActionDecision result;
+            if (!actionIdToDecision.TryGetValue(id, out result))
+            {
+                result = new ActionDecision(id);
+                actionIdToDecision[id] = result;
+            }
+
+            return result;
         }
 
         private Decision GenCond(ArraySlice<DecisionTest> S)
@@ -81,7 +99,7 @@ namespace IronText.Algorithm
 
         private Decision GenSwitch(ArraySlice<DecisionTest> S)
         {
-            var result = new JumpTableDecision(S);
+            var result = new JumpTableDecision(S, GetActionDecision);
             return result;
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace IronText.Algorithm
 {
@@ -7,26 +8,26 @@ namespace IronText.Algorithm
         private readonly ArraySlice<DecisionTest> tests;
         private readonly int startElement;
         private readonly Decision[] elementToAction;
-        private readonly Dictionary<int, Decision> leafDecisions;
+        private readonly List<Decision> leafDecisions = new List<Decision>();
 
-        internal JumpTableDecision(ArraySlice<DecisionTest> tests)
+        internal JumpTableDecision(ArraySlice<DecisionTest> tests, Func<int,ActionDecision> idToAction)
         {
             this.tests = tests;
             this.startElement = tests.Array[tests.Offset].Interval.First;
             int elementCount = tests.Array[tests.Offset + tests.Count - 1].Interval.Last - startElement + 1;
             this.elementToAction = new Decision[elementCount];
 
-            this.leafDecisions = new Dictionary<int, Decision>();
             foreach (var test in tests)
             {
-                if (!leafDecisions.ContainsKey(test.Action))
+                var action = idToAction(test.Action);
+                if (!leafDecisions.Contains(action))
                 {
-                    leafDecisions.Add(test.Action, new ActionDecision(test.Action));
+                    leafDecisions.Add(action);
                 }
 
                 for (int i = test.Interval.First; i <= test.Interval.Last; ++i)
                 {
-                    elementToAction[i - startElement] = leafDecisions[test.Action];
+                    elementToAction[i - startElement] = action;
                 }
             }
         }
@@ -35,7 +36,7 @@ namespace IronText.Algorithm
 
         public Decision[] ElementToAction { get { return elementToAction; } }
 
-        public ICollection<Decision> LeafDecisions { get { return leafDecisions.Values; } }
+        public ICollection<Decision> LeafDecisions { get { return leafDecisions; } }
 
         public override int Decide(int value)
         {
