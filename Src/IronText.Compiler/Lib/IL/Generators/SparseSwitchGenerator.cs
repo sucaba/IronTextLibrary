@@ -63,7 +63,7 @@ namespace IronText.Lib.IL.Generators
 
             var platformInfo = new DecisionTreePlatformInfo(
                                     branchCost:            3,
-                                    switchCost:            8,
+                                    switchCost:            6,
                                     maxSwitchElementCount: 1024,
                                     minSwitchDensity:      0.5);
 
@@ -170,6 +170,18 @@ namespace IronText.Lib.IL.Generators
             if (index < 0)
             {
                 knownDecisions.Insert(generationIndex++, decision);
+                decision.Accept(this);
+            }
+            else if (index >= generationIndex)
+            {
+                if (index != generationIndex)
+                {
+                    // Swap next planned element and just generated element
+                    knownDecisions[index] = knownDecisions[generationIndex];
+                    knownDecisions[generationIndex] = decision;
+                }
+
+                ++generationIndex;
                 decision.Accept(this);
             }
             else
