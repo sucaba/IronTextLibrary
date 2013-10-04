@@ -51,6 +51,7 @@
     <Compile Include="Algorithm\DecisionTree\DecisionTest.cs" />
     <Compile Include="Algorithm\DecisionTree\DecisionTreeBuilder.cs" />
     <Compile Include="Algorithm\DecisionTree\DecisionTreePlatformInfo.cs" />
+    <Compile Include="Algorithm\DecisionTree\InlineFirstDTStrategy.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\ActionDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\BranchDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\Decision.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Lib\IL\CilLanguage.cs" />
     <Compile Include="Lib\IL\Generators\ArrayLoopGenerator.cs" />
     <Compile Include="Lib\IL\Generators\ContiguousSwitchGenerator.cs" />
+    <Compile Include="Algorithm\DecisionTree\IDecisionTreeGenerationStrategy.cs" />
     <Compile Include="Lib\IL\Generators\SparseReadOnlyTableGenerator.cs" />
     <Compile Include="Lib\IL\Generators\ILoopGenerator.cs" />
     <Compile Include="Lib\IL\Generators\ImplementationGenerator.cs" />

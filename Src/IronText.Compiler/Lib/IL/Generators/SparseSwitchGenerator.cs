@@ -11,6 +11,7 @@ namespace IronText.Lib.IL.Generators
     {
         private SwitchGeneratorAction action;
         private List<Ref<Labels>>     labels;
+        private readonly IDecisionTreeGenerationStrategy strategy;
 
         public int                    MaxLinearCount = 3;
         private EmitSyntax emit;
@@ -18,6 +19,7 @@ namespace IronText.Lib.IL.Generators
         private readonly IIntMap<int>  intMap;
         private readonly IntInterval   possibleBounds;
         private readonly IIntFrequency frequency;
+        private DecisionTreeBuilder builder;
 
         public SparseSwitchGenerator(
             IntArrow<int>[] intArrows,
@@ -41,6 +43,7 @@ namespace IronText.Lib.IL.Generators
             IntInterval   possibleBounds,
             IIntFrequency frequency)
         {
+            this.strategy = new InlineFirstDTStrategy(this);
             this.intMap = intMap;
             if (frequency == null)
             {
@@ -81,8 +84,8 @@ namespace IronText.Lib.IL.Generators
             this.ldvalue = ldvalue;
             this.labels = new List<Ref<Labels>>();
 
-            PlanCode(node);
-            GenerateCode();
+            strategy.PlanCode(node);
+            strategy.GenerateCode();
 
             // Debug.Write(node);
         }
@@ -116,10 +119,10 @@ namespace IronText.Lib.IL.Generators
 
             GenerateCodeOrJump(decision.Left);
 
-            IntermediateGenerateCode();
+            strategy.IntermediateGenerateCode();
         }
 
-        public void Visit(JumpTableDecision decision)
+        void IDecisionVisitor.Visit(JumpTableDecision decision)
         {
             emit
                 .Label(GetNodeLabel(decision).Def)
@@ -133,10 +136,10 @@ namespace IronText.Lib.IL.Generators
 
             foreach (var leaf in decision.LeafDecisions)
             {
-                PlanCode(leaf);
+                strategy.PlanCode(leaf);
             }
 
-            IntermediateGenerateCode();
+            strategy.IntermediateGenerateCode();
         }
 
         private Ref<Labels> GetNodeLabel(Decision decision)
@@ -146,63 +149,19 @@ namespace IronText.Lib.IL.Generators
                 decision.Label = labels.Count;
                 labels.Add(emit.Labels.Generate().GetRef());
 
-                PlanCode(decision);
+                strategy.PlanCode(decision);
             }
 
             return labels[decision.Label.Value];
         }
 
-        private int generationIndex = 0;
-        private readonly List<Decision> knownDecisions = new List<Decision>();
-        private DecisionTreeBuilder builder;
-
-        private void PlanCode(Decision decision)
-        {
-            if (!knownDecisions.Contains(decision))
-            {
-                knownDecisions.Add(decision);
-            }
-        }
-
         private void GenerateCodeOrJump(Decision decision)
         {
-            int index = knownDecisions.IndexOf(decision);
-            if (index < 0)
-            {
-                knownDecisions.Insert(generationIndex++, decision);
-                decision.Accept(this);
-            }
-            else if (index >= generationIndex)
-            {
-                if (index != generationIndex)
-                {
-                    // Swap next planned element and just generated element
-                    knownDecisions[index] = knownDecisions[generationIndex];
-                    knownDecisions[generationIndex] = decision;
-                }
-
-                ++generationIndex;
-                decision.Accept(this);
-            }
-            else
+            if (!strategy.TryInlineCode(decision))
             {
                 emit.Br(GetNodeLabel(decision));
             }
         }
 
-        private void IntermediateGenerateCode()
-        {
-            GenerateCode();
-        }
-
-        private void GenerateCode()
-        {
-            for (; generationIndex != knownDecisions.Count; )
-            {
-                var decision = knownDecisions[generationIndex];
-                ++generationIndex;
-                decision.Accept(this);
-            }
-        }
     }
 }
