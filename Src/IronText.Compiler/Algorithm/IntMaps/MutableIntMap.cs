@@ -107,6 +107,14 @@ namespace IronText.Algorithm
 
         public void Set(IntArrow<TAttr> newArrow)
         {
+#if false
+            if (newArrow.Value.Equals(DefaultValue))
+            {
+                Clear(newArrow.Key);
+                return;
+            }
+#endif
+
             IntInterval bounds = newArrow.Key;
             var relation = ParseBoundsRelation(bounds);
 

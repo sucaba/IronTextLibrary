@@ -11,8 +11,8 @@ namespace IronText.Tests.Algorithm
         private readonly DecisionTreePlatformInfo platformInfo = 
                             new DecisionTreePlatformInfo(
                                     maxLinearCount:        3,
-                                    branchCost:            7,
-                                    switchCost:            3,
+                                    branchCost:            3,
+                                    switchCost:            7,
                                     maxSwitchElementCount: 1024,
                                     minSwitchDensity:      0.5);
         [Test]
@@ -20,7 +20,7 @@ namespace IronText.Tests.Algorithm
         {
             var frequency = new UniformIntFrequency(new IntInterval(-100, 100));
 
-            const int DefaultValue = -1;
+            const int DefaultValue = -100;
             var elementToAction = new MutableIntMap<int>();
             elementToAction.DefaultValue = DefaultValue;
             elementToAction.Set(new IntArrow<int>(1, 1));
@@ -28,10 +28,26 @@ namespace IronText.Tests.Algorithm
             elementToAction.Set(new IntArrow<int>(51, 1));
             elementToAction.Set(new IntArrow<int>(54, 100, 1));
 
-            var target = new DecisionTreeBuilder(-100, platformInfo);
-            var bounds = new IntInterval(int.MinValue, int.MaxValue);
+            var target = new DecisionTreeBuilder(platformInfo);
+            var bounds = new IntInterval(0, 1000);
             var node = target.Build(elementToAction, bounds, frequency);
             PrintProgram(node);
+        }
+
+        [Test]
+        public void TestElementaryChecks()
+        {
+            const int DefaultValue = -100;
+            var elementToAction = new MutableIntMap<int>();
+            elementToAction.DefaultValue = DefaultValue;
+            var bounds = new IntInterval(0, 9);
+            var frequency = new UniformIntFrequency(bounds);
+            elementToAction.Set(new IntArrow<int>(2, 100));
+            elementToAction.Set(new IntArrow<int>(5, 200));
+
+            var target = new DecisionTreeBuilder(platformInfo);
+            var node = target.Build(elementToAction, bounds, frequency);
+            PrintProgram(node, target.DefaultActionDecision);
         }
 
         [Test]
@@ -52,10 +68,10 @@ namespace IronText.Tests.Algorithm
             elementToAction.Set(new IntArrow<int>(50, 3));
             elementToAction.Set(new IntArrow<int>(51, 100, 4));
 
-            var target = new DecisionTreeBuilder(-100, platformInfo);
+            var target = new DecisionTreeBuilder(platformInfo);
             var bounds = new IntInterval(int.MinValue, int.MaxValue);
             var node = target.Build(elementToAction, bounds, frequency);
-            PrintProgram(node);
+            PrintProgram(node, target.DefaultActionDecision);
 
             Assert.AreEqual(-1, node.Decide(int.MinValue) );
             Assert.AreEqual(-1, node.Decide(0) );
@@ -70,10 +86,16 @@ namespace IronText.Tests.Algorithm
         }
 
         [Conditional("DEBUG")]
-        private void PrintProgram(Decision nodes)
+        private void PrintProgram(Decision nodes, Decision defaultDecision = null)
         {
+            if (defaultDecision == null)
+            {
+                defaultDecision = new ActionDecision(-1);
+            }
+
             StringBuilder output = new StringBuilder();
-            nodes.Accept(new DecisionProgramWriter(output));
+            var writer = new DecisionProgramWriter(output);
+            writer.Build(nodes, defaultDecision);
             Debug.WriteLine(output);
         }
 

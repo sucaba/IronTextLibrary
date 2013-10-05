@@ -9,6 +9,13 @@ namespace IronText.Lib.IL.Generators
 {
     class SparseSwitchGenerator : SwitchGenerator, IDecisionVisitor
     {
+        private readonly DecisionTreePlatformInfo platformInfo 
+                                                        = new DecisionTreePlatformInfo(
+                                                                branchCost:            3,
+                                                                switchCost:            10,
+                                                                maxSwitchElementCount: 256,
+                                                                minSwitchDensity:      0.5);
+
         private SwitchGeneratorAction action;
         private List<Ref<Labels>>     labels;
         private readonly IDecisionTreeGenerationStrategy strategy;
@@ -45,16 +52,8 @@ namespace IronText.Lib.IL.Generators
         {
             this.strategy = new InlineFirstDTStrategy(this);
             this.intMap = intMap;
-            if (frequency == null)
-            {
-                this.possibleBounds = new IntInterval(int.MinValue, int.MaxValue);
-                this.frequency = new UniformIntFrequency(possibleBounds);
-            }
-            else
-            {
-                this.possibleBounds = possibleBounds;
-                this.frequency = frequency;
-            }
+            this.possibleBounds = possibleBounds;
+            this.frequency = frequency ?? new UniformIntFrequency(possibleBounds);
         }
 
         protected override void DoBuild(
@@ -64,17 +63,11 @@ namespace IronText.Lib.IL.Generators
         {
             this.action = action;
 
-            var platformInfo = new DecisionTreePlatformInfo(
-                                    branchCost:            3,
-                                    switchCost:            6,
-                                    maxSwitchElementCount: 1024,
-                                    minSwitchDensity:      0.5);
-
 #if false
             var decisionTree = new BinaryDecisionTreeBuilder(intMap.DefaultValue, platformInfo);
             var node = decisionTree.Build(intMap.Enumerate().ToArray());
 #else
-            this.builder = new DecisionTreeBuilder(intMap.DefaultValue, platformInfo);
+            this.builder = new DecisionTreeBuilder(platformInfo);
             var node = builder.Build(
                     intMap,
                     possibleBounds,
@@ -127,10 +120,16 @@ namespace IronText.Lib.IL.Generators
             emit
                 .Label(GetNodeLabel(decision).Def)
                 .Do(ldvalue)
-                .Ldc_I4(decision.StartElement)
-                .Sub()
-                .Switch(decision.ElementToAction.Select(GetNodeLabel).ToArray())
                 ;
+            if (decision.StartElement != 0)
+            {
+                emit
+                    .Ldc_I4(decision.StartElement)
+                    .Sub();
+            }
+
+            emit
+                .Switch(decision.ElementToAction.Select(GetNodeLabel).ToArray());
             // default case:
             GenerateCodeOrJump(builder.DefaultActionDecision);
 

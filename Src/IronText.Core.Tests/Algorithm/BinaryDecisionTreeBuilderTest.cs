@@ -87,10 +87,16 @@ namespace IronText.Tests.Algorithm
         }
 
         [Conditional("DEBUG")]
-        private void PrintProgram(Decision nodes)
+        private void PrintProgram(Decision nodes, Decision defaultDecision = null)
         {
+            if (defaultDecision == null)
+            {
+                defaultDecision = new ActionDecision(-1);
+            }
+
             StringBuilder output = new StringBuilder();
-            nodes.Accept(new DecisionProgramWriter(output));
+            var writer = new DecisionProgramWriter(output);
+            writer.Build(nodes, defaultDecision);
             Debug.WriteLine(output);
         }
 

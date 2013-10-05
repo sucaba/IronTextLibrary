@@ -9,8 +9,8 @@ namespace IronText.Algorithm
     {
         public DecisionTreePlatformInfo(
             int    maxLinearCount           = 3,
-            double branchCost               = 7,
-            double switchCost               = 3,
+            double branchCost               = 3,
+            double switchCost               = 8,
             int    maxSwitchElementCount    = 1024,
             double minSwitchDensity         = 0.5)
         {

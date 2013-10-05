@@ -13,7 +13,8 @@ namespace IronText.Algorithm
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            this.Accept(new DecisionProgramWriter(output));
+            var writer = new DecisionProgramWriter(output);
+            writer.Build(this, new ActionDecision(int.MinValue));
             return output.ToString();
         }
     }

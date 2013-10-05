@@ -6,11 +6,21 @@ namespace IronText.Algorithm
     public class DecisionProgramWriter : IDecisionVisitor
     {
         private readonly StringBuilder output;
+        private readonly IDecisionTreeGenerationStrategy strategy;
+        private Decision defaultDecision;
         private int labelGen;
 
         public DecisionProgramWriter(StringBuilder output)
         {
             this.output = output;
+            this.strategy = new InlineFirstDTStrategy(this);
+        }
+
+        public void Build(Decision root, Decision defaultDecision)
+        {
+            this.defaultDecision = defaultDecision;
+            strategy.PlanCode(root);
+            strategy.GenerateCode();
         }
 
         public void Visit(ActionDecision node)
@@ -34,8 +44,8 @@ namespace IronText.Algorithm
                     GetLabelText(decision.Right))
                 .AppendLine();
 
-            decision.Left.Accept(this);
-            decision.Right.Accept(this);
+            GenerateCodeOrJump(decision.Left);
+            strategy.IntermediateGenerateCode();
         }
 
         public void Visit(JumpTableDecision decision)
@@ -48,39 +58,41 @@ namespace IronText.Algorithm
                     decision.StartElement,
                     string.Join(",", decision.ElementToAction.Select(GetLabelText)))
                 .AppendLine();
+
+            // default case:
+            GenerateCodeOrJump(defaultDecision);
+
+            foreach (var leaf in decision.LeafDecisions)
+            {
+                strategy.PlanCode(leaf);
+            }
+
+            strategy.IntermediateGenerateCode();
+        }
+
+        private void GenerateCodeOrJump(Decision decision)
+        {
+            if (!strategy.TryInlineCode(decision))
+            {
+                output.Append("goto ").Append(GetLabelText(decision)).AppendLine();
+            }
         }
 
         private void PutLabel(Decision labelNode)
         {
-            int label;
-            if (labelNode != null)
-            {
-                if (labelNode.Label.HasValue)
-                {
-                    label = labelNode.Label.Value;
-                }
-                else
-                {
-                    labelNode.Label = label = labelGen++;
-                }
-            }
-            else
-            {
-                label = labelGen++;
-            }
-
-            output.Append(FormatLabel(label)).Append(": ");
+            output.Append(GetLabelText(labelNode)).Append(": ");
         }
 
-        private int GetLabel(Decision node)
+        private int GetLabel(Decision decision)
         {
-            if (node.Label.HasValue)
+            if (decision.Label.HasValue)
             {
-                return node.Label.Value;
+                return decision.Label.Value;
             }
 
-            node.Label = labelGen++;
-            return node.Label.Value;
+            strategy.PlanCode(decision);
+            decision.Label = labelGen++;
+            return decision.Label.Value;
         }
 
         private string GetLabelText(Decision node)

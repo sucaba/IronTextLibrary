@@ -37,18 +37,11 @@ namespace IronText.Lib.IL.Generators
                 .Br(END)
                 ;
 
+            var columnRange = new IntInterval(0, columns - 1);
+            var columnFrequency = new UniformIntFrequency(columnRange);
             for (int i = 0; i != rows; ++i)
             {
-                var intervalToValue = new List<IntArrow<int>>();
-
-                // TODO: Optimize. Following causes huge size of GetParserAction method.
-                for (int c = 0; c != columns; ++c)
-                {
-                    int value = table.Get(i, c);
-                    intervalToValue.Add(new IntArrow<int>(c, value));
-                }
-
-                var switchEmitter = SwitchGenerator.Sparse(table.GetRow(i), new IntInterval(0, columns));
+                var switchEmitter = SwitchGenerator.Sparse(table.GetRow(i), columnRange, columnFrequency);
 
                 emit.Label(labels[i].Def);
                 switchEmitter.Build(emit, LdCol, SwitchGenerator.LdValueAction(END));

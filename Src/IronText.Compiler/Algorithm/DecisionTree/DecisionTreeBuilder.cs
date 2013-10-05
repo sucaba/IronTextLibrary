@@ -5,14 +5,12 @@ namespace IronText.Algorithm
 {
     public class DecisionTreeBuilder
     {
-        private readonly int defaultAction;
+        private int defaultAction;
         private readonly DecisionTreePlatformInfo platform;
         private readonly Dictionary<int,ActionDecision> actionIdToDecision = new Dictionary<int,ActionDecision>();
 
-        public DecisionTreeBuilder(int defaultAction, DecisionTreePlatformInfo platform)
+        public DecisionTreeBuilder(DecisionTreePlatformInfo platform)
         {
-            this.defaultAction = defaultAction;
-            this.actionIdToDecision[defaultAction] = new ActionDecision(defaultAction);
             this.platform = platform;
         }
 
@@ -25,6 +23,16 @@ namespace IronText.Algorithm
             IntInterval   possibleBounds,
             IIntFrequency frequency)
         {
+            defaultAction = outcomeArrows.DefaultValue;
+            this.actionIdToDecision[defaultAction] = new ActionDecision(defaultAction);
+
+            Decision result;
+
+            if (TryBuildElementaryTree(outcomeArrows, out result))
+            {
+                return result;
+            }
+
             // TODO: Alternatively to averaging probability, each test can 
             // be split if probability varies significantly within test range
             DecisionTest[] tests
@@ -35,14 +43,61 @@ namespace IronText.Algorithm
                     )
                     .ToArray();
 
-            return GenTree(new ArraySlice<DecisionTest>(tests));
+            result = GenTree(new ArraySlice<DecisionTest>(tests));
+            return result;
+        }
+
+        private bool TryBuildElementaryTree(IIntMap<int> map, out Decision result)
+        {
+            result = null;
+
+            int count = 0;
+            foreach (var arrow in map.Enumerate())
+            {
+                if (arrow.Value == map.DefaultValue)
+                {
+                    continue;
+                }
+
+                ++count;
+                if (count > platform.MaxLinearCount || arrow.Key.LongSize != 1)
+                {
+                    return false;
+                }
+            }
+
+            RelationalBranchDecision lastParent = null;
+            foreach (var arrow in map.Enumerate())
+            {
+                if (arrow.Value == map.DefaultValue)
+                {
+                    continue;
+                }
+
+                var node = new RelationalBranchDecision(RelationalOperator.Equal, arrow.Key.First);
+                node.Left = GetActionDecision(arrow.Value);
+                if (lastParent == null)
+                {
+                    result = node;
+                }
+                else
+                {
+                    lastParent.Right = node;
+                }
+
+                lastParent = node;
+            }
+
+            lastParent.Right = DefaultActionDecision;
+
+            return true;
         }
 
         private Decision GenTree(ArraySlice<DecisionTest> S)
         {
             if (S.Count == 1)
             {
-                return GetActionDecision(S.ElementAt(0).Action);
+                return GetActionDecision(S[0].Action);
             }
 
             Normalize(S);
@@ -73,15 +128,15 @@ namespace IronText.Algorithm
             double probability;
             int splitIndex = Split(S, out probability);
 
-            int splitElement = S.ElementAt(splitIndex).Interval.First;
+            int splitElement = S[splitIndex].Interval.First;
             RelationalBranchDecision result;
             RelationalOperator op;
-            if (splitIndex == 1 && S.ElementAt(0).Interval.LongSize == 1)
+            if (splitIndex == 1 && S[0].Interval.LongSize == 1)
             {
                 op = RelationalOperator.Equal;
-                result = new RelationalBranchDecision(op, S.ElementAt(0).Interval.First);
+                result = new RelationalBranchDecision(op, S[0].Interval.First);
             }
-            else if (splitIndex == (S.Count - 1) && S.ElementAt(splitIndex).Interval.Size == 1)
+            else if (splitIndex == (S.Count - 1) && S[splitIndex].Interval.LongSize == 1)
             {
                 op = RelationalOperator.NotEqual;
                 result = new RelationalBranchDecision(op, splitElement);
@@ -94,6 +149,7 @@ namespace IronText.Algorithm
 
             result.Left  = GenTree(S.SubSlice(0, splitIndex));
             result.Right = GenTree(S.SubSlice(splitIndex));
+
             return result;
         }
 
@@ -128,24 +184,22 @@ namespace IronText.Algorithm
 
         private int Split(ArraySlice<DecisionTest> S, out double probability)
         {
-            var tests = S.Array;
-
             probability = 0;
-            int i = S.Offset;
-            int end = S.Offset + S.Count;
+            int i = 0;
+            int end = S.Count;
             for (; i != end; ++i)
             {
-                probability += tests[i].Probability;
+                probability += S[i].Probability;
                 if (probability > 0.5)
                 {
                     break;
                 }
             }
 
-            int result = i + 1 - S.Offset; // return relative index
+            int result = i + 1; // return relative index
             if (result == S.Count)
             {
-                probability -= tests[i].Probability;
+                probability -= S[i].Probability;
                 --result;
             }
 
@@ -160,8 +214,8 @@ namespace IronText.Algorithm
                 return false;
             }
 
-            var rangeSize = S.ElementAt(S.Count - 1).Interval.Last 
-                          - S.ElementAt(0).Interval.First 
+            var rangeSize = S[S.Count - 1].Interval.Last 
+                          - S[0].Interval.First 
                           + 1;
 
             double density = elementCount / (double)rangeSize;
