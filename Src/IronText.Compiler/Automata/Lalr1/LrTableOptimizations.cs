@@ -1,7 +1,7 @@
 ﻿
 namespace IronText.Automata.Lalr1
 {
-    enum LrTableOptimizations
+    public enum LrTableOptimizations
     {
         None                     = 0x0,
         EliminateLr0ReduceStates = 0x1,

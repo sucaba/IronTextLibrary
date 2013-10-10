@@ -34,7 +34,9 @@ namespace IronText.Framework
 
         public int CurrentLayer { get { return currentLayer; } }
 
-        public IEnumerable<GssNode<T>> Front { get { return front; } }
+        public IList<GssNode<T>> Front { get { return front; } }
+
+        public int Count { get { return front.Count; } }
 
         public bool IsEmpty { get { return front.Count == 0; } }
 
@@ -214,6 +216,11 @@ namespace IronText.Framework
                 for (int nodeIndex = 0; nodeIndex != layer.Count; ++nodeIndex)
                 {
                     var from = layer[nodeIndex];
+                    if (from.State < 0)
+                    {
+                        continue;
+                    }
+
                     Token token = stateToSymbol[from.State];
                     foreach (var link in from.Links)
                     {

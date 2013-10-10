@@ -14,9 +14,13 @@ namespace IronText.Automata.Lalr1
             = new Dictionary<TransitionKey, ParserConflictInfo>();
         private readonly IMutableTable<int> actionTable;
         private int[]  conflictActionTable;
+        private readonly bool canOptimizeReduceStates;
 
         public ReductionModifiedLrDfaTable(ILrDfa dfa)
         {
+            var flag = LrTableOptimizations.EliminateLr0ReduceStates;
+            this.canOptimizeReduceStates = (dfa.Optimizations & flag) == flag;
+
             this.grammar = dfa.Grammar;
             var states = dfa.States;
             this.actionTable = new MutableTable<int>(states.Length, dfa.Grammar.TokenCount);
@@ -65,22 +69,38 @@ namespace IronText.Automata.Lalr1
                 {
                     var rule = item.Rule;
 
-                    if (rule.Parts.Length != item.Pos)
+                    if (!item.IsReduce)
                     {
                         int nextToken = rule.Parts[item.Pos];
 
-                        var action = new ParserAction
-                            { 
+                        if (canOptimizeReduceStates
+                            && item.IsShiftReduce
+                            && !state.Transitions.Exists(t => t.Tokens.Contains(nextToken)))
+                        {
+                            var action = new ParserAction
+                            {
+                                Kind = ParserActionKind.ShiftReduce,
+                                Rule = rule.Id,
+                                Size = (short)rule.Parts.Length
+                            };
+
+                            AddAction(i, nextToken, action);
+                        }
+                        else
+                        {
+                            var action = new ParserAction
+                            {
                                 Kind = ParserActionKind.Shift,
                                 State = state.GetNextIndex(nextToken)
                             };
 
-                        AddAction(i, nextToken, action);
+                            AddAction(i, nextToken, action);
+                        }
                     }
 
                     bool isStartRule = rule.Left == BnfGrammar.AugmentedStart;
 
-                    if (item.Pos == rule.Parts.Length || grammar.IsTailNullable(rule.Parts, item.Pos))
+                    if (item.IsReduce || grammar.IsTailNullable(rule.Parts, item.Pos))
                     {
                         ParserAction action;
 

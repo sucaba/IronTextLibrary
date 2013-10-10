@@ -8,6 +8,8 @@ namespace IronText.Automata.Lalr1
     {
         BnfGrammar Grammar { get; }
 
+        LrTableOptimizations Optimizations { get; }
+
         DotState[] States { get; }
     }
 

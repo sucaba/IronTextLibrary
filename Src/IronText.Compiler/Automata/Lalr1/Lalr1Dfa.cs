@@ -18,7 +18,6 @@ namespace IronText.Automata.Lalr1
     /// </summary>
     partial class Lalr1Dfa : ILrDfa
     {
-        private readonly LrTableOptimizations optimizations;
         private readonly BitSetType TokenSet;
         private BitSetType StateSet;
 
@@ -29,16 +28,18 @@ namespace IronText.Automata.Lalr1
         public Lalr1Dfa(BnfGrammarAnalysis analysis, LrTableOptimizations optimizations)
         {
             this.grammar = analysis.Grammar;
-            this.optimizations = optimizations;
+            this.Optimizations = optimizations;
             this.TokenSet = grammar.TokenSet;
 
             BuildLalr1States();
 
-            if ((optimizations & LrTableOptimizations.EliminateLr0ReduceStates) != 0)
+            if ((Optimizations & LrTableOptimizations.EliminateLr0ReduceStates) != 0)
             {
                 EliminateLr0ReduceStates();
             }
         }
+
+        public LrTableOptimizations Optimizations { get; private set; }
 
         private void EliminateLr0ReduceStates()
         {

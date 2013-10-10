@@ -104,5 +104,10 @@ namespace IronText.Framework
 
             return lastLink.Label;
         }
+
+        public override string ToString()
+        {
+            return string.Format("GssNode(State={0})", State);
+        }
     }
 }

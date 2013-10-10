@@ -92,7 +92,7 @@ namespace IronText.Framework
             this.tokenSet = new BitSetType(TokenCount);
 
             EnsureFirsts();
-            for (int i = 0; i != TokenCount; ++i)
+            for (int i = PredefinedTokenCount; i != TokenCount; ++i)
             {
                 if (i == Error)
                 {
@@ -103,6 +103,8 @@ namespace IronText.Framework
                     tokenInfos[i].IsTerm = CalcIsTerm(i);
                 }
             }
+
+            tokenInfos[Eoi].IsTerm = true;
 
             this.MaxRuleSize = Rules.Select(r => r.Parts.Length).Max();
         }
@@ -143,6 +145,12 @@ namespace IronText.Framework
         }
 
         public bool IsTerm(int token) { return tokenInfos[token].IsTerm; }
+
+        public bool IsNonTerm(int token) 
+        {
+            var ti = tokenInfos[token];
+            return !ti.IsTerm && (token >= PredefinedTokenCount);
+        }
 
         internal TokenCategory GetTokenCategories(int token) { return tokenInfos[token].Categories; }
 

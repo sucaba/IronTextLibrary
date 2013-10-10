@@ -9,7 +9,9 @@ namespace IronText.Framework
 
         bool IsEmpty { get; }
 
-        IEnumerable<GssNode<T>> Front { get; }
+        int Count { get; }
+
+        IList<GssNode<T>> Front { get; }
 
         GssNode<T> GetFrontNode(int state);
 

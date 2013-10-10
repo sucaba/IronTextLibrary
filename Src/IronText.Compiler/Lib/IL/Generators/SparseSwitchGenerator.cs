@@ -12,8 +12,8 @@ namespace IronText.Lib.IL.Generators
         private readonly DecisionTreePlatformInfo platformInfo 
                                                         = new DecisionTreePlatformInfo(
                                                                 branchCost:            3,
-                                                                switchCost:            10,
-                                                                maxSwitchElementCount: 256,
+                                                                switchCost:            8,
+                                                                maxSwitchElementCount: 128,
                                                                 minSwitchDensity:      0.5);
 
         private SwitchGeneratorAction action;

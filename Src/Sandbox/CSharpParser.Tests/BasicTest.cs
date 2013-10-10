@@ -7,8 +7,10 @@ using System.Runtime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using IronText.Algorithm;
 using IronText.Diagnostics;
 using IronText.Framework;
+using IronText.MetadataCompiler;
 using NUnit.Framework;
 
 namespace CSharpParser.Tests
@@ -35,7 +37,260 @@ namespace CSharpParser.Tests
             var data = provider.Resource;
             timer.Stop();
 
+            ShowReduceStates(data);
+            //ShowSimilarStates(data);
+            //ShowSimilarTokens(data);
+
+
             Console.WriteLine("Build time = {0}sec", timer.Elapsed.TotalSeconds);
+        }
+
+        private void ShowReduceStates(LanguageData data)
+        {
+            foreach (var state in data.ParserStates)
+            {
+            }
+        }
+
+        private static void ShowSimilarStates(LanguageData data)
+        {
+            int stateCount = data.ParserStates.Length;
+            var grammar = data.Grammar;
+            int[] terms = grammar.EnumerateTokens().Where(grammar.IsTerm).ToArray();
+            var table = data.Lalr1ParserActionTable;
+            var unpartitioned = Enumerable.Range(0, stateCount).ToList();
+            var categories = new List<List<int>>();
+
+            while (unpartitioned.Count != 0)
+            {
+                int p = unpartitioned[0];
+                unpartitioned.RemoveAt(0);
+                var category = new List<int> { p };
+
+                for (int j = 1; j < unpartitioned.Count;)
+                {
+                    int q = unpartitioned[j];
+
+                    if (AreCompatibleStates(data, terms, table, p, q))
+                    {
+                        unpartitioned.RemoveAt(j);
+                        category.Add(q);
+                    }
+                    else
+                    {
+                        ++j;
+                    }
+                }
+
+                categories.Add(category);
+
+                Console.WriteLine("{ " + string.Join(", ", category) + "}");
+            }
+        }
+
+        private static bool AreCompatibleStates(LanguageData data, int[] terms, ITable<int> table, int p, int q)
+        {
+            foreach (int term in terms)
+            {
+                var pCell = table.Get(p, term);
+                var qCell = table.Get(q, term);
+                var pAction = ParserAction.Decode(pCell);
+                var qAction = ParserAction.Decode(qCell);
+
+                if (pCell != qCell 
+                    && !HaveSameShifts(data, pAction, qAction))
+                {
+                    return false;
+                }
+
+                if (pAction.Kind == ParserActionKind.Conflict 
+                    || qAction.Kind == ParserActionKind.Conflict)
+                {
+                    Console.WriteLine("Skipped conflicting {0}<->{1} states", p, q);
+                    return false;
+                }
+
+                if (!HaveComptibleReductions(data, pAction, qAction))
+                {
+                    /*
+                    Console.WriteLine(
+                        "Skipped incompatible {0}<->{1} state reductions {2}<->{3}",
+                        p, q,
+                        pAction, qAction);
+                    */
+
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool HaveComptibleReductions(LanguageData data, ParserAction pAction, ParserAction qAction)
+        {
+            return 
+                (
+                    pAction.Kind != ParserActionKind.Reduce
+                    && qAction.Kind != ParserActionKind.Reduce)
+                ||
+                (
+                    pAction.Kind == ParserActionKind.Reduce
+                    && qAction.Kind == ParserActionKind.Reduce
+                    && pAction.Rule == qAction.Rule
+                );
+        }
+
+        private static bool HaveSameShifts(LanguageData data, ParserAction x, ParserAction y)
+        {
+            var xShift = GetShift(data, x);
+            var yShift = GetShift(data, y);
+            return xShift == yShift;
+        }
+
+        private static ParserAction GetShift(LanguageData data, ParserAction x)
+        {
+            switch (x.Kind)
+            {
+                case ParserActionKind.Shift:
+                case ParserActionKind.ShiftReduce:
+                    return x;
+                case ParserActionKind.Conflict:
+                    int start = x.Value1;
+                    int count = x.Value2;
+                    int last = start + count;
+                    for (; start != last; ++start)
+                    {
+                        var cAction = ParserAction.Decode(data.Lalr1ParserConflictActionTable[start]);
+                        switch (cAction.Kind)
+                        {
+                            case ParserActionKind.Shift:
+                            case ParserActionKind.ShiftReduce:
+                                return cAction;
+                        }
+                    }
+
+                    break;
+            }
+
+            return ParserAction.FailAction;
+        }
+
+        // Merging similar tokens (token equivalence classes) makes sense only 
+        // after state compression
+        private static void ShowSimilarTokens(LanguageData data)
+        {
+            var grammar = data.Grammar;
+
+            int stateCount = data.ParserStates.Length;
+            int startToken = BnfGrammar.PredefinedTokenCount;
+            int tokenCount = grammar.TokenCount;
+
+            var table = data.Lalr1ParserActionTable;
+            var unpartitioned = Enumerable.Range(startToken, tokenCount - startToken).ToList();
+            var categories = new List<List<int>>();
+
+            while (unpartitioned.Count != 0)
+            {
+                int p = unpartitioned[0];
+                unpartitioned.RemoveAt(0);
+                var category = new List<int> { p };
+
+                for (int j = 1; j < unpartitioned.Count;)
+                {
+                    int q = unpartitioned[j];
+
+                    bool areSimilar = true;
+                    for (int s = 0; s != stateCount; ++s)
+                    {
+                        var pCell = table.Get(s, p);
+                        var qCell = table.Get(s, q);
+                        if (pCell != qCell)
+                        {
+                            areSimilar = false;
+                            break;
+                        }
+                    }
+
+                    if (areSimilar)
+                    {
+                        unpartitioned.RemoveAt(j);
+                        category.Add(q);
+                    }
+                    else
+                    {
+                        ++j;
+                    }
+                }
+
+                categories.Add(category);
+
+                Console.WriteLine("T{ " + string.Join(", ", category) + "}");
+            }
+        }
+
+#if false
+                    var pRules = new List<int>();
+                    var qRules = new List<int>();
+                    foreach (var term in terms)
+                    {
+                        var pCell = table.Get(p, term);
+                        var qCell = table.Get(q, term);
+                        var pAction = ParserAction.Decode(pCell);
+                        var qAction = ParserAction.Decode(pCell);
+
+                        if (pAction.Kind == ParserActionKind.Reduce)
+                        {
+                            pRules.Add(pAction.Rule);
+                        }
+
+                        if (qAction.Kind == ParserActionKind.Reduce)
+                        {
+                            qRules.Add(qAction.Rule);
+                        }
+                    }
+
+                    if (pRules.Count != qRules.Count)
+                    {
+                        continue;
+                    }
+
+                    pRules.Sort();
+                    qRules.Sort();
+                    if (!Enumerable.SequenceEqual(pRules, qRules))
+                    {
+                        continue;
+                    }
+#endif
+
+        private static bool IsTermShiftAction(LanguageData data, int cell)
+        {
+            var kind = ParserAction.GetKind(cell);
+            switch (kind)
+            {
+                case ParserActionKind.Shift:
+                case ParserActionKind.ShiftReduce:
+                    return true;
+                case ParserActionKind.Conflict:
+                    var action = ParserAction.Decode(cell);
+                    int start = action.Value1;
+                    int count = action.Value2;
+                    int last = start + count;
+                    while (start != last)
+                    {
+                        ParserAction cAction = ParserAction.Decode(data.Lalr1ParserConflictActionTable[start++]);
+                        switch (cAction.Kind)
+                        {
+                            case ParserActionKind.Shift:
+                            case ParserActionKind.ShiftReduce:
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                    return false;
+                default:
+                    return false;
+            }
         }
 
         [Test]

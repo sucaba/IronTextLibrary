@@ -259,6 +259,7 @@ namespace IronText.Tests.Framework
         }
 
         [Language(LanguageFlags.ForceNonDeterministic)]
+        [DescribeParserStateMachine("NondeterministicCalc.info")]
         public class NondeterministicCalc
         {
             public readonly List<double> Results = new List<double>();

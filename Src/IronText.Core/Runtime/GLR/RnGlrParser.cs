@@ -3,10 +3,10 @@ using System.Linq;
 using System.Collections.Generic;
 using IronText.Algorithm;
 using IronText.Diagnostics;
+using IronText.Extensibility;
 
 namespace IronText.Framework
 {
-    using IronText.Extensibility;
     using State = System.Int32;
     using Token = System.Int32;
     using System.Text;
@@ -96,7 +96,7 @@ namespace IronText.Framework
             gss.BeginEdit();
 
             Actor(item);
-            Reducer(item);
+            Reducer(item.Id);
 
             if (accepted)
             {
@@ -110,18 +110,38 @@ namespace IronText.Framework
                 }
             }
 
-            // Plan shifting using the latest version of the GSS front
-            foreach (var frontNode in gss.Front)
+            var itemValue = producer.CreateLeaf(item);
+            
+            for (int i = 0; i != gss.Front.Count; ++i)
             {
+                var frontNode = gss.Front[i];
+
+                // Plan shift
                 var shift = GetShift(frontNode.State, item.Id);
                 if (shift >= 0)
                 {
                     Q.Enqueue(new PendingShift(frontNode, shift));
                 }
+
+                // Shift and plan reduce
+                var action = GetShiftReduce(frontNode.State, item.Id);
+                if (action.Kind == ParserActionKind.ShiftReduce)
+                {
+                    PlanShiftReduce(
+                        frontNode,
+                        item.Id,
+                        itemValue,
+                        action.Rule,
+                        action.Size);
+                }
             }
 
             gss.PushLayer();
-            Shifter(item);
+            Shifter(item, itemValue);
+
+            // Run reducer again to complete 
+            // shift-reduce and goto-reduce actions.
+            Reducer();
 
 #if DIAGNOSTICS
             using (var graphView = new GvGraphView("GlrState" + gss.CurrentLayer + ".gv"))
@@ -237,7 +257,7 @@ namespace IronText.Framework
             }
         }
 
-        private void Reducer(Msg item)
+        private void Reducer(int lookaheadToken = -1)
         {
             N.Clear();
 
@@ -250,8 +270,6 @@ namespace IronText.Framework
 
                 GssNode<T> u = path.LeftNode;
                 State k = u.State;
-                State l = NonTermGoTo(k, X);
-
                 T z;
                 if (m == 0)
                 {
@@ -280,31 +298,58 @@ namespace IronText.Framework
                     N[Nkey] = z;
                 }
 
+                State l;
+
+                var action = ParserAction.Decode(transition(k, X));
+                switch (action.Kind)
+                {
+                    case ParserActionKind.Shift:
+                        l = action.State;
+                        break;
+                    case ParserActionKind.ShiftReduce:
+                        // Handle goto-reduce action
+                        PlanShiftReduce(
+                            u,
+                            X,
+                            z,
+                            action.Rule,
+                            action.Size);
+                        continue;
+                    default:
+                        throw new InvalidOperationException(
+                            "Internal error: Non-term action should be shift or shift-reduce, but got "
+                            + Enum.GetName(typeof(ParserActionKind), action.Kind));
+                }
+
                 bool stateAlreadyExists = gss.GetFrontNode(l) != null;
+
+                // Goto on non-term produced by rule.
+                var newLink = gss.Push(u, l, z);
+
+                if (lookaheadToken < 0)
+                {
+                    continue;
+                }
+
                 if (stateAlreadyExists)
                 {
-                    var newLink = gss.Push(u, l, z);
-                    if (newLink != null)
+                    if (newLink != null && m != 0)
                     {
-                        if (m != 0)
+                        var reductions = GetReductions(l, lookaheadToken);
+                        foreach (var red in reductions)
                         {
-                            var reductions = GetReductions(l, item.Id);
-                            foreach (var red in reductions)
+                            if (red.Size != 0)
                             {
-                                if (red.Size != 0)
-                                {
-                                    R.Enqueue(newLink, red.Rule, red.Size);
-                                }
+                                R.Enqueue(newLink, red.Rule, red.Size);
                             }
                         }
                     }
                 }
                 else
                 {
-                    var newLink = gss.Push(u, l, z);
                     var w = gss.GetFrontNode(l);
 
-                    var reductions = GetReductions(l, item.Id);
+                    var reductions = GetReductions(l, lookaheadToken);
                     foreach (var red in reductions)
                     {
                         if (red.Size == 0)
@@ -327,30 +372,31 @@ namespace IronText.Framework
             }
         }
 
-        private void Shifter(Msg item)
+        private void Shifter(Msg item, T val)
         {
-            var z = producer.CreateLeaf(item);
-            N[GetNKey(item.Id, gss.CurrentLayer)] = z;
+            // TODO: Is following useful for terms? Shift-Shift conlicts?
+            N[GetNKey(item.Id, gss.CurrentLayer)] = val;
 
             while (Q.Count != 0)
             {
                 var shift = Q.Dequeue();
 
-                gss.Push(shift.FrontNode, shift.ToState, z);
+                gss.Push(shift.FrontNode, shift.ToState, val);
             }
         }
-        
-        private Token NonTermGoTo(State state, Token token)
+
+        private void PlanShiftReduce(GssNode<T> frontNode, int shiftToken, T shiftValue, int rule, int size)
         {
-            var action = ParserAction.Decode(transition(state, token));
-            if (action == null || action.Kind != ParserActionKind.Shift)
-            {
-                throw new InvalidOperationException("Non-term action should be shift");
-            }
+            int fakeState = MakeFakeDestState(frontNode.State, shiftToken);
 
-            return action.State;
+            var newLink = gss.Push(frontNode, fakeState, shiftValue);
+            if (newLink != null)
+            {
+                R.Enqueue(newLink, grammar.Rules[rule], size);
+            }
         }
 
+        
         private int GetShift(State state, Token token)
         {
             int shift = -1;
@@ -376,13 +422,36 @@ namespace IronText.Framework
             return shift;
         }
 
-        private IEnumerable<ModifiedReduction> GetReductions(State state, Token token)
+        private ParserAction GetShiftReduce(State state, Token token)
         {
             ParserAction action = GetDfaCell(state, token);
             switch (action.Kind)
             {
+                case ParserActionKind.ShiftReduce:
+                    return action;
+                case ParserActionKind.Conflict:
+                    foreach (ParserAction conflictAction in GetConflictActions(action.Value1, action.Value2))
+                    {
+                        if (conflictAction.Kind == ParserActionKind.ShiftReduce)
+                        {
+                            return conflictAction;
+                        }
+                    }
+
+                    break;
+            }
+
+            return ParserAction.FailAction;
+        }
+
+        private IEnumerable<ModifiedReduction> GetReductions(State state, Token token)
+        {
+            ParserAction action = GetDfaCell(state, token);
+            BnfRule rule;
+            switch (action.Kind)
+            {
                 case ParserActionKind.Reduce:
-                    var rule = grammar.Rules[action.Rule];
+                    rule = grammar.Rules[action.Rule];
                     yield return new ModifiedReduction(rule, action.Size);
                     break;
                 case ParserActionKind.Accept:
@@ -391,12 +460,15 @@ namespace IronText.Framework
                 case ParserActionKind.Conflict:
                     foreach (ParserAction conflictAction in GetConflictActions(action.Value1, action.Value2))
                     {
-                        if (conflictAction.Kind == ParserActionKind.Reduce)
+                        switch (conflictAction.Kind)
                         {
-                            var crule = grammar.Rules[conflictAction.Rule];
-                            yield return new ModifiedReduction(crule, conflictAction.Size);
+                            case ParserActionKind.Reduce:
+                                var crule = grammar.Rules[conflictAction.Rule];
+                                yield return new ModifiedReduction(crule, conflictAction.Size);
+                                break;
                         }
                     }
+
                     break;
             }
         }
@@ -488,5 +560,10 @@ namespace IronText.Framework
         {
             return (X << 32) + c;
         }
+
+        private static int MakeFakeDestState(int state, int token)
+        {
+            return -((state << 16) + token);
+        }        
     }
 }

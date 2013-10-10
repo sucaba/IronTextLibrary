@@ -7,6 +7,8 @@ namespace IronText.Framework
     [StructLayout(LayoutKind.Explicit)]
     public struct ParserAction
     {
+        public static readonly ParserAction FailAction = new ParserAction();
+
         private const int KindStartBit      = 0;
         private const int KindBits          = 3;
 
@@ -50,16 +52,9 @@ namespace IronText.Framework
 
         public static bool operator==(ParserAction x, ParserAction y)
         {
-            if ((object)x == null)
-            {
-                return (object)y == null;
-            }
-            else if ((object)y == null)
-            {
-                return false;
-            }
-
-            return x.Value1 == y.Value1 && x.Kind == y.Kind;
+            return x.Value1 == y.Value1 
+                && x.Kind == y.Kind 
+                && x.Value2 == y.Value2;
         }
 
         public static bool operator!=(ParserAction x, ParserAction y)

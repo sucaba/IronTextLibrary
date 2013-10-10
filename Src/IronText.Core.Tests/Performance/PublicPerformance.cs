@@ -14,13 +14,14 @@ namespace IronText.Tests.Performance
     public class PublicPerformance
     {
         [Test]
-        public void TestLalr1()
+        public void _0_TestLalr1()
         {
             int count = 1000000;
             TestLalr1("LALR1", count, 3);
         }
 
         [Test]
+        [Explicit]
         public void TestLalr1Profilable()
         {
             int count = 1000;
@@ -28,13 +29,14 @@ namespace IronText.Tests.Performance
         }
 
         [Test]
-        public void TestLalr1AsGlr()
+        public void _1_TestLalr1AsGlr()
         {
             int count = 1000000;
-            TestLalr1(typeof(Lalr1PerfLangAsGlr), "LALR1(forceGlr)", count, 3);
+            TestLalr1(typeof(Lalr1PerfLangAsGlr), "GLR not ambiguous", count, 3);
         }
 
         [Test]
+        [Explicit]
         public void TestLalr1AsGlrProfilable()
         {
             int count = 1000;
@@ -42,6 +44,7 @@ namespace IronText.Tests.Performance
         }
 
         [Test]
+        [Explicit]
         public void TestLalr1AsGlrProfilable2()
         {
             int count = 10;
@@ -70,13 +73,14 @@ namespace IronText.Tests.Performance
         }
 
         [Test]
-        public void TestGlr()
+        public void _2_TestGlr()
         {
             int count = 200;
-            TestGlr("GLR", count, 3);
+            TestGlr("GLR ambiguous", count, 3);
         }
 
         [Test]
+        [Explicit]
         public void TestGlrProfilableNoTree()
         {
             int count = 100;
@@ -84,6 +88,7 @@ namespace IronText.Tests.Performance
         }
 
         [Test]
+        [Explicit]
         public void TestGlrProfilableTree()
         {
             int count = 100;

@@ -35,13 +35,13 @@ namespace IronText.Framework
                 }
             }
 
-            Loc result = source[1].Location;
-            if (result.IsUnknown)
+            var errorItems = source.Select(s => s.Location);
+            if (source.Count > 1)
             {
-                result = source[0].Location;
+                errorItems = errorItems.Skip(1);
             }
 
-            return result;
+            return Loc.Sum(errorItems);
         }
 
         public HLoc GetHiglightHLocation(List<Msg> source)
@@ -59,13 +59,13 @@ namespace IronText.Framework
                 }
             }
 
-            HLoc result = source[1].HLocation;
-            if (result.IsUnknown)
+            var errorItems = source.Select(s => s.HLocation);
+            if (source.Count > 1)
             {
-                result = source[0].HLocation;
+                errorItems = errorItems.Skip(1);
             }
 
-            return result;
+            return HLoc.Sum(errorItems);
         }
 
         public string FormatMessage(BnfGrammar grammar, List<Msg> source, List<Msg> corrected)

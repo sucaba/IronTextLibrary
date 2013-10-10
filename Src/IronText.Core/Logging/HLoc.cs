@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 namespace IronText.Framework
 {
     public struct HLoc
@@ -41,6 +42,17 @@ namespace IronText.Framework
         public bool IsUnknown
         {
             get { return FirstLine == 0 || FirstColumn == 0; }
+        }
+
+        public static HLoc Sum(IEnumerable<HLoc> locations)
+        {
+            HLoc result = HLoc.Unknown;
+            foreach (var loc in locations)
+            {
+                result = result + loc;
+            }
+
+            return result;
         }
 
         public override string ToString()

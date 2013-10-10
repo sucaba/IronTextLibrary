@@ -122,6 +122,7 @@ namespace IronText.MetadataCompiler
             }
             else
             {
+#if false
                 WithTimeLogging(
                     () =>
                     {
@@ -129,6 +130,7 @@ namespace IronText.MetadataCompiler
                     },
                     "rebuilding non-optmized LALR1 DFA");
                 lrTable     = new CanonicalLrDfaTable(parserDfa);
+#endif
                 parserTable = new ReductionModifiedLrDfaTable(parserDfa);
             }
 

@@ -16,9 +16,13 @@ namespace IronText.Automata.Lalr1
 
         private IMutableTable<int> actionTable;
         private int[]  conflictActionTable;
+        private readonly bool canOptimizeReduceStates;
 
         public CanonicalLrDfaTable(ILrDfa dfa)
         {
+            var flag = LrTableOptimizations.EliminateLr0ReduceStates;
+            this.canOptimizeReduceStates = (dfa.Optimizations & flag) == flag;
+
             this.grammar = dfa.Grammar;
             FillDfaTable(dfa.States);
             BuildConflictTable();
@@ -75,7 +79,9 @@ namespace IronText.Automata.Lalr1
                     {
                         int nextToken = rule.Parts[item.Pos];
 
-                        if (item.IsShiftReduce && !state.Transitions.Exists(t => t.Tokens.Contains(nextToken)))
+                        if (canOptimizeReduceStates
+                            && item.IsShiftReduce
+                            && !state.Transitions.Exists(t => t.Tokens.Contains(nextToken)))
                         {
                             var action = new ParserAction
                             {
