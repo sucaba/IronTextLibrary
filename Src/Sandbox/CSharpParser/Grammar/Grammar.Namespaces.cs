@@ -22,9 +22,6 @@ namespace CSharpParser
                 CsNamespaceBody                     body);
 
         [Parse]
-        CsQualifiedIdentifier QualifiedIdentifier(CsIdentifier id);
-
-        [Parse]
         CsQualifiedIdentifier QualifiedIdentifier(CsDotList<CsIdentifier> identifiers);
 
         [Parse("{", null, null, null, "}")]

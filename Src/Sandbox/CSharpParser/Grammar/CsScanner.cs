@@ -31,7 +31,8 @@ namespace CSharpParser
         [Parse]
         public CsIdentifier NameIdentifier(string name) { return null; }
 
-        [Parse("var")]
+        // TODO: Schrodinger's token
+#if false
         [Parse("assembly")]
         [Parse("module")]
         [Parse("field")]
@@ -41,6 +42,8 @@ namespace CSharpParser
         [Parse("property")]
         [Parse("return")]
         [Parse("type")]
+#endif
+        [Parse("var")]
         public CsIdentifier KeywordIdentifier() { return null; }
 
         [Literal("true")]

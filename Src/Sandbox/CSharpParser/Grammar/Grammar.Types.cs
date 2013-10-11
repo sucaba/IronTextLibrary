@@ -31,8 +31,10 @@ namespace CSharpParser
         [Parse]
         CsType Type(CsReferenceType referenceType);
 
+        /* TODO: Syntactic ambiguity with other types referenced by name
         [Parse]
         CsType Type(CsTypeParameter typeParameter);
+        */
 
         [Parse]
         CsValueType ValueType(CsStructType structType);
