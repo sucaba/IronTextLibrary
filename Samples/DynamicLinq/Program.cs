@@ -17,14 +17,13 @@ namespace Samples
 
             var query = DynamicLinqCompiler.Compile<Func<IQueryable<string>>>(
                             "from e in $0 where e.Age > $1 select e.FirstName",
-                            employees.AsQueryable(), //.AsQueryable() is optional in this case
+                            employees.AsQueryable(),
                             30);
 
             foreach (var name in query())
             {
                 Console.WriteLine(name);
             }
-
             
             // Should produce:
             //   Samantha

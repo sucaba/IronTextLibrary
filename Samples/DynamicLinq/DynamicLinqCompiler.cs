@@ -60,7 +60,7 @@ namespace Samples
                                 Parameter = Expression.Parameter(elementType, variable)
                             };
 
-            // TODO: Unversal search for extension method container
+            // TODO: Universal search for an extension method container
             if (typeof(IQueryable<>).MakeGenericType(elementType).IsAssignableFrom(source.Type))
             {
                 result.MethodContainerType = typeof(Queryable);
