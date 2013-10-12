@@ -93,6 +93,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Algorithm\ArraySlice.cs" />
+    <Compile Include="Algorithm\Buffer.cs" />
     <Compile Include="Algorithm\IntegerSets\BitSet.cs" />
     <Compile Include="Algorithm\IntegerSets\BitSetBase.cs" />
     <Compile Include="Algorithm\IntegerSets\BitSetType.cs" />
