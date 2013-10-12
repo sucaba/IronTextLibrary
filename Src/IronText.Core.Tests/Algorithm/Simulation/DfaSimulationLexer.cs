@@ -92,11 +92,10 @@ namespace IronText.Tests.Algorithm
 
                     // Emit next token
                     visitor = visitor.Next(
-                        new Msg
-                        {
-                            Value    = tokenFactory(text.Substring(start, tokenLength)),
-                            Location = new Loc(Loc.MemoryString, start, pos)
-                        });
+                        new Msg(
+                            -1,
+                            tokenFactory(text.Substring(start, tokenLength)),
+                            new Loc(Loc.MemoryString, start, pos)));
                 }
 
                 start = pos;

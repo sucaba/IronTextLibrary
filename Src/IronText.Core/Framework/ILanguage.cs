@@ -34,7 +34,7 @@ namespace IronText.Framework
         public static Msg Literal(this ILanguage @this, string keyword)
         {
             var id = @this.Identify(keyword);
-            return new Msg { Id = id, Value = null };
+            return new Msg(id, null, Loc.Unknown);
         }
 
         public static Msg Token<T>(this ILanguage @this) where T : new()

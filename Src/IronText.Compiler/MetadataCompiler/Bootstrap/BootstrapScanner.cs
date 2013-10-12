@@ -101,12 +101,10 @@ namespace IronText.MetadataCompiler
 
                         int tokenId = tokenRefResolver.GetId(singleTokenRule.AnyTokenRef);
                         yield return
-                            new Msg
-                            {
-                                Id       = tokenId,
-                                Value    = term,
-                                Location = new Loc(Loc.MemoryString, match.Index, match.Length)
-                            };
+                            new Msg(
+                                tokenId,
+                                term,
+                                new Loc(Loc.MemoryString, match.Index, match.Length));
                     }
 
                     if (currentPos == text.Length)

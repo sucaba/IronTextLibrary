@@ -1,26 +1,17 @@
-﻿#define MSGCLASS
-
-using System;
+﻿using System;
 
 namespace IronText.Framework
 {
-#if MSGCLASS
-    public class Msg
-#else
-    public struct Msg
-#endif
-        : IEquatable<Msg>
+    public class Msg : IEquatable<Msg>
     {
-        public int    Id;
-        public object Value;
-        public Loc    Location;
-        public HLoc   HLocation;
+        public readonly int Id;
 
-#if MSGCLASS
-        public Msg()
-        {
-        }
-#endif
+        public readonly object Value;
+
+        public readonly Loc    Location;
+
+        public readonly HLoc   HLocation;
+
         public Msg(int id, object value, Loc location, HLoc hLocation = default(HLoc))
         {
             this.Id        = id;

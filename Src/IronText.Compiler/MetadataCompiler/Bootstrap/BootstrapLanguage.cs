@@ -95,7 +95,7 @@ namespace IronText.MetadataCompiler
             ILanguage      lang)
         {
             // Bootstrap langauge does not support externals
-            return exit.Next(new Msg { Id = externalToken });
+            return exit.Next(new Msg(externalToken, null, Loc.Unknown));
         }
 
         private GrammarActionDelegate BuildExecuteRuleAction()

@@ -230,13 +230,21 @@ namespace IronText.Framework
 
         public IReceiver<Msg> Done()
         {
-            var eoi = new Msg { Id = BnfGrammar.Eoi };
+            Loc location;
+            HLoc hLocation;
+
             if (!object.Equals(priorInput, default(Msg)))
             {
-                eoi.Location = priorInput.Location.GetEndLocation();
-                eoi.HLocation = priorInput.HLocation.GetEndLocation();
+                location = priorInput.Location.GetEndLocation();
+                hLocation = priorInput.HLocation.GetEndLocation();
+            }
+            else
+            {
+                location = Loc.Unknown;
+                hLocation = HLoc.Unknown;
             }
 
+            var eoi = new Msg(BnfGrammar.Eoi, null, location, hLocation);
             return Next(eoi);
         }
 
