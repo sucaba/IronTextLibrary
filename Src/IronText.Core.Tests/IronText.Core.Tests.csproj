@@ -81,6 +81,7 @@
     <Compile Include="Algorithm\TdfaSimulationLexerTest.cs" />
     <Compile Include="Algorithm\TopologicalSortTest.cs" />
     <Compile Include="Algorithm\UnicodeFrequencyTest.cs" />
+    <Compile Include="Framework\AmbTokenTest.cs" />
     <Compile Include="Framework\BuildErrorTest.cs" />
     <Compile Include="Framework\ErrorRecoveryTest.cs" />
     <Compile Include="Framework\GlrTest.cs" />

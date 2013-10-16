@@ -2,20 +2,38 @@
 
 namespace IronText.Framework
 {
-    public class Msg : IEquatable<Msg>
+    public class MsgAlternative
     {
-        public readonly int Id;
-
+        public readonly int    Id;
         public readonly object Value;
 
+        /// <summary>
+        /// Alternative message information for Shrodinger's token
+        /// </summary>
+        public MsgAlternative  Next;
+
+        public MsgAlternative(int id, object value)
+        {
+            Id = id;
+            Value = value;
+        }
+    }
+
+    public sealed class Msg : MsgAlternative, IEquatable<Msg>
+    {
+        /// <summary>
+        /// Location for an automatic processing
+        /// </summary>
         public readonly Loc    Location;
 
+        /// <summary>
+        /// Line, column based location for a human
+        /// </summary>
         public readonly HLoc   HLocation;
 
         public Msg(int id, object value, Loc location, HLoc hLocation = default(HLoc))
+            : base(id, value)
         {
-            this.Id        = id;
-            this.Value     = value;
             this.Location  = location;
             this.HLocation = hLocation;
         }

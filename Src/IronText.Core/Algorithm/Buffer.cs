@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IronText.Algorithm
 {
-    sealed class Buffer<T>
+    public sealed class Buffer<T>
     {
         public T[] items;
         private int count; 
@@ -16,6 +16,10 @@ namespace IronText.Algorithm
         }
 
         public int Count { get { return count; } }
+
+        public bool IsEmpty { get { return count == 0; } }
+
+        public bool HasItems { get { return count != 0; } }
 
         public T this[int index]
         {
@@ -39,6 +43,15 @@ namespace IronText.Algorithm
             }
 
             items[count++] = value;
+        }
+
+        public void AddRange(Buffer<T> other)
+        {
+            int otherCount = other.Count;
+            for (int i = 0; i != otherCount; ++i)
+            {
+                Add(other[i]);
+            }
         }
 
         public void Clear()
