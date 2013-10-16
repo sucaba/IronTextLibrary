@@ -101,7 +101,7 @@ namespace IronText.Automata.Regular
                     data.AddState(newlineState);
                     newlineState.Tunnel      = newlineTransition.To;
                     newlineState.IsAccepting = to.IsAccepting;
-                    newlineState.Action      = to.Action;
+                    newlineState.Actions.AddRange(to.Actions);
 
                     data.DeleteTransition(state.Index, newlines);
                     data.AddTransition(state.Index, newlines, newlineState.Index);
@@ -158,7 +158,7 @@ namespace IronText.Automata.Regular
                         );
                     var S = data.GetState(state);
                     newStateInfo.IsAccepting = S.IsAccepting;
-                    newStateInfo.Action = S.Action;
+                    newStateInfo.Actions.AddRange(S.Actions);
                     newStateInfo.Tunnel = state;
                     previous = newState;
 
@@ -193,7 +193,8 @@ namespace IronText.Automata.Regular
             // process new final state
             var finalState = data.GetState(previous);
             finalState.IsAccepting = true;
-            finalState.Action = scanAction;
+            finalState.Actions.Clear();
+            finalState.Actions.Add(scanAction);
         }
 
         private State Control(State state, int symbol)

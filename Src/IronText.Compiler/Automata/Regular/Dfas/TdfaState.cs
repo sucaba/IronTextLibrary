@@ -10,6 +10,7 @@ namespace IronText.Automata.Regular
     {
         private ReadOnlyCollection<IScannerTransition> transitions;
         private readonly ITdfaData container;
+        private List<int> _actions;
 
         public TdfaState(ITdfaData container)
         {
@@ -24,7 +25,23 @@ namespace IronText.Automata.Regular
 
         public bool IsNewline { get; set; }
 
-        public int? Action { get; set; }
+        public List<int> Actions
+        {
+            get { return _actions ?? (_actions = new List<int>()); }
+        }
+
+        public int? Action
+        {
+            get
+            {
+                if (_actions == null || _actions.Count == 0)
+                {
+                    return null;
+                }
+
+                return _actions[0];
+            }
+        }
 
         public int Tunnel { get; set; }
 

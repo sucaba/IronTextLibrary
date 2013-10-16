@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using IronText.Extensibility;
 
@@ -31,26 +33,21 @@ namespace IronText.Automata.Regular
                 {
                     data.GetState(Sindex).IsAccepting = true;
                 }
+        
+                var actionPosList = new SortedList<int, int>();
 
-                int? stateAction = null;
-                int actionPos = int.MaxValue;
                 foreach (var position in S)
                 {
                     var action = regTree.GetPosAction(position);
                     if (action.HasValue)
                     {
-                        // Resolve ambiguous actions by selecting the first one (lowest position in regexp)
-                        if (!stateAction.HasValue || actionPos > position)
-                        {
-                            stateAction = action;
-                            actionPos = position;
-                        }
+                        actionPosList[position] = action.Value;
                     }
                 }
 
-                if (stateAction.HasValue)
+                if (actionPosList.Count != 0)
                 {
-                    st.Action = stateAction;
+                    st.Actions.AddRange(actionPosList.Values);
                 }
 
                 var transitionSymbols = alphabet.SymbolSetType.Union(
