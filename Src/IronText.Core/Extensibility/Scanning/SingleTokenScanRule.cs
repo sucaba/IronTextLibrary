@@ -9,6 +9,8 @@ namespace IronText.Extensibility
     {
         public SingleTokenScanRule() { }
 
+        public override TokenRef MainTokenRef { get { return AnyTokenRef; } }
+
         public TokenRef AnyTokenRef
         {
             get

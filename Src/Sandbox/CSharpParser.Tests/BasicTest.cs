@@ -57,7 +57,7 @@ namespace CSharpParser.Tests
             int stateCount = data.ParserStates.Length;
             var grammar = data.Grammar;
             int[] terms = grammar.EnumerateTokens().Where(grammar.IsTerm).ToArray();
-            var table = data.Lalr1ParserActionTable;
+            var table = data.ParserActionTable;
             var unpartitioned = Enumerable.Range(0, stateCount).ToList();
             var categories = new List<List<int>>();
 
@@ -160,7 +160,7 @@ namespace CSharpParser.Tests
                     int last = start + count;
                     for (; start != last; ++start)
                     {
-                        var cAction = ParserAction.Decode(data.Lalr1ParserConflictActionTable[start]);
+                        var cAction = ParserAction.Decode(data.ParserConflictActionTable[start]);
                         switch (cAction.Kind)
                         {
                             case ParserActionKind.Shift:
@@ -185,7 +185,7 @@ namespace CSharpParser.Tests
             int startToken = BnfGrammar.PredefinedTokenCount;
             int tokenCount = grammar.TokenCount;
 
-            var table = data.Lalr1ParserActionTable;
+            var table = data.ParserActionTable;
             var unpartitioned = Enumerable.Range(startToken, tokenCount - startToken).ToList();
             var categories = new List<List<int>>();
 
@@ -277,7 +277,7 @@ namespace CSharpParser.Tests
                     int last = start + count;
                     while (start != last)
                     {
-                        ParserAction cAction = ParserAction.Decode(data.Lalr1ParserConflictActionTable[start++]);
+                        ParserAction cAction = ParserAction.Decode(data.ParserConflictActionTable[start++]);
                         switch (cAction.Kind)
                         {
                             case ParserActionKind.Shift:

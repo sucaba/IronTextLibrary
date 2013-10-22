@@ -13,7 +13,7 @@ namespace IronText.Framework
 
         IList<GssNode<T>> Front { get; }
 
-        GssNode<T> GetFrontNode(int state);
+        GssNode<T> GetFrontNode(int state, int lookahead = -1);
 
         Gss<T> CloneWithoutData();
 
@@ -35,6 +35,6 @@ namespace IronText.Framework
         //        which are triggered by the lookahead.
         void PopLayer();
 
-        GssLink<T> Push(GssNode<T> frontNode, int state, T value);
+        GssLink<T> Push(GssNode<T> frontNode, int state, T value, int lookahead = -1);
     }
 }

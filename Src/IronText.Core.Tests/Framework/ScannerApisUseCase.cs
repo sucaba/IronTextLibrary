@@ -32,17 +32,17 @@ namespace IronText.Tests.Framework
                 =>
                 {
                     value = new string(cursor.Buffer, cursor.Start, cursor.Marker - cursor.Start);
-                    return cursor.ActionId;
+                    return cursor.Actions[0];
                 };
 
             var logging = ExceptionLogging.Instance;
-            var allTokens = new Scanner(Scan1, input, document, null, scanAction, logging).ToArray();
+            var allTokens = new Scanner(Scan1, input, document, null, scanAction, 10, logging).ToArray();
 
             Assert.AreEqual(expectedTokens, TokenTexts(allTokens));
             Assert.AreEqual(expectedTokenIds, TokenIds(allTokens));
             Assert.AreEqual(expectedLocations, Locations(allTokens));
 
-            var scanner = new Scanner(Scan1, new StringReader(" a11"), Loc.MemoryString, null, scanAction, logging);
+            var scanner = new Scanner(Scan1, new StringReader(" a11"), Loc.MemoryString, null, scanAction, 10, logging);
             Assert.Throws<SyntaxException>(
                 () =>
                 {
@@ -111,7 +111,8 @@ namespace IronText.Tests.Framework
 
         LDIGIT: // State #1
             ++cursor.Cursor;
-            cursor.ActionId = 1;
+            cursor.ActionCount = 1;
+            cursor.Actions[0] = 1;
             cursor.Marker = cursor.Cursor; // accept
         MDIGIT:
             ch = cursor.Buffer[cursor.Cursor];
@@ -137,7 +138,8 @@ namespace IronText.Tests.Framework
 
         LSPACE: // State #2
             ++cursor.Cursor;
-            cursor.ActionId = 0;
+            cursor.ActionCount = 1;
+            cursor.Actions[0] = 0;
             cursor.Marker = cursor.Cursor;
         MSPACE:
             ch = cursor.Buffer[cursor.Cursor];

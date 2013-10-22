@@ -23,6 +23,11 @@ namespace IronText.Algorithm
             table[row, col] = value;
         }
 
+        public void Clear()
+        {
+            Array.Clear(table, 0, table.GetLength(0) * table.GetLength(1));
+        }
+
         public int RowCount
         {
             get { return table.GetLength(0); }

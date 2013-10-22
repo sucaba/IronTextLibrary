@@ -8,14 +8,13 @@ using IronText.Extensibility;
 namespace IronText.Framework
 {
     using State = System.Int32;
-    using Token = System.Int32;
     using System.Text;
 
     sealed class RnGlrParser<T> : IPushParser
     {
         private readonly BnfGrammar           grammar;
         private readonly int[]                conflictActionsTable;
-        private readonly Token[]              stateToPriorToken;
+        private readonly int[]                stateToPriorToken;
         private readonly TransitionDelegate   transition;
         private          IProducer<T>         producer;
         private readonly ResourceAllocator    allocator;
@@ -36,7 +35,7 @@ namespace IronText.Framework
             BnfGrammar          grammar,
             int[]               tokenComplexity,
             TransitionDelegate  transition,
-            Token[]             stateToPriorToken,
+            int[]               stateToPriorToken,
             int[]               conflictActionsTable,
             IProducer<T>        producer,
             ResourceAllocator   allocator,
@@ -58,7 +57,7 @@ namespace IronText.Framework
             BnfGrammar          grammar,
             int[]               tokenComplexity,
             TransitionDelegate  transition,
-            Token[]             stateToPriorToken,
+            int[]               stateToPriorToken,
             int[]               conflictActionsTable,
             IProducer<T>        producer,
             ResourceAllocator   allocator,
@@ -91,53 +90,66 @@ namespace IronText.Framework
             }
         }
 
-        public IReceiver<Msg> Next(Msg item)
+        public IReceiver<Msg> Next(Msg envelope)
         {
+            // Fork envelope in a one of the ways:
+            // - GssNode has lookup token info and reductions and shifts are performed only on the same lookahaed
+            // - Gss modification are performed separately for each alternative
             gss.BeginEdit();
 
-            Actor(item);
-            Reducer(item.Id);
-
-            if (accepted)
+            MsgData data = envelope.FirstData;
+            do
             {
-                foreach (var node in gss.Front)
+                int lookahead = data.TokenId;
+
+                Actor(lookahead);
+                Reducer(lookahead);
+
+                if (accepted)
                 {
-                    if (IsAccepting(node.State))
+                    foreach (var node in gss.Front)
                     {
-                        producer.Result = node.PrevLink.Label;
-                        break;
+                        if (IsAccepting(node.State))
+                        {
+                            producer.Result = node.PrevLink.Label;
+                            break;
+                        }
                     }
                 }
-            }
 
-            var itemValue = producer.CreateLeaf(item);
-            
-            for (int i = 0; i != gss.Front.Count; ++i)
-            {
-                var frontNode = gss.Front[i];
+                var termValue = producer.CreateLeaf(envelope, data);
+                N[GetNKey(lookahead, gss.CurrentLayer + 1)] = termValue;
 
-                // Plan shift
-                var shift = GetShift(frontNode.State, item.Id);
-                if (shift >= 0)
+                for (int i = 0; i != gss.Front.Count; ++i)
                 {
-                    Q.Enqueue(new PendingShift(frontNode, shift));
+                    var frontNode = gss.Front[i];
+
+                    // Plan shift
+                    var shift = GetShift(frontNode.State, lookahead);
+                    if (shift >= 0)
+                    {
+                        Q.Enqueue(new PendingShift(frontNode, shift, lookahead));
+                    }
+
+                    // Shift and plan reduce
+                    var action = GetShiftReduce(frontNode.State, lookahead);
+                    if (action.Kind == ParserActionKind.ShiftReduce)
+                    {
+                        PlanShiftReduce(
+                            frontNode,
+                            lookahead,
+                            termValue,
+                            action.Rule,
+                            action.Size);
+                    }
                 }
 
-                // Shift and plan reduce
-                var action = GetShiftReduce(frontNode.State, item.Id);
-                if (action.Kind == ParserActionKind.ShiftReduce)
-                {
-                    PlanShiftReduce(
-                        frontNode,
-                        item.Id,
-                        itemValue,
-                        action.Rule,
-                        action.Size);
-                }
+                data = data.Next;
             }
+            while (data != null);
 
             gss.PushLayer();
-            Shifter(item, itemValue);
+            Shifter();
 
             // Run reducer again to complete 
             // shift-reduce and goto-reduce actions.
@@ -168,7 +180,7 @@ namespace IronText.Framework
                     var message = new StringBuilder();
                     message
                         .Append("Unexpected token ")
-                        .Append(grammar.TokenName(item.Id))
+                        .Append(grammar.TokenName(envelope.Id))
                         .Append(" in state stacks: {");
                     bool firstStack = true;
                     foreach (var node in gss.Front)
@@ -214,17 +226,17 @@ namespace IronText.Framework
                         new LogEntry
                         {
                             Severity = Severity.Verbose,
-                            Location = item.Location,
-                            HLocation = item.HLocation,
+                            Location = envelope.Location,
+                            HLocation = envelope.HLocation,
                             Message = message.ToString()
                         });
                 }
 
-                return RecoverFromError(item);
+                return RecoverFromError(envelope);
             }
 
             gss.EndEdit();
-            this.priorInput = item;
+            this.priorInput = envelope;
             return this;
         }
 
@@ -254,18 +266,18 @@ namespace IronText.Framework
             return ParserAction.GetKind(cell) == ParserActionKind.Accept;
         }
 
-        private void Actor(Msg item)
+        private void Actor(int lookahead)
         {
             foreach (var w in gss.Front)
             {
-                foreach (var red in GetReductions(w.State, item.Id))
+                foreach (var red in GetReductions(w.State, lookahead))
                 {
                     R.Enqueue(w, red.Rule, red.Size);
                 }
             }
         }
 
-        private void Reducer(int lookaheadToken = -1)
+        private void Reducer(int lookahead = -1)
         {
             N.Clear();
 
@@ -273,7 +285,7 @@ namespace IronText.Framework
             {
                 GssReducePath<T> path = R.Dequeue();
 
-                Token X = path.Rule.Left;
+                int X = path.Rule.Left;
                 int m = path.Size;
 
                 GssNode<T> u = path.LeftNode;
@@ -314,8 +326,7 @@ namespace IronText.Framework
                     case ParserActionKind.Shift:
                         l = action.State;
                         break;
-                    case ParserActionKind.ShiftReduce:
-                        // Handle goto-reduce action
+                    case ParserActionKind.ShiftReduce: // Goto-Reduce action
                         PlanShiftReduce(
                             u,
                             X,
@@ -329,12 +340,12 @@ namespace IronText.Framework
                             + Enum.GetName(typeof(ParserActionKind), action.Kind));
                 }
 
-                bool stateAlreadyExists = gss.GetFrontNode(l) != null;
+                bool stateAlreadyExists = gss.GetFrontNode(l, lookahead) != null;
 
                 // Goto on non-term produced by rule.
-                var newLink = gss.Push(u, l, z);
+                var newLink = gss.Push(u, l, z, lookahead);
 
-                if (lookaheadToken < 0)
+                if (lookahead < 0)
                 {
                     continue;
                 }
@@ -343,7 +354,7 @@ namespace IronText.Framework
                 {
                     if (newLink != null && m != 0)
                     {
-                        var reductions = GetReductions(l, lookaheadToken);
+                        var reductions = GetReductions(l, lookahead);
                         foreach (var red in reductions)
                         {
                             if (red.Size != 0)
@@ -355,9 +366,9 @@ namespace IronText.Framework
                 }
                 else
                 {
-                    var w = gss.GetFrontNode(l);
+                    var w = gss.GetFrontNode(l, lookahead);
 
-                    var reductions = GetReductions(l, lookaheadToken);
+                    var reductions = GetReductions(l, lookahead);
                     foreach (var red in reductions)
                     {
                         if (red.Size == 0)
@@ -380,14 +391,12 @@ namespace IronText.Framework
             }
         }
 
-        private void Shifter(Msg item, T val)
+        private void Shifter()
         {
-            // TODO: Is following useful for terms? Shift-Shift conlicts?
-            N[GetNKey(item.Id, gss.CurrentLayer)] = val;
-
             while (Q.Count != 0)
             {
                 var shift = Q.Dequeue();
+                var val = N[GetNKey(shift.Token, gss.CurrentLayer)];
 
                 gss.Push(shift.FrontNode, shift.ToState, val);
             }
@@ -404,8 +413,7 @@ namespace IronText.Framework
             }
         }
 
-        
-        private int GetShift(State state, Token token)
+        private int GetShift(State state, int token)
         {
             int shift = -1;
 
@@ -430,7 +438,7 @@ namespace IronText.Framework
             return shift;
         }
 
-        private ParserAction GetShiftReduce(State state, Token token)
+        private ParserAction GetShiftReduce(State state, int token)
         {
             ParserAction action = GetDfaCell(state, token);
             switch (action.Kind)
@@ -452,7 +460,7 @@ namespace IronText.Framework
             return ParserAction.FailAction;
         }
 
-        private IEnumerable<ModifiedReduction> GetReductions(State state, Token token)
+        private IEnumerable<ModifiedReduction> GetReductions(State state, int token)
         {
             ParserAction action = GetDfaCell(state, token);
             BnfRule rule;
@@ -490,21 +498,23 @@ namespace IronText.Framework
             }
         }
 
-        private ParserAction GetDfaCell(State state, Token token)
+        private ParserAction GetDfaCell(State state, int token)
         {
             return ParserAction.Decode(transition(state, token));
         }
 
         struct PendingShift
         {
-            public PendingShift(GssNode<T> frontNode, State toState)
+            public PendingShift(GssNode<T> frontNode, State toState, int token)
             {
-                FrontNode = frontNode;
-                ToState = toState;
+                this.FrontNode = frontNode;
+                this.ToState = toState;
+                this.Token = token;
             }
 
             public readonly GssNode<T> FrontNode;
             public readonly State ToState;
+            public readonly int Token;
         }
 
         public IPushParser CloneVerifier()

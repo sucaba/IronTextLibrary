@@ -24,11 +24,11 @@ namespace IronText.Framework
 #endif
 
         // Leaf
-        public SppfNode(Msg msg)
+        public SppfNode(MsgData msg, Loc location, HLoc hLocation)
         {
-            this.Id = msg.Id;
+            this.Id = msg.TokenId;
             this.Value = msg.Value;
-            this.Location = msg.Location;
+            this.Location = location;
 
 #if DEBUG
             timestamp = timestampGen++;
@@ -36,7 +36,7 @@ namespace IronText.Framework
         }
 
         // Leaf
-        public SppfNode(int tokenId, object value, Loc location)
+        public SppfNode(int tokenId, object value, Loc location, HLoc hLocation)
         {
             this.Id       = tokenId;
             this.Value    = value;

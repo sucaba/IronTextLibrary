@@ -75,13 +75,25 @@ namespace IronText.MetadataCompiler
                 // in Marker and save corresponding ActionId.
                 if (S.IsAccepting)
                 {
-                    // Index of action for this state
-                    int ruleIndex = S.Action.HasValue ? (S.Action.Value + startRuleId) : -1;
+                    int i = 0;
+                    foreach (var action in S.Actions)
+                    {
+                        emit
+                            .Ldarg(0)
+                            .Ldfld((ScanCursor c) => c.Actions)
+                            .Ldc_I4(i)
+                            .Ldc_I4(action + startRuleId) 
+                            .Stelem_I4()
+                            ;
+                    }
 
                     emit
                         .Ldarg(0)
-                        .Ldc_I4(ruleIndex)
-                        .Stfld((ScanCursor c) => c.ActionId)
+                        .Ldc_I4(S.Actions.Count)
+                        .Stfld((ScanCursor c) => c.ActionCount)
+                        ;
+
+                    emit
                         .Ldarg(0)
                         .Ldarg(0) .Ldfld((ScanCursor c) => c.Cursor)
                         .Stfld((ScanCursor c) => c.Marker);

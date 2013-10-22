@@ -21,7 +21,7 @@ namespace IronText.MetadataCompiler
 
         public BnfGrammarAnalysis GrammarAnalysis { get; set; }
 
-        public int TokenCount { get { return Lalr1ParserActionTable.ColumnCount; } }
+        public int TokenCount { get { return Grammar.TokenCount; } }
 
         public bool                   IsDeterministic;
         public Type                   RootContextType;
@@ -38,16 +38,12 @@ namespace IronText.MetadataCompiler
         
         public ScanMode[]             ScanModes;
         public Dictionary<Type, ITdfaData>  ScanModeTypeToDfa;
+        public IIntMap<int>           AmbTokenToMainToken;
 
         public ITable<int>            ParserActionTable;
         public int[]                  ParserConflictActionTable;
         public int[]                  StateToSymbolTable;
-
-        // For reporting
-        public ITable<int>            Lalr1ParserActionTable;
-        public int[]                  Lalr1ParserConflictActionTable;
-        public ParserConflictInfo[]   Lalr1Conflicts;
-
+        public ParserConflictInfo[]   ParserConflicts;
 
         string IReportData.DestinationDirectory { get { return Name.SourceAssemblyDirectory; } }
 

@@ -102,12 +102,15 @@ namespace IronText.Framework
             return Next(eoi);
         }
 
-        public IReceiver<Msg> Next(Msg msg)
+        public IReceiver<Msg> Next(Msg envelope)
         {
             stateStack.BeginEdit();
 
-            ParserAction action = LookaheadAction(msg.Id);
+            int id = envelope.Id;
+            MsgData data = envelope.FirstData;
 
+        START:
+            ParserAction action = LookaheadAction(envelope.Id);
             switch (action.Kind)
             {
                 case ParserActionKind.Fail:
@@ -117,15 +120,33 @@ namespace IronText.Framework
                     }
 
                     // ReportUnexpectedToken(msg, stateStack.PeekTag());
-                    return RecoverFromError(msg);
+                    return RecoverFromError(envelope);
+                case ParserActionKind.Resolve:
+                    id = action.RolvedToken;
+                    while (true)
+                    {
+                        if (data.TokenId == id)
+                        {
+                            // Successfully resolved to a particular token 
+                            goto START;
+                        }
+
+                        data = data.Next;
+                        if (data == null)
+                        {
+                            // Desired token was not present in Msg
+                            goto case ParserActionKind.Fail;
+                        }
+                    }
+                case ParserActionKind.Fork:
                 case ParserActionKind.Conflict:
                     logging.Write(
                         new LogEntry
                         {
                             Severity = Severity.Error,
-                            Location = msg.Location,
-                            HLocation = msg.HLocation,
-                            Message = "Hit parser conflict on token " + grammar.TokenName(msg.Id)
+                            Location = envelope.Location,
+                            HLocation = envelope.HLocation,
+                            Message = "Hit parser conflict on token " + grammar.TokenName(envelope.Id)
                         });
                     return null;
 
@@ -138,12 +159,12 @@ namespace IronText.Framework
 #endif
                 case ParserActionKind.Shift:
                     {
-                        stateStack.Push(action.State, producer.CreateLeaf(msg));
+                        stateStack.Push(action.State, producer.CreateLeaf(envelope, data));
                         break;
                     }
                 case ParserActionKind.ShiftReduce:
                     {
-                        TNode value = producer.CreateLeaf(msg);
+                        TNode value = producer.CreateLeaf(envelope, data);
                         do
                         {
                             stateStack.Push(-1, value);
@@ -176,7 +197,7 @@ namespace IronText.Framework
             }
 
             stateStack.EndEdit();
-            this.priorInput = msg;
+            this.priorInput = envelope;
             return this;
         }
 

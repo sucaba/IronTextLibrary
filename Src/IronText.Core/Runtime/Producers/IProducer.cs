@@ -25,7 +25,7 @@ namespace IronText.Framework
         T Result { get; set; }
 
         // Leaf corresponding to the input terminal
-        T CreateLeaf(Msg msg);
+        T CreateLeaf(Msg envelope, MsgData data);
 
         // Branch for production rule
         T CreateBranch(BnfRule rule, ArraySlice<T> parts, IStackLookback<T> lookback);

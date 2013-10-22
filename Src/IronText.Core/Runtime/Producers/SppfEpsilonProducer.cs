@@ -23,7 +23,7 @@
             {
                 if (grammar.IsNullable(token))
                 {
-                    tokenCache[token] = new SppfNode(token, null, Loc.Unknown);
+                    tokenCache[token] = new SppfNode(token, null, Loc.Unknown, HLoc.Unknown);
                 }
             }
 

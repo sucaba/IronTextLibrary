@@ -16,17 +16,19 @@ namespace IronText.Automata.Lalr1
         private int[]  conflictActionTable;
         private readonly bool canOptimizeReduceStates;
 
-        public ReductionModifiedLrDfaTable(ILrDfa dfa)
+        public ReductionModifiedLrDfaTable(ILrDfa dfa, IMutableTable<int> actionTable = null)
         {
             var flag = LrTableOptimizations.EliminateLr0ReduceStates;
             this.canOptimizeReduceStates = (dfa.Optimizations & flag) == flag;
 
             this.grammar = dfa.Grammar;
             var states = dfa.States;
-            this.actionTable = new MutableTable<int>(states.Length, dfa.Grammar.TokenCount);
+            this.actionTable = actionTable ?? new MutableTable<int>(states.Length, dfa.Grammar.TokenCount);
             FillDfaTable(states);
             BuildConflictActionTable();
         }
+
+        public bool RequiresGlr { get { return true; } }
 
         public ParserConflictInfo[] Conflicts
         {

@@ -77,9 +77,9 @@ namespace IronText.Automata.Regular
 
             foreach (var state in EnumerateStates())
             {
-                if (state.Action.HasValue)
+                foreach (var action in state.Actions)
                 {
-                    output.AppendFormat("   {0} -> {1},", state.Index, state.Action.Value).AppendLine();
+                    output.AppendFormat("   {0} -> {1},", state.Index, action).AppendLine();
                 }
             }
 

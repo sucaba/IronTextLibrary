@@ -28,6 +28,8 @@ namespace IronText.MetadataCompiler
 
         private bool Build(ILogging logging, out LanguageData result)
         {
+            result = new LanguageData();
+
             this.logging = logging;
 
             LanguageDefinition definition = null;
@@ -61,6 +63,14 @@ namespace IronText.MetadataCompiler
                 }
             }
 
+            if (!bootstrap)
+            {
+                if (!BuildScanner(definition, grammar, tokenResolver, result))
+                {
+                    return false;
+                }
+            }
+
             // Build parsing tables
             ILrDfa parserDfa = null;
 
@@ -71,118 +81,39 @@ namespace IronText.MetadataCompiler
                 },
                 "building LALR1 DFA");
 
-            ILrParserTable lrTable = new CanonicalLrDfaTable(parserDfa);
             var flags = Attributes.First<LanguageAttribute>(languageName.DefinitionType).Flags;
-            bool hasConflicts = lrTable.GetConflictActionTable().Length > 0;
-            bool isDeterministic;
-            bool success;
-
-            switch (flags & LanguageFlags.ParserAlgorithmMask)
+            var lrTable = new ConfigurableLrTable(parserDfa, flags);
+            if (!lrTable.ComplyWithConfiguration)
             {
-                case LanguageFlags.ForceDeterministic:
-                    success = !hasConflicts;
-                    isDeterministic = true;
-
-                    if (hasConflicts)
+                reportBuilders.Add(
+                    reportData =>
                     {
-                        success = false;
-                        reportBuilders.Add(
-                            reportData =>
-                            {
-                                var messageBuilder = new ConflictMessageBuilder(reportData);
-                                messageBuilder.Write(logging);
-                            });
-                    }
-                    else
-                    {
-                        success = true;
-                    }
-
-                    break;
-                case LanguageFlags.ForceNonDeterministic:
-                    success     = true;
-                    isDeterministic = false;
-                    break;
-                default:
-#if DEBUG
-                    throw new InvalidOperationException(
-                        "Internal error: unsupported language flags: " + (int)flags);
-#endif
-                case LanguageFlags.AllowNonDeterministic:
-                    success     = true;
-                    isDeterministic = !hasConflicts;
-                    break;
-            }
-
-            ILrParserTable parserTable;
-
-            if (isDeterministic)
-            {
-                parserTable = lrTable;
-            }
-            else
-            {
-#if false
-                WithTimeLogging(
-                    () =>
-                    {
-                        parserDfa = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.None);
-                    },
-                    "rebuilding non-optmized LALR1 DFA");
-                lrTable     = new CanonicalLrDfaTable(parserDfa);
-#endif
-                parserTable = new ReductionModifiedLrDfaTable(parserDfa);
+                        var messageBuilder = new ConflictMessageBuilder(reportData);
+                        messageBuilder.Write(logging);
+                    });
             }
 
             var localParseContexts = CollectLocalContexts(grammar, parserDfa, definition.ParseRules);
 
             // Prepare language data for the language assembly generation
-            result = new LanguageData
-            {
-                Name                = languageName,
-                IsDeterministic     = isDeterministic,
-                RootContextType     = languageName.DefinitionType,
-                Grammar             = grammar,
-                GrammarAnalysis     = grammarAnalysis,
-                ParserStates        = parserDfa.States,
-                StateToSymbolTable  = parserDfa.GetStateToSymbolTable(),
-                ParserActionTable   = parserTable.GetParserActionTable(),
-                ParserConflictActionTable = parserTable.GetConflictActionTable(),
+            result.Name                = languageName;
+            result.IsDeterministic     = !lrTable.RequiresGlr;
+            result.RootContextType     = languageName.DefinitionType;
+            result.Grammar             = grammar;
+            result.GrammarAnalysis     = grammarAnalysis;
+            result.ParserStates        = parserDfa.States;
+            result.StateToSymbolTable  = parserDfa.GetStateToSymbolTable();
+            result.ParserActionTable   = lrTable.GetParserActionTable();
+            result.ParserConflictActionTable = lrTable.GetConflictActionTable();
+            result.ParserConflicts     = lrTable.Conflicts;
 
-                Lalr1ParserActionTable = lrTable.GetParserActionTable(),
-                Lalr1ParserConflictActionTable = lrTable.GetConflictActionTable(),
-                Lalr1Conflicts = lrTable.Conflicts,
+            result.TokenRefResolver    = tokenResolver;
 
-                TokenRefResolver    = tokenResolver,
-
-                LocalParseContexts  = localParseContexts.ToArray(),
-                RuleActionBuilders  = ruleActionBuilders.Select(bs => bs == null ? null : bs.ToArray()).ToArray(),
-                MergeRules          = definition.MergeRules.ToArray(),
-                SwitchRules         = definition.SwitchRules.ToArray(),
-                ScanModes           = definition.ScanModes.ToArray(),
-            };
-
-            if (!bootstrap)
-            {
-                result.ScanModeTypeToDfa = new Dictionary<Type, ITdfaData>();
-                foreach (ScanMode scanMode in result.ScanModes)
-                {
-                    if (!BuildScanModeDfa(logging, result, scanMode))
-                    {
-                        logging.Write(
-                            new LogEntry
-                            {
-                                Severity = Severity.Error,
-                                Member = languageName.DefinitionType,
-                                Message = string.Format(
-                                            "Unable to create scanner for '{0}' language.",
-                                            languageName.DefinitionType)
-                            });
-
-                        return false;
-                    }
-                }
-            }
+            result.LocalParseContexts  = localParseContexts.ToArray();
+            result.RuleActionBuilders  = ruleActionBuilders.Select(bs => bs == null ? null : bs.ToArray()).ToArray();
+            result.MergeRules          = definition.MergeRules.ToArray();
+            result.SwitchRules         = definition.SwitchRules.ToArray();
+            result.ScanModes           = definition.ScanModes.ToArray();
 
             if (!bootstrap)
             {
@@ -192,26 +123,98 @@ namespace IronText.MetadataCompiler
                 }
             }
 
-            return success;
+            return true;
         }
 
-        private static bool BuildScanModeDfa(ILogging logging, LanguageData result, ScanMode scanMode)
+        private bool BuildScanner(
+            LanguageDefinition definition,
+            BnfGrammar grammar,
+            ITokenRefResolver tokenResolver,
+            LanguageData result)
+        {
+            var scanModeTypeToDfa = new Dictionary<Type, ITdfaData>();
+
+            int actionCount = definition.ScanModes.Sum(m => m.ScanRules.Count);
+            IScanAmbiguityResolver scanAmbiguityResolver
+#if false
+                                    = new ShrodingerScanAmbiguityResolver(
+                                            grammar.TokenSet,
+                                            actionCount);
+#else
+                                    = new FirstWinsScanAmbiguityResolver();
+#endif
+
+            int firstScanAction = 0;
+
+            foreach (ScanMode scanMode in definition.ScanModes)
+            {
+                ITdfaData tdfaData;
+                if (!BuildScanModeDfa(logging, scanMode, out tdfaData))
+                {
+                    logging.Write(
+                        new LogEntry
+                        {
+                            Severity = Severity.Error,
+                            Member = languageName.DefinitionType,
+                            Message = string.Format(
+                                        "Unable to create scanner for '{0}' language.",
+                                        languageName.DefinitionType)
+                        });
+
+                    return false;
+                }
+
+                scanModeTypeToDfa[scanMode.ScanModeType] = tdfaData;
+
+                // For each action store information ambout produced tokens
+                int count = scanMode.ScanRules.Count;
+                for (int i = 0; i != count; ++i)
+                {
+                    var scanRule = scanMode.ScanRules[i];
+
+                    scanAmbiguityResolver.RegisterActionTokens(
+                        firstScanAction + i,
+                        tokenResolver.GetId(scanRule.MainTokenRef),
+                        scanRule
+                            .GetTokenRefGroups()
+                            .Select(trs => trs[0])
+                            .Select(tokenResolver.GetId));
+                }
+
+                // For each 'ambiguous scanner state' deduce all tokens
+                // which can be produced in this state.
+                foreach (var state in tdfaData.EnumerateStates())
+                {
+                    scanAmbiguityResolver.RegisterStateActions(state);
+                }
+
+                firstScanAction += scanMode.ScanRules.Count;
+            }
+
+            scanAmbiguityResolver.DefineAmbiguities(grammar);
+            scanAmbiguityResolver.FixAutomata(scanModeTypeToDfa.Values);
+
+            result.ScanModeTypeToDfa = scanModeTypeToDfa;
+
+            return true;
+        }
+
+        private static bool BuildScanModeDfa(ILogging logging, ScanMode scanMode, out ITdfaData tdfaData)
         {
             var descr = ScannerDescriptor.FromScanRules(
                                         scanMode.ScanModeType.FullName,
                                         scanMode.ScanRules,
                                         logging);
-            ITdfaData data;
             var literalToAction = new Dictionary<string, int>();
             var ast = descr.MakeAst(literalToAction);
             if (ast == null)
             {
+                tdfaData = null;
                 return false;
             }
 
-            var regTree2 = new RegularTree(ast);
-            data = new RegularToTdfaAlgorithm(regTree2, literalToAction).Data;
-            result.ScanModeTypeToDfa[scanMode.ScanModeType] = data;
+            var regTree = new RegularTree(ast);
+            tdfaData = new RegularToTdfaAlgorithm(regTree, literalToAction).Data;
 
             return true;
         }

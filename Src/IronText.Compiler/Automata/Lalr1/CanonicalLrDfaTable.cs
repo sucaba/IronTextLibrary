@@ -18,15 +18,18 @@ namespace IronText.Automata.Lalr1
         private int[]  conflictActionTable;
         private readonly bool canOptimizeReduceStates;
 
-        public CanonicalLrDfaTable(ILrDfa dfa)
+        public CanonicalLrDfaTable(ILrDfa dfa, IMutableTable<int> actionTable)
         {
             var flag = LrTableOptimizations.EliminateLr0ReduceStates;
             this.canOptimizeReduceStates = (dfa.Optimizations & flag) == flag;
 
             this.grammar = dfa.Grammar;
+            this.actionTable = actionTable ?? new MutableTable<int>(dfa.States.Length, grammar.TokenCount);
             FillDfaTable(dfa.States);
             BuildConflictTable();
         }
+
+        public bool RequiresGlr { get; private set; }
 
         public ParserConflictInfo[] Conflicts
         {
@@ -64,8 +67,6 @@ namespace IronText.Automata.Lalr1
 
         private void FillDfaTable(DotState[] states)
         {
-            actionTable = new MutableTable<int>(states.Length, grammar.TokenCount);
-
             for (int i = 0; i != states.Length; ++i)
             {
                 var state = states[i];
@@ -162,6 +163,8 @@ namespace IronText.Automata.Lalr1
                 int resolvedCell;
                 if (!TryResolveShiftReduce(currentCell, cell, token, out resolvedCell))
                 {
+                    RequiresGlr = true;
+
                     ParserConflictInfo conflict;
                     var key = new TransitionKey(state, token);
                     if (!transitionToConflict.TryGetValue(key, out conflict))

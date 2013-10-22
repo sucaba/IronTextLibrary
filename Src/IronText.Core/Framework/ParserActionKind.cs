@@ -16,9 +16,9 @@ namespace IronText.Framework
         // Switch to another token reciever
         Switch = 3,
 #endif
-        ShiftAlt = 3,  // Shift on a non-main alternative of a Shrodinger's token
+        Resolve    = 3,  // Resolve Shrodinger's token
 
-        ShiftFork = 7, // Fork on allowed alternatives of a Shrodinger's token
+        Fork       = 7,  // Fork on allowed alternatives of a Shrodinger's token
 
         // Multiple actions can happend in this state (0 or 1 shift + 0 or more reductions)
         Conflict = 4,

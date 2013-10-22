@@ -10,7 +10,9 @@
         public bool IsEoi;     // EOI flag
         public int Start;      // token start
         public int InnerState; // Inner state of the scanner FSM
-        public int ActionId;   // accept action ID
+        public int CurrentActionId;   // accept action ID
+        public int ActionCount;
+        public int[] Actions;
 
         public int Cursor;          // current scan position
         public int CursorLine = 1;  // 1-based currently scanned line number

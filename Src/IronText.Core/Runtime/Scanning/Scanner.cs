@@ -23,6 +23,7 @@ namespace IronText.Framework
             string             document,
             object             rootContext,
             ScanActionDelegate scanAction,
+            int                maxActionCount,
             ILogging           logging)
         {
             this.startMode  = startMode;
@@ -30,8 +31,11 @@ namespace IronText.Framework
             this.context    = rootContext;
             this.document   = document;
             this.scanAction = scanAction;
+            this.MaxActionCount = maxActionCount;
             this.logging    = logging;
         }
+
+        public int MaxActionCount { get; private set; }
 
         public IEnumerator<Msg> GetEnumerator()
         {

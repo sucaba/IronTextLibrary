@@ -34,7 +34,15 @@ namespace IronText.Tests.Algorithm
 
         bool IDfaSimulation.IsAccepting(int state) { return data.GetState(state).IsAccepting; }
 
-        int? IDfaSimulation.GetAction(int state) { return data.GetState(state).Action; }
+        int? IDfaSimulation.GetAction(int state) 
+        { 
+            var s = data.GetState(state);
+            if (s.Actions.Count == 0)
+            {
+                return null;
+            }
 
+            return s.Actions[0];
+        }
     }
 }

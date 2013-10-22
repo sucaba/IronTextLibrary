@@ -39,7 +39,7 @@ namespace IronText.MetadataCompiler
 
         public ReadOnlyCollection<ParserConflictInfo> Conflicts
         {
-            get { return new ReadOnlyCollection<ParserConflictInfo>(data.Lalr1Conflicts); }
+            get { return new ReadOnlyCollection<ParserConflictInfo>(data.ParserConflicts); }
         }
     }
 }

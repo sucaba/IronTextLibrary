@@ -77,7 +77,7 @@ namespace IronText.Framework
             // Following line removes nodes created by the lookahead triggered 
             // reductions.
             //
-            // This is line optional since PopLayer() is used in panic-mode 
+            // This line optional since PopLayer() is used in the panic-mode 
             // error recovery only and such nodes should not cause incorrect
             // parsing recovery sequences (TODO: prove!). However removing 
             // these nodes should simplify debugging and can slightly improve
@@ -85,11 +85,11 @@ namespace IronText.Framework
             front.RemoveAll(node => node.Stage != 0);
         }
 
-        public GssNode<T> GetFrontNode(State state)
+        public GssNode<T> GetFrontNode(State state, int lookahead = -1)
         {
             foreach (var node in front)
             {
-                if (node.State == state)
+                if (node.State == state && (lookahead < 0 || node.Lookahead < 0 || lookahead == node.Lookahead))
                 {
                     return node;
                 }
@@ -98,16 +98,16 @@ namespace IronText.Framework
             return default(GssNode<T>);
         }
 
-        private GssNode<T> AddTopmost(State state)
+        private GssNode<T> AddTopmost(State state, int lookahead = -1)
         {
-            var result = new GssNode<T>(state, currentLayer, currentStage);
+            var result = new GssNode<T>(state, currentLayer, currentStage, lookahead);
             front.Add(result);
             return result;
         }
 
-        public GssLink<T> Push(GssNode<T> leftNode, int rightState, T label)
+        public GssLink<T> Push(GssNode<T> leftNode, int rightState, T label, int lookahead = -1)
         {
-            GssNode<T> rightmostNode = GetFrontNode(rightState) ?? AddTopmost(rightState);
+            GssNode<T> rightmostNode = GetFrontNode(rightState, lookahead) ?? AddTopmost(rightState, lookahead);
 
             var link = GetLink(rightmostNode, leftNode);
             if (link != null)

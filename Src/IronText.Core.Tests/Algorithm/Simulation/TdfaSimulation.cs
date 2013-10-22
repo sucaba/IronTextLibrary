@@ -52,7 +52,13 @@ namespace IronText.Tests.Algorithm
 
         public int? GetAction(int state)
         {
-            return data.GetState(state).Action;
+            var s = data.GetState(state);
+            if (s.Actions.Count == 0)
+            {
+                return null;
+            }
+
+            return s.Actions[0];
         }
     }
 }

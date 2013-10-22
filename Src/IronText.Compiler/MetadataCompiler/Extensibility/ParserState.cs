@@ -67,7 +67,7 @@ namespace IronText.MetadataCompiler
 
         private IEnumerable<ParserAction> GetAllParserActions(int state, int token)
         {
-            var cell = data.Lalr1ParserActionTable.Get(state, token);
+            var cell = data.ParserActionTable.Get(state, token);
             var action = ParserAction.Decode(cell);
             if (action == null || action.Kind == ParserActionKind.Fail)
             {
@@ -78,7 +78,7 @@ namespace IronText.MetadataCompiler
                 {
                     yield return
                         ParserAction.Decode(
-                            data.Lalr1ParserConflictActionTable[action.Value1 + i]);
+                            data.ParserConflictActionTable[action.Value1 + i]);
                 }
             }
             else

@@ -13,7 +13,7 @@ namespace IronText.Framework
             set { }
         }
 
-        public T CreateLeaf(Msg msg) { return default(T); }
+        public T CreateLeaf(Msg envelope, MsgData msg) { return default(T); }
 
         public T CreateBranch(Framework.BnfRule rule, Algorithm.ArraySlice<T> parts, IStackLookback<T> lookback)
         {

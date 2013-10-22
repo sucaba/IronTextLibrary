@@ -42,7 +42,8 @@ namespace IronText.Framework
                                 Marker   = -1,
                                 Start    = 0,
                                 InnerState = 0,
-                                ActionId = -1,
+                                Actions = new int[scanner.MaxActionCount],
+                                ActionCount = 0,
                             };
             cursor.Buffer[0] = Scanner.Sentinel;
 
@@ -88,7 +89,7 @@ namespace IronText.Framework
                         continue;
                     }
 
-                    if (cursor.ActionId >= 0)
+                    if (cursor.ActionCount != 0)
                     {
                         token = PrepareCurrent();
                         CompleteToken();
@@ -122,7 +123,7 @@ namespace IronText.Framework
                     return false;
                 }
 
-                if (cursor.ActionId < 0) // No accepting state visited
+                if (cursor.ActionCount == 0) // No accepting state visited
                 {
                     char badCh = cursor.Buffer[cursor.Cursor];
                     var message = string.Format(
@@ -180,7 +181,7 @@ namespace IronText.Framework
 
             cursor.Start = cursor.Cursor = cursor.Marker;
             cursor.InnerState = 0;
-            cursor.ActionId = -1;
+            cursor.ActionCount = 0;
         }
 
         private int PrepareCurrent()
@@ -193,11 +194,39 @@ namespace IronText.Framework
 
             object tokenValue;
             this.skipCurrentToken = false;
+
+            // TODO: 
+            //  1) cursor.Action -> list of real actions. for each real action create MsgData
+            //  2) in build time ensure that within one state
+            //     actions cannot produce same token
+            //  3) each action can produce multiple tokens (optional by now, but in future can be useful)
+
+            cursor.CurrentActionId = cursor.Actions[0];
             token = termFactory(cursor, out tokenValue);
 
             if (token >= 0 && !skipCurrentToken)
             {
+                // TODO: Main token for envelope.Id
                 Current = new Msg(token, tokenValue, location, hLocation);
+
+                // Shrodinger's token
+                if (cursor.ActionCount > 1)
+                {
+                    MsgData data = Current;
+                    for (int i = 1; i != cursor.ActionCount; ++i)
+                    {
+                        cursor.CurrentActionId = cursor.Actions[i];
+
+                        this.skipCurrentToken = false;
+                        token = termFactory(cursor, out tokenValue);
+
+                        if (!skipCurrentToken)
+                        {
+                            data.Next = new MsgData(token, tokenValue);
+                            data = data.Next;
+                        }
+                    }
+                }
             }
             else
             {

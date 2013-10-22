@@ -15,7 +15,10 @@ namespace IronText.Framework
 
         public SppfNode Result { get; set; }
 
-        public SppfNode CreateLeaf(Msg msg) { return new SppfNode(msg); }
+        public SppfNode CreateLeaf(Msg envelope, MsgData data)
+        { 
+            return new SppfNode(data.TokenId, data.Value, envelope.Location, envelope.HLocation);
+        }
 
         public SppfNode CreateBranch(
                             BnfRule      rule,

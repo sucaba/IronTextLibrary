@@ -10,14 +10,6 @@ namespace IronText.Framework
     [Serializable]
     public sealed class BnfGrammar
     {
-        // Special Tokens
-        private const int SpecialTokenCount = 2;
-        // Token IDs without TokenInfo
-
-        private BitSetType tokenSet;
-        private readonly List<TokenInfo> tokenInfos;
-        private readonly int InternalStartRuleId;
-
         // Predefined tokens
         public const int NoToken               = -1;
         private const int EpsilonToken         = 0;
@@ -26,6 +18,17 @@ namespace IronText.Framework
         public const int Eoi                   = 3;
         public const int Error                 = 4;
         public const int PredefinedTokenCount  = 5;
+
+        // Special Tokens
+        private const int SpecialTokenCount = 2;
+        // Token IDs without TokenInfo
+
+        // pending token count
+        private int allTokenCount = PredefinedTokenCount;
+        private BitSetType tokenSet;
+        private readonly List<TokenInfo> tokenInfos;
+        private readonly List<BnfAmbToken> ambTokens;
+        private readonly int InternalStartRuleId;
 
         [NonSerialized]
         private MutableIntSet[] first;
@@ -38,6 +41,7 @@ namespace IronText.Framework
         {   
             Rules = new List<BnfRule>();
             tokenInfos = new List<TokenInfo>(PredefinedTokenCount);
+            ambTokens = new List<BnfAmbToken>();
             for (int i = PredefinedTokenCount; i != 0; --i)
             {
                 tokenInfos.Add(null);
@@ -86,6 +90,10 @@ namespace IronText.Framework
 
         public int TokenCount { get { return tokenInfos.Count; } }
 
+        public int AmbTokenCount { get { return ambTokens.Count; } }
+
+        public IEnumerable<BnfAmbToken> AmbTokens { get { return ambTokens; } }
+
         public void Freeze()
         {
             this.frozen = true;
@@ -122,6 +130,14 @@ namespace IronText.Framework
             return result;
         }
 
+        public int DefineAmbToken(int mainToken, IEnumerable<int> tokens)
+        {
+            int result = allTokenCount++;
+            var ambToken = new BnfAmbToken(result, mainToken, tokens);
+            ambTokens.Add(ambToken);
+            return result;
+        }
+
         internal bool IsBeacon(int token)
         {
             return (tokenInfos[token].Categories & TokenCategory.Beacon) != 0;
@@ -139,8 +155,8 @@ namespace IronText.Framework
 
         private int InternalDefineToken(string name, TokenCategory categories)
         {
-            int result = tokenInfos.Count;
-            tokenInfos.Add(new TokenInfo { Name = name ?? "token-" + result, Categories = categories });
+            int result = allTokenCount++;
+            tokenInfos.Add(new TokenInfo { Id = result, Name = name ?? "token-" + result, Categories = categories });
             return result;
         }
 
@@ -242,7 +258,7 @@ namespace IronText.Framework
 
         public IEnumerable<int> EnumerateTokens()
         {
-            return Enumerable.Range(0, tokenInfos.Count);
+            return tokenInfos.Select(ti => ti.Id);
         }
 
         /// <summary>
@@ -462,6 +478,7 @@ namespace IronText.Framework
 
         class TokenInfo
         {
+            public int Id;
             public string Name;       // Display name
             public TokenCategory Categories;
             public bool IsTerm;

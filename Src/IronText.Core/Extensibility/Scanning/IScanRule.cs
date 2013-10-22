@@ -14,6 +14,8 @@ namespace IronText.Extensibility
 
         Type NextModeType { get; }
 
+        TokenRef MainTokenRef { get; }
+
         IEnumerable<TokenRef[]> GetTokenRefGroups();
 
         // TODO: Make internal

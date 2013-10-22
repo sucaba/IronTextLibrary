@@ -9,6 +9,8 @@ namespace IronText.Extensibility
     {
         public SkipScanRule() { }
 
+        public override TokenRef MainTokenRef { get { return null; } }
+
         public override IEnumerable<TokenRef[]> GetTokenRefGroups()
         {
             return Enumerable.Empty<TokenRef[]>();

@@ -9,6 +9,8 @@ namespace IronText.Extensibility
     {
         public MemberInfo DefiningMember { get; set; }
 
+        public abstract TokenRef MainTokenRef { get; }
+
         public abstract IEnumerable<TokenRef[]> GetTokenRefGroups();
 
         bool IScanRule.IsSortable { get {  return LiteralText != null; } }

@@ -5,5 +5,7 @@ namespace IronText.Algorithm
         : ITable<T>
     {
         void Set(int row, int col, T value);
+
+        void Clear();
     }
 }

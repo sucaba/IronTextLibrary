@@ -6,11 +6,14 @@ using IronText.Extensibility;
 
 namespace IronText.Automata.Regular
 {
-    public sealed class TdfaState : IScannerState
+    public sealed class TdfaState 
+        : IScannerState
     {
         private ReadOnlyCollection<IScannerTransition> transitions;
         private readonly ITdfaData container;
         private List<int> _actions;
+
+        public readonly List<TdfaTransition> Outgoing = new List<TdfaTransition>();
 
         public TdfaState(ITdfaData container)
         {
@@ -30,19 +33,6 @@ namespace IronText.Automata.Regular
             get { return _actions ?? (_actions = new List<int>()); }
         }
 
-        public int? Action
-        {
-            get
-            {
-                if (_actions == null || _actions.Count == 0)
-                {
-                    return null;
-                }
-
-                return _actions[0];
-            }
-        }
-
         public int Tunnel { get; set; }
 
         /// <summary>
@@ -53,8 +43,6 @@ namespace IronText.Automata.Regular
         {
             get { return Outgoing.Count == 0 && Tunnel < 0; }
         }
-
-        public readonly List<TdfaTransition> Outgoing = new List<TdfaTransition>();
 
         IScannerState IScannerState.TunnelState
         {

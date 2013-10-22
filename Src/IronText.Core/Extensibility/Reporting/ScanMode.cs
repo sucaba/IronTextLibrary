@@ -53,5 +53,21 @@ namespace IronText.Extensibility
 
             return result;
         }
+
+        public void SortRules()
+        {
+            // Fixed-text rules have priority comparing to regular pattern rules.
+            var sortedScanRules 
+                = scanRules
+                  .Where(rule => rule.IsSortable)
+                  .ToArray();
+
+            // Sort rules in the same order as they appear in definition:
+            var nonSortedScanRules = scanRules.Where(rule => !rule.IsSortable).ToArray();
+            Array.Sort(nonSortedScanRules, ScanRule.ComparePriority);
+
+            scanRules.Clear();
+            scanRules.AddRange(sortedScanRules.Concat(nonSortedScanRules));
+        }
     }
 }

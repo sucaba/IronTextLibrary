@@ -240,7 +240,7 @@ namespace IronText.Lib.ScannerExpressions
 
         [Scan(
             @"'u' hex {4}",
-            @"u [0-9a-fA-F]{4}")]
+            @"u [0-9a-fA-F] {4}")]
         public static Chr UnicodeCharByCode(string text) 
         {
             int ch = (Chr.Hex(text[1]) << 12)

@@ -49,7 +49,7 @@ namespace IronText.MetadataCompiler
 
             var alternatives = new AstNode[descriptor.Rules.Count];
             int i = 0;
-            var pattern = new StringBuilder(1024);
+            var pattern = new StringBuilder(128);
 
             pattern.Append("(");
             bool first = true;

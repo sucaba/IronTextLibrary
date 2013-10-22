@@ -55,6 +55,7 @@ namespace IronText.Framework
         protected int[]                  tokenComplexity;
         private ResourceAllocator        allocator;
         protected Func<object>           createDefaultContext;
+        private const int maxActionCount = 16;
 
         public LanguageBase(LanguageName name) 
         { 
@@ -125,7 +126,7 @@ namespace IronText.Framework
                     logging);
             }
 
-            return new Scanner(scan1, input, document, context, scanAction, logging);
+            return new Scanner(scan1, input, document, context, scanAction, maxActionCount, logging);
         }
 
         public IPushParser CreateParser<TNode>(IProducer<TNode> producer, ILogging logging)

@@ -12,6 +12,7 @@ namespace IronText.Framework
         public readonly State State;
         public readonly int Layer;
         public readonly byte Stage;
+        public readonly int Lookahead;
         private GssLink<T> prevLink;
 
         /// <summary>
@@ -29,11 +30,12 @@ namespace IronText.Framework
         /// #1 - for reduces triggered by the next incoming
         /// term.
         /// </param>
-        public GssNode(State state, int layer, byte stage)
+        public GssNode(State state, int layer, byte stage, int lookahead = -1)
         {
-            State = state;
-            Layer = layer;
-            Stage = stage;
+            this.State = state;
+            this.Layer = layer;
+            this.Stage = stage;
+            this.Lookahead = lookahead;
         }
 
         public int LinkCount { get { return Links.Count(); } }

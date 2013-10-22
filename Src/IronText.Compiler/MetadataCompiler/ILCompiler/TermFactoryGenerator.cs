@@ -54,7 +54,7 @@ namespace IronText.MetadataCompiler
 
             emit
                 .Do(ldCursor)
-                .Ldfld((ScanCursor c) => c.ActionId)
+                .Ldfld((ScanCursor c) => c.CurrentActionId)
                 .Switch(action)
                 ;
 

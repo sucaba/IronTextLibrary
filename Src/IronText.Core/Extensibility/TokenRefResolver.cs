@@ -20,7 +20,7 @@ namespace IronText.Extensibility
         public TokenDef Resolve(TokenRef tid)
         {
             TokenDef result;
-            if (!ref2def.TryGetValue(tid, out result))
+            if (tid == null || !ref2def.TryGetValue(tid, out result))
             {
                 result = null;
             }

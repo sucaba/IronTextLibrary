@@ -34,9 +34,11 @@ namespace IronText.Framework
 
         public Msg Result { get; set; }
 
-        public Msg CreateLeaf(Msg leaf)
+        public Msg CreateLeaf(Msg envelope, MsgData data)
         {
-            return leaf;
+            return data == (object)envelope 
+                ? envelope 
+                : new Msg(envelope.Id, data.TokenId, data.Value, envelope.Location, envelope.HLocation);
         }
 
         public Msg CreateBranch(BnfRule rule, ArraySlice<Msg> prefix, IStackLookback<Msg> stackLookback)

@@ -2,25 +2,30 @@
 
 namespace IronText.Framework
 {
-    public class MsgAlternative
+    public class MsgData
     {
-        public readonly int    Id;
+        public readonly int    TokenId;
         public readonly object Value;
 
         /// <summary>
         /// Alternative message information for Shrodinger's token
         /// </summary>
-        public MsgAlternative  Next;
+        public MsgData  Next;
 
-        public MsgAlternative(int id, object value)
+        public MsgData(int tokenId, object value)
         {
-            Id = id;
+            TokenId = tokenId;
             Value = value;
         }
     }
 
-    public sealed class Msg : MsgAlternative, IEquatable<Msg>
+    public sealed class Msg : MsgData, IEquatable<Msg>
     {
+        /// <summary>
+        /// Envelope Id
+        /// </summary>
+        public readonly int    Id;
+
         /// <summary>
         /// Location for an automatic processing
         /// </summary>
@@ -31,12 +36,20 @@ namespace IronText.Framework
         /// </summary>
         public readonly HLoc   HLocation;
 
-        public Msg(int id, object value, Loc location, HLoc hLocation = default(HLoc))
-            : base(id, value)
+        public Msg(int tokenId, object value, Loc location, HLoc hLocation = default(HLoc))
+            : this(tokenId, tokenId, value, location, hLocation)
         {
+        }
+
+        public Msg(int id, int tokenId, object value, Loc location, HLoc hLocation = default(HLoc))
+            : base(tokenId, value)
+        {
+            this.Id = id;
             this.Location  = location;
             this.HLocation = hLocation;
         }
+
+        public MsgData FirstData { get { return this; } }
 
         public override bool Equals(object obj)
         {
