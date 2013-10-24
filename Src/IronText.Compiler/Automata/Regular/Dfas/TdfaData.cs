@@ -4,6 +4,7 @@ using IronText.Algorithm;
 using IronText.Diagnostics;
 using IronText.Extensibility;
 using System.Collections.ObjectModel;
+using System.Text;
 
 namespace IronText.Automata.Regular
 {
@@ -129,11 +130,11 @@ namespace IronText.Automata.Regular
                 GraphColor color = S.IsNewline ? GraphColor.Green : GraphColor.Default;
                 if (S.IsAccepting)
                 {
-                    view.AddNode(S.Index, S.Index.ToString(), style: Style.Bold, color: color);
+                    view.AddNode(S.Index, GetStateName(S), style: Style.Bold, color: color);
                 }
                 else
                 {
-                    view.AddNode(S.Index, S.Index.ToString(), color: color);
+                    view.AddNode(S.Index, GetStateName(S), color: color);
                 }
             }
 
@@ -152,6 +153,20 @@ namespace IronText.Automata.Regular
             }
 
             view.EndDigraph();
+        }
+
+        private static string GetStateName(TdfaState S)
+        {
+            var output = new StringBuilder();
+            output.Append(S.Index);
+            if (S.Actions.Count != 0)
+            {
+                output.Append(" [");
+                output.Append(string.Join(",", S.Actions));
+                output.Append("]");
+            }
+
+            return output.ToString();
         }
 
         ReadOnlyCollection<IScannerState> IScannerAutomata.States

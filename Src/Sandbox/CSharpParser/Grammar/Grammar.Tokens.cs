@@ -24,6 +24,7 @@ namespace CSharpParser
     public interface CsArrayCreationExpression { }
     public interface CsArrayInitializer { }
     public interface CsArrayType { }
+    public interface CsAssemblyKeyword { }
     public interface CsAssignment { }
     public interface CsAssignmentOperator { }
     public interface CsAttribute { }
@@ -94,6 +95,7 @@ namespace CSharpParser
     public interface CsEquilityExpression { }
     public interface CsEventAccessorDeclarations { }
     public interface CsEventDeclaration { }
+    public interface CsEventKeyword { }
     public interface CsEventModifier { }
     public interface CsExclusiveOrExpression { }
     public interface CsExplicitAnonymousFunctionParameter { }
@@ -103,6 +105,7 @@ namespace CSharpParser
     public interface CsExtern { }
     public interface CsExternAliasDirective { }
     public interface CsFieldDeclaration { }
+    public interface CsFieldKeyword { }
     public interface CsFieldModifiers { }
     public interface CsFinallyClause { }
     public interface CsFixedParameter { }
@@ -166,7 +169,9 @@ namespace CSharpParser
     public interface CsMethodBody { }
     public interface CsMethodDeclaration { }
     public interface CsMethodHeader { }
+    public interface CsMethodKeyword { }
     public interface CsMethodModifier { }
+    public interface CsModuleKeyword { }
     public interface CsMultiplicativeExpression { }
     public interface CsNamedArgument { }
     public interface CsNamespaceBody { }
@@ -197,6 +202,7 @@ namespace CSharpParser
     public interface CsOverloadableUnaryOperator { }
     public interface CsParameterArray { }
     public interface CsParameterModifier { }
+    public interface CsParamKeyword { }
     public interface CsParenthesizedExpression { }
     public interface CsPartial { }
     public interface CsPositionalArgument { }
@@ -209,6 +215,7 @@ namespace CSharpParser
     public interface CsPrimaryExpression { }
     public interface CsPrimaryNoArrayCreationExpression { }
     public interface CsPropertyDeclaration { }
+    public interface CsPropertyKeyword { }
     public interface CsPropertyModifier { }
     public interface CsQualifiedAliasMember { }
     public interface CsQualifiedIdentifier { }
@@ -222,6 +229,7 @@ namespace CSharpParser
     public interface CsRelationalExpression { }
     public interface CsRemoveAccessorDeclaration { }
     public interface CsResourceAcquisition { }
+    public interface CsReturnKeyword { }
     public interface CsReturnStatement { }
     public interface CsReturnType { }
     public interface CsScannerEx { }
@@ -258,6 +266,7 @@ namespace CSharpParser
     public interface CsTypeArgument { }
     public interface CsTypeArgumentList { }
     public interface CsTypeDeclaration { }
+    public interface CsTypeKeyword { }
     public interface CsTypeName { }
     public interface CsTypeOfExpression { }
     public interface CsTypeParameter { }
@@ -281,6 +290,7 @@ namespace CSharpParser
     public interface CsVarianceAnnotation { }
     public interface CsVariantTypeParameter { }
     public interface CsVariantTypeParameterList { }
+    public interface CsVarKeyword { }
     public interface CsWhereClause { }
     public interface CsWhileStatement { }
     public interface CsYieldStatement { }

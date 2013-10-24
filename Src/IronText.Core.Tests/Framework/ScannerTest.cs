@@ -174,14 +174,14 @@ namespace IronText.Tests.Syntax.Re2IL
             [Literal("loop")]
             public WhileKwd WhileKeyword(string text) { return null; }
             
-            // Type-token :
-            [Scan("'if'")]
-            public IfKwd IfKeyword(string text) { return null; }
-
             // Two scan methods on the same method
             [Scan("'%'")]
             [Scan("'$'")]
             public SpecSymb SpecSymb() { return null; }
+
+            // Type-token :
+            [Scan("'if'")]
+            public IfKwd IfKeyword(string text) { return null; }
 
             [Scan("alpha alnum{0,10}")]
             public string Identifier(string token) { return token; }

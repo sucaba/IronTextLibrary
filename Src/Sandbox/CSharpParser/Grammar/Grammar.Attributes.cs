@@ -18,15 +18,9 @@ namespace CSharpParser
                 CsGlobalAttributeTarget  target,
                 CsCommaList<CsAttribute> attributes);
 
-        // TODO: Schrodinger's token
-#if false
         [Parse("assembly")]
         [Parse("module")]
         CsGlobalAttributeTarget GlobalAttributeTarget();
-#else
-        [Parse]
-        CsGlobalAttributeTarget GlobalAttributeTarget(CsIdentifier target);
-#endif
 
         [Parse]
         CsAttributes Attributes(CsList<CsAttributeSection> sections);
@@ -41,8 +35,6 @@ namespace CSharpParser
         CsAttributeTargetSpecifier AttributeTargetSpecifier(
                 CsAttributeTarget target);
 
-        // TODO: Schrodinger's token
-#if false
         [Parse("field")]
         [Parse("event")]
         [Parse("method")]
@@ -51,10 +43,6 @@ namespace CSharpParser
         [Parse("return")]
         [Parse("type")]
         CsAttributeTarget AttributeTarget();
-#else
-        [Parse]
-        CsAttributeTarget AttributeTarget(CsIdentifier target);
-#endif
 
         [Parse]
         CsAttribute Attribute(

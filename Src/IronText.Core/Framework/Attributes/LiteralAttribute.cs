@@ -9,6 +9,7 @@ namespace IronText.Framework
         public LiteralAttribute(string text, Disambiguation disambiguation = Disambiguation.Exclusive)
         {
             base.LiteralText = text;
+            base.Disambiguation = disambiguation;
 
             // Look-ahead is needed because .net Regex does not select longest match but the first alternative.
             this.RegexPattern = Regex.Escape(text);

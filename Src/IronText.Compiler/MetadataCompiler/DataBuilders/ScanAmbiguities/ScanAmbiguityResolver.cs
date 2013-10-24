@@ -48,7 +48,9 @@ namespace IronText.MetadataCompiler
                 stateToTokenProducer[state] = stateTokenProducer;
             }
 
-            state.Actions.RemoveAll(a => !stateTokenProducer.RealActions.Contains(a));
+            state.Actions.Clear();
+            state.Actions.AddRange(stateTokenProducer.RealActions);
+            state.Actions.Sort();
         }
 
         public void DefineAmbiguities(BnfGrammar grammar)

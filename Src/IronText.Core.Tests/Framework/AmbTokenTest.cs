@@ -14,7 +14,7 @@ namespace IronText.Tests.Framework
         public void Test()
         {
             Assert.AreEqual(new [] { typeof(Ident) }, Parse("myvar"));
-            Assert.AreEqual(new [] { typeof(WhileKwd) }, Parse("while"));
+            Assert.AreEqual(new [] { typeof(Ident), typeof(WhileKwd) }, Parse("while"));
         }
 
         private static Type[] Parse(string input)
@@ -24,6 +24,8 @@ namespace IronText.Tests.Framework
         }
 
         [Language]
+        [DescribeParserStateMachine("AmbTokenLang.info")]
+        [ScannerGraph("AmbTokenLang_Scanner.gv")]
         public class AmbTokenLang
         {
             public readonly List<Type> ResultTypes = new List<Type>();
@@ -34,10 +36,10 @@ namespace IronText.Tests.Framework
             [Parse]
             public void Done(WhileKwd kwd) { ResultTypes.Add(typeof(WhileKwd)); }
 
-            [Scan("alpha alnum+")]
+            [Scan("alpha alnum*")]
             public Ident Ident() { return null; }
 
-            [Literal("while")]
+            [Literal("while", Disambiguation.Contextual)]
             public WhileKwd WhileKwd() { return null; }
         }
 

@@ -5,17 +5,37 @@ using System.Text;
 
 namespace IronText.Algorithm
 {
-    public sealed class Buffer<T>
+    sealed class Buffer<T>
     {
-        public T[] items;
+        private T[] data;
         private int count; 
 
-        public Buffer(int capacity)
+        public Buffer(int count)
         {
-            this.items = new T[capacity];
+            this.data = new T[count];
         }
 
-        public int Count { get { return count; } }
+        public T[] Data { get { return data; } }
+
+        public int Count 
+        { 
+            get { return count; }
+            set
+            {
+                if (data.Length != value)
+                {
+                    Array.Resize(ref data, value);
+                }
+            }
+        }
+
+        public void Ensure(int minCount)
+        {
+            if (data.Length < minCount)
+            {
+                Array.Resize(ref data, minCount);
+            }
+        }
 
         public bool IsEmpty { get { return count == 0; } }
 
@@ -23,26 +43,26 @@ namespace IronText.Algorithm
 
         public T this[int index]
         {
-            get { return items[index]; }
-            set { items[index] = value; }
+            get { return data[index]; }
+            set{ data[index] = value; }
         }
 
         public void ForEach(Action<T> action)
         {
             for (int i = 0; i != count; ++i)
             {
-                action(items[i]);
+                action(data[i]);
             }
         }
 
         public void Add(T value)
         {
-            if (count == items.Length)
+            if (Count == data.Length)
             {
-                Array.Resize(ref items, count * 2);
+                Count = Count * 2;
             }
 
-            items[count++] = value;
+            data[count++] = value;
         }
 
         public void AddRange(Buffer<T> other)
@@ -58,10 +78,25 @@ namespace IronText.Algorithm
         {
             for (int i = 0; i != count; ++i)
             {
-                items[i] = default(T);
+                data[i] = default(T);
             }
 
             count = 0;
+        }
+
+        public void Fill(IList<T> items)
+        {
+            Ensure(items.Count);
+            Fill((IEnumerable<T>)items);
+        }
+
+        public void Fill(IEnumerable<T> items) 
+        {
+            int i = 0;
+            foreach (var item in items)
+            {
+                data[i++] = item;
+            }
         }
     }
 }

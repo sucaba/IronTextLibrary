@@ -11,6 +11,7 @@ namespace IronText.Extensibility
     public class ScanMode
     {
         internal readonly List<IScanRule> scanRules = new List<IScanRule>();
+        private int implicitRulesCount = 0;
 
         internal ScanMode(Type scanModeType)
         {
@@ -20,13 +21,15 @@ namespace IronText.Extensibility
 
         public Type ScanModeType { get; private set; }
 
+        public int ActionIndexShift { get; internal set; }
+
         // Ordered scan rules
         public ReadOnlyCollection<IScanRule> ScanRules { get; private set; }
 
-        internal IScanRule AddLiteralRule(string literal)
+        internal IScanRule AddImplicitLiteralRule(string literal)
         {
-            var result = CreateImplicitLiteralScanRule(literal);
-            scanRules.Add(result);
+            var result = CreateImplicitLiteralRule(literal);
+            scanRules.Insert(implicitRulesCount++, result);
 
             return result;
         }
@@ -36,7 +39,7 @@ namespace IronText.Extensibility
             scanRules.Add(rule);
         }
 
-        private static ScanRule CreateImplicitLiteralScanRule(string literal)
+        private static ScanRule CreateImplicitLiteralRule(string literal)
         {
             // Generate implicit scan rule for the keyword
             var result  = new SingleTokenScanRule

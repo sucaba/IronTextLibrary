@@ -26,25 +26,41 @@ namespace CSharpParser
                 ('_' | Lu | Ll | Lt | Lm | Lo | Nl)
                 (Pc | Lu | Ll | Lt | Lm | Lo | Nl | Nd | Mn | Mc | Cf)*
                ")]
-        public string Identifier(string text) { return text; }
+        public CsIdentifier Identifier(string text) { return null; }
 
-        [Parse]
-        public CsIdentifier NameIdentifier(string name) { return null; }
+        #region Contextual keywords
+        
+        [Literal("assembly", Disambiguation.Contextual)]
+        public CsAssemblyKeyword AssemblyKeyword() { return null; }
 
-        // TODO: Schrodinger's token
-#if false
-        [Parse("assembly")]
-        [Parse("module")]
-        [Parse("field")]
-        [Parse("event")]
-        [Parse("method")]
-        [Parse("param")]
-        [Parse("property")]
-        [Parse("return")]
-        [Parse("type")]
-#endif
-        [Parse("var")]
-        public CsIdentifier KeywordIdentifier() { return null; }
+        [Literal("module", Disambiguation.Contextual)]
+        public CsModuleKeyword ModuleKeyword() { return null; }
+
+        [Literal("field", Disambiguation.Contextual)]
+        public CsFieldKeyword FieldKeyword() { return null; }
+
+        [Literal("event", Disambiguation.Contextual)]
+        public CsEventKeyword EventKeyword() { return null; }
+
+        [Literal("method", Disambiguation.Contextual)]
+        public CsMethodKeyword MethodKeyword() { return null; }
+
+        [Literal("param", Disambiguation.Contextual)]
+        public CsParamKeyword ParamKeyword() { return null; }
+
+        [Literal("property", Disambiguation.Contextual)]
+        public CsPropertyKeyword PropertyKeyword() { return null; }
+
+        [Literal("return", Disambiguation.Contextual)]
+        public CsReturnKeyword ReturnKeyword() { return null; }
+
+        [Literal("type", Disambiguation.Contextual)]
+        public CsTypeKeyword TypeKeyword() { return null; }
+
+        [Literal("var", Disambiguation.Contextual)]
+        public CsVarKeyword VarKeyword() { return null; }
+
+        #endregion Contextual keywords
 
         [Literal("true")]
         public CsBoolean BooleanTrue(string text) { return null; }

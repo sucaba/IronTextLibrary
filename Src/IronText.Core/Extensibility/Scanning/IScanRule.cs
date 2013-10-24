@@ -21,8 +21,7 @@ namespace IronText.Extensibility
 
         IEnumerable<TokenRef[]> GetTokenRefGroups();
 
-        // TODO: Make internal
-        int Priority { get; set; }
+        int Index { get; set; }
         bool IsSortable { get; }
     }
 }

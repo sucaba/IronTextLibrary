@@ -106,7 +106,7 @@ namespace IronText.MetadataCompiler
         {
             var currentScanMode = processedScanModes.Peek();
             currentScanMode.AddRule(rule);
-            rule.Priority = rulePriority++;
+            rule.Index = rulePriority++;
 
             if (rule.NextModeType != null)
             {
@@ -149,11 +149,11 @@ namespace IronText.MetadataCompiler
 
                 foreach (var literal in implicitLiterals)
                 {
-                    scanMode.AddLiteralRule(literal);
+                    scanMode.AddImplicitLiteralRule(literal);
                 }
             }
 
-            scanMode.SortRules();
+            // scanMode.SortRules();
 
             processedScanModes.Pop();
         }

@@ -272,8 +272,8 @@ namespace IronText.Lib.ScannerExpressions
         }
 
         [Scan(
-            @"alpha alnum+",
-            @"[A-Za-z] [A-Za-z0-9]+")]
+            @"alpha alnum*",
+            @"[A-Za-z] [A-Za-z0-9]*")]
         public static string Identifier(string name) { return name; }
 
         [Scan(

@@ -33,14 +33,14 @@ namespace IronText.Extensibility
         // for bootstrap
         internal bool ShouldSkip { get { return this is ISkipScanRule; } }
 
-        int IScanRule.Priority { get; set; }
+        int IScanRule.Index { get; set; }
 
         // for sorting
         internal int Priority { get; set; }
 
         public static int ComparePriority(IScanRule x, IScanRule y)
         {
-            return x.Priority - y.Priority;
+            return x.Index - y.Index;
         }
     }
 }

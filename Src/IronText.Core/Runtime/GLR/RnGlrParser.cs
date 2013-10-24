@@ -92,10 +92,9 @@ namespace IronText.Framework
 
         public IReceiver<Msg> Next(Msg envelope)
         {
-            // Fork envelope in a one of the ways:
-            // - GssNode has lookup token info and reductions and shifts are performed only on the same lookahaed
-            // - Gss modification are performed separately for each alternative
             gss.BeginEdit();
+
+            N.Clear();
 
             MsgData data = envelope.FirstData;
             do
@@ -194,6 +193,8 @@ namespace IronText.Framework
                             message.Append(", ");
                         }
 
+
+
                         message.Append("[");
                         var n = node;
                         bool firstState = true;
@@ -279,8 +280,6 @@ namespace IronText.Framework
 
         private void Reducer(int lookahead = -1)
         {
-            N.Clear();
-
             while (!R.IsEmpty)
             {
                 GssReducePath<T> path = R.Dequeue();

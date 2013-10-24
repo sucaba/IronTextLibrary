@@ -4,14 +4,14 @@
     {
         public ScanAttribute() { }
 
-        public ScanAttribute(string sre, Disambiguation disambiguation = Disambiguation.Exclusive)
+        public ScanAttribute(string sre, Disambiguation disambiguation = Disambiguation.Contextual)
         {
             Pattern = sre;
             Disambiguation = disambiguation;
         }
 
         // Allow providing regular expression pattern for bootstrapping
-        internal ScanAttribute(string scanPattern, string rePattern, Disambiguation disambiguation = Disambiguation.Exclusive)
+        internal ScanAttribute(string scanPattern, string rePattern, Disambiguation disambiguation = Disambiguation.Contextual)
         {
             Pattern = scanPattern;
             RegexPattern = rePattern;

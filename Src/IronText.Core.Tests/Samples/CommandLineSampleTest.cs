@@ -22,6 +22,7 @@ namespace IronText.Tests.Samples
         [Language]
         [DescribeParserStateMachine("MyArchiver.info")]
         [StaticContext(typeof(Builtins))]
+        [ScannerGraph("MyArchiver_Scanner.gv")]
         public class MyArchiver
         {
             private int           CompressLevel;

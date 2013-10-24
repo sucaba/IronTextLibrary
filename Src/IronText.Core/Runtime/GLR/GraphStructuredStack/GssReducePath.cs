@@ -66,8 +66,8 @@ namespace IronText.Framework
             else
             {
                 // TODO: Get rid of front. 'front link' is frontPaths[j][k]
-                var front      = new Buffer<GssLink<T>>(2);
-                var frontPaths = new Buffer<GssLink<T>[]>(rightNode.LinkCount);
+                var front      = new List<GssLink<T>>(2);
+                var frontPaths = new List<GssLink<T>[]>(rightNode.LinkCount);
 
                 foreach (var frontLink in rightNode.Links)
                 {

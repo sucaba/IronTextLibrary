@@ -50,6 +50,7 @@ namespace IronText.Automata.Lalr1
                     result = outputTable != null && !outputTable.RequiresGlr;
                     if (!result)
                     {
+                        data.Clear();
                         ComplyWithConfiguration = false;
                         RequiresGlr   = true;
                         outputTable = BuildReductionModifiedLRTable(dfa);

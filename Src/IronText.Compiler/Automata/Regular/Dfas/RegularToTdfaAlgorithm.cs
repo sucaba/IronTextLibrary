@@ -193,8 +193,7 @@ namespace IronText.Automata.Regular
             // process new final state
             var finalState = data.GetState(previous);
             finalState.IsAccepting = true;
-            finalState.Actions.Clear();
-            finalState.Actions.Add(scanAction);
+            finalState.Actions.Insert(0, scanAction);
         }
 
         private State Control(State state, int symbol)
