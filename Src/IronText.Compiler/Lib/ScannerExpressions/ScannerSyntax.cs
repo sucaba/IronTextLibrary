@@ -218,7 +218,8 @@ namespace IronText.Lib.ScannerExpressions
         }
 
         [Scan(@"['] (~['\\] | [\\] .) [']",
-              @"['] (?: [^'\\] | [\\] .) [']")]
+              @"['] (?: [^'\\] | [\\] .) [']",
+              Disambiguation.Exclusive)]
         public Chr Char(char[] buffer, int start, int length)
         {
             return Chr.Parse(buffer, start, length);
@@ -240,7 +241,8 @@ namespace IronText.Lib.ScannerExpressions
 
         [Scan(
             @"'u' hex {4}",
-            @"u [0-9a-fA-F] {4}")]
+            @"u [0-9a-fA-F] {4}",
+            Disambiguation.Exclusive)]
         public static Chr UnicodeCharByCode(string text) 
         {
             int ch = (Chr.Hex(text[1]) << 12)
@@ -253,7 +255,8 @@ namespace IronText.Lib.ScannerExpressions
 
         [Scan(
             @"'U' hex {8}",
-            @"U [0-9a-fA-F]{8}")]
+            @"U [0-9a-fA-F]{8}",
+            Disambiguation.Exclusive)]
         public static QStr UnicodeSurrogateByCode(string text) 
         {
             int value = (Chr.Hex(text[1]) << 28)

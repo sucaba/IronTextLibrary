@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using IronText.Framework;
 
 namespace IronText.Extensibility
 {
     internal abstract class ScanRule : IScanRule, IBootstrapScanRule
     {
         public MemberInfo DefiningMember { get; set; }
+
+        public Disambiguation Disambiguation { get; set; }
 
         public abstract TokenRef MainTokenRef { get; }
 

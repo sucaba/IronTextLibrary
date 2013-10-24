@@ -167,6 +167,7 @@
     <Compile Include="Framework\Interpreter.cs" />
     <Compile Include="Framework\InterpreterT.cs" />
     <Compile Include="Framework\Reflection\BnfAmbToken.cs" />
+    <Compile Include="Framework\Disambiguation.cs" />
     <Compile Include="Lib\Ctem\CtemScanner.cs" />
     <Compile Include="Lib\Ctem\Num.cs" />
     <Compile Include="Lib\Ctem\QStr.cs" />

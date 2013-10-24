@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using IronText.Algorithm;
 using System.Collections.ObjectModel;
+using IronText.Framework;
 
 namespace IronText.Extensibility
 {
@@ -41,6 +42,7 @@ namespace IronText.Extensibility
             var result  = new SingleTokenScanRule
             {
                 LiteralText           = literal,
+                Disambiguation        = Disambiguation.Exclusive,
                 Pattern               = ScannerUtils.Escape(literal),
                 BootstrapRegexPattern = Regex.Escape(literal),
                 ActionBuilder = code =>

@@ -4,16 +4,18 @@
     {
         public ScanAttribute() { }
 
-        public ScanAttribute(string sre)
+        public ScanAttribute(string sre, Disambiguation disambiguation = Disambiguation.Exclusive)
         {
             Pattern = sre;
+            Disambiguation = disambiguation;
         }
 
         // Allow providing regular expression pattern for bootstrapping
-        internal ScanAttribute(string scanPattern, string rePattern)
+        internal ScanAttribute(string scanPattern, string rePattern, Disambiguation disambiguation = Disambiguation.Exclusive)
         {
             Pattern = scanPattern;
             RegexPattern = rePattern;
+            Disambiguation = disambiguation;
         }
 
         public override bool Validate(ILogging logging)

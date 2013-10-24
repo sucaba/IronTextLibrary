@@ -20,6 +20,7 @@ namespace IronText.Tests.Samples
         }
 
         [Language]
+        [DescribeParserStateMachine("MyArchiver.info")]
         [StaticContext(typeof(Builtins))]
         public class MyArchiver
         {
@@ -83,15 +84,15 @@ namespace IronText.Tests.Samples
             [Scan("digit+")]
             public int Integer(string text) { return int.Parse(text); }
 
+            [Scan("~(blank | quot | '-') ~(blank | quot)*")]
+            public string Word(string name) { return name; }
+
             [Scan("quot ~quot* quot")]
             public string QuotedWord(char[] buffer, int start, int length) 
             {
                 string text = new string(buffer, start + 1, length - 2);
                 return text;
             }
-
-            [Scan("~(blank | quot | '-') ~(blank | quot)*")]
-            public string Word(string name) { return name; }
 
             [Scan("blank+")]
             public void Blank() { }

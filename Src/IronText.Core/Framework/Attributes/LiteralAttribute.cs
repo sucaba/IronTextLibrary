@@ -6,7 +6,7 @@ namespace IronText.Framework
     public class LiteralAttribute : ScanBaseAttribute
     {
         // TODO: Logic should not be present in attribute constructor
-        public LiteralAttribute(string text)
+        public LiteralAttribute(string text, Disambiguation disambiguation = Disambiguation.Exclusive)
         {
             base.LiteralText = text;
 

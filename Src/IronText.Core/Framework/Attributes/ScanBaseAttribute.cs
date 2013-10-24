@@ -13,7 +13,10 @@ namespace IronText.Framework
     {
         protected ScanBaseAttribute() 
         {
+            Disambiguation = Disambiguation.Exclusive;
         }
+
+        public Disambiguation Disambiguation { get; protected set; }
 
         /// <summary>
         /// Raw text
@@ -60,6 +63,7 @@ namespace IronText.Framework
             }
 
             scanRule.DefiningMember = method;
+            scanRule.Disambiguation = Disambiguation;
             scanRule.Pattern = Pattern;
             scanRule.BootstrapRegexPattern = RegexPattern;
             scanRule.NextModeType = nextModeType;

@@ -175,9 +175,8 @@
     <Compile Include="MetadataCompiler\DataBuilders\ParserConflictLogging.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ContextBrowser.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\LanguageDataProvider.cs" />
-    <Compile Include="MetadataCompiler\DataBuilders\ScanAmbiguities\FirstWinsScanAmbiguityResolver.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ScanAmbiguities\IScanAmbiguityResolver.cs" />
-    <Compile Include="MetadataCompiler\DataBuilders\ScanAmbiguities\ShrodingerScanAmbiguityResolver.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\ScanAmbiguities\ScanAmbiguityResolver.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\TokenProducerInfo.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ScannerDescriptor.cs" />
     <Compile Include="MetadataCompiler\Extensibility\ParserAutomata.cs" />
