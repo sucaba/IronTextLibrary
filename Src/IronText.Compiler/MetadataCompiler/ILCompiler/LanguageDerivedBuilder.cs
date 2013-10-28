@@ -166,7 +166,6 @@ namespace IronText.MetadataCompiler
                 });
 
             int modeIndex = 0;
-            int startRuleId = 0;
             foreach (var scanMode in data.ScanModes)
             {
                 var methodName = ScanModeMethods.GetMethodName(modeIndex++);
@@ -191,10 +190,9 @@ namespace IronText.MetadataCompiler
                         .NoOptimization
                     .BeginBody();
 
-                generator.Build(emit, null, startRuleId);
+                generator.Build(emit, null);
 
                 context = emit.EndBody();
-                startRuleId += scanMode.ScanRules.Count;
             }
 
             logging.Write(

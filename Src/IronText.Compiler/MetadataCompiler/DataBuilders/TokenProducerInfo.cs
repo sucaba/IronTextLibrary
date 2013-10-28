@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using IronText.Algorithm;
+using IronText.Automata.Regular;
 using IronText.Framework;
 
 namespace IronText.MetadataCompiler
 {
-    public class TokenProducerInfo
+    class TokenProducerInfo
     {
         public TokenProducerInfo()
         {
             MainTokenId    = BnfGrammar.NoToken;
         }
+
+        public TdfaState State { get; set; }
 
         public Disambiguation Disambiguation { get; set; }
 

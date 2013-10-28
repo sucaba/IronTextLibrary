@@ -20,7 +20,7 @@ namespace IronText.MetadataCompiler
             this.dfa = dfa;
         }
 
-        public void Build(EmitSyntax emit, IContextResolverCode contextResolverCode, int startRuleId)
+        public void Build(EmitSyntax emit, IContextResolverCode contextResolverCode)
         {
             // Debug.WriteLine("DFA for " + descriptor.Name + ":");
             // Debug.WriteLine(dfa);
@@ -82,7 +82,7 @@ namespace IronText.MetadataCompiler
                             .Ldarg(0)
                             .Ldfld((ScanCursor c) => c.Actions)
                             .Ldc_I4(actionCount++)
-                            .Ldc_I4(action + startRuleId) 
+                            .Ldc_I4(action) 
                             .Stelem_I4()
                             ;
                     }
@@ -91,6 +91,12 @@ namespace IronText.MetadataCompiler
                         .Ldarg(0)
                         .Ldc_I4(actionCount)
                         .Stfld((ScanCursor c) => c.ActionCount)
+                        ;
+
+                    emit
+                        .Ldarg(0)
+                        .Ldc_I4(S.EnvelopeId)
+                        .Stfld((ScanCursor c) => c.EnvelopeId)
                         ;
 
                     emit

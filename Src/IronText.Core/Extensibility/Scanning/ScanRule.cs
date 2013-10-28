@@ -33,7 +33,8 @@ namespace IronText.Extensibility
         // for bootstrap
         internal bool ShouldSkip { get { return this is ISkipScanRule; } }
 
-        int IScanRule.Index { get; set; }
+        private int index = -1;
+        int IScanRule.Index { get { return index; } set { index = value; } }
 
         // for sorting
         internal int Priority { get; set; }
@@ -41,6 +42,20 @@ namespace IronText.Extensibility
         public static int ComparePriority(IScanRule x, IScanRule y)
         {
             return x.Index - y.Index;
+        }
+
+        public override string ToString()
+        {
+            if (DefiningMember != null)
+            {
+                return DefiningMember.ToString();
+            }
+            else if (LiteralText != null)
+            {
+                return LiteralText;
+            }
+
+            return base.ToString();
         }
     }
 }

@@ -31,19 +31,29 @@ namespace IronText.Stem.Tests.Lib.IL
             // Cold state: Slow because of loading big methods:
             {
                 var timer0 = new Stopwatch();
-                timer0.Start();
-                lang.Heatup();
-                timer0.Stop();
+                using (var interp = new Interpreter(lang))
+                {
+                    interp.LogKind = LoggingKind.None;
+                    timer0.Start();
+                    interp.Parse("");
+                    timer0.Stop();
+                }
+
                 Trace.WriteLine("heatup: " + timer0.Elapsed);
             }
 
             // Hot state: should be fast 
             {
                 var timer0 = new Stopwatch();
-                timer0.Start();
-                lang.Heatup();
-                timer0.Stop();
-                Trace.WriteLine("heatup2: " + timer0.Elapsed);
+                using (var interp = new Interpreter(lang))
+                {
+                    interp.LogKind = LoggingKind.None;
+                    timer0.Start();
+                    interp.Parse("");
+                    timer0.Stop();
+                }
+
+                Trace.WriteLine("heatup: " + timer0.Elapsed);
             }
         }
 

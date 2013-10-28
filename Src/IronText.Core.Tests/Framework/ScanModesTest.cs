@@ -22,6 +22,7 @@ namespace IronText.Tests.Framework
         [Language]
         // [GrammarDocument("ScanModes.gram")]
         // [ScannerDocument("ScanModes.scan")]
+        [ScannerGraph("ScanModes_Scanner.gv")]
         public class ScanModesLanguage
         {
             [ParseResult] 

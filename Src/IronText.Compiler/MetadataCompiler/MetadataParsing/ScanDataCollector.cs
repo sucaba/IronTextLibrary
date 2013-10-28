@@ -17,7 +17,7 @@ namespace IronText.MetadataCompiler
         private readonly ITokenPool              tokenPool;
 
         private readonly Stack<ScanMode> processedScanModes;
-        private int rulePriority = 0;
+        private int totalRuleCount = 0;
         private readonly TokenRef voidTerm;
         private readonly ILogging logging;
 
@@ -106,7 +106,7 @@ namespace IronText.MetadataCompiler
         {
             var currentScanMode = processedScanModes.Peek();
             currentScanMode.AddRule(rule);
-            rule.Index = rulePriority++;
+            rule.Index = totalRuleCount++;
 
             if (rule.NextModeType != null)
             {
@@ -149,11 +149,9 @@ namespace IronText.MetadataCompiler
 
                 foreach (var literal in implicitLiterals)
                 {
-                    scanMode.AddImplicitLiteralRule(literal);
+                    scanMode.AddImplicitLiteralRule(totalRuleCount++, literal);
                 }
             }
-
-            // scanMode.SortRules();
 
             processedScanModes.Pop();
         }

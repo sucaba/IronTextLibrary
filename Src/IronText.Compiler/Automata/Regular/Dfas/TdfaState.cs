@@ -28,6 +28,8 @@ namespace IronText.Automata.Regular
 
         public bool IsNewline { get; set; }
 
+        public int EnvelopeId { get; set; }
+
         public List<int> Actions
         {
             get { return _actions ?? (_actions = new List<int>()); }

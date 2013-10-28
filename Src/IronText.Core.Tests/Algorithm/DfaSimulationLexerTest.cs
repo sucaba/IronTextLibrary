@@ -48,6 +48,11 @@ namespace IronText.Tests.Algorithm
                     }
                 };
             
+            for (int i = 0; i != scanRules.Length; ++i)
+            {
+                ((IScanRule)scanRules[i]).Index = i;
+            }
+            
             var target = new DfaSimulationLexer(
                 " (1 (\"bar\" +))",
                 ScannerDescriptor.FromScanRules(

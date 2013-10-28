@@ -21,13 +21,17 @@ namespace IronText.Framework
 
         private void WriteGvGraph(IReportData data)
         {
-            string path = Path.Combine(data.DestinationDirectory, fileName);
-
-            var modeType = data.ScanModes[0].ScanModeType;
-            var dfa = data.GetScanModeDfa(modeType);
-            using (var graph = new GvGraphView(path))
+            for (int i = 0; i != data.ScanModes.Count; ++i)
             {
-                dfa.DescribeGraph(graph);
+                string scanModeFileName = Path.GetFileName(fileName) + "_" + i + Path.GetExtension(fileName);
+                string path = Path.Combine(data.DestinationDirectory, scanModeFileName);
+
+                var modeType = data.ScanModes[i].ScanModeType;
+                var dfa = data.GetScanModeDfa(modeType);
+                using (var graph = new GvGraphView(path))
+                {
+                    dfa.DescribeGraph(graph);
+                }
             }
         }
     }

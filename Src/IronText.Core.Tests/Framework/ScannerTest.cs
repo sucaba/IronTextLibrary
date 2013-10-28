@@ -19,11 +19,7 @@ namespace IronText.Tests.Syntax.Re2IL
             var whileKwdId = lang.Identify("while");
             Assert.IsTrue(whileKwdId >= 0);
 
-            var ifKwdId = lang.Identify("if");
-            Assert.IsTrue(ifKwdId == -1);
-
             Assert.AreEqual(lang.Identify(typeof(WhileKwd)), lang.Identify("while")); // literal and type
-            Assert.AreEqual(-1, lang.Identify("if"));       // not literal but scan pattern
         }
 
         [Test]
@@ -49,7 +45,6 @@ namespace IronText.Tests.Syntax.Re2IL
                 { NUM,   new [] { "123" } },
                 { QSTR,  new [] { "\"bar\"" } },
                 { WHILE, new [] { "while" } },
-                { IF,    new [] { "if" } },
                 { SPECSYM, new [] { "%" } },
                 { GRAVEACCENTA, new [] { "\u00C0" , "\u0060A" } },
                 { SURROGATE1, new [] { "\U0010FFFF" } },
@@ -62,7 +57,6 @@ namespace IronText.Tests.Syntax.Re2IL
                         QSTR,
                         ID,
                         WHILE,
-                        IF,
                         SPECSYM,
                         GRAVEACCENTA,
                         SURROGATE1
@@ -79,7 +73,7 @@ namespace IronText.Tests.Syntax.Re2IL
                     AssertScanned(sample, new [] { token });
                 }
 
-            Predicate<int> IsKeyword = t => t == IF || t == WHILE;
+            Predicate<int> IsKeyword = t => t == WHILE;
 
             // Pairwise tests
             foreach (var leftToken in tokens)
@@ -180,7 +174,7 @@ namespace IronText.Tests.Syntax.Re2IL
             public SpecSymb SpecSymb() { return null; }
 
             // Type-token :
-            [Scan("'if'")]
+            [Literal("if")]
             public IfKwd IfKeyword(string text) { return null; }
 
             [Scan("alpha alnum{0,10}")]

@@ -112,6 +112,7 @@ namespace IronText.Tests.Framework
         LDIGIT: // State #1
             ++cursor.Cursor;
             cursor.ActionCount = 1;
+            cursor.EnvelopeId = 1; 
             cursor.Actions[0] = 1;
             cursor.Marker = cursor.Cursor; // accept
         MDIGIT:
@@ -140,6 +141,7 @@ namespace IronText.Tests.Framework
             ++cursor.Cursor;
             cursor.ActionCount = 1;
             cursor.Actions[0] = 0;
+            cursor.EnvelopeId = 0;
             cursor.Marker = cursor.Cursor;
         MSPACE:
             ch = cursor.Buffer[cursor.Cursor];

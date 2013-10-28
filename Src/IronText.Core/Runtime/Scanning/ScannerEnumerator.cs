@@ -116,7 +116,7 @@ namespace IronText.Framework
                                                 cursor.CursorColumn - 1,
                                                 cursor.CursorLine,
                                                 cursor.CursorColumn - 1),
-                                Message = "Unexpected end of input",
+                                Message = "Incomplete token",
                             });
                     }
 
@@ -206,8 +206,9 @@ namespace IronText.Framework
 
             if (token >= 0 && !skipCurrentToken)
             {
-                // TODO: Main token for envelope.Id
-                Current = new Msg(token, tokenValue, location, hLocation);
+                int id = cursor.EnvelopeId;
+                // TODO: Amb & Main tokens for envelope.Id
+                Current = new Msg(id, token, tokenValue, location, hLocation);
 
                 // Shrodinger's token
                 if (cursor.ActionCount > 1)

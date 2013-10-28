@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using IronText.Automata.Regular;
@@ -13,8 +14,13 @@ namespace IronText.MetadataCompiler
     {
         private readonly ILogging logging;
 
-        public static ScannerDescriptor FromScanRules(string name, IEnumerable<IScanRule> rules, ILogging logging)
+        public static ScannerDescriptor FromScanRules(
+            string name,
+            IEnumerable<IScanRule> rules,
+            ILogging logging)
         {
+            CheckAllRulesHaveIndex(rules);
+
             var result = new ScannerDescriptor(name, logging);
             foreach (var rule in rules)
             {
@@ -48,7 +54,6 @@ namespace IronText.MetadataCompiler
             var descriptor = this;
 
             var alternatives = new AstNode[descriptor.Rules.Count];
-            int i = 0;
             var pattern = new StringBuilder(128);
 
             pattern.Append("(");
@@ -60,7 +65,7 @@ namespace IronText.MetadataCompiler
                     && literalToAction != null 
                     && asSingleTokenRule.LiteralText != null)
                 {
-                    literalToAction.Add(asSingleTokenRule.LiteralText, i++);
+                    literalToAction.Add(asSingleTokenRule.LiteralText, scanRule.Index);
                     continue;
                 }
 
@@ -78,8 +83,7 @@ namespace IronText.MetadataCompiler
                         .Append(scanRule.Pattern)
                     .Append(" )")
                         .Append(' ')
-                    .Append("action(").Append(i).Append(")");
-                ++i;
+                    .Append("action(").Append(scanRule.Index).Append(")");
             }
 
             if (pattern.Length == 1)
@@ -166,6 +170,17 @@ namespace IronText.MetadataCompiler
         {
             bool result = root.Accept(NullableGetter.Instance);
             return result;
+        }
+
+        private static void CheckAllRulesHaveIndex(IEnumerable<IScanRule> rules)
+        {
+            foreach (var rule in rules)
+            {
+                if (rule.Index < 0)
+                {
+                    throw new ArgumentException("Rule " + rule + " has no index.", "rules");
+                }
+            }
         }
 
     }

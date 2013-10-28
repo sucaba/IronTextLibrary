@@ -52,6 +52,10 @@ namespace IronText.Tests.Bootstrap
                         BootstrapRegexPattern = @"\)"
                     }
                 };
+            for (int i = 0; i != scanRules.Length; ++i)
+            {
+                ((IScanRule)scanRules[i]).Index = i;
+            }
 
             var target = new BootstrapScanner(
                 " (1 (\"bar\" +))",

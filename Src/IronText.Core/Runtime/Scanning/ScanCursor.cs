@@ -11,7 +11,9 @@
         public int Start;      // token start
         public int InnerState; // Inner state of the scanner FSM
         public int CurrentActionId;   // accept action ID
-        public int ActionCount;
+
+        public int   EnvelopeId;
+        public int   ActionCount;
         public int[] Actions;
 
         public int Cursor;          // current scan position

@@ -43,9 +43,18 @@ namespace IronText.MetadataCompiler
                 select actionToTokenProducer[act];
 
             var stateTokenProducer = TokenProducerInfo.Combine(tokenSetType, stateTokenProducers);
-            if (stateTokenProducer.PossibleTokens.Count > 1)
+            switch (stateTokenProducer.PossibleTokens.Count)
             {
-                stateToTokenProducer[state] = stateTokenProducer;
+                case 0:
+                    state.EnvelopeId = -1;
+                    break;
+                case 1:
+                    state.EnvelopeId = stateTokenProducer.PossibleTokens.First();
+                    break;
+                default:
+                    stateTokenProducer.State = state;
+                    stateToTokenProducer[state] = stateTokenProducer;
+                    break;
             }
 
             state.Actions.Clear();
@@ -60,6 +69,7 @@ namespace IronText.MetadataCompiler
             foreach (var prod in stateToTokenProducer.Values.Distinct())
             {
                 int ambTokenId = grammar.DefineAmbToken(prod.MainTokenId, prod.PossibleTokens);
+                prod.State.EnvelopeId = ambTokenId;
                 ambTokenToMainToken.Set(new IntArrow<int>(ambTokenId, prod.MainTokenId));
             }
         }

@@ -45,6 +45,12 @@ namespace IronText.MetadataCompiler
                 ;
 
             int ruleCount = scanModes.Sum(mode => mode.ScanRules.Count);
+#if DEBUG
+            int[] ruleIndexes = scanModes
+                                    .SelectMany(mode => mode.scanRules)
+                                    .Select(r => r.Index)
+                                    .ToArray();
+#endif
 
             var action = new Ref<Labels>[ruleCount];
             for (int i = 0; i != ruleCount; ++i)
@@ -61,7 +67,6 @@ namespace IronText.MetadataCompiler
             var actionContext = new ScanActionCode(emit, contextResolver, ldCursor, declaringType, scanModes);
             actionContext.Init(emit, RETURN.GetRef());
 
-            int j = 0;
             foreach (var mode in scanModes)
             {
                 // Each mode has its own root context type:
@@ -69,13 +74,11 @@ namespace IronText.MetadataCompiler
                 foreach (var rule in mode.ScanRules)
                 {
                     emit
-                        .Label(action[j].Def)
+                        .Label(action[rule.Index].Def)
                         .Ldc_I4(GetRuleResultId(rule))
                         .Stloc(tokenId.GetRef())
                         ;
                     rule.ActionBuilder(actionContext);
-
-                    ++j;
                 }
             }
 

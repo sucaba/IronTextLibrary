@@ -254,7 +254,7 @@ namespace IronText.Framework
             else
             {
                 location = Loc.Unknown;
-                hLocation = HLoc.Unknown;
+                hLocation = new HLoc(1, 1, 1, 1);
             }
 
             var eoi = new Msg(BnfGrammar.Eoi, null, location, hLocation);
@@ -561,6 +561,23 @@ namespace IronText.Framework
 
         private IReceiver<Msg> RecoverFromError(Msg currentInput)
         {
+            if (currentInput.Id == BnfGrammar.Eoi)
+            {
+                if (!isVerifier)
+                {
+                    logging.Write(
+                        new LogEntry
+                        {
+                            Severity  = Severity.Error,
+                            Message   = "Unexpected end of file.",
+                            Location  = currentInput.Location,
+                            HLocation = currentInput.HLocation,
+                        });
+                }
+
+                return null;
+            }
+
             this.producer = producer.GetErrorRecoveryProducer();
 
             IReceiver<Msg> result = new LocalCorrectionErrorRecovery(grammar, this, logging);

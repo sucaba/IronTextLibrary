@@ -13,8 +13,11 @@ namespace IronText.Tests.Framework
         [Test]
         public void Test()
         {
-            Assert.AreEqual(new [] { typeof(Ident) }, Parse("myvar"));
-            Assert.AreEqual(new [] { typeof(Ident), typeof(WhileKwd) }, Parse("while"));
+            Assert.IsTrue(Language.Get(typeof(AmbTokenLang)).IsDeterministic);
+
+            Assert.AreEqual(new [] { typeof(Ident) }, Parse("$ident myvar"));
+            Assert.AreEqual(new [] { typeof(Ident) }, Parse("$ident while"));
+            Assert.AreEqual(new [] { typeof(WhileKwd) }, Parse("$keyword while"));
         }
 
         private static Type[] Parse(string input)
@@ -30,10 +33,10 @@ namespace IronText.Tests.Framework
         {
             public readonly List<Type> ResultTypes = new List<Type>();
 
-            [Parse]
+            [Parse("$ident")]
             public void Done(Ident id) { ResultTypes.Add(typeof(Ident)); }
 
-            [Parse]
+            [Parse("$keyword")]
             public void Done(WhileKwd kwd) { ResultTypes.Add(typeof(WhileKwd)); }
 
             [Scan("alpha alnum*")]
@@ -41,6 +44,9 @@ namespace IronText.Tests.Framework
 
             [Literal("while", Disambiguation.Contextual)]
             public WhileKwd WhileKwd() { return null; }
+
+            [Scan("blank+")]
+            public void WhiteSpace() { }
         }
 
         public interface WhileKwd { }

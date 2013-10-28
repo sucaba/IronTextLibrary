@@ -66,7 +66,7 @@ namespace IronText.Tests.Framework
             var lang = Language.Get(langDef);
 
             Parse(lang, "callF");
-            AssertErrors(0, 1);
+            AssertErrors(0, 2, "One lexical error for incomplete token and one syntax error for unexpected EOI"); 
         }
 
         [Theory]
@@ -151,15 +151,15 @@ namespace IronText.Tests.Framework
         {
             using (var interp = new Interpreter(context, lang))
             {
-                interp.LogKind = LoggingKind.Collection;
+                interp.LogKind = LoggingKind.ConsoleOut;
                 interp.Parse(input);
                 errorCount = interp.ErrorCount;
             }
         }
 
-        private void AssertErrors(int expectedProductions, int expectedErrors)
+        private void AssertErrors(int expectedProductions, int expectedErrors, string message = null)
         {
-            Assert.AreEqual(expectedErrors + expectedProductions, errorCount);
+            Assert.AreEqual(expectedErrors + expectedProductions, errorCount, message);
         }
 
         [Language]

@@ -142,10 +142,12 @@ namespace IronText.MetadataCompiler
 
             int firstScanAction = 0;
 
-            foreach (ScanMode scanMode in definition.ScanModes)
+            foreach (ScanMode mode in definition.ScanModes)
             {
+                int count = mode.ScanRules.Count;
+
                 ITdfaData tdfaData;
-                if (!BuildScanModeDfa(logging, scanMode, out tdfaData))
+                if (!BuildScanModeDfa(logging, mode, out tdfaData))
                 {
                     logging.Write(
                         new LogEntry
@@ -160,16 +162,13 @@ namespace IronText.MetadataCompiler
                     return false;
                 }
 
-                scanModeTypeToDfa[scanMode.ScanModeType] = tdfaData;
+                scanModeTypeToDfa[mode.ScanModeType] = tdfaData;
 
-                // For each action store information ambout produced tokens
-                int count = scanMode.ScanRules.Count;
-                for (int i = 0; i != count; ++i)
+                // For each action store information about produced tokens
+                foreach (var scanRule in mode.scanRules)
                 {
-                    var scanRule = scanMode.ScanRules[i];
-
                     scanAmbiguityResolver.RegisterAction(
-                        firstScanAction + i,
+                        scanRule.Index,
                         scanRule.Disambiguation,
                         tokenResolver.GetId(scanRule.MainTokenRef),
                         scanRule
@@ -185,7 +184,7 @@ namespace IronText.MetadataCompiler
                     scanAmbiguityResolver.RegisterState(state);
                 }
 
-                firstScanAction += scanMode.ScanRules.Count;
+                firstScanAction += count;
             }
 
             scanAmbiguityResolver.DefineAmbiguities(grammar);

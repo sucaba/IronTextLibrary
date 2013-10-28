@@ -26,9 +26,10 @@ namespace IronText.Extensibility
         // Ordered scan rules
         public ReadOnlyCollection<IScanRule> ScanRules { get; private set; }
 
-        internal IScanRule AddImplicitLiteralRule(string literal)
+        internal IScanRule AddImplicitLiteralRule(int ruleIndex, string literal)
         {
             var result = CreateImplicitLiteralRule(literal);
+            result.Index = ruleIndex;
             scanRules.Insert(implicitRulesCount++, result);
 
             return result;
@@ -39,7 +40,7 @@ namespace IronText.Extensibility
             scanRules.Add(rule);
         }
 
-        private static ScanRule CreateImplicitLiteralRule(string literal)
+        private static IScanRule CreateImplicitLiteralRule(string literal)
         {
             // Generate implicit scan rule for the keyword
             var result  = new SingleTokenScanRule

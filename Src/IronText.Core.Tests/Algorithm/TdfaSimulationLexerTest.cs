@@ -61,6 +61,10 @@ namespace IronText.Tests.Algorithm
                         TokenType = typeof(void)
                     }
                 };
+            for (int i = 0; i != scanRules.Length; ++i)
+            {
+                ((IScanRule)scanRules[i]).Index = i;
+            }
             
             var target = new TdfaSimulationLexer(
                 "b:=10Q \"foo\"",
