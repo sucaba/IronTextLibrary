@@ -108,7 +108,14 @@ namespace IronText.Automata.Lalr1
 
                         if (isStartRule)
                         {
-                            action = new ParserAction { Kind = ParserActionKind.Accept };
+                            if (item.Pos == 0)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                action = new ParserAction { Kind = ParserActionKind.Accept };
+                            }
                         }
                         else
                         {

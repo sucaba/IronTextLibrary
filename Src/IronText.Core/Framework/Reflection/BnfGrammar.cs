@@ -28,7 +28,7 @@ namespace IronText.Framework
         private BitSetType tokenSet;
         private readonly List<TokenInfo> tokenInfos;
         private readonly List<BnfAmbToken> ambTokens;
-        private readonly int InternalStartRuleId;
+        private readonly int AugmentedStartRuleId;
 
         [NonSerialized]
         private MutableIntSet[] first;
@@ -59,7 +59,7 @@ namespace IronText.Framework
                                           };
             tokenInfos[Error]           = new TokenInfo { Name = "$error" };
 
-            InternalStartRuleId = DefineRule(AugmentedStart, new[] { -1 });
+            AugmentedStartRuleId = DefineRule(AugmentedStart, new[] { -1 });
         }
 
         public List<BnfRule> Rules { get; private set; }
@@ -75,17 +75,17 @@ namespace IronText.Framework
 
         public int MaxRuleSize { get; private set; }
 
-        public BnfRule AugmentedRule { get { return Rules[InternalStartRuleId];  } }
+        public BnfRule AugmentedRule { get { return Rules[AugmentedStartRuleId];  } }
 
         public int? StartToken
         {
             get 
             { 
-                int result = this.Rules[InternalStartRuleId].Parts[0];
+                int result = this.Rules[AugmentedStartRuleId].Parts[0];
                 return result < 0 ? null : (int?)result;
             }
 
-            set { this.Rules[InternalStartRuleId].Parts[0] = value.HasValue ? value.Value : -1; }
+            set { this.Rules[AugmentedStartRuleId].Parts[0] = value.HasValue ? value.Value : -1; }
         }
 
         public int TokenCount { get { return tokenInfos.Count; } }
@@ -136,6 +136,11 @@ namespace IronText.Framework
             var ambToken = new BnfAmbToken(result, mainToken, tokens);
             ambTokens.Add(ambToken);
             return result;
+        }
+
+        public bool IsStartRule(int ruleId)
+        {
+            return Rules[ruleId].Left == AugmentedRule.Parts[0];
         }
 
         internal bool IsBeacon(int token)
