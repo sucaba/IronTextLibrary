@@ -45,6 +45,22 @@ namespace IronText.Tests.Misc
                 Assert.IsNull(types);
                 Assert.IsNull(patternNoPlaceholders.MakeProducer(type));
             }
+
+            var arrayPattern = new TypePattern(typeof(IRules).GetMethod("Rule3"));
+
+            {
+                var type = typeof(string[]);
+                Type[] types = arrayPattern.Match(type);
+                Assert.AreEqual(new []{ typeof(string) }, types);
+                Assert.IsNotNull(arrayPattern.MakeProducer(type));
+            }
+    
+            {
+                var type = typeof(string);
+                Type[] types = arrayPattern.Match(type);
+                Assert.IsNull(types);
+                Assert.IsNull(arrayPattern.MakeProducer(type));
+            }
         }
 
         interface IRules
@@ -52,6 +68,8 @@ namespace IronText.Tests.Misc
             Dictionary<Dictionary<T1, T2>, Dictionary<T1, T3>> Rule1<T1,T2,T3>();
 
             string Rule2();
+
+            T[] Rule3<T>();
         }
     }
 }

@@ -58,6 +58,37 @@ namespace IronText.Misc
 
         private bool Match(Type patternType, Type instanceType, ref Type[] output)
         {
+            if (patternType.IsArray)
+            {
+                if (!instanceType.IsArray || patternType.GetArrayRank() != instanceType.GetArrayRank())
+                {
+                    return false;
+                }
+
+                return Match(patternType.GetElementType(), instanceType.GetElementType(), ref output);
+            }
+
+            if (patternType.IsPointer)
+            {
+                if (!instanceType.IsPointer)
+                {
+                    return false;
+                }
+
+                return Match(patternType.GetElementType(), instanceType.GetElementType(), ref output);
+            }
+
+            if (patternType.IsByRef)
+            {
+                if (!instanceType.IsByRef)
+                {
+                    return false;
+                }
+
+                return Match(patternType.GetElementType(), instanceType.GetElementType(), ref output);
+            }
+
+
             if (patternType.IsGenericType)
             {
                 var patternGenericDef = patternType.GetGenericTypeDefinition();
