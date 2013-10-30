@@ -246,6 +246,7 @@
     <Compile Include="Framework\Attributes\LanguageContextAttribute.cs" />
     <Compile Include="Framework\Attributes\UseTokenAttribute.cs" />
     <Compile Include="Framework\Attributes\ParseAttribute.cs" />
+    <Compile Include="Misc\TypePattern.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Framework\Reactive\ISequence.cs" />
     <Compile Include="Framework\Reactive\IReceiver.cs" />
