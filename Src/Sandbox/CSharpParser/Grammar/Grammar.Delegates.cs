@@ -11,12 +11,12 @@ namespace CSharpParser
         [Parse(null, null, "delegate", null, null, null, "(", null, ")", null, ";")]
         CsDelegateDeclaration DelegateDeclaration(
                 Opt<CsAttributes>        attributes,
-                CsOptList<CsDelegateModifier> modifiers,
+                Opt<CsList<CsDelegateModifier>> modifiers,
                 CsReturnType                    returnType,
                 CsIdentifier                    id,
                 Opt<CsVariantTypeParameterList> typeParams,
                 Opt<CsFormalParameterList>      formalParams,
-                CsOptList<CsTypeParameterConstraintClause> typeParameterConstraints);
+                Opt<CsList<CsTypeParameterConstraintClause>> typeParameterConstraints);
 
         [Parse("new")]
         [Parse("public")]

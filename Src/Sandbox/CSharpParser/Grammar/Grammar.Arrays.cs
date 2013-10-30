@@ -15,7 +15,7 @@ namespace CSharpParser
 
         [Parse("{", null, "}")]
         CsArrayInitializer ArrayInitializer(
-                CsOptCommaList<CsVariableInitializer> initialziers);
+                Opt<CsCommaList<CsVariableInitializer>> initialziers);
 
         [Parse("{", null, ",", "}")]
         CsArrayInitializer ArrayInitializer(

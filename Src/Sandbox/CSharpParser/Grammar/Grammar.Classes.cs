@@ -11,12 +11,12 @@ namespace CSharpParser
         [Parse(null, null, null, "class")]
         CsClassDeclaration ClassDeclaration(
                 Opt<CsAttributes>            attributes,
-                CsOptList<CsClassModifier>   modifiers,
+                Opt<CsList<CsClassModifier>>   modifiers,
                 Opt<CsPartial>               partial,
                 CsIdentifier                 identifier,
                 Opt<CsTypeParameterList>     typeParameters,
                 Opt<CsClassBase>             classBase,
-                CsOptList<CsTypeParameterConstraintClause> typeParamConstraints,
+                Opt<CsList<CsTypeParameterConstraintClause>> typeParamConstraints,
                 CsClassBody                  body);
 
         [Parse("new")]
@@ -99,7 +99,7 @@ namespace CSharpParser
         CsConstructorConstraint ConstructorConstraint();
 
         [Parse("{", null, "}")]
-        CsClassBody ClassBody(CsOptList<CsClassMemberDeclaration> declarations);
+        CsClassBody ClassBody(Opt<CsList<CsClassMemberDeclaration>> declarations);
 
         [Parse]
         CsClassMemberDeclaration ClassMemberDeclaration(CsConstantDeclaration decl);
@@ -137,7 +137,7 @@ namespace CSharpParser
         [Parse(null, null, "const", null, null, ";")]
         CsConstantDeclaration ConstantDeclaration(
                 Opt<CsAttributes>                  attributes,
-                CsOptList<CsConstantModifier>      modifiers,
+                Opt<CsList<CsConstantModifier>>      modifiers,
                 CsType                             type,
                 CsCommaList<CsConstantDeclarator>  declarators);
 
@@ -151,7 +151,7 @@ namespace CSharpParser
         [Parse(null, null, null, null, ";")]
         CsFieldDeclaration FieldDeclaration(
                 Opt<CsAttributes>                 attributes,
-                CsOptList<CsFieldModifiers>       modifiers,
+                Opt<CsList<CsFieldModifiers>>       modifiers,
                 CsType                            type,
                 CsCommaList<CsVariableDeclarator> declarators);
 
@@ -188,13 +188,13 @@ namespace CSharpParser
         [Parse(null, null, null, null, null, null, "(", null, ")", null)]
         CsMethodHeader MethodHeader(
                 Opt<CsAttributes>      attributes,
-                CsOptList<CsMethodModifier> modifiers,
+                Opt<CsList<CsMethodModifier>> modifiers,
                 Opt<CsPartial>                partial,
                 CsReturnType                  returnType,
                 CsMemberName                  memberName,
                 Opt<CsTypeParameterList>      typeParameters,
                 Opt<CsFormalParameterList>    formalParams,
-                CsOptList<CsTypeParameterConstraintClause> typeParamConstraints);
+                Opt<CsList<CsTypeParameterConstraintClause>> typeParamConstraints);
 
         [Parse("new")]
         [Parse("public")]
@@ -256,7 +256,7 @@ namespace CSharpParser
         [Parse(null, null, null, null, "{", null, "}")]
         CsPropertyDeclaration PropertyDeclaration(
                 Opt<CsAttributes>        attributes,
-                CsOptList<CsPropertyModifier> modifiers,
+                Opt<CsList<CsPropertyModifier>> modifiers,
                 CsType                          type,
                 CsMemberName                    name,
                 CsAccessorDecrations            accessors);
@@ -320,14 +320,14 @@ namespace CSharpParser
         [Parse(null, null, "event", null, null, ";")]
         CsEventDeclaration EventDeclaration(
                 Opt<CsAttributes>          attributes,
-                CsOptList<CsEventModifier>      modifiers,
+                Opt<CsList<CsEventModifier>>      modifiers,
                 CsType                            type,
                 CsCommaList<CsVariableDeclarator> variableDeclarators);
 
         [Parse(null, null, "event", null, null, "{", null, "}")]
         CsEventDeclaration EventDeclaration(
                 Opt<CsAttributes>          attributes,
-                CsOptList<CsEventModifier>      modifiers,
+                Opt<CsList<CsEventModifier>>      modifiers,
                 CsType                            type,
                 CsMemberName                      memberName,
                 CsEventAccessorDeclarations       accessorDeclarations);
@@ -363,7 +363,7 @@ namespace CSharpParser
         [Parse(null, null, null, "{", null, "}")]
         CsIndexerDeclaration IndexerDeclaration(
                 Opt<CsAttributes>       attributes,
-                CsOptList<CsIndexerModifier> modifiers,
+                Opt<CsList<CsIndexerModifier>> modifiers,
                 CsIndexerDeclarator            declarator,
                 CsAccessorDecrations           accessorDeclarations);
 
@@ -472,7 +472,7 @@ namespace CSharpParser
         [Parse]
         CsConstructorDeclaration ConstructorDeclaration(
                 Opt<CsAttributes>    attributes,
-                CsOptList<CsConstructorModifier> modifiers,
+                Opt<CsList<CsConstructorModifier>> modifiers,
                 CsConstructorDeclarator     declarator,
                 CsConstructorBody           body);
 

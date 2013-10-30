@@ -54,7 +54,7 @@ namespace CSharpParser
 
         [Parse("(", null, ")")]
         CsAttributeArguments AttributeArguments(
-                CsOptCommaList<CsPositionalArgument> args);
+                Opt<CsCommaList<CsPositionalArgument>> args);
 
         [Parse("(", null, ",", null, ")")]
         CsAttributeArguments AttributeArguments(

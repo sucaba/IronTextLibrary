@@ -10,10 +10,10 @@ namespace CSharpParser
     {
         [Parse]
         CsCompilationUnit CompilationUnit(
-                CsOptList<CsExternAliasDirective>        externAliasDirectives,
-                CsOptList<CsUsingDirective>              usingDirectives,
+                Opt<CsList<CsExternAliasDirective>>        externAliasDirectives,
+                Opt<CsList<CsUsingDirective>>              usingDirectives,
                 Opt<CsGlobalAttributes>                  globalAttributes,
-                CsOptList<CsNamespaceMemberDeclaration>  nsMemberDeclarations);
+                Opt<CsList<CsNamespaceMemberDeclaration>>  nsMemberDeclarations);
 
         [Parse("namespace", null, null)]
         [Parse("namespace", null, null, ";")]
@@ -26,9 +26,9 @@ namespace CSharpParser
 
         [Parse("{", null, null, null, "}")]
         CsNamespaceBody NamespaceBody(
-                CsOptList<CsExternAliasDirective>        externAliasDirectives,
-                CsOptList<CsUsingDirective>              usingDirectives,
-                CsOptList<CsNamespaceMemberDeclaration>  nsMemberDeclarations);
+                Opt<CsList<CsExternAliasDirective>>        externAliasDirectives,
+                Opt<CsList<CsUsingDirective>>              usingDirectives,
+                Opt<CsList<CsNamespaceMemberDeclaration>>  nsMemberDeclarations);
 
         [Parse("extern", "alias", null)]
         CsExternAliasDirective ExternAliasDirective(

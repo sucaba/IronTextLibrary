@@ -187,7 +187,7 @@ namespace CSharpParser
         CsObjectOrCollectionInitializer ObjectOrCollectionInitializer(CsCollectionInitializer initializer);
 
         [Parse("{", null, "}")]
-        CsObjectInitializer ObjectInitializer(CsOptCommaList<CsMemberInitializer> initializer);
+        CsObjectInitializer ObjectInitializer(Opt<CsCommaList<CsMemberInitializer>> initializer);
 
         [Parse("{", null, ",", "}")]
         CsObjectInitializer ObjectInitializer(CsCommaList<CsMemberInitializer> initializer);
@@ -215,7 +215,7 @@ namespace CSharpParser
         CsArrayCreationExpression ArrayCreationExpression(
                 CsNonArrayType               type,
                 CsCommaList<CsExpression>    expressionList,
-                CsOptList<CsRankSpecifier> rankSpecifiers,
+                Opt<CsList<CsRankSpecifier>> rankSpecifiers,
                 Opt<CsArrayInitializer>      arrayInitializer);
 
         [Parse("new", null, null)]
@@ -239,7 +239,7 @@ namespace CSharpParser
 
         [Parse("{", null, "}")]
         CsAnonymousObjectInitializer AnonymousObjectInitializer(
-            CsOptCommaList<CsMemberDeclarator> declarators);
+            Opt<CsCommaList<CsMemberDeclarator>> declarators);
 
         [Parse("{", null, ",", "}")]
         CsAnonymousObjectInitializer AnonymousObjectInitializer(
@@ -490,7 +490,7 @@ namespace CSharpParser
 
         [Parse("(", null, ")")]
         CsExplicitAnonymousFunctionSignature ExplicitAnonymousFunctionSignature(
-                CsOptCommaList<CsExplicitAnonymousFunctionParameter> parmeterList);
+                Opt<CsCommaList<CsExplicitAnonymousFunctionParameter>> parmeterList);
 
         [Parse]
         CsExplicitAnonymousFunctionParameter ExplicitAnonymousFunctionParameter(
@@ -504,7 +504,7 @@ namespace CSharpParser
 
         [Parse("(", null, ")")]
         CsImplicitAnonymousFunctionSignature ImplicitAnonymousFunctionSignature(
-                CsOptCommaList<CsImplicitAnonymousFunctionParameter> parameters);
+                Opt<CsCommaList<CsImplicitAnonymousFunctionParameter>> parameters);
 
         [Parse]
         CsImplicitAnonymousFunctionSignature ImplicitAnonymousFunctionSignature(
@@ -531,7 +531,7 @@ namespace CSharpParser
 
         [Parse]
         CsQueryBody QueryBody(
-                CsOptList<CsQueryBodyClause>  queryBodyClauses, 
+                Opt<CsList<CsQueryBodyClause>>  queryBodyClauses, 
                 CsSelectOrGroupClause           selectOrGroup,
                 Opt<CsQueryContinuation>        continuation);
 

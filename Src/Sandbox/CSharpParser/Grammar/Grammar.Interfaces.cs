@@ -11,12 +11,12 @@ namespace CSharpParser
         [Parse(null, null, null, "interface", null, null, null, null, null, null)]
         CsInterfaceDeclaration InterfaceDeclaration(
                 Opt<CsAttributes>         attributes,
-                CsOptList<CsInterfaceModifier> modifiers,
+                Opt<CsList<CsInterfaceModifier>> modifiers,
                 Opt<CsPartial>                   partial,
                 CsIdentifier                     id,
                 Opt<CsVariantTypeParameterList>  typeParams,
                 Opt<CsInterfaceBase>             interfaceBase,
-                CsOptList<CsTypeParameterConstraintClause> typeParamsConstraints,
+                Opt<CsList<CsTypeParameterConstraintClause>> typeParamsConstraints,
                 CsInterfaceBody                  body,
                 Opt<CsSemicolon>                 semi);
 
@@ -47,7 +47,7 @@ namespace CSharpParser
 
         [Parse("{", null, "}")]
         CsInterfaceBody InterfaceBody(
-                CsOptList<CsInterfaceMemberDeclaration> declarations);
+                Opt<CsList<CsInterfaceMemberDeclaration>> declarations);
 
         [Parse]
         CsInterfaceMemberDeclaration InterfaceMemberDeclaration(
@@ -73,7 +73,7 @@ namespace CSharpParser
                 CsIdentifier               identifier,
                 CsTypeParameterList        typeParams,
                 Opt<CsFormalParameterList> formalParams,
-                CsOptList<CsTypeParameterConstraintClause> typeParameterConstraints);
+                Opt<CsList<CsTypeParameterConstraintClause>> typeParameterConstraints);
 
         [Parse(null, null, null, null, "{", null, "}")]
         CsInterfacePropertyDeclaration InterfacePropertyDeclaration(

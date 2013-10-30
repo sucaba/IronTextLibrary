@@ -73,41 +73,6 @@ namespace IronText.Framework
             }
         }
 
-        private bool MethodDefinesRuleTemplates(MethodInfo method, Type leftSideTokenType)
-        {
-            if (!method.IsGenericMethodDefinition)
-            {
-                // Only generic methods are considered as rule templates
-                return false;
-            }
-
-            var returnType = method.ReturnType;
-            if (returnType.IsArray)
-            {
-                return leftSideTokenType.IsArray
-                    && returnType.GetElementType().IsGenericParameter;
-            }
-
-            return returnType.IsGenericType
-                && leftSideTokenType.IsGenericType
-                && returnType.GetGenericTypeDefinition() == leftSideTokenType.GetGenericTypeDefinition();
-        }
-
-        private static MethodInfo MakeGenericRuleMethod(Type tokenType, MethodInfo method)
-        {
-            Type[] parameters;
-            if (method.ReturnType.IsArray)
-            {
-                parameters = new[] { tokenType.GetElementType() };
-            }
-            else
-            {
-                parameters = tokenType.GetGenericArguments();
-            }
-
-            return method.MakeGenericMethod(parameters);
-        }
-
         public override IEnumerable<Type> GetContextTypes()
         {
             yield break;

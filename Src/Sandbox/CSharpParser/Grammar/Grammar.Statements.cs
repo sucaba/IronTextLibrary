@@ -54,7 +54,7 @@ namespace CSharpParser
         CsEmbeddedStatement EmbeddedStatement(CsYieldStatement statement);
 
         [Parse("{", null, "}")]
-        CsBlock Block(CsOptList<CsStatement> statements);
+        CsBlock Block(Opt<CsList<CsStatement>> statements);
 
         [Parse(";")]
         CsEmptyStatement EmptyStatement();
@@ -155,7 +155,7 @@ namespace CSharpParser
                 CsSwitchBlock block);
 
         [Parse("{", null, "}")]
-        CsSwitchBlock SwitchBlock(CsOptList<CsSwitchSection> sections);
+        CsSwitchBlock SwitchBlock(Opt<CsList<CsSwitchSection>> sections);
 
         [Parse]
         CsSwitchSection SwitchSection(
@@ -272,11 +272,11 @@ namespace CSharpParser
         [Parse]
         CsCatchClauses CatchClauses(
                 CsList<CsSpecificCatchClause>     specific,
-                CsOptList<CsGeneralCatchClause> general);
+                Opt<CsList<CsGeneralCatchClause>> general);
 
         [Parse]
         CsCatchClauses CatchClauses(
-                CsOptList<CsSpecificCatchClause> specific,
+                Opt<CsList<CsSpecificCatchClause>> specific,
                 CsList<CsGeneralCatchClause>       general);
 
         [Parse("catch", "(", null, null, ")", null)]

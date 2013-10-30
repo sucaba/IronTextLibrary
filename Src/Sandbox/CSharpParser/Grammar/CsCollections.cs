@@ -9,7 +9,6 @@ namespace CSharpParser
     public class CsCommaList<T>    : List<T> { }
     public class CsDotList<T>      : List<T> { }
     public class CsList<T>         : List<T> { }
-    public class CsOptList<T>      : List<T> { }
     public class CsOptCommaList<T> : List<T> { }
 
     public class Opt<T> 
@@ -37,19 +36,6 @@ namespace CSharpParser
         }
 
         [Parse]
-        public static CsOptList<T> OptCsList<T>() 
-        {
-            return new CsOptList<T>();
-        }
-
-        [Parse]
-        public static CsOptList<T> OptCsList<T>(CsOptList<T> list, T value) 
-        {
-            list.Add(value);
-            return list;
-        }
-
-        [Parse]
         public static CsCommaList<T> CommaList<T>(T item) 
         {
             return new CsCommaList<T> { item };
@@ -57,26 +43,6 @@ namespace CSharpParser
 
         [Parse(null, ",", null)]
         public static CsCommaList<T> CommaList<T>(CsCommaList<T> list, T item) 
-        { 
-            list.Add(item);
-            return list;
-        }
-
-        // TODO: This rule can cause incorrect reductions if followed by a ','-rule reduction
-        [Parse]
-        public static CsOptCommaList<T> OptCommaList<T>() 
-        {
-            return new CsOptCommaList<T>();
-        }
-
-        [Parse]
-        public static CsOptCommaList<T> OptCommaList<T>(T value) 
-        {
-            return new CsOptCommaList<T> { value };
-        }
-
-        [Parse(null, ",", null)]
-        public static CsOptCommaList<T> CommaList<T>(CsOptCommaList<T> list, T item) 
         { 
             list.Add(item);
             return list;
