@@ -29,7 +29,7 @@ namespace IronText.Misc
 
         public Type[] Match(Type type)
         {
-            Type[] result = null;
+            Type[] result = placeholders.Length == 0 ? Type.EmptyTypes : null;
             if (!Match(patternType, type, ref result))
             {
                 return null;
@@ -44,6 +44,11 @@ namespace IronText.Misc
             if (types == null)
             {
                 return null;
+            }
+
+            if (placeholders.Length == 0)
+            {
+                return matcher;
             }
 
             return matcher.MakeGenericMethod(types);
