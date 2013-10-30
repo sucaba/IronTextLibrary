@@ -13,8 +13,7 @@ namespace IronText.Tests.Misc
         [Test]
         public void PatternMatchesType()
         {
-            var matcher = typeof(IRules).GetMethod("Rule1");
-            var pattern = new TypePattern(matcher);
+            var pattern = new TypePattern(typeof(IRules).GetMethod("Rule1"));
 
             {
                 var type = typeof(Dictionary<Dictionary<int, string>, Dictionary<int, byte>>);
@@ -32,6 +31,7 @@ namespace IronText.Tests.Misc
             }
 
             var patternNoPlaceholders = new TypePattern(typeof(IRules).GetMethod("Rule2"));
+
             {
                 var type = typeof(string);
                 Type[] types = patternNoPlaceholders.Match(type);
@@ -53,7 +53,5 @@ namespace IronText.Tests.Misc
 
             string Rule2();
         }
-
-        public class Opt<T> { }
     }
 }

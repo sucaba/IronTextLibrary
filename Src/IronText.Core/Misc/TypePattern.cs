@@ -27,6 +27,8 @@ namespace IronText.Misc
             }
         }
 
+        public int PlaceholderCount { get { return placeholders.Length; } }
+
         public Type[] Match(Type type)
         {
             Type[] result = placeholders.Length == 0 ? Type.EmptyTypes : null;
