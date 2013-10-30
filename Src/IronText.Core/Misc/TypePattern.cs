@@ -91,9 +91,14 @@ namespace IronText.Misc
 
             if (patternType.IsGenericType)
             {
+                if (!instanceType.IsGenericType)
+                {
+                    return false;
+                }
+
                 var patternGenericDef = patternType.GetGenericTypeDefinition();
-                var genericDef = patternType.GetGenericTypeDefinition();
-                if (!patternGenericDef.Equals(genericDef))
+                var instanceGenericDef = instanceType.GetGenericTypeDefinition();
+                if (!patternGenericDef.Equals(instanceGenericDef))
                 {
                     return false;
                 }

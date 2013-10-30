@@ -61,14 +61,15 @@ namespace IronText.Framework
             }
 
             var method = this.Method;
-            if (MethodDefinesRuleTemplates(method, token.TokenType))
+            var pattern = new TypePattern(method);
+            MethodInfo producer = pattern.MakeProducer(token.TokenType);
+            if (producer != null)
             {
-                MethodInfo instantiatedMethod = MakeGenericRuleMethod(token.TokenType, method);
-                return DoGetRules(tokenPool, instantiatedMethod, token);
+                return DoGetRules(tokenPool, producer, token);
             }
             else
             {
-                return DoGetRules(tokenPool, method, token);
+                return Enumerable.Empty<ParseRule>();
             }
         }
 

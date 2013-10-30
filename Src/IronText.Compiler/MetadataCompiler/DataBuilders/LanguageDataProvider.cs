@@ -41,7 +41,7 @@ namespace IronText.MetadataCompiler
                 },
                 "parsing language definition");
                 
-            if (!definition.IsValid)
+            if (definition == null || !definition.IsValid)
             {
                 result = null;
                 return false;
@@ -80,6 +80,12 @@ namespace IronText.MetadataCompiler
                     parserDfa = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.Default);
                 },
                 "building LALR1 DFA");
+
+            if (parserDfa == null)
+            {
+                result = null;
+                return false;
+            }
 
             var flags = Attributes.First<LanguageAttribute>(languageName.DefinitionType).Flags;
             var lrTable = new ConfigurableLrTable(parserDfa, flags);
@@ -392,9 +398,15 @@ namespace IronText.MetadataCompiler
             {
                 action();
             }
-            catch
+            catch (Exception e)
             {
-                Verbose("Failed {0} for {1}", activityName, languageName.Name);
+                logging.Write(
+                    new LogEntry
+                    {
+                        Severity = Severity.Error,
+                        Member   = languageName.DefinitionType,
+                        Message  = e.Message
+                    });
             }
             finally
             {
@@ -408,6 +420,17 @@ namespace IronText.MetadataCompiler
                 new LogEntry
                 {
                     Severity = Severity.Verbose,
+                    Member = languageName.DefinitionType,
+                    Message = string.Format(fmt, args)
+                });
+        }
+
+        private void Error(string fmt, params object[] args)
+        {
+            logging.Write(
+                new LogEntry
+                {
+                    Severity = Severity.Error,
                     Member = languageName.DefinitionType,
                     Message = string.Format(fmt, args)
                 });
