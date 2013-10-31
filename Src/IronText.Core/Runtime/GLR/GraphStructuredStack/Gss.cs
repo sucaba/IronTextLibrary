@@ -34,7 +34,7 @@ namespace IronText.Framework
 
         public int CurrentLayer { get { return currentLayer; } }
 
-        public IList<GssNode<T>> Front { get { return front; } }
+        public List<GssNode<T>> Front { get { return front; } }
 
         public int Count { get { return front.Count; } }
 
@@ -64,12 +64,15 @@ namespace IronText.Framework
 
                 if (node.Layer >= currentLayer)
                 {
-                    foreach (var link in node.Links)
+                    var link = node.FirstLink;
+                    while (link != null)
                     {
                         if (!visited.Contains(link.LeftNode))
                         {
                             visited.Add(link.LeftNode);
                         }
+
+                        link = link.NextLink;
                     }
                 }
             }
@@ -118,7 +121,7 @@ namespace IronText.Framework
             }
 
             var result = rightmostNode.AddLink(leftNode, label);
-            if (result.NextSibling != null)
+            if (result.NextLink != null)
             {
                 rightmostNode.DeterministicDepth = 0;
                 UpdateDeterministicDepths();
@@ -154,12 +157,15 @@ namespace IronText.Framework
 
         private static GssLink<T> GetLink(GssNode<T> fromNode, GssNode<T> toNode)
         {
-            foreach (var link in fromNode.Links)
+            var link = fromNode.FirstLink;
+            while (link != null)
             {
                 if (link.LeftNode == toNode)
                 {
                     return link;
                 }
+
+                link = link.NextLink;
             }
 
             return default(GssLink<T>);
@@ -222,7 +228,8 @@ namespace IronText.Framework
                     }
 
                     Token token = stateToSymbol[from.State];
-                    foreach (var link in from.Links)
+                    var link = from.FirstLink;
+                    while (link != null)
                     {
                         var to = link.LeftNode;
 
@@ -239,6 +246,8 @@ namespace IronText.Framework
                             );
 
                         ++linkIndex;
+
+                        link = link.NextLink;
                     }
                 }
             }
@@ -246,6 +255,7 @@ namespace IronText.Framework
             view.EndDigraph();
         }
 
+        // Note: peformance non-critical
         private List<GssNode<T>> GetAllNodes()
         {
             var result = new List<GssNode<T>>(front);

@@ -39,7 +39,8 @@ namespace IronText.Framework
             }
             else
             {
-                foreach (var link in rightNode.Links)
+                var link = rightNode.FirstLink;
+                while (link != null)
                 {
                     reductions.Enqueue(
                         new Reduction<T>(
@@ -48,6 +49,8 @@ namespace IronText.Framework
                             size,
                             -1,
                             link));
+
+                    link = link.NextLink;
                 }
             }
         }

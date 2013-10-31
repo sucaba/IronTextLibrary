@@ -4,7 +4,7 @@ namespace IronText.Framework
     sealed class GssLink<T>
     {
         public readonly GssNode<T> LeftNode;
-        public readonly GssLink<T> NextSibling;
+        public readonly GssLink<T> NextLink;
 
         private T label;
 
@@ -12,7 +12,7 @@ namespace IronText.Framework
         {
             this.LeftNode    = leftNode;
             this.label       = label;
-            this.NextSibling = nextSibling;
+            this.NextLink = nextSibling;
         }
 
         public T Label { get { return label; } }

@@ -123,6 +123,7 @@
     <Compile Include="Lib\Scope\NsBaseTest.cs" />
     <Compile Include="Algorithm\IntervalIntSetTest.cs" />
     <Compile Include="Misc\TypePatternTest.cs" />
+    <Compile Include="Performance\ExperimentsTest.cs" />
     <Compile Include="Performance\PublicPerformance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IO\LocTest.cs" />

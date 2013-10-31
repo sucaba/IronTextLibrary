@@ -16,7 +16,7 @@ namespace IronText.Framework
             do
             {
                 lastNode = node;
-                lastLink = node.PrevLink;
+                lastLink = node.FirstLink;
                 node = lastLink.LeftNode;
             }
             while (--count != 0);

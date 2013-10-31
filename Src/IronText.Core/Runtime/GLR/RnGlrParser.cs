@@ -114,7 +114,7 @@ namespace IronText.Framework
                     {
                         if (IsAccepting(node.State))
                         {
-                            producer.Result = node.PrevLink.Label;
+                            producer.Result = node.FirstLink.Label;
                             break;
                         }
                     }
@@ -219,7 +219,7 @@ namespace IronText.Framework
                                 break;
                             }
 
-                            n = n.PrevLink.LeftNode;
+                            n = n.FirstLink.LeftNode;
                         }
 
                         message.Append("]");

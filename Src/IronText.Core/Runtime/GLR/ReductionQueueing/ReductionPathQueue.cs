@@ -53,9 +53,13 @@ namespace IronText.Framework
             }
             else
             {
-                foreach (var link in rightNode.Links)
+                var link = rightNode.FirstLink;
+                
+                while (link != null)
                 {
                     Enqueue(link, rule, size);
+
+                    link = link.NextLink;
                 }
             }
         }

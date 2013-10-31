@@ -13,7 +13,7 @@ namespace IronText.Framework
         public readonly int Layer;
         public readonly byte Stage;
         public readonly int Lookahead;
-        private GssLink<T> prevLink;
+        private GssLink<T> firstLink;
 
         /// <summary>
         /// 
@@ -38,47 +38,61 @@ namespace IronText.Framework
             this.Lookahead = lookahead;
         }
 
-        public int LinkCount { get { return Links.Count(); } }
+        public int LinkCount 
+        { 
+            get 
+            {
+                int count = 0;
+                var link = FirstLink;
+                while (link != null)
+                {
+                    ++count;
+                    link = link.NextLink;
+                }
+
+                return count;
+            } 
+        }
 
         public IEnumerable<GssLink<T>> Links
         {
             get
             {
-                var link = prevLink;
+                var link = firstLink;
                 while (link != null)
                 {
                     yield return link;
-                    link = link.NextSibling;
+                    link = link.NextLink;
                 }
             }
         }
 
         public GssLink<T> AddLink(GssNode<T> leftNode, T label)
         {
-            var result = new GssLink<T>(leftNode, label, prevLink);
-            prevLink = result;
+            var result = new GssLink<T>(leftNode, label, firstLink);
+            firstLink = result;
             return result;
         }
 
-        public GssLink<T> PrevLink
+        public GssLink<T> FirstLink
         {
             get
             {
                 //Debug.Assert(DeterministicDepth > 0);
-                return prevLink;
+                return firstLink;
             }
         }
 
         public int ComputeDeterministicDepth()
         {
-            if (prevLink == null)
+            if (firstLink == null)
             {
                 return 1;
             }
 
-            if (prevLink.NextSibling == null)
+            if (firstLink.NextLink == null)
             {
-                return prevLink.LeftNode.DeterministicDepth + 1;
+                return firstLink.LeftNode.DeterministicDepth + 1;
             }
 
             return 0;
@@ -99,7 +113,7 @@ namespace IronText.Framework
             do
             {
                 lastNode = node;
-                lastLink = node.PrevLink;
+                lastLink = node.FirstLink;
                 node = lastLink.LeftNode;
             }
             while (--count != 0);
