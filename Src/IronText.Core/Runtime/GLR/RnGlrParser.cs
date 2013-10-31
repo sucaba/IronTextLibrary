@@ -26,6 +26,8 @@ namespace IronText.Framework
         private readonly Dictionary<long,T> N = new Dictionary<long,T>();
         private readonly T[]                  nodeBuffer;
         private readonly int[]                tokenComplexity;
+        private readonly ModifiedReduction[]  pendingReductions;
+        private int pendingReductionsCount = 0;
 
         private bool                          accepted = false;
         private readonly ILogging             logging;
@@ -74,6 +76,8 @@ namespace IronText.Framework
             this.producer             = producer;
             this.allocator            = allocator;
             this.logging              = logging;
+
+            this.pendingReductions = new ModifiedReduction[grammar.Rules.Count];
 
             switch (producer.ReductionOrder)
             {
@@ -271,9 +275,24 @@ namespace IronText.Framework
         {
             foreach (var w in gss.Front)
             {
-                foreach (var red in GetReductions(w.State, lookahead))
+                GetReductions(w.State, lookahead);
+
+                for (int i = 0; i != pendingReductionsCount; ++i)
                 {
-                    R.Enqueue(w, red.Rule, red.Size);
+                    var red = pendingReductions[i];
+                    if (red.Size != 0)
+                    {
+                        R.Enqueue(w, red.Rule, red.Size);
+                    }
+                }
+
+                for (int i = 0; i != pendingReductionsCount; ++i)
+                {
+                    var red = pendingReductions[i];
+                    if (red.Size == 0)
+                    {
+                        R.Enqueue(w, red.Rule, red.Size);
+                    }
                 }
             }
         }
@@ -353,9 +372,10 @@ namespace IronText.Framework
                 {
                     if (newLink != null && m != 0)
                     {
-                        var reductions = GetReductions(l, lookahead);
-                        foreach (var red in reductions)
+                        GetReductions(l, lookahead);
+                        for (int i = 0; i != pendingReductionsCount; ++i)
                         {
+                            var red = pendingReductions[i];
                             if (red.Size != 0)
                             {
                                 R.Enqueue(newLink, red.Rule, red.Size);
@@ -367,9 +387,11 @@ namespace IronText.Framework
                 {
                     var w = gss.GetFrontNode(l, lookahead);
 
-                    var reductions = GetReductions(l, lookahead);
-                    foreach (var red in reductions)
+                    GetReductions(l, lookahead);
+                    //foreach (var red in reductions)
+                    for (int i = 0; i != pendingReductionsCount; ++i)
                     {
+                        var red = pendingReductions[i];
                         if (red.Size == 0)
                         {
                             R.Enqueue(w, red.Rule, 0);
@@ -378,8 +400,9 @@ namespace IronText.Framework
 
                     if (m != 0)
                     {
-                        foreach (var red in reductions)
+                        for (int i = 0; i != pendingReductionsCount; ++i)
                         {
+                            var red = pendingReductions[i];
                             if (red.Size != 0)
                             {
                                 R.Enqueue(newLink, red.Rule, red.Size);
@@ -459,27 +482,34 @@ namespace IronText.Framework
             return ParserAction.FailAction;
         }
 
-        private IEnumerable<ModifiedReduction> GetReductions(State state, int token)
+        private void GetReductions(State state, int token)
         {
+            pendingReductionsCount = 0;
+
             ParserAction action = GetDfaCell(state, token);
             BnfRule rule;
             switch (action.Kind)
             {
                 case ParserActionKind.Reduce:
                     rule = grammar.Rules[action.Rule];
-                    yield return new ModifiedReduction(rule, action.Size);
+                    pendingReductionsCount = 1;
+                    pendingReductions[0] = new ModifiedReduction(rule, action.Size);
                     break;
                 case ParserActionKind.Accept:
                     accepted = true;
                     break;
                 case ParserActionKind.Conflict:
-                    foreach (ParserAction conflictAction in GetConflictActions(action.Value1, action.Value2))
+                    int start = action.Value1;
+                    int last = action.Value1 + action.Value2;
+                    while (start != last)
                     {
+                        var conflictAction = ParserAction.Decode(conflictActionsTable[start++]);
                         switch (conflictAction.Kind)
                         {
                             case ParserActionKind.Reduce:
                                 var crule = grammar.Rules[conflictAction.Rule];
-                                yield return new ModifiedReduction(crule, conflictAction.Size);
+                                pendingReductions[pendingReductionsCount++]
+                                    = new ModifiedReduction(crule, conflictAction.Size);
                                 break;
                         }
                     }
