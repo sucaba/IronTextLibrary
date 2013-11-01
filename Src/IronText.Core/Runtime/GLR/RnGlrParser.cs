@@ -321,7 +321,7 @@ namespace IronText.Framework
                 T z;
                 if (m == 0)
                 {
-                    z = producer.GetEpsilonNonTerm(X, (IStackLookback<T>)u);
+                    z = producer.GetDefault(X, (IStackLookback<T>)u);
                 }
                 else
                 {

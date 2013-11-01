@@ -16,7 +16,7 @@ namespace IronText.Framework
             this.grammarAction = grammarAction;
         }
 
-        public Msg GetEpsilonNonTerm(int nonTerm, IStackLookback<Msg> stackLookback)
+        public Msg GetDefault(int nonTerm, IStackLookback<Msg> stackLookback)
         {
             Msg result = InternalGetNullable(nonTerm, stackLookback);
             return result;
@@ -49,7 +49,7 @@ namespace IronText.Framework
             int end = rule.Parts.Length;
             while (i != end)
             {
-                buffer[destIndex++] = GetEpsilonNonTerm(rule.Parts[i++], stackLookback);
+                buffer[destIndex++] = GetDefault(rule.Parts[i++], stackLookback);
             }
         }
     }

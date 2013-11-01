@@ -28,7 +28,7 @@ namespace IronText.Framework
             // Produce more dense tree
             if (parts.Count == 0)
             {
-                return GetEpsilonNonTerm(rule.Left, stackLookback);
+                return GetDefault(rule.Left, stackLookback);
             }
 
             SppfNode[] children = new SppfNode[rule.Parts.Length];

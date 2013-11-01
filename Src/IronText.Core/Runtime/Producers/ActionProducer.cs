@@ -45,7 +45,7 @@ namespace IronText.Framework
         {
             if (prefix.Count == 0)
             {
-                return GetEpsilonNonTerm(rule.Left, stackLookback);
+                return GetDefault(rule.Left, stackLookback);
             }
 
             Loc location;

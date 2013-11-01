@@ -22,7 +22,7 @@ namespace IronText.Framework
 
         public T Merge(T alt1, T alt2, IStackLookback<T> lookback) { return default(T); }
 
-        public T GetEpsilonNonTerm(int nonTerm, IStackLookback<T> lookback) { return default(T); }
+        public T GetDefault(int nonTerm, IStackLookback<T> lookback) { return default(T); }
 
         public void FillEpsilonSuffix(
             int ruleId,

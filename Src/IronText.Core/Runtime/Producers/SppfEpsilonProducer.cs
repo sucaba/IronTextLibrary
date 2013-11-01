@@ -79,7 +79,7 @@
             }
         }
 
-        public SppfNode GetEpsilonNonTerm(int nonTerm, IStackLookback<SppfNode> stackLookback)
+        public SppfNode GetDefault(int nonTerm, IStackLookback<SppfNode> stackLookback)
         {
             return tokenCache[nonTerm];
         }

@@ -34,9 +34,6 @@ namespace IronText.Framework
         T Merge(T alt1, T alt2, IStackLookback<T> lookback);
 
         // Get epsilon node corresponding to the non-term
-        T GetEpsilonNonTerm(int nonTerm, IStackLookback<T> lookback);
-
-        // Fill epsilon suffix
-        void FillEpsilonSuffix(int ruleId, int prefixSize, T[] buffer, int destIndex, IStackLookback<T> lookback);
+        T GetDefault(int token, IStackLookback<T> lookback);
     }
 }
