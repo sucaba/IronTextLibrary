@@ -456,8 +456,11 @@ namespace IronText.Framework
                     shift = action.State;
                     break;
                 case ParserActionKind.Conflict:
-                    foreach (ParserAction conflictAction in GetConflictActions(action.Value1, action.Value2))
+                    int start = action.Value1;
+                    int last = action.Value1 + action.Value2;
+                    while (start != last)
                     {
+                        var conflictAction = ParserAction.Decode(conflictActionsTable[start++]);
                         if (conflictAction.Kind == ParserActionKind.Shift)
                         {
                             shift = conflictAction.State;
@@ -478,8 +481,11 @@ namespace IronText.Framework
                 case ParserActionKind.ShiftReduce:
                     return action;
                 case ParserActionKind.Conflict:
-                    foreach (ParserAction conflictAction in GetConflictActions(action.Value1, action.Value2))
+                    int start = action.Value1;
+                    int last = action.Value1 + action.Value2;
+                    while (start != last)
                     {
+                        var conflictAction = ParserAction.Decode(conflictActionsTable[start++]);
                         if (conflictAction.Kind == ParserActionKind.ShiftReduce)
                         {
                             return conflictAction;
