@@ -51,7 +51,7 @@ namespace IronText.Framework
                 producer,
                 allocator,
                 logging,
-                new Gss<T>(stateToPriorToken.Length))
+                new Gss<T>(stateToPriorToken.Length + grammar.Rules.Count))
         {
         }
 
@@ -100,6 +100,7 @@ namespace IronText.Framework
 
             N.Clear();
 
+            var front = gss.FrontArray;
             MsgData data = envelope.FirstData;
             do
             {
@@ -110,8 +111,10 @@ namespace IronText.Framework
 
                 if (accepted)
                 {
-                    foreach (var node in gss.Front)
+                    int count = gss.Count;
+                    for (int i = 0; i != count; ++i)
                     {
+                        var node = front[i];
                         if (IsAccepting(node.State))
                         {
                             producer.Result = node.FirstLink.Label;
@@ -123,9 +126,9 @@ namespace IronText.Framework
                 var termValue = producer.CreateLeaf(envelope, data);
                 N[GetNKey(lookahead, gss.CurrentLayer + 1)] = termValue;
 
-                for (int i = 0; i != gss.Front.Count; ++i)
+                for (int i = 0; i != gss.Count; ++i)
                 {
-                    var frontNode = gss.Front[i];
+                    var frontNode = front[i];
 
                     // Plan shift
                     var shift = GetShift(frontNode.State, lookahead);
@@ -159,9 +162,12 @@ namespace IronText.Framework
             Reducer();
 
 #if DIAGNOSTICS
-            using (var graphView = new GvGraphView("GlrState" + gss.CurrentLayer + ".gv"))
+            if (!isVerifier)
             {
-                gss.WriteGraph(graphView, grammar, stateToPriorToken);
+                using (var graphView = new GvGraphView("GlrState" + gss.CurrentLayer + ".gv"))
+                {
+                    gss.WriteGraph(graphView, grammar, stateToPriorToken);
+                }
             }
 #endif
 
@@ -186,8 +192,10 @@ namespace IronText.Framework
                         .Append(grammar.TokenName(envelope.Id))
                         .Append(" in state stacks: {");
                     bool firstStack = true;
-                    foreach (var node in gss.Front)
+                    for (int i = 0; i != gss.Count; ++i)
                     {
+                        var node = gss.FrontArray[i];
+
                         if (firstStack)
                         {
                             firstStack = false;
@@ -273,8 +281,10 @@ namespace IronText.Framework
 
         private void Actor(int lookahead)
         {
-            foreach (var w in gss.Front)
+            for (int j = 0; j != gss.Count; ++j)
             {
+                var w = gss.FrontArray[j];
+
                 GetReductions(w.State, lookahead);
 
                 for (int i = 0; i != pendingReductionsCount; ++i)

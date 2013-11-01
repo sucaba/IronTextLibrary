@@ -11,7 +11,7 @@ namespace IronText.Framework
 
         int Count { get; }
 
-        List<GssNode<T>> Front { get; }
+        GssNode<T>[] FrontArray { get; }
 
         GssNode<T> GetFrontNode(int state, int lookahead = -1);
 

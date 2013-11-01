@@ -16,50 +16,54 @@ namespace IronText.Framework
     {
         private int currentLayer = 0;
         private byte currentStage = 0;
-        private List<GssNode<T>> front;
+        private GssNode<T>[] front;
         private readonly CircularStack<GssNode<T>> history;
 
         public Gss(int stateCount)
         {
-            front = new List<GssNode<T>>(stateCount);
-            history = new CircularStack<GssNode<T>>(2 * stateCount);
+            front = new GssNode<T>[stateCount];
+            Count = 0;
+            history = new CircularStack<GssNode<T>>(2 * stateCount + 2);
             AddTopmost(0);
         }
 
-        private Gss(int currentLayer, List<GssNode<T>> front)
+        private Gss(int currentLayer, GssNode<T>[] front, int frontCount)
         {
             this.currentLayer = currentLayer;
             this.front = front;
+            this.Count = frontCount;
         }
+
+        public int Count { get; private set; }
 
         public int CurrentLayer { get { return currentLayer; } }
 
-        public List<GssNode<T>> Front { get { return front; } }
+        public GssNode<T>[] FrontArray { get { return front; } }
 
-        public int Count { get { return front.Count; } }
-
-        public bool IsEmpty { get { return front.Count == 0; } }
+        public bool IsEmpty { get { return Count == 0; } }
 
         public void PushLayer()
         {
             currentStage = 0;
-            front.Clear();
+            Count = 0;
             ++currentLayer;
         }
 
         public void PopLayer()
         {
             var visited = front;
-            front = new List<GssNode<T>>(front.Capacity);
+            int visitedCount = Count;
+            this.front = new GssNode<T>[front.Length];
+            int frontCount = 0;
 
             --currentLayer;
 
-            for (int i = 0; i != visited.Count; ++i)
+            for (int i = 0; i != visitedCount; ++i)
             {
                 var node = visited[i];
                 if (node.Layer == currentLayer)
                 {
-                    front.Add(node);
+                    front[frontCount++] = node;
                 }
 
                 if (node.Layer >= currentLayer)
@@ -69,13 +73,15 @@ namespace IronText.Framework
                     {
                         if (!visited.Contains(link.LeftNode))
                         {
-                            visited.Add(link.LeftNode);
+                            visited[visitedCount++] = link.LeftNode;
                         }
 
                         link = link.NextLink;
                     }
                 }
             }
+
+            this.Count = frontCount;
 
             // Following line removes nodes created by the lookahead triggered 
             // reductions.
@@ -85,13 +91,28 @@ namespace IronText.Framework
             // parsing recovery sequences (TODO: prove!). However removing 
             // these nodes should simplify debugging and can slightly improve
             // performance.
-            front.RemoveAll(node => node.Stage != 0);
+            ArrayRemoveAll(front, frontCount, node => node.Stage != 0);
+        }
+
+        public static void ArrayRemoveAll<U>(U[] array, int count, Predicate<U> shouldRemove)
+        {
+            int srcIndex = 0, destIndex = 0;
+            while (srcIndex != count)
+            {
+                if (!shouldRemove(array[srcIndex]))
+                {
+                    array[destIndex++] = array[srcIndex];
+                }
+
+                ++srcIndex;
+            }
         }
 
         public GssNode<T> GetFrontNode(State state, int lookahead = -1)
         {
-            foreach (var node in front)
+            for (int i = 0; i != Count; ++i)
             {
+                var node = front[i];
                 if (node.State == state && (lookahead < 0 || node.Lookahead < 0 || lookahead == node.Lookahead))
                 {
                     return node;
@@ -104,7 +125,7 @@ namespace IronText.Framework
         private GssNode<T> AddTopmost(State state, int lookahead = -1)
         {
             var result = new GssNode<T>(state, currentLayer, currentStage, lookahead);
-            front.Add(result);
+            front[Count++] = result;
             return result;
         }
 
@@ -142,8 +163,11 @@ namespace IronText.Framework
                 changes = 0;
                 // Note: Just added link can affect deterministic 
                 //       depth only of the topmost state nodes.
-                foreach (var topNode in front)
+                int count = this.Count;
+                for (int i = 0; i != count; ++i)
                 {
+                    var topNode = front[i];
+
                     int newDepth = topNode.ComputeDeterministicDepth();
                     if (newDepth != topNode.DeterministicDepth)
                     {
@@ -258,7 +282,7 @@ namespace IronText.Framework
         // Note: peformance non-critical
         private List<GssNode<T>> GetAllNodes()
         {
-            var result = new List<GssNode<T>>(front);
+            var result = new List<GssNode<T>>(front.Take(Count));
 
             for (int i = 0; i != result.Count; ++i)
             {
@@ -277,12 +301,14 @@ namespace IronText.Framework
             // Save front to history before editing
             if (history != null)
             {
-                Debug.Assert(front.Count != 0);
+                Debug.Assert(Count != 0);
 
                 history.Push(null); // sentinel
-                foreach (var node in front)
+
+                int count = this.Count;
+                for (int i = 0; i != count; ++i)
                 {
-                    history.Push(node);
+                    history.Push(front[i]);
                 }
             }
         }
@@ -304,10 +330,10 @@ namespace IronText.Framework
                 }
             }
 
-            front.Clear();
+            Count = 0;
             while ((node = history.Pop()) != null)
             {
-                front.Add(node);
+                front[Count++] = node;
             }
 
             this.currentLayer -= inputCount;
@@ -320,7 +346,9 @@ namespace IronText.Framework
 
         public Gss<T> CloneWithoutData()
         {
-            return new Gss<T>(currentLayer, front.ToList());
+            var newFront = new GssNode<T>[front.Length];
+            front.CopyTo(newFront, 0);
+            return new Gss<T>(currentLayer, newFront, Count);
         }
     }
 }
