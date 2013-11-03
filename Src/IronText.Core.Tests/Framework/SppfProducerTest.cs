@@ -179,6 +179,7 @@ namespace IronText.Tests.Framework
 
         [Language(LanguageFlags.AllowNonDeterministic)]
         [ParserGraph("ShareBranchNodesWithTree.gv")]
+        [DescribeParserStateMachine("ShareBranchNodesWithTree.info")]
         public interface ShareBranchNodesWithTree
         {
             [Parse]

@@ -129,7 +129,10 @@ namespace IronText.Automata.Lalr1
 
                         foreach (var lookahead in item.Lookaheads)
                         {
-                            AddAction(i, lookahead, action);
+                            if (!IsValueOnlyEpsilonReduceItem(item, state, lookahead))
+                            {
+                                AddAction(i, lookahead, action);
+                            }
                         }
                     }
                 }
@@ -168,6 +171,44 @@ namespace IronText.Automata.Lalr1
                 }
             }
 #endif
+        }
+
+        private bool IsValueOnlyEpsilonReduceItem(DotItem item, DotState state, int lookahead)
+        {
+            if (item.Pos != 0 
+                || grammar.IsStartRule(item.RuleId)
+                || !grammar.IsTailNullable(item.Rule.Parts, item.Pos)
+                || !item.Lookaheads.Contains(lookahead))
+            {
+                return false;
+            }
+
+            int epsilonToken = item.Rule.Left;
+
+            foreach (var otherItem in state.Items)
+            {
+                if (otherItem == item)
+                {
+                    continue;
+                }
+
+                if (!otherItem.IsReduce 
+                    && otherItem.NextToken == epsilonToken)
+                {
+                    if (!grammar.IsTailNullable(otherItem.Rule.Parts, otherItem.Pos))
+                    {
+                        // there is at least one rule which needs shift on epsilonToken
+                        return false;
+                    }
+
+                    if (grammar.HasFirst(otherItem.Rule.Parts, otherItem.Pos + 1, lookahead))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         private void AddAction(int state, int token, ParserAction action)

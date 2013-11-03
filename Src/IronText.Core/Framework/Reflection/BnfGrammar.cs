@@ -145,16 +145,31 @@ namespace IronText.Framework
 
         internal bool IsBeacon(int token)
         {
+            if (token >= tokenInfos.Count)
+            {
+                return false;
+            }
+
             return (tokenInfos[token].Categories & TokenCategory.Beacon) != 0;
         }
 
         internal bool IsDontInsert(int token)
         {
+            if (token >= tokenInfos.Count)
+            {
+                return false;
+            }
+
             return (tokenInfos[token].Categories & TokenCategory.DoNotInsert) != 0;
         }
 
         internal bool IsDontDelete(int token)
         {
+            if (token >= tokenInfos.Count)
+            {
+                return false;
+            }
+
             return (tokenInfos[token].Categories & TokenCategory.DoNotDelete) != 0;
         }
 
@@ -291,6 +306,28 @@ namespace IronText.Framework
             }
 
             return result;
+        }
+
+        public bool HasFirst(int[] tokenChain, int startIndex, int token)
+        {
+            while (startIndex != tokenChain.Length)
+            {
+                int t = tokenChain[startIndex];
+
+                if (first[t].Contains(token))
+                {
+                    return true;
+                }
+
+                if (!isNullable[t])
+                {
+                    return false;
+                }
+
+                ++startIndex;
+            }
+
+            return false;
         }
 
         internal bool IsTailNullable(int[] tokens, int startIndex)
