@@ -185,24 +185,26 @@ namespace IronText.Automata.Lalr1
 
             int epsilonToken = item.Rule.Left;
 
-            foreach (var otherItem in state.Items)
+            foreach (var parentItem in state.Items)
             {
-                if (otherItem == item)
+                if (parentItem == item)
                 {
                     continue;
                 }
 
-                if (!otherItem.IsReduce 
-                    && otherItem.NextToken == epsilonToken)
+                if (!parentItem.IsReduce 
+                    && parentItem.NextToken == epsilonToken)
                 {
-                    if (!grammar.IsTailNullable(otherItem.Rule.Parts, otherItem.Pos))
+                    if (!grammar.IsTailNullable(parentItem.Rule.Parts, parentItem.Pos))
                     {
                         // there is at least one rule which needs shift on epsilonToken
                         return false;
                     }
 
-                    if (grammar.HasFirst(otherItem.Rule.Parts, otherItem.Pos + 1, lookahead))
+                    if (grammar.HasFirst(parentItem.Rule.Parts, parentItem.Pos + 1, lookahead))
                     {
+                        // One of the subseqent non-terms in parentItem can start parsing with current lookahead.
+                        // It means that we need tested epsilonToken production for continue parsing on parentItem.
                         return false;
                     }
                 }
