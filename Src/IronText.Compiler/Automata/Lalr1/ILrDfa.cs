@@ -6,7 +6,7 @@ namespace IronText.Automata.Lalr1
 {
     public interface ILrDfa
     {
-        BnfGrammar Grammar { get; }
+        IBuildtimeBnfGrammar Grammar { get; }
 
         LrTableOptimizations Optimizations { get; }
 

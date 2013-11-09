@@ -9,7 +9,7 @@ namespace IronText.Automata.Lalr1
 {
     class ReductionModifiedLrDfaTable : ILrParserTable
     {
-        private readonly BnfGrammar grammar;
+        private readonly IBuildtimeBnfGrammar grammar;
         private readonly Dictionary<TransitionKey, ParserConflictInfo> transitionToConflict 
             = new Dictionary<TransitionKey, ParserConflictInfo>();
         private readonly IMutableTable<int> actionTable;

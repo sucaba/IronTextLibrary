@@ -7,8 +7,50 @@ using IronText.Algorithm;
 
 namespace IronText.Framework
 {
+    internal interface IRuntimeBnfGrammar
+    {
+        List<BnfRule> Rules { get; }
+
+        bool IsNullable(int token);
+
+        IEnumerable<BnfRule> GetProductionRules(int leftToken);
+    }
+
+    public interface IBuildtimeBnfGrammar
+    {
+        string TokenName(int token);
+
+        bool IsTerm(int token);
+
+        IEnumerable<BnfRule> GetProductionRules(int leftToken);
+
+        int TokenCount { get; }
+
+        int AmbTokenCount { get; }
+
+        Precedence GetTermPrecedence(int token);
+
+        BnfRule AugmentedRule { get; }
+
+        Precedence GetRulePrecedence(int ruleId);
+
+        bool IsStartRule(int ruleId);
+
+        BitSetType TokenSet { get; }
+
+        IEnumerable<BnfAmbToken> AmbTokens { get; }
+
+        bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output);
+
+        bool HasFirst(int[] tokenChain, int startIndex, int token);
+
+        bool IsTailNullable(int[] tokens, int startIndex);
+    }
+
     [Serializable]
-    public sealed class BnfGrammar
+    public sealed class BnfGrammar 
+        : IRuntimeBnfGrammar
+        , IBuildtimeBnfGrammar
     {
         // Predefined tokens
         public const int NoToken               = -1;
@@ -192,7 +234,7 @@ namespace IronText.Framework
 
         internal bool IsExternal(int token) { return (tokenInfos[token].Categories & TokenCategory.External) != 0; }
 
-        internal bool IsNullable(int token) { return isNullable[token]; }
+        public bool IsNullable(int token) { return isNullable[token]; }
 
         public bool IsPredefined(int token) { return 0 <= token && token < PredefinedTokenCount; }
 
@@ -287,7 +329,7 @@ namespace IronText.Framework
         /// <param name="tokenChain"></param>
         /// <param name="output"></param>
         /// <returns><c>true</c> if chain is nullable, <c>false</c> otherwise</returns>
-        internal bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output)
+        public bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output)
         {
             bool result = true;
 
@@ -330,7 +372,7 @@ namespace IronText.Framework
             return false;
         }
 
-        internal bool IsTailNullable(int[] tokens, int startIndex)
+        public bool IsTailNullable(int[] tokens, int startIndex)
         {
             bool result = true;
 

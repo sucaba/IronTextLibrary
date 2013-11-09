@@ -12,14 +12,14 @@ namespace IronText.Automata.Lalr1
     /// </summary>
     sealed class BnfGrammarAnalysis
     {
-        private readonly BnfGrammar grammar;
+        private readonly IBuildtimeBnfGrammar grammar;
 
-        public BnfGrammarAnalysis(BnfGrammar grammar)
+        public BnfGrammarAnalysis(IBuildtimeBnfGrammar grammar)
         {
             this.grammar = grammar;
         }
 
-        public BnfGrammar Grammar { get { return grammar; } } 
+        public IBuildtimeBnfGrammar Grammar { get { return grammar; } } 
 
         /// <summary>
         /// Fewer values are less dependent to higher values 

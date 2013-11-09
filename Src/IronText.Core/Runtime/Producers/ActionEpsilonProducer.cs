@@ -5,7 +5,7 @@ namespace IronText.Framework
 {
     class ActionEpsilonProducer
     {
-        private readonly BnfGrammar grammar;
+        private readonly IRuntimeBnfGrammar grammar;
         private readonly GrammarActionDelegate grammarAction;
         private readonly object context;
 

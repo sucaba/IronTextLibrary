@@ -21,12 +21,14 @@ namespace IronText.Automata.Lalr1
         private readonly BitSetType TokenSet;
         private BitSetType StateSet;
 
-        private readonly BnfGrammar grammar;
+        private readonly IBuildtimeBnfGrammar grammar;
+        private readonly BnfGrammarAnalysis grammarAnalysis;
 
         private DotState[] states;
 
         public Lalr1Dfa(BnfGrammarAnalysis analysis, LrTableOptimizations optimizations)
         {
+            this.grammarAnalysis = analysis;
             this.grammar = analysis.Grammar;
             this.Optimizations = optimizations;
             this.TokenSet = grammar.TokenSet;
@@ -71,7 +73,7 @@ namespace IronText.Automata.Lalr1
             }
         }
 
-        public BnfGrammar Grammar { get { return grammar; } }
+        public IBuildtimeBnfGrammar Grammar { get { return grammar; } }
 
         public DotState[] States { get { return this.states; } }
 
@@ -365,7 +367,7 @@ namespace IronText.Automata.Lalr1
         }
 
         // TODO: Performance
-        private static void CollectClosureLookaheads(IDotItemSet result, BnfGrammar grammar)
+        private static void CollectClosureLookaheads(IDotItemSet result, IBuildtimeBnfGrammar grammar)
         {
             int count = result.Count;
             if (count == 0)
@@ -425,7 +427,7 @@ namespace IronText.Automata.Lalr1
                     // Debug.WriteLine("closured lookaheads: extra pass");
                 }
             }
-            while(modified);
+            while (modified);
         }
     }
 }
