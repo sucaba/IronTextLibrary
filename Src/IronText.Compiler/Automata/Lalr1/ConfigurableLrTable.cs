@@ -5,6 +5,7 @@ using System.Text;
 using IronText.Algorithm;
 using IronText.Extensibility;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 
 namespace IronText.Automata.Lalr1
 {
@@ -18,7 +19,7 @@ namespace IronText.Automata.Lalr1
         {
             this.grammar = dfa.Grammar;
 
-            int allTokenCount = grammar.TokenCount + grammar.AmbTokenCount;
+            int allTokenCount = grammar.SymbolCount + grammar.AmbSymbolCount;
             this.data = new MutableTable<int>(dfa.States.Length, allTokenCount);
 
             Configure(dfa, flags, out underlyingTable); 

@@ -4,6 +4,7 @@ using IronText.Algorithm;
 using IronText.Extensibility;
 using IronText.Framework;
 using System.Collections.ObjectModel;
+using IronText.Framework.Reflection;
 
 namespace IronText.Automata.Lalr1
 {
@@ -23,7 +24,7 @@ namespace IronText.Automata.Lalr1
 
             this.grammar = dfa.Grammar;
             var states = dfa.States;
-            this.actionTable = actionTable ?? new MutableTable<int>(states.Length, dfa.Grammar.TokenCount);
+            this.actionTable = actionTable ?? new MutableTable<int>(states.Length, dfa.Grammar.SymbolCount);
             FillDfaTable(states);
             BuildConflictActionTable();
         }
@@ -100,7 +101,7 @@ namespace IronText.Automata.Lalr1
                         }
                     }
 
-                    bool isStartRule = rule.Left == BnfGrammar.AugmentedStart;
+                    bool isStartRule = rule.Left == EbnfGrammar.AugmentedStart;
 
                     if (item.IsReduce || grammar.IsTailNullable(rule.Parts, item.Pos))
                     {
@@ -176,7 +177,7 @@ namespace IronText.Automata.Lalr1
         private bool IsValueOnlyEpsilonReduceItem(DotItem item, DotState state, int lookahead)
         {
             if (item.Pos != 0 
-                || grammar.IsStartRule(item.RuleId)
+                || grammar.IsStartProduction(item.RuleId)
                 || !grammar.IsTailNullable(item.Rule.Parts, item.Pos)
                 || !item.Lookaheads.Contains(lookahead))
             {
@@ -274,7 +275,7 @@ namespace IronText.Automata.Lalr1
             }
 
             var shiftTokenPrecedence = grammar.GetTermPrecedence(incomingToken);
-            var reduceRulePrecedence = grammar.GetRulePrecedence(ParserAction.GetId(reduceAction));
+            var reduceRulePrecedence = grammar.GetProductionPrecedence(ParserAction.GetId(reduceAction));
 
             if (shiftTokenPrecedence == null && reduceRulePrecedence == null)
             {

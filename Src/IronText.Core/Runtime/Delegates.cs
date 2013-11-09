@@ -1,4 +1,5 @@
-﻿
+﻿using IronText.Framework.Reflection;
+
 namespace IronText.Framework
 {
     public delegate int TransitionDelegate(int state, int token);
@@ -15,7 +16,7 @@ namespace IronText.Framework
         ILanguage      language);
 
     public delegate object GrammarActionDelegate(
-        BnfRule rule,        // rule being reduced
+        Production rule,        // rule being reduced
         Msg[]   parts,       // array containing path being reduced
         int     firstIndex,  // starting index of the path being reduced
         object  context,     // user provided context

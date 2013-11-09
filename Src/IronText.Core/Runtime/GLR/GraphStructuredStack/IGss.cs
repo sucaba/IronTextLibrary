@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using IronText.Diagnostics;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
@@ -17,7 +18,7 @@ namespace IronText.Framework
 
         Gss<T> CloneWithoutData();
 
-        void WriteGraph(IGraphView view, BnfGrammar grammar, int[] stateToSymbol);
+        void WriteGraph(IGraphView view, EbnfGrammar grammar, int[] stateToSymbol);
 
         void PushLayer();
 

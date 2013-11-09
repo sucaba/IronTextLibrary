@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
@@ -69,7 +70,7 @@ namespace IronText.Framework
             }
         }
 
-        public BnfGrammar Grammar { get { return language.Grammar; } }
+        public EbnfGrammar Grammar { get { return language.Grammar; } }
 
         public object Context
         {

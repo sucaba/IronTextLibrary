@@ -1,14 +1,16 @@
-﻿namespace IronText.Framework
+﻿using IronText.Framework.Reflection;
+
+namespace IronText.Framework
 {
     class SppfEpsilonProducer
     {
-        private readonly BnfGrammar grammar;
+        private readonly EbnfGrammar grammar;
         private SppfNode[] tokenCache;
         private SppfNode[] ruleCache;
         private int[] ruleOffsetInCache;
         private int[] ruleEndOffsetInCache;
 
-        public SppfEpsilonProducer(BnfGrammar grammar)
+        public SppfEpsilonProducer(EbnfGrammar grammar)
         {
             this.grammar = grammar;
             BuildCache();
@@ -16,7 +18,7 @@
 
         private void BuildCache()
         {
-            int tokenCount = grammar.TokenCount;
+            int tokenCount = grammar.SymbolCount;
             tokenCache = new SppfNode[tokenCount];
 
             for (int token = 0; token != tokenCount; ++token)

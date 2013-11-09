@@ -1,4 +1,5 @@
 ﻿
+using IronText.Framework.Reflection;
 namespace IronText.Framework
 {
     public class NullProducer<T> : IProducer<T>
@@ -15,7 +16,7 @@ namespace IronText.Framework
 
         public T CreateLeaf(Msg envelope, MsgData msg) { return default(T); }
 
-        public T CreateBranch(Framework.BnfRule rule, Algorithm.ArraySlice<T> parts, IStackLookback<T> lookback)
+        public T CreateBranch(Production rule, Algorithm.ArraySlice<T> parts, IStackLookback<T> lookback)
         {
             return default(T);
         }

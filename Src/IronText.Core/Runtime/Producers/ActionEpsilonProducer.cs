@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Linq;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
@@ -9,7 +10,7 @@ namespace IronText.Framework
         private readonly GrammarActionDelegate grammarAction;
         private readonly object context;
 
-        public ActionEpsilonProducer(BnfGrammar grammar, object context, GrammarActionDelegate grammarAction)
+        public ActionEpsilonProducer(EbnfGrammar grammar, object context, GrammarActionDelegate grammarAction)
         {
             this.grammar = grammar;
             this.context = context;
@@ -26,7 +27,7 @@ namespace IronText.Framework
         {
             Debug.Assert(grammar.IsNullable(nonTerm));
 
-            var rule = (from r in grammar.GetProductionRules(nonTerm)
+            var rule = (from r in grammar.GetProductions(nonTerm)
                        where r.Parts.All(grammar.IsNullable)
                        orderby r.Parts.Length ascending
                        select r)

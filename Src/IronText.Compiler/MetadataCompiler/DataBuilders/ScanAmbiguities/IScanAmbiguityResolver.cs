@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using IronText.Automata.Regular;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 
 namespace IronText.MetadataCompiler
 {
@@ -33,6 +34,6 @@ namespace IronText.MetadataCompiler
         /// Define ambiguous tokens
         /// </summary>
         /// <param name="grammar"></param>
-        void DefineAmbiguities(BnfGrammar grammar);
+        void DefineAmbiguities(EbnfGrammar grammar);
     }
 }

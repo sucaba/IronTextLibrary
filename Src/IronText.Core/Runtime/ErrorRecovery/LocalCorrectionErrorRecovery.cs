@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace IronText.Framework
 {
+    using IronText.Framework.Reflection;
     using Token = System.Int32;
 
     class LocalCorrectionErrorRecovery : IReceiver<Msg>
@@ -68,12 +69,12 @@ namespace IronText.Framework
                 ("Expected %0 %1 before $1 but got $0.") // ("$0 before $1 is replaced by %0 %1." ) 
                 { Insertion, Insertion, 1, }, 
         };
-        private readonly BnfGrammar grammar;
+        private readonly EbnfGrammar grammar;
         private readonly Token[] terms;
         private readonly ILogging logging;
 
         public LocalCorrectionErrorRecovery(
-            BnfGrammar  grammar,
+            EbnfGrammar  grammar,
             IPushParser exit,
             ILogging    logging)
         {
@@ -83,7 +84,7 @@ namespace IronText.Framework
 
             this.terms = grammar
                             .EnumerateTokens()
-                            .Where(t => grammar.IsTerm(t) && t >= BnfGrammar.PredefinedTokenCount)
+                            .Where(t => grammar.IsTerminal(t) && t >= EbnfGrammar.PredefinedTokenCount)
                             .ToArray();
         }
 
@@ -91,7 +92,7 @@ namespace IronText.Framework
         {
             failedInput.Add(item);
 
-            if (failedInput.Count == FailurePatternSize || item.Id == BnfGrammar.Eoi)
+            if (failedInput.Count == FailurePatternSize || item.Id == EbnfGrammar.Eoi)
             {
                 return Recover(false);
             }
@@ -119,7 +120,7 @@ namespace IronText.Framework
                     return false;
                 }
 
-                if (pos >= minLength && (BnfGrammar.Eoi == msg.Id || grammar.IsBeacon(msg.Id)))
+                if (pos >= minLength && (EbnfGrammar.Eoi == msg.Id || grammar.IsBeacon(msg.Id)))
                 {
                     return true;
                 }

@@ -7,6 +7,7 @@ using IronText.Diagnostics;
 
 namespace IronText.Framework
 {
+    using IronText.Framework.Reflection;
     using State = System.Int32;
     using Token = System.Int32;
 
@@ -201,7 +202,7 @@ namespace IronText.Framework
             return string.Format("{0}:{1}", node.State, node.Stage);
         }
 
-        public void WriteGraph(IGraphView view, BnfGrammar grammar, int[] stateToSymbol)
+        public void WriteGraph(IGraphView view, EbnfGrammar grammar, int[] stateToSymbol)
         {
             var allAccessibleByLayer = GetAllNodes().GroupBy(state => state.Layer);
 
@@ -257,7 +258,7 @@ namespace IronText.Framework
                     {
                         var to = link.LeftNode;
 
-                        view.AddNode(Tuple.Create("t", linkIndex), grammar.TokenName(token));
+                        view.AddNode(Tuple.Create("t", linkIndex), grammar.SymbolName(token));
 
                         view.AddEdge(
                             Tuple.Create("s", layerIndex, nodeIndex),

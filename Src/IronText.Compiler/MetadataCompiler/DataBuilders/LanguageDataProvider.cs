@@ -10,6 +10,7 @@ using IronText.Framework;
 using IronText.Misc;
 using System.Text;
 using IronText.Algorithm;
+using IronText.Framework.Reflection;
 
 namespace IronText.MetadataCompiler
 {
@@ -134,7 +135,7 @@ namespace IronText.MetadataCompiler
 
         private bool BuildScanner(
             LanguageDefinition definition,
-            BnfGrammar grammar,
+            EbnfGrammar grammar,
             ITokenRefResolver tokenResolver,
             LanguageData result)
         {
@@ -220,11 +221,11 @@ namespace IronText.MetadataCompiler
             return true;
         }
 
-        private static BnfGrammar BuildGrammar(
+        private static EbnfGrammar BuildGrammar(
             LanguageDefinition definition,
             out List<List<GrammarActionBuilder>> ruleActionBuilders)
         {
-            var grammar = new BnfGrammar();
+            var grammar = new EbnfGrammar();
 
             // Define grammar tokens
             var tokenResolver = definition.TokenRefResolver;
@@ -233,7 +234,7 @@ namespace IronText.MetadataCompiler
             {
                 if (def.TokenType == typeof(Exception))
                 {
-                    def.Id = BnfGrammar.Error;
+                    def.Id = EbnfGrammar.Error;
                 }
                 else
                 {
@@ -300,7 +301,7 @@ namespace IronText.MetadataCompiler
         }
 
         private static List<LocalParseContext> CollectLocalContexts(
-            BnfGrammar       grammar,
+            EbnfGrammar       grammar,
             ILrDfa           lrDfa,
             IList<ParseRule> allParseRules)
         {

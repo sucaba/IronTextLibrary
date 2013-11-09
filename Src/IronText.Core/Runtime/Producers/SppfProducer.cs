@@ -1,4 +1,5 @@
 ﻿using IronText.Algorithm;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
@@ -6,7 +7,7 @@ namespace IronText.Framework
         : SppfEpsilonProducer
         , IProducer<SppfNode>
     {
-        public SppfProducer(BnfGrammar grammar)
+        public SppfProducer(EbnfGrammar grammar)
             : base(grammar)
         {
         }
@@ -21,7 +22,7 @@ namespace IronText.Framework
         }
 
         public SppfNode CreateBranch(
-                            BnfRule      rule,
+                            Production      rule,
                             ArraySlice<SppfNode> parts,
                             IStackLookback<SppfNode> stackLookback)
         {

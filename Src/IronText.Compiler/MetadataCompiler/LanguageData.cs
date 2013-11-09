@@ -7,6 +7,7 @@ using IronText.Extensibility;
 using System.Linq;
 using IronText.Automata.Regular;
 using IronText.Automata.Lalr1;
+using IronText.Framework.Reflection;
 
 namespace IronText.MetadataCompiler
 {
@@ -17,11 +18,11 @@ namespace IronText.MetadataCompiler
     {
         public LanguageName Name { get; set; }
 
-        public BnfGrammar Grammar { get; set; }
+        public EbnfGrammar Grammar { get; set; }
 
         public BnfGrammarAnalysis GrammarAnalysis { get; set; }
 
-        public int TokenCount { get { return Grammar.TokenCount; } }
+        public int TokenCount { get { return Grammar.SymbolCount; } }
 
         public bool                   IsDeterministic;
         public Type                   RootContextType;

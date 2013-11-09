@@ -4,6 +4,7 @@ using System.Linq;
 using IronText.Algorithm;
 using IronText.Framework;
 using System.Collections.ObjectModel;
+using IronText.Framework.Reflection;
 
 namespace IronText.Automata.Lalr1
 {
@@ -36,7 +37,7 @@ namespace IronText.Automata.Lalr1
                 return Transitions.Count == 0 
                     && Items.Count == 1 
                     && Items[0].IsReduce
-                    && Items[0].Rule.Left != BnfGrammar.AugmentedStart;
+                    && Items[0].Rule.Left != EbnfGrammar.AugmentedStart;
             }
         }
 

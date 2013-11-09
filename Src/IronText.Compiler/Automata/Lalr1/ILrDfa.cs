@@ -1,6 +1,7 @@
 ﻿using System;
 using IronText.Extensibility;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 
 namespace IronText.Automata.Lalr1
 {

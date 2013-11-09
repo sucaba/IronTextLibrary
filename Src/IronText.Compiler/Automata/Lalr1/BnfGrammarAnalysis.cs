@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using IronText.Framework;
 using IronText.Algorithm;
+using IronText.Framework.Reflection;
 
 namespace IronText.Automata.Lalr1
 {
@@ -28,9 +29,9 @@ namespace IronText.Automata.Lalr1
         /// </summary>
         public int[] GetTokenComplexity()
         {
-            var result = Enumerable.Repeat(-1, grammar.TokenCount).ToArray();
+            var result = Enumerable.Repeat(-1, grammar.SymbolCount).ToArray();
             var sortedTokens = Graph.ToplogicalSort(
-                                new [] { BnfGrammar.AugmentedStart },
+                                new [] { EbnfGrammar.AugmentedStart },
                                 GetDependantTokens)
                                 .ToArray();
             for (int i = 0; i != sortedTokens.Length; ++i)
@@ -43,7 +44,7 @@ namespace IronText.Automata.Lalr1
 
         private IEnumerable<int> GetDependantTokens(int token)
         {
-            foreach (var rule in grammar.GetProductionRules(token))
+            foreach (var rule in grammar.GetProductions(token))
             {
                 foreach (int part in rule.Parts)
                 {

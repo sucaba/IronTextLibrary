@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using IronText.Diagnostics;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
@@ -64,7 +65,7 @@ namespace IronText.Framework
 #endif
         }
 
-        public int GetTokenId(BnfGrammar grammar)
+        public int GetTokenId(EbnfGrammar grammar)
         {
             if (Id < 0)
             {
@@ -162,7 +163,7 @@ namespace IronText.Framework
             }
         }
 
-        public void WriteIndented(BnfGrammar grammar, TextWriter output, int indentLevel)
+        public void WriteIndented(EbnfGrammar grammar, TextWriter output, int indentLevel)
         {
             const int IndentStep = 2;
 
@@ -172,13 +173,13 @@ namespace IronText.Framework
             {
                 if (Id > 0)
                 {
-                    output.WriteLine("{0}{1} = {2}", indent, "Token", grammar.TokenName(Id));
+                    output.WriteLine("{0}{1} = {2}", indent, "Token", grammar.SymbolName(Id));
                 }
                 else
                 {
                     var rule = grammar.Rules[-Id];
-                    output.Write("{0}Rule: {1} -> ", indent, grammar.TokenName(rule.Left));
-                    output.WriteLine(string.Join(" ", rule.Parts.Select(grammar.TokenName)));
+                    output.Write("{0}Rule: {1} -> ", indent, grammar.SymbolName(rule.Left));
+                    output.WriteLine(string.Join(" ", rule.Parts.Select(grammar.SymbolName)));
                 }
             }
 
@@ -196,7 +197,7 @@ namespace IronText.Framework
             }
         }
 
-        public void WriteGraph(IGraphView graph, BnfGrammar grammar, bool showRules = false)
+        public void WriteGraph(IGraphView graph, EbnfGrammar grammar, bool showRules = false)
         {
             var graphWriter = new SppfGraphWriter(grammar, graph, showRules: showRules);
             graphWriter.WriteGraph(this);

@@ -1,4 +1,5 @@
 ﻿using IronText.Algorithm;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
@@ -28,7 +29,7 @@ namespace IronText.Framework
         T CreateLeaf(Msg envelope, MsgData data);
 
         // Branch for production rule
-        T CreateBranch(BnfRule rule, ArraySlice<T> parts, IStackLookback<T> lookback);
+        T CreateBranch(Production rule, ArraySlice<T> parts, IStackLookback<T> lookback);
 
         // Merge derivation alternatives
         T Merge(T alt1, T alt2, IStackLookback<T> lookback);

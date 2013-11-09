@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using IronText.Diagnostics;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
     sealed class SppfGraphWriter : ISppfNodeVisitor
     {
-        private readonly BnfGrammar grammar;
+        private readonly EbnfGrammar grammar;
         private readonly IGraphView graph;
         private readonly bool showRules;
         private HashSet<SppfNode> visited;
@@ -14,7 +15,7 @@ namespace IronText.Framework
         private object currentNodeIdentity;
         private SppfNode currentNode;
 
-        public SppfGraphWriter(BnfGrammar grammar, IGraphView graph, bool showRules)
+        public SppfGraphWriter(EbnfGrammar grammar, IGraphView graph, bool showRules)
         {
             this.grammar   = grammar;
             this.graph     = graph;
@@ -60,7 +61,7 @@ namespace IronText.Framework
 
         void ISppfNodeVisitor.VisitLeaf(int token, object value, Loc location)
         {
-            string label = grammar.TokenName(token) + " pos: " + location.Position 
+            string label = grammar.SymbolName(token) + " pos: " + location.Position 
 #if DEBUG
                 + " t: " + currentNode.timestamp
 #endif
@@ -72,7 +73,7 @@ namespace IronText.Framework
         {
             var rule = grammar.Rules[ruleIndex];
 
-            var tokenName = grammar.TokenName(rule.Left);
+            var tokenName = grammar.SymbolName(rule.Left);
 
             string label;
             if (showRules)
@@ -84,7 +85,7 @@ namespace IronText.Framework
 #endif
                         ,
                         tokenName,
-                        string.Join(" ", rule.Parts.Select(grammar.TokenName)));
+                        string.Join(" ", rule.Parts.Select(grammar.SymbolName)));
             }
             else
             {
@@ -111,7 +112,7 @@ namespace IronText.Framework
         void ISppfNodeVisitor.VisitAlternatives(SppfNode alternatives)
         {
             var token = alternatives.GetTokenId(grammar);
-            string label = grammar.TokenName(token) + " pos: " + alternatives.Location.Position 
+            string label = grammar.SymbolName(token) + " pos: " + alternatives.Location.Position 
 #if DEBUG
                 + " t: " + currentNode.timestamp
 #endif
@@ -147,12 +148,12 @@ namespace IronText.Framework
         {
             if (node.Id > 0)
             {
-                return grammar.TokenName(node.Id) + " pos: " + node.Location.Position;
+                return grammar.SymbolName(node.Id) + " pos: " + node.Location.Position;
             }
 
             if (node.NextAlternative != null)
             {
-                return grammar.TokenName(node.GetTokenId(grammar));
+                return grammar.SymbolName(node.GetTokenId(grammar));
             }
 
             var rule = grammar.Rules[-node.Id];
@@ -160,11 +161,11 @@ namespace IronText.Framework
             {
                 return string.Format(
                         "{0} -> {1}",
-                        grammar.TokenName(rule.Left),
-                        string.Join(" ", rule.Parts.Select(grammar.TokenName)));
+                        grammar.SymbolName(rule.Left),
+                        string.Join(" ", rule.Parts.Select(grammar.SymbolName)));
             }
 
-            return grammar.TokenName(rule.Left);
+            return grammar.SymbolName(rule.Left);
         }
     }
 }

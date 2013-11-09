@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
@@ -14,7 +15,7 @@ namespace IronText.Framework
 
         public bool IsEmpty { get { return reductions.Count == 0 && pendingPaths.Count == 0; } }
 
-        public void Enqueue(GssLink<T> rightLink, BnfRule rule, int size)
+        public void Enqueue(GssLink<T> rightLink, Production rule, int size)
         {
             reductions.Enqueue(
                 new Reduction<T>(
@@ -25,7 +26,7 @@ namespace IronText.Framework
                     rightLink));
         }
 
-        public void Enqueue(GssNode<T> rightNode, BnfRule rule, int size)
+        public void Enqueue(GssNode<T> rightNode, Production rule, int size)
         {
             if (size == 0)
             {

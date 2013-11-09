@@ -2,10 +2,10 @@
 using System.IO;
 using System.Linq;
 
-namespace IronText.Framework
+namespace IronText.Framework.Reflection
 {
     [Serializable]
-    public class BnfRule
+    public class Production
     {
         public int      Id;
         public int      Left;
@@ -14,7 +14,7 @@ namespace IronText.Framework
 
         public override bool Equals(object obj)
         {
-            var casted = obj as BnfRule;
+            var casted = obj as Production;
             return casted != null
                 && casted.Id == Id
                 && casted.Left == Left
@@ -30,7 +30,7 @@ namespace IronText.Framework
             }
         }
 
-        public string Describe(BnfGrammar grammar, int pos)
+        public string Describe(EbnfGrammar grammar, int pos)
         {
             using (var writer = new StringWriter())
             {
@@ -39,7 +39,7 @@ namespace IronText.Framework
             }
         }
 
-        public string Describe(BnfGrammar grammar)
+        public string Describe(EbnfGrammar grammar)
         {
             using (var writer = new StringWriter())
             {
@@ -48,9 +48,9 @@ namespace IronText.Framework
             }
         }
 
-        public void Describe(BnfGrammar grammar, int pos, TextWriter output)
+        public void Describe(EbnfGrammar grammar, int pos, TextWriter output)
         {
-            output.Write("{0} ->", grammar.TokenName(Left));
+            output.Write("{0} ->", grammar.SymbolName(Left));
 
             for (int i = 0; i != Parts.Length; ++i)
             {
@@ -60,7 +60,7 @@ namespace IronText.Framework
                 }
 
                 output.Write(" ");
-                output.Write(grammar.TokenName(Parts[i]));
+                output.Write(grammar.SymbolName(Parts[i]));
             }
 
             if (pos == Parts.Length)
@@ -69,14 +69,14 @@ namespace IronText.Framework
             }
         }
 
-        public void Describe(BnfGrammar grammar, TextWriter output)
+        public void Describe(EbnfGrammar grammar, TextWriter output)
         {
-            output.Write("{0} ->", grammar.TokenName(Left));
+            output.Write("{0} ->", grammar.SymbolName(Left));
 
             for (int i = 0; i != Parts.Length; ++i)
             {
                 output.Write(" ");
-                output.Write(grammar.TokenName(Parts[i]));
+                output.Write(grammar.SymbolName(Parts[i]));
             }
         }
     }

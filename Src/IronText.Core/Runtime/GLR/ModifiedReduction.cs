@@ -1,12 +1,13 @@
-﻿
+﻿using IronText.Framework.Reflection;
+
 namespace IronText.Framework
 {
     struct ModifiedReduction
     { 
-        public readonly BnfRule Rule;
+        public readonly Production Rule;
         public readonly short Size;
 
-        public ModifiedReduction(BnfRule rule, short size)
+        public ModifiedReduction(Production rule, short size)
         {
             this.Rule = rule;
             this.Size = size;

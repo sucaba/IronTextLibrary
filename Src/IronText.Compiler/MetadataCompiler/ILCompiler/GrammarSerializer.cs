@@ -1,17 +1,18 @@
 ﻿using IronText.Framework;
+using IronText.Framework.Reflection;
 using IronText.Lib.Ctem;
 using IronText.Lib.IL;
 
 namespace IronText.MetadataCompiler
 {
     /// <summary>
-    /// Generates IL code for creating <see cref="BnfGrammar"/> instance 
+    /// Generates IL code for creating <see cref="EbnfGrammar"/> instance 
     /// </summary>
     public class GrammarSerializer
     {
-        private BnfGrammar grammar;
+        private EbnfGrammar grammar;
 
-        public GrammarSerializer(BnfGrammar grammar)
+        public GrammarSerializer(EbnfGrammar grammar)
         {
             this.grammar = grammar;
         }
@@ -23,22 +24,22 @@ namespace IronText.MetadataCompiler
 
             var parts = emit.Locals.Generate();
             emit
-                .Local(result, emit.Types.Import(typeof(BnfGrammar)))
+                .Local(result, emit.Types.Import(typeof(EbnfGrammar)))
                 .Local(parts, emit.Types.Import(typeof(int[])))
 
-                .Newobj(() => new BnfGrammar())
+                .Newobj(() => new EbnfGrammar())
                 .Stloc(result.GetRef())
                 ;
 
-            for (int token = 0; token != grammar.TokenCount; ++token)
+            for (int token = 0; token != grammar.SymbolCount; ++token)
             {
                 if (!grammar.IsPredefined(token))
                 {
                     emit
                         .Ldloc(result.GetRef())
-                        .Ldstr(new QStr(grammar.TokenName(token)))
+                        .Ldstr(new QStr(grammar.SymbolName(token)))
                         .Ldc_I4((int)grammar.GetTokenCategories(token))
-                        .Call((BnfGrammar g, string name, TokenCategory c) => g.DefineToken(name, c))
+                        .Call((EbnfGrammar g, string name, TokenCategory c) => g.DefineToken(name, c))
                         .Pop()
                         ;
                 }
@@ -46,7 +47,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var rule in grammar.Rules)
             {
-                if (rule.Left == BnfGrammar.AugmentedStart)
+                if (rule.Left == EbnfGrammar.AugmentedStart)
                 {
                     // Start rule is defined automatically when first token is defined
                     continue;
@@ -74,14 +75,14 @@ namespace IronText.MetadataCompiler
                     .Ldloc(result.GetRef())
                     .Ldc_I4(rule.Left)
                     .Ldloc(parts.GetRef())
-                    .Call((BnfGrammar g, int l, int[] p) => g.DefineRule(l, p))
+                    .Call((EbnfGrammar g, int l, int[] p) => g.DefineRule(l, p))
                     .Pop()
                     ;
             }
 
-            for (int token = 2; token != grammar.TokenCount; ++token)
+            for (int token = 2; token != grammar.SymbolCount; ++token)
             {
-                if (!grammar.IsTerm(token))
+                if (!grammar.IsTerminal(token))
                 {
                     continue;
                 }
@@ -97,13 +98,13 @@ namespace IronText.MetadataCompiler
                         .Ldc_I4(precedence.Value)
                         .Ldc_I4((int)precedence.Assoc)
                     .Newobj((int _prec, Associativity _assoc) => new Precedence(_prec, _assoc))
-                    .Call((BnfGrammar g, int t, Precedence p) => g.SetTermPrecedence(t, p))
+                    .Call((EbnfGrammar g, int t, Precedence p) => g.SetTermPrecedence(t, p))
                     ;
             }
 
             emit
                 .Ldloc(result.GetRef())
-                .Call((BnfGrammar g) => g.Freeze())
+                .Call((EbnfGrammar g) => g.Freeze())
                 ;
             return emit.Ldloc(result.GetRef());
         }

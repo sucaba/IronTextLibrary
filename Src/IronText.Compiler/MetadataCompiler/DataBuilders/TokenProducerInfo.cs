@@ -5,6 +5,7 @@ using System.Text;
 using IronText.Algorithm;
 using IronText.Automata.Regular;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 
 namespace IronText.MetadataCompiler
 {
@@ -12,7 +13,7 @@ namespace IronText.MetadataCompiler
     {
         public TokenProducerInfo()
         {
-            MainTokenId    = BnfGrammar.NoToken;
+            MainTokenId    = EbnfGrammar.NoToken;
         }
 
         public TdfaState State { get; set; }
@@ -81,13 +82,13 @@ namespace IronText.MetadataCompiler
             if (result == null)
             {
                 result = new TokenProducerInfo { Disambiguation = Disambiguation.Exclusive };
-                int mainToken = BnfGrammar.NoToken;
+                int mainToken = EbnfGrammar.NoToken;
                 var allPossible = tokenSetType.Mutable();
                 var allActions = SparseIntSetType.Instance.Mutable();
 
                 foreach (var item in items)
                 {
-                    if (mainToken != BnfGrammar.NoToken && item.MainTokenId != BnfGrammar.NoToken)
+                    if (mainToken != EbnfGrammar.NoToken && item.MainTokenId != EbnfGrammar.NoToken)
                     {
                         mainToken = item.MainTokenId;
                     }

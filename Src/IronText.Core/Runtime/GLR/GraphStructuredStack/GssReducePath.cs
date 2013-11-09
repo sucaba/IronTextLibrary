@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using IronText.Algorithm;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
@@ -9,9 +10,9 @@ namespace IronText.Framework
         public readonly GssNode<T> LeftNode;
         public readonly GssLink<T>[] Links;    // Left-to-right reduction path labels
         public readonly int          Size;
-        public readonly BnfRule      Rule;
+        public readonly Production      Rule;
 
-        public GssReducePath(GssNode<T> leftNode, GssLink<T>[] links, BnfRule rule, int size)
+        public GssReducePath(GssNode<T> leftNode, GssLink<T>[] links, Production rule, int size)
         {
             this.LeftNode = leftNode;
             this.Links = links;
@@ -23,7 +24,7 @@ namespace IronText.Framework
             GssNode<T> rightNode,
             int        size,
             int        tail,
-            BnfRule    rule,
+            Production    rule,
             GssLink<T> rightLink,
             Action<GssReducePath<T>> action0)
         {

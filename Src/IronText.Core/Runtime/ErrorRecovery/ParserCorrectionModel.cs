@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
@@ -68,7 +69,7 @@ namespace IronText.Framework
             return HLoc.Sum(errorItems);
         }
 
-        public string FormatMessage(BnfGrammar grammar, List<Msg> source, List<Msg> corrected)
+        public string FormatMessage(EbnfGrammar grammar, List<Msg> source, List<Msg> corrected)
         {
             var output = new StringBuilder();
             ProcessMessageFormat(grammar, source, corrected, output);
@@ -76,7 +77,7 @@ namespace IronText.Framework
         }
 
         private void ProcessMessageFormat(
-            BnfGrammar grammar,
+            EbnfGrammar grammar,
             List<Msg> source,
             List<Msg> corrected,
             StringBuilder output)
@@ -115,14 +116,14 @@ namespace IronText.Framework
             }
         }
 
-        private string FormatToken(BnfGrammar grammar, Msg msg)
+        private string FormatToken(EbnfGrammar grammar, Msg msg)
         {
-            if (msg.Id == BnfGrammar.Eoi)
+            if (msg.Id == EbnfGrammar.Eoi)
             {
                 return "end of file";
             }
 
-            string result = grammar.TokenName(msg.Id);
+            string result = grammar.SymbolName(msg.Id);
             if (!result.StartsWith("'") && msg.Value != null)
             {
                 result = msg.Value.ToString();

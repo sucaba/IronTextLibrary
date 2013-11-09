@@ -4,15 +4,16 @@ using System.Collections.Generic;
 using IronText.Algorithm;
 using IronText.Diagnostics;
 using IronText.Extensibility;
+using System.Text;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
     using State = System.Int32;
-    using System.Text;
 
     sealed class RnGlrParser<T> : IPushParser
     {
-        private readonly BnfGrammar           grammar;
+        private readonly EbnfGrammar           grammar;
         private readonly int[]                conflictActionsTable;
         private readonly int[]                stateToPriorToken;
         private readonly TransitionDelegate   transition;
@@ -34,7 +35,7 @@ namespace IronText.Framework
         private bool isVerifier;
 
         public RnGlrParser(
-            BnfGrammar          grammar,
+            EbnfGrammar          grammar,
             int[]               tokenComplexity,
             TransitionDelegate  transition,
             int[]               stateToPriorToken,
@@ -56,7 +57,7 @@ namespace IronText.Framework
         }
 
         private RnGlrParser(
-            BnfGrammar          grammar,
+            EbnfGrammar          grammar,
             int[]               tokenComplexity,
             TransitionDelegate  transition,
             int[]               stateToPriorToken,
@@ -189,7 +190,7 @@ namespace IronText.Framework
                     var message = new StringBuilder();
                     message
                         .Append("Unexpected token ")
-                        .Append(grammar.TokenName(envelope.Id))
+                        .Append(grammar.SymbolName(envelope.Id))
                         .Append(" in state stacks: {");
                     bool firstStack = true;
                     for (int i = 0; i != gss.Count; ++i)
@@ -269,13 +270,13 @@ namespace IronText.Framework
                 hLocation = new HLoc(1, 1, 1, 1);
             }
 
-            var eoi = new Msg(BnfGrammar.Eoi, null, location, hLocation);
+            var eoi = new Msg(EbnfGrammar.Eoi, null, location, hLocation);
             return Next(eoi);
         }
 
         private bool IsAccepting(State s)
         {
-            int cell = transition(s, BnfGrammar.Eoi);
+            int cell = transition(s, EbnfGrammar.Eoi);
             return ParserAction.GetKind(cell) == ParserActionKind.Accept;
         }
 
@@ -503,7 +504,7 @@ namespace IronText.Framework
             pendingReductionsCount = 0;
 
             ParserAction action = GetDfaCell(state, token);
-            BnfRule rule;
+            Production rule;
             switch (action.Kind)
             {
                 case ParserActionKind.Reduce:
@@ -607,7 +608,7 @@ namespace IronText.Framework
 
         private IReceiver<Msg> RecoverFromError(Msg currentInput)
         {
-            if (currentInput.Id == BnfGrammar.Eoi)
+            if (currentInput.Id == EbnfGrammar.Eoi)
             {
                 if (!isVerifier)
                 {

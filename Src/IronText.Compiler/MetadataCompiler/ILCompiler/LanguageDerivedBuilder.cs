@@ -4,6 +4,7 @@ using IronText.Automata.Regular;
 using IronText.Build;
 using IronText.Extensibility;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 using IronText.Lib.IL;
 using IronText.Lib.IL.Generators;
 using IronText.Lib.Shared;
@@ -326,7 +327,7 @@ namespace IronText.MetadataCompiler
             return context
                 .Method()   
                     .Private.Static
-                    .Returning(context.Types.Import(typeof(BnfGrammar)))
+                    .Returning(context.Types.Import(typeof(EbnfGrammar)))
                     .Named(CreateGrammarMethodName)
                         .BeginArgs()
                         .EndArgs()
@@ -482,7 +483,7 @@ namespace IronText.MetadataCompiler
                 .Call(emit.Methods.Method(
                     _=>_
                         .StartSignature
-                        .Returning(emit.Types.Import(typeof(BnfGrammar)))
+                        .Returning(emit.Types.Import(typeof(EbnfGrammar)))
                         .DecaringType(declaringTypeRef)
                         .Named(CreateGrammarMethodName)
                         .BeginArgs()

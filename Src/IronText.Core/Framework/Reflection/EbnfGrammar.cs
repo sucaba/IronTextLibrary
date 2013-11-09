@@ -5,40 +5,40 @@ using System.Linq;
 using System.Text;
 using IronText.Algorithm;
 
-namespace IronText.Framework
+namespace IronText.Framework.Reflection
 {
     internal interface IRuntimeBnfGrammar
     {
-        List<BnfRule> Rules { get; }
+        List<Production> Rules { get; }
 
         bool IsNullable(int token);
 
-        IEnumerable<BnfRule> GetProductionRules(int leftToken);
+        IEnumerable<Production> GetProductions(int leftToken);
     }
 
     public interface IBuildtimeBnfGrammar
     {
-        string TokenName(int token);
+        string SymbolName(int token);
 
-        bool IsTerm(int token);
+        bool IsTerminal(int token);
 
-        IEnumerable<BnfRule> GetProductionRules(int leftToken);
+        IEnumerable<Production> GetProductions(int leftToken);
 
-        int TokenCount { get; }
+        int SymbolCount { get; }
 
-        int AmbTokenCount { get; }
+        int AmbSymbolCount { get; }
 
         Precedence GetTermPrecedence(int token);
 
-        BnfRule AugmentedRule { get; }
+        Production AugmentedProduction { get; }
 
-        Precedence GetRulePrecedence(int ruleId);
+        Precedence GetProductionPrecedence(int ruleId);
 
-        bool IsStartRule(int ruleId);
+        bool IsStartProduction(int ruleId);
 
         BitSetType TokenSet { get; }
 
-        IEnumerable<BnfAmbToken> AmbTokens { get; }
+        IEnumerable<AmbiguousSymbol> AmbTokens { get; }
 
         bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output);
 
@@ -47,8 +47,7 @@ namespace IronText.Framework
         bool IsTailNullable(int[] tokens, int startIndex);
     }
 
-    [Serializable]
-    public sealed class BnfGrammar 
+    public sealed class EbnfGrammar 
         : IRuntimeBnfGrammar
         , IBuildtimeBnfGrammar
     {
@@ -68,43 +67,41 @@ namespace IronText.Framework
         // pending token count
         private int allTokenCount = PredefinedTokenCount;
         private BitSetType tokenSet;
-        private readonly List<TokenInfo> tokenInfos;
-        private readonly List<BnfAmbToken> ambTokens;
+        private readonly List<Symbol> symbols;
+        private readonly List<AmbiguousSymbol> ambTokens;
         private readonly int AugmentedStartRuleId;
 
-        [NonSerialized]
         private MutableIntSet[] first;
 
-        [NonSerialized]
         private bool[] isNullable;
         private bool frozen;
 
-        public BnfGrammar()
+        public EbnfGrammar()
         {   
-            Rules = new List<BnfRule>();
-            tokenInfos = new List<TokenInfo>(PredefinedTokenCount);
-            ambTokens = new List<BnfAmbToken>();
+            Rules = new List<Production>();
+            symbols = new List<Symbol>(PredefinedTokenCount);
+            ambTokens = new List<AmbiguousSymbol>();
             for (int i = PredefinedTokenCount; i != 0; --i)
             {
-                tokenInfos.Add(null);
+                symbols.Add(null);
             }
 
-            tokenInfos[PropogatedToken] = new TokenInfo { Name = "#" };
-            tokenInfos[EpsilonToken]    = new TokenInfo { Name = "$eps" };
-            tokenInfos[AugmentedStart]  = new TokenInfo { Name = "$start" };
-            tokenInfos[Eoi]             = new TokenInfo 
+            symbols[PropogatedToken] = new Symbol { Name = "#" };
+            symbols[EpsilonToken]    = new Symbol { Name = "$eps" };
+            symbols[AugmentedStart]  = new Symbol { Name = "$start" };
+            symbols[Eoi]             = new Symbol 
                                           { 
                                               Name = "$",
                                               Categories = 
                                                          TokenCategory.DoNotInsert 
                                                          | TokenCategory.DoNotDelete 
                                           };
-            tokenInfos[Error]           = new TokenInfo { Name = "$error" };
+            symbols[Error]           = new Symbol { Name = "$error" };
 
             AugmentedStartRuleId = DefineRule(AugmentedStart, new[] { -1 });
         }
 
-        public List<BnfRule> Rules { get; private set; }
+        public List<Production> Rules { get; private set; }
 
         public BitSetType TokenSet 
         { 
@@ -117,7 +114,7 @@ namespace IronText.Framework
 
         public int MaxRuleSize { get; private set; }
 
-        public BnfRule AugmentedRule { get { return Rules[AugmentedStartRuleId];  } }
+        public Production AugmentedProduction { get { return Rules[AugmentedStartRuleId];  } }
 
         public int? StartToken
         {
@@ -130,31 +127,31 @@ namespace IronText.Framework
             set { this.Rules[AugmentedStartRuleId].Parts[0] = value.HasValue ? value.Value : -1; }
         }
 
-        public int TokenCount { get { return tokenInfos.Count; } }
+        public int SymbolCount { get { return symbols.Count; } }
 
-        public int AmbTokenCount { get { return ambTokens.Count; } }
+        public int AmbSymbolCount { get { return ambTokens.Count; } }
 
-        public IEnumerable<BnfAmbToken> AmbTokens { get { return ambTokens; } }
+        public IEnumerable<AmbiguousSymbol> AmbTokens { get { return ambTokens; } }
 
         public void Freeze()
         {
             this.frozen = true;
-            this.tokenSet = new BitSetType(TokenCount);
+            this.tokenSet = new BitSetType(SymbolCount);
 
             EnsureFirsts();
-            for (int i = PredefinedTokenCount; i != TokenCount; ++i)
+            for (int i = PredefinedTokenCount; i != SymbolCount; ++i)
             {
                 if (i == Error)
                 {
-                    tokenInfos[Error].IsTerm = false;
+                    symbols[Error].IsTerm = false;
                 }
                 else
                 {
-                    tokenInfos[i].IsTerm = CalcIsTerm(i);
+                    symbols[i].IsTerm = CalcIsTerm(i);
                 }
             }
 
-            tokenInfos[Eoi].IsTerm = true;
+            symbols[Eoi].IsTerm = true;
 
             this.MaxRuleSize = Rules.Select(r => r.Parts.Length).Max();
         }
@@ -175,72 +172,72 @@ namespace IronText.Framework
         public int DefineAmbToken(int mainToken, IEnumerable<int> tokens)
         {
             int result = allTokenCount++;
-            var ambToken = new BnfAmbToken(result, mainToken, tokens);
+            var ambToken = new AmbiguousSymbol(result, mainToken, tokens);
             ambTokens.Add(ambToken);
             return result;
         }
 
-        public bool IsStartRule(int ruleId)
+        public bool IsStartProduction(int ruleId)
         {
-            return Rules[ruleId].Left == AugmentedRule.Parts[0];
+            return Rules[ruleId].Left == AugmentedProduction.Parts[0];
         }
 
         internal bool IsBeacon(int token)
         {
-            if (token >= tokenInfos.Count)
+            if (token >= symbols.Count)
             {
                 return false;
             }
 
-            return (tokenInfos[token].Categories & TokenCategory.Beacon) != 0;
+            return (symbols[token].Categories & TokenCategory.Beacon) != 0;
         }
 
         internal bool IsDontInsert(int token)
         {
-            if (token >= tokenInfos.Count)
+            if (token >= symbols.Count)
             {
                 return false;
             }
 
-            return (tokenInfos[token].Categories & TokenCategory.DoNotInsert) != 0;
+            return (symbols[token].Categories & TokenCategory.DoNotInsert) != 0;
         }
 
         internal bool IsDontDelete(int token)
         {
-            if (token >= tokenInfos.Count)
+            if (token >= symbols.Count)
             {
                 return false;
             }
 
-            return (tokenInfos[token].Categories & TokenCategory.DoNotDelete) != 0;
+            return (symbols[token].Categories & TokenCategory.DoNotDelete) != 0;
         }
 
         private int InternalDefineToken(string name, TokenCategory categories)
         {
             int result = allTokenCount++;
-            tokenInfos.Add(new TokenInfo { Id = result, Name = name ?? "token-" + result, Categories = categories });
+            symbols.Add(new Symbol { Id = result, Name = name ?? "token-" + result, Categories = categories });
             return result;
         }
 
-        public bool IsTerm(int token) { return tokenInfos[token].IsTerm; }
+        public bool IsTerminal(int token) { return symbols[token].IsTerm; }
 
         public bool IsNonTerm(int token) 
         {
-            var ti = tokenInfos[token];
+            var ti = symbols[token];
             return !ti.IsTerm && (token >= PredefinedTokenCount);
         }
 
-        internal TokenCategory GetTokenCategories(int token) { return tokenInfos[token].Categories; }
+        internal TokenCategory GetTokenCategories(int token) { return symbols[token].Categories; }
 
-        internal bool IsExternal(int token) { return (tokenInfos[token].Categories & TokenCategory.External) != 0; }
+        internal bool IsExternal(int token) { return (symbols[token].Categories & TokenCategory.External) != 0; }
 
         public bool IsNullable(int token) { return isNullable[token]; }
 
         public bool IsPredefined(int token) { return 0 <= token && token < PredefinedTokenCount; }
 
-        private BnfRule GetRule(int rule) { return this.Rules[rule]; }
+        private Production GetRule(int rule) { return this.Rules[rule]; }
 
-        public IEnumerable<BnfRule> GetProductionRules(int left) { return tokenInfos[left].Productions; }
+        public IEnumerable<Production> GetProductions(int left) { return symbols[left].Productions; }
 
         private bool CalcIsTerm(int token)
         {
@@ -248,14 +245,14 @@ namespace IronText.Framework
             return result;
         }
 
-        public string TokenName(int token) 
+        public string SymbolName(int token) 
         {
             if (token < 0)
             {
                 return "<undefined token>";
             }
 
-            return tokenInfos[token].Name; 
+            return symbols[token].Name; 
         }
 
         /// <summary>
@@ -292,7 +289,7 @@ namespace IronText.Framework
 
             int result = this.Rules.Count;
 
-            var rule = new BnfRule
+            var rule = new Production
                 {
                     Id = result,
                     Left = left,
@@ -301,13 +298,13 @@ namespace IronText.Framework
 
             this.Rules.Add(rule);
 
-            tokenInfos[left].Productions.Add(rule);
+            symbols[left].Productions.Add(rule);
             
             return result;
         }
 
         // TODO: Optmize
-        internal IEnumerable<BnfRule> TokenRules(int token)
+        internal IEnumerable<Production> TokenRules(int token)
         {
             var result = this.Rules.Where(r => r.Left == token).ToArray();
             if (result.Length == 0)
@@ -320,7 +317,7 @@ namespace IronText.Framework
 
         public IEnumerable<int> EnumerateTokens()
         {
-            return tokenInfos.Select(ti => ti.Id);
+            return symbols.Select(ti => ti.Id);
         }
 
         /// <summary>
@@ -415,7 +412,7 @@ namespace IronText.Framework
 
         private void BuildFirst()
         {
-            int count = TokenCount;
+            int count = SymbolCount;
             this.first     = new MutableIntSet[count];
             this.isNullable = new bool[count];
 
@@ -428,7 +425,7 @@ namespace IronText.Framework
                 }
             }
 
-            var recursiveRules = new List<BnfRule>();
+            var recursiveRules = new List<Production>();
 
             // Init FIRST using rules without recursion in first part
             foreach (var rule in Rules)
@@ -517,7 +514,7 @@ namespace IronText.Framework
 
         public override bool Equals(object obj)
         {
-            var casted = obj as BnfGrammar;
+            var casted = obj as EbnfGrammar;
             return Equals(casted);
         }
 
@@ -526,15 +523,15 @@ namespace IronText.Framework
             unchecked
             {
                 return Rules.Sum(rule => rule.GetHashCode())
-                    + tokenInfos.Sum(t => t.GetHashCode());
+                    + symbols.Sum(t => t.GetHashCode());
             }
         }
 
-        public bool Equals(BnfGrammar other)
+        public bool Equals(EbnfGrammar other)
         {
             return other != null
                 && Enumerable.SequenceEqual(other.Rules, this.Rules)
-                && Enumerable.SequenceEqual(other.tokenInfos, this.tokenInfos);
+                && Enumerable.SequenceEqual(other.symbols, this.symbols);
         }
 
         public override string ToString()
@@ -542,72 +539,32 @@ namespace IronText.Framework
             var output = new StringBuilder();
             output
                 .Append("Terminals: ")
-                .Append(string.Join(" ", EnumerateTokens().Where(IsTerm).Select(TokenName)))
+                .Append(string.Join(" ", EnumerateTokens().Where(IsTerminal).Select(SymbolName)))
                 .AppendLine()
                 .Append("Non-Terminals: ")
-                .Append(string.Join(" ", EnumerateTokens().Where(t => !IsTerm(t)).Select(TokenName)))
+                .Append(string.Join(" ", EnumerateTokens().Where(t => !IsTerminal(t)).Select(SymbolName)))
                 .AppendLine()
-                .AppendFormat("Start Token: {0}", StartToken == null ? "<undefined>" : TokenName(StartToken.Value))
+                .AppendFormat("Start Token: {0}", StartToken == null ? "<undefined>" : SymbolName(StartToken.Value))
                 .AppendLine()
                 .Append("Rules:")
                 .AppendLine();
             foreach (var rule in Rules)
             {
-                output.AppendFormat("{0:D2}: {1} -> {2}", rule.Id, TokenName(rule.Left), string.Join(" ", rule.Parts.Select(TokenName))).AppendLine();
+                output.AppendFormat("{0:D2}: {1} -> {2}", rule.Id, SymbolName(rule.Left), string.Join(" ", rule.Parts.Select(SymbolName))).AppendLine();
             }
 
             return output.ToString();
         }
 
 
-        class TokenInfo
-        {
-            public int Id;
-            public string Name;       // Display name
-            public TokenCategory Categories;
-            public bool IsTerm;
-            public Precedence Precedence;
-            public readonly List<BnfRule> Productions = new List<BnfRule>();
-
-            public override bool Equals(object obj)
-            {
-                var casted = obj as TokenInfo;
-                return casted != null
-                    && casted.Name == Name
-                    && casted.Categories == Categories
-                    && object.Equals(casted.Precedence, Precedence)
-                    ;
-            }
-
-            public override int GetHashCode()
-            {
-                int result = 0;
-                unchecked
-                {
-                    if (Name != null)
-                    {
-                        result += Name.GetHashCode();
-                    }
-
-                    result += Categories.GetHashCode();
-                    if (Precedence != null)
-                    {
-                        result += Precedence.GetHashCode();
-                    }
-                }
-
-                return result;
-            }
-        }
-
         public Precedence GetTermPrecedence(int token)
         {
-            if (!IsTerm(token))
+            if (!IsTerminal(token))
             {
                 throw new ArgumentException("Precedence is applicable only to terminals.", "token");
             }
 
-            var info = this.tokenInfos[token];
+            var info = this.symbols[token];
             return info.Precedence;
         }
 
@@ -618,11 +575,11 @@ namespace IronText.Framework
                 throw new ArgumentException("Precedence is applicable only to terminals.", "token");
             }
 
-            var info = this.tokenInfos[token];
+            var info = this.symbols[token];
             info.Precedence = precedence;
         }
 
-        public Precedence GetRulePrecedence(int ruleId)
+        public Precedence GetProductionPrecedence(int ruleId)
         {
             var rule = GetRule(ruleId);
             if (rule.Precedence != null)

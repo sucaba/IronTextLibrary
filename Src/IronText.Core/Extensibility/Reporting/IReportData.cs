@@ -2,6 +2,7 @@
 using IronText.Framework;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using IronText.Framework.Reflection;
 
 namespace IronText.Extensibility
 {
@@ -14,7 +15,7 @@ namespace IronText.Extensibility
 
         LanguageName Name { get; }
 
-        BnfGrammar Grammar { get; }
+        EbnfGrammar Grammar { get; }
 
         int TokenCount { get; }
 

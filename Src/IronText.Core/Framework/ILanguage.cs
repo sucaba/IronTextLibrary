@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
@@ -7,7 +8,7 @@ namespace IronText.Framework
     {
         LanguageName Name { get; }
 
-        BnfGrammar  Grammar { get; }
+        EbnfGrammar  Grammar { get; }
 
         /// <summary>
         /// Determines whether parsing algorithm being used is deterministic.
@@ -52,7 +53,7 @@ namespace IronText.Framework
         {
             if (token == null)
             {
-                return BnfGrammar.Eoi;
+                return EbnfGrammar.Eoi;
             }
 
             return @this.Identify(token.GetType());

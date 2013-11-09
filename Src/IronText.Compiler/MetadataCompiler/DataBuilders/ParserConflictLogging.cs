@@ -60,7 +60,7 @@ namespace IronText.MetadataCompiler
             using (var message = new IndentedTextWriter(writer, "  "))
             {
                 message.Write("Conflict on token ");
-                message.Write(data.Grammar.TokenName(conflict.Token));
+                message.Write(data.Grammar.SymbolName(conflict.Token));
                 message.Write(" between actions in state #");
                 message.Write(conflict.State + "");
                 message.WriteLine(":");
@@ -105,7 +105,7 @@ namespace IronText.MetadataCompiler
             bool showLookaheads = true)
         {
             var rule = item.Rule;
-            output.Write(data.Grammar.TokenName(rule.Left));
+            output.Write(data.Grammar.SymbolName(rule.Left));
             output.Write(" ->");
             for (int i = 0; i != rule.Parts.Length; ++i)
             {
@@ -115,7 +115,7 @@ namespace IronText.MetadataCompiler
                 }
 
                 output.Write(" ");
-                output.Write(data.Grammar.TokenName(rule.Parts[i]));
+                output.Write(data.Grammar.SymbolName(rule.Parts[i]));
             }
 
             if (item.Position == rule.Parts.Length)
@@ -126,7 +126,7 @@ namespace IronText.MetadataCompiler
             if (showLookaheads)
             {
                 output.Write("  |LA = {");
-                output.Write(string.Join(", ", item.Lookaheads.Select(data.Grammar.TokenName)));
+                output.Write(string.Join(", ", item.Lookaheads.Select(data.Grammar.SymbolName)));
                 output.Write("}");
             }
         }
@@ -174,13 +174,13 @@ namespace IronText.MetadataCompiler
         {
             var rule = data.Grammar.Rules[ruleId];
 
-            output.Write(data.Grammar.TokenName(rule.Left));
+            output.Write(data.Grammar.SymbolName(rule.Left));
             output.Write(" ->");
 
             for (int i = 0; i != rule.Parts.Length; ++i)
             {
                 output.Write(" ");
-                output.Write(data.Grammar.TokenName(rule.Parts[i]));
+                output.Write(data.Grammar.SymbolName(rule.Parts[i]));
             }
         }
     }

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
     class PanicModeErrorRecovery : IReceiver<Msg>
     {
-        private readonly BnfGrammar grammar;
+        private readonly EbnfGrammar grammar;
         private readonly IPushParser exit;
         private readonly ILogging logging;
         private Loc errorLocation = Loc.Unknown;
@@ -12,7 +13,7 @@ namespace IronText.Framework
         private readonly List<Msg> collectedInput = new List<Msg>();
         private IReceiver<Msg> validPrefixVerifier;
 
-        public PanicModeErrorRecovery(BnfGrammar grammar, IPushParser exit, ILogging logging)
+        public PanicModeErrorRecovery(EbnfGrammar grammar, IPushParser exit, ILogging logging)
         {
             this.grammar = grammar;
             this.exit    = exit;
@@ -32,7 +33,7 @@ namespace IronText.Framework
                 }
             }
 
-            var error = new Msg(BnfGrammar.Error, null, errorLocation); // TODO: Location?
+            var error = new Msg(EbnfGrammar.Error, null, errorLocation); // TODO: Location?
             if (null != exit.CloneVerifier().ForceNext(error, item))
             {
                 ReportError();

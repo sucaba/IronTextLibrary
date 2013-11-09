@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using IronText.Algorithm;
 using IronText.Diagnostics;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 using IronText.MetadataCompiler;
 using NUnit.Framework;
 
@@ -56,7 +57,7 @@ namespace CSharpParser.Tests
         {
             int stateCount = data.ParserStates.Length;
             var grammar = data.Grammar;
-            int[] terms = grammar.EnumerateTokens().Where(grammar.IsTerm).ToArray();
+            int[] terms = grammar.EnumerateTokens().Where(grammar.IsTerminal).ToArray();
             var table = data.ParserActionTable;
             var unpartitioned = Enumerable.Range(0, stateCount).ToList();
             var categories = new List<List<int>>();
@@ -182,8 +183,8 @@ namespace CSharpParser.Tests
             var grammar = data.Grammar;
 
             int stateCount = data.ParserStates.Length;
-            int startToken = BnfGrammar.PredefinedTokenCount;
-            int tokenCount = grammar.TokenCount;
+            int startToken = EbnfGrammar.PredefinedTokenCount;
+            int tokenCount = grammar.SymbolCount;
 
             var table = data.ParserActionTable;
             var unpartitioned = Enumerable.Range(startToken, tokenCount - startToken).ToList();

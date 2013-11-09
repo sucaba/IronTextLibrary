@@ -1,5 +1,6 @@
 ﻿using IronText.Extensibility;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 using IronText.Lib.IL;
 using IronText.Lib.Shared;
 
@@ -26,7 +27,7 @@ namespace IronText.MetadataCompiler
             Def<Args> stackLookback =  args.Args.Generate("startLookback");
 
             var emit = args
-                    .Argument(context.Types.Import(typeof(BnfRule)), rule)
+                    .Argument(context.Types.Import(typeof(Production)), rule)
                     .Argument(context.Types.Import(typeof(Msg[])), ruleArgs)
                     .Argument(context.Types.Int32, argsStart)
                     .Argument(context.Types.Object, ctx)
@@ -98,7 +99,7 @@ namespace IronText.MetadataCompiler
 
             emit
                 .Do(code.LdRule)
-                .Ldfld((BnfRule r) => r.Id)
+                .Ldfld((Production r) => r.Id)
                 .Switch(jumpTable)
                 .Br(defaultLabel.GetRef());
 

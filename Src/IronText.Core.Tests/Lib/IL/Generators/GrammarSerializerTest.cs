@@ -1,5 +1,6 @@
 ﻿using System;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 using IronText.Lib.IL;
 using IronText.MetadataCompiler;
 using NUnit.Framework;
@@ -12,7 +13,7 @@ namespace IronText.Tests.Lib.IL.Generators
         [Test]
         public void Test()
         {
-            var originalGrammar = new BnfGrammar();
+            var originalGrammar = new EbnfGrammar();
             int red = originalGrammar.DefineToken("red");
             int green = originalGrammar.DefineToken("green", TokenCategory.External);
             int blue = originalGrammar.DefineToken("blue");
@@ -23,7 +24,7 @@ namespace IronText.Tests.Lib.IL.Generators
             originalGrammar.Freeze();
 
             GrammarSerializer target = new GrammarSerializer(originalGrammar);
-            var factory = new CachedMethod<Func<BnfGrammar>>("GrammarSerializerTest.Assembly0", (emit, args) => { target.Build(emit); return emit.Ret(); }).Delegate;
+            var factory = new CachedMethod<Func<EbnfGrammar>>("GrammarSerializerTest.Assembly0", (emit, args) => { target.Build(emit); return emit.Ret(); }).Delegate;
 
             var recreated = factory();
 

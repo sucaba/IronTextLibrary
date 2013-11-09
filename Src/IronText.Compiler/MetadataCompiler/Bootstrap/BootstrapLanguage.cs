@@ -2,6 +2,7 @@
 using System.IO;
 using IronText.Extensibility;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 using IronText.Lib.IL;
 
 namespace IronText.MetadataCompiler
@@ -31,7 +32,7 @@ namespace IronText.MetadataCompiler
 
         public LanguageName Name { get { return name; } }
 
-        public BnfGrammar Grammar { get { return data.Grammar; } }
+        public EbnfGrammar Grammar { get { return data.Grammar; } }
 
         public void Heatup() { }
 

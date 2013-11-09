@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using IronText.Extensibility;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
@@ -11,7 +12,7 @@ namespace IronText.Framework
     {
         private const int InitialValueStackSize = 32;
 
-        private readonly BnfGrammar             grammar;
+        private readonly EbnfGrammar             grammar;
         private readonly TransitionDelegate     actionTable;
 
         private readonly TaggedStack<TNode> stateStack;
@@ -19,8 +20,8 @@ namespace IronText.Framework
 #if SWITCH_FEATURE
         private Func<object,int,IReciever<Msg>,IReciever<Msg>> makeSwitch;
 #endif
-        private readonly BnfRule[] rules;
-        private BnfRule            currentRule;
+        private readonly Production[] rules;
+        private Production            currentRule;
         private IProducer<TNode>   producer;
         private readonly ResourceAllocator allocator;
         private ILogging logging;
@@ -29,7 +30,7 @@ namespace IronText.Framework
 
         public DeterministicParser(
             IProducer<TNode>      producer,
-            BnfGrammar            grammar,
+            EbnfGrammar            grammar,
             TransitionDelegate    actionTable,
             ResourceAllocator     allocator
 #if SWITCH_FEATURE
@@ -54,7 +55,7 @@ namespace IronText.Framework
 
         private DeterministicParser(
             IProducer<TNode>      producer,
-            BnfGrammar            grammar,
+            EbnfGrammar            grammar,
             TransitionDelegate    actionTable,
             ResourceAllocator     allocator
 #if SWITCH_FEATURE
@@ -98,7 +99,7 @@ namespace IronText.Framework
                 hLocation = new HLoc(1, 1, 1, 1);
             }
 
-            var eoi = new Msg(BnfGrammar.Eoi, null, location, hLocation);
+            var eoi = new Msg(EbnfGrammar.Eoi, null, location, hLocation);
             return Next(eoi);
         }
 
@@ -146,7 +147,7 @@ namespace IronText.Framework
                             Severity = Severity.Error,
                             Location = envelope.Location,
                             HLocation = envelope.HLocation,
-                            Message = "Hit parser conflict on token " + grammar.TokenName(envelope.Id)
+                            Message = "Hit parser conflict on token " + grammar.SymbolName(envelope.Id)
                         });
                     return null;
 
@@ -203,7 +204,7 @@ namespace IronText.Framework
 
         private IReceiver<Msg> RecoverFromError(Msg currentInput)
         {
-            if (currentInput.Id == BnfGrammar.Eoi)
+            if (currentInput.Id == EbnfGrammar.Eoi)
             {
                 if (!isVerifier)
                 {
@@ -242,7 +243,7 @@ namespace IronText.Framework
 
             var message = new StringBuilder();
 
-            message.Append("Got ").Append(msg.Value ?? grammar.TokenName(msg.Id));
+            message.Append("Got ").Append(msg.Value ?? grammar.SymbolName(msg.Id));
             message.Append("  but expected ");
 
             int[] expectedTokens = GetExpectedTokens(state);
@@ -252,7 +253,7 @@ namespace IronText.Framework
             }
             else
             {
-                message.Append(" ").Append(string.Join(" or ", expectedTokens.Select(grammar.TokenName)));
+                message.Append(" ").Append(string.Join(" or ", expectedTokens.Select(grammar.SymbolName)));
             }
 
             //message.Append("  State stack [" + string.Join(", ", stateStack.Data.Take(stateStack.Count).Select(st => st.Tag)) + "]");
@@ -270,12 +271,12 @@ namespace IronText.Framework
         private int[] GetExpectedTokens(int state)
         {
             var result = new List<int>();
-            int tokenCount = grammar.TokenCount;
+            int tokenCount = grammar.SymbolCount;
 
             for (int i = 0; i != tokenCount; ++i)
             {
                 var action = actionTable(state, i);
-                if (action != ParserAction.FailActionCell && grammar.IsTerm(i))
+                if (action != ParserAction.FailActionCell && grammar.IsTerminal(i))
                 {
                     result.Add(i);
                 }

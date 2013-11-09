@@ -5,6 +5,7 @@ using IronText.Algorithm;
 using IronText.Extensibility;
 using IronText.Framework;
 using System.Collections.ObjectModel;
+using IronText.Framework.Reflection;
 
 namespace IronText.Automata.Lalr1
 {
@@ -24,7 +25,7 @@ namespace IronText.Automata.Lalr1
             this.canOptimizeReduceStates = (dfa.Optimizations & flag) == flag;
 
             this.grammar = dfa.Grammar;
-            this.actionTable = actionTable ?? new MutableTable<int>(dfa.States.Length, grammar.TokenCount);
+            this.actionTable = actionTable ?? new MutableTable<int>(dfa.States.Length, grammar.SymbolCount);
             FillDfaTable(dfa.States);
             BuildConflictTable();
         }
@@ -103,10 +104,10 @@ namespace IronText.Automata.Lalr1
                             AssignAction(i, nextToken, action);
                         }
                     }
-                    else if (rule.Left == BnfGrammar.AugmentedStart)
+                    else if (rule.Left == EbnfGrammar.AugmentedStart)
                     {
                         var action = new ParserAction { Kind = ParserActionKind.Accept };
-                        AssignAction(i, BnfGrammar.Eoi, action);
+                        AssignAction(i, EbnfGrammar.Eoi, action);
                     }
                     else
                     {
@@ -209,7 +210,7 @@ namespace IronText.Automata.Lalr1
             }
 
             var shiftTokenPrecedence = grammar.GetTermPrecedence(incomingToken);
-            var reduceRulePrecedence = grammar.GetRulePrecedence(ParserAction.GetId(reduceAction));
+            var reduceRulePrecedence = grammar.GetProductionPrecedence(ParserAction.GetId(reduceAction));
 
             if (shiftTokenPrecedence == null && reduceRulePrecedence == null)
             {

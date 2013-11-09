@@ -1,4 +1,5 @@
 ﻿using IronText.Framework;
+using IronText.Framework.Reflection;
 using NUnit.Framework;
 
 namespace IronText.Tests.Framework
@@ -9,7 +10,7 @@ namespace IronText.Tests.Framework
         [Test]
         public void TestRightTrimNullable()
         {
-            var target = new BnfGrammar();
+            var target = new EbnfGrammar();
 
             var S = target.DefineToken("S");
             var a = target.DefineToken("a");

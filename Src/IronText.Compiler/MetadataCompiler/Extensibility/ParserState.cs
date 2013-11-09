@@ -6,6 +6,7 @@ using IronText.Extensibility;
 using System.Collections.ObjectModel;
 using IronText.Framework;
 using IronText.Automata.Lalr1;
+using IronText.Framework.Reflection;
 
 namespace IronText.MetadataCompiler
 {
@@ -46,7 +47,7 @@ namespace IronText.MetadataCompiler
                 {
                     var list = new List<IParserTransition>();
                     int tokenCount = data.TokenCount;
-                    for (int token = BnfGrammar.Eoi; token != tokenCount; ++token)
+                    for (int token = EbnfGrammar.Eoi; token != tokenCount; ++token)
                     {
                         var actions = GetAllParserActions(dotState.Index, token);
                         if (actions.Count() != 0)

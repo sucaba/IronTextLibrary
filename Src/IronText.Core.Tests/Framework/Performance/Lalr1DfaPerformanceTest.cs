@@ -1,6 +1,7 @@
 ﻿using System;
 using IronText.Automata.Lalr1;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 using NUnit.Framework;
 
 namespace IronText.Tests.Framework.Performance
@@ -9,7 +10,7 @@ namespace IronText.Tests.Framework.Performance
     [Explicit]
     public class Lalr1DfaPerformanceTest
     {
-        private BnfGrammar grammar;
+        private EbnfGrammar grammar;
 
         [Test]
         public void Test()
@@ -19,7 +20,7 @@ namespace IronText.Tests.Framework.Performance
 
             int[] tokens = new int[tokenCount];
             
-            this.grammar = new BnfGrammar();
+            this.grammar = new EbnfGrammar();
 
             for (int i = 0; i != tokenCount; ++i)
             {

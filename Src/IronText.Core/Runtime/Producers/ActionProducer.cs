@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using IronText.Algorithm;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
@@ -8,7 +9,7 @@ namespace IronText.Framework
         , IProducer<Msg>
         , IParsing
     {
-        private readonly BnfGrammar grammar;
+        private readonly EbnfGrammar grammar;
         private readonly GrammarActionDelegate grammarAction;
         private readonly MergeDelegate merge;
         private readonly object context;
@@ -17,7 +18,7 @@ namespace IronText.Framework
         private readonly object[] ruleArgBuffer;
 
         public ActionProducer(
-            BnfGrammar grammar,
+            EbnfGrammar grammar,
             object context,
             GrammarActionDelegate grammarAction,
             MergeDelegate merge)
@@ -41,7 +42,7 @@ namespace IronText.Framework
                 : new Msg(envelope.Id, data.TokenId, data.Value, envelope.Location, envelope.HLocation);
         }
 
-        public Msg CreateBranch(BnfRule rule, ArraySlice<Msg> prefix, IStackLookback<Msg> stackLookback)
+        public Msg CreateBranch(Production rule, ArraySlice<Msg> prefix, IStackLookback<Msg> stackLookback)
         {
             if (prefix.Count == 0)
             {

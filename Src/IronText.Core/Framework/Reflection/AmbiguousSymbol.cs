@@ -4,18 +4,18 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace IronText.Framework
+namespace IronText.Framework.Reflection
 {
     /// <summary>
     /// Ambiguous token
     /// </summary>
-    public sealed class BnfAmbToken
+    public sealed class AmbiguousSymbol
     {
-        public BnfAmbToken(int ambTokenId, int mainToken, IEnumerable<int> tokens)
+        public AmbiguousSymbol(int id, int mainToken, IEnumerable<int> tokens)
         {
-            this.Id = ambTokenId;
+            this.Id        = id;
             this.MainToken = mainToken;
-            this.Tokens = new ReadOnlyCollection<int>(tokens.ToArray());
+            this.Tokens    = new ReadOnlyCollection<int>(tokens.ToArray());
         }
 
         /// <summary>

@@ -4,12 +4,13 @@ using System.Web;
 using IronText.Algorithm;
 using IronText.Diagnostics;
 using IronText.Extensibility;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
     sealed class LrGraph
     {
-        private readonly BnfGrammar     grammar;
+        private readonly EbnfGrammar     grammar;
         private readonly IReportData data;
 
         public LrGraph(IReportData data)
@@ -47,7 +48,7 @@ namespace IronText.Framework
                     {
                         if (action.Kind == ParserActionKind.Shift)
                         {
-                            graph.AddEdge(state.Index, action.State, grammar.TokenName(transition.Token));
+                            graph.AddEdge(state.Index, action.State, grammar.SymbolName(transition.Token));
                         }
                     }
 
@@ -108,7 +109,7 @@ namespace IronText.Framework
 
         private string TokenToHtml(int token)
         {
-            var result = HttpUtility.HtmlEncode(grammar.TokenName(token));
+            var result = HttpUtility.HtmlEncode(grammar.SymbolName(token));
             result = result.Replace("{", "&#123;");
             result = result.Replace("}", "&#125;");
             return result;

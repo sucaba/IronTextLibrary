@@ -3,6 +3,7 @@
 namespace IronText.Framework
 {
     using System.Diagnostics;
+    using IronText.Framework.Reflection;
     using Token = System.Int32;
 
     sealed class ReductionPathQueue<T> : IReductionQueue<T>
@@ -10,7 +11,7 @@ namespace IronText.Framework
         private readonly LinkedList<GssReducePath<T>> paths = new LinkedList<GssReducePath<T>>();
         private readonly Token[] tokenComplexity;
 
-        public ReductionPathQueue(Token[] tokenComplexity, BnfGrammar grammar)
+        public ReductionPathQueue(Token[] tokenComplexity, EbnfGrammar grammar)
         {
             this.tokenComplexity = tokenComplexity;
 
@@ -31,7 +32,7 @@ namespace IronText.Framework
 
         public bool IsEmpty { get { return paths.Count == 0; } }
 
-        public void Enqueue(GssLink<T> rightLink, BnfRule rule, int size)
+        public void Enqueue(GssLink<T> rightLink, Production rule, int size)
         {
             Debug.Assert(rightLink != null);
 
@@ -45,7 +46,7 @@ namespace IronText.Framework
                 InternalEnqueue);
         }
 
-        public void Enqueue(GssNode<T> rightNode, BnfRule rule, int size)
+        public void Enqueue(GssNode<T> rightNode, Production rule, int size)
         {
             if (size == 0)
             {

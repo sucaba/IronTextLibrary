@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using IronText.Framework.Reflection;
 using IronText.Misc;
 
 namespace IronText.Framework
@@ -41,7 +42,7 @@ namespace IronText.Framework
         }
 
         protected internal bool          isDeterministic;
-        protected BnfGrammar             grammar;
+        protected EbnfGrammar             grammar;
         protected TransitionDelegate     getParserAction;
         protected Dictionary<object,int> tokenKeyToId;
         protected Scan1Delegate          scan1;
@@ -72,7 +73,7 @@ namespace IronText.Framework
 
         public LanguageName Name { get { return name; } }
 
-        public BnfGrammar Grammar { get { return grammar; } }
+        public EbnfGrammar Grammar { get { return grammar; } }
 
         private ResourceAllocator Allocator
         {
@@ -96,7 +97,7 @@ namespace IronText.Framework
             scanAction(cursor, out ignore);
             grammarAction(grammar.Rules[0], new Msg[0], 0, null, null);
             switchFactory(null, 0, null, this);
-            merge(BnfGrammar.AugmentedStart, null, null, null, null);
+            merge(EbnfGrammar.AugmentedStart, null, null, null, null);
         }
 
         public object CreateDefaultContext()
@@ -208,7 +209,7 @@ namespace IronText.Framework
             Debug.WriteLine("------------------------------");
             Debug.WriteLine(
                 "Default merging of token {0} values in state {1}:",
-                (object)grammar.TokenName(token),
+                (object)grammar.SymbolName(token),
                 stackLookback.GetParentState());
             Debug.WriteLine("  '{0}'", alt1);
             Debug.WriteLine(" and");

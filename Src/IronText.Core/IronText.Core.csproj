@@ -166,8 +166,9 @@
     <Compile Include="Framework\ILanguageLoader.cs" />
     <Compile Include="Framework\Interpreter.cs" />
     <Compile Include="Framework\InterpreterT.cs" />
-    <Compile Include="Framework\Reflection\BnfAmbToken.cs" />
+    <Compile Include="Framework\Reflection\AmbiguousSymbol.cs" />
     <Compile Include="Framework\Disambiguation.cs" />
+    <Compile Include="Framework\Reflection\Symbol.cs" />
     <Compile Include="Lib\Ctem\CtemScanner.cs" />
     <Compile Include="Lib\Ctem\Num.cs" />
     <Compile Include="Lib\Ctem\QStr.cs" />
@@ -217,7 +218,7 @@
     <Compile Include="Logging\LogEntry.cs" />
     <Compile Include="Framework\Reactive\FinalReceiver.cs" />
     <Compile Include="Framework\Associativity.cs" />
-    <Compile Include="Framework\Reflection\BnfRule.cs" />
+    <Compile Include="Framework\Reflection\Production.cs" />
     <Compile Include="Framework\Precedence.cs" />
     <Compile Include="Logging\LoggingKind.cs" />
     <Compile Include="Logging\Severity.cs" />
@@ -294,7 +295,7 @@
     <Compile Include="Runtime\GLR\RnGlrParser.cs" />
     <Compile Include="Runtime\Scanning\ScanCursor.cs" />
     <Compile Include="Runtime\Scanning\Scanner.cs" />
-    <Compile Include="Framework\Reflection\BnfGrammar.cs" />
+    <Compile Include="Framework\Reflection\EbnfGrammar.cs" />
     <Compile Include="Framework\Language.cs" />
     <Compile Include="Lib\Raw.cs" />
     <Compile Include="Runtime\Deterministic\DeterministicParser.cs" />

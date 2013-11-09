@@ -1,11 +1,12 @@
-﻿
+﻿using IronText.Framework.Reflection;
+
 namespace IronText.Framework
 {
     sealed class ResourceAllocator : IResourceAllocator
     {
-        private readonly BnfGrammar grammar;
+        private readonly EbnfGrammar grammar;
 
-        public ResourceAllocator(BnfGrammar grammar)
+        public ResourceAllocator(EbnfGrammar grammar)
         {
             this.grammar = grammar;
         }

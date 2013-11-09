@@ -4,6 +4,7 @@ using System.Diagnostics;
 using IronText.Algorithm;
 using IronText.Extensibility;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 
 namespace IronText.Automata.Lalr1
 {
@@ -94,7 +95,7 @@ namespace IronText.Automata.Lalr1
             // symbol X to determine which lookaheads are spontaneously generated
             // for kernel items in GOTO(I, X), and from which items in I lookaheads
             // are propagated to kernel items in GOTO(I, X).
-            lr0states[0].KernelItems[0].Lookaheads.Add(BnfGrammar.Eoi);
+            lr0states[0].KernelItems[0].Lookaheads.Add(EbnfGrammar.Eoi);
 
             var propogation = DetermineLookaheads(lr0states);
 
@@ -179,7 +180,7 @@ namespace IronText.Automata.Lalr1
                         {
                             new DotItem(fromItem.Rule, fromItem.Pos)
                             {
-                                Lookaheads = TokenSet.Of(BnfGrammar.PropogatedToken).EditCopy()
+                                Lookaheads = TokenSet.Of(EbnfGrammar.PropogatedToken).EditCopy()
                             }
                         });
 
@@ -201,7 +202,7 @@ namespace IronText.Automata.Lalr1
 
                         foreach (var lookahead in closedItem.Lookaheads)
                         {
-                            if (lookahead == BnfGrammar.PropogatedToken)
+                            if (lookahead == EbnfGrammar.PropogatedToken)
                             {
                                 List<Tuple<int, int, int>> propogatedItems;
                                 var key = Tuple.Create(from, fromItem.RuleId, fromItem.Pos);
@@ -238,7 +239,7 @@ namespace IronText.Automata.Lalr1
 
             var initialItemSet = ClosureLr0(new MutableDotItemSet
                 { 
-                    new DotItem(grammar.AugmentedRule, 0)
+                    new DotItem(grammar.AugmentedProduction, 0)
                     { 
                         Lookaheads = TokenSet.Mutable() 
                     }
@@ -335,11 +336,11 @@ namespace IronText.Automata.Lalr1
                 {
                     var item = result[i];
 
-                    if (!item.IsReduce && !grammar.IsTerm(item.NextToken))
+                    if (!item.IsReduce && !grammar.IsTerminal(item.NextToken))
                     {
                         int X = item.NextToken;
 
-                        foreach (var childRule in grammar.GetProductionRules(X))
+                        foreach (var childRule in grammar.GetProductions(X))
                         {
                             var newItem = new DotItem(childRule, 0)
                             { 

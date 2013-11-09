@@ -5,6 +5,7 @@ using System.Text;
 using IronText.Algorithm;
 using IronText.Automata.Regular;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 
 namespace IronText.MetadataCompiler
 {
@@ -62,7 +63,7 @@ namespace IronText.MetadataCompiler
             state.Actions.Sort();
         }
 
-        public void DefineAmbiguities(BnfGrammar grammar)
+        public void DefineAmbiguities(EbnfGrammar grammar)
         {
             this.ambTokenToMainToken = new MutableIntMap<int>();
 

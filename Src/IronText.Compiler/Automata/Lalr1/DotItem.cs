@@ -2,16 +2,17 @@
 using IronText.Framework;
 using System.Collections.Generic;
 using IronText.Extensibility;
+using IronText.Framework.Reflection;
 
 namespace IronText.Automata.Lalr1
 {
     public class DotItem : IParserDotItem
     {
-        public readonly BnfRule Rule;
+        public readonly Production Rule;
         public readonly int Pos;
         public MutableIntSet Lookaheads;
 
-        public DotItem(BnfRule rule, int pos) 
+        public DotItem(Production rule, int pos) 
         {
             this.Rule = rule;
             this.Pos = pos;
@@ -20,7 +21,7 @@ namespace IronText.Automata.Lalr1
 
         public bool IsKernel
         {
-            get { return Pos != 0 || Rule.Left == BnfGrammar.AugmentedStart; }
+            get { return Pos != 0 || Rule.Left == EbnfGrammar.AugmentedStart; }
         }
 
         public int RuleId { get { return Rule.Id; } }
@@ -50,7 +51,7 @@ namespace IronText.Automata.Lalr1
             return string.Format("(Rule={0} Pos={1} LAs={2})", Rule.Id, Pos, Lookaheads);
         }
 
-        BnfRule IParserDotItem.Rule { get { return Rule; } }
+        Production IParserDotItem.Rule { get { return Rule; } }
 
         int IParserDotItem.Position { get { return Pos; } }
 
