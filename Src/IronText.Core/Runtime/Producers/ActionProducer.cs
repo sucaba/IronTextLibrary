@@ -46,7 +46,7 @@ namespace IronText.Framework
         {
             if (prefix.Count == 0)
             {
-                return GetDefault(rule.Left, stackLookback);
+                return GetDefault(rule.Outcome, stackLookback);
             }
 
             Loc location;
@@ -75,14 +75,14 @@ namespace IronText.Framework
             this._resultLocation = location;
             this._resultHLocation = hLocation;
 
-            if (rule.Parts.Length > prefix.Count)
+            if (rule.Pattern.Length > prefix.Count)
             {
                 FillEpsilonSuffix(rule.Id, prefix.Count, prefix.Array, prefix.Offset + prefix.Count, stackLookback);
             }
 
-            object value = grammarAction(rule, prefix.Array, prefix.Offset, context, stackLookback);
+            object value = grammarAction(rule.Id, prefix.Array, prefix.Offset, context, stackLookback);
 
-            return new Msg(rule.Left, value, location, hLocation);
+            return new Msg(rule.Outcome, value, location, hLocation);
         }
 
         public Msg Merge(Msg alt1, Msg alt2, IStackLookback<Msg> stackLookback)

@@ -9,7 +9,6 @@ namespace IronText.Framework
 {
     using IronText.Framework.Reflection;
     using State = System.Int32;
-    using Token = System.Int32;
 
     sealed class Gss<T>
         : IGss<T>
@@ -252,7 +251,7 @@ namespace IronText.Framework
                         continue;
                     }
 
-                    Token token = stateToSymbol[from.State];
+                    int token = stateToSymbol[from.State];
                     var link = from.FirstLink;
                     while (link != null)
                     {

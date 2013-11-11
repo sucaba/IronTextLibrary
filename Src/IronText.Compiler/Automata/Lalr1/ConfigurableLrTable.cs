@@ -112,7 +112,7 @@ namespace IronText.Automata.Lalr1
             {
                 var state = states[i];
 
-                foreach (var ambToken in grammar.AmbTokens)
+                foreach (var ambToken in grammar.AmbiguousSymbols)
                 {
                     var validTokenActions = new Dictionary<int,int>();
                     foreach (int token in ambToken.Tokens)

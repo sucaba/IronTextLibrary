@@ -16,7 +16,7 @@ namespace IronText.Framework
         ILanguage      language);
 
     public delegate object GrammarActionDelegate(
-        Production rule,        // rule being reduced
+        int     ruleId,      // rule being reduced
         Msg[]   parts,       // array containing path being reduced
         int     firstIndex,  // starting index of the path being reduced
         object  context,     // user provided context

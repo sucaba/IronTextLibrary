@@ -20,14 +20,14 @@ namespace IronText.MetadataCompiler
                             .Named(methodName)
                             .BeginArgs();
 
-            Def<Args> rule          =  args.Args.Generate("rule");
+            Def<Args> ruleId        =  args.Args.Generate("ruleId");
             Def<Args> ruleArgs      =  args.Args.Generate("ruleArgs");
             Def<Args> argsStart     =  args.Args.Generate("argsStart");
             Def<Args> ctx           =  args.Args.Generate("rootContext");
             Def<Args> stackLookback =  args.Args.Generate("startLookback");
 
             var emit = args
-                    .Argument(context.Types.Import(typeof(Production)), rule)
+                    .Argument(context.Types.Int32, ruleId)
                     .Argument(context.Types.Import(typeof(Msg[])), ruleArgs)
                     .Argument(context.Types.Int32, argsStart)
                     .Argument(context.Types.Object, ctx)
@@ -36,7 +36,7 @@ namespace IronText.MetadataCompiler
 
                 .BeginBody();
 
-            rule.Name          = "rule";
+            ruleId.Name        = "ruleId";
             ruleArgs.Name      = "args";
             argsStart.Name     = "argsStart";
             ctx.Name           = "ctx";
@@ -45,7 +45,7 @@ namespace IronText.MetadataCompiler
             BuildBody(
                 emit, 
                 data, 
-                rule.GetRef(),
+                ruleId.GetRef(),
                 ruleArgs.GetRef(),
                 argsStart.GetRef(),
                 ctx.GetRef(),
@@ -59,7 +59,7 @@ namespace IronText.MetadataCompiler
             BuildBody(
                 emit,
                 data,
-                rule:       args[0],
+                ruleId:     args[0],
                 ruleArgs:   args[1],
                 argsStart:  args[2],
                 ctx:        args[3],
@@ -69,7 +69,7 @@ namespace IronText.MetadataCompiler
         public void BuildBody(
             EmitSyntax emit, 
             LanguageData data,
-            Ref<Args> rule,
+            Ref<Args> ruleId,
             Ref<Args> ruleArgs,
             Ref<Args> argsStart,
             Ref<Args> ctx,
@@ -84,7 +84,7 @@ namespace IronText.MetadataCompiler
 
             var code = new GrammarActionCode(emit, contextResolverCode)
             {
-                LdRule       = il => il.Ldarg(rule),
+                LdRule       = il => il.Ldarg(ruleId),
                 LdRuleArgs   = il => il.Ldarg(ruleArgs),
                 LdArgsStart  = il => il.Ldarg(argsStart)
             };
@@ -99,7 +99,6 @@ namespace IronText.MetadataCompiler
 
             emit
                 .Do(code.LdRule)
-                .Ldfld((Production r) => r.Id)
                 .Switch(jumpTable)
                 .Br(defaultLabel.GetRef());
 

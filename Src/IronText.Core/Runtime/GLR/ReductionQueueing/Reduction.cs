@@ -2,13 +2,11 @@
 
 namespace IronText.Framework
 {
-    using Token = System.Int32;
-
     struct Reduction<T>
     {
         public readonly GssNode<T> RightNode;
-        public readonly Production    Rule;
-        public readonly Token      Token;
+        public readonly Production Rule;
+        public readonly int        Token;
         public readonly int        Size;
         public readonly int        EpsilonIndex;
         public readonly GssLink<T> RightLink; 
@@ -17,7 +15,7 @@ namespace IronText.Framework
         {
             this.Rule           = rule;
             this.RightNode      = rightNode;
-            this.Token          = rule.Left;
+            this.Token          = rule.Outcome;
             this.Size           = size;
             this.EpsilonIndex   = epsilonIndex;
             this.RightLink      = rightLink;

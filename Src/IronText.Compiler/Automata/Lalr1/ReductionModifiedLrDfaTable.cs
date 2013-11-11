@@ -74,7 +74,7 @@ namespace IronText.Automata.Lalr1
 
                     if (!item.IsReduce)
                     {
-                        int nextToken = rule.Parts[item.Pos];
+                        int nextToken = rule.Pattern[item.Pos];
 
                         if (canOptimizeReduceStates
                             && item.IsShiftReduce
@@ -84,7 +84,7 @@ namespace IronText.Automata.Lalr1
                             {
                                 Kind = ParserActionKind.ShiftReduce,
                                 Rule = rule.Id,
-                                Size = (short)rule.Parts.Length
+                                Size = (short)rule.Pattern.Length
                             };
 
                             AddAction(i, nextToken, action);
@@ -101,9 +101,9 @@ namespace IronText.Automata.Lalr1
                         }
                     }
 
-                    bool isStartRule = rule.Left == EbnfGrammar.AugmentedStart;
+                    bool isStartRule = rule.Outcome == EbnfGrammar.AugmentedStart;
 
-                    if (item.IsReduce || grammar.IsTailNullable(rule.Parts, item.Pos))
+                    if (item.IsReduce || grammar.IsTailNullable(rule.Pattern, item.Pos))
                     {
                         ParserAction action;
 
@@ -178,13 +178,13 @@ namespace IronText.Automata.Lalr1
         {
             if (item.Pos != 0 
                 || grammar.IsStartProduction(item.RuleId)
-                || !grammar.IsTailNullable(item.Rule.Parts, item.Pos)
+                || !grammar.IsTailNullable(item.Rule.Pattern, item.Pos)
                 || !item.Lookaheads.Contains(lookahead))
             {
                 return false;
             }
 
-            int epsilonToken = item.Rule.Left;
+            int epsilonToken = item.Rule.Outcome;
 
             foreach (var parentItem in state.Items)
             {
@@ -196,13 +196,13 @@ namespace IronText.Automata.Lalr1
                 if (!parentItem.IsReduce 
                     && parentItem.NextToken == epsilonToken)
                 {
-                    if (!grammar.IsTailNullable(parentItem.Rule.Parts, parentItem.Pos))
+                    if (!grammar.IsTailNullable(parentItem.Rule.Pattern, parentItem.Pos))
                     {
                         // there is at least one rule which needs shift on epsilonToken
                         return false;
                     }
 
-                    if (grammar.HasFirst(parentItem.Rule.Parts, parentItem.Pos + 1, lookahead))
+                    if (grammar.HasFirst(parentItem.Rule.Pattern, parentItem.Pos + 1, lookahead))
                     {
                         // One of the subseqent non-terms in parentItem can start parsing with current lookahead.
                         // It means that we need tested epsilonToken production for continue parsing on parentItem.

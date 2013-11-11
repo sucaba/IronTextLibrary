@@ -24,18 +24,18 @@ namespace IronText.Automata.Lalr1
         {
             var rule = item.Rule;
             int start = output.Length;
-            output.Append(grammar.SymbolName(rule.Left)).Append(" ->");
-            for (int i = 0; i != rule.Parts.Length; ++i)
+            output.Append(grammar.SymbolName(rule.Outcome)).Append(" ->");
+            for (int i = 0; i != rule.Pattern.Length; ++i)
             {
                 if (item.Pos == i)
                 {
                     output.Append(" •");
                 }
 
-                output.Append(" ").Append(grammar.SymbolName(rule.Parts[i]));
+                output.Append(" ").Append(grammar.SymbolName(rule.Pattern[i]));
             }
 
-            if (item.Pos == rule.Parts.Length)
+            if (item.Pos == rule.Pattern.Length)
             {
                 output.Append(" •");
             }

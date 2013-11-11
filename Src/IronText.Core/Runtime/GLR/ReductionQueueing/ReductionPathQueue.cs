@@ -4,14 +4,13 @@ namespace IronText.Framework
 {
     using System.Diagnostics;
     using IronText.Framework.Reflection;
-    using Token = System.Int32;
 
     sealed class ReductionPathQueue<T> : IReductionQueue<T>
     {
         private readonly LinkedList<GssReducePath<T>> paths = new LinkedList<GssReducePath<T>>();
-        private readonly Token[] tokenComplexity;
+        private readonly int[] tokenComplexity;
 
-        public ReductionPathQueue(Token[] tokenComplexity, EbnfGrammar grammar)
+        public ReductionPathQueue(int[] tokenComplexity, EbnfGrammar grammar)
         {
             this.tokenComplexity = tokenComplexity;
 
@@ -95,7 +94,7 @@ namespace IronText.Framework
                 return false;
             }
 
-            return tokenComplexity[x.Rule.Left] < tokenComplexity[y.Rule.Left];
+            return tokenComplexity[x.Rule.Outcome] < tokenComplexity[y.Rule.Outcome];
         }
 
         public GssReducePath<T> Dequeue()

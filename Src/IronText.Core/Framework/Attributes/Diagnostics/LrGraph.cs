@@ -81,20 +81,20 @@ namespace IronText.Framework
                 output.AppendFormat(
                     @"<tr> <td align=""left"" port=""r0"">&#40;{0}&#41; {1} -&gt; ",
                     item.Rule.Id,
-                    TokenToHtml(rule.Left)
+                    TokenToHtml(rule.Outcome)
                     );
 
-                for (int k = 0; k != rule.Parts.Length; ++k)
+                for (int k = 0; k != rule.Pattern.Length; ++k)
                 {
                     if (item.Position == k)
                     {
                         output.Append("&bull;");
                     }
 
-                    output.Append(" ").Append(TokenToHtml(rule.Parts[k]));
+                    output.Append(" ").Append(TokenToHtml(rule.Pattern[k]));
                 }
 
-                if (item.Position == rule.Parts.Length)
+                if (item.Position == rule.Pattern.Length)
                 {
                     output.Append("&bull;");
                 }

@@ -3,12 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
-    using IronText.Framework.Reflection;
-    using Token = System.Int32;
-
     class LocalCorrectionErrorRecovery : IReceiver<Msg>
     {
         /// <summary>
@@ -70,7 +68,7 @@ namespace IronText.Framework
                 { Insertion, Insertion, 1, }, 
         };
         private readonly EbnfGrammar grammar;
-        private readonly Token[] terms;
+        private readonly int[] terms;
         private readonly ILogging logging;
 
         public LocalCorrectionErrorRecovery(
@@ -288,7 +286,7 @@ namespace IronText.Framework
             {
                 if (!useViolatingRules)
                 {
-                    foreach (Token term in terms)
+                    foreach (int term in terms)
                     {
                         var categories = grammar.GetTokenCategories(term);
                         if ((categories & TokenCategory.DoNotInsert) == 0)
@@ -299,7 +297,7 @@ namespace IronText.Framework
                 }
                 else
                 {
-                    foreach (Token term in terms)
+                    foreach (int term in terms)
                     {
                         var categories = grammar.GetTokenCategories(term);
                         if ((categories & TokenCategory.DoNotInsert) != 0)

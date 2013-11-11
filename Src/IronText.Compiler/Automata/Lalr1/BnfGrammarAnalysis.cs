@@ -46,7 +46,7 @@ namespace IronText.Automata.Lalr1
         {
             foreach (var rule in grammar.GetProductions(token))
             {
-                foreach (int part in rule.Parts)
+                foreach (int part in rule.Pattern)
                 {
                     yield return part;
                 }

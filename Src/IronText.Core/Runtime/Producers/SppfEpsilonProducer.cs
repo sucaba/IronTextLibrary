@@ -29,16 +29,16 @@ namespace IronText.Framework
                 }
             }
 
-            ruleOffsetInCache = new int[grammar.Rules.Count];
-            ruleEndOffsetInCache = new int[grammar.Rules.Count];
+            ruleOffsetInCache = new int[grammar.Productions.Count];
+            ruleEndOffsetInCache = new int[grammar.Productions.Count];
 
             int nullableCount = 0;
-            foreach (var rule in grammar.Rules)
+            foreach (var rule in grammar.Productions)
             {
-                int i = rule.Parts.Length;
+                int i = rule.Pattern.Length;
                 while (i != 0)
                 {
-                    int token = rule.Parts[--i];
+                    int token = rule.Pattern[--i];
                     if (tokenCache[token] == null)
                     {
                         break;
@@ -48,18 +48,18 @@ namespace IronText.Framework
                 }
 
                 ruleEndOffsetInCache[rule.Id] = nullableCount;
-                ruleOffsetInCache[rule.Id] = nullableCount - rule.Parts.Length;
+                ruleOffsetInCache[rule.Id] = nullableCount - rule.Pattern.Length;
             }
 
             this.ruleCache = new SppfNode[nullableCount];
 
-            foreach (var rule in grammar.Rules)
+            foreach (var rule in grammar.Productions)
             {
-                int endOffset = ruleOffsetInCache[rule.Id] + rule.Parts.Length;
-                int i = rule.Parts.Length;
+                int endOffset = ruleOffsetInCache[rule.Id] + rule.Pattern.Length;
+                int i = rule.Pattern.Length;
                 while (i != 0)
                 {
-                    int token = rule.Parts[--i];
+                    int token = rule.Pattern[--i];
                     if (tokenCache[token] == null)
                     {
                         break;

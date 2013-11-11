@@ -69,7 +69,7 @@ namespace IronText.Framework
         {
             if (Id < 0)
             {
-                return grammar.Rules[-Id].Left;
+                return grammar.Productions[-Id].Outcome;
             }
 
             return Id;
@@ -177,9 +177,9 @@ namespace IronText.Framework
                 }
                 else
                 {
-                    var rule = grammar.Rules[-Id];
-                    output.Write("{0}Rule: {1} -> ", indent, grammar.SymbolName(rule.Left));
-                    output.WriteLine(string.Join(" ", rule.Parts.Select(grammar.SymbolName)));
+                    var rule = grammar.Productions[-Id];
+                    output.Write("{0}Rule: {1} -> ", indent, grammar.SymbolName(rule.Outcome));
+                    output.WriteLine(string.Join(" ", rule.Pattern.Select(grammar.SymbolName)));
                 }
             }
 

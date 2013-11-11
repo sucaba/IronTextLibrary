@@ -67,7 +67,7 @@ namespace IronText.Framework
         {
             this.producer       = producer;
             this.grammar        = grammar;
-            this.rules          = grammar.Rules.ToArray();
+            this.rules          = grammar.Productions.ToArray();
             this.actionTable    = actionTable;
             this.allocator      = allocator;
 #if SWITCH_FEATURE
@@ -169,14 +169,14 @@ namespace IronText.Framework
                         do
                         {
                             stateStack.Push(-1, value);
-                            this.currentRule = grammar.Rules[action.Rule];
-                            stateStack.Start = stateStack.Count - currentRule.Parts.Length;
+                            this.currentRule = grammar.Productions[action.Rule];
+                            stateStack.Start = stateStack.Count - currentRule.Pattern.Length;
                             value = producer.CreateBranch(
                                 currentRule,
-                                stateStack.PeekTail(currentRule.Parts.Length),
+                                stateStack.PeekTail(currentRule.Pattern.Length),
                                 (IStackLookback<TNode>)stateStack);
-                            stateStack.Pop(currentRule.Parts.Length);
-                            action = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Left));
+                            stateStack.Pop(currentRule.Pattern.Length);
+                            action = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));
                         }
                         while (action.Kind == ParserActionKind.ShiftReduce);
 
@@ -332,29 +332,29 @@ namespace IronText.Framework
 
             while (act.Kind == ParserActionKind.Reduce)
             {
-                this.currentRule = grammar.Rules[act.Rule];
-                stateStack.Start = stateStack.Count - currentRule.Parts.Length;
+                this.currentRule = grammar.Productions[act.Rule];
+                stateStack.Start = stateStack.Count - currentRule.Pattern.Length;
                 value = producer.CreateBranch(
                             currentRule,
-                            stateStack.PeekTail(currentRule.Parts.Length),
+                            stateStack.PeekTail(currentRule.Pattern.Length),
                             (IStackLookback<TNode>)stateStack);
 
-                stateStack.Pop(currentRule.Parts.Length);
-                act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Left));
+                stateStack.Pop(currentRule.Pattern.Length);
+                act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));
 
                 while (act.Kind == ParserActionKind.ShiftReduce) // == GotoReduce
                 {
                     stateStack.Push(-1, value);
 
-                    this.currentRule = grammar.Rules[act.Rule];
-                    stateStack.Start = stateStack.Count - currentRule.Parts.Length;
+                    this.currentRule = grammar.Productions[act.Rule];
+                    stateStack.Start = stateStack.Count - currentRule.Pattern.Length;
                     value = producer.CreateBranch(
                             currentRule,
-                            stateStack.PeekTail(currentRule.Parts.Length),
+                            stateStack.PeekTail(currentRule.Pattern.Length),
                             (IStackLookback<TNode>)stateStack);
 
-                    stateStack.Pop(currentRule.Parts.Length);
-                    act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Left));
+                    stateStack.Pop(currentRule.Pattern.Length);
+                    act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));
                 }
 
                 stateStack.Push(act.State, value);

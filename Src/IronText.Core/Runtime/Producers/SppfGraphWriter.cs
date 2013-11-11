@@ -71,9 +71,9 @@ namespace IronText.Framework
 
         void ISppfNodeVisitor.VisitBranch(int ruleIndex, SppfNode[] children, Loc location)
         {
-            var rule = grammar.Rules[ruleIndex];
+            var rule = grammar.Productions[ruleIndex];
 
-            var tokenName = grammar.SymbolName(rule.Left);
+            var tokenName = grammar.SymbolName(rule.Outcome);
 
             string label;
             if (showRules)
@@ -85,7 +85,7 @@ namespace IronText.Framework
 #endif
                         ,
                         tokenName,
-                        string.Join(" ", rule.Parts.Select(grammar.SymbolName)));
+                        string.Join(" ", rule.Pattern.Select(grammar.SymbolName)));
             }
             else
             {
@@ -156,16 +156,16 @@ namespace IronText.Framework
                 return grammar.SymbolName(node.GetTokenId(grammar));
             }
 
-            var rule = grammar.Rules[-node.Id];
+            var rule = grammar.Productions[-node.Id];
             if (showRules)
             {
                 return string.Format(
                         "{0} -> {1}",
-                        grammar.SymbolName(rule.Left),
-                        string.Join(" ", rule.Parts.Select(grammar.SymbolName)));
+                        grammar.SymbolName(rule.Outcome),
+                        string.Join(" ", rule.Pattern.Select(grammar.SymbolName)));
             }
 
-            return grammar.SymbolName(rule.Left);
+            return grammar.SymbolName(rule.Outcome);
         }
     }
 }

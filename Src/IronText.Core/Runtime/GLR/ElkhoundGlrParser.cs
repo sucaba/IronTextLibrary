@@ -12,7 +12,6 @@ namespace IronText.Framework
 {
     using State = System.Int32;
     using RuleIndex = System.Int32;
-    using Token = System.Int32;
     using IronText.Diagnostics;
 
     // Simplistic Elkhound parsing algorinthm from paper
@@ -29,7 +28,7 @@ namespace IronText.Framework
         private readonly BnfGrammar            grammar;
         private readonly object                context;
         private readonly int[]                 conflictActionsTable;
-        private readonly Token[]               stateToPriorToken;
+        private readonly int[]               stateToPriorToken;
         private readonly TransitionDelegate    transition;
         private readonly GrammarActionDelegate grammarAction;
 
@@ -38,7 +37,7 @@ namespace IronText.Framework
             BnfGrammar              grammar,
             TransitionDelegate      transition,
             GrammarActionDelegate   grammarAction,
-            Token[]                 stateToPriorToken,
+            int[]                 stateToPriorToken,
             int[]                   conflictActionsTable,
             Func<object, int, IReciever<Msg>, IReciever<Msg>> makeSwitch)
         {
@@ -143,7 +142,7 @@ namespace IronText.Framework
 
         private void ReduceViaPath(GssReducePath path, Msg item)
         {
-            Token N = path.Rule.Left;
+            int N = path.Rule.Left;
             GssStateNode leftSib = path.LeftmostStateNode;
             State k = leftSib.State;
 
@@ -176,7 +175,7 @@ namespace IronText.Framework
         /// <summary>
         /// Enqueue all reductions that use newly-created link
         /// </summary>
-        private void EnqueueLimitedReductions(Token lookahead, GssStateLink link)
+        private void EnqueueLimitedReductions(int lookahead, GssStateLink link)
         {
             foreach (var n in gss.Topmost)
             {
@@ -194,7 +193,7 @@ namespace IronText.Framework
 
             foreach (var current in prevTops)
             {
-                Token? shift;
+                int? shift;
                 if (GetParserActions(current.State, item.Id, out shift, null) && shift.HasValue)
                 {
                     var rightSib = gss.FindTopmost(shift.Value);
@@ -246,7 +245,7 @@ namespace IronText.Framework
             return new Msg(rule.Left, value, loc);
         }
         
-        private Token NonTermGoTo(State state, Token token)
+        private int NonTermGoTo(State state, int token)
         {
             var action = ParserAction.Decode(transition(state, token));
             if (action == null || action.Kind != ParserActionKind.Shift)
@@ -257,7 +256,7 @@ namespace IronText.Framework
             return action.State;
         }
 
-        private IEnumerable<Reduction> GetReductions(State state, Token token)
+        private IEnumerable<Reduction> GetReductions(State state, int token)
         {
             var result = new List<Reduction>();
             int? shift;
@@ -265,7 +264,7 @@ namespace IronText.Framework
             return result;
         }
 
-        private bool GetParserActions(State state, Token token, out int? shift, List<Reduction> reductions)
+        private bool GetParserActions(State state, int token, out int? shift, List<Reduction> reductions)
         {
             shift = null;
 
@@ -323,7 +322,7 @@ namespace IronText.Framework
             }
         }
 
-        private ParserAction GetDfaCell(State state, Token token)
+        private ParserAction GetDfaCell(State state, int token)
         {
             int cell = transition(state, token);
             var result = ParserAction.Decode(cell);

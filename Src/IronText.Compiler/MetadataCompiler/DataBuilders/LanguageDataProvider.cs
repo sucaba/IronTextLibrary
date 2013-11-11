@@ -262,7 +262,7 @@ namespace IronText.MetadataCompiler
 
                 if (rule.Precedence != null)
                 {
-                    var existingPrecedence = grammar.Rules[ruleId].Precedence;
+                    var existingPrecedence = grammar.Productions[ruleId].Precedence;
                     if (existingPrecedence != null)
                     {
                         if (!object.Equals(rule.Precedence, existingPrecedence))
@@ -314,7 +314,7 @@ namespace IronText.MetadataCompiler
 
                 foreach (var item in stateItems.Items)
                 {
-                    if (item.Pos == 0 || item.Pos == item.Rule.Parts.Length)
+                    if (item.Pos == 0 || item.Pos == item.Rule.Pattern.Length)
                     {
                         // Skip non-kernel, augmented (start rule) items and end-of-rule states
                         continue;

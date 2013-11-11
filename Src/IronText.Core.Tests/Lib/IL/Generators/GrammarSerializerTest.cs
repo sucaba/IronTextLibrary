@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 using IronText.Lib.IL;
@@ -28,7 +29,16 @@ namespace IronText.Tests.Lib.IL.Generators
 
             var recreated = factory();
 
-            Assert.AreEqual(originalGrammar, recreated);
+            Assert.IsTrue(GrammarEquals(originalGrammar, recreated));
+        }
+
+        public static bool GrammarEquals(EbnfGrammar x, EbnfGrammar y)
+        {
+            return x == y
+                || (x != null
+                && y != null
+                && Enumerable.SequenceEqual(y.Productions, x.Productions)
+                && Enumerable.SequenceEqual(y.Symbols, x.Symbols));
         }
     }
 }

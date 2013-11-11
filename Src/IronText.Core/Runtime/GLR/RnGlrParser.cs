@@ -52,7 +52,7 @@ namespace IronText.Framework
                 producer,
                 allocator,
                 logging,
-                new Gss<T>(stateToPriorToken.Length + grammar.Rules.Count))
+                new Gss<T>(stateToPriorToken.Length + grammar.Productions.Count))
         {
         }
 
@@ -78,7 +78,7 @@ namespace IronText.Framework
             this.allocator            = allocator;
             this.logging              = logging;
 
-            this.pendingReductions = new ModifiedReduction[grammar.Rules.Count];
+            this.pendingReductions = new ModifiedReduction[grammar.Productions.Count];
 
             switch (producer.ReductionOrder)
             {
@@ -314,7 +314,7 @@ namespace IronText.Framework
             {
                 GssReducePath<T> path = R.Dequeue();
 
-                int X = path.Rule.Left;
+                int X = path.Rule.Outcome;
                 int m = path.Size;
 
                 GssNode<T> u = path.LeftNode;
@@ -442,7 +442,7 @@ namespace IronText.Framework
             var newLink = gss.Push(frontNode, fakeState, shiftValue);
             if (newLink != null)
             {
-                R.Enqueue(newLink, grammar.Rules[rule], size);
+                R.Enqueue(newLink, grammar.Productions[rule], size);
             }
         }
 
@@ -508,7 +508,7 @@ namespace IronText.Framework
             switch (action.Kind)
             {
                 case ParserActionKind.Reduce:
-                    rule = grammar.Rules[action.Rule];
+                    rule = grammar.Productions[action.Rule];
                     pendingReductionsCount = 1;
                     pendingReductions[0] = new ModifiedReduction(rule, action.Size);
                     break;
@@ -524,7 +524,7 @@ namespace IronText.Framework
                         switch (conflictAction.Kind)
                         {
                             case ParserActionKind.Reduce:
-                                var crule = grammar.Rules[conflictAction.Rule];
+                                var crule = grammar.Productions[conflictAction.Rule];
                                 pendingReductions[pendingReductionsCount++]
                                     = new ModifiedReduction(crule, conflictAction.Size);
                                 break;

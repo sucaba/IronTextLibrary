@@ -15,12 +15,12 @@ namespace IronText.Misc
             }
 
             var field = memberExpr.Member as FieldInfo;
-            if (field == null)
+            if (field != null)
             {
-                throw new ArgumentException("Expected MemberExpression with field reference");
+                return field;
             }
 
-            return field;
+            throw new ArgumentException("Expected MemberExpression with field reference");
         }
 
         public static MethodInfo GetMethod<T>(Expression<Action<T>> expr)

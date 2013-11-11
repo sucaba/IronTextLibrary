@@ -9,7 +9,7 @@ namespace IronText.Framework.Reflection
 {
     internal interface IRuntimeBnfGrammar
     {
-        List<Production> Rules { get; }
+        List<Production> Productions { get; }
 
         bool IsNullable(int token);
 
@@ -38,7 +38,7 @@ namespace IronText.Framework.Reflection
 
         BitSetType TokenSet { get; }
 
-        IEnumerable<AmbiguousSymbol> AmbTokens { get; }
+        IEnumerable<AmbiguousSymbol> AmbiguousSymbols { get; }
 
         bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output);
 
@@ -67,9 +67,9 @@ namespace IronText.Framework.Reflection
         // pending token count
         private int allTokenCount = PredefinedTokenCount;
         private BitSetType tokenSet;
-        private readonly List<Symbol> symbols;
-        private readonly List<AmbiguousSymbol> ambTokens;
-        private readonly int AugmentedStartRuleId;
+        public readonly List<Symbol> Symbols;
+        private readonly List<AmbiguousSymbol> ambSymbols;
+        private readonly int AugmentedProductionId;
 
         private MutableIntSet[] first;
 
@@ -78,30 +78,30 @@ namespace IronText.Framework.Reflection
 
         public EbnfGrammar()
         {   
-            Rules = new List<Production>();
-            symbols = new List<Symbol>(PredefinedTokenCount);
-            ambTokens = new List<AmbiguousSymbol>();
+            Productions = new List<Production>();
+            Symbols = new List<Symbol>(PredefinedTokenCount);
+            ambSymbols = new List<AmbiguousSymbol>();
             for (int i = PredefinedTokenCount; i != 0; --i)
             {
-                symbols.Add(null);
+                Symbols.Add(null);
             }
 
-            symbols[PropogatedToken] = new Symbol { Name = "#" };
-            symbols[EpsilonToken]    = new Symbol { Name = "$eps" };
-            symbols[AugmentedStart]  = new Symbol { Name = "$start" };
-            symbols[Eoi]             = new Symbol 
+            Symbols[PropogatedToken] = new Symbol { Name = "#" };
+            Symbols[EpsilonToken]    = new Symbol { Name = "$eps" };
+            Symbols[AugmentedStart]  = new Symbol { Name = "$start" };
+            Symbols[Eoi]             = new Symbol 
                                           { 
                                               Name = "$",
                                               Categories = 
                                                          TokenCategory.DoNotInsert 
                                                          | TokenCategory.DoNotDelete 
                                           };
-            symbols[Error]           = new Symbol { Name = "$error" };
+            Symbols[Error]           = new Symbol { Name = "$error" };
 
-            AugmentedStartRuleId = DefineRule(AugmentedStart, new[] { -1 });
+            AugmentedProductionId = DefineRule(AugmentedStart, new[] { -1 });
         }
 
-        public List<Production> Rules { get; private set; }
+        public List<Production> Productions { get; private set; }
 
         public BitSetType TokenSet 
         { 
@@ -114,24 +114,24 @@ namespace IronText.Framework.Reflection
 
         public int MaxRuleSize { get; private set; }
 
-        public Production AugmentedProduction { get { return Rules[AugmentedStartRuleId];  } }
+        public Production AugmentedProduction { get { return Productions[AugmentedProductionId];  } }
 
         public int? StartToken
         {
             get 
             { 
-                int result = this.Rules[AugmentedStartRuleId].Parts[0];
+                int result = this.Productions[AugmentedProductionId].Pattern[0];
                 return result < 0 ? null : (int?)result;
             }
 
-            set { this.Rules[AugmentedStartRuleId].Parts[0] = value.HasValue ? value.Value : -1; }
+            set { this.Productions[AugmentedProductionId].Pattern[0] = value.HasValue ? value.Value : -1; }
         }
 
-        public int SymbolCount { get { return symbols.Count; } }
+        public int SymbolCount { get { return Symbols.Count; } }
 
-        public int AmbSymbolCount { get { return ambTokens.Count; } }
+        public int AmbSymbolCount { get { return ambSymbols.Count; } }
 
-        public IEnumerable<AmbiguousSymbol> AmbTokens { get { return ambTokens; } }
+        public IEnumerable<AmbiguousSymbol> AmbiguousSymbols { get { return ambSymbols; } }
 
         public void Freeze()
         {
@@ -143,17 +143,17 @@ namespace IronText.Framework.Reflection
             {
                 if (i == Error)
                 {
-                    symbols[Error].IsTerm = false;
+                    Symbols[Error].IsTerm = false;
                 }
                 else
                 {
-                    symbols[i].IsTerm = CalcIsTerm(i);
+                    Symbols[i].IsTerm = CalcIsTerm(i);
                 }
             }
 
-            symbols[Eoi].IsTerm = true;
+            Symbols[Eoi].IsTerm = true;
 
-            this.MaxRuleSize = Rules.Select(r => r.Parts.Length).Max();
+            this.MaxRuleSize = Productions.Select(r => r.Pattern.Length).Max();
         }
 
         public int DefineToken(string name, TokenCategory categories = TokenCategory.None)
@@ -173,75 +173,75 @@ namespace IronText.Framework.Reflection
         {
             int result = allTokenCount++;
             var ambToken = new AmbiguousSymbol(result, mainToken, tokens);
-            ambTokens.Add(ambToken);
+            ambSymbols.Add(ambToken);
             return result;
         }
 
         public bool IsStartProduction(int ruleId)
         {
-            return Rules[ruleId].Left == AugmentedProduction.Parts[0];
+            return Productions[ruleId].Outcome == AugmentedProduction.Pattern[0];
         }
 
         internal bool IsBeacon(int token)
         {
-            if (token >= symbols.Count)
+            if (token >= Symbols.Count)
             {
                 return false;
             }
 
-            return (symbols[token].Categories & TokenCategory.Beacon) != 0;
+            return (Symbols[token].Categories & TokenCategory.Beacon) != 0;
         }
 
         internal bool IsDontInsert(int token)
         {
-            if (token >= symbols.Count)
+            if (token >= Symbols.Count)
             {
                 return false;
             }
 
-            return (symbols[token].Categories & TokenCategory.DoNotInsert) != 0;
+            return (Symbols[token].Categories & TokenCategory.DoNotInsert) != 0;
         }
 
         internal bool IsDontDelete(int token)
         {
-            if (token >= symbols.Count)
+            if (token >= Symbols.Count)
             {
                 return false;
             }
 
-            return (symbols[token].Categories & TokenCategory.DoNotDelete) != 0;
+            return (Symbols[token].Categories & TokenCategory.DoNotDelete) != 0;
         }
 
         private int InternalDefineToken(string name, TokenCategory categories)
         {
             int result = allTokenCount++;
-            symbols.Add(new Symbol { Id = result, Name = name ?? "token-" + result, Categories = categories });
+            Symbols.Add(new Symbol { Id = result, Name = name ?? "token-" + result, Categories = categories });
             return result;
         }
 
-        public bool IsTerminal(int token) { return symbols[token].IsTerm; }
+        public bool IsTerminal(int token) { return Symbols[token].IsTerm; }
 
         public bool IsNonTerm(int token) 
         {
-            var ti = symbols[token];
+            var ti = Symbols[token];
             return !ti.IsTerm && (token >= PredefinedTokenCount);
         }
 
-        internal TokenCategory GetTokenCategories(int token) { return symbols[token].Categories; }
+        internal TokenCategory GetTokenCategories(int token) { return Symbols[token].Categories; }
 
-        internal bool IsExternal(int token) { return (symbols[token].Categories & TokenCategory.External) != 0; }
+        internal bool IsExternal(int token) { return (Symbols[token].Categories & TokenCategory.External) != 0; }
 
         public bool IsNullable(int token) { return isNullable[token]; }
 
         public bool IsPredefined(int token) { return 0 <= token && token < PredefinedTokenCount; }
 
-        private Production GetRule(int rule) { return this.Rules[rule]; }
+        private Production GetRule(int rule) { return this.Productions[rule]; }
 
-        public IEnumerable<Production> GetProductions(int left) { return symbols[left].Productions; }
+        public IEnumerable<Production> GetProductions(int left) { return Symbols[left].Productions; }
 
         private bool CalcIsTerm(int token)
         {
-            bool result = !Rules.Any(rule => rule.Left == token);
+            bool result = !Productions.Any(rule => rule.Outcome == token);
             return result;
         }
 
@@ -252,7 +252,7 @@ namespace IronText.Framework.Reflection
                 return "<undefined token>";
             }
 
-            return symbols[token].Name; 
+            return Symbols[token].Name; 
         }
 
         /// <summary>
@@ -263,12 +263,12 @@ namespace IronText.Framework.Reflection
         /// <returns>Rule ID or -1 if there is no such rule</returns>
         internal int FindRuleId(int left, int[] parts)
         {
-            for (int i = 0; i != Rules.Count; ++i)
+            for (int i = 0; i != Productions.Count; ++i)
             {
-                var rule = Rules[i];
-                if (rule.Left == left
-                    && rule.Parts.Length == parts.Length
-                    && Enumerable.SequenceEqual(rule.Parts, parts))
+                var rule = Productions[i];
+                if (rule.Outcome == left
+                    && rule.Pattern.Length == parts.Length
+                    && Enumerable.SequenceEqual(rule.Pattern, parts))
                 {
                     return i;
                 }
@@ -287,18 +287,18 @@ namespace IronText.Framework.Reflection
                     "Unable to define rule for external token. This token should be represented by the external reciver logic.");
             }
 
-            int result = this.Rules.Count;
+            int result = this.Productions.Count;
 
             var rule = new Production
                 {
                     Id = result,
-                    Left = left,
-                    Parts = parts,
+                    Outcome = left,
+                    Pattern = parts,
                 };
 
-            this.Rules.Add(rule);
+            this.Productions.Add(rule);
 
-            symbols[left].Productions.Add(rule);
+            Symbols[left].Productions.Add(rule);
             
             return result;
         }
@@ -306,7 +306,7 @@ namespace IronText.Framework.Reflection
         // TODO: Optmize
         internal IEnumerable<Production> TokenRules(int token)
         {
-            var result = this.Rules.Where(r => r.Left == token).ToArray();
+            var result = this.Productions.Where(r => r.Outcome == token).ToArray();
             if (result.Length == 0)
             {
                 throw new InvalidOperationException("Term token has no rules.");
@@ -317,7 +317,7 @@ namespace IronText.Framework.Reflection
 
         public IEnumerable<int> EnumerateTokens()
         {
-            return symbols.Select(ti => ti.Id);
+            return Symbols.Select(ti => ti.Id);
         }
 
         /// <summary>
@@ -428,15 +428,15 @@ namespace IronText.Framework.Reflection
             var recursiveRules = new List<Production>();
 
             // Init FIRST using rules without recursion in first part
-            foreach (var rule in Rules)
+            foreach (var rule in Productions)
             {
-                if (rule.Parts.Length == 0)
+                if (rule.Pattern.Length == 0)
                 {
-                    first[rule.Left].Add(EpsilonToken);
+                    first[rule.Outcome].Add(EpsilonToken);
                 }
-                else if (CalcIsTerm(rule.Parts[0]))
+                else if (CalcIsTerm(rule.Pattern[0]))
                 {
-                    first[rule.Left].Add(rule.Parts[0]);
+                    first[rule.Outcome].Add(rule.Pattern[0]);
                 }
                 else
                 {
@@ -452,7 +452,7 @@ namespace IronText.Framework.Reflection
 
                 foreach (var rule in recursiveRules)
                 {
-                    if (InternalAddFirsts(rule.Parts, first[rule.Left]))
+                    if (InternalAddFirsts(rule.Pattern, first[rule.Outcome]))
                     {
                         changed = true;
                     }
@@ -518,22 +518,6 @@ namespace IronText.Framework.Reflection
             return Equals(casted);
         }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return Rules.Sum(rule => rule.GetHashCode())
-                    + symbols.Sum(t => t.GetHashCode());
-            }
-        }
-
-        public bool Equals(EbnfGrammar other)
-        {
-            return other != null
-                && Enumerable.SequenceEqual(other.Rules, this.Rules)
-                && Enumerable.SequenceEqual(other.symbols, this.symbols);
-        }
-
         public override string ToString()
         {
             var output = new StringBuilder();
@@ -548,9 +532,9 @@ namespace IronText.Framework.Reflection
                 .AppendLine()
                 .Append("Rules:")
                 .AppendLine();
-            foreach (var rule in Rules)
+            foreach (var rule in Productions)
             {
-                output.AppendFormat("{0:D2}: {1} -> {2}", rule.Id, SymbolName(rule.Left), string.Join(" ", rule.Parts.Select(SymbolName))).AppendLine();
+                output.AppendFormat("{0:D2}: {1} -> {2}", rule.Id, SymbolName(rule.Outcome), string.Join(" ", rule.Pattern.Select(SymbolName))).AppendLine();
             }
 
             return output.ToString();
@@ -564,7 +548,7 @@ namespace IronText.Framework.Reflection
                 throw new ArgumentException("Precedence is applicable only to terminals.", "token");
             }
 
-            var info = this.symbols[token];
+            var info = this.Symbols[token];
             return info.Precedence;
         }
 
@@ -575,7 +559,7 @@ namespace IronText.Framework.Reflection
                 throw new ArgumentException("Precedence is applicable only to terminals.", "token");
             }
 
-            var info = this.symbols[token];
+            var info = this.Symbols[token];
             info.Precedence = precedence;
         }
 
@@ -587,8 +571,8 @@ namespace IronText.Framework.Reflection
                 return rule.Precedence;
             }
 
-            int index = Array.FindLastIndex(rule.Parts, CalcIsTerm);
-            return index < 0 ? null : GetTermPrecedence(rule.Parts[index]);
+            int index = Array.FindLastIndex(rule.Pattern, CalcIsTerm);
+            return index < 0 ? null : GetTermPrecedence(rule.Pattern[index]);
         }
 
         public void SetRulePrecedence(int ruleId, Precedence value)

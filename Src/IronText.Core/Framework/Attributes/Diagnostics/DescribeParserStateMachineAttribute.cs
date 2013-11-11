@@ -233,9 +233,9 @@ namespace IronText.Framework
             bool showLookaheads = true)
         {
             var rule = item.Rule;
-            output.Write(data.Grammar.SymbolName(rule.Left));
+            output.Write(data.Grammar.SymbolName(rule.Outcome));
             output.Write(" ->");
-            for (int i = 0; i != rule.Parts.Length; ++i)
+            for (int i = 0; i != rule.Pattern.Length; ++i)
             {
                 if (item.Position == i)
                 {
@@ -243,10 +243,10 @@ namespace IronText.Framework
                 }
 
                 output.Write(" ");
-                output.Write(data.Grammar.SymbolName(rule.Parts[i]));
+                output.Write(data.Grammar.SymbolName(rule.Pattern[i]));
             }
 
-            if (item.Position == rule.Parts.Length)
+            if (item.Position == rule.Pattern.Length)
             {
                 output.Write(" •");
             }
@@ -263,15 +263,15 @@ namespace IronText.Framework
 
         private static StreamWriter DescribeRule(IReportData data, int ruleId, StreamWriter output)
         {
-            var rule = data.Grammar.Rules[ruleId];
+            var rule = data.Grammar.Productions[ruleId];
 
-            output.Write(data.Grammar.SymbolName(rule.Left));
+            output.Write(data.Grammar.SymbolName(rule.Outcome));
             output.Write(" ->");
 
-            for (int i = 0; i != rule.Parts.Length; ++i)
+            for (int i = 0; i != rule.Pattern.Length; ++i)
             {
                 output.Write(" ");
-                output.Write(data.Grammar.SymbolName(rule.Parts[i]));
+                output.Write(data.Grammar.SymbolName(rule.Pattern[i]));
             }
 
             return output;

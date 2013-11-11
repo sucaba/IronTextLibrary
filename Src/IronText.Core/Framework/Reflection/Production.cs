@@ -5,20 +5,24 @@ using System.Linq;
 namespace IronText.Framework.Reflection
 {
     [Serializable]
-    public class Production
+    public sealed class Production
     {
-        public int      Id;
-        public int      Left;
-        public int[]    Parts;
-        public Precedence Precedence;
+        public int        Id         { get; set; }
+        public int        Outcome    { get; set; }
+        public int[]      Pattern    { get; set; }
+        public Precedence Precedence { get; set; }
 
         public override bool Equals(object obj)
         {
-            var casted = obj as Production;
-            return casted != null
-                && casted.Id == Id
-                && casted.Left == Left
-                && Enumerable.SequenceEqual(casted.Parts, Parts)
+            return Equals(obj as Production);
+        }
+
+        public bool Equals(Production other)
+        {
+            return other != null
+                && other.Id == Id
+                && other.Outcome == Outcome
+                && Enumerable.SequenceEqual(other.Pattern, Pattern)
                 ;
         }
 
@@ -26,7 +30,7 @@ namespace IronText.Framework.Reflection
         {
             unchecked 
             {
-                return Id + Left + Parts.Sum();
+                return Id + Outcome + Pattern.Sum();
             }
         }
 
@@ -50,9 +54,9 @@ namespace IronText.Framework.Reflection
 
         public void Describe(EbnfGrammar grammar, int pos, TextWriter output)
         {
-            output.Write("{0} ->", grammar.SymbolName(Left));
+            output.Write("{0} ->", grammar.SymbolName(Outcome));
 
-            for (int i = 0; i != Parts.Length; ++i)
+            for (int i = 0; i != Pattern.Length; ++i)
             {
                 if (pos == i)
                 {
@@ -60,10 +64,10 @@ namespace IronText.Framework.Reflection
                 }
 
                 output.Write(" ");
-                output.Write(grammar.SymbolName(Parts[i]));
+                output.Write(grammar.SymbolName(Pattern[i]));
             }
 
-            if (pos == Parts.Length)
+            if (pos == Pattern.Length)
             {
                 output.Write(" •");
             }
@@ -71,12 +75,12 @@ namespace IronText.Framework.Reflection
 
         public void Describe(EbnfGrammar grammar, TextWriter output)
         {
-            output.Write("{0} ->", grammar.SymbolName(Left));
+            output.Write("{0} ->", grammar.SymbolName(Outcome));
 
-            for (int i = 0; i != Parts.Length; ++i)
+            for (int i = 0; i != Pattern.Length; ++i)
             {
                 output.Write(" ");
-                output.Write(grammar.SymbolName(Parts[i]));
+                output.Write(grammar.SymbolName(Pattern[i]));
             }
         }
     }

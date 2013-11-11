@@ -45,22 +45,22 @@ namespace IronText.MetadataCompiler
                 }
             }
 
-            foreach (var rule in grammar.Rules)
+            foreach (var rule in grammar.Productions)
             {
-                if (rule.Left == EbnfGrammar.AugmentedStart)
+                if (rule.Outcome == EbnfGrammar.AugmentedStart)
                 {
                     // Start rule is defined automatically when first token is defined
                     continue;
                 }
 
                 emit
-                    .Ldc_I4(rule.Parts.Length)
+                    .Ldc_I4(rule.Pattern.Length)
                     .Newarr(emit.Types.Int32)
                     .Stloc(parts.GetRef())
                     ;
 
                 int i = 0;
-                foreach (int part in rule.Parts)
+                foreach (int part in rule.Pattern)
                 {
                     emit
                         .Ldloc(parts.GetRef())
@@ -73,7 +73,7 @@ namespace IronText.MetadataCompiler
 
                 emit
                     .Ldloc(result.GetRef())
-                    .Ldc_I4(rule.Left)
+                    .Ldc_I4(rule.Outcome)
                     .Ldloc(parts.GetRef())
                     .Call((EbnfGrammar g, int l, int[] p) => g.DefineRule(l, p))
                     .Pop()
