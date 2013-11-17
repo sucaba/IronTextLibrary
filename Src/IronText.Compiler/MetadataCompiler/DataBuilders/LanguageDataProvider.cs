@@ -247,41 +247,29 @@ namespace IronText.MetadataCompiler
             ruleActionBuilders = new List<List<GrammarActionBuilder>> { null }; // first null is for the augumented start rule
 
             // Define grammar rules
-            foreach (var rule in definition.ParseRules)
+            foreach (var ruleDef in definition.ParseRules)
             {
-                int leftId = tokenResolver.GetId(rule.Left);
-                int[] parts = Array.ConvertAll(rule.Parts, tokenResolver.GetId);
+                int outcome = tokenResolver.GetId(ruleDef.Left);
+                int[] pattern = Array.ConvertAll(ruleDef.Parts, tokenResolver.GetId);
 
                 // Try to find existing rules whith same token-signature
-                int ruleId = grammar.FindRuleId(leftId, parts);
-                if (ruleId < 0)
+                var production = grammar.FindOrDefineProduction(outcome, pattern);
+                if (production.Id == ruleActionBuilders.Count)
                 {
-                    ruleId = grammar.DefineRule(leftId, parts);
                     ruleActionBuilders.Add(new List<GrammarActionBuilder>());
                 }
 
-                if (rule.Precedence != null)
+                // Each rule may have multiple action builders
+                ruleActionBuilders[production.Id].Add(ruleDef.ActionBuilder);
+
+                if (!production.AssignPrecedence(ruleDef.Precedence))
                 {
-                    var existingPrecedence = grammar.Productions[ruleId].Precedence;
-                    if (existingPrecedence != null)
-                    {
-                        if (!object.Equals(rule.Precedence, existingPrecedence))
-                        {
-                            throw new InvalidOperationException(
-                                "Two rule definitions of the same rule have conflicting precedence: " +
-                                rule);
-                        }
-                    }
-                    else
-                    {
-                        grammar.SetRulePrecedence(ruleId, rule.Precedence);
-                    }
+                    throw new InvalidOperationException(
+                        "Two rule definitions of the same rule have conflicting precedence: " +
+                        ruleDef);
                 }
 
-                // Each rule may have multiple action builders
-                ruleActionBuilders[ruleId].Add(rule.ActionBuilder);
-
-                rule.Index = ruleId;
+                ruleDef.Index = production.Id;
             }
 
             foreach (var mergeRule in definition.MergeRules)
@@ -301,7 +289,7 @@ namespace IronText.MetadataCompiler
         }
 
         private static List<LocalParseContext> CollectLocalContexts(
-            EbnfGrammar       grammar,
+            EbnfGrammar      grammar,
             ILrDfa           lrDfa,
             IList<ParseRule> allParseRules)
         {

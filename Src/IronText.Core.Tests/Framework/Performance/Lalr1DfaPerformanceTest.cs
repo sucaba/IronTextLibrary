@@ -30,10 +30,10 @@ namespace IronText.Tests.Framework.Performance
             int iterationCount = tokenCount - ruleSize;
             for (int i = 0; i < iterationCount; ++i)
             {
-                int left = tokens[i];
-                int[] parts = new int[ruleSize];
-                Array.Copy(tokens, i + 1, parts, 0, ruleSize);
-                grammar.DefineRule(left, parts);
+                int outcome = tokens[i];
+                int[] pattern = new int[ruleSize];
+                Array.Copy(tokens, i + 1, pattern, 0, ruleSize);
+                grammar.DefineProduction(outcome, pattern);
             }
 
             grammar.Freeze();

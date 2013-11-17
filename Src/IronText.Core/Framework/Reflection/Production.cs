@@ -8,9 +8,33 @@ namespace IronText.Framework.Reflection
     public sealed class Production
     {
         public int        Id         { get; set; }
+
         public int        Outcome    { get; set; }
+
         public int[]      Pattern    { get; set; }
-        public Precedence Precedence { get; set; }
+
+        public Precedence Precedence { get; private set; }
+
+        public bool AssignPrecedence(Precedence value)
+        {
+            if (value != null)
+            {
+                var existingPrecedence = this.Precedence;
+                if (existingPrecedence != null)
+                {
+                    if (!object.Equals(value, existingPrecedence))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    this.Precedence = value;
+                }
+            }
+
+            return true;
+        }
 
         public override bool Equals(object obj)
         {

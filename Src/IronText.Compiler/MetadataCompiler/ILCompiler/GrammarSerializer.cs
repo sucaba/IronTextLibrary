@@ -75,7 +75,7 @@ namespace IronText.MetadataCompiler
                     .Ldloc(result.GetRef())
                     .Ldc_I4(rule.Outcome)
                     .Ldloc(parts.GetRef())
-                    .Call((EbnfGrammar g, int l, int[] p) => g.DefineRule(l, p))
+                    .Call((EbnfGrammar g, int l, int[] p) => g.DefineProduction(l, p))
                     .Pop()
                     ;
             }

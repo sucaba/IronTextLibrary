@@ -111,18 +111,18 @@ namespace IronText.Tests.Framework
 
         private static readonly ILanguage lang = Language.Get(typeof(MiniInterperter));
 
-        private static readonly Msg OPN = lang.Literal("(");
-        private static readonly Msg CLS = lang.Literal(")");
-        private static readonly Msg VAL0 = lang.Token(new Num("0"));
-        private static readonly Msg VAL1 = lang.Token(new Num("1"));
-        private static readonly Msg VAL2 = lang.Token(new Num("2"));
-        private static readonly Msg VAL3 = lang.Token(new Num("3"));
+        private static readonly Msg OPN   = lang.Literal("(");
+        private static readonly Msg CLS   = lang.Literal(")");
+        private static readonly Msg VAL0  = lang.Token(new Num("0"));
+        private static readonly Msg VAL1  = lang.Token(new Num("1"));
+        private static readonly Msg VAL2  = lang.Token(new Num("2"));
+        private static readonly Msg VAL3  = lang.Token(new Num("3"));
         private static readonly Msg VAL10 = lang.Token(new Num("10"));
         private static readonly Msg VAL20 = lang.Token(new Num("20"));
         private static readonly Msg DESCR = lang.Token(new QStr("long description"));
-        private static readonly Msg IF = lang.Literal("if");
-        private static readonly Msg POW = lang.Literal("^");
-        private static readonly Msg SUM = lang.Literal("sum");
+        private static readonly Msg IF    = lang.Literal("if");
+        private static readonly Msg POW   = lang.Literal("^");
+        private static readonly Msg SUM   = lang.Literal("sum");
 
         public interface Locals { }
 

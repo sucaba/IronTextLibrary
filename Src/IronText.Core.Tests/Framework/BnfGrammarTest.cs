@@ -19,10 +19,10 @@ namespace IronText.Tests.Framework
             var B = target.DefineToken("B");
 
             target.StartToken = S;
-            target.DefineRule(S, new[] { b, A });
-            target.DefineRule(A, new[] { a, A, B });
-            target.DefineRule(A, new int[0]);
-            target.DefineRule(B, new int[0]);
+            target.DefineProduction(S, new[] { b, A });
+            target.DefineProduction(A, new[] { a, A, B });
+            target.DefineProduction(A, new int[0]);
+            target.DefineProduction(B, new int[0]);
 
             target.Freeze();
 

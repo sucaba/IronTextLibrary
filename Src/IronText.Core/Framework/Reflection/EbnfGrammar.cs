@@ -98,7 +98,7 @@ namespace IronText.Framework.Reflection
                                           };
             Symbols[Error]           = new Symbol { Name = "$error" };
 
-            AugmentedProductionId = DefineRule(AugmentedStart, new[] { -1 });
+            AugmentedProductionId = DefineProduction(AugmentedStart, new[] { -1 }).Id;
         }
 
         public List<Production> Productions { get; private set; }
@@ -258,53 +258,59 @@ namespace IronText.Framework.Reflection
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="parts"></param>
+        /// <param name="outcome"></param>
+        /// <param name="pattern"></param>
         /// <returns>Rule ID or -1 if there is no such rule</returns>
-        internal int FindRuleId(int left, int[] parts)
+        internal Production FindProduction(int outcome, int[] pattern)
         {
             for (int i = 0; i != Productions.Count; ++i)
             {
                 var rule = Productions[i];
-                if (rule.Outcome == left
-                    && rule.Pattern.Length == parts.Length
-                    && Enumerable.SequenceEqual(rule.Pattern, parts))
+                if (rule.Outcome == outcome
+                    && rule.Pattern.Length == pattern.Length
+                    && Enumerable.SequenceEqual(rule.Pattern, pattern))
                 {
-                    return i;
+                    return rule;
                 }
             }
 
-            return -1;
+            return null;
         }
 
-        public int DefineRule(int left, int[] parts)
+        public Production FindOrDefineProduction(int outcome, int[] pattern)
+        {
+            return FindProduction(outcome, pattern)
+                ?? DefineProduction(outcome, pattern);
+        }
+
+        public Production DefineProduction(int outcome, int[] pattern)
         {
             Debug.Assert(!frozen);
 
-            if (IsExternal(left))
+            if (IsExternal(outcome))
             {
                 throw new InvalidOperationException(
                     "Unable to define rule for external token. This token should be represented by the external reciver logic.");
             }
 
-            int result = this.Productions.Count;
+            int id = this.Productions.Count;
 
-            var rule = new Production
+            var result = new Production
                 {
-                    Id = result,
-                    Outcome = left,
-                    Pattern = parts,
+                    Id      = id,
+                    Outcome = outcome,
+                    Pattern = pattern,
                 };
 
-            this.Productions.Add(rule);
+            this.Productions.Add(result);
 
-            Symbols[left].Productions.Add(rule);
+            Symbols[outcome].Productions.Add(result);
             
             return result;
         }
 
         // TODO: Optmize
-        internal IEnumerable<Production> TokenRules(int token)
+        internal IEnumerable<Production> TokenProductions(int token)
         {
             var result = this.Productions.Where(r => r.Outcome == token).ToArray();
             if (result.Length == 0)
@@ -512,12 +518,6 @@ namespace IronText.Framework.Reflection
             return changed;
         }
 
-        public override bool Equals(object obj)
-        {
-            var casted = obj as EbnfGrammar;
-            return Equals(casted);
-        }
-
         public override string ToString()
         {
             var output = new StringBuilder();
@@ -573,12 +573,6 @@ namespace IronText.Framework.Reflection
 
             int index = Array.FindLastIndex(rule.Pattern, CalcIsTerm);
             return index < 0 ? null : GetTermPrecedence(rule.Pattern[index]);
-        }
-
-        public void SetRulePrecedence(int ruleId, Precedence value)
-        {
-            var rule = GetRule(ruleId);
-            rule.Precedence = value;
         }
     }
 }

@@ -17,7 +17,6 @@ namespace IronText.Framework
 
         public Associativity Assoc { get; private set; }
 
-
         public static bool IsReduce(Precedence rulePrecedence, Precedence shiftPrecedence)
         {
             if (rulePrecedence == null)

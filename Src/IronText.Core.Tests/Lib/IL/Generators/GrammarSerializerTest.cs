@@ -18,9 +18,9 @@ namespace IronText.Tests.Lib.IL.Generators
             int red = originalGrammar.DefineToken("red");
             int green = originalGrammar.DefineToken("green", TokenCategory.External);
             int blue = originalGrammar.DefineToken("blue");
-            originalGrammar.DefineRule(red, new[]{ green, blue });
-            originalGrammar.DefineRule(blue, new []{ red, green });
-            originalGrammar.DefineRule(blue, new int[0]);
+            originalGrammar.DefineProduction(red, new[]{ green, blue });
+            originalGrammar.DefineProduction(blue, new []{ red, green });
+            originalGrammar.DefineProduction(blue, new int[0]);
 
             originalGrammar.Freeze();
 
