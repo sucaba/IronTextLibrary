@@ -112,6 +112,7 @@
     <Compile Include="Diagnostics\GvGraphView.cs" />
     <Compile Include="Diagnostics\IGraphView.cs" />
     <Compile Include="Build\IDerivedBuilderMetadata.cs" />
+    <Compile Include="Extensibility\Bindings\Cil\CilProductionActionBinding.cs" />
     <Compile Include="Extensibility\Reporting\CharRange.cs" />
     <Compile Include="Extensibility\Reporting\IParserAutomata.cs" />
     <Compile Include="Extensibility\Reporting\IParserDotItem.cs" />
@@ -168,7 +169,16 @@
     <Compile Include="Framework\InterpreterT.cs" />
     <Compile Include="Framework\Reflection\AmbiguousSymbol.cs" />
     <Compile Include="Framework\Disambiguation.cs" />
+    <Compile Include="Framework\Reflection\Structures\TableIndexing.cs" />
+    <Compile Include="Framework\Reflection\Structures\TableObject.cs" />
+    <Compile Include="Framework\Reflection\Structures\ObjectTable.cs" />
+    <Compile Include="Framework\Reflection\Structures\ObjectReferenceCollection.cs" />
+    <Compile Include="Framework\Reflection\Structures\ITableObject.cs" />
+    <Compile Include="Framework\Reflection\Structures\ITableObjectReferences.cs" />
+    <Compile Include="Framework\Reflection\Structures\ITableObjectOwner.cs" />
     <Compile Include="Framework\Reflection\InlineProduction.cs" />
+    <Compile Include="Framework\Reflection\IProductionActionBinding.cs" />
+    <Compile Include="Framework\Reflection\ProductionAction.cs" />
     <Compile Include="Framework\Reflection\Symbol.cs" />
     <Compile Include="Lib\Ctem\CtemScanner.cs" />
     <Compile Include="Lib\Ctem\Num.cs" />
@@ -234,7 +244,7 @@
     <Compile Include="Lib\Builtins.cs" />
     <Compile Include="Lib\Numbers.cs" />
     <Compile Include="Lib\Shared\Labels.cs" />
-    <Compile Include="Extensibility\IGrammarActionCode.cs" />
+    <Compile Include="Extensibility\Bindings\Cil\IProductionActionCode.cs" />
     <Compile Include="Extensibility\ILanguageMetadata.cs" />
     <Compile Include="Extensibility\MetadataParser.cs" />
     <Compile Include="Framework\Attributes\StaticContextAttribute.cs" />

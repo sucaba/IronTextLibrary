@@ -1,19 +1,29 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
 namespace IronText.Framework.Reflection
 {
-    [Serializable]
-    public sealed class Production
+    public sealed class Production : TableObject
     {
-        public int        Id         { get; set; }
+        public Production()
+        {
+            Actions = new ObjectReferenceCollection<ProductionAction>();
+        }
 
         public int        Outcome    { get; set; }
 
         public int[]      Pattern    { get; set; }
 
         public Precedence Precedence { get; private set; }
+
+        /// <summary>
+        /// Typically production contains single action, however
+        /// when production is inlined there are multiple actions
+        /// happing when this production can be applied.
+        /// </summary>
+        public Collection<ProductionAction> Actions { get; private set; }
 
         public bool AssignPrecedence(Precedence value)
         {

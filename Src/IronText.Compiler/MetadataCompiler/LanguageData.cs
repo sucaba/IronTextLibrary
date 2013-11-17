@@ -32,7 +32,7 @@ namespace IronText.MetadataCompiler
         internal ITokenRefResolver    TokenRefResolver; 
 
         // Rule ID -> ActionBuilder
-        public GrammarActionBuilder[][] RuleActionBuilders;
+        public ProductionActionBuilder[][] RuleActionBuilders;
         public MergeRule[]            MergeRules;
         public SwitchRule[]           SwitchRules;
         public LocalParseContext[]    LocalParseContexts;

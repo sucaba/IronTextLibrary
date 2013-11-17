@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace IronText.Framework.Reflection
 {
     internal interface IRuntimeBnfGrammar
     {
-        List<Production> Productions { get; }
+        ObjectTable<Production> Productions { get; }
 
         bool IsNullable(int token);
 
@@ -67,23 +68,28 @@ namespace IronText.Framework.Reflection
         // pending token count
         private int allTokenCount = PredefinedTokenCount;
         private BitSetType tokenSet;
-        public readonly List<Symbol> Symbols;
-        private readonly List<AmbiguousSymbol> ambSymbols;
-        private readonly int AugmentedProductionId;
+        private readonly int AugmentedProductionIndex;
+
+        private readonly ObjectTable<Production>       productions;
+        private readonly ObjectTable<ProductionAction> productionActions;
+        private readonly ObjectTable<Symbol>           symbols;
+        private readonly List<AmbiguousSymbol>         ambSymbols;
 
         private MutableIntSet[] first;
 
         private bool[] isNullable;
-        private bool frozen;
+        private bool   frozen;
 
         public EbnfGrammar()
-        {   
-            Productions = new List<Production>();
-            Symbols = new List<Symbol>(PredefinedTokenCount);
-            ambSymbols = new List<AmbiguousSymbol>();
+        {
+            productions       = new ObjectTable<Production>();
+            productionActions = new ObjectTable<ProductionAction>();
+            symbols           = new ObjectTable<Symbol>();
+            ambSymbols        = new List<AmbiguousSymbol>();
+
             for (int i = PredefinedTokenCount; i != 0; --i)
             {
-                Symbols.Add(null);
+                Symbols.Add(new Symbol()); // stub
             }
 
             Symbols[PropogatedToken] = new Symbol { Name = "#" };
@@ -98,10 +104,12 @@ namespace IronText.Framework.Reflection
                                           };
             Symbols[Error]           = new Symbol { Name = "$error" };
 
-            AugmentedProductionId = DefineProduction(AugmentedStart, new[] { -1 }).Id;
+            AugmentedProductionIndex = DefineProduction(AugmentedStart, new[] { -1 }).Id;
         }
 
-        public List<Production> Productions { get; private set; }
+        public ObjectTable<Symbol> Symbols { get { return symbols; } }
+
+        public ObjectTable<Production> Productions { get { return productions; } }
 
         public BitSetType TokenSet 
         { 
@@ -114,17 +122,17 @@ namespace IronText.Framework.Reflection
 
         public int MaxRuleSize { get; private set; }
 
-        public Production AugmentedProduction { get { return Productions[AugmentedProductionId];  } }
+        public Production AugmentedProduction { get { return Productions[AugmentedProductionIndex];  } }
 
         public int? StartToken
         {
             get 
             { 
-                int result = this.Productions[AugmentedProductionId].Pattern[0];
+                int result = this.Productions[AugmentedProductionIndex].Pattern[0];
                 return result < 0 ? null : (int?)result;
             }
 
-            set { this.Productions[AugmentedProductionId].Pattern[0] = value.HasValue ? value.Value : -1; }
+            set { this.Productions[AugmentedProductionIndex].Pattern[0] = value.HasValue ? value.Value : -1; }
         }
 
         public int SymbolCount { get { return Symbols.Count; } }
@@ -172,8 +180,8 @@ namespace IronText.Framework.Reflection
         public int DefineAmbToken(int mainToken, IEnumerable<int> tokens)
         {
             int result = allTokenCount++;
-            var ambToken = new AmbiguousSymbol(result, mainToken, tokens);
-            ambSymbols.Add(ambToken);
+            var ambSymbol = new AmbiguousSymbol(result, mainToken, tokens);
+            ambSymbols.Add(ambSymbol);
             return result;
         }
 
@@ -215,7 +223,7 @@ namespace IronText.Framework.Reflection
         private int InternalDefineToken(string name, TokenCategory categories)
         {
             int result = allTokenCount++;
-            Symbols.Add(new Symbol { Id = result, Name = name ?? "token-" + result, Categories = categories });
+            Symbols.Add(new Symbol { Name = name ?? "token-" + result, Categories = categories });
             return result;
         }
 
@@ -234,8 +242,6 @@ namespace IronText.Framework.Reflection
         public bool IsNullable(int token) { return isNullable[token]; }
 
         public bool IsPredefined(int token) { return 0 <= token && token < PredefinedTokenCount; }
-
-        private Production GetRule(int rule) { return this.Productions[rule]; }
 
         public IEnumerable<Production> GetProductions(int left) { return Symbols[left].Productions; }
 
@@ -277,10 +283,24 @@ namespace IronText.Framework.Reflection
             return null;
         }
 
-        public Production FindOrDefineProduction(int outcome, int[] pattern)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="outcome"></param>
+        /// <param name="pattern"></param>
+        /// <param name="?"></param>
+        /// <returns><c>true</c> when production was just defined, <c>false</c> if it existed previously</returns>
+        public bool FindOrDefineProduction(int outcome, int[] pattern, out Production output)
         {
-            return FindProduction(outcome, pattern)
-                ?? DefineProduction(outcome, pattern);
+            output = FindProduction(outcome, pattern);
+
+            if (output == null)
+            {
+                output = DefineProduction(outcome, pattern);
+                return true;
+            }
+
+            return false;
         }
 
         public Production DefineProduction(int outcome, int[] pattern)
@@ -293,11 +313,8 @@ namespace IronText.Framework.Reflection
                     "Unable to define rule for external token. This token should be represented by the external reciver logic.");
             }
 
-            int id = this.Productions.Count;
-
             var result = new Production
                 {
-                    Id      = id,
                     Outcome = outcome,
                     Pattern = pattern,
                 };
@@ -565,7 +582,7 @@ namespace IronText.Framework.Reflection
 
         public Precedence GetProductionPrecedence(int ruleId)
         {
-            var rule = GetRule(ruleId);
+            var rule = productions.Get(ruleId);
             if (rule.Precedence != null)
             {
                 return rule.Precedence;

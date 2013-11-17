@@ -6,7 +6,7 @@
     /// <remarks>
     /// Generated code should leave <see cref="Object"/> return value in the CLR stack.
     /// </remarks>
-    public delegate void GrammarActionBuilder(IGrammarActionCode code);
+    public delegate void ProductionActionBuilder(IProductionActionCode code);
 
     /// <summary>
     /// Merge action builder contract

@@ -11,6 +11,7 @@ using IronText.Misc;
 using System.Text;
 using IronText.Algorithm;
 using IronText.Framework.Reflection;
+using IronText.Extensibility.Bindings.Cil;
 
 namespace IronText.MetadataCompiler
 {
@@ -52,7 +53,7 @@ namespace IronText.MetadataCompiler
 
             var tokenResolver = definition.TokenRefResolver;
 
-            List<List<GrammarActionBuilder>> ruleActionBuilders;
+            List<List<ProductionActionBuilder>> ruleActionBuilders;
             var grammar = BuildGrammar(definition, out ruleActionBuilders);
             var grammarAnalysis = new BnfGrammarAnalysis(grammar);
 
@@ -134,10 +135,10 @@ namespace IronText.MetadataCompiler
         }
 
         private bool BuildScanner(
-            LanguageDefinition definition,
-            EbnfGrammar grammar,
-            ITokenRefResolver tokenResolver,
-            LanguageData result)
+            LanguageDefinition  definition,
+            EbnfGrammar         grammar,
+            ITokenRefResolver   tokenResolver,
+            LanguageData        result)
         {
             var scanModeTypeToDfa = new Dictionary<Type, ITdfaData>();
 
@@ -223,7 +224,7 @@ namespace IronText.MetadataCompiler
 
         private static EbnfGrammar BuildGrammar(
             LanguageDefinition definition,
-            out List<List<GrammarActionBuilder>> ruleActionBuilders)
+            out List<List<ProductionActionBuilder>> ruleActionBuilders)
         {
             var grammar = new EbnfGrammar();
 
@@ -244,7 +245,7 @@ namespace IronText.MetadataCompiler
 
             grammar.StartToken = tokenResolver.GetId(definition.Start);
 
-            ruleActionBuilders = new List<List<GrammarActionBuilder>> { null }; // first null is for the augumented start rule
+            ruleActionBuilders = new List<List<ProductionActionBuilder>> { null }; // first null is for the augumented start rule
 
             // Define grammar rules
             foreach (var ruleDef in definition.ParseRules)
@@ -253,10 +254,27 @@ namespace IronText.MetadataCompiler
                 int[] pattern = Array.ConvertAll(ruleDef.Parts, tokenResolver.GetId);
 
                 // Try to find existing rules whith same token-signature
-                var production = grammar.FindOrDefineProduction(outcome, pattern);
-                if (production.Id == ruleActionBuilders.Count)
+                Production production;
+                if (grammar.FindOrDefineProduction(outcome, pattern, out production))
                 {
-                    ruleActionBuilders.Add(new List<GrammarActionBuilder>());
+                    ruleActionBuilders.Add(new List<ProductionActionBuilder>());
+                    production.Actions.Add(
+                        new ProductionAction
+                        {
+                            Bindings = {
+                                new CilProductionActionBinding(ruleDef.ActionBuilder)
+                            }
+                        });
+                }
+                else
+                {
+                    // Note: Following adds action alternative as another
+                    // binding such that stack reduction happens after all
+                    // bindings are executed.  It would be mistake to do
+                    // Actions.Add(...) in this case because reduction happens
+                    // after each ProductionAction.
+                    production.Actions[0].Bindings.Add(
+                        new CilProductionActionBinding(ruleDef.ActionBuilder));
                 }
 
                 // Each rule may have multiple action builders
@@ -265,7 +283,7 @@ namespace IronText.MetadataCompiler
                 if (!production.AssignPrecedence(ruleDef.Precedence))
                 {
                     throw new InvalidOperationException(
-                        "Two rule definitions of the same rule have conflicting precedence: " +
+                        "Two or more production definitions have conflicting precedence: " +
                         ruleDef);
                 }
 

@@ -6,7 +6,7 @@ using IronText.Lib.Shared;
 
 namespace IronText.MetadataCompiler
 {
-    public class GrammarActionCode : IGrammarActionCode
+    public class GrammarActionCode : IProductionActionCode
     {
         public GrammarActionCode(EmitSyntax emit, IContextResolverCode contextResolver)
         {
@@ -22,7 +22,7 @@ namespace IronText.MetadataCompiler
         public Def<Labels>  ReturnLabel;
         private EmitSyntax emit;
 
-        public IGrammarActionCode Emit(Pipe<EmitSyntax> pipe)
+        public IProductionActionCode Emit(Pipe<EmitSyntax> pipe)
         {
             emit = pipe(emit);
             return this;
@@ -30,7 +30,7 @@ namespace IronText.MetadataCompiler
 
         public IContextResolverCode ContextResolver { get; private set; }
 
-        public IGrammarActionCode LdRuleArg(int index)
+        public IProductionActionCode LdRuleArg(int index)
         {
             emit = emit
                 .Do(LdRuleArgs)
@@ -56,7 +56,7 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IGrammarActionCode LdRuleArg(int index, Type argType)
+        public IProductionActionCode LdRuleArg(int index, Type argType)
         {
             LdRuleArg(index);
             if (argType.IsValueType)

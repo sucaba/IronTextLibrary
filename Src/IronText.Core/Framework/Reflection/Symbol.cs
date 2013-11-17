@@ -5,9 +5,8 @@ using System.Text;
 
 namespace IronText.Framework.Reflection
 {
-    public class Symbol
+    public class Symbol : TableObject
     {
-        public int Id;
         public string Name;       // Display name
         public TokenCategory Categories;
         public bool IsTerm;

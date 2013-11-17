@@ -9,7 +9,7 @@ namespace IronText.Extensibility
         public ParseRule(
             TokenRef             left,
             TokenRef[]           parts,
-            GrammarActionBuilder actionBuilder,
+            ProductionActionBuilder actionBuilder,
             Type                 instanceDeclaringType,
             bool                 isContextRule = false,
             Precedence           precedence = null)
@@ -28,7 +28,7 @@ namespace IronText.Extensibility
 
         public Type InstanceDeclaringType { get; private set; }
 
-        public GrammarActionBuilder ActionBuilder { get; private set; }
+        public ProductionActionBuilder ActionBuilder { get; private set; }
 
         public bool IsContextRule { get; private set; }
 
