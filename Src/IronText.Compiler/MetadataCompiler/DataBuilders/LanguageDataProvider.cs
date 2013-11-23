@@ -239,7 +239,9 @@ namespace IronText.MetadataCompiler
                 }
                 else
                 {
-                    def.Id = grammar.DefineSymbol(def.Name, def.Categories);
+                    var symbol = new Symbol(def.Name) { Categories = def.Categories };
+                    grammar.Symbols.Add(symbol);
+                    def.Id = symbol.Id;
                 }
             }
 

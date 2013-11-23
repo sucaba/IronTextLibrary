@@ -21,7 +21,7 @@ namespace IronText.Framework.Reflection
         /// <summary>
         /// Typically production contains single action, however
         /// when production is inlined there are multiple actions
-        /// happing when this production can be applied.
+        /// happing when this production being applied.
         /// </summary>
         public Collection<ProductionAction> Actions { get; private set; }
 

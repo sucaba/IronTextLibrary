@@ -12,7 +12,7 @@ namespace IronText.Framework.Reflection
 
         public Symbol(string name)
         {
-            this.Name = name;
+            this.Name = name ?? EbnfGrammar.UnnamedTokenName;
 
             this.productions = new ObjectReferenceCollection<Production>();
         }

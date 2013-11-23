@@ -52,6 +52,9 @@ namespace IronText.Framework.Reflection
         : IRuntimeBnfGrammar
         , IBuildtimeBnfGrammar
     {
+        public const string UnnamedTokenName = "<unnamed token>";
+        public const string UnknownTokenName = "<unknown token>";
+
         // Predefined tokens
         public const int NoToken               = -1;
         private const int EpsilonToken         = 0;
@@ -71,7 +74,7 @@ namespace IronText.Framework.Reflection
 
         private readonly ObjectTable<Production>       productions;
         private readonly ObjectTable<ProductionAction> productionActions;
-        private readonly ObjectTable<SymbolBase>       symbols;
+        private readonly SymbolTable                   symbols;
 
         private MutableIntSet[] first;
 
@@ -82,7 +85,7 @@ namespace IronText.Framework.Reflection
         {
             productions       = new ObjectTable<Production>();
             productionActions = new ObjectTable<ProductionAction>();
-            symbols           = new ObjectTable<SymbolBase>();
+            symbols           = new SymbolTable();
 
             for (int i = PredefinedTokenCount; i != 0; --i)
             {
@@ -103,7 +106,7 @@ namespace IronText.Framework.Reflection
             AugmentedProductionIndex = DefineProduction(AugmentedStart, new[] { -1 }).Id;
         }
 
-        public ObjectTable<SymbolBase> Symbols { get { return symbols; } }
+        public SymbolTable Symbols { get { return symbols; } }
 
         public ObjectTable<Production> Productions { get { return productions; } }
 
@@ -178,7 +181,7 @@ namespace IronText.Framework.Reflection
         {
             Debug.Assert(!frozen);
 
-            var symbol = new Symbol(name ?? "<unnamed-token>") { Categories = categories };
+            var symbol = new Symbol(name) { Categories = categories };
             Symbols.Add(symbol);
             if (null == StartToken)
             {
@@ -258,7 +261,7 @@ namespace IronText.Framework.Reflection
         {
             if (token < 0)
             {
-                return "<undefined token>";
+                return UnknownTokenName;
             }
 
             return Symbols[token].Name; 

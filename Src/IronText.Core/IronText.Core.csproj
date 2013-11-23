@@ -181,6 +181,7 @@
     <Compile Include="Framework\Reflection\ProductionAction.cs" />
     <Compile Include="Framework\Reflection\Symbol.cs" />
     <Compile Include="Framework\Reflection\SymbolBase.cs" />
+    <Compile Include="Framework\Reflection\SymbolTable.cs" />
     <Compile Include="Lib\Ctem\CtemScanner.cs" />
     <Compile Include="Lib\Ctem\Num.cs" />
     <Compile Include="Lib\Ctem\QStr.cs" />
