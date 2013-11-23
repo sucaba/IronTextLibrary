@@ -11,16 +11,15 @@ namespace IronText.Automata.Lalr1
 {
     class ConfigurableLrTable : ILrParserTable
     {
-        private readonly IMutableTable<int> data;
-        private readonly IBuildtimeBnfGrammar         grammar;
-        private readonly ILrParserTable     underlyingTable;
+        private readonly IMutableTable<int>     data;
+        private readonly IBuildtimeBnfGrammar   grammar;
+        private readonly ILrParserTable         underlyingTable;
 
         public ConfigurableLrTable(ILrDfa dfa, LanguageFlags flags)
         {
             this.grammar = dfa.Grammar;
 
-            int allTokenCount = grammar.SymbolCount + grammar.AmbSymbolCount;
-            this.data = new MutableTable<int>(dfa.States.Length, allTokenCount);
+            this.data = new MutableTable<int>(dfa.States.Length, grammar.SymbolCount);
 
             Configure(dfa, flags, out underlyingTable); 
         }

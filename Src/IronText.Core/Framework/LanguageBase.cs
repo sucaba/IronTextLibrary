@@ -47,7 +47,7 @@ namespace IronText.Framework
         protected Dictionary<object,int> tokenKeyToId;
         protected Scan1Delegate          scan1;
         protected ScanActionDelegate     scanAction;
-        protected GrammarActionDelegate  grammarAction;
+        protected ProductionActionDelegate  grammarAction;
         protected MergeDelegate          merge;
         protected SwitchFactory          switchFactory;
         protected LanguageName           name;

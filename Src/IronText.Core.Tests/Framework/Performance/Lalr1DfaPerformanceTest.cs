@@ -24,7 +24,7 @@ namespace IronText.Tests.Framework.Performance
 
             for (int i = 0; i != tokenCount; ++i)
             {
-                tokens[i] = grammar.DefineToken(i.ToString());
+                tokens[i] = grammar.DefineSymbol(i.ToString());
             }
 
             int iterationCount = tokenCount - ruleSize;

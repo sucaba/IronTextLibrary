@@ -1,17 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
 namespace IronText.Framework.Reflection
 {
-    public class Symbol : TableObject
+    public class Symbol : SymbolBase
     {
-        public string Name;       // Display name
-        public TokenCategory Categories;
-        public bool IsTerm;
-        public Precedence Precedence;
-        public readonly List<Production> Productions = new List<Production>();
+        public readonly ObjectReferenceCollection<Production> productions;
+
+        public Symbol(string name)
+        {
+            this.Name = name;
+
+            this.productions = new ObjectReferenceCollection<Production>();
+        }
+
+        /// <summary>
+        /// Categories token belongs to
+        /// </summary>
+        public override TokenCategory Categories { get; set; }
+
+        /// <summary>
+        /// Determines whether symbol is terminal
+        /// </summary>
+        public override bool IsTerminal { get; set; }
+
+        /// <summary>
+        /// Determines token-level precedence
+        /// </summary>
+        /// <remarks>
+        /// If production has no associated precedence, it is calculated from
+        /// the last terminal token in a production pattern.
+        /// </remarks>
+        public override Precedence Precedence { get; set; }
+
+        public override Collection<Production> Productions { get { return productions; } }
 
         public override bool Equals(object obj)
         {

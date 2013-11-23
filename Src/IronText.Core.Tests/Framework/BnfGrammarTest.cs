@@ -12,11 +12,11 @@ namespace IronText.Tests.Framework
         {
             var target = new EbnfGrammar();
 
-            var S = target.DefineToken("S");
-            var a = target.DefineToken("a");
-            var b = target.DefineToken("b");
-            var A = target.DefineToken("A");
-            var B = target.DefineToken("B");
+            var S = target.DefineSymbol("S");
+            var a = target.DefineSymbol("a");
+            var b = target.DefineSymbol("b");
+            var A = target.DefineSymbol("A");
+            var B = target.DefineSymbol("B");
 
             target.StartToken = S;
             target.DefineProduction(S, new[] { b, A });

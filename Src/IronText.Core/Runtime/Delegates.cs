@@ -15,7 +15,7 @@ namespace IronText.Framework
         // TODO: Use ILanguage service instead 
         ILanguage      language);
 
-    public delegate object GrammarActionDelegate(
+    public delegate object ProductionActionDelegate(
         int     ruleId,      // rule being reduced
         Msg[]   parts,       // array containing path being reduced
         int     firstIndex,  // starting index of the path being reduced

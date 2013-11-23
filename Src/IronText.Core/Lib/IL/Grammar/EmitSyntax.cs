@@ -288,6 +288,18 @@ namespace IronText.Lib.IL
             return emit;
         }
 
+        public static EmitSyntax Ldprop<T,R>(this EmitSyntax emit, Expression<Func<T,R>> expr)
+        {
+            var property = ExpressionUtils.GetProperty(expr);
+            return emit.Call(property.GetGetMethod());
+        }
+
+        public static EmitSyntax Stprop<T,R>(this EmitSyntax emit, Expression<Func<T,R>> expr)
+        {
+            var property = ExpressionUtils.GetProperty(expr);
+            return emit.Call(property.GetSetMethod());
+        }
+
         public static EmitSyntax Call(this EmitSyntax emit, Expression<Action> callExpr)
         {
             return emit .CallFromLambda(callExpr);

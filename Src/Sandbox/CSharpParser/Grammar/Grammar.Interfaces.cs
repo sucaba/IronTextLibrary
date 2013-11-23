@@ -10,7 +10,7 @@ namespace CSharpParser
     {
         [Parse(null, null, null, "interface", null, null, null, null, null, null)]
         CsInterfaceDeclaration InterfaceDeclaration(
-                Opt<CsAttributes>         attributes,
+                Opt<CsAttributes>                attributes,
                 Opt<CsList<CsInterfaceModifier>> modifiers,
                 Opt<CsPartial>                   partial,
                 CsIdentifier                     id,
@@ -103,14 +103,14 @@ namespace CSharpParser
 
         [Parse(null, null, "event", null, null, ";")]
         CsInterfaceEventDeclaration InterfaceEventDeclaration(
-                Opt<CsAttributes>   attributes,
+                Opt<CsAttributes>          attributes,
                 Opt<CsNew>                 @new,
                 CsType                     type,
                 CsIdentifier               id);
 
         [Parse(null, null, null, "this", "[", null, "]", "{", null, "}")]
         CsInterfaceIndexerDeclaration InterfaceIndexerDeclaration(
-                Opt<CsAttributes>   attributes,
+                Opt<CsAttributes>          attributes,
                 Opt<CsNew>                 @new,
                 CsType                     type,
                 CsFormalParameterList      formalParams,

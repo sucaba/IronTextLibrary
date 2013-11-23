@@ -10,7 +10,7 @@ namespace IronText.Framework
         , IParsing
     {
         private readonly EbnfGrammar grammar;
-        private readonly GrammarActionDelegate grammarAction;
+        private readonly ProductionActionDelegate grammarAction;
         private readonly MergeDelegate merge;
         private readonly object context;
         private Loc _resultLocation;
@@ -20,7 +20,7 @@ namespace IronText.Framework
         public ActionProducer(
             EbnfGrammar grammar,
             object context,
-            GrammarActionDelegate grammarAction,
+            ProductionActionDelegate grammarAction,
             MergeDelegate merge)
             : base(grammar, context, grammarAction)
         {

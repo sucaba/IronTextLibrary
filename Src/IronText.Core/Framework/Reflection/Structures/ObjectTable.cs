@@ -9,15 +9,8 @@ namespace IronText.Framework.Reflection
     public class ObjectTable<T> : Collection<T>
         where T : ITableObject
     {
-        public T Get(int id)
+        public bool TryGet(int index, out T output)
         {
-            int index = TableIndexing.IndexFromId(id);
-            return this[index];
-        }
-
-        public bool TryGet(int id, out T output)
-        {
-            int index = TableIndexing.IndexFromId(id);
             if (index < 0 || index >= Count)
             {
                 output = default(T);
@@ -41,7 +34,7 @@ namespace IronText.Framework.Reflection
         protected override void InsertItem(int index, T item)
         {
             base.InsertItem(index, item);
-            item.Attach(TableIndexing.IdFromIndex(index));
+            item.Attach(index);
         }
 
         protected override void RemoveItem(int index)
@@ -54,7 +47,7 @@ namespace IronText.Framework.Reflection
         {
             this[index].Detach();
             base.SetItem(index, item);
-            item.Attach(TableIndexing.IdFromIndex(index));
+            item.Attach(index);
         }
     }
 }

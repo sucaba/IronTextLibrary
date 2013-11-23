@@ -11,7 +11,7 @@ namespace IronText.MetadataCompiler
     {
         private readonly LanguageData data;
         private readonly LanguageName name;
-        private readonly GrammarActionDelegate grammarAction;
+        private readonly ProductionActionDelegate grammarAction;
         private readonly MergeDelegate merge;
         private ResourceAllocator allocator;
 
@@ -99,10 +99,10 @@ namespace IronText.MetadataCompiler
             return exit.Next(new Msg(externalToken, null, Loc.Unknown));
         }
 
-        private GrammarActionDelegate BuildExecuteRuleAction()
+        private ProductionActionDelegate BuildExecuteRuleAction()
         {
             var generator = new GrammarActionGenerator();
-            var result = new CachedMethod<GrammarActionDelegate>(
+            var result = new CachedMethod<ProductionActionDelegate>(
                 "Bootstrap." + name.FullName + ".GrammarActions",
                 (emit, args) => 
                 { 

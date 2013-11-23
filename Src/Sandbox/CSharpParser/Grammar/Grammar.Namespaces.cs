@@ -12,7 +12,7 @@ namespace CSharpParser
         CsCompilationUnit CompilationUnit(
                 Opt<CsList<CsExternAliasDirective>>        externAliasDirectives,
                 Opt<CsList<CsUsingDirective>>              usingDirectives,
-                Opt<CsGlobalAttributes>                  globalAttributes,
+                Opt<CsGlobalAttributes>                    globalAttributes,
                 Opt<CsList<CsNamespaceMemberDeclaration>>  nsMemberDeclarations);
 
         [Parse("namespace", null, null)]

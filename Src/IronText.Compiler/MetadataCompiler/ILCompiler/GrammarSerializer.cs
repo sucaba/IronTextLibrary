@@ -1,7 +1,10 @@
-﻿using IronText.Framework;
+﻿using System;
+using System.Collections.ObjectModel;
+using IronText.Framework;
 using IronText.Framework.Reflection;
 using IronText.Lib.Ctem;
 using IronText.Lib.IL;
+using IronText.Misc;
 
 namespace IronText.MetadataCompiler
 {
@@ -19,30 +22,91 @@ namespace IronText.MetadataCompiler
 
         public EmitSyntax Build(EmitSyntax emit)
         {
-            var result = emit.Locals.Generate();
-            result.Name = "grammar";
-
-            var parts = emit.Locals.Generate();
+            var resultVar   = emit.Locals.Generate("result");
+            var partsVar    = emit.Locals.Generate("parts");
+            var symbolVar   = emit.Locals.Generate("symbol").GetRef();
+            var intArrayVar = emit.Locals.Generate("intArray").GetRef();
             emit
-                .Local(result, emit.Types.Import(typeof(EbnfGrammar)))
-                .Local(parts, emit.Types.Import(typeof(int[])))
+                .Local(resultVar, emit.Types.Import(typeof(EbnfGrammar)))
+                .Local(partsVar, emit.Types.Import(typeof(int[])))
+                .Local(symbolVar.Def,   emit.Types.Import(typeof(SymbolBase)))
+                .Local(intArrayVar.Def, emit.Types.Array(emit.Types.Int32))
 
                 .Newobj(() => new EbnfGrammar())
-                .Stloc(result.GetRef())
+                .Stloc(resultVar.GetRef())
                 ;
 
-            for (int token = 0; token != grammar.SymbolCount; ++token)
+            foreach (var symbol in grammar.Symbols)
             {
-                if (!grammar.IsPredefined(token))
+                if (grammar.IsPredefined(symbol.Id))
                 {
+                    continue;
+                }
+
+                if (symbol is Symbol)
+                {
+                    var determSymbol = (Symbol)symbol;
                     emit
-                        .Ldloc(result.GetRef())
-                        .Ldstr(new QStr(grammar.SymbolName(token)))
-                        .Ldc_I4((int)grammar.GetTokenCategories(token))
-                        .Call((EbnfGrammar g, string name, TokenCategory c) => g.DefineToken(name, c))
-                        .Pop()
+                        .Ldstr(new QStr(symbol.Name))
+                        .Newobj((string name) => new Symbol(name))
+                        .Stloc(symbolVar)
+                        ;
+                    if (symbol.Categories != TokenCategory.None)
+                    {
+                        emit
+                            .Ldloc(symbolVar)
+                            .Ldc_I4((int)symbol.Categories)
+                            .Call(typeof(Symbol).GetProperty("Categories").GetSetMethod())
+                            ;
+                    }
+                }
+                else if (symbol is AmbiguousSymbol)
+                {
+                    var ambSymbol = (AmbiguousSymbol)symbol;
+
+                    emit
+                        .Ldc_I4(ambSymbol.Tokens.Count)
+                        .Newarr(emit.Types.Int32)
+                        .Stloc(intArrayVar)
+                        ;
+
+                    for (int i = 0; i != ambSymbol.Tokens.Count; ++i)
+                    {
+                        emit
+                            .Ldloc(intArrayVar)
+                            .Ldc_I4(i)
+                            .Ldc_I4(ambSymbol.Tokens[i])
+                            .Stelem_I4()
+                            ;
+                    }
+
+                    emit
+                        .Ldc_I4(ambSymbol.MainToken)
+                        .Ldloc(intArrayVar)
+                        .Newobj((int main, int[] tokens) => new AmbiguousSymbol(main, tokens))
+                        .Stloc(symbolVar)
                         ;
                 }
+                else
+                {
+                    throw new InvalidOperationException("Internal error: unknown symbol type.");
+                }
+
+                emit
+                    .Ldloc(resultVar.GetRef())
+                    .Call(typeof(EbnfGrammar).GetProperty("Symbols").GetGetMethod())
+                    .Ldloc(symbolVar)
+                    .Call((Collection<Symbol> coll, Symbol sym) => coll.Add(sym))
+                    ;
+            }
+
+            if (grammar.StartToken.HasValue)
+            {
+                emit
+                    .Ldloc(resultVar.GetRef())
+                    .Ldc_I4(grammar.StartToken.Value)
+                    .Newobj((int val) => new Nullable<int>(val))
+                    .Stprop((EbnfGrammar g) => g.StartToken);
             }
 
             foreach (var rule in grammar.Productions)
@@ -56,14 +120,14 @@ namespace IronText.MetadataCompiler
                 emit
                     .Ldc_I4(rule.Pattern.Length)
                     .Newarr(emit.Types.Int32)
-                    .Stloc(parts.GetRef())
+                    .Stloc(partsVar.GetRef())
                     ;
 
                 int i = 0;
                 foreach (int part in rule.Pattern)
                 {
                     emit
-                        .Ldloc(parts.GetRef())
+                        .Ldloc(partsVar.GetRef())
                         .Ldc_I4(i)
                         .Ldc_I4(part)
                         .Stelem_I4()
@@ -72,9 +136,9 @@ namespace IronText.MetadataCompiler
                 }
 
                 emit
-                    .Ldloc(result.GetRef())
+                    .Ldloc(resultVar.GetRef())
                     .Ldc_I4(rule.Outcome)
-                    .Ldloc(parts.GetRef())
+                    .Ldloc(partsVar.GetRef())
                     .Call((EbnfGrammar g, int l, int[] p) => g.DefineProduction(l, p))
                     .Pop()
                     ;
@@ -93,7 +157,7 @@ namespace IronText.MetadataCompiler
                 }
 
                 emit
-                    .Ldloc(result.GetRef())
+                    .Ldloc(resultVar.GetRef())
                     .Ldc_I4(token)
                         .Ldc_I4(precedence.Value)
                         .Ldc_I4((int)precedence.Assoc)
@@ -103,10 +167,10 @@ namespace IronText.MetadataCompiler
             }
 
             emit
-                .Ldloc(result.GetRef())
+                .Ldloc(resultVar.GetRef())
                 .Call((EbnfGrammar g) => g.Freeze())
                 ;
-            return emit.Ldloc(result.GetRef());
+            return emit.Ldloc(resultVar.GetRef());
         }
     }
 }

@@ -23,6 +23,23 @@ namespace IronText.Misc
             throw new ArgumentException("Expected MemberExpression with field reference");
         }
 
+        public static PropertyInfo GetProperty<T,R>(Expression<Func<T,R>> expr)
+        {
+            var memberExpr = expr.Body as MemberExpression;
+            if (memberExpr == null)
+            {
+                throw new ArgumentException("Expected MemberExpression");
+            }
+
+            var property = memberExpr.Member as PropertyInfo;
+            if (property != null)
+            {
+                return property;
+            }
+
+            throw new ArgumentException("Expected MemberExpression with property reference");
+        }
+
         public static MethodInfo GetMethod<T>(Expression<Action<T>> expr)
         {
             return GetMethodFromLambda(expr);

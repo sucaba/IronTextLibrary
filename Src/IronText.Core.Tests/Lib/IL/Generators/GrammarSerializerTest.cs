@@ -15,9 +15,9 @@ namespace IronText.Tests.Lib.IL.Generators
         public void Test()
         {
             var originalGrammar = new EbnfGrammar();
-            int red = originalGrammar.DefineToken("red");
-            int green = originalGrammar.DefineToken("green", TokenCategory.External);
-            int blue = originalGrammar.DefineToken("blue");
+            int red = originalGrammar.DefineSymbol("red");
+            int green = originalGrammar.DefineSymbol("green", TokenCategory.External);
+            int blue = originalGrammar.DefineSymbol("blue");
             originalGrammar.DefineProduction(red, new[]{ green, blue });
             originalGrammar.DefineProduction(blue, new []{ red, green });
             originalGrammar.DefineProduction(blue, new int[0]);

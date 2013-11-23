@@ -54,7 +54,7 @@ namespace IronText.Framework.Reflection
 
         private void AddToOwner(T item)
         {
-            if (item.IsDetached)
+            if (owner != null && item.IsDetached)
             {
                 owner.Add(item);
             }

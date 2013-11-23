@@ -544,7 +544,7 @@ namespace IronText.MetadataCompiler
                 .LdMethodDelegate(
                     declaringTypeRef,
                     RuleActionMethodName,
-                    typeof(GrammarActionDelegate))
+                    typeof(ProductionActionDelegate))
                 .Stfld(LanguageBase.Fields.grammarAction)
 
                 // Init grammarAction field

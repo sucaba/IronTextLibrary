@@ -66,14 +66,12 @@ namespace IronText.Framework.Reflection
         // Token IDs without TokenInfo
 
         // pending token count
-        private int allTokenCount = PredefinedTokenCount;
         private BitSetType tokenSet;
         private readonly int AugmentedProductionIndex;
 
         private readonly ObjectTable<Production>       productions;
         private readonly ObjectTable<ProductionAction> productionActions;
-        private readonly ObjectTable<Symbol>           symbols;
-        private readonly List<AmbiguousSymbol>         ambSymbols;
+        private readonly ObjectTable<SymbolBase>       symbols;
 
         private MutableIntSet[] first;
 
@@ -84,30 +82,28 @@ namespace IronText.Framework.Reflection
         {
             productions       = new ObjectTable<Production>();
             productionActions = new ObjectTable<ProductionAction>();
-            symbols           = new ObjectTable<Symbol>();
-            ambSymbols        = new List<AmbiguousSymbol>();
+            symbols           = new ObjectTable<SymbolBase>();
 
             for (int i = PredefinedTokenCount; i != 0; --i)
             {
-                Symbols.Add(new Symbol()); // stub
+                Symbols.Add(new Symbol("")); // stub
             }
 
-            Symbols[PropogatedToken] = new Symbol { Name = "#" };
-            Symbols[EpsilonToken]    = new Symbol { Name = "$eps" };
-            Symbols[AugmentedStart]  = new Symbol { Name = "$start" };
-            Symbols[Eoi]             = new Symbol 
+            Symbols[PropogatedToken] = new Symbol("#");
+            Symbols[EpsilonToken]    = new Symbol("$eps");
+            Symbols[AugmentedStart]  = new Symbol("$start");
+            Symbols[Eoi]             = new Symbol("$")
                                           { 
-                                              Name = "$",
                                               Categories = 
                                                          TokenCategory.DoNotInsert 
                                                          | TokenCategory.DoNotDelete 
                                           };
-            Symbols[Error]           = new Symbol { Name = "$error" };
+            Symbols[Error]           = new Symbol("$error");
 
             AugmentedProductionIndex = DefineProduction(AugmentedStart, new[] { -1 }).Id;
         }
 
-        public ObjectTable<Symbol> Symbols { get { return symbols; } }
+        public ObjectTable<SymbolBase> Symbols { get { return symbols; } }
 
         public ObjectTable<Production> Productions { get { return productions; } }
 
@@ -135,11 +131,25 @@ namespace IronText.Framework.Reflection
             set { this.Productions[AugmentedProductionIndex].Pattern[0] = value.HasValue ? value.Value : -1; }
         }
 
+        public Symbol Start
+        {
+            get 
+            {
+                int? token = StartToken;
+                if (token.HasValue)
+                {
+                    return (Symbol)symbols[token.Value];
+                }
+
+                return null;
+            }
+        }
+
         public int SymbolCount { get { return Symbols.Count; } }
 
-        public int AmbSymbolCount { get { return ambSymbols.Count; } }
+        public int AmbSymbolCount { get { return symbols.Where(sym => sym.IsAmbiguous).Count(); } }
 
-        public IEnumerable<AmbiguousSymbol> AmbiguousSymbols { get { return ambSymbols; } }
+        public IEnumerable<AmbiguousSymbol> AmbiguousSymbols { get { return symbols.OfType<AmbiguousSymbol>(); } }
 
         public void Freeze()
         {
@@ -151,38 +161,38 @@ namespace IronText.Framework.Reflection
             {
                 if (i == Error)
                 {
-                    Symbols[Error].IsTerm = false;
+                    Symbols[Error].IsTerminal = false;
                 }
                 else
                 {
-                    Symbols[i].IsTerm = CalcIsTerm(i);
+                    Symbols[i].IsTerminal = CalcIsTerm(i);
                 }
             }
 
-            Symbols[Eoi].IsTerm = true;
+            Symbols[Eoi].IsTerminal = true;
 
             this.MaxRuleSize = Productions.Select(r => r.Pattern.Length).Max();
         }
 
-        public int DefineToken(string name, TokenCategory categories = TokenCategory.None)
+        public int DefineSymbol(string name, TokenCategory categories = TokenCategory.None)
         {
             Debug.Assert(!frozen);
 
-            int result = InternalDefineToken(name, categories);
+            var symbol = new Symbol(name ?? "<unnamed-token>") { Categories = categories };
+            Symbols.Add(symbol);
             if (null == StartToken)
             {
-                StartToken = result;
+                StartToken = symbol.Id;
             }
 
-            return result;
+            return symbol.Id;
         }
 
         public int DefineAmbToken(int mainToken, IEnumerable<int> tokens)
         {
-            int result = allTokenCount++;
-            var ambSymbol = new AmbiguousSymbol(result, mainToken, tokens);
-            ambSymbols.Add(ambSymbol);
-            return result;
+            var ambSymbol = new AmbiguousSymbol(mainToken, tokens);
+            symbols.Add(ambSymbol);
+            return ambSymbol.Id;
         }
 
         public bool IsStartProduction(int ruleId)
@@ -220,19 +230,12 @@ namespace IronText.Framework.Reflection
             return (Symbols[token].Categories & TokenCategory.DoNotDelete) != 0;
         }
 
-        private int InternalDefineToken(string name, TokenCategory categories)
-        {
-            int result = allTokenCount++;
-            Symbols.Add(new Symbol { Name = name ?? "token-" + result, Categories = categories });
-            return result;
-        }
-
-        public bool IsTerminal(int token) { return Symbols[token].IsTerm; }
+        public bool IsTerminal(int token) { return Symbols[token].IsTerminal; }
 
         public bool IsNonTerm(int token) 
         {
             var ti = Symbols[token];
-            return !ti.IsTerm && (token >= PredefinedTokenCount);
+            return !ti.IsTerminal && (token >= PredefinedTokenCount);
         }
 
         internal TokenCategory GetTokenCategories(int token) { return Symbols[token].Categories; }
@@ -582,7 +585,7 @@ namespace IronText.Framework.Reflection
 
         public Precedence GetProductionPrecedence(int ruleId)
         {
-            var rule = productions.Get(ruleId);
+            var rule = productions[ruleId];
             if (rule.Precedence != null)
             {
                 return rule.Precedence;

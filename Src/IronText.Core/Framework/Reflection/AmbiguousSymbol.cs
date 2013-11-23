@@ -9,19 +9,13 @@ namespace IronText.Framework.Reflection
     /// <summary>
     /// Ambiguous token
     /// </summary>
-    public sealed class AmbiguousSymbol
+    public sealed class AmbiguousSymbol : SymbolBase
     {
-        public AmbiguousSymbol(int id, int mainToken, IEnumerable<int> tokens)
+        public AmbiguousSymbol(int mainToken, IEnumerable<int> tokens)
         {
-            this.Id        = id;
             this.MainToken = mainToken;
             this.Tokens    = new ReadOnlyCollection<int>(tokens.ToArray());
         }
-
-        /// <summary>
-        /// ID of the ambiguous token
-        /// </summary>
-        public int Id { get; private set; }
 
         /// <summary>
         /// The most probable mandatory token ID 
@@ -33,5 +27,15 @@ namespace IronText.Framework.Reflection
         /// Token alternatives
         /// </summary>
         public ReadOnlyCollection<int> Tokens { get; private set; }
+
+        public override TokenCategory Categories
+        {
+            get { return TokenCategory.None; }
+            set { }
+        }
+
+        public override Precedence Precedence { get { return null; } set { } }
+
+        public override bool IsAmbiguous { get { return true; } }
     }
 }
