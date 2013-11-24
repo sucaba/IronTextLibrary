@@ -13,6 +13,8 @@ namespace IronText.Framework
         public RuntimeEbnfGrammar(EbnfGrammar grammar)
         {
             this.grammar = grammar;
+
+            this.MaxRuleSize = grammar.Productions.Select(r => r.Pattern.Length).Max();
         }
 
         public ProductionCollection Productions { get { return grammar.Productions; } }
@@ -21,12 +23,12 @@ namespace IronText.Framework
 
         public IEnumerable<Production> GetProductions(int outcomeToken)
         {
-            return grammar.GetProductions(outcomeToken);
+            return grammar.Symbols[outcomeToken].Productions;
         }
 
         public IEnumerable<int> EnumerateTokens()
         {
-            return grammar.EnumerateTokens();
+            return grammar.Symbols.Select(ti => ti.Index);
         }
 
         public bool IsTerminal(int token)
@@ -64,7 +66,7 @@ namespace IronText.Framework
             return grammar.GetTokenCategories(token);
         }
 
-        public int MaxRuleSize { get { return grammar.MaxRuleSize; } }
+        public int MaxRuleSize { get; private set; }
     }
 
 }

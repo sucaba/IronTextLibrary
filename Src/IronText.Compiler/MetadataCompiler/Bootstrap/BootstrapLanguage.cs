@@ -26,8 +26,8 @@ namespace IronText.MetadataCompiler
 
         public void Init()
         {
-            this.allocator = new ResourceAllocator(data.Grammar);
             this.runtimeGrammar = new RuntimeEbnfGrammar(data.Grammar);
+            this.allocator = new ResourceAllocator(runtimeGrammar);
         }
 
         public bool IsDeterministic { get { return data.IsDeterministic; } }

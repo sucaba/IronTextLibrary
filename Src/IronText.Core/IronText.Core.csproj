@@ -176,6 +176,7 @@
     <Compile Include="Collections\IReferenceContainer.cs" />
     <Compile Include="Collections\IOwner.cs" />
     <Compile Include="Framework\Reflection\IEbnfContext.cs" />
+    <Compile Include="Framework\Reflection\NullableFirstTables.cs" />
     <Compile Include="Framework\Reflection\ProductionActionCollection.cs" />
     <Compile Include="Framework\Reflection\InlineProduction.cs" />
     <Compile Include="Framework\Reflection\IProductionActionBinding.cs" />
@@ -239,7 +240,6 @@
     <Compile Include="Logging\Severity.cs" />
     <Compile Include="Framework\Attributes\ScanBaseAttribute.cs" />
     <Compile Include="Framework\Attributes\RuleMethodAttribute.cs" />
-    <Compile Include="Framework\Attributes\SwitchAttribute.cs" />
     <Compile Include="Framework\Attributes\DemandAttribute.cs" />
     <Compile Include="Framework\Delegates.cs" />
     <Compile Include="Extensibility\ITokenRefResolver.cs" />
@@ -313,7 +313,6 @@
     <Compile Include="Runtime\Scanning\Scanner.cs" />
     <Compile Include="Framework\Reflection\EbnfGrammar.cs" />
     <Compile Include="Framework\Language.cs" />
-    <Compile Include="Lib\Raw.cs" />
     <Compile Include="Runtime\Deterministic\DeterministicParser.cs" />
     <Compile Include="Logging\Loc.cs" />
     <Compile Include="Framework\SyntaxException.cs" />

@@ -9,6 +9,5 @@ namespace IronText.Framework
         Beacon          = 0x02,
         DoNotInsert     = 0x04,
         DoNotDelete     = 0x08,
-        External        = 0x10,
     }
 }

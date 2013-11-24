@@ -57,7 +57,7 @@ namespace CSharpParser.Tests
         {
             int stateCount = data.ParserStates.Length;
             var grammar = data.Grammar;
-            int[] terms = grammar.EnumerateTokens().Where(grammar.IsTerminal).ToArray();
+            int[] terms = (from s in grammar.Symbols where s.IsTerminal select s.Index).ToArray();
             var table = data.ParserActionTable;
             var unpartitioned = Enumerable.Range(0, stateCount).ToList();
             var categories = new List<List<int>>();

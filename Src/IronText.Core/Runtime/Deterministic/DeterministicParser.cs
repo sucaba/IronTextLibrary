@@ -17,9 +17,6 @@ namespace IronText.Framework
 
         private readonly TaggedStack<TNode> stateStack;
 
-#if SWITCH_FEATURE
-        private Func<object,int,IReciever<Msg>,IReciever<Msg>> makeSwitch;
-#endif
         private readonly Production[] rules;
         private Production            currentRule;
         private IProducer<TNode>   producer;
@@ -32,23 +29,16 @@ namespace IronText.Framework
             IProducer<TNode>      producer,
             RuntimeEbnfGrammar     grammar,
             TransitionDelegate    actionTable,
-            ResourceAllocator     allocator
-#if SWITCH_FEATURE
-            , Func<object,int,IReciever<Msg>,IReciever<Msg>> makeSwitch
-#endif
-            , ILogging logging
+            ResourceAllocator     allocator,
+            ILogging              logging
             )
             : this(
                 producer,
                 grammar,
                 actionTable,
-                allocator
-#if SWITCH_FEATURE
-                , makeSwitch
-#endif
-                , logging
-                , new TaggedStack<TNode>(InitialValueStackSize)
-                )
+                allocator,
+                logging,
+                new TaggedStack<TNode>(InitialValueStackSize))
         {
             this.Reset();
         }
@@ -57,22 +47,15 @@ namespace IronText.Framework
             IProducer<TNode>      producer,
             RuntimeEbnfGrammar    grammar,
             TransitionDelegate    actionTable,
-            ResourceAllocator     allocator
-#if SWITCH_FEATURE
-            , Func<object,int,IReciever<Msg>,IReciever<Msg>> makeSwitch
-#endif
-            , ILogging logging
-            , TaggedStack<TNode> stateStack 
-            )
+            ResourceAllocator     allocator,
+            ILogging              logging,
+            TaggedStack<TNode>    stateStack)
         {
             this.producer       = producer;
             this.grammar        = grammar;
             this.rules          = grammar.Productions.ToArray();
             this.actionTable    = actionTable;
             this.allocator      = allocator;
-#if SWITCH_FEATURE
-            this.makeSwitch     = makeSwitch;
-#endif
             this.logging        = logging;
             this.stateStack     = stateStack;
         }
@@ -151,13 +134,6 @@ namespace IronText.Framework
                         });
                     return null;
 
-#if SWITCH_FEATURE
-                case ParserActionKind.Switch:
-                    {
-                        var reciever = makeSwitch(Context, action.ExternalToken, this);
-                        return reciever.Next(msg);
-                    }
-#endif
                 case ParserActionKind.Shift:
                     {
                         stateStack.Push(action.State, producer.CreateLeaf(envelope, data));

@@ -16,7 +16,7 @@ namespace IronText.Tests.Lib.IL.Generators
         {
             var originalGrammar = new EbnfGrammar();
             int red   = originalGrammar.Symbols.Add("red").Index;
-            int green = originalGrammar.Symbols.Add("green", TokenCategory.External).Index;
+            int green = originalGrammar.Symbols.Add("green", TokenCategory.ExplicitlyUsed).Index;
             int blue  = originalGrammar.Symbols.Add("blue").Index;
             originalGrammar.Productions.Add(red,  new[] { green, blue });
             originalGrammar.Productions.Add(blue, new[] { red, green });

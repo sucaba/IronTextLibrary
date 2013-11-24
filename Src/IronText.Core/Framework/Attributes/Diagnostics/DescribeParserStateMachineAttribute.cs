@@ -109,12 +109,6 @@ namespace IronText.Framework
             output.Write("             ");
             switch (action.Kind)
             {
-#if SWITCH_FEATURE
-                case ParserActionKind.Switch:
-                    output.Write("switch to the external token ");
-                    output.Write(action.ExternalToken);
-                    break;
-#endif
                 case ParserActionKind.Shift:
                     output.Write("shift and go to state ");
                     output.Write(action.State);
@@ -163,14 +157,6 @@ namespace IronText.Framework
         {
             switch (action.Kind)
             {
-#if SWITCH_FEATURE
-                case ParserActionKind.Switch:
-                    output.Write(indent);
-                    output.Write("Swith to the external token ");
-                    output.Write(data.Grammar.TokenName(action.ExternalToken));
-                    output.WriteLine(":");
-                    break;
-#endif
                 case ParserActionKind.Shift:
                     output.Write(indent);
                     output.Write("Shift to the state I");

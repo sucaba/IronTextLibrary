@@ -105,7 +105,7 @@ namespace IronText.MetadataCompiler
             bool showLookaheads = true)
         {
             var rule = item.Rule;
-            output.Write(data.Grammar.SymbolName(rule.Outcome));
+            output.Write(data.Grammar.Symbols[rule.Outcome].Name);
             output.Write(" ->");
             for (int i = 0; i != rule.Pattern.Length; ++i)
             {
@@ -115,7 +115,7 @@ namespace IronText.MetadataCompiler
                 }
 
                 output.Write(" ");
-                output.Write(data.Grammar.SymbolName(rule.Pattern[i]));
+                output.Write(data.Grammar.Symbols[rule.Pattern[i]].Name);
             }
 
             if (item.Position == rule.Pattern.Length)

@@ -69,27 +69,14 @@ namespace IronText.Framework
 
         public void Init()
         {
-            this.allocator = new ResourceAllocator(grammar);
             this.runtimeGrammar = new RuntimeEbnfGrammar(grammar);
+            this.allocator = new ResourceAllocator(runtimeGrammar);
         }
 
         public LanguageName Name { get { return name; } }
 
         public EbnfGrammar Grammar { get { return grammar; } }
 
-        private ResourceAllocator Allocator
-        {
-            get
-            {
-                if (allocator == null)
-                {
-                    allocator = new ResourceAllocator(grammar);
-                }
-
-                return allocator;
-            }
-        }
-        
         public void Heatup()
         {
             getParserAction(0, 0);
@@ -140,11 +127,8 @@ namespace IronText.Framework
                     producer,
                     runtimeGrammar,
                     getParserAction,
-                    allocator
-#if SWITCH_FEATURE
-                    , (ctx, id, exit) => switchFactory(ctx, id, exit, this)
-#endif
-                    , logging
+                    allocator,
+                    logging
                     );
             }
             else

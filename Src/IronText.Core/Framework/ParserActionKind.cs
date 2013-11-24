@@ -12,10 +12,6 @@ namespace IronText.Framework
         // Reduce rule and invoke rule action
         Reduce = 2,
 
-#if SWITCH_FEATURE
-        // Switch to another token reciever
-        Switch = 3,
-#endif
         Resolve    = 3,  // Resolve Shrodinger's token
 
         Fork       = 7,  // Fork on allowed alternatives of a Shrodinger's token

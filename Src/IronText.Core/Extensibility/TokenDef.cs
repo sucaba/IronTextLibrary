@@ -10,25 +10,8 @@ namespace IronText.Extensibility
         public int  Id = -1;
         public readonly HashSet<string> Literals = new HashSet<string>();
         public TokenCategory Categories;
-        private Type tokenType;
 
-        public Type TokenType
-        {
-            get { return this.tokenType; }
-            set 
-            { 
-                this.tokenType = value;
-                if (typeof(IReceiver<Msg>).IsAssignableFrom(TokenType))
-                {
-                    this.Categories |= TokenCategory.External;
-                }
-            }
-        }
-
-        public bool IsExternal
-        {
-            get { return (Categories & TokenCategory.External) != 0; }
-        }
+        public Type TokenType { get; set; }
 
         public string Name
         {
