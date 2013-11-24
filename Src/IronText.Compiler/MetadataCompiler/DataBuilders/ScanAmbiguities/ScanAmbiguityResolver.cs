@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using IronText.Algorithm;
+using IronText.Automata.Lalr1;
 using IronText.Automata.Regular;
+using IronText.Compiler;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 
@@ -63,7 +65,7 @@ namespace IronText.MetadataCompiler
             state.Actions.Sort();
         }
 
-        public void DefineAmbiguities(EbnfGrammar grammar)
+        public void DefineAmbiguities(EbnfGrammarAnalysis grammar)
         {
             this.ambTokenToMainToken = new MutableIntMap<int>();
 

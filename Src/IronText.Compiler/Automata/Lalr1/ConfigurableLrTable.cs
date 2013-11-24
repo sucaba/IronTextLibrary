@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using IronText.Algorithm;
+using IronText.Compiler;
 using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Framework.Reflection;
@@ -11,15 +12,15 @@ namespace IronText.Automata.Lalr1
 {
     class ConfigurableLrTable : ILrParserTable
     {
-        private readonly IMutableTable<int>     data;
-        private readonly IBuildtimeBnfGrammar   grammar;
-        private readonly ILrParserTable         underlyingTable;
+        private readonly IMutableTable<int>   data;
+        private readonly EbnfGrammarAnalysis   grammar;
+        private readonly ILrParserTable       underlyingTable;
 
         public ConfigurableLrTable(ILrDfa dfa, LanguageFlags flags)
         {
             this.grammar = dfa.Grammar;
 
-            this.data = new MutableTable<int>(dfa.States.Length, grammar.SymbolCount);
+            this.data = new MutableTable<int>(dfa.States.Length, grammar.Symbols.Count);
 
             Configure(dfa, flags, out underlyingTable); 
         }

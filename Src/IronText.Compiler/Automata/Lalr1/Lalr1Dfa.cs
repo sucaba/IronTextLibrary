@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using IronText.Algorithm;
+using IronText.Compiler;
 using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Framework.Reflection;
@@ -22,17 +23,15 @@ namespace IronText.Automata.Lalr1
         private readonly BitSetType TokenSet;
         private BitSetType StateSet;
 
-        private readonly IBuildtimeBnfGrammar grammar;
-        private readonly BnfGrammarAnalysis grammarAnalysis;
+        private readonly EbnfGrammarAnalysis grammar;
 
         private DotState[] states;
 
-        public Lalr1Dfa(BnfGrammarAnalysis analysis, LrTableOptimizations optimizations)
+        public Lalr1Dfa(EbnfGrammarAnalysis grammar, LrTableOptimizations optimizations)
         {
-            this.grammarAnalysis = analysis;
-            this.grammar = analysis.Grammar;
+            this.grammar       = grammar;
             this.Optimizations = optimizations;
-            this.TokenSet = grammar.TokenSet;
+            this.TokenSet      = grammar.TokenSet;
 
             BuildLalr1States();
 
@@ -74,7 +73,7 @@ namespace IronText.Automata.Lalr1
             }
         }
 
-        public IBuildtimeBnfGrammar Grammar { get { return grammar; } }
+        public EbnfGrammarAnalysis Grammar { get { return grammar; } }
 
         public DotState[] States { get { return this.states; } }
 
@@ -368,7 +367,7 @@ namespace IronText.Automata.Lalr1
         }
 
         // TODO: Performance
-        private static void CollectClosureLookaheads(IDotItemSet result, IBuildtimeBnfGrammar grammar)
+        private static void CollectClosureLookaheads(IDotItemSet result, EbnfGrammarAnalysis grammar)
         {
             int count = result.Count;
             if (count == 0)

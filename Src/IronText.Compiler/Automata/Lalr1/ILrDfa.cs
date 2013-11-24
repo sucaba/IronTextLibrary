@@ -1,20 +1,21 @@
 ﻿using System;
+using IronText.Compiler;
 using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 
 namespace IronText.Automata.Lalr1
 {
-    public interface ILrDfa
+    interface ILrDfa
     {
-        IBuildtimeBnfGrammar Grammar { get; }
+        EbnfGrammarAnalysis Grammar { get; }
 
         LrTableOptimizations Optimizations { get; }
 
         DotState[] States { get; }
     }
 
-    public static class LrDfaExtensions
+    static class LrDfaExtensions
     {
         public static int[] GetStateToSymbolTable(this ILrDfa lrDfa)
         {

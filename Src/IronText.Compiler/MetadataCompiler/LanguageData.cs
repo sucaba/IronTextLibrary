@@ -8,6 +8,7 @@ using System.Linq;
 using IronText.Automata.Regular;
 using IronText.Automata.Lalr1;
 using IronText.Framework.Reflection;
+using IronText.Compiler;
 
 namespace IronText.MetadataCompiler
 {
@@ -20,7 +21,7 @@ namespace IronText.MetadataCompiler
 
         public EbnfGrammar Grammar { get; set; }
 
-        public BnfGrammarAnalysis GrammarAnalysis { get; set; }
+        public EbnfGrammarAnalysis GrammarAnalysis { get; set; }
 
         public int TokenCount { get { return Grammar.SymbolCount; } }
 

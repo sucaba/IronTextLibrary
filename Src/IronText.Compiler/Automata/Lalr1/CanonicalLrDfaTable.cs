@@ -6,18 +6,19 @@ using IronText.Extensibility;
 using IronText.Framework;
 using System.Collections.ObjectModel;
 using IronText.Framework.Reflection;
+using IronText.Compiler;
 
 namespace IronText.Automata.Lalr1
 {
     class CanonicalLrDfaTable : ILrParserTable
     {
-        private readonly IBuildtimeBnfGrammar grammar;
+        private readonly EbnfGrammarAnalysis grammar;
         private readonly Dictionary<TransitionKey, ParserConflictInfo> transitionToConflict 
             = new Dictionary<TransitionKey, ParserConflictInfo>();
 
         private IMutableTable<int> actionTable;
-        private int[]  conflictActionTable;
-        private readonly bool canOptimizeReduceStates;
+        private int[]              conflictActionTable;
+        private readonly bool      canOptimizeReduceStates;
 
         public CanonicalLrDfaTable(ILrDfa dfa, IMutableTable<int> actionTable)
         {
@@ -25,7 +26,7 @@ namespace IronText.Automata.Lalr1
             this.canOptimizeReduceStates = (dfa.Optimizations & flag) == flag;
 
             this.grammar = dfa.Grammar;
-            this.actionTable = actionTable ?? new MutableTable<int>(dfa.States.Length, grammar.SymbolCount);
+            this.actionTable = actionTable ?? new MutableTable<int>(dfa.States.Length, grammar.Symbols.Count);
             FillDfaTable(dfa.States);
             BuildConflictTable();
         }

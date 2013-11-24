@@ -1,5 +1,6 @@
 ﻿using System;
 using IronText.Automata.Lalr1;
+using IronText.Compiler;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 using NUnit.Framework;
@@ -38,7 +39,7 @@ namespace IronText.Tests.Framework.Performance
 
             grammar.Freeze();
             
-            var target = new Lalr1Dfa(new BnfGrammarAnalysis(grammar), LrTableOptimizations.Default);
+            var target = new Lalr1Dfa(new EbnfGrammarAnalysis(grammar), LrTableOptimizations.Default);
         }
     }
 }

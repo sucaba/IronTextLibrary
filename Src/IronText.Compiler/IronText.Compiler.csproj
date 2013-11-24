@@ -168,7 +168,7 @@
     <Compile Include="Lib\RegularAst\IAstNodeVisitor.cs" />
     <Compile Include="Lib\ScannerExpressions\Chr.cs" />
     <Compile Include="Lib\ScannerExpressions\ScannerSyntax.cs" />
-    <Compile Include="Automata\Lalr1\BnfGrammarAnalysis.cs" />
+    <Compile Include="EbnfGrammarAnalysis.cs" />
     <Compile Include="MetadataCompiler\Bootstrap\BootstrapLanguage.cs" />
     <Compile Include="MetadataCompiler\Bootstrap\BootstrapScanner.cs" />
     <Compile Include="MetadataCompiler\CompiledLanguageProvider.cs" />

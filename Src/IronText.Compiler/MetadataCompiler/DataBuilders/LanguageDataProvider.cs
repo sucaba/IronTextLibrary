@@ -12,6 +12,7 @@ using System.Text;
 using IronText.Algorithm;
 using IronText.Framework.Reflection;
 using IronText.Extensibility.Bindings.Cil;
+using IronText.Compiler;
 
 namespace IronText.MetadataCompiler
 {
@@ -55,7 +56,7 @@ namespace IronText.MetadataCompiler
 
             List<List<ProductionActionBuilder>> ruleActionBuilders;
             var grammar = BuildGrammar(definition, out ruleActionBuilders);
-            var grammarAnalysis = new BnfGrammarAnalysis(grammar);
+            var grammarAnalysis = new EbnfGrammarAnalysis(grammar);
 
             foreach (SwitchRule switchRule in definition.SwitchRules)
             {
@@ -67,7 +68,7 @@ namespace IronText.MetadataCompiler
 
             if (!bootstrap)
             {
-                if (!BuildScanner(definition, grammar, tokenResolver, result))
+                if (!BuildScanner(definition, grammarAnalysis, tokenResolver, result))
                 {
                     return false;
                 }
@@ -136,7 +137,7 @@ namespace IronText.MetadataCompiler
 
         private bool BuildScanner(
             LanguageDefinition  definition,
-            EbnfGrammar         grammar,
+            EbnfGrammarAnalysis grammar,
             ITokenRefResolver   tokenResolver,
             LanguageData        result)
         {

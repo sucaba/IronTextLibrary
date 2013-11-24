@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using IronText.Automata.Lalr1;
 using IronText.Automata.Regular;
+using IronText.Compiler;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 
@@ -34,6 +36,6 @@ namespace IronText.MetadataCompiler
         /// Define ambiguous tokens
         /// </summary>
         /// <param name="grammar"></param>
-        void DefineAmbiguities(EbnfGrammar grammar);
+        void DefineAmbiguities(EbnfGrammarAnalysis grammar);
     }
 }

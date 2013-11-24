@@ -18,40 +18,7 @@ namespace IronText.Framework.Reflection
         IEnumerable<Production> GetProductions(int leftToken);
     }
 
-    public interface IBuildtimeBnfGrammar
-    {
-        string SymbolName(int token);
-
-        bool IsTerminal(int token);
-
-        IEnumerable<Production> GetProductions(int leftToken);
-
-        int SymbolCount { get; }
-
-        int AmbSymbolCount { get; }
-
-        Precedence GetTermPrecedence(int token);
-
-        Production AugmentedProduction { get; }
-
-        Precedence GetProductionPrecedence(int ruleId);
-
-        bool IsStartProduction(int ruleId);
-
-        BitSetType TokenSet { get; }
-
-        IEnumerable<AmbiguousSymbol> AmbiguousSymbols { get; }
-
-        bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output);
-
-        bool HasFirst(int[] tokenChain, int startIndex, int token);
-
-        bool IsTailNullable(int[] tokens, int startIndex);
-    }
-
-    public sealed class EbnfGrammar 
-        : IRuntimeBnfGrammar
-        , IBuildtimeBnfGrammar
+    public sealed class EbnfGrammar : IRuntimeBnfGrammar
     {
         public const string UnnamedTokenName = "<unnamed token>";
         public const string UnknownTokenName = "<unknown token>";
@@ -150,8 +117,6 @@ namespace IronText.Framework.Reflection
         }
 
         public int SymbolCount { get { return Symbols.Count; } }
-
-        public int AmbSymbolCount { get { return symbols.Where(sym => sym.IsAmbiguous).Count(); } }
 
         public IEnumerable<AmbiguousSymbol> AmbiguousSymbols { get { return symbols.OfType<AmbiguousSymbol>(); } }
 

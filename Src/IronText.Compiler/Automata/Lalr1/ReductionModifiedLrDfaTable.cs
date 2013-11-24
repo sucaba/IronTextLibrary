@@ -5,12 +5,13 @@ using IronText.Extensibility;
 using IronText.Framework;
 using System.Collections.ObjectModel;
 using IronText.Framework.Reflection;
+using IronText.Compiler;
 
 namespace IronText.Automata.Lalr1
 {
     class ReductionModifiedLrDfaTable : ILrParserTable
     {
-        private readonly IBuildtimeBnfGrammar grammar;
+        private readonly EbnfGrammarAnalysis grammar;
         private readonly Dictionary<TransitionKey, ParserConflictInfo> transitionToConflict 
             = new Dictionary<TransitionKey, ParserConflictInfo>();
         private readonly IMutableTable<int> actionTable;
@@ -24,7 +25,7 @@ namespace IronText.Automata.Lalr1
 
             this.grammar = dfa.Grammar;
             var states = dfa.States;
-            this.actionTable = actionTable ?? new MutableTable<int>(states.Length, dfa.Grammar.SymbolCount);
+            this.actionTable = actionTable ?? new MutableTable<int>(states.Length, dfa.Grammar.Symbols.Count);
             FillDfaTable(states);
             BuildConflictActionTable();
         }
