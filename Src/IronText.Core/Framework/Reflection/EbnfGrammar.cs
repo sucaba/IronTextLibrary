@@ -83,18 +83,12 @@ namespace IronText.Framework.Reflection
             }
         }
 
-        public int SymbolCount { get { return Symbols.Count; } }
-
         public IEnumerable<AmbiguousSymbol> AmbiguousSymbols { get { return symbols.OfType<AmbiguousSymbol>(); } }
 
         public bool IsStartProduction(int prodId)
         {
             return Productions[prodId].Outcome == StartToken;
         }
-
-        public TokenCategory GetTokenCategories(int token) { return Symbols[token].Categories; }
-
-        public bool IsPredefined(int token) { return 0 <= token && token < PredefinedTokenCount; }
 
         public string SymbolName(int token) 
         {

@@ -9,28 +9,33 @@ namespace IronText.Framework
     internal class RuntimeEbnfGrammar
     {
         private readonly EbnfGrammar grammar;
-        private readonly IRuntimeNullableFirstTables tables;
+        private readonly bool[]      isNullable;
+        private readonly int         symbolCount;
 
         public RuntimeEbnfGrammar(EbnfGrammar grammar)
         {
             this.grammar = grammar;
-            this.tables = new NullableFirstTables(grammar);
-
-            this.MaxRuleSize = grammar.Productions.Select(r => r.Pattern.Length).Max();
+            IRuntimeNullableFirstTables tables = new NullableFirstTables(grammar);
+            this.isNullable  = tables.TokenToNullable;
+            this.MaxRuleSize = tables.MaxRuleSize;
+            this.symbolCount = grammar.Symbols.Count;
         }
+
+        public int MaxRuleSize { get; private set; }
 
         public ProductionCollection Productions { get { return grammar.Productions; } }
 
-        public bool IsNullable(int token) { return tables.IsNullable(token); }
+        public bool IsNullable(int token) { return isNullable[token]; }
 
-        public IEnumerable<Production> GetProductions(int outcomeToken)
+        public IEnumerable<Production> GetProductions(int outcome)
         {
-            return grammar.Symbols[outcomeToken].Productions;
+            return grammar.Symbols[outcome].Productions;
         }
 
         public IEnumerable<int> EnumerateTokens()
         {
-            return grammar.Symbols.Select(ti => ti.Index);
+            return from s in grammar.Symbols
+                   select s.Index;
         }
 
         public bool IsTerminal(int token)
@@ -55,7 +60,7 @@ namespace IronText.Framework
 
         public int SymbolCount 
         {
-            get { return grammar.SymbolCount; }
+            get { return symbolCount; }
         }
 
         public string SymbolName(int token)
@@ -65,10 +70,8 @@ namespace IronText.Framework
 
         public TokenCategory GetTokenCategories(int token)
         {
-            return grammar.GetTokenCategories(token);
+            return grammar.Symbols[token].Categories;
         }
-
-        public int MaxRuleSize { get; private set; }
     }
 
 }

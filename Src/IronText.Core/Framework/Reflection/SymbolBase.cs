@@ -14,6 +14,8 @@ namespace IronText.Framework.Reflection
         /// </summary>
         public string Name { get; protected set; }
 
+        public bool IsPredefined { get { return 0 <= Index && Index < EbnfGrammar.PredefinedTokenCount; } }
+
         public abstract TokenCategory Categories { get; set; }
 
         /// <summary>

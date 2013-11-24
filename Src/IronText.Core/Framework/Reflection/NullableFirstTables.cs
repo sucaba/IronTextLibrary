@@ -11,7 +11,6 @@ namespace IronText.Framework.Reflection
     {
         BitSetType TokenSet { get; }
 
-
         bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output);
         bool HasFirst(int[] tokenChain, int startIndex, int token);
         bool IsTailNullable(int[] tokens, int startIndex);
@@ -19,7 +18,9 @@ namespace IronText.Framework.Reflection
 
     internal interface IRuntimeNullableFirstTables
     {
-        bool IsNullable(int token);
+        int MaxRuleSize { get; }
+
+        bool[] TokenToNullable { get; }
     }
 
     public class NullableFirstTables : IBuildtimeNullableFirstTables, IRuntimeNullableFirstTables
@@ -37,8 +38,14 @@ namespace IronText.Framework.Reflection
             this.tokenSet   = new BitSetType(count);
             this.firsts     = new MutableIntSet[count];
             this.isNullable = new bool[count];
+
+            MaxRuleSize = grammar.Productions.Select(r => r.Pattern.Length).Max();
             Build();
         }
+
+        public int MaxRuleSize { get; private set; }
+
+        public bool[] TokenToNullable { get { return isNullable; } }
 
         public BitSetType TokenSet 
         { 
