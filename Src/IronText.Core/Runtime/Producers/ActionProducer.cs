@@ -9,7 +9,7 @@ namespace IronText.Framework
         , IProducer<Msg>
         , IParsing
     {
-        private readonly RuntimeBnfGrammar grammar;
+        private readonly RuntimeEbnfGrammar grammar;
         private readonly ProductionActionDelegate grammarAction;
         private readonly MergeDelegate merge;
         private readonly object context;
@@ -18,7 +18,7 @@ namespace IronText.Framework
         private readonly object[] ruleArgBuffer;
 
         public ActionProducer(
-            RuntimeBnfGrammar grammar,
+            RuntimeEbnfGrammar grammar,
             object context,
             ProductionActionDelegate grammarAction,
             MergeDelegate merge)

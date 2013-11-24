@@ -14,7 +14,7 @@ namespace IronText.MetadataCompiler
         private readonly ProductionActionDelegate grammarAction;
         private readonly MergeDelegate merge;
         private ResourceAllocator allocator;
-        private RuntimeBnfGrammar runtimeGrammar;
+        private RuntimeEbnfGrammar runtimeGrammar;
 
         public BootstrapLanguage(LanguageName name, LanguageData data)
         {
@@ -27,7 +27,7 @@ namespace IronText.MetadataCompiler
         public void Init()
         {
             this.allocator = new ResourceAllocator(data.Grammar);
-            this.runtimeGrammar = new RuntimeBnfGrammar(data.Grammar);
+            this.runtimeGrammar = new RuntimeEbnfGrammar(data.Grammar);
         }
 
         public bool IsDeterministic { get { return data.IsDeterministic; } }

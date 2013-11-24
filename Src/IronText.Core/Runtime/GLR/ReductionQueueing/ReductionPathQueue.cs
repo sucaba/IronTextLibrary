@@ -10,7 +10,7 @@ namespace IronText.Framework
         private readonly LinkedList<GssReducePath<T>> paths = new LinkedList<GssReducePath<T>>();
         private readonly int[] tokenComplexity;
 
-        public ReductionPathQueue(int[] tokenComplexity, RuntimeBnfGrammar grammar)
+        public ReductionPathQueue(int[] tokenComplexity, RuntimeEbnfGrammar grammar)
         {
             this.tokenComplexity = tokenComplexity;
 

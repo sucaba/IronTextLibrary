@@ -69,7 +69,7 @@ namespace IronText.Framework
             return HLoc.Sum(errorItems);
         }
 
-        public string FormatMessage(RuntimeBnfGrammar grammar, List<Msg> source, List<Msg> corrected)
+        public string FormatMessage(RuntimeEbnfGrammar grammar, List<Msg> source, List<Msg> corrected)
         {
             var output = new StringBuilder();
             ProcessMessageFormat(grammar, source, corrected, output);
@@ -77,7 +77,7 @@ namespace IronText.Framework
         }
 
         private void ProcessMessageFormat(
-            RuntimeBnfGrammar grammar,
+            RuntimeEbnfGrammar grammar,
             List<Msg>          source,
             List<Msg>          corrected,
             StringBuilder      output)
@@ -116,7 +116,7 @@ namespace IronText.Framework
             }
         }
 
-        private string FormatToken(RuntimeBnfGrammar grammar, Msg msg)
+        private string FormatToken(RuntimeEbnfGrammar grammar, Msg msg)
         {
             if (msg.Id == EbnfGrammar.Eoi)
             {

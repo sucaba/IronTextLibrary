@@ -57,7 +57,7 @@ namespace IronText.Framework
         private ResourceAllocator        allocator;
         protected Func<object>           createDefaultContext;
         private const int maxActionCount = 16;
-        private RuntimeBnfGrammar runtimeGrammar;
+        private RuntimeEbnfGrammar runtimeGrammar;
 
         public LanguageBase(LanguageName name) 
         { 
@@ -70,7 +70,7 @@ namespace IronText.Framework
         public void Init()
         {
             this.allocator = new ResourceAllocator(grammar);
-            this.runtimeGrammar = new RuntimeBnfGrammar(grammar);
+            this.runtimeGrammar = new RuntimeEbnfGrammar(grammar);
         }
 
         public LanguageName Name { get { return name; } }
