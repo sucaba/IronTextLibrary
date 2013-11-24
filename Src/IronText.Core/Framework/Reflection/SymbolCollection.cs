@@ -6,7 +6,18 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public class SymbolCollection : IndexedCollection<SymbolBase>
+    public class SymbolCollection : IndexedCollection<SymbolBase, IEbnfContext>
     {
+        public SymbolCollection(IEbnfContext context)
+            : base(context)
+        {
+        }
+
+        public Symbol Add(string name, TokenCategory categories = TokenCategory.None)
+        {
+            var result = new Symbol(name) { Categories = categories };
+            Add(result);
+            return result;
+        }
     }
 }

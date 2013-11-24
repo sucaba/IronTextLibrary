@@ -5,11 +5,11 @@ using System.Text;
 
 namespace IronText.Framework.Collections
 {
-    public class IndexedObject : IIndexable
+    public abstract class IndexableObject<TContext> : IIndexable<TContext>
     {
         public const int NoId = -1;
 
-        public IndexedObject()
+        public IndexableObject()
         {
             Index = NoId;
         }
@@ -18,7 +18,13 @@ namespace IronText.Framework.Collections
 
         public bool IsDetached { get { return NoId == Index; } }
 
-        void IIndexable.Attach(int id)
+        protected TContext Context { get; private set; }
+
+        protected virtual void DoAttached() { }
+
+        protected virtual void DoDetaching() { }
+
+        void IIndexable<TContext>.Attach(int id, TContext context)
         {
             if (!IsDetached)
             {
@@ -26,10 +32,15 @@ namespace IronText.Framework.Collections
             }
 
             Index = id;
+            Context = context;
+
+            DoAttached();
         }
 
-        void IIndexable.Detach()
+        void IIndexable<TContext>.Detach(TContext context)
         {
+            DoDetaching();
+
             Index = NoId;
         }
     }

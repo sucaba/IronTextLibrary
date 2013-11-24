@@ -7,7 +7,7 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public abstract class SymbolBase : IndexedObject
+    public abstract class SymbolBase : IndexableObject<IEbnfContext>
     {
         /// <summary>
         /// Display name

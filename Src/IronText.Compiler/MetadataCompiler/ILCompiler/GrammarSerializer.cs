@@ -98,6 +98,7 @@ namespace IronText.MetadataCompiler
                     .Ldprop((EbnfGrammar g) => g.Symbols)
                     .Ldloc(symbolVar)
                     .Call((SymbolCollection coll, Symbol sym) => coll.Add(sym))
+                    .Pop()
                     ;
             }
 
@@ -138,9 +139,10 @@ namespace IronText.MetadataCompiler
 
                 emit
                     .Ldloc(resultVar.GetRef())
+                    .Ldprop((EbnfGrammar g) => g.Productions)
                     .Ldc_I4(rule.Outcome)
                     .Ldloc(partsVar.GetRef())
-                    .Call((EbnfGrammar g, int l, int[] p) => g.DefineProduction(l, p))
+                    .Call((ProductionCollection prods, int l, int[] p) => prods.Add(l, p))
                     .Pop()
                     ;
             }

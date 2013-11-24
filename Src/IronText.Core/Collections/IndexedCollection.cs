@@ -7,39 +7,42 @@ using System.Text;
 
 namespace IronText.Framework.Collections
 {
-    public class IndexedCollection<T> : IOwner<T>, IEnumerable<T>
-        where T : class, IIndexable
+    public class IndexedCollection<T, TContext> : IOwner<T>, IEnumerable<T>
+        where T : class, IIndexable<TContext>
     {
         private const int InitialCapacity = 8;
+
+        private readonly TContext context;
         private T[] indexToItem;
 
-        public IndexedCollection()
+        public IndexedCollection(TContext context = default(TContext))
         {
             indexToItem = new T[InitialCapacity];
+            this.context = context;
         }
 
         public int Count { get; private set; }
 
-        public T this[int index] 
+        public T this[int index]
         {
             get { return indexToItem[index]; }
             set
             {
                 if (indexToItem[index] != null)
                 {
-                    indexToItem[index].Detach();
+                    indexToItem[index].Detach(context);
                 }
 
                 indexToItem[index] = value;
 
                 if (value != null)
                 {
-                    indexToItem[index].Attach(index);
+                    indexToItem[index].Attach(index, context);
                 }
             }
         }
 
-        public void Add(T item)
+        public T Add(T item)
         {
             int index = Count;
             if (indexToItem.Length == index)
@@ -47,10 +50,12 @@ namespace IronText.Framework.Collections
                 Array.Resize(ref indexToItem, index * 2);
             }
 
-            item.Attach(index);
+            item.Attach(index, context);
             indexToItem[index] = item;
 
             this.Count = index + 1;
+
+            return item;
         }
 
         public void Clear()
@@ -62,7 +67,7 @@ namespace IronText.Framework.Collections
                 var item = indexToItem[i];
                 if (item != null)
                 {
-                    item.Detach();
+                    item.Detach(context);
                     indexToItem[i] = null;
                 }
             }
@@ -127,7 +132,7 @@ namespace IronText.Framework.Collections
             {
                 if (indexToItem[i] == (object)item)
                 {
-                    item.Detach();
+                    item.Detach(context);
                     indexToItem[i] = null;
                     return true;
                 }
@@ -141,7 +146,7 @@ namespace IronText.Framework.Collections
             var item = indexToItem[index];
             if (item != null)
             {
-                item.Detach();
+                item.Detach(context);
                 indexToItem[index] = null;
                 return true;
             }

@@ -6,7 +6,7 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public sealed class Production : IndexedObject
+    public sealed class Production : IndexableObject<IEbnfContext>
     {
         public Production()
         {
@@ -117,6 +117,20 @@ namespace IronText.Framework.Reflection
                 output.Write(" ");
                 output.Write(grammar.SymbolName(Pattern[i]));
             }
+        }
+
+        protected override void DoAttached()
+        {
+            base.DoAttached();
+
+            Context.Symbols[Outcome].Productions.Add(this);
+        }
+
+        protected override void DoDetaching()
+        {
+            Context.Symbols[Outcome].Productions.Remove(this);
+
+            base.DoDetaching();
         }
     }
 }

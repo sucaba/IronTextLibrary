@@ -18,7 +18,7 @@ namespace IronText.Framework.Reflection
         IEnumerable<Production> GetProductions(int leftToken);
     }
 
-    public sealed class EbnfGrammar : IRuntimeBnfGrammar
+    public sealed class EbnfGrammar : IRuntimeBnfGrammar, IEbnfContext
     {
         public const string UnnamedTokenName = "<unnamed token>";
         public const string UnknownTokenName = "<unknown token>";
@@ -51,9 +51,9 @@ namespace IronText.Framework.Reflection
 
         public EbnfGrammar()
         {
-            productions       = new ProductionCollection();
-            productionActions = new ProductionActionCollection();
-            symbols           = new SymbolCollection();
+            productions       = new ProductionCollection(this);
+            productionActions = new ProductionActionCollection(this);
+            symbols           = new SymbolCollection(this);
 
             for (int i = PredefinedTokenCount; i != 0; --i)
             {
@@ -71,7 +71,7 @@ namespace IronText.Framework.Reflection
                                           };
             Symbols[Error]           = new Symbol("$error");
 
-            AugmentedProductionIndex = DefineProduction(AugmentedStart, new[] { -1 }).Index;
+            AugmentedProductionIndex = Productions.Add(AugmentedStart, new[] { -1 }).Index;
         }
 
         public SymbolCollection Symbols { get { return symbols; } }
@@ -141,20 +141,6 @@ namespace IronText.Framework.Reflection
             Symbols[Eoi].IsTerminal = true;
 
             this.MaxRuleSize = Productions.Select(r => r.Pattern.Length).Max();
-        }
-
-        public int DefineSymbol(string name, TokenCategory categories = TokenCategory.None)
-        {
-            Debug.Assert(!frozen);
-
-            var symbol = new Symbol(name) { Categories = categories };
-            Symbols.Add(symbol);
-            if (null == StartToken)
-            {
-                StartToken = symbol.Index;
-            }
-
-            return symbol.Index;
         }
 
         public int DefineAmbToken(int mainToken, IEnumerable<int> tokens)
@@ -268,34 +254,11 @@ namespace IronText.Framework.Reflection
 
             if (output == null)
             {
-                output = DefineProduction(outcome, pattern);
+                output = Productions.Add(outcome, pattern);
                 return true;
             }
 
             return false;
-        }
-
-        public Production DefineProduction(int outcome, int[] pattern)
-        {
-            Debug.Assert(!frozen);
-
-            if (IsExternal(outcome))
-            {
-                throw new InvalidOperationException(
-                    "Unable to define rule for external token. This token should be represented by the external reciver logic.");
-            }
-
-            var result = new Production
-                {
-                    Outcome = outcome,
-                    Pattern = pattern,
-                };
-
-            this.Productions.Add(result);
-
-            Symbols[outcome].Productions.Add(result);
-            
-            return result;
         }
 
         // TODO: Optmize

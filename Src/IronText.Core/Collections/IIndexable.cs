@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IronText.Framework.Collections
 {
-    public interface IIndexable
+    public interface IIndexable<TContext>
     {
         /// <summary>
         /// Determinise if object is detached from an indexed collection
@@ -17,11 +17,11 @@ namespace IronText.Framework.Collections
         /// </summary>
         /// <param name="index">Index of the object within an owning indexed collection</param>
         /// <exception cref="InvalidOperationException">when object is already attached.</exception>
-        void Attach(int index);
+        void Attach(int index, TContext context);
 
         /// <summary>
         /// Detaches object from an indexed collection
         /// </summary>
-        void Detach();
+        void Detach(TContext context);
     }
 }

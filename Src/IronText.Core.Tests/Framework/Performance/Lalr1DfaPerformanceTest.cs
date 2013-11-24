@@ -25,7 +25,7 @@ namespace IronText.Tests.Framework.Performance
 
             for (int i = 0; i != tokenCount; ++i)
             {
-                tokens[i] = grammar.DefineSymbol(i.ToString());
+                tokens[i] = grammar.Symbols.Add(i.ToString()).Index;
             }
 
             int iterationCount = tokenCount - ruleSize;
@@ -34,7 +34,7 @@ namespace IronText.Tests.Framework.Performance
                 int outcome = tokens[i];
                 int[] pattern = new int[ruleSize];
                 Array.Copy(tokens, i + 1, pattern, 0, ruleSize);
-                grammar.DefineProduction(outcome, pattern);
+                grammar.Productions.Add(outcome, pattern);
             }
 
             grammar.Freeze();

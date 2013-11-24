@@ -169,12 +169,13 @@
     <Compile Include="Framework\InterpreterT.cs" />
     <Compile Include="Framework\Reflection\AmbiguousSymbol.cs" />
     <Compile Include="Framework\Disambiguation.cs" />
-    <Compile Include="Collections\IndexedObject.cs" />
+    <Compile Include="Collections\IndexableObject.cs" />
     <Compile Include="Collections\IndexedCollection.cs" />
     <Compile Include="Collections\ReferenceCollection.cs" />
     <Compile Include="Collections\IIndexable.cs" />
     <Compile Include="Collections\IReferenceContainer.cs" />
     <Compile Include="Collections\IOwner.cs" />
+    <Compile Include="Framework\Reflection\IEbnfContext.cs" />
     <Compile Include="Framework\Reflection\ProductionActionCollection.cs" />
     <Compile Include="Framework\Reflection\InlineProduction.cs" />
     <Compile Include="Framework\Reflection\IProductionActionBinding.cs" />

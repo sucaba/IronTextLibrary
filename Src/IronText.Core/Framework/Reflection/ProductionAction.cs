@@ -7,7 +7,7 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public class ProductionAction : IndexedObject
+    public class ProductionAction : IndexableObject<IEbnfContext>
     {
         public ProductionAction()
         {

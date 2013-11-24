@@ -6,7 +6,11 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public class ProductionActionCollection : IndexedCollection<Production>
+    public class ProductionActionCollection : IndexedCollection<Production, IEbnfContext>
     {
+        public ProductionActionCollection(IEbnfContext context)
+            : base(context)
+        {
+        }
     }
 }
