@@ -42,7 +42,7 @@ namespace IronText.Compiler
 
         private IEnumerable<int> GetDependantTokens(int token)
         {
-            foreach (var rule in grammar.GetProductions(token))
+            foreach (var rule in grammar.Symbols[token].Productions)
             {
                 foreach (int part in rule.Pattern)
                 {
@@ -63,7 +63,7 @@ namespace IronText.Compiler
 
         public IEnumerable<Production> GetProductions(int leftToken)
         {
-            return grammar.GetProductions(leftToken);
+            return grammar.Symbols[leftToken].Productions;
         }
 
         public SymbolCollection Symbols

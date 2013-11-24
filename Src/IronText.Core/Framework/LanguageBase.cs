@@ -42,7 +42,7 @@ namespace IronText.Framework
         }
 
         protected internal bool          isDeterministic;
-        protected EbnfGrammar             grammar;
+        protected EbnfGrammar            grammar;
         protected TransitionDelegate     getParserAction;
         protected Dictionary<object,int> tokenKeyToId;
         protected Scan1Delegate          scan1;
@@ -57,6 +57,7 @@ namespace IronText.Framework
         private ResourceAllocator        allocator;
         protected Func<object>           createDefaultContext;
         private const int maxActionCount = 16;
+        private RuntimeBnfGrammar runtimeGrammar;
 
         public LanguageBase(LanguageName name) 
         { 
@@ -69,6 +70,7 @@ namespace IronText.Framework
         public void Init()
         {
             this.allocator = new ResourceAllocator(grammar);
+            this.runtimeGrammar = new RuntimeBnfGrammar(grammar);
         }
 
         public LanguageName Name { get { return name; } }
@@ -136,7 +138,7 @@ namespace IronText.Framework
             {
                 return new DeterministicParser<TNode>(
                     producer,
-                    grammar,
+                    runtimeGrammar,
                     getParserAction,
                     allocator
 #if SWITCH_FEATURE
@@ -148,7 +150,7 @@ namespace IronText.Framework
             else
             {
                 return new RnGlrParser<TNode>(
-                    grammar,
+                    runtimeGrammar,
                     tokenComplexity,
                     getParserAction,
                     stateToSymbol,
@@ -161,7 +163,7 @@ namespace IronText.Framework
 
         public IProducer<Msg> CreateActionProducer(object context)
         {
-            var result = new ActionProducer(grammar, context, grammarAction, this.merge);
+            var result = new ActionProducer(runtimeGrammar, context, grammarAction, this.merge);
 
             if (context != null)
             {
@@ -209,7 +211,7 @@ namespace IronText.Framework
             Debug.WriteLine("------------------------------");
             Debug.WriteLine(
                 "Default merging of token {0} values in state {1}:",
-                (object)grammar.SymbolName(token),
+                (object)runtimeGrammar.SymbolName(token),
                 stackLookback.GetParentState());
             Debug.WriteLine("  '{0}'", alt1);
             Debug.WriteLine(" and");

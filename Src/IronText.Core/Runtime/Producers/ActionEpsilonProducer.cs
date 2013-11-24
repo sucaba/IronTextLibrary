@@ -6,11 +6,11 @@ namespace IronText.Framework
 {
     class ActionEpsilonProducer
     {
-        private readonly IRuntimeBnfGrammar       grammar;
+        private readonly RuntimeBnfGrammar       grammar;
         private readonly ProductionActionDelegate productionAction;
         private readonly object                   context;
 
-        public ActionEpsilonProducer(IRuntimeBnfGrammar grammar, object context, ProductionActionDelegate productionAction)
+        public ActionEpsilonProducer(RuntimeBnfGrammar grammar, object context, ProductionActionDelegate productionAction)
         {
             this.grammar          = grammar;
             this.context          = context;

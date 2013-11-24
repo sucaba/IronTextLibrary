@@ -9,16 +9,68 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    internal interface IRuntimeBnfGrammar
+    internal class RuntimeBnfGrammar
     {
-        ProductionCollection Productions { get; }
+        private readonly EbnfGrammar grammar;
 
-        bool IsNullable(int token);
+        public RuntimeBnfGrammar(EbnfGrammar grammar)
+        {
+            this.grammar = grammar;
+        }
 
-        IEnumerable<Production> GetProductions(int leftToken);
+        public ProductionCollection Productions { get { return grammar.Productions; } }
+
+        public bool IsNullable(int token) { return grammar.IsNullable(token); }
+
+        public IEnumerable<Production> GetProductions(int outcomeToken)
+        {
+            return grammar.GetProductions(outcomeToken);
+        }
+
+        public IEnumerable<int> EnumerateTokens()
+        {
+            return grammar.EnumerateTokens();
+        }
+
+        public bool IsTerminal(int token)
+        {
+            return grammar.IsTerminal(token);
+        }
+
+        public bool IsBeacon(int token)
+        {
+            return grammar.IsBeacon(token);
+        }
+
+        public bool IsDontInsert(int token)
+        {
+            return grammar.IsDontInsert(token);
+        }
+
+        public bool IsDontDelete(int token)
+        {
+            return grammar.IsDontDelete(token);
+        }
+
+        public int SymbolCount 
+        {
+            get { return grammar.SymbolCount; }
+        }
+
+        public string SymbolName(int token)
+        {
+            return grammar.SymbolName(token);
+        }
+
+        public TokenCategory GetTokenCategories(int token)
+        {
+            return grammar.GetTokenCategories(token);
+        }
+
+        public int MaxRuleSize { get { return grammar.MaxRuleSize; } }
     }
 
-    public sealed class EbnfGrammar : IRuntimeBnfGrammar, IEbnfContext
+    public sealed class EbnfGrammar : IEbnfContext
     {
         public const string UnnamedTokenName = "<unnamed token>";
         public const string UnknownTokenName = "<unknown token>";
@@ -135,7 +187,7 @@ namespace IronText.Framework.Reflection
             return Productions[ruleId].Outcome == AugmentedProduction.Pattern[0];
         }
 
-        internal bool IsBeacon(int token)
+        public bool IsBeacon(int token)
         {
             if (token >= Symbols.Count)
             {
@@ -145,7 +197,7 @@ namespace IronText.Framework.Reflection
             return (Symbols[token].Categories & TokenCategory.Beacon) != 0;
         }
 
-        internal bool IsDontInsert(int token)
+        public bool IsDontInsert(int token)
         {
             if (token >= Symbols.Count)
             {
@@ -155,7 +207,7 @@ namespace IronText.Framework.Reflection
             return (Symbols[token].Categories & TokenCategory.DoNotInsert) != 0;
         }
 
-        internal bool IsDontDelete(int token)
+        public bool IsDontDelete(int token)
         {
             if (token >= Symbols.Count)
             {
@@ -169,7 +221,7 @@ namespace IronText.Framework.Reflection
 
         public bool IsNonTerm(int token) { return !Symbols[token].IsTerminal; }
 
-        internal TokenCategory GetTokenCategories(int token) { return Symbols[token].Categories; }
+        public TokenCategory GetTokenCategories(int token) { return Symbols[token].Categories; }
 
         internal bool IsExternal(int token) { return (Symbols[token].Categories & TokenCategory.External) != 0; }
 
@@ -391,12 +443,12 @@ namespace IronText.Framework.Reflection
             var output = new StringBuilder();
             output
                 .Append("Terminals: ")
-                .Append(string.Join(" ", EnumerateTokens().Where(IsTerminal).Select(SymbolName)))
+                .Append(string.Join(" ", (from s in Symbols where s.IsTerminal select s.Name)))
                 .AppendLine()
                 .Append("Non-Terminals: ")
-                .Append(string.Join(" ", EnumerateTokens().Where(t => !IsTerminal(t)).Select(SymbolName)))
+                .Append(string.Join(" ", (from s in Symbols where !s.IsTerminal select s.Name)))
                 .AppendLine()
-                .AppendFormat("Start Token: {0}", StartToken == null ? "<undefined>" : SymbolName(StartToken.Value))
+                .AppendFormat("Start Token: {0}", StartToken == null ? "<undefined>" : Start.Name)
                 .AppendLine()
                 .Append("Rules:")
                 .AppendLine();

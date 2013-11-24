@@ -14,6 +14,7 @@ namespace IronText.MetadataCompiler
         private readonly ProductionActionDelegate grammarAction;
         private readonly MergeDelegate merge;
         private ResourceAllocator allocator;
+        private RuntimeBnfGrammar runtimeGrammar;
 
         public BootstrapLanguage(LanguageName name, LanguageData data)
         {
@@ -26,6 +27,7 @@ namespace IronText.MetadataCompiler
         public void Init()
         {
             this.allocator = new ResourceAllocator(data.Grammar);
+            this.runtimeGrammar = new RuntimeBnfGrammar(data.Grammar);
         }
 
         public bool IsDeterministic { get { return data.IsDeterministic; } }
@@ -59,7 +61,7 @@ namespace IronText.MetadataCompiler
         {
             return new DeterministicParser<TNode>(
                 producer,
-                Grammar,
+                runtimeGrammar,
                 GetParserAction,
                 allocator
 #if SWITCH_FEATURE
@@ -71,7 +73,7 @@ namespace IronText.MetadataCompiler
 
         public IProducer<Msg> CreateActionProducer(object context)
         {
-            return new ActionProducer(Grammar, context, grammarAction, this.merge);
+            return new ActionProducer(runtimeGrammar, context, grammarAction, this.merge);
         }
 
         private int GetParserAction(int state, int token)
