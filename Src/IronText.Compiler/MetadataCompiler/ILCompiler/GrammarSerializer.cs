@@ -97,7 +97,7 @@ namespace IronText.MetadataCompiler
                     .Ldloc(resultVar.GetRef())
                     .Ldprop((EbnfGrammar g) => g.Symbols)
                     .Ldloc(symbolVar)
-                    .Call((IndexedCollection<SymbolBase> coll, Symbol sym) => coll.Add(sym))
+                    .Call((SymbolCollection coll, Symbol sym) => coll.Add(sym))
                     ;
             }
 

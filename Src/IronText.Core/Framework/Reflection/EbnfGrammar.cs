@@ -11,7 +11,7 @@ namespace IronText.Framework.Reflection
 {
     internal interface IRuntimeBnfGrammar
     {
-        IndexedCollection<Production> Productions { get; }
+        ProductionCollection Productions { get; }
 
         bool IsNullable(int token);
 
@@ -73,9 +73,9 @@ namespace IronText.Framework.Reflection
         private BitSetType tokenSet;
         private readonly int AugmentedProductionIndex;
 
-        private readonly IndexedCollection<Production>       productions;
-        private readonly IndexedCollection<ProductionAction> productionActions;
-        private readonly SymbolTable                   symbols;
+        private readonly ProductionCollection       productions;
+        private readonly ProductionActionCollection productionActions;
+        private readonly SymbolCollection           symbols;
 
         private MutableIntSet[] first;
 
@@ -84,9 +84,9 @@ namespace IronText.Framework.Reflection
 
         public EbnfGrammar()
         {
-            productions       = new IndexedCollection<Production>();
-            productionActions = new IndexedCollection<ProductionAction>();
-            symbols           = new SymbolTable();
+            productions       = new ProductionCollection();
+            productionActions = new ProductionActionCollection();
+            symbols           = new SymbolCollection();
 
             for (int i = PredefinedTokenCount; i != 0; --i)
             {
@@ -107,9 +107,9 @@ namespace IronText.Framework.Reflection
             AugmentedProductionIndex = DefineProduction(AugmentedStart, new[] { -1 }).Index;
         }
 
-        public SymbolTable Symbols { get { return symbols; } }
+        public SymbolCollection Symbols { get { return symbols; } }
 
-        public IndexedCollection<Production> Productions { get { return productions; } }
+        public ProductionCollection Productions { get { return productions; } }
 
         public BitSetType TokenSet 
         { 

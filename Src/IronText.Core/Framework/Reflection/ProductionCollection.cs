@@ -6,7 +6,7 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public class SymbolTable : IndexedCollection<SymbolBase>
+    public class ProductionCollection : IndexedCollection<Production>
     {
     }
 }
