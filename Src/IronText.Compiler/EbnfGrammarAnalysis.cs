@@ -81,9 +81,9 @@ namespace IronText.Compiler
             get { return grammar.AugmentedProduction; }
         }
 
-        public Precedence GetProductionPrecedence(int ruleId)
+        public Precedence GetProductionPrecedence(int prodId)
         {
-            return grammar.GetProductionPrecedence(ruleId);
+            return grammar.Productions[prodId].Precedence;
         }
 
         public bool IsStartProduction(int ruleId)
@@ -118,7 +118,9 @@ namespace IronText.Compiler
 
         public int DefineAmbToken(int mainToken, IEnumerable<int> tokens)
         {
-            return grammar.DefineAmbToken(mainToken, tokens);
+            var ambSymbol = new AmbiguousSymbol(mainToken, tokens);
+            grammar.Symbols.Add(ambSymbol);
+            return ambSymbol.Index;
         }
     }
 }

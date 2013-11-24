@@ -52,12 +52,28 @@ namespace IronText.MetadataCompiler
                         .Newobj((string name) => new Symbol(name))
                         .Stloc(symbolVar)
                         ;
+
                     if (symbol.Categories != TokenCategory.None)
                     {
                         emit
                             .Ldloc(symbolVar)
                             .Ldc_I4((int)symbol.Categories)
-                            .Call(typeof(Symbol).GetProperty("Categories").GetSetMethod())
+                            .Stprop((Symbol s) => s.Categories)
+                            ;
+                    }
+
+                    if (symbol.Precedence != null)
+                    {
+                        var precedence = symbol.Precedence;
+
+                        emit
+                            .Ldloc(symbolVar)
+
+                            .Ldc_I4(precedence.Value)
+                            .Ldc_I4((int)precedence.Assoc)
+                            .Newobj((int _prec, Associativity _assoc) => new Precedence(_prec, _assoc))
+
+                            .Stprop((Symbol s) => s.Precedence)
                             ;
                     }
                 }
@@ -144,30 +160,6 @@ namespace IronText.MetadataCompiler
                     .Ldloc(partsVar.GetRef())
                     .Call((ProductionCollection prods, int l, int[] p) => prods.Add(l, p))
                     .Pop()
-                    ;
-            }
-
-            for (int token = 2; token != grammar.SymbolCount; ++token)
-            {
-                var symbol = grammar.Symbols[token];
-                if (!symbol.IsTerminal)
-                {
-                    continue;
-                }
-
-                var precedence = grammar.Symbols[token].Precedence;
-                if (precedence == null)
-                {
-                    continue;
-                }
-
-                emit
-                    .Ldloc(resultVar.GetRef())
-                    .Ldc_I4(token)
-                        .Ldc_I4(precedence.Value)
-                        .Ldc_I4((int)precedence.Assoc)
-                    .Newobj((int _prec, Associativity _assoc) => new Precedence(_prec, _assoc))
-                    .Call((EbnfGrammar g, int t, Precedence p) => g.SetTermPrecedence(t, p))
                     ;
             }
 

@@ -283,7 +283,7 @@ namespace IronText.MetadataCompiler
                 // Each rule may have multiple action builders
                 ruleActionBuilders[production.Index].Add(ruleDef.ActionBuilder);
 
-                if (!production.AssignPrecedence(ruleDef.Precedence))
+                if (!AssignPrecedence(production, ruleDef.Precedence))
                 {
                     throw new InvalidOperationException(
                         "Two or more production definitions have conflicting precedence: " +
@@ -444,6 +444,27 @@ namespace IronText.MetadataCompiler
                     Member = languageName.DefinitionType,
                     Message = string.Format(fmt, args)
                 });
+        }
+
+        private static bool AssignPrecedence(Production prod, Precedence value)
+        {
+            if (value != null)
+            {
+                var existingPrecedence = prod.ExplicitPrecedence;
+                if (existingPrecedence != null)
+                {
+                    if (!object.Equals(value, existingPrecedence))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    prod.ExplicitPrecedence = value;
+                }
+            }
+
+            return true;
         }
     }
 }

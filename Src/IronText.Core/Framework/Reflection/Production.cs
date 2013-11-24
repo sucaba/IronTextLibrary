@@ -17,7 +17,7 @@ namespace IronText.Framework.Reflection
 
         public int[]      Pattern    { get; set; }
 
-        public Precedence Precedence { get; private set; }
+        public Precedence ExplicitPrecedence { get; set; }
 
         /// <summary>
         /// Typically production contains single action, however
@@ -26,25 +26,18 @@ namespace IronText.Framework.Reflection
         /// </summary>
         public ReferenceCollection<ProductionAction> Actions { get; private set; }
 
-        public bool AssignPrecedence(Precedence value)
+        public Precedence Precedence
         {
-            if (value != null)
+            get
             {
-                var existingPrecedence = this.Precedence;
-                if (existingPrecedence != null)
+                if (ExplicitPrecedence != null)
                 {
-                    if (!object.Equals(value, existingPrecedence))
-                    {
-                        return false;
-                    }
+                    return ExplicitPrecedence;
                 }
-                else
-                {
-                    this.Precedence = value;
-                }
-            }
 
-            return true;
+                int index = Array.FindLastIndex(Pattern, t => Context.Symbols[t].IsTerminal);
+                return index < 0 ? null : Context.Symbols[Pattern[index]].Precedence;
+            }
         }
 
         public override bool Equals(object obj)

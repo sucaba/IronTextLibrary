@@ -22,6 +22,8 @@ namespace IronText.Tests.Lib.IL.Generators
             originalGrammar.Productions.Add(blue, new[] { red, green });
             originalGrammar.Productions.Add(blue, new int[0]);
 
+            originalGrammar.StartToken = red;
+
             originalGrammar.Freeze();
 
             GrammarSerializer target = new GrammarSerializer(originalGrammar);

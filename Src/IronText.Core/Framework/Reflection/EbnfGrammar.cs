@@ -126,30 +126,8 @@ namespace IronText.Framework.Reflection
             this.tokenSet = new BitSetType(SymbolCount);
 
             EnsureFirsts();
-#if false
-            for (int i = PredefinedTokenCount; i != SymbolCount; ++i)
-            {
-                if (i == Error)
-                {
-                    Symbols[Error].IsTerminal = false;
-                }
-                else
-                {
-                    Symbols[i].IsTerminal = CalcIsTerm(i);
-                }
-            }
-
-            Symbols[Eoi].IsTerminal = true;
-#endif
 
             this.MaxRuleSize = Productions.Select(r => r.Pattern.Length).Max();
-        }
-
-        public int DefineAmbToken(int mainToken, IEnumerable<int> tokens)
-        {
-            var ambSymbol = new AmbiguousSymbol(mainToken, tokens);
-            symbols.Add(ambSymbol);
-            return ambSymbol.Index;
         }
 
         public bool IsStartProduction(int ruleId)
@@ -200,12 +178,6 @@ namespace IronText.Framework.Reflection
         public bool IsPredefined(int token) { return 0 <= token && token < PredefinedTokenCount; }
 
         public IEnumerable<Production> GetProductions(int left) { return Symbols[left].Productions; }
-
-        private bool CalcIsTerm(int token)
-        {
-            bool result = !Productions.Any(rule => rule.Outcome == token);
-            return result;
-        }
 
         public string SymbolName(int token) 
         {
@@ -321,28 +293,28 @@ namespace IronText.Framework.Reflection
             for (int i = 0; i != count; ++i)
             {
                 first[i] = tokenSet.Mutable();
-                if (CalcIsTerm(i))
+                if (Symbols[i].IsTerminal)
                 {
                     first[i].Add(i);
                 }
             }
 
-            var recursiveRules = new List<Production>();
+            var recursiveProds = new List<Production>();
 
             // Init FIRST using rules without recursion in first part
-            foreach (var rule in Productions)
+            foreach (var prod in Productions)
             {
-                if (rule.Pattern.Length == 0)
+                if (prod.Pattern.Length == 0)
                 {
-                    first[rule.Outcome].Add(EpsilonToken);
+                    first[prod.Outcome].Add(EpsilonToken);
                 }
-                else if (CalcIsTerm(rule.Pattern[0]))
+                else if (Symbols[prod.Pattern[0]].IsTerminal)
                 {
-                    first[rule.Outcome].Add(rule.Pattern[0]);
+                    first[prod.Outcome].Add(prod.Pattern[0]);
                 }
                 else
                 {
-                    recursiveRules.Add(rule);
+                    recursiveProds.Add(prod);
                 }
             }
 
@@ -352,9 +324,9 @@ namespace IronText.Framework.Reflection
             {
                 changed = false;
 
-                foreach (var rule in recursiveRules)
+                foreach (var prod in recursiveProds)
                 {
-                    if (InternalAddFirsts(rule.Pattern, first[rule.Outcome]))
+                    if (InternalAddFirsts(prod.Pattern, first[prod.Outcome]))
                     {
                         changed = true;
                     }
@@ -434,39 +406,6 @@ namespace IronText.Framework.Reflection
             }
 
             return output.ToString();
-        }
-
-        public Precedence GetTermPrecedence(int token)
-        {
-            if (!IsTerminal(token))
-            {
-                throw new ArgumentException("Precedence is applicable only to terminals.", "token");
-            }
-
-            return Symbols[token].Precedence;
-        }
-
-        public void SetTermPrecedence(int token, Precedence precedence)
-        {
-            if (!CalcIsTerm(token))
-            {
-                throw new ArgumentException("Precedence is applicable only to terminals.", "token");
-            }
-
-            var info = this.Symbols[token];
-            info.Precedence = precedence;
-        }
-
-        public Precedence GetProductionPrecedence(int ruleId)
-        {
-            var rule = productions[ruleId];
-            if (rule.Precedence != null)
-            {
-                return rule.Precedence;
-            }
-
-            int index = Array.FindLastIndex(rule.Pattern, CalcIsTerm);
-            return index < 0 ? null : GetTermPrecedence(rule.Pattern[index]);
         }
     }
 }
