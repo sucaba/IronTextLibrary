@@ -55,11 +55,6 @@ namespace IronText.Framework.Reflection
             }
         }
 
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as Production);
-        }
-
         public bool Equals(Production other)
         {
             return other != null
@@ -69,12 +64,14 @@ namespace IronText.Framework.Reflection
                 ;
         }
 
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Production);
+        }
+
         public override int GetHashCode()
         {
-            unchecked 
-            {
-                return Index + Outcome + Pattern.Sum();
-            }
+            return unchecked(Outcome + Pattern.Sum());
         }
 
         public string Describe(EbnfGrammar grammar, int pos)
