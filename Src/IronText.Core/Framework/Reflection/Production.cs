@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -13,9 +14,23 @@ namespace IronText.Framework.Reflection
             Actions = new ReferenceCollection<ProductionAction>();
         }
 
-        public int        Outcome    { get; set; }
+        public int    Outcome    { get; set; }
 
-        public int[]      Pattern    { get; set; }
+        public int[]  Pattern    { get; set; }
+
+        public Symbol OutcomeSymbol
+        {
+            get { return (Symbol)Context.Symbols[Outcome]; }
+        }
+
+        public IEnumerable<Symbol> PatternSymbols
+        {
+            get
+            {
+                var symbols = Context.Symbols;
+                return (from t in Pattern select (Symbol)symbols[t]);
+            }
+        }
 
         public Precedence ExplicitPrecedence { get; set; }
 
@@ -26,7 +41,7 @@ namespace IronText.Framework.Reflection
         /// </summary>
         public ReferenceCollection<ProductionAction> Actions { get; private set; }
 
-        public Precedence Precedence
+        public Precedence EffectivePrecedence
         {
             get
             {
@@ -66,7 +81,7 @@ namespace IronText.Framework.Reflection
         {
             using (var writer = new StringWriter())
             {
-                Describe(grammar, pos, writer);
+                Describe(pos, writer);
                 return writer.ToString();
             }
         }
@@ -80,11 +95,12 @@ namespace IronText.Framework.Reflection
             }
         }
 
-        public void Describe(EbnfGrammar grammar, int pos, TextWriter output)
+        public void Describe(int pos, TextWriter output)
         {
-            output.Write("{0} ->", grammar.SymbolName(Outcome));
+            output.Write("{0} ->", OutcomeSymbol.Name);
 
-            for (int i = 0; i != Pattern.Length; ++i)
+            int i = 0;
+            foreach (var symbol in PatternSymbols)
             {
                 if (pos == i)
                 {
@@ -92,7 +108,8 @@ namespace IronText.Framework.Reflection
                 }
 
                 output.Write(" ");
-                output.Write(grammar.SymbolName(Pattern[i]));
+                output.Write(symbol.Name);
+                ++i;
             }
 
             if (pos == Pattern.Length)
@@ -103,12 +120,12 @@ namespace IronText.Framework.Reflection
 
         public void Describe(EbnfGrammar grammar, TextWriter output)
         {
-            output.Write("{0} ->", grammar.SymbolName(Outcome));
+            output.Write("{0} ->", OutcomeSymbol.Name);
 
-            for (int i = 0; i != Pattern.Length; ++i)
+            foreach (var symbol in PatternSymbols)
             {
                 output.Write(" ");
-                output.Write(grammar.SymbolName(Pattern[i]));
+                output.Write(symbol.Name);
             }
         }
 

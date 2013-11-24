@@ -61,7 +61,7 @@ namespace IronText.Framework
 
         void ISppfNodeVisitor.VisitLeaf(int token, object value, Loc location)
         {
-            string label = grammar.SymbolName(token) + " pos: " + location.Position 
+            string label = grammar.Symbols[token].Name + " pos: " + location.Position 
 #if DEBUG
                 + " t: " + currentNode.timestamp
 #endif
@@ -73,7 +73,7 @@ namespace IronText.Framework
         {
             var rule = grammar.Productions[ruleIndex];
 
-            var tokenName = grammar.SymbolName(rule.Outcome);
+            var tokenName = grammar.Symbols[rule.Outcome].Name;
 
             string label;
             if (showRules)
@@ -85,7 +85,7 @@ namespace IronText.Framework
 #endif
                         ,
                         tokenName,
-                        string.Join(" ", rule.Pattern.Select(grammar.SymbolName)));
+                        string.Join(" ", from s in rule.PatternSymbols select s.Name));
             }
             else
             {
@@ -112,7 +112,8 @@ namespace IronText.Framework
         void ISppfNodeVisitor.VisitAlternatives(SppfNode alternatives)
         {
             var token = alternatives.GetTokenId(grammar);
-            string label = grammar.SymbolName(token) + " pos: " + alternatives.Location.Position 
+            var symbol = grammar.Symbols[token];
+            string label = symbol.Name + " pos: " + alternatives.Location.Position 
 #if DEBUG
                 + " t: " + currentNode.timestamp
 #endif
@@ -148,24 +149,24 @@ namespace IronText.Framework
         {
             if (node.Id > 0)
             {
-                return grammar.SymbolName(node.Id) + " pos: " + node.Location.Position;
+                return grammar.Symbols[node.Id].Name + " pos: " + node.Location.Position;
             }
 
             if (node.NextAlternative != null)
             {
-                return grammar.SymbolName(node.GetTokenId(grammar));
+                return grammar.Symbols[node.GetTokenId(grammar)].Name;
             }
 
-            var rule = grammar.Productions[-node.Id];
+            var production = grammar.Productions[-node.Id];
             if (showRules)
             {
                 return string.Format(
                         "{0} -> {1}",
-                        grammar.SymbolName(rule.Outcome),
-                        string.Join(" ", rule.Pattern.Select(grammar.SymbolName)));
+                        production.OutcomeSymbol.Name,
+                        string.Join(" ", from s in production.PatternSymbols select s.Name));
             }
 
-            return grammar.SymbolName(rule.Outcome);
+            return production.OutcomeSymbol.Name;
         }
     }
 }

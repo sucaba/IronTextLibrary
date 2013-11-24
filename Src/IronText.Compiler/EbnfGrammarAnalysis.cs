@@ -85,7 +85,7 @@ namespace IronText.Compiler
 
         public Precedence GetProductionPrecedence(int prodId)
         {
-            return grammar.Productions[prodId].Precedence;
+            return grammar.Productions[prodId].EffectivePrecedence;
         }
 
         public bool IsStartProduction(int prodId)
@@ -100,7 +100,7 @@ namespace IronText.Compiler
 
         public IEnumerable<AmbiguousSymbol> AmbiguousSymbols
         {
-            get { return grammar.AmbiguousSymbols; }
+            get { return grammar.Symbols.OfType<AmbiguousSymbol>(); }
         }
 
         public bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output)

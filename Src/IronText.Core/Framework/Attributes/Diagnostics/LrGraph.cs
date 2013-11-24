@@ -10,7 +10,7 @@ namespace IronText.Framework
 {
     sealed class LrGraph
     {
-        private readonly EbnfGrammar     grammar;
+        private readonly EbnfGrammar grammar;
         private readonly IReportData data;
 
         public LrGraph(IReportData data)
@@ -48,10 +48,9 @@ namespace IronText.Framework
                     {
                         if (action.Kind == ParserActionKind.Shift)
                         {
-                            graph.AddEdge(state.Index, action.State, grammar.SymbolName(transition.Token));
+                            graph.AddEdge(state.Index, action.State, grammar.Symbols[transition.Token].Name);
                         }
                     }
-
                 }
             }
 
@@ -109,7 +108,7 @@ namespace IronText.Framework
 
         private string TokenToHtml(int token)
         {
-            var result = HttpUtility.HtmlEncode(grammar.SymbolName(token));
+            var result = HttpUtility.HtmlEncode(grammar.Symbols[token].Name);
             result = result.Replace("{", "&#123;");
             result = result.Replace("}", "&#125;");
             return result;

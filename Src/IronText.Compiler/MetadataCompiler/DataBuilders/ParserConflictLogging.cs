@@ -59,8 +59,10 @@ namespace IronText.MetadataCompiler
             using (var writer = new StringWriter())
             using (var message = new IndentedTextWriter(writer, "  "))
             {
+                var symbol = data.Grammar.Symbols[conflict.Token];
+
                 message.Write("Conflict on token ");
-                message.Write(data.Grammar.SymbolName(conflict.Token));
+                message.Write(symbol.Name);
                 message.Write(" between actions in state #");
                 message.Write(conflict.State + "");
                 message.WriteLine(":");
@@ -126,7 +128,11 @@ namespace IronText.MetadataCompiler
             if (showLookaheads)
             {
                 output.Write("  |LA = {");
-                output.Write(string.Join(", ", item.Lookaheads.Select(data.Grammar.SymbolName)));
+                output.Write(
+                    string.Join(
+                        ", ",
+                        from la in item.Lookaheads
+                        select data.Grammar.Symbols[la].Name));
                 output.Write("}");
             }
         }
@@ -135,13 +141,6 @@ namespace IronText.MetadataCompiler
         {
             switch (action.Kind)
             {
-#if SWITCH_FEATURE
-                case ParserActionKind.Switch:
-                    message.Write("Swith to the external token ");
-                    message.Write(data.Grammar.TokenName(action.ExternalToken));
-                    message.WriteLine();
-                    break;
-#endif
                 case ParserActionKind.Shift:
                     message.Write("Shift to state #");
                     message.Write(action.State + "");
@@ -174,13 +173,13 @@ namespace IronText.MetadataCompiler
         {
             var rule = data.Grammar.Productions[ruleId];
 
-            output.Write(data.Grammar.SymbolName(rule.Outcome));
+            output.Write(data.Grammar.Symbols[rule.Outcome].Name);
             output.Write(" ->");
 
             for (int i = 0; i != rule.Pattern.Length; ++i)
             {
                 output.Write(" ");
-                output.Write(data.Grammar.SymbolName(rule.Pattern[i]));
+                output.Write(data.Grammar.Symbols[rule.Pattern[i]].Name);
             }
         }
     }

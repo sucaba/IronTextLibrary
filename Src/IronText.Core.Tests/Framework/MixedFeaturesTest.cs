@@ -45,39 +45,11 @@ namespace IronText.Tests.Framework
             Assert.Throws<SyntaxException>(() => Eval("(begin x (let x 555) 0)"), "Use before definition should cause error.");
         }
 
-#if SWITCH_FEATURE
-        [Test]
-        public void Call()
-        {
-            Eval("(define (f x) x)");
-            Eval("(define (plus x y) (+ x y) )");
-            Assert.AreEqual(5, Eval("(begin (define (plus x y) (+ x y)) (plus 3 2))"));
-        }
-#endif
-
         [Test]
         public void TestEval()
         {
             Assert.AreEqual(11, Eval("(begin (let x 44) (eval \"(/ x 4)\"))"));
         }
-
-#if SWITCH_FEATURE
-        [Test]
-        public void TestIf()
-        {
-            var language = Language.Get(typeof(MiniInterperter));
-
-            var result = Eval(new[] { OPN, IF, VAL1, VAL10, VAL20, CLS });
-            Assert.AreEqual(10, result);
-
-            result = Eval(new[] { OPN, IF, VAL0, VAL10, VAL20, CLS });
-            Assert.AreEqual(20, result);
-
-            // Verify that there is no ambiguity between switching to Raw and shifting with '^'
-            result = Eval(new[] { OPN, IF, VAL1, POW, VAL20, VAL10, VAL20, CLS });
-            Assert.AreEqual(10, result);
-        }
-#endif
 
         [Test]
         public void ProgrammaticallyPassTokens()
@@ -141,14 +113,6 @@ namespace IronText.Tests.Framework
 
             public double Result { get; [Parse] set; }
 
-#if SWITCH_FEATURE
-            [Switch]
-            public static Raw CreateRaw(ILanguage language, IReciever<Msg> exit)
-            {
-                return new Raw(exit, language);
-            }
-#endif
-
             [SubContext]
             public CtemScanner Scanner { get; private set; }
 
@@ -173,15 +137,6 @@ namespace IronText.Tests.Framework
 
             [Parse("(", "begin", null, null, null, ")")]
             public double Begin(Push<Locals> push, List<double> exprs, Pop<Locals> pop) { return exprs.LastOrDefault(); }
-
-#if SWITCH_FEATURE
-            [Parse("(", "define", StemScanner.LParen, null, null, StemScanner.RParen, null, ")")]
-            public double Define(Def<Locals> name, List<string> formals, Raw body)
-            {
-                name.Value = new Lambda<Locals, object> { ClosedFrame = ScopeFrame, Formals = formals, Body = body.ToArray() };
-                return 0;
-            }
-#endif
 
             [Parse("(", null, null, ")")]
             public double Apply(Ref<Locals> f, List<double> args)
@@ -233,18 +188,6 @@ namespace IronText.Tests.Framework
             [Parse("(", "sum", null, ")")]
             public double Sum(List<double> args) { return args.Sum(); }
 
-#if SWITCH_FEATURE
-            // Partially parse if-statement with fully calculated condition and return 
-            // selected branch code for reprocessing.
-            // Note that Raw does not perform parsing, it only counts parenthes to detect
-            // where it should stop consuming tokens.
-            [Parse("(", "if", null, null, null, ")")]
-            public double If(double cond, Raw pos, Raw neg)
-            {
-                var branch = cond == 0 ? neg : pos;
-                return Language.Parse(this, branch.ToArray()).Result;
-            }
-#endif
 
             class Lambda<TNs, T>
             {

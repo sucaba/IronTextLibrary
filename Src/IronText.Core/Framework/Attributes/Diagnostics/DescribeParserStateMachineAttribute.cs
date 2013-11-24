@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using IronText.Extensibility;
+using IronText.Framework.Reflection;
 
 namespace IronText.Framework
 {
@@ -71,6 +72,8 @@ namespace IronText.Framework
                     var actions = transition.Actions;
                     int count = actions.Count();
 
+                    var symbol = data.Grammar.Symbols[transition.Token];
+
                     if (count == 0)
                     {
                     }
@@ -80,7 +83,7 @@ namespace IronText.Framework
                         output.WriteLine("conflict {");
                         foreach (var action in actions)
                         {
-                            PrintAction(data, transition.Token, output, action);
+                            PrintAction(data, symbol, output, action);
                         }
 
                         output.Write(Indent);
@@ -89,7 +92,7 @@ namespace IronText.Framework
                     }
                     else
                     {
-                        PrintAction(data, transition.Token, output, actions.Single());
+                        PrintAction(data, symbol, output, actions.Single());
                     }
                 }
 
@@ -97,7 +100,7 @@ namespace IronText.Framework
             }
         }
 
-        private void PrintAction(IReportData data, int token, StreamWriter output, ParserAction action)
+        private void PrintAction(IReportData data, SymbolBase symbol, StreamWriter output, ParserAction action)
         {
             if (action == null || action.Kind == ParserActionKind.Fail)
             {
@@ -105,7 +108,7 @@ namespace IronText.Framework
             }
 
             output.Write(Indent);
-            output.Write(data.Grammar.SymbolName(token));
+            output.Write(symbol.Name);
             output.Write("             ");
             switch (action.Kind)
             {
@@ -131,11 +134,13 @@ namespace IronText.Framework
 
         private void ReportConflict(IReportData data, ParserConflictInfo conflict, StreamWriter message)
         {
+            var symbol = data.Grammar.Symbols[conflict.Token];
+
             const string Indent = "  ";
 
             message.WriteLine(new string('-', 50));
             message.Write("Conflict on token ");
-            message.Write(data.Grammar.SymbolName(conflict.Token));
+            message.Write(symbol.Name);
             message.Write(" between actions in state #");
             message.Write(conflict.State + "");
             message.WriteLine(":");
@@ -218,10 +223,11 @@ namespace IronText.Framework
             StreamWriter output,
             bool showLookaheads = true)
         {
-            var rule = item.Rule;
-            output.Write(data.Grammar.SymbolName(rule.Outcome));
+            var production = item.Rule;
+            output.Write(production.OutcomeSymbol.Name);
             output.Write(" ->");
-            for (int i = 0; i != rule.Pattern.Length; ++i)
+            int i = 0;
+            foreach (var symbol in production.PatternSymbols)
             {
                 if (item.Position == i)
                 {
@@ -229,10 +235,12 @@ namespace IronText.Framework
                 }
 
                 output.Write(" ");
-                output.Write(data.Grammar.SymbolName(rule.Pattern[i]));
+                output.Write(symbol.Name);
+
+                ++i;
             }
 
-            if (item.Position == rule.Pattern.Length)
+            if (item.Position == production.Pattern.Length)
             {
                 output.Write(" •");
             }
@@ -240,7 +248,7 @@ namespace IronText.Framework
             if (showLookaheads)
             {
                 output.Write("  |LA = {");
-                output.Write(string.Join(", ", item.Lookaheads.Select(data.Grammar.SymbolName)));
+                output.Write(string.Join(", ", (from la in item.Lookaheads select data.Grammar.Symbols[la].Name)));
                 output.Write("}");
             }
 
@@ -251,13 +259,13 @@ namespace IronText.Framework
         {
             var rule = data.Grammar.Productions[ruleId];
 
-            output.Write(data.Grammar.SymbolName(rule.Outcome));
+            output.Write(rule.OutcomeSymbol.Name);
             output.Write(" ->");
 
-            for (int i = 0; i != rule.Pattern.Length; ++i)
+            foreach (var symbol in rule.PatternSymbols)
             {
                 output.Write(" ");
-                output.Write(data.Grammar.SymbolName(rule.Pattern[i]));
+                output.Write(symbol.Name);
             }
 
             return output;

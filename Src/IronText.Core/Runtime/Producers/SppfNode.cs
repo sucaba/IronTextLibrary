@@ -173,13 +173,13 @@ namespace IronText.Framework
             {
                 if (Id > 0)
                 {
-                    output.WriteLine("{0}{1} = {2}", indent, "Token", grammar.SymbolName(Id));
+                    output.WriteLine("{0}{1} = {2}", indent, "Token", grammar.Symbols[Id].Name);
                 }
                 else
                 {
-                    var rule = grammar.Productions[-Id];
-                    output.Write("{0}Rule: {1} -> ", indent, grammar.SymbolName(rule.Outcome));
-                    output.WriteLine(string.Join(" ", rule.Pattern.Select(grammar.SymbolName)));
+                    var prod = grammar.Productions[-Id];
+                    output.Write("{0}Rule: {1} -> ", indent, prod.OutcomeSymbol.Name);
+                    output.WriteLine(string.Join(" ", from s in prod.PatternSymbols select s.Name));
                 }
             }
 

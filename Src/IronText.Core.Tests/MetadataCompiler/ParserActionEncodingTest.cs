@@ -13,9 +13,6 @@ namespace IronText.Tests.MetdataCompiler
                 ParserActionKind.Accept,
                 ParserActionKind.Reduce,
                 ParserActionKind.Shift
-#if SWITCH_FEATURE
-                ,ParserActionKind.Switch
-#endif
                 )] 
                     ParserActionKind kind,
             [Values(0, 1, 1024, ushort.MaxValue)] 

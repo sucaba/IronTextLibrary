@@ -120,35 +120,6 @@ namespace IronText.Automata.Lalr1
                     }
                 }
             }
-
-#if SWITCH_FEATURE
-            // Now assign switch actions in all states which will not cause conflicts
-            for (int i = 0; i != states.Length; ++i)
-            {
-                var state = states[i];
-
-                foreach (var item in state.Items)
-                {
-                    var rule = item.Rule;
-
-                    if (rule.Parts.Length != item.Pos && grammar.IsExternal(rule.Parts[item.Pos]))
-                    {
-                        var action = new ParserAction
-                        {
-                            Kind = ParserActionKind.Switch,
-                            ExternalToken = rule.Parts[item.Pos]
-                        };
-                        foreach (var token in grammar.EnumerateTokens())
-                        {
-                            if (actionTable.Get(i, token) == 0)
-                            {
-                                AssignAction(i, token, action);
-                            }
-                        }
-                    }
-                }
-            }
-#endif
         }
 
         private void AssignAction(int state, int token, ParserAction action)

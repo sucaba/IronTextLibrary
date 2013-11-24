@@ -63,11 +63,8 @@ namespace IronText.MetadataCompiler
                 producer,
                 runtimeGrammar,
                 GetParserAction,
-                allocator
-#if SWITCH_FEATURE
-                , (ctx, id, exit)=> CreateExternalToken(ctx, id, exit, this)
-#endif
-                , logging
+                allocator,
+                logging
                 );
         }
 

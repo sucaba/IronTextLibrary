@@ -15,19 +15,16 @@ namespace IronText.Framework.Reflection
         public const string UnknownTokenName = "<unknown token>";
 
         // Predefined tokens
-        public const int NoToken               = -1;
+        internal const int NoToken             = -1;
         internal const int EpsilonToken        = 0;
-        public const int PropogatedToken       = 1;
+        internal const int PropogatedToken     = 1;
+
+        public const int   ReservedTokenCount = 2;
+
         public const int AugmentedStart        = 2;
         public const int Eoi                   = 3;
         public const int Error                 = 4;
         public const int PredefinedTokenCount  = 5;
-
-        // Special Tokens
-        private const int SpecialTokenCount = 2;
-        // Token IDs without TokenInfo
-
-        private readonly int AugmentedProductionIndex;
 
         private readonly ProductionCollection       productions;
         private readonly ProductionActionCollection productionActions;
@@ -55,14 +52,14 @@ namespace IronText.Framework.Reflection
                                           };
             Symbols[Error]           = new Symbol("$error");
 
-            AugmentedProductionIndex = Productions.Add(AugmentedStart, new[] { -1 }).Index;
+            AugmentedProduction = Productions.Add(AugmentedStart, new[] { NoToken });
         }
 
         public SymbolCollection Symbols { get { return symbols; } }
 
         public ProductionCollection Productions { get { return productions; } }
 
-        public Production AugmentedProduction { get { return Productions[AugmentedProductionIndex];  } }
+        public Production AugmentedProduction { get; private set; }
 
         public int StartToken
         {
@@ -83,21 +80,9 @@ namespace IronText.Framework.Reflection
             }
         }
 
-        public IEnumerable<AmbiguousSymbol> AmbiguousSymbols { get { return symbols.OfType<AmbiguousSymbol>(); } }
-
         public bool IsStartProduction(int prodId)
         {
             return Productions[prodId].Outcome == StartToken;
-        }
-
-        public string SymbolName(int token) 
-        {
-            if (token < 0)
-            {
-                return UnknownTokenName;
-            }
-
-            return Symbols[token].Name; 
         }
 
         public override string ToString()
@@ -110,18 +95,18 @@ namespace IronText.Framework.Reflection
                 .Append("Non-Terminals: ")
                 .Append(string.Join(" ", (from s in Symbols where !s.IsTerminal select s.Name)))
                 .AppendLine()
-                .AppendFormat("Start Token: {0}", StartToken <= 0 ? "<undefined>" : Start.Name)
+                .AppendFormat("Start Token: {0}", Start == null ? "<undefined>" : Start.Name)
                 .AppendLine()
                 .Append("Rules:")
                 .AppendLine();
-            foreach (var rule in Productions)
+            foreach (var prod in Productions)
             {
                 output
                     .AppendFormat(
                         "{0:D2}: {1} -> {2}",
-                        rule.Index,
-                        Symbols[rule.Outcome].Name,
-                        string.Join(" ", rule.Pattern.Select(SymbolName)))
+                        prod.Index,
+                        prod.OutcomeSymbol.Name,
+                        string.Join(" ", from s in prod.PatternSymbols select s.Name))
                     .AppendLine();
             }
 

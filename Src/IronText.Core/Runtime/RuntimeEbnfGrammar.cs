@@ -65,7 +65,7 @@ namespace IronText.Framework
 
         public string SymbolName(int token)
         {
-            return grammar.SymbolName(token);
+            return grammar.Symbols[token].Name;
         }
 
         public TokenCategory GetTokenCategories(int token)
