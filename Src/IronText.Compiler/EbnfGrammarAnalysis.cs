@@ -86,9 +86,9 @@ namespace IronText.Compiler
             return grammar.Productions[prodId].Precedence;
         }
 
-        public bool IsStartProduction(int ruleId)
+        public bool IsStartProduction(int prodId)
         {
-            return grammar.IsStartProduction(ruleId);
+            return grammar.IsStartProduction(prodId);
         }
 
         public BitSetType TokenSet

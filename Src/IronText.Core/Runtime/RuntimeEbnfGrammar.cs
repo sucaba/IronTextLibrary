@@ -33,22 +33,22 @@ namespace IronText.Framework
 
         public bool IsTerminal(int token)
         {
-            return grammar.IsTerminal(token);
+            return grammar.Symbols[token].IsTerminal;
         }
 
         public bool IsBeacon(int token)
         {
-            return grammar.IsBeacon(token);
+            return grammar.Symbols[token].Categories.Has(TokenCategory.Beacon);
         }
 
         public bool IsDontInsert(int token)
         {
-            return grammar.IsDontInsert(token);
+            return grammar.Symbols[token].Categories.Has(TokenCategory.DoNotInsert);
         }
 
         public bool IsDontDelete(int token)
         {
-            return grammar.IsDontDelete(token);
+            return grammar.Symbols[token].Categories.Has(TokenCategory.DoNotDelete);
         }
 
         public int SymbolCount 

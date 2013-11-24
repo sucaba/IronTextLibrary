@@ -10,4 +10,12 @@ namespace IronText.Framework
         DoNotInsert     = 0x04,
         DoNotDelete     = 0x08,
     }
+
+    public static class TokenCategoryExtensions
+    {
+        public static bool Has(this TokenCategory self, TokenCategory flag)
+        {
+            return (self & flag) == flag;
+        }
+    }
 }

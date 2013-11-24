@@ -16,7 +16,7 @@ namespace IronText.Framework.Reflection
 
         // Predefined tokens
         public const int NoToken               = -1;
-        internal const int EpsilonToken         = 0;
+        internal const int EpsilonToken        = 0;
         public const int PropogatedToken       = 1;
         public const int AugmentedStart        = 2;
         public const int Eoi                   = 3;
@@ -66,25 +66,19 @@ namespace IronText.Framework.Reflection
 
         public Production AugmentedProduction { get { return Productions[AugmentedProductionIndex];  } }
 
-        public int? StartToken
+        public int StartToken
         {
-            get 
-            { 
-                int result = this.Productions[AugmentedProductionIndex].Pattern[0];
-                return result < 0 ? null : (int?)result;
-            }
-
-            set { this.Productions[AugmentedProductionIndex].Pattern[0] = value.HasValue ? value.Value : -1; }
+            get { return AugmentedProduction.Pattern[0]; }
+            set { AugmentedProduction.Pattern[0] = value; }
         }
 
         public Symbol Start
         {
             get 
             {
-                int? token = StartToken;
-                if (token.HasValue)
+                if (StartToken > 0)
                 {
-                    return (Symbol)symbols[token.Value];
+                    return (Symbol)symbols[StartToken];
                 }
 
                 return null;
@@ -95,44 +89,10 @@ namespace IronText.Framework.Reflection
 
         public IEnumerable<AmbiguousSymbol> AmbiguousSymbols { get { return symbols.OfType<AmbiguousSymbol>(); } }
 
-        public bool IsStartProduction(int ruleId)
+        public bool IsStartProduction(int prodId)
         {
-            return Productions[ruleId].Outcome == AugmentedProduction.Pattern[0];
+            return Productions[prodId].Outcome == StartToken;
         }
-
-        public bool IsBeacon(int token)
-        {
-            if (token >= Symbols.Count)
-            {
-                return false;
-            }
-
-            return (Symbols[token].Categories & TokenCategory.Beacon) != 0;
-        }
-
-        public bool IsDontInsert(int token)
-        {
-            if (token >= Symbols.Count)
-            {
-                return false;
-            }
-
-            return (Symbols[token].Categories & TokenCategory.DoNotInsert) != 0;
-        }
-
-        public bool IsDontDelete(int token)
-        {
-            if (token >= Symbols.Count)
-            {
-                return false;
-            }
-
-            return (Symbols[token].Categories & TokenCategory.DoNotDelete) != 0;
-        }
-
-        public bool IsTerminal(int token) { return Symbols[token].IsTerminal; }
-
-        public bool IsNonTerm(int token) { return !Symbols[token].IsTerminal; }
 
         public TokenCategory GetTokenCategories(int token) { return Symbols[token].Categories; }
 
@@ -164,7 +124,13 @@ namespace IronText.Framework.Reflection
                 .AppendLine();
             foreach (var rule in Productions)
             {
-                output.AppendFormat("{0:D2}: {1} -> {2}", rule.Index, SymbolName(rule.Outcome), string.Join(" ", rule.Pattern.Select(SymbolName))).AppendLine();
+                output
+                    .AppendFormat(
+                        "{0:D2}: {1} -> {2}",
+                        rule.Index,
+                        Symbols[rule.Outcome].Name,
+                        string.Join(" ", rule.Pattern.Select(SymbolName)))
+                    .AppendLine();
             }
 
             return output.ToString();

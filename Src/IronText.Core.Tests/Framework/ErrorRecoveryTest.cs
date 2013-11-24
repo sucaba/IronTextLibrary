@@ -132,9 +132,9 @@ namespace IronText.Tests.Framework
 
             var context = new RecoveryLang();
 
-            Assert.IsTrue(lang.Grammar.IsBeacon(lang.Identify("beacon")));
-            Assert.IsTrue(lang.Grammar.IsDontInsert(lang.Identify("{")));
-            Assert.IsTrue(lang.Grammar.IsDontDelete(lang.Identify("{")));
+            Assert.IsTrue(lang.Grammar.Symbols[lang.Identify("beacon")].Categories.Has(TokenCategory.Beacon));
+            Assert.IsTrue(lang.Grammar.Symbols[lang.Identify("{")].Categories.Has(TokenCategory.DoNotInsert));
+            Assert.IsTrue(lang.Grammar.Symbols[lang.Identify("{")].Categories.Has(TokenCategory.DoNotDelete));
 
             Parse(
                 lang, 

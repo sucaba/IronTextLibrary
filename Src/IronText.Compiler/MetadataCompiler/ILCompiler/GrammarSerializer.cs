@@ -118,12 +118,11 @@ namespace IronText.MetadataCompiler
                     ;
             }
 
-            if (grammar.StartToken.HasValue)
+            if (grammar.StartToken > 0)
             {
                 emit
                     .Ldloc(resultVar.GetRef())
-                    .Ldc_I4(grammar.StartToken.Value)
-                    .Newobj((int val) => new Nullable<int>(val))
+                    .Ldc_I4(grammar.StartToken)
                     .Stprop((EbnfGrammar g) => g.StartToken);
             }
 

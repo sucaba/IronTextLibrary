@@ -262,7 +262,5 @@ namespace IronText.Framework
 
             return output;
         }
-
-        
     }
 }
