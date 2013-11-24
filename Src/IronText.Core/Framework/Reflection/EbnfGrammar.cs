@@ -5,12 +5,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using IronText.Algorithm;
+using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
     internal interface IRuntimeBnfGrammar
     {
-        ObjectTable<Production> Productions { get; }
+        IndexedCollection<Production> Productions { get; }
 
         bool IsNullable(int token);
 
@@ -72,8 +73,8 @@ namespace IronText.Framework.Reflection
         private BitSetType tokenSet;
         private readonly int AugmentedProductionIndex;
 
-        private readonly ObjectTable<Production>       productions;
-        private readonly ObjectTable<ProductionAction> productionActions;
+        private readonly IndexedCollection<Production>       productions;
+        private readonly IndexedCollection<ProductionAction> productionActions;
         private readonly SymbolTable                   symbols;
 
         private MutableIntSet[] first;
@@ -83,8 +84,8 @@ namespace IronText.Framework.Reflection
 
         public EbnfGrammar()
         {
-            productions       = new ObjectTable<Production>();
-            productionActions = new ObjectTable<ProductionAction>();
+            productions       = new IndexedCollection<Production>();
+            productionActions = new IndexedCollection<ProductionAction>();
             symbols           = new SymbolTable();
 
             for (int i = PredefinedTokenCount; i != 0; --i)
@@ -108,7 +109,7 @@ namespace IronText.Framework.Reflection
 
         public SymbolTable Symbols { get { return symbols; } }
 
-        public ObjectTable<Production> Productions { get { return productions; } }
+        public IndexedCollection<Production> Productions { get { return productions; } }
 
         public BitSetType TokenSet 
         { 

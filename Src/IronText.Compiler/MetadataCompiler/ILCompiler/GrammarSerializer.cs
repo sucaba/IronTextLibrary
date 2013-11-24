@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using IronText.Framework;
+using IronText.Framework.Collections;
 using IronText.Framework.Reflection;
 using IronText.Lib.Ctem;
 using IronText.Lib.IL;
@@ -96,7 +97,7 @@ namespace IronText.MetadataCompiler
                     .Ldloc(resultVar.GetRef())
                     .Ldprop((EbnfGrammar g) => g.Symbols)
                     .Ldloc(symbolVar)
-                    .Call((ObjectTable<SymbolBase> coll, Symbol sym) => coll.Add(sym))
+                    .Call((IndexedCollection<SymbolBase> coll, Symbol sym) => coll.Add(sym))
                     ;
             }
 

@@ -2,14 +2,15 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public sealed class Production : TableObject
+    public sealed class Production : IndexedObject
     {
         public Production()
         {
-            Actions = new ObjectReferenceCollection<ProductionAction>();
+            Actions = new ReferenceCollection<ProductionAction>();
         }
 
         public int        Outcome    { get; set; }
@@ -23,7 +24,7 @@ namespace IronText.Framework.Reflection
         /// when production is inlined there are multiple actions
         /// happing when this production being applied.
         /// </summary>
-        public ObjectReferenceCollection<ProductionAction> Actions { get; private set; }
+        public ReferenceCollection<ProductionAction> Actions { get; private set; }
 
         public bool AssignPrecedence(Precedence value)
         {

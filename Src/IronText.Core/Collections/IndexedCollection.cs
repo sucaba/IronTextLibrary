@@ -5,15 +5,15 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace IronText.Framework.Reflection
+namespace IronText.Framework.Collections
 {
-    public class ObjectTable<T> : IEnumerable<T>
-        where T : class, ITableObject
+    public class IndexedCollection<T> : IOwner<T>, IEnumerable<T>
+        where T : class, IIndexable
     {
         private const int InitialCapacity = 8;
         private T[] indexToItem;
 
-        public ObjectTable()
+        public IndexedCollection()
         {
             indexToItem = new T[InitialCapacity];
         }
@@ -113,11 +113,6 @@ namespace IronText.Framework.Reflection
             }
         }
 
-        public int IndexOf(T item)
-        {
-            return item.Index;
-        }
-
         public bool Remove(T item)
         {
             if (item == null)
@@ -176,6 +171,16 @@ namespace IronText.Framework.Reflection
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+
+        void IOwner<T>.Own(T item)
+        {
+            Add(item);
+        }
+
+        void IOwner<T>.Unown(T item)
+        {
+            Remove(item);
         }
     }
 }

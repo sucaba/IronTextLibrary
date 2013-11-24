@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public abstract class SymbolBase : TableObject
+    public abstract class SymbolBase : IndexedObject
     {
         /// <summary>
         /// Display name
@@ -24,6 +25,6 @@ namespace IronText.Framework.Reflection
 
         public virtual bool IsAmbiguous { get { return false; } }
 
-        public virtual ObjectReferenceCollection<Production> Productions { get { return new ObjectReferenceCollection<Production>(); } }
+        public virtual ReferenceCollection<Production> Productions { get { return new ReferenceCollection<Production>(); } }
     }
 }

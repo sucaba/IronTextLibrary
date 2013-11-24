@@ -3,20 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace IronText.Framework.Reflection
+namespace IronText.Framework.Collections
 {
-    public class TableObject : ITableObject
+    public class IndexedObject : IIndexable
     {
-        public TableObject()
+        public const int NoId = -1;
+
+        public IndexedObject()
         {
-            Index = TableIndexing.NoId;
+            Index = NoId;
         }
 
         public int Index { get; private set; }
 
-        public bool IsDetached { get { return TableIndexing.NoId == Index; } }
+        public bool IsDetached { get { return NoId == Index; } }
 
-        void ITableObject.Attach(int id)
+        void IIndexable.Attach(int id)
         {
             if (!IsDetached)
             {
@@ -26,9 +28,9 @@ namespace IronText.Framework.Reflection
             Index = id;
         }
 
-        void ITableObject.Detach()
+        void IIndexable.Detach()
         {
-            Index = -1;
+            Index = NoId;
         }
     }
 }

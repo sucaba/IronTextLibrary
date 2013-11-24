@@ -5,17 +5,17 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace IronText.Framework.Reflection
+namespace IronText.Framework.Collections
 {
-    public class ObjectReferenceCollection<T> : ITableObjectReferences<T>, IEnumerable<T>
-        where T : class, ITableObject
+    public class ReferenceCollection<T> : IReferenceContainer<T>, IEnumerable<T>
+        where T : class
     {
         private const int InitialCapacity = 1;
 
-        private ITableObjectOwner<T> owner;
-        private List<T>              items;
+        private IOwner<T> owner;
+        private List<T>         items;
 
-        public ObjectReferenceCollection()
+        public ReferenceCollection()
         {
             items = new List<T>(1);
         }
@@ -27,7 +27,7 @@ namespace IronText.Framework.Reflection
             get { return items[0]; }
         }
 
-        public ITableObjectOwner<T> Owner
+        public IOwner<T> Owner
         {
             get { return this.owner; }
             set
@@ -71,9 +71,9 @@ namespace IronText.Framework.Reflection
 
         private void AddToOwner(T item)
         {
-            if (owner != null && item.IsDetached)
+            if (owner != null)
             {
-                owner.Add(item);
+                owner.Own(item);
             }
         }
 
