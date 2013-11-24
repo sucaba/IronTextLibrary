@@ -23,7 +23,7 @@ namespace IronText.MetadataCompiler
 
         public EbnfGrammarAnalysis GrammarAnalysis { get; set; }
 
-        public int TokenCount { get { return Grammar.SymbolCount; } }
+        public int TokenCount { get { return Grammar.Symbols.Count; } }
 
         public bool                   IsDeterministic;
         public Type                   RootContextType;

@@ -199,7 +199,7 @@ namespace IronText.Framework
             Clear();
 
             var scanner    = language.CreateScanner(context, input, document, GetCurrentLogging());
-            var producer = new SppfProducer(language.Grammar);
+            var producer = new SppfProducer(((ILanguageRuntime)language).RuntimeGrammar);
             var parser   = language.CreateParser(producer, logging);
             scanner.Accept(parser);
 

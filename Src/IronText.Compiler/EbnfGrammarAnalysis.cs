@@ -14,10 +14,12 @@ namespace IronText.Compiler
     sealed class EbnfGrammarAnalysis
     {
         private readonly EbnfGrammar grammar;
+        private readonly IBuildtimeNullableFirstTables tables;
 
         public EbnfGrammarAnalysis(EbnfGrammar grammar)
         {
             this.grammar = grammar;
+            this.tables = new NullableFirstTables(grammar);
         }
 
         /// <summary>
@@ -93,7 +95,7 @@ namespace IronText.Compiler
 
         public BitSetType TokenSet
         {
-            get { return grammar.TokenSet; }
+            get { return tables.TokenSet; }
         }
 
         public IEnumerable<AmbiguousSymbol> AmbiguousSymbols
@@ -103,17 +105,17 @@ namespace IronText.Compiler
 
         public bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output)
         {
-            return grammar.AddFirst(tokenChain, startIndex, output);
+            return tables.AddFirst(tokenChain, startIndex, output);
         }
 
         public bool HasFirst(int[] tokenChain, int startIndex, int token)
         {
-            return grammar.HasFirst(tokenChain, startIndex, token);
+            return tables.HasFirst(tokenChain, startIndex, token);
         }
 
         public bool IsTailNullable(int[] tokens, int startIndex)
         {
-            return grammar.IsTailNullable(tokens, startIndex);
+            return tables.IsTailNullable(tokens, startIndex);
         }
 
         public int DefineAmbToken(int mainToken, IEnumerable<int> tokens)

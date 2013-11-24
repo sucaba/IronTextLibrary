@@ -9,7 +9,7 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public sealed class EbnfGrammar : NullableFirstTables, IEbnfContext
+    public sealed class EbnfGrammar : IEbnfContext
     {
         public const string UnnamedTokenName = "<unnamed token>";
         public const string UnknownTokenName = "<unknown token>";
@@ -35,8 +35,6 @@ namespace IronText.Framework.Reflection
 
         public EbnfGrammar()
         {
-            base.grammar = this;
-
             productions       = new ProductionCollection(this);
             productionActions = new ProductionActionCollection(this);
             symbols           = new SymbolCollection(this);
@@ -85,7 +83,7 @@ namespace IronText.Framework.Reflection
             }
         }
 
-        public override int SymbolCount { get { return Symbols.Count; } }
+        public int SymbolCount { get { return Symbols.Count; } }
 
         public IEnumerable<AmbiguousSymbol> AmbiguousSymbols { get { return symbols.OfType<AmbiguousSymbol>(); } }
 
@@ -118,7 +116,7 @@ namespace IronText.Framework.Reflection
                 .Append("Non-Terminals: ")
                 .Append(string.Join(" ", (from s in Symbols where !s.IsTerminal select s.Name)))
                 .AppendLine()
-                .AppendFormat("Start Token: {0}", StartToken == null ? "<undefined>" : Start.Name)
+                .AppendFormat("Start Token: {0}", StartToken <= 0 ? "<undefined>" : Start.Name)
                 .AppendLine()
                 .Append("Rules:")
                 .AppendLine();

@@ -9,17 +9,19 @@ namespace IronText.Framework
     internal class RuntimeEbnfGrammar
     {
         private readonly EbnfGrammar grammar;
+        private readonly IRuntimeNullableFirstTables tables;
 
         public RuntimeEbnfGrammar(EbnfGrammar grammar)
         {
             this.grammar = grammar;
+            this.tables = new NullableFirstTables(grammar);
 
             this.MaxRuleSize = grammar.Productions.Select(r => r.Pattern.Length).Max();
         }
 
         public ProductionCollection Productions { get { return grammar.Productions; } }
 
-        public bool IsNullable(int token) { return grammar.IsNullable(token); }
+        public bool IsNullable(int token) { return tables.IsNullable(token); }
 
         public IEnumerable<Production> GetProductions(int outcomeToken)
         {

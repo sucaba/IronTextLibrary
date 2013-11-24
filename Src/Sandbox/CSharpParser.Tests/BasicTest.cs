@@ -184,7 +184,7 @@ namespace CSharpParser.Tests
 
             int stateCount = data.ParserStates.Length;
             int startToken = EbnfGrammar.PredefinedTokenCount;
-            int tokenCount = grammar.SymbolCount;
+            int tokenCount = grammar.Symbols.Count;
 
             var table = data.ParserActionTable;
             var unpartitioned = Enumerable.Range(startToken, tokenCount - startToken).ToList();

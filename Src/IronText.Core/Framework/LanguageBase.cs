@@ -8,7 +8,7 @@ using IronText.Misc;
 
 namespace IronText.Framework
 {
-    public abstract class LanguageBase : ILanguage, IInternalInitializable
+    public abstract class LanguageBase : ILanguage, IInternalInitializable, ILanguageRuntime
     {
         public static class Fields
         {
@@ -203,6 +203,11 @@ namespace IronText.Framework
             Debug.WriteLine(" into the value: '{0}'", (object)result);
 #endif
             return result;
+        }
+
+        RuntimeEbnfGrammar ILanguageRuntime.RuntimeGrammar
+        {
+            get { return runtimeGrammar; }
         }
     }
 }

@@ -7,7 +7,7 @@ using IronText.Lib.IL;
 
 namespace IronText.MetadataCompiler
 {
-    class BootstrapLanguage : ILanguage, IInternalInitializable, IBootstrapLanguage
+    class BootstrapLanguage : ILanguage, IInternalInitializable, IBootstrapLanguage, ILanguageRuntime
     {
         private readonly LanguageData data;
         private readonly LanguageName name;
@@ -112,6 +112,11 @@ namespace IronText.MetadataCompiler
                     return emit.Ret();
                 }).Delegate;
             return result;
+        }
+
+        RuntimeEbnfGrammar ILanguageRuntime.RuntimeGrammar
+        {
+            get { return runtimeGrammar; }
         }
     }
 }

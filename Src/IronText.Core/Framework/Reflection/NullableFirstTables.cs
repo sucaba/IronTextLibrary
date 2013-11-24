@@ -7,59 +7,58 @@ using IronText.Algorithm;
 
 namespace IronText.Framework.Reflection
 {
-    public abstract class NullableFirstTables
+    internal interface IBuildtimeNullableFirstTables
     {
-        private BitSetType tokenSet;
-        private MutableIntSet[] First;
-        private bool[] IsTokenNullable;
-        private bool   frozen;
+        BitSetType TokenSet { get; }
+
+
+        bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output);
+        bool HasFirst(int[] tokenChain, int startIndex, int token);
+        bool IsTailNullable(int[] tokens, int startIndex);
+    }
+
+    internal interface IRuntimeNullableFirstTables
+    {
+        bool IsNullable(int token);
+    }
+
+    public class NullableFirstTables : IBuildtimeNullableFirstTables, IRuntimeNullableFirstTables
+    {
+        private BitSetType      tokenSet;
+        private MutableIntSet[] firsts;
+        private bool[]          isNullable;
 
         protected EbnfGrammar grammar;
 
-        /*
         public NullableFirstTables(EbnfGrammar grammar)
         {
-            this.grammar = grammar;
+            this.grammar    = grammar;
+            int count       = grammar.Symbols.Count;
+            this.tokenSet   = new BitSetType(count);
+            this.firsts     = new MutableIntSet[count];
+            this.isNullable = new bool[count];
+            Build();
         }
-        */
-        public abstract int SymbolCount { get; }
 
         public BitSetType TokenSet 
         { 
-            get 
-            {
-                Debug.Assert(frozen);
-                return this.tokenSet; 
-            } 
+            get { return this.tokenSet; } 
         }
 
-        public bool IsNullable(int token) { return IsTokenNullable[token]; }
+        public bool IsNullable(int token) { return isNullable[token]; }
 
-        private void EnsureFirsts()
+        private void Build()
         {
-            if (this.First == null)
-            {
-                BuildFirstFollowing();
-            }
-        }
-
-        private void BuildFirstFollowing()
-        {
-            BuildFirst();
-        }
-
-        private void BuildFirst()
-        {
-            int count = SymbolCount;
-            this.First     = new MutableIntSet[count];
-            this.IsTokenNullable = new bool[count];
+            int count = grammar.Symbols.Count;
+            this.firsts     = new MutableIntSet[count];
+            this.isNullable = new bool[count];
 
             for (int i = 0; i != count; ++i)
             {
-                First[i] = tokenSet.Mutable();
+                firsts[i] = tokenSet.Mutable();
                 if (grammar.Symbols[i].IsTerminal)
                 {
-                    First[i].Add(i);
+                    firsts[i].Add(i);
                 }
             }
 
@@ -70,11 +69,11 @@ namespace IronText.Framework.Reflection
             {
                 if (prod.Pattern.Length == 0)
                 {
-                    First[prod.Outcome].Add(EbnfGrammar.EpsilonToken);
+                    firsts[prod.Outcome].Add(EbnfGrammar.EpsilonToken);
                 }
                 else if (grammar.Symbols[prod.Pattern[0]].IsTerminal)
                 {
-                    First[prod.Outcome].Add(prod.Pattern[0]);
+                    firsts[prod.Outcome].Add(prod.Pattern[0]);
                 }
                 else
                 {
@@ -90,7 +89,7 @@ namespace IronText.Framework.Reflection
 
                 foreach (var prod in recursiveProds)
                 {
-                    if (InternalAddFirsts(prod.Pattern, First[prod.Outcome]))
+                    if (InternalAddFirsts(prod.Pattern, firsts[prod.Outcome]))
                     {
                         changed = true;
                     }
@@ -100,11 +99,11 @@ namespace IronText.Framework.Reflection
 
             for (int i = 0; i != count; ++i)
             {
-                bool hasEpsilon = First[i].Contains(EbnfGrammar.EpsilonToken);
+                bool hasEpsilon = firsts[i].Contains(EbnfGrammar.EpsilonToken);
                 if (hasEpsilon)
                 {
-                    IsTokenNullable[i] = hasEpsilon;
-                    First[i].Remove(EbnfGrammar.EpsilonToken);
+                    isNullable[i] = hasEpsilon;
+                    firsts[i].Remove(EbnfGrammar.EpsilonToken);
                 }
             }
         }
@@ -119,7 +118,7 @@ namespace IronText.Framework.Reflection
             foreach (int item in chain)
             {
                 bool itemNullable = false;
-                foreach (var f in First[item].ToArray())
+                foreach (var f in firsts[item].ToArray())
                 {
                     if (f == EbnfGrammar.EpsilonToken)
                     {
@@ -156,12 +155,12 @@ namespace IronText.Framework.Reflection
             {
                 int t = tokenChain[startIndex];
 
-                if (First[t].Contains(token))
+                if (firsts[t].Contains(token))
                 {
                     return true;
                 }
 
-                if (!IsTokenNullable[t])
+                if (!isNullable[t])
                 {
                     return false;
                 }
@@ -178,7 +177,7 @@ namespace IronText.Framework.Reflection
 
             while (startIndex != tokens.Length)
             {
-                if (!IsTokenNullable[tokens[startIndex]])
+                if (!isNullable[tokens[startIndex]])
                 {
                     result = false;
                     break;
@@ -204,8 +203,8 @@ namespace IronText.Framework.Reflection
             {
                 int token = tokenChain[startIndex];
 
-                output.AddAll(First[token]);
-                if (!IsTokenNullable[token])
+                output.AddAll(firsts[token]);
+                if (!isNullable[token])
                 {
                     result = false;
                     break;
@@ -216,14 +215,5 @@ namespace IronText.Framework.Reflection
 
             return result;
         }
-
-        public void Freeze()
-        {
-            this.frozen = true;
-            this.tokenSet = new BitSetType(SymbolCount);
-
-            EnsureFirsts();
-        }
-
     }
 }

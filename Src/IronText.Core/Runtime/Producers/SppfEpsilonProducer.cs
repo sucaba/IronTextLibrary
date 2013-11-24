@@ -4,13 +4,13 @@ namespace IronText.Framework
 {
     class SppfEpsilonProducer
     {
-        private readonly EbnfGrammar grammar;
+        private readonly RuntimeEbnfGrammar grammar;
         private SppfNode[] tokenCache;
         private SppfNode[] ruleCache;
         private int[] ruleOffsetInCache;
         private int[] ruleEndOffsetInCache;
 
-        public SppfEpsilonProducer(EbnfGrammar grammar)
+        public SppfEpsilonProducer(RuntimeEbnfGrammar grammar)
         {
             this.grammar = grammar;
             BuildCache();

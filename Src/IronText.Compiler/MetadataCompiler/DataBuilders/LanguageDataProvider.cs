@@ -304,7 +304,7 @@ namespace IronText.MetadataCompiler
                 grammar.Symbols[id].Precedence = pair.Value;
             }
 
-            grammar.Freeze();
+            // grammar.Freeze();
 
             return grammar;
         }

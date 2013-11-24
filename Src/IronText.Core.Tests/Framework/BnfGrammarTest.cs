@@ -5,26 +5,26 @@ using NUnit.Framework;
 namespace IronText.Tests.Framework
 {
     [TestFixture]
-    public class BnfGrammarTest
+    public class RuntimeBnfGrammarTest
     {
         [Test]
         public void TestRightTrimNullable()
         {
-            var target = new EbnfGrammar();
+            var grammar = new EbnfGrammar();
 
-            var S = target.Symbols.Add("S").Index;
-            var a = target.Symbols.Add("a").Index;
-            var b = target.Symbols.Add("b").Index;
-            var A = target.Symbols.Add("A").Index;
-            var B = target.Symbols.Add("B").Index;
+            var S = grammar.Symbols.Add("S").Index;
+            var a = grammar.Symbols.Add("a").Index;
+            var b = grammar.Symbols.Add("b").Index;
+            var A = grammar.Symbols.Add("A").Index;
+            var B = grammar.Symbols.Add("B").Index;
 
-            target.StartToken = S;
-            target.Productions.Add(S, new[] { b, A });
-            target.Productions.Add(A, new[] { a, A, B });
-            target.Productions.Add(A, new int[0]);
-            target.Productions.Add(B, new int[0]);
+            grammar.StartToken = S;
+            grammar.Productions.Add(S, new[] { b, A });
+            grammar.Productions.Add(A, new[] { a, A, B });
+            grammar.Productions.Add(A, new int[0]);
+            grammar.Productions.Add(B, new int[0]);
 
-            target.Freeze();
+            var target = new RuntimeEbnfGrammar(grammar);
 
             Assert.IsTrue(target.IsNullable(A));
             Assert.IsTrue(target.IsNullable(B));

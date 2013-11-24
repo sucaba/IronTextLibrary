@@ -24,7 +24,7 @@ namespace IronText.Tests.Lib.IL.Generators
 
             originalGrammar.StartToken = red;
 
-            originalGrammar.Freeze();
+//            originalGrammar.Freeze();
 
             GrammarSerializer target = new GrammarSerializer(originalGrammar);
             var factory = new CachedMethod<Func<EbnfGrammar>>("GrammarSerializerTest.Assembly0", (emit, args) => { target.Build(emit); return emit.Ret(); }).Delegate;
