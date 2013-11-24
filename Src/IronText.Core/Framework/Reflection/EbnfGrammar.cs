@@ -126,6 +126,7 @@ namespace IronText.Framework.Reflection
             this.tokenSet = new BitSetType(SymbolCount);
 
             EnsureFirsts();
+#if false
             for (int i = PredefinedTokenCount; i != SymbolCount; ++i)
             {
                 if (i == Error)
@@ -139,6 +140,7 @@ namespace IronText.Framework.Reflection
             }
 
             Symbols[Eoi].IsTerminal = true;
+#endif
 
             this.MaxRuleSize = Productions.Select(r => r.Pattern.Length).Max();
         }
@@ -187,11 +189,7 @@ namespace IronText.Framework.Reflection
 
         public bool IsTerminal(int token) { return Symbols[token].IsTerminal; }
 
-        public bool IsNonTerm(int token) 
-        {
-            var ti = Symbols[token];
-            return !ti.IsTerminal && (token >= PredefinedTokenCount);
-        }
+        public bool IsNonTerm(int token) { return !Symbols[token].IsTerminal; }
 
         internal TokenCategory GetTokenCategories(int token) { return Symbols[token].Categories; }
 
@@ -217,60 +215,6 @@ namespace IronText.Framework.Reflection
             }
 
             return Symbols[token].Name; 
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="outcome"></param>
-        /// <param name="pattern"></param>
-        /// <returns>Rule ID or -1 if there is no such rule</returns>
-        internal Production FindProduction(int outcome, int[] pattern)
-        {
-            for (int i = 0; i != Productions.Count; ++i)
-            {
-                var rule = Productions[i];
-                if (rule.Outcome == outcome
-                    && rule.Pattern.Length == pattern.Length
-                    && Enumerable.SequenceEqual(rule.Pattern, pattern))
-                {
-                    return rule;
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="outcome"></param>
-        /// <param name="pattern"></param>
-        /// <param name="?"></param>
-        /// <returns><c>true</c> when production was just defined, <c>false</c> if it existed previously</returns>
-        public bool FindOrDefineProduction(int outcome, int[] pattern, out Production output)
-        {
-            output = FindProduction(outcome, pattern);
-
-            if (output == null)
-            {
-                output = Productions.Add(outcome, pattern);
-                return true;
-            }
-
-            return false;
-        }
-
-        // TODO: Optmize
-        internal IEnumerable<Production> TokenProductions(int token)
-        {
-            var result = this.Productions.Where(r => r.Outcome == token).ToArray();
-            if (result.Length == 0)
-            {
-                throw new InvalidOperationException("Term token has no rules.");
-            }
-
-            return result;
         }
 
         public IEnumerable<int> EnumerateTokens()
@@ -492,7 +436,6 @@ namespace IronText.Framework.Reflection
             return output.ToString();
         }
 
-
         public Precedence GetTermPrecedence(int token)
         {
             if (!IsTerminal(token))
@@ -500,8 +443,7 @@ namespace IronText.Framework.Reflection
                 throw new ArgumentException("Precedence is applicable only to terminals.", "token");
             }
 
-            var info = this.Symbols[token];
-            return info.Precedence;
+            return Symbols[token].Precedence;
         }
 
         public void SetTermPrecedence(int token, Precedence precedence)

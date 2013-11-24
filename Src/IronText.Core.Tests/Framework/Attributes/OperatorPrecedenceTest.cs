@@ -33,8 +33,8 @@ namespace IronText.Tests.Framework
             var lang = Language.Get(typeof(OperatorPrecedenceLang));
             int PLUS = lang.Identify("+");
             int MULT = lang.Identify("*");
-            var plusPrecedence = lang.Grammar.GetTermPrecedence(PLUS);
-            var multPrecedence = lang.Grammar.GetTermPrecedence(MULT);
+            var plusPrecedence = lang.Grammar.Symbols[PLUS].Precedence;
+            var multPrecedence = lang.Grammar.Symbols[MULT].Precedence;
             Assert.IsNotNull(plusPrecedence);
             Assert.IsNotNull(multPrecedence);
             Assert.AreEqual(Associativity.Left, plusPrecedence.Assoc);

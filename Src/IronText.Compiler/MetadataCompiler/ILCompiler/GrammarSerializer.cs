@@ -28,8 +28,8 @@ namespace IronText.MetadataCompiler
             var symbolVar   = emit.Locals.Generate("symbol").GetRef();
             var intArrayVar = emit.Locals.Generate("intArray").GetRef();
             emit
-                .Local(resultVar, emit.Types.Import(typeof(EbnfGrammar)))
-                .Local(partsVar, emit.Types.Import(typeof(int[])))
+                .Local(resultVar,       emit.Types.Import(typeof(EbnfGrammar)))
+                .Local(partsVar,        emit.Types.Import(typeof(int[])))
                 .Local(symbolVar.Def,   emit.Types.Import(typeof(SymbolBase)))
                 .Local(intArrayVar.Def, emit.Types.Array(emit.Types.Int32))
 
@@ -149,11 +149,13 @@ namespace IronText.MetadataCompiler
 
             for (int token = 2; token != grammar.SymbolCount; ++token)
             {
-                if (!grammar.IsTerminal(token))
+                var symbol = grammar.Symbols[token];
+                if (!symbol.IsTerminal)
                 {
                     continue;
                 }
-                var precedence = grammar.GetTermPrecedence(token);
+
+                var precedence = grammar.Symbols[token].Precedence;
                 if (precedence == null)
                 {
                     continue;

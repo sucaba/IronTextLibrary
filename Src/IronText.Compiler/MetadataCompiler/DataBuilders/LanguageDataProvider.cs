@@ -258,7 +258,7 @@ namespace IronText.MetadataCompiler
 
                 // Try to find existing rules whith same token-signature
                 Production production;
-                if (grammar.FindOrDefineProduction(outcome, pattern, out production))
+                if (grammar.Productions.FindOrAdd(outcome, pattern, out production))
                 {
                     ruleActionBuilders.Add(new List<ProductionActionBuilder>());
                     production.Actions.Add(
@@ -301,7 +301,7 @@ namespace IronText.MetadataCompiler
             foreach (KeyValuePair<TokenRef, Precedence> pair in definition.Precedence)
             {
                 int id = tokenResolver.GetId(pair.Key);
-                grammar.SetTermPrecedence(id, pair.Value);
+                grammar.Symbols[id].Precedence = pair.Value;
             }
 
             grammar.Freeze();

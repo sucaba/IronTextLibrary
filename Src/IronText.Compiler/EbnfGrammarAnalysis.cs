@@ -53,12 +53,12 @@ namespace IronText.Compiler
 
         public string SymbolName(int token)
         {
-            return grammar.SymbolName(token);
+            return grammar.Symbols[token].Name;
         }
 
         public bool IsTerminal(int token)
         {
-            return grammar.IsTerminal(token);
+            return grammar.Symbols[token].IsTerminal;
         }
 
         public IEnumerable<Production> GetProductions(int leftToken)
@@ -73,7 +73,7 @@ namespace IronText.Compiler
 
         public Precedence GetTermPrecedence(int token)
         {
-            return grammar.GetTermPrecedence(token);
+            return grammar.Symbols[token].Precedence;
         }
 
         public Production AugmentedProduction

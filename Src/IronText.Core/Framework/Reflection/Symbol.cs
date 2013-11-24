@@ -26,7 +26,7 @@ namespace IronText.Framework.Reflection
         /// <summary>
         /// Determines whether symbol is terminal
         /// </summary>
-        public override bool IsTerminal { get; set; }
+        public override bool IsTerminal { get { return Productions.Count == 0; } }
 
         /// <summary>
         /// Determines token-level precedence

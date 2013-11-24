@@ -12,14 +12,15 @@ namespace IronText.Framework.Collections
     {
         private const int InitialCapacity = 8;
 
-        private readonly TContext context;
         private T[] indexToItem;
 
         public IndexedCollection(TContext context = default(TContext))
         {
             indexToItem = new T[InitialCapacity];
-            this.context = context;
+            this.Context = context;
         }
+
+        public TContext Context { get; private set; }
 
         public int Count { get; private set; }
 
@@ -30,14 +31,14 @@ namespace IronText.Framework.Collections
             {
                 if (indexToItem[index] != null)
                 {
-                    indexToItem[index].Detach(context);
+                    indexToItem[index].Detach(Context);
                 }
 
                 indexToItem[index] = value;
 
                 if (value != null)
                 {
-                    indexToItem[index].Attach(index, context);
+                    indexToItem[index].Attach(index, Context);
                 }
             }
         }
@@ -50,7 +51,7 @@ namespace IronText.Framework.Collections
                 Array.Resize(ref indexToItem, index * 2);
             }
 
-            item.Attach(index, context);
+            item.Attach(index, Context);
             indexToItem[index] = item;
 
             this.Count = index + 1;
@@ -67,7 +68,7 @@ namespace IronText.Framework.Collections
                 var item = indexToItem[i];
                 if (item != null)
                 {
-                    item.Detach(context);
+                    item.Detach(Context);
                     indexToItem[i] = null;
                 }
             }
@@ -132,7 +133,7 @@ namespace IronText.Framework.Collections
             {
                 if (indexToItem[i] == (object)item)
                 {
-                    item.Detach(context);
+                    item.Detach(Context);
                     indexToItem[i] = null;
                     return true;
                 }
@@ -146,7 +147,7 @@ namespace IronText.Framework.Collections
             var item = indexToItem[index];
             if (item != null)
             {
-                item.Detach(context);
+                item.Detach(Context);
                 indexToItem[index] = null;
                 return true;
             }

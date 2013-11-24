@@ -19,12 +19,12 @@ namespace IronText.Framework.Reflection
         /// <summary>
         /// Determines whether symbol is terminal
         /// </summary>
-        public virtual bool IsTerminal { get { return false; } set { } }
-
-        public abstract Precedence Precedence { get; set; }
+        public virtual bool IsTerminal { get { return false; } }
 
         public virtual bool IsAmbiguous { get { return false; } }
 
-        public virtual ReferenceCollection<Production> Productions { get { return new ReferenceCollection<Production>(); } }
+        public abstract Precedence Precedence { get; set; }
+
+        public abstract ReferenceCollection<Production> Productions { get; }
     }
 }

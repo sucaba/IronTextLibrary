@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
@@ -37,5 +38,10 @@ namespace IronText.Framework.Reflection
         public override Precedence Precedence { get { return null; } set { } }
 
         public override bool IsAmbiguous { get { return true; } }
+
+        public override ReferenceCollection<Production> Productions
+        {
+            get { throw new NotSupportedException(); }
+        }
     }
 }
