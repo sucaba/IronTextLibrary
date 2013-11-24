@@ -24,7 +24,7 @@ namespace IronText.Automata.Lalr1
             get { return Pos != 0 || Rule.Outcome == EbnfGrammar.AugmentedStart; }
         }
 
-        public int RuleId { get { return Rule.Id; } }
+        public int RuleId { get { return Rule.Index; } }
 
         public bool IsReduce { get { return Pos == Rule.Pattern.Length; } }
 
@@ -44,11 +44,11 @@ namespace IronText.Automata.Lalr1
 
         public override bool Equals(object obj) { return this == (DotItem)obj; }
 
-        public override int GetHashCode() { unchecked { return Rule.Id + Pos; } }
+        public override int GetHashCode() { unchecked { return Rule.Index + Pos; } }
 
         public override string ToString()
         {
-            return string.Format("(Rule={0} Pos={1} LAs={2})", Rule.Id, Pos, Lookaheads);
+            return string.Format("(Rule={0} Pos={1} LAs={2})", Rule.Index, Pos, Lookaheads);
         }
 
         Production IParserDotItem.Rule { get { return Rule; } }

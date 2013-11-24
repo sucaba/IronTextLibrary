@@ -38,7 +38,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var symbol in grammar.Symbols)
             {
-                if (grammar.IsPredefined(symbol.Id))
+                if (grammar.IsPredefined(symbol.Index))
                 {
                     continue;
                 }

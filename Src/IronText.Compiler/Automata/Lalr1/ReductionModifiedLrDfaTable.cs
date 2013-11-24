@@ -83,7 +83,7 @@ namespace IronText.Automata.Lalr1
                             var action = new ParserAction
                             {
                                 Kind = ParserActionKind.ShiftReduce,
-                                Rule = rule.Id,
+                                Rule = rule.Index,
                                 Size = (short)rule.Pattern.Length
                             };
 

@@ -77,10 +77,10 @@ namespace IronText.Framework
 
             if (rule.Pattern.Length > prefix.Count)
             {
-                FillEpsilonSuffix(rule.Id, prefix.Count, prefix.Array, prefix.Offset + prefix.Count, stackLookback);
+                FillEpsilonSuffix(rule.Index, prefix.Count, prefix.Array, prefix.Offset + prefix.Count, stackLookback);
             }
 
-            object value = grammarAction(rule.Id, prefix.Array, prefix.Offset, context, stackLookback);
+            object value = grammarAction(rule.Index, prefix.Array, prefix.Offset, context, stackLookback);
 
             return new Msg(rule.Outcome, value, location, hLocation);
         }

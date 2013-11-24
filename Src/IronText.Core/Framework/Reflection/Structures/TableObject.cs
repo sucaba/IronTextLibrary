@@ -9,12 +9,12 @@ namespace IronText.Framework.Reflection
     {
         public TableObject()
         {
-            Id = TableIndexing.NoId;
+            Index = TableIndexing.NoId;
         }
 
-        public int Id { get; private set; }
+        public int Index { get; private set; }
 
-        public bool IsDetached { get { return TableIndexing.NoId == Id; } }
+        public bool IsDetached { get { return TableIndexing.NoId == Index; } }
 
         void ITableObject.Attach(int id)
         {
@@ -23,12 +23,12 @@ namespace IronText.Framework.Reflection
                 throw new InvalidOperationException("Object is already attached to a table.");
             }
 
-            Id = id;
+            Index = id;
         }
 
         void ITableObject.Detach()
         {
-            Id = -1;
+            Index = -1;
         }
     }
 }

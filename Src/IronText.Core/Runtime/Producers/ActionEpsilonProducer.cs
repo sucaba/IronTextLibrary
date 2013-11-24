@@ -40,7 +40,7 @@ namespace IronText.Framework
                 args[i] = InternalGetNullable(production.Pattern[i], stackLookback);
             }
 
-            var value = productionAction(production.Id, args, 0, context, stackLookback);
+            var value = productionAction(production.Index, args, 0, context, stackLookback);
             return new Msg(nonTerm, value, Loc.Unknown);
         }
 

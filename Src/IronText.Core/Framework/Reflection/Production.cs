@@ -23,7 +23,7 @@ namespace IronText.Framework.Reflection
         /// when production is inlined there are multiple actions
         /// happing when this production being applied.
         /// </summary>
-        public Collection<ProductionAction> Actions { get; private set; }
+        public ObjectReferenceCollection<ProductionAction> Actions { get; private set; }
 
         public bool AssignPrecedence(Precedence value)
         {
@@ -54,7 +54,7 @@ namespace IronText.Framework.Reflection
         public bool Equals(Production other)
         {
             return other != null
-                && other.Id == Id
+                && other.Index == Index
                 && other.Outcome == Outcome
                 && Enumerable.SequenceEqual(other.Pattern, Pattern)
                 ;
@@ -64,7 +64,7 @@ namespace IronText.Framework.Reflection
         {
             unchecked 
             {
-                return Id + Outcome + Pattern.Sum();
+                return Index + Outcome + Pattern.Sum();
             }
         }
 

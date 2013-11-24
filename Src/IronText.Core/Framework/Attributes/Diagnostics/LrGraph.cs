@@ -80,7 +80,7 @@ namespace IronText.Framework
                 var rule = item.Rule;
                 output.AppendFormat(
                     @"<tr> <td align=""left"" port=""r0"">&#40;{0}&#41; {1} -&gt; ",
-                    item.Rule.Id,
+                    item.Rule.Index,
                     TokenToHtml(rule.Outcome)
                     );
 

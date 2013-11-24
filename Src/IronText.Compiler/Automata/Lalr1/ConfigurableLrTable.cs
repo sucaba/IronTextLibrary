@@ -129,7 +129,7 @@ namespace IronText.Automata.Lalr1
                     {
                         case 0:
                             // AmbToken is entirely non-acceptable for this state
-                            data.Set(i, ambToken.Id, 0);
+                            data.Set(i, ambToken.Index, 0);
                             break;
                         case 1:
                             {
@@ -137,7 +137,7 @@ namespace IronText.Automata.Lalr1
                                 if (pair.Key == ambToken.MainToken)
                                 {
                                     // ambToken action is the same as for the main token
-                                    data.Set(i, ambToken.Id, pair.Value);
+                                    data.Set(i, ambToken.Index, pair.Value);
                                 }
                                 else
                                 {
@@ -146,7 +146,7 @@ namespace IronText.Automata.Lalr1
                                     // is in Msg and non-acceptable when this particular token
                                     // is not in Msg.
                                     var action = new ParserAction { Kind = ParserActionKind.Resolve, Value1 = pair.Key };
-                                    data.Set(i, ambToken.Id, ParserAction.Encode(action));
+                                    data.Set(i, ambToken.Index, ParserAction.Encode(action));
                                 }
                             }
 
@@ -167,7 +167,7 @@ namespace IronText.Automata.Lalr1
                             {
                                 var pair = validTokenActions.First();
                                 var forkAction = new ParserAction { Kind = ParserActionKind.Fork, Value1 = pair.Key };
-                                data.Set(i, ambToken.Id, ParserAction.Encode(forkAction));
+                                data.Set(i, ambToken.Index, ParserAction.Encode(forkAction));
                             }
 
                             break;

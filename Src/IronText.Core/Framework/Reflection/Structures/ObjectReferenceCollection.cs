@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -6,15 +7,24 @@ using System.Text;
 
 namespace IronText.Framework.Reflection
 {
-    public class ObjectReferenceCollection<T> 
-        : Collection<T>
-        , ITableObjectReferences<T>
-        where T : ITableObject
+    public class ObjectReferenceCollection<T> : ITableObjectReferences<T>, IEnumerable<T>
+        where T : class, ITableObject
     {
+        private const int InitialCapacity = 1;
+
         private ITableObjectOwner<T> owner;
+        private List<T>              items;
 
         public ObjectReferenceCollection()
         {
+            items = new List<T>(1);
+        }
+
+        public int Count { get { return items.Count; } }
+
+        public T First
+        {
+            get { return items[0]; }
         }
 
         public ITableObjectOwner<T> Owner
@@ -28,9 +38,12 @@ namespace IronText.Framework.Reflection
                 else if (owner == null)
                 {
                     this.owner = value;
-                    foreach (var item in this)
+
+                    int count = Count;
+                    var items = this.items;
+                    for (int i = 0; i != count; ++i)
                     {
-                        AddToOwner(item);
+                        AddToOwner(items[i]);
                     }
                 }
                 else if (value == null)
@@ -40,16 +53,20 @@ namespace IronText.Framework.Reflection
             }
         }
 
-        protected override void InsertItem(int index, T item)
+        public void Add(T item)
         {
-            base.InsertItem(index, item);
             AddToOwner(item);
+            items.Add(item);
         }
 
-        protected override void SetItem(int index, T item)
+        public bool Remove(T item)
         {
-            base.SetItem(index, item);
-            AddToOwner(item);
+            return items.Remove(item);
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return items.GetEnumerator();
         }
 
         private void AddToOwner(T item)
@@ -58,6 +75,11 @@ namespace IronText.Framework.Reflection
             {
                 owner.Add(item);
             }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return items.GetEnumerator();
         }
     }
 }

@@ -7,7 +7,6 @@ using System.Text;
 
 namespace IronText.Framework.Reflection
 {
-    // Safe, Unsafe methods
     public class ObjectTable<T> : IEnumerable<T>
         where T : class, ITableObject
     {
@@ -116,7 +115,7 @@ namespace IronText.Framework.Reflection
 
         public int IndexOf(T item)
         {
-            return item.Id;
+            return item.Index;
         }
 
         public bool Remove(T item)

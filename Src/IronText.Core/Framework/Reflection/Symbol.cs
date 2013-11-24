@@ -36,7 +36,7 @@ namespace IronText.Framework.Reflection
         /// </remarks>
         public override Precedence Precedence { get; set; }
 
-        public override Collection<Production> Productions { get { return productions; } }
+        public override ObjectReferenceCollection<Production> Productions { get { return productions; } }
 
         public override bool Equals(object obj)
         {

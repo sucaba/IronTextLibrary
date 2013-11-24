@@ -95,7 +95,7 @@ namespace IronText.Framework
             scan1(cursor);
             object ignore;
             scanAction(cursor, out ignore);
-            grammarAction(grammar.AugmentedProduction.Id, new Msg[0], 0, null, null);
+            grammarAction(grammar.AugmentedProduction.Index, new Msg[0], 0, null, null);
             switchFactory(null, 0, null, this);
             merge(EbnfGrammar.AugmentedStart, null, null, null, null);
         }

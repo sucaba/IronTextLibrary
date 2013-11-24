@@ -24,6 +24,6 @@ namespace IronText.Framework.Reflection
 
         public virtual bool IsAmbiguous { get { return false; } }
 
-        public virtual Collection<Production> Productions { get { return new Collection<Production>(); } }
+        public virtual ObjectReferenceCollection<Production> Productions { get { return new ObjectReferenceCollection<Production>(); } }
     }
 }

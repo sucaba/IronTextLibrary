@@ -103,7 +103,7 @@ namespace IronText.Framework.Reflection
                                           };
             Symbols[Error]           = new Symbol("$error");
 
-            AugmentedProductionIndex = DefineProduction(AugmentedStart, new[] { -1 }).Id;
+            AugmentedProductionIndex = DefineProduction(AugmentedStart, new[] { -1 }).Index;
         }
 
         public SymbolTable Symbols { get { return symbols; } }
@@ -185,17 +185,17 @@ namespace IronText.Framework.Reflection
             Symbols.Add(symbol);
             if (null == StartToken)
             {
-                StartToken = symbol.Id;
+                StartToken = symbol.Index;
             }
 
-            return symbol.Id;
+            return symbol.Index;
         }
 
         public int DefineAmbToken(int mainToken, IEnumerable<int> tokens)
         {
             var ambSymbol = new AmbiguousSymbol(mainToken, tokens);
             symbols.Add(ambSymbol);
-            return ambSymbol.Id;
+            return ambSymbol.Index;
         }
 
         public bool IsStartProduction(int ruleId)
@@ -346,7 +346,7 @@ namespace IronText.Framework.Reflection
 
         public IEnumerable<int> EnumerateTokens()
         {
-            return Symbols.Select(ti => ti.Id);
+            return Symbols.Select(ti => ti.Index);
         }
 
         /// <summary>
@@ -557,7 +557,7 @@ namespace IronText.Framework.Reflection
                 .AppendLine();
             foreach (var rule in Productions)
             {
-                output.AppendFormat("{0:D2}: {1} -> {2}", rule.Id, SymbolName(rule.Outcome), string.Join(" ", rule.Pattern.Select(SymbolName))).AppendLine();
+                output.AppendFormat("{0:D2}: {1} -> {2}", rule.Index, SymbolName(rule.Outcome), string.Join(" ", rule.Pattern.Select(SymbolName))).AppendLine();
             }
 
             return output.ToString();

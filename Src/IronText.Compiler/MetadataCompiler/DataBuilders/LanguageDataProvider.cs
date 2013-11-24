@@ -241,7 +241,7 @@ namespace IronText.MetadataCompiler
                 {
                     var symbol = new Symbol(def.Name) { Categories = def.Categories };
                     grammar.Symbols.Add(symbol);
-                    def.Id = symbol.Id;
+                    def.Id = symbol.Index;
                 }
             }
 
@@ -275,12 +275,12 @@ namespace IronText.MetadataCompiler
                     // bindings are executed.  It would be mistake to do
                     // Actions.Add(...) in this case because reduction happens
                     // after each ProductionAction.
-                    production.Actions[0].Bindings.Add(
+                    production.Actions.First.Bindings.Add(
                         new CilProductionActionBinding(ruleDef.ActionBuilder));
                 }
 
                 // Each rule may have multiple action builders
-                ruleActionBuilders[production.Id].Add(ruleDef.ActionBuilder);
+                ruleActionBuilders[production.Index].Add(ruleDef.ActionBuilder);
 
                 if (!production.AssignPrecedence(ruleDef.Precedence))
                 {
@@ -289,7 +289,7 @@ namespace IronText.MetadataCompiler
                         ruleDef);
                 }
 
-                ruleDef.Index = production.Id;
+                ruleDef.Index = production.Index;
             }
 
             foreach (var mergeRule in definition.MergeRules)

@@ -44,10 +44,10 @@ namespace IronText.Framework
 
             if (rule.Pattern.Length > parts.Count)
             {
-                FillEpsilonSuffix(rule.Id, parts.Count, children, parts.Count, stackLookback);
+                FillEpsilonSuffix(rule.Index, parts.Count, children, parts.Count, stackLookback);
             }
 
-            return new SppfNode(rule.Id, location, children);
+            return new SppfNode(rule.Index, location, children);
         }
 
         public SppfNode Merge(SppfNode alt1, SppfNode alt2, IStackLookback<SppfNode> stackLookback)

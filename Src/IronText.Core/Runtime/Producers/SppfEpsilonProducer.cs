@@ -47,15 +47,15 @@ namespace IronText.Framework
                     ++nullableCount;
                 }
 
-                ruleEndOffsetInCache[rule.Id] = nullableCount;
-                ruleOffsetInCache[rule.Id] = nullableCount - rule.Pattern.Length;
+                ruleEndOffsetInCache[rule.Index] = nullableCount;
+                ruleOffsetInCache[rule.Index] = nullableCount - rule.Pattern.Length;
             }
 
             this.ruleCache = new SppfNode[nullableCount];
 
             foreach (var rule in grammar.Productions)
             {
-                int endOffset = ruleOffsetInCache[rule.Id] + rule.Pattern.Length;
+                int endOffset = ruleOffsetInCache[rule.Index] + rule.Pattern.Length;
                 int i = rule.Pattern.Length;
                 while (i != 0)
                 {
