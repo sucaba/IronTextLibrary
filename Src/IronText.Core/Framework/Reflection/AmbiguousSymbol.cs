@@ -8,8 +8,12 @@ using IronText.Framework.Collections;
 namespace IronText.Framework.Reflection
 {
     /// <summary>
-    /// Ambiguous token
+    /// Ambiguous token. Represents unresolved alternative betwen 2 or more tokens.
     /// </summary>
+    /// <remarks>
+    /// Alternative can be resolved in a deterministic way when current parser state 
+    /// allows only single alternative or by a forking extended-GLR parsing paths.
+    /// </remarks>
     public sealed class AmbiguousSymbol : SymbolBase
     {
         public AmbiguousSymbol(int mainToken, IEnumerable<int> tokens)

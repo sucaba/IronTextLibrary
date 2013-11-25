@@ -14,17 +14,27 @@ namespace IronText.Framework.Reflection
         public const string UnnamedTokenName = "<unnamed token>";
         public const string UnknownTokenName = "<unknown token>";
 
-        // Predefined tokens
+        #region Reserved tokens
+
         internal const int NoToken             = -1;
         internal const int EpsilonToken        = 0;
         internal const int PropogatedToken     = 1;
 
-        public const int   ReservedTokenCount = 2;
+        public const int ReservedTokenCount    = 2;
+
+        #endregion Reserved tokens
+
+        #region Predefined tokens
 
         public const int AugmentedStart        = 2;
+
         public const int Eoi                   = 3;
+
         public const int Error                 = 4;
+
         public const int PredefinedTokenCount  = 5;
+
+        #endregion Predefined tokens
 
         private readonly ProductionCollection       productions;
         private readonly ProductionActionCollection productionActions;
@@ -78,11 +88,6 @@ namespace IronText.Framework.Reflection
 
                 return null;
             }
-        }
-
-        public bool IsStartProduction(int prodId)
-        {
-            return Productions[prodId].Outcome == StartToken;
         }
 
         public override string ToString()

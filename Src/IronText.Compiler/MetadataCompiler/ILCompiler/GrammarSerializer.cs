@@ -162,12 +162,6 @@ namespace IronText.MetadataCompiler
                     ;
             }
 
-#if false
-            emit
-                .Ldloc(resultVar.GetRef())
-                .Call((EbnfGrammar g) => g.Freeze())
-                ;
-#endif
             return emit.Ldloc(resultVar.GetRef());
         }
     }

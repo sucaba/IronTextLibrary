@@ -90,7 +90,7 @@ namespace IronText.Compiler
 
         public bool IsStartProduction(int prodId)
         {
-            return grammar.IsStartProduction(prodId);
+            return grammar.Productions[prodId].IsStart;
         }
 
         public BitSetType TokenSet

@@ -7,6 +7,9 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
+    /// <summary>
+    /// Deterministic symbol
+    /// </summary>
     public class Symbol : SymbolBase
     {
         public readonly ReferenceCollection<Production> productions;
@@ -17,6 +20,8 @@ namespace IronText.Framework.Reflection
 
             this.productions = new ReferenceCollection<Production>();
         }
+
+        public bool IsStart { get { return Context.StartToken == Index; } }
 
         /// <summary>
         /// Categories token belongs to

@@ -18,6 +18,8 @@ namespace IronText.Framework.Reflection
 
         public int[]  Pattern    { get; set; }
 
+        public bool IsStart { get { return Context.StartToken == Outcome; } }
+
         public Symbol OutcomeSymbol
         {
             get { return (Symbol)Context.Symbols[Outcome]; }
@@ -34,13 +36,6 @@ namespace IronText.Framework.Reflection
 
         public Precedence ExplicitPrecedence { get; set; }
 
-        /// <summary>
-        /// Typically production contains single action, however
-        /// when production is inlined there are multiple actions
-        /// happing when this production being applied.
-        /// </summary>
-        public ReferenceCollection<ProductionAction> Actions { get; private set; }
-
         public Precedence EffectivePrecedence
         {
             get
@@ -54,6 +49,16 @@ namespace IronText.Framework.Reflection
                 return index < 0 ? null : Context.Symbols[Pattern[index]].Precedence;
             }
         }
+
+        /// <summary>
+        /// Semantic actions for the production
+        /// </summary>
+        /// <remarks>
+        /// Typically production contains single action, however
+        /// when production is inlined there are multiple actions
+        /// happing when this production being applied.
+        /// </remarks>
+        public ReferenceCollection<ProductionAction> Actions { get; private set; }
 
         public bool Equals(Production other)
         {
