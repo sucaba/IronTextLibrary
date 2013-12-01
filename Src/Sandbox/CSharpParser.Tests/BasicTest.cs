@@ -137,7 +137,7 @@ namespace CSharpParser.Tests
                 (
                     pAction.Kind == ParserActionKind.Reduce
                     && qAction.Kind == ParserActionKind.Reduce
-                    && pAction.Rule == qAction.Rule
+                    && pAction.ProductionId == qAction.ProductionId
                 );
         }
 

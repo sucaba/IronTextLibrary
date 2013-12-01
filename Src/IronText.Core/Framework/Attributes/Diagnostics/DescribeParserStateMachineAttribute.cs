@@ -118,11 +118,11 @@ namespace IronText.Framework
                     break;
                 case ParserActionKind.Reduce:
                     output.Write("reduce using rule ");
-                    output.Write(action.Rule);
+                    output.Write(action.ProductionId);
                     break;
                 case ParserActionKind.ShiftReduce:
                     output.Write("shift-reduce using rule ");
-                    output.Write(action.Rule);
+                    output.Write(action.ProductionId);
                     break;
                 case ParserActionKind.Accept:
                     output.WriteLine("accept");
@@ -173,14 +173,14 @@ namespace IronText.Framework
                     output.Write(indent);
                     output.WriteLine("Shift-Reduce on the rule:");
                     output.Write(indent + indent);
-                    DescribeRule(data, action.Rule, output);
+                    DescribeRule(data, action.ProductionId, output);
                     output.WriteLine();
                     break;
                 case ParserActionKind.Reduce:
                     output.Write(indent);
                     output.WriteLine("Reduce on the rule:");
                     output.Write(indent + indent);
-                    DescribeRule(data, action.Rule, output);
+                    DescribeRule(data, action.ProductionId, output);
                     output.WriteLine();
                     break;
                 case ParserActionKind.Accept:

@@ -152,13 +152,13 @@ namespace IronText.MetadataCompiler
                 case ParserActionKind.ShiftReduce:
                     message.WriteLine("Shift-Reduce on the rule:");
                     ++message.Indent;
-                    DescribeRule(message, action.Rule);
+                    DescribeRule(message, action.ProductionId);
                     --message.Indent;
                     break;
                 case ParserActionKind.Reduce:
                     message.WriteLine("Reduce on the rule:");
                     ++message.Indent;
-                    DescribeRule(message, action.Rule);
+                    DescribeRule(message, action.ProductionId);
                     --message.Indent;
                     break;
                 case ParserActionKind.Accept:

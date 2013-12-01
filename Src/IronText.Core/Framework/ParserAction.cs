@@ -39,7 +39,7 @@ namespace IronText.Framework
         public int              State;
 
         [FieldOffset(sizeof(ParserActionKind))]
-        public int              Rule;
+        public int              ProductionId;
 
         [FieldOffset(sizeof(ParserActionKind))]
         public int              ExternalToken;

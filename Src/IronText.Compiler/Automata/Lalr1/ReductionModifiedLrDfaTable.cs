@@ -72,11 +72,9 @@ namespace IronText.Automata.Lalr1
 
                 foreach (var item in state.Items)
                 {
-                    var rule = item.Production;
-
                     if (!item.IsReduce)
                     {
-                        int nextToken = rule.PatternTokens[item.Pos];
+                        int nextToken = item.NextToken;
 
                         if (canOptimizeReduceStates
                             && item.IsShiftReduce
@@ -85,8 +83,8 @@ namespace IronText.Automata.Lalr1
                             var action = new ParserAction
                             {
                                 Kind = ParserActionKind.ShiftReduce,
-                                Rule = rule.Index,
-                                Size = (short)rule.PatternTokens.Length
+                                ProductionId = item.ProductionId,
+                                Size = (short)item.Size
                             };
 
                             AddAction(i, nextToken, action);
@@ -103,9 +101,9 @@ namespace IronText.Automata.Lalr1
                         }
                     }
 
-                    bool isStartRule = rule.OutcomeToken == EbnfGrammar.AugmentedStart;
+                    bool isStartRule = item.IsAugmented;
 
-                    if (item.IsReduce || grammar.IsTailNullable(rule.PatternTokens, item.Pos))
+                    if (item.IsReduce || grammar.IsTailNullable(item.GetPattern(), item.Pos))
                     {
                         ParserAction action;
 
@@ -125,7 +123,7 @@ namespace IronText.Automata.Lalr1
                             action = new ParserAction
                             {
                                 Kind = ParserActionKind.Reduce,
-                                Rule = item.ProductionId,
+                                ProductionId = item.ProductionId,
                                 Size = (short)item.Pos
                             };
                         }
@@ -146,13 +144,13 @@ namespace IronText.Automata.Lalr1
         {
             if (item.Pos != 0 
                 || grammar.IsStartProduction(item.ProductionId)
-                || !grammar.IsTailNullable(item.Production.PatternTokens, item.Pos)
+                || !grammar.IsTailNullable(item.GetPattern(), item.Pos)
                 || !item.Lookaheads.Contains(lookahead))
             {
                 return false;
             }
 
-            int epsilonToken = item.Production.OutcomeToken;
+            int epsilonToken = item.Outcome;
 
             foreach (var parentItem in state.Items)
             {
@@ -161,16 +159,15 @@ namespace IronText.Automata.Lalr1
                     continue;
                 }
 
-                if (!parentItem.IsReduce 
-                    && parentItem.NextToken == epsilonToken)
+                if (parentItem.NextToken == epsilonToken)
                 {
-                    if (!grammar.IsTailNullable(parentItem.Production.PatternTokens, parentItem.Pos))
+                    if (!grammar.IsTailNullable(parentItem.GetPattern(), parentItem.Pos))
                     {
                         // there is at least one rule which needs shift on epsilonToken
                         return false;
                     }
 
-                    if (grammar.HasFirst(parentItem.Production.PatternTokens, parentItem.Pos + 1, lookahead))
+                    if (grammar.HasFirst(parentItem.GetPattern(), parentItem.Pos + 1, lookahead))
                     {
                         // One of the subseqent non-terms in parentItem can start parsing with current lookahead.
                         // It means that we need tested epsilonToken production for continue parsing on parentItem.

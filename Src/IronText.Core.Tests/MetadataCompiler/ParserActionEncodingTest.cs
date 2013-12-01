@@ -48,7 +48,7 @@ namespace IronText.Tests.MetdataCompiler
             var output = ParserAction.Decode(cell);
             Assert.IsNotNull(output);
             Assert.AreEqual(ParserActionKind.Reduce, output.Kind);
-            Assert.AreEqual(value1, output.Rule);
+            Assert.AreEqual(value1, output.ProductionId);
             Assert.AreEqual(value2, output.Size);
         }
     }

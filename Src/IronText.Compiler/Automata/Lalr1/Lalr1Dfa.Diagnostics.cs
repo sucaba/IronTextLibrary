@@ -22,20 +22,19 @@ namespace IronText.Automata.Lalr1
 
         private StringBuilder DescribeItem(DotItem item, StringBuilder output, bool showLookaheads = true)
         {
-            var rule = item.Production;
             int start = output.Length;
-            output.Append(grammar.SymbolName(rule.OutcomeToken)).Append(" ->");
-            for (int i = 0; i != rule.PatternTokens.Length; ++i)
+            output.Append(grammar.SymbolName(item.Outcome)).Append(" ->");
+            for (int i = 0; i != item.Size; ++i)
             {
                 if (item.Pos == i)
                 {
                     output.Append(" •");
                 }
 
-                output.Append(" ").Append(grammar.SymbolName(rule.PatternTokens[i]));
+                output.Append(" ").Append(grammar.SymbolName(item[i]));
             }
 
-            if (item.Pos == rule.PatternTokens.Length)
+            if (item.IsReduce)
             {
                 output.Append(" •");
             }

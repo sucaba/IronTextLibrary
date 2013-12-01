@@ -37,7 +37,7 @@ namespace IronText.Automata.Lalr1
                 return Transitions.Count == 0
                     && Items.Count == 1
                     && Items[0].IsReduce
-                    && !Items[0].Production.IsAugmented;
+                    && !Items[0].IsAugmented;
             }
         }
 
@@ -67,7 +67,7 @@ namespace IronText.Automata.Lalr1
             {
                 if (item.Pos != 0)
                 {
-                    return item.Production.PatternTokens[item.Pos - 1];
+                    return item[item.Pos - 1];
                 }
             }
 

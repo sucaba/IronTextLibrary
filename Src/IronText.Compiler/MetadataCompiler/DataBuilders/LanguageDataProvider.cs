@@ -322,7 +322,7 @@ namespace IronText.MetadataCompiler
 
                 foreach (var item in stateItems.Items)
                 {
-                    if (item.Pos == 0 || item.Pos == item.Production.PatternTokens.Length)
+                    if (item.Pos == 0 || item.IsReduce)
                     {
                         // Skip non-kernel, augmented (start rule) items and end-of-rule states
                         continue;

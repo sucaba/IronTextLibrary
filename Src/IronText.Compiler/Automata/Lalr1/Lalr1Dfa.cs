@@ -178,7 +178,7 @@ namespace IronText.Automata.Lalr1
                     var J = ClosureLr0(
                         new MutableDotItemSet 
                         {
-                            new DotItem(fromItem.Production, fromItem.Pos)
+                            new DotItem(fromItem)
                             {
                                 Lookaheads = TokenSet.Of(EbnfGrammar.PropogatedToken).EditCopy()
                             }
@@ -305,14 +305,9 @@ namespace IronText.Automata.Lalr1
 
             foreach (var item in itemSet)
             {
-                var rule = item.Production;
-                if (rule.PatternTokens.Length != item.Pos && rule.PatternTokens[item.Pos] == token)
+                if (item.NextToken == token)
                 {
-                    result.Add(
-                        new DotItem(item.Production, item.Pos + 1)
-                        {
-                            Lookaheads = item.Lookaheads.EditCopy()
-                        });
+                    result.Add(item.CreateNext());
                 }
             }
 
@@ -340,9 +335,9 @@ namespace IronText.Automata.Lalr1
                     {
                         int X = item.NextToken;
 
-                        foreach (var childRule in grammar.GetProductions(X))
+                        foreach (var childProd in grammar.GetProductions(X))
                         {
-                            var newItem = new DotItem(childRule, 0)
+                            var newItem = new DotItem(childProd, 0)
                             { 
                                 Lookaheads = TokenSet.Mutable()
                             };
@@ -394,7 +389,7 @@ namespace IronText.Automata.Lalr1
                         {
                             var toItem = result[j];
 
-                            if (fromItem.NextToken == toItem.Production.OutcomeToken)
+                            if (fromItem.NextToken == toItem.Outcome)
                             {
                                 int countBefore = 0;
                                 if (!modified)
@@ -404,7 +399,7 @@ namespace IronText.Automata.Lalr1
 
                                 // TODO: Move outside of the loop. There is no childRule dependency 
                                 bool isNullable = grammar.AddFirst(
-                                                    fromItem.Production.PatternTokens,
+                                                    fromItem.GetPattern(),
                                                     fromItem.Pos + 1,
                                                     toItem.Lookaheads);
 

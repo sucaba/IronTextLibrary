@@ -8,14 +8,32 @@ namespace IronText.Automata.Lalr1
 {
     public class DotItem : IParserDotItem
     {
+        private readonly Production production;
+
+        public DotItem(DotItem other)
+            : this(other.production, other.Pos)
+        {
+        }
+
         public DotItem(Production production, int pos) 
         {
-            this.Production = production;
+            this.production = production;
             this.Pos        = pos;
             this.Lookaheads = null;
         }
 
-        public Production Production { get; private set; }
+        public int Outcome { get { return production.OutcomeToken; } }
+
+        public int this[int index]
+        {
+            get { return production.PatternTokens[index]; }
+        }
+
+        public int[] GetPattern() { return production.PatternTokens; }
+
+        public bool IsAugmented { get { return production.IsAugmented; } }
+
+        public int Size { get { return production.Size; } }
 
         public int Pos { get; private set; }
 
@@ -23,16 +41,24 @@ namespace IronText.Automata.Lalr1
 
         public bool IsKernel
         {
-            get { return Pos != 0 || Production.IsAugmented; }
+            get { return Pos != 0 || production.IsAugmented; }
         }
 
-        public int ProductionId { get { return Production.Index; } }
+        public int ProductionId { get { return production.Index; } }
 
-        public bool IsReduce { get { return Pos == Production.PatternTokens.Length; } }
+        public bool IsReduce { get { return Pos == production.PatternTokens.Length; } }
 
-        public bool IsShiftReduce { get { return (Production.PatternTokens.Length - Pos) == 1; } }
+        public bool IsShiftReduce { get { return (production.PatternTokens.Length - Pos) == 1; } }
 
-        public int NextToken { get { return Production.PatternTokens[Pos]; } }
+        public int NextToken
+        {
+            get
+            { 
+                return Pos == production.PatternTokens.Length 
+                     ? -1
+                     : production.PatternTokens[Pos];
+            }
+        }
 
         public static bool operator ==(DotItem x, DotItem y) 
         { 
@@ -46,14 +72,22 @@ namespace IronText.Automata.Lalr1
 
         public override bool Equals(object obj) { return this == (DotItem)obj; }
 
-        public override int GetHashCode() { return unchecked(Production.Index + Pos); }
+        public override int GetHashCode() { return unchecked(production.Index + Pos); }
 
         public override string ToString()
         {
-            return string.Format("(ProdId={0} Pos={1} LAs={2})", Production.Index, Pos, Lookaheads);
+            return string.Format("(ProdId={0} Pos={1} LAs={2})", production.Index, Pos, Lookaheads);
         }
 
-        Production IParserDotItem.Rule { get { return Production; } }
+        public DotItem CreateNext()
+        {
+            return new DotItem(production, Pos + 1)
+                        {
+                            Lookaheads = Lookaheads.EditCopy()
+                        };
+        }
+
+        Production IParserDotItem.Rule { get { return production; } }
 
         int IParserDotItem.Position { get { return Pos; } }
 
