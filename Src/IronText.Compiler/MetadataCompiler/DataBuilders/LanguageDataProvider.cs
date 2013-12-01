@@ -13,6 +13,7 @@ using IronText.Algorithm;
 using IronText.Framework.Reflection;
 using IronText.Extensibility.Bindings.Cil;
 using IronText.Compiler;
+using IronText.Compiler.Analysis;
 
 namespace IronText.MetadataCompiler
 {
@@ -276,7 +277,7 @@ namespace IronText.MetadataCompiler
                     // bindings are executed.  It would be mistake to do
                     // Actions.Add(...) in this case because reduction happens
                     // after each ProductionAction.
-                    production.Actions.First.Bindings.Add(
+                    production.Actions.First().Bindings.Add(
                         new CilProductionActionBinding(ruleDef.ActionBuilder));
                 }
 

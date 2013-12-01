@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using IronText.Framework.Collections;
@@ -20,6 +21,8 @@ namespace IronText.Framework.Reflection
 
             this.productions = new ReferenceCollection<Production>();
         }
+
+        public bool IsAugmentedStart { get { return EbnfGrammar.AugmentedStart == Index; } }
 
         public bool IsStart { get { return Context.StartToken == Index; } }
 
@@ -72,6 +75,20 @@ namespace IronText.Framework.Reflection
             }
 
             return result;
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        protected override SymbolBase DoClone()
+        {
+            return new Symbol(Name)
+            {
+                Precedence = Precedence,
+                Categories = Categories
+            };
         }
     }
 }

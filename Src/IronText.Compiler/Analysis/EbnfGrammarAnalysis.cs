@@ -6,7 +6,7 @@ using IronText.Framework;
 using IronText.Algorithm;
 using IronText.Framework.Reflection;
 
-namespace IronText.Compiler
+namespace IronText.Compiler.Analysis
 {
     /// <summary>
     /// Prebuilds various tables related to <see cref="IronText.Framework.BnfGrammar"/>
@@ -30,7 +30,7 @@ namespace IronText.Compiler
         public int[] GetTokenComplexity()
         {
             var result = Enumerable.Repeat(-1, grammar.Symbols.Count).ToArray();
-            var sortedTokens = Graph.ToplogicalSort(
+            var sortedTokens = Graph.TopologicalSort(
                                 new [] { EbnfGrammar.AugmentedStart },
                                 GetDependantTokens)
                                 .ToArray();

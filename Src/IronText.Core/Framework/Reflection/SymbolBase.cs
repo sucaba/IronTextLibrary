@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public abstract class SymbolBase : IndexableObject<IEbnfContext>
+    [DebuggerDisplay("Name = {Name}")]
+    public abstract class SymbolBase : IndexableObject<IEbnfContext>, ICloneable
     {
         /// <summary>
         /// Display name
@@ -28,5 +30,12 @@ namespace IronText.Framework.Reflection
         public abstract Precedence Precedence { get; set; }
 
         public abstract ReferenceCollection<Production> Productions { get; }
+
+        public object Clone()
+        {
+            return DoClone();
+        }
+
+        protected abstract SymbolBase DoClone();
     }
 }

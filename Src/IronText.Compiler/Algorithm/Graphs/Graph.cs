@@ -14,8 +14,7 @@ namespace IronText.Algorithm
             return tarjan.Result;
         }
 #endif
-
-        public static IEnumerable<T> ToplogicalSort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> following)
+        public static IEnumerable<T> TopologicalSort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> following)
         {
             var result = new List<T>();
             var visited = new HashSet<T>();

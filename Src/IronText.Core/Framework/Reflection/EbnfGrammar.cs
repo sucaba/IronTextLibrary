@@ -102,7 +102,7 @@ namespace IronText.Framework.Reflection
                 .AppendLine()
                 .AppendFormat("Start Token: {0}", Start == null ? "<undefined>" : Start.Name)
                 .AppendLine()
-                .Append("Rules:")
+                .Append("Productions:")
                 .AppendLine();
             foreach (var prod in Productions)
             {
@@ -111,7 +111,7 @@ namespace IronText.Framework.Reflection
                         "{0:D2}: {1} -> {2}",
                         prod.Index,
                         prod.OutcomeSymbol.Name,
-                        string.Join(" ", from s in prod.PatternSymbols select s.Name))
+                        string.Join(" ", from s in prod.PatternSymbols select s == null ? "<none>" : s.Name))
                     .AppendLine();
             }
 

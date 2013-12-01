@@ -47,5 +47,10 @@ namespace IronText.Framework.Reflection
         {
             get { throw new NotSupportedException(); }
         }
+
+        protected override SymbolBase DoClone()
+        {
+            return new AmbiguousSymbol(MainToken, Tokens);
+        }
     }
 }

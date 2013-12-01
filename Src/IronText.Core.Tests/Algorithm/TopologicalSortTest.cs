@@ -22,7 +22,7 @@ namespace IronText.Tests.Algorithm
             following[D] = new [] { E };
             following[E] = new int[0];
 
-            var result = Graph.ToplogicalSort(new [] { A }, n => following[n]).ToArray();
+            var result = Graph.TopologicalSort(new [] { A }, n => following[n]).ToArray();
             Debug.Write(string.Join(", ", result.Select(n => names[n])));
         }
 
@@ -39,7 +39,7 @@ namespace IronText.Tests.Algorithm
             following[E] = new [] { F };
             following[F] = new int[0];
 
-            var result = Graph.ToplogicalSort(new [] { A }, n => following[n]).ToArray();
+            var result = Graph.TopologicalSort(new [] { A }, n => following[n]).ToArray();
             Debug.Write(string.Join(", ", result.Select(n => names[n])));
         }
     }

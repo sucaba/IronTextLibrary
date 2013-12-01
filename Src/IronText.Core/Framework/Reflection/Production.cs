@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public sealed class Production : IndexableObject<IEbnfContext>
+    [DebuggerDisplay("{DebugProductionText}")]
+    public sealed class Production : IndexableObject<IEbnfContext>, ICloneable
     {
         public Production()
         {
@@ -18,7 +21,11 @@ namespace IronText.Framework.Reflection
 
         public int[]  Pattern    { get; set; }
 
+        public int Size { get { return Pattern.Length; } }
+
         public bool IsStart { get { return Context.StartToken == Outcome; } }
+
+        public bool IsAugmented { get { return EbnfGrammar.AugmentedStart == Outcome; } }
 
         public Symbol OutcomeSymbol
         {
@@ -30,7 +37,7 @@ namespace IronText.Framework.Reflection
             get
             {
                 var symbols = Context.Symbols;
-                return (from t in Pattern select (Symbol)symbols[t]);
+                return (from t in Pattern select t >= 0 ? (Symbol)symbols[t] : null);
             }
         }
 
@@ -143,6 +150,55 @@ namespace IronText.Framework.Reflection
             Context.Symbols[Outcome].Productions.Remove(this);
 
             base.DoDetaching();
+        }
+
+        public Production Clone()
+        {
+            return new Production
+            {
+                Outcome            = Outcome,
+                Pattern            = (int[])Pattern.Clone(),
+                ExplicitPrecedence = ExplicitPrecedence,
+            };
+        }
+
+        object ICloneable.Clone()
+        {
+            return Clone();
+        }
+
+        public string DebugProductionText
+        {
+            get
+            {
+                var output = new StringBuilder();
+                if (IsDetached)
+                {                
+                    output
+                        .Append(Outcome)
+                        .Append(" ->")
+                        .Append(string.Join(" ", Pattern));
+                }
+                else
+                {
+                    output
+                        .Append(OutcomeSymbol.Name)
+                        .Append(" ->");
+                    if (Size == 0)
+                    {
+                        output.Append(" /*empty*/");
+                    }
+                    else
+                    {
+                        foreach (var symbol in PatternSymbols)
+                        {
+                            output.Append(" ").Append(symbol.Name);
+                        }
+                    }
+                }
+
+                return output.ToString();
+            }
         }
     }
 }

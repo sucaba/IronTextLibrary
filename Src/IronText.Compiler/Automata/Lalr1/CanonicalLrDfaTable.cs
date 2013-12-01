@@ -7,6 +7,7 @@ using IronText.Framework;
 using System.Collections.ObjectModel;
 using IronText.Framework.Reflection;
 using IronText.Compiler;
+using IronText.Compiler.Analysis;
 
 namespace IronText.Automata.Lalr1
 {

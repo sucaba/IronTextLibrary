@@ -7,7 +7,7 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public class ProductionAction : IndexableObject<IEbnfContext>
+    public class ProductionAction : IndexableObject<IEbnfContext>, ICloneable
     {
         public ProductionAction()
         {
@@ -15,5 +15,21 @@ namespace IronText.Framework.Reflection
         }
 
         public Collection<IProductionActionBinding> Bindings { get; private set; }
+
+        public ProductionAction Clone()
+        {
+            var result = new ProductionAction();
+            foreach (var binding in Bindings)
+            {
+                result.Bindings.Add(binding);
+            }
+
+            return result;
+        }
+
+        object ICloneable.Clone()
+        {
+            return Clone();
+        }
     }
 }

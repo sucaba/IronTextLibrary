@@ -21,6 +21,7 @@
     <DefineConstants>TRACE;DEBUG;DIAGNOSTICS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -83,6 +84,8 @@
     <Compile Include="Algorithm\Unicode\UnicodeIntSetType.cs" />
     <Compile Include="Algorithm\Unicode\UnicodeIntSetType.Data.cs" />
     <Compile Include="Algorithm\Unicode\UnicodeIntSetType.Disp.cs" />
+    <Compile Include="Analysis\IProductionInliner.cs" />
+    <Compile Include="Analysis\ProductionInliner.cs" />
     <Compile Include="Automata\Lalr1\CanonicalLrDfaTable.cs" />
     <Compile Include="Automata\Lalr1\ConfigurableLrTable.cs" />
     <Compile Include="Automata\Lalr1\DotItem.cs" />
@@ -168,7 +171,7 @@
     <Compile Include="Lib\RegularAst\IAstNodeVisitor.cs" />
     <Compile Include="Lib\ScannerExpressions\Chr.cs" />
     <Compile Include="Lib\ScannerExpressions\ScannerSyntax.cs" />
-    <Compile Include="EbnfGrammarAnalysis.cs" />
+    <Compile Include="Analysis\EbnfGrammarAnalysis.cs" />
     <Compile Include="MetadataCompiler\Bootstrap\BootstrapLanguage.cs" />
     <Compile Include="MetadataCompiler\Bootstrap\BootstrapScanner.cs" />
     <Compile Include="MetadataCompiler\CompiledLanguageProvider.cs" />

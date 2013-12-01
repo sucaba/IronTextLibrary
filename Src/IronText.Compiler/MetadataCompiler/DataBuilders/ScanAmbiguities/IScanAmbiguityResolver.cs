@@ -5,6 +5,7 @@ using System.Text;
 using IronText.Automata.Lalr1;
 using IronText.Automata.Regular;
 using IronText.Compiler;
+using IronText.Compiler.Analysis;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 

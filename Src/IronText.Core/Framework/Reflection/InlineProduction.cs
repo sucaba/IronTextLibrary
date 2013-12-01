@@ -7,29 +7,36 @@ namespace IronText.Framework.Reflection
 {
     public class InlineProduction
     {
-        private Dictionary<int, InlineProduction> inlines;
-
-        public InlineProduction(Production production)
+        public InlineProduction(int position, Production production)
         {
+            this.Position   = position;
             this.Production = production;
-            this.Pattern = (int[])production.Pattern.Clone();
+            this.Pattern    = (int[])production.Pattern.Clone();
         }
 
-        public void Inline(int index, InlineProduction inlined)
+        /// <summary>
+        /// Parent pattern inlining position
+        /// </summary>
+        public int Position { get; private set; }
+
+        public void Inline(InlineProduction prod)
         {
-            int inlineLength = inlined.Pattern.Length;
+            int position = prod.Position;
+
+            int inlineLength = prod.Pattern.Length;
+
             int[] pattern = Pattern;
             Array.Resize(ref pattern, pattern.Length + inlineLength);
-            Array.Copy(pattern, index + 1, pattern, index + inlineLength, pattern.Length - index - 1);
-            Array.Copy(inlined.Pattern, 0, pattern, index, inlineLength);
-            Pattern = pattern;
+            Array.Copy(pattern, position + 1, pattern, position + inlineLength, pattern.Length - position - 1);
+            Array.Copy(prod.Pattern, 0, pattern, position, inlineLength);
+            this.Pattern = pattern;
 
-            if (inlines == null)
+            if (Inlines == null)
             {
-                inlines = new Dictionary<int, InlineProduction>();
+                Inlines = new List<InlineProduction>();
             }
 
-            inlines.Add(index, inlined);
+            Inlines.Add(prod);
         }
 
         public Production Production { get; private set; }
@@ -38,5 +45,10 @@ namespace IronText.Framework.Reflection
         /// Inlined pattern
         /// </summary>
         public int[] Pattern { get; private set; }
+
+        /// <summary>
+        /// Ordered list of inlines
+        /// </summary>
+        public List<InlineProduction> Inlines { get; private set; }
     }
 }

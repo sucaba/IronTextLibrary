@@ -13,7 +13,7 @@ namespace IronText.Framework.Collections
         private const int InitialCapacity = 1;
 
         private IOwner<T> owner;
-        private List<T>         items;
+        private List<T>   items;
 
         public ReferenceCollection()
         {
@@ -22,9 +22,14 @@ namespace IronText.Framework.Collections
 
         public int Count { get { return items.Count; } }
 
-        public T First
+        public T First()
         {
-            get { return items[0]; }
+            if (items.Count == 0)
+            {
+                throw new InvalidOperationException("Cannot take first item of the empty collection.");
+            }
+
+            return items[0];
         }
 
         public IOwner<T> Owner

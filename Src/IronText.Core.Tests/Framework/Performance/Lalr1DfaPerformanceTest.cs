@@ -1,6 +1,7 @@
 ﻿using System;
 using IronText.Automata.Lalr1;
 using IronText.Compiler;
+using IronText.Compiler.Analysis;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 using NUnit.Framework;

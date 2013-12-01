@@ -81,6 +81,7 @@
     <Compile Include="Algorithm\TdfaSimulationLexerTest.cs" />
     <Compile Include="Algorithm\TopologicalSortTest.cs" />
     <Compile Include="Algorithm\UnicodeFrequencyTest.cs" />
+    <Compile Include="Analysis\ProductionInlinerTest.cs" />
     <Compile Include="Framework\AmbTokenTest.cs" />
     <Compile Include="Framework\BuildErrorTest.cs" />
     <Compile Include="Framework\ErrorRecoveryTest.cs" />
@@ -169,6 +170,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

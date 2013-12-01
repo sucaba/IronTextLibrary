@@ -9,6 +9,7 @@ using IronText.Automata.Regular;
 using IronText.Automata.Lalr1;
 using IronText.Framework.Reflection;
 using IronText.Compiler;
+using IronText.Compiler.Analysis;
 
 namespace IronText.MetadataCompiler
 {
