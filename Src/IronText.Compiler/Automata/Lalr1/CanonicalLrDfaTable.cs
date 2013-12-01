@@ -77,7 +77,7 @@ namespace IronText.Automata.Lalr1
 
                 foreach (var item in state.Items)
                 {
-                    var rule = item.Rule;
+                    var rule = item.Production;
 
                     if (!item.IsReduce)
                     {
@@ -113,7 +113,7 @@ namespace IronText.Automata.Lalr1
                     }
                     else
                     {
-                        var action = new ParserAction { Kind = ParserActionKind.Reduce, Rule = item.RuleId };
+                        var action = new ParserAction { Kind = ParserActionKind.Reduce, Rule = item.ProductionId };
                         foreach (var lookahead in item.Lookaheads)
                         {
                             AssignAction(i, lookahead, action);

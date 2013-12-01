@@ -8,57 +8,55 @@ namespace IronText.Automata.Lalr1
 {
     public class DotItem : IParserDotItem
     {
-        public readonly Production Rule;
-        public readonly int Pos;
-        public MutableIntSet Lookaheads;
-
-        public DotItem(Production rule, int pos) 
+        public DotItem(Production production, int pos) 
         {
-            this.Rule = rule;
-            this.Pos = pos;
+            this.Production = production;
+            this.Pos        = pos;
             this.Lookaheads = null;
         }
 
+        public Production Production { get; private set; }
+
+        public int Pos { get; private set; }
+
+        public MutableIntSet Lookaheads { get; set; }
+
         public bool IsKernel
         {
-            get { return Pos != 0 || Rule.OutcomeToken == EbnfGrammar.AugmentedStart; }
+            get { return Pos != 0 || Production.IsAugmented; }
         }
 
-        public int RuleId { get { return Rule.Index; } }
+        public int ProductionId { get { return Production.Index; } }
 
-        public bool IsReduce { get { return Pos == Rule.PatternTokens.Length; } }
+        public bool IsReduce { get { return Pos == Production.PatternTokens.Length; } }
 
-        public bool IsShiftReduce { get { return (Rule.PatternTokens.Length - Pos) == 1; } }
+        public bool IsShiftReduce { get { return (Production.PatternTokens.Length - Pos) == 1; } }
 
-        public int NextToken { get { return Rule.PatternTokens[Pos]; } }
+        public int NextToken { get { return Production.PatternTokens[Pos]; } }
 
         public static bool operator ==(DotItem x, DotItem y) 
         { 
-            return x.RuleId == y.RuleId && x.Pos == y.Pos; 
+            return x.ProductionId == y.ProductionId && x.Pos == y.Pos; 
         }
 
         public static bool operator !=(DotItem x, DotItem y) 
         {
-            return x.RuleId != y.RuleId || x.Pos != y.Pos; 
+            return x.ProductionId != y.ProductionId || x.Pos != y.Pos; 
         }
 
         public override bool Equals(object obj) { return this == (DotItem)obj; }
 
-        public override int GetHashCode() { unchecked { return Rule.Index + Pos; } }
+        public override int GetHashCode() { return unchecked(Production.Index + Pos); }
 
         public override string ToString()
         {
-            return string.Format("(Rule={0} Pos={1} LAs={2})", Rule.Index, Pos, Lookaheads);
+            return string.Format("(ProdId={0} Pos={1} LAs={2})", Production.Index, Pos, Lookaheads);
         }
 
-        Production IParserDotItem.Rule { get { return Rule; } }
+        Production IParserDotItem.Rule { get { return Production; } }
 
         int IParserDotItem.Position { get { return Pos; } }
 
-
-        IEnumerable<int> IParserDotItem.Lookaheads
-        {
-            get { return Lookaheads; }
-        }
+        IEnumerable<int> IParserDotItem.Lookaheads { get { return Lookaheads; } }
     }
 }

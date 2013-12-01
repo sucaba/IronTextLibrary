@@ -322,7 +322,7 @@ namespace IronText.MetadataCompiler
 
                 foreach (var item in stateItems.Items)
                 {
-                    if (item.Pos == 0 || item.Pos == item.Rule.PatternTokens.Length)
+                    if (item.Pos == 0 || item.Pos == item.Production.PatternTokens.Length)
                     {
                         // Skip non-kernel, augmented (start rule) items and end-of-rule states
                         continue;
@@ -330,7 +330,7 @@ namespace IronText.MetadataCompiler
 
                     foreach (var parentRuleDef in allParseRules)
                     {
-                        if (parentRuleDef.Index != item.RuleId || !parentRuleDef.IsContextRule)
+                        if (parentRuleDef.Index != item.ProductionId || !parentRuleDef.IsContextRule)
                         {
                             continue;
                         }

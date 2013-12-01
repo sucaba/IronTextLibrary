@@ -22,7 +22,7 @@ namespace IronText.Automata.Lalr1
 
         private StringBuilder DescribeItem(DotItem item, StringBuilder output, bool showLookaheads = true)
         {
-            var rule = item.Rule;
+            var rule = item.Production;
             int start = output.Length;
             output.Append(grammar.SymbolName(rule.OutcomeToken)).Append(" ->");
             for (int i = 0; i != rule.PatternTokens.Length; ++i)

@@ -34,10 +34,10 @@ namespace IronText.Automata.Lalr1
         {
             get
             {
-                return Transitions.Count == 0 
-                    && Items.Count == 1 
+                return Transitions.Count == 0
+                    && Items.Count == 1
                     && Items[0].IsReduce
-                    && Items[0].Rule.OutcomeToken != EbnfGrammar.AugmentedStart;
+                    && !Items[0].Production.IsAugmented;
             }
         }
 
@@ -67,7 +67,7 @@ namespace IronText.Automata.Lalr1
             {
                 if (item.Pos != 0)
                 {
-                    return item.Rule.PatternTokens[item.Pos - 1];
+                    return item.Production.PatternTokens[item.Pos - 1];
                 }
             }
 
@@ -118,7 +118,7 @@ namespace IronText.Automata.Lalr1
         {
             foreach (var item in Items)
             {
-                if (item.RuleId == ruleId && item.Pos == dotPos)
+                if (item.ProductionId == ruleId && item.Pos == dotPos)
                 {
                     return item;
                 }

@@ -115,7 +115,7 @@ namespace IronText.Automata.Lalr1
                     foreach (var item in kernelSet)
                     {
                         List<Tuple<int, int, int>> propogatedItems;
-                        var itemId = Tuple.Create(from, item.RuleId, item.Pos);
+                        var itemId = Tuple.Create(from, item.ProductionId, item.Pos);
                         if (propogation.TryGetValue(itemId, out propogatedItems))
                         {
                             foreach (var propogatedItemId in propogatedItems)
@@ -178,7 +178,7 @@ namespace IronText.Automata.Lalr1
                     var J = ClosureLr0(
                         new MutableDotItemSet 
                         {
-                            new DotItem(fromItem.Rule, fromItem.Pos)
+                            new DotItem(fromItem.Production, fromItem.Pos)
                             {
                                 Lookaheads = TokenSet.Of(EbnfGrammar.PropogatedToken).EditCopy()
                             }
@@ -198,14 +198,14 @@ namespace IronText.Automata.Lalr1
                         var gotoX = gotoXstate == null ? -1 : gotoXstate.Index;
                         Debug.Assert(gotoX >= 0, "Internal error. Non-existing state.");
 
-                        var nextItemIds = Tuple.Create(gotoX, closedItem.RuleId, closedItem.Pos + 1);
+                        var nextItemIds = Tuple.Create(gotoX, closedItem.ProductionId, closedItem.Pos + 1);
 
                         foreach (var lookahead in closedItem.Lookaheads)
                         {
                             if (lookahead == EbnfGrammar.PropogatedToken)
                             {
                                 List<Tuple<int, int, int>> propogatedItems;
-                                var key = Tuple.Create(from, fromItem.RuleId, fromItem.Pos);
+                                var key = Tuple.Create(from, fromItem.ProductionId, fromItem.Pos);
                                 if (!result.TryGetValue(key, out propogatedItems))
                                 {
                                     propogatedItems = new List<Tuple<int, int, int>>();
@@ -305,11 +305,11 @@ namespace IronText.Automata.Lalr1
 
             foreach (var item in itemSet)
             {
-                var rule = item.Rule;
+                var rule = item.Production;
                 if (rule.PatternTokens.Length != item.Pos && rule.PatternTokens[item.Pos] == token)
                 {
                     result.Add(
-                        new DotItem(item.Rule, item.Pos + 1)
+                        new DotItem(item.Production, item.Pos + 1)
                         {
                             Lookaheads = item.Lookaheads.EditCopy()
                         });
@@ -394,7 +394,7 @@ namespace IronText.Automata.Lalr1
                         {
                             var toItem = result[j];
 
-                            if (fromItem.NextToken == toItem.Rule.OutcomeToken)
+                            if (fromItem.NextToken == toItem.Production.OutcomeToken)
                             {
                                 int countBefore = 0;
                                 if (!modified)
@@ -404,7 +404,7 @@ namespace IronText.Automata.Lalr1
 
                                 // TODO: Move outside of the loop. There is no childRule dependency 
                                 bool isNullable = grammar.AddFirst(
-                                                    fromItem.Rule.PatternTokens,
+                                                    fromItem.Production.PatternTokens,
                                                     fromItem.Pos + 1,
                                                     toItem.Lookaheads);
 
