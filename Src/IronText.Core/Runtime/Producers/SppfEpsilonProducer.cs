@@ -35,10 +35,10 @@ namespace IronText.Framework
             int nullableCount = 0;
             foreach (var rule in grammar.Productions)
             {
-                int i = rule.Pattern.Length;
+                int i = rule.PatternTokens.Length;
                 while (i != 0)
                 {
-                    int token = rule.Pattern[--i];
+                    int token = rule.PatternTokens[--i];
                     if (tokenCache[token] == null)
                     {
                         break;
@@ -48,18 +48,18 @@ namespace IronText.Framework
                 }
 
                 ruleEndOffsetInCache[rule.Index] = nullableCount;
-                ruleOffsetInCache[rule.Index] = nullableCount - rule.Pattern.Length;
+                ruleOffsetInCache[rule.Index] = nullableCount - rule.PatternTokens.Length;
             }
 
             this.ruleCache = new SppfNode[nullableCount];
 
             foreach (var rule in grammar.Productions)
             {
-                int endOffset = ruleOffsetInCache[rule.Index] + rule.Pattern.Length;
-                int i = rule.Pattern.Length;
+                int endOffset = ruleOffsetInCache[rule.Index] + rule.PatternTokens.Length;
+                int i = rule.PatternTokens.Length;
                 while (i != 0)
                 {
-                    int token = rule.Pattern[--i];
+                    int token = rule.PatternTokens[--i];
                     if (tokenCache[token] == null)
                     {
                         break;

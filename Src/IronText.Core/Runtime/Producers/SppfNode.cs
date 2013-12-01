@@ -69,7 +69,7 @@ namespace IronText.Framework
         {
             if (Id < 0)
             {
-                return grammar.Productions[-Id].Outcome;
+                return grammar.Productions[-Id].OutcomeToken;
             }
 
             return Id;

@@ -116,10 +116,8 @@
     <Compile Include="Framework\UnsupportedGrammarTest.cs" />
     <Compile Include="Lib\IL\CachedMethodTest.cs" />
     <Compile Include="Lib\IL\Generators\ImplementationGeneratorTest.cs" />
-    <Compile Include="Lib\IL\Generators\SwitchFactoryGeneratorTest.cs" />
     <Compile Include="Lib\IL\Generators\GrammarSerializerTest.cs" />
     <Compile Include="Lib\IL\Generators\ReadOnlyTableGeneratorTest.cs" />
-    <Compile Include="Lib\IL\Generators\SwitchGeneratorTest.cs" />
     <Compile Include="Lib\RegularExpressions\Scanners\ScannerSyntaxTest.cs" />
     <Compile Include="Lib\Scope\NsBaseTest.cs" />
     <Compile Include="Algorithm\IntervalIntSetTest.cs" />

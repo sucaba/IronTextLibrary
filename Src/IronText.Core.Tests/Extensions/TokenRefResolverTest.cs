@@ -1,5 +1,6 @@
 ﻿using System;
 using IronText.Extensibility;
+using IronText.Framework.Reflection;
 using NUnit.Framework;
 
 namespace IronText.Tests.Extensions
@@ -32,12 +33,12 @@ namespace IronText.Tests.Extensions
 
             target.Link(tokens);
 
-            const int ID = 123;
-            target.SetId(tokens[0], ID);
+            var SYM1 = new Symbol("123");
+            target.SetId(tokens[0], SYM1);
             for (int i = 1; i != tokens.Length; ++i)
             {
                 var context = "#" + i;
-                Assert.AreEqual(ID, target.GetId(tokens[i]), context);
+                Assert.AreSame(SYM1, target.GetSymbol(tokens[i]), context);
             }
         }
 

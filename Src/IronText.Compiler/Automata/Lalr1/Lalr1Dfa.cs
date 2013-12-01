@@ -306,7 +306,7 @@ namespace IronText.Automata.Lalr1
             foreach (var item in itemSet)
             {
                 var rule = item.Rule;
-                if (rule.Pattern.Length != item.Pos && rule.Pattern[item.Pos] == token)
+                if (rule.PatternTokens.Length != item.Pos && rule.PatternTokens[item.Pos] == token)
                 {
                     result.Add(
                         new DotItem(item.Rule, item.Pos + 1)
@@ -394,7 +394,7 @@ namespace IronText.Automata.Lalr1
                         {
                             var toItem = result[j];
 
-                            if (fromItem.NextToken == toItem.Rule.Outcome)
+                            if (fromItem.NextToken == toItem.Rule.OutcomeToken)
                             {
                                 int countBefore = 0;
                                 if (!modified)
@@ -404,7 +404,7 @@ namespace IronText.Automata.Lalr1
 
                                 // TODO: Move outside of the loop. There is no childRule dependency 
                                 bool isNullable = grammar.AddFirst(
-                                                    fromItem.Rule.Pattern,
+                                                    fromItem.Rule.PatternTokens,
                                                     fromItem.Pos + 1,
                                                     toItem.Lookaheads);
 

@@ -13,10 +13,18 @@ namespace IronText.Framework.Reflection
         {
         }
 
-        public Production Add(int outcome, int[] pattern)
+        public Production Add(Symbol outcome, IEnumerable<Symbol> pattern)
         {
-            var result = new Production { Outcome = outcome, Pattern = pattern };
+            var result = new Production(outcome, pattern);
             return Add(result);
+        }
+
+        [Obsolete("Refactoring grammar indexing")]
+        public Production Add(int outcome, IEnumerable<int> pattern)
+        {
+            return Add(
+                (Symbol)Context.Symbols[outcome],
+                pattern.Select(t => (Symbol)Context.Symbols[t]));
         }
 
         /// <summary>
@@ -25,15 +33,15 @@ namespace IronText.Framework.Reflection
         /// <param name="outcome"></param>
         /// <param name="pattern"></param>
         /// <returns>Rule ID or -1 if there is no such rule</returns>
-        public Production Find(int outcome, int[] pattern)
+        public Production Find(Symbol outcome, Symbol[] pattern)
         {
             int count = Count;
             for (int i = 0; i != count; ++i)
             {
                 var prod = this[i];
-                if (prod.Outcome == outcome
-                    && prod.Pattern.Length == pattern.Length
-                    && Enumerable.SequenceEqual(prod.Pattern, pattern))
+                if (prod.OutcomeSymbol == outcome
+                    && prod.PatternSymbols.Length == pattern.Length
+                    && Enumerable.SequenceEqual(prod.PatternSymbols, pattern))
                 {
                     return prod;
                 }
@@ -49,7 +57,7 @@ namespace IronText.Framework.Reflection
         /// <param name="pattern"></param>
         /// <param name="?"></param>
         /// <returns><c>true</c> when production was just defined, <c>false</c> if it existed previously</returns>
-        public bool FindOrAdd(int outcome, int[] pattern, out Production output)
+        public bool FindOrAdd(Symbol outcome, Symbol[] pattern, out Production output)
         {
             output = Find(outcome, pattern);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using IronText.Framework.Reflection;
 
 namespace IronText.Extensibility
 {
@@ -35,19 +36,25 @@ namespace IronText.Extensibility
 
         public int GetId(TokenRef tid)
         {
+            var symbol = GetSymbol(tid);
+            return symbol == null ? -1 : symbol.Index;
+        }
+
+        public Symbol GetSymbol(TokenRef tid)
+        {
             TokenDef def = Resolve(tid);
             if (def == null)
             {
-                return -1;
+                return null;
             }
 
-            return def.Id;
+            return def.Symbol;
         }
 
-        public void SetId(TokenRef tid, int id)
+        public void SetId(TokenRef tid, Symbol symbol)
         {
             TokenDef def = Ensure(tid);
-            def.Id = id;
+            def.Symbol = symbol;
         }
 
         private TokenDef Ensure(TokenRef tid)

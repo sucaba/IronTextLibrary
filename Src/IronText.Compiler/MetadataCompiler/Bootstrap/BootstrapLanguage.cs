@@ -88,16 +88,6 @@ namespace IronText.MetadataCompiler
             return data.TokenRefResolver.GetId(TokenRef.Literal(literal));
         }
 
-        private IReceiver<Msg> CreateExternalToken(
-            object         context,
-            int            externalToken,
-            IReceiver<Msg> exit,
-            ILanguage      lang)
-        {
-            // Bootstrap langauge does not support externals
-            return exit.Next(new Msg(externalToken, null, Loc.Unknown));
-        }
-
         private ProductionActionDelegate BuildExecuteRuleAction()
         {
             var generator = new GrammarActionGenerator();

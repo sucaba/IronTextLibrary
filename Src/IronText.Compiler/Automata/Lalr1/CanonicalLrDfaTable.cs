@@ -81,7 +81,7 @@ namespace IronText.Automata.Lalr1
 
                     if (!item.IsReduce)
                     {
-                        int nextToken = rule.Pattern[item.Pos];
+                        int nextToken = rule.PatternTokens[item.Pos];
 
                         if (canOptimizeReduceStates
                             && item.IsShiftReduce
@@ -106,7 +106,7 @@ namespace IronText.Automata.Lalr1
                             AssignAction(i, nextToken, action);
                         }
                     }
-                    else if (rule.Outcome == EbnfGrammar.AugmentedStart)
+                    else if (rule.OutcomeToken == EbnfGrammar.AugmentedStart)
                     {
                         var action = new ParserAction { Kind = ParserActionKind.Accept };
                         AssignAction(i, EbnfGrammar.Eoi, action);

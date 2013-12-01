@@ -196,7 +196,6 @@
     <Compile Include="MetadataCompiler\ILCompiler\ScanModeMethods.cs" />
     <Compile Include="MetadataCompiler\ILCompiler\ScannerGenerator.cs" />
     <Compile Include="MetadataCompiler\ILCompiler\SwitchActionCode.cs" />
-    <Compile Include="MetadataCompiler\ILCompiler\SwitchFactoryGenerator.cs" />
     <Compile Include="MetadataCompiler\ILCompiler\TermFactoryGenerator.cs" />
     <Compile Include="MetadataCompiler\ILCompiler\TokenIdentitiesSerializer.cs" />
     <Compile Include="MetadataCompiler\LanguageData.cs" />

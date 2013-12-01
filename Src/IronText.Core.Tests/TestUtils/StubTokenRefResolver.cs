@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using IronText.Extensibility;
+using IronText.Framework.Reflection;
 
 namespace IronText.Tests.TestUtils
 {
@@ -9,6 +10,11 @@ namespace IronText.Tests.TestUtils
         public TokenDef Resolve(TokenRef tid)
         {
             throw new System.NotImplementedException();
+        }
+
+        public Symbol GetSymbol(TokenRef tid)
+        {
+            return null;
         }
 
         public int GetId(TokenRef tid)

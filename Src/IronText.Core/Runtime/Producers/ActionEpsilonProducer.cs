@@ -29,15 +29,15 @@ namespace IronText.Framework
 
             var production = 
                       (from r in grammar.GetProductions(nonTerm)
-                       where r.Pattern.All(grammar.IsNullable)
-                       orderby r.Pattern.Length ascending
+                       where r.PatternTokens.All(grammar.IsNullable)
+                       orderby r.PatternTokens.Length ascending
                        select r)
                        .First();
 
-            var args = new Msg[production.Pattern.Length];
+            var args = new Msg[production.PatternTokens.Length];
             for (int i = 0; i != args.Length; ++i)
             {
-                args[i] = InternalGetNullable(production.Pattern[i], stackLookback);
+                args[i] = InternalGetNullable(production.PatternTokens[i], stackLookback);
             }
 
             var value = productionAction(production.Index, args, 0, context, stackLookback);
@@ -48,10 +48,10 @@ namespace IronText.Framework
         {
             var production = grammar.Productions[prodId];
             int i   = prefixSize;
-            int end = production.Pattern.Length;
+            int end = production.PatternTokens.Length;
             while (i != end)
             {
-                buffer[destIndex++] = GetDefault(production.Pattern[i++], stackLookback);
+                buffer[destIndex++] = GetDefault(production.PatternTokens[i++], stackLookback);
             }
         }
     }

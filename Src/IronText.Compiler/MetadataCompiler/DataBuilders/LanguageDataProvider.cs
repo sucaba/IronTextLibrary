@@ -237,13 +237,13 @@ namespace IronText.MetadataCompiler
             {
                 if (def.TokenType == typeof(Exception))
                 {
-                    def.Id = EbnfGrammar.Error;
+                    def.Symbol = (Symbol)grammar.Symbols[EbnfGrammar.Error];
                 }
                 else
                 {
                     var symbol = new Symbol(def.Name) { Categories = def.Categories };
                     grammar.Symbols.Add(symbol);
-                    def.Id = symbol.Index;
+                    def.Symbol = symbol;
                 }
             }
 
@@ -254,8 +254,8 @@ namespace IronText.MetadataCompiler
             // Define grammar rules
             foreach (var ruleDef in definition.ParseRules)
             {
-                int outcome = tokenResolver.GetId(ruleDef.Left);
-                int[] pattern = Array.ConvertAll(ruleDef.Parts, tokenResolver.GetId);
+                Symbol outcome = tokenResolver.GetSymbol(ruleDef.Left);
+                var pattern = Array.ConvertAll(ruleDef.Parts, tokenResolver.GetSymbol);
 
                 // Try to find existing rules whith same token-signature
                 Production production;
@@ -322,7 +322,7 @@ namespace IronText.MetadataCompiler
 
                 foreach (var item in stateItems.Items)
                 {
-                    if (item.Pos == 0 || item.Pos == item.Rule.Pattern.Length)
+                    if (item.Pos == 0 || item.Pos == item.Rule.PatternTokens.Length)
                     {
                         // Skip non-kernel, augmented (start rule) items and end-of-rule states
                         continue;

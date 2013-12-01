@@ -28,8 +28,6 @@ namespace IronText.Framework
 
             public static readonly FieldInfo merge           = ExpressionUtils.GetField((LanguageBase lang) => lang.merge);
 
-            public static readonly FieldInfo switchFactory   = ExpressionUtils.GetField((LanguageBase lang) => lang.switchFactory);
-
             public static readonly FieldInfo name            = ExpressionUtils.GetField((LanguageBase lang) => lang.name);
 
             public static readonly FieldInfo stateToSymbol   = ExpressionUtils.GetField((LanguageBase lang) => lang.stateToSymbol);
@@ -49,7 +47,6 @@ namespace IronText.Framework
         protected ScanActionDelegate     scanAction;
         protected ProductionActionDelegate  grammarAction;
         protected MergeDelegate          merge;
-        protected SwitchFactory          switchFactory;
         protected LanguageName           name;
         protected int[]                  stateToSymbol;
         protected int[]                  parserConflictActions;
@@ -85,7 +82,6 @@ namespace IronText.Framework
             object ignore;
             scanAction(cursor, out ignore);
             grammarAction(grammar.AugmentedProduction.Index, new Msg[0], 0, null, null);
-            switchFactory(null, 0, null, this);
             merge(EbnfGrammar.AugmentedStart, null, null, null, null);
         }
 

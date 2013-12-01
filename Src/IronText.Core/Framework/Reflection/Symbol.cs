@@ -77,11 +77,6 @@ namespace IronText.Framework.Reflection
             return result;
         }
 
-        public override string ToString()
-        {
-            return Name;
-        }
-
         protected override SymbolBase DoClone()
         {
             return new Symbol(Name)

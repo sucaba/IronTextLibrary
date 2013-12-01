@@ -29,10 +29,10 @@ namespace IronText.Framework
             // Produce more dense tree
             if (parts.Count == 0)
             {
-                return GetDefault(rule.Outcome, stackLookback);
+                return GetDefault(rule.OutcomeToken, stackLookback);
             }
 
-            SppfNode[] children = new SppfNode[rule.Pattern.Length];
+            SppfNode[] children = new SppfNode[rule.PatternTokens.Length];
             parts.CopyTo(children, 0);
 
             Loc location = Loc.Unknown;
@@ -42,7 +42,7 @@ namespace IronText.Framework
                 location += children[i].Location;
             }
 
-            if (rule.Pattern.Length > parts.Count)
+            if (rule.PatternTokens.Length > parts.Count)
             {
                 FillEpsilonSuffix(rule.Index, parts.Count, children, parts.Count, stackLookback);
             }

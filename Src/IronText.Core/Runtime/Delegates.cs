@@ -8,13 +8,6 @@ namespace IronText.Framework
 
     public delegate int ScanActionDelegate(ScanCursor cursor, out object value);
 
-    public delegate IReceiver<Msg> SwitchFactory(
-        object         context,
-        int            token,
-        IReceiver<Msg> exit,
-        // TODO: Use ILanguage service instead 
-        ILanguage      language);
-
     public delegate object ProductionActionDelegate(
         int     ruleId,      // rule being reduced
         Msg[]   parts,       // array containing path being reduced

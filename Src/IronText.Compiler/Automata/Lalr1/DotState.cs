@@ -37,7 +37,7 @@ namespace IronText.Automata.Lalr1
                 return Transitions.Count == 0 
                     && Items.Count == 1 
                     && Items[0].IsReduce
-                    && Items[0].Rule.Outcome != EbnfGrammar.AugmentedStart;
+                    && Items[0].Rule.OutcomeToken != EbnfGrammar.AugmentedStart;
             }
         }
 
@@ -67,7 +67,7 @@ namespace IronText.Automata.Lalr1
             {
                 if (item.Pos != 0)
                 {
-                    return item.Rule.Pattern[item.Pos - 1];
+                    return item.Rule.PatternTokens[item.Pos - 1];
                 }
             }
 

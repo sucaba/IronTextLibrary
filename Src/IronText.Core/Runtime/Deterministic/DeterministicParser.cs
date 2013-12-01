@@ -146,13 +146,13 @@ namespace IronText.Framework
                         {
                             stateStack.Push(-1, value);
                             this.currentRule = grammar.Productions[action.Rule];
-                            stateStack.Start = stateStack.Count - currentRule.Pattern.Length;
+                            stateStack.Start = stateStack.Count - currentRule.PatternTokens.Length;
                             value = producer.CreateBranch(
                                 currentRule,
-                                stateStack.PeekTail(currentRule.Pattern.Length),
+                                stateStack.PeekTail(currentRule.PatternTokens.Length),
                                 (IStackLookback<TNode>)stateStack);
-                            stateStack.Pop(currentRule.Pattern.Length);
-                            action = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));
+                            stateStack.Pop(currentRule.PatternTokens.Length);
+                            action = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.OutcomeToken));
                         }
                         while (action.Kind == ParserActionKind.ShiftReduce);
 
@@ -309,28 +309,28 @@ namespace IronText.Framework
             while (act.Kind == ParserActionKind.Reduce)
             {
                 this.currentRule = grammar.Productions[act.Rule];
-                stateStack.Start = stateStack.Count - currentRule.Pattern.Length;
+                stateStack.Start = stateStack.Count - currentRule.PatternTokens.Length;
                 value = producer.CreateBranch(
                             currentRule,
-                            stateStack.PeekTail(currentRule.Pattern.Length),
+                            stateStack.PeekTail(currentRule.PatternTokens.Length),
                             (IStackLookback<TNode>)stateStack);
 
-                stateStack.Pop(currentRule.Pattern.Length);
-                act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));
+                stateStack.Pop(currentRule.PatternTokens.Length);
+                act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.OutcomeToken));
 
                 while (act.Kind == ParserActionKind.ShiftReduce) // == GotoReduce
                 {
                     stateStack.Push(-1, value);
 
                     this.currentRule = grammar.Productions[act.Rule];
-                    stateStack.Start = stateStack.Count - currentRule.Pattern.Length;
+                    stateStack.Start = stateStack.Count - currentRule.PatternTokens.Length;
                     value = producer.CreateBranch(
                             currentRule,
-                            stateStack.PeekTail(currentRule.Pattern.Length),
+                            stateStack.PeekTail(currentRule.PatternTokens.Length),
                             (IStackLookback<TNode>)stateStack);
 
-                    stateStack.Pop(currentRule.Pattern.Length);
-                    act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));
+                    stateStack.Pop(currentRule.PatternTokens.Length);
+                    act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.OutcomeToken));
                 }
 
                 stateStack.Push(act.State, value);

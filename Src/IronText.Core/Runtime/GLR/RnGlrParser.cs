@@ -314,7 +314,7 @@ namespace IronText.Framework
             {
                 GssReducePath<T> path = R.Dequeue();
 
-                int X = path.Rule.Outcome;
+                int X = path.Rule.OutcomeToken;
                 int m = path.Size;
 
                 GssNode<T> u = path.LeftNode;

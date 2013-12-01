@@ -46,7 +46,7 @@ namespace IronText.Compiler.Analysis
         {
             foreach (var rule in grammar.Symbols[token].Productions)
             {
-                foreach (int part in rule.Pattern)
+                foreach (int part in rule.PatternTokens)
                 {
                     yield return part;
                 }

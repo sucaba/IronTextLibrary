@@ -15,7 +15,7 @@ namespace IronText.Framework
         {
             this.Rule           = rule;
             this.RightNode      = rightNode;
-            this.Token          = rule.Outcome;
+            this.Token          = rule.OutcomeToken;
             this.Size           = size;
             this.EpsilonIndex   = epsilonIndex;
             this.RightLink      = rightLink;

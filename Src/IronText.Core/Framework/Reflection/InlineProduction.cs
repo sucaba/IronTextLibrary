@@ -11,7 +11,7 @@ namespace IronText.Framework.Reflection
         {
             this.Position   = position;
             this.Production = production;
-            this.Pattern    = (int[])production.Pattern.Clone();
+            this.Pattern    = (int[])production.PatternTokens.Clone();
         }
 
         /// <summary>

@@ -62,7 +62,7 @@ namespace IronText.Framework.Reflection
                                           };
             Symbols[Error]           = new Symbol("$error");
 
-            AugmentedProduction = Productions.Add(AugmentedStart, new[] { NoToken });
+            AugmentedProduction = Productions.Add((Symbol)Symbols[AugmentedStart], new Symbol[] { null });
         }
 
         public SymbolCollection Symbols { get { return symbols; } }
@@ -73,21 +73,14 @@ namespace IronText.Framework.Reflection
 
         public int StartToken
         {
-            get { return AugmentedProduction.Pattern[0]; }
-            set { AugmentedProduction.Pattern[0] = value; }
+            get { return AugmentedProduction.PatternTokens[0]; }
+            set { Start = value < 0 ? null : (Symbol)Symbols[value]; }
         }
 
         public Symbol Start
         {
-            get 
-            {
-                if (StartToken > 0)
-                {
-                    return (Symbol)symbols[StartToken];
-                }
-
-                return null;
-            }
+            get { return AugmentedProduction.PatternSymbols[0]; }
+            set { AugmentedProduction.SetAt(0, value); }
         }
 
         public override string ToString()

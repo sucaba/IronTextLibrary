@@ -16,34 +16,34 @@ namespace IronText.Tests.Analysis
         private EbnfGrammar originalGrammar;
         private EbnfGrammar resultGrammar;
 
-        private int start;
-        private int prefix;
-        private int suffix;
-        private int inlinedNonTerm;
-        private int term1;
-        private int term2;
-        private int term3;
-        private int term4;
-        private int term5;
-        private int nestedNonTerm;
+        private Symbol start;
+        private Symbol prefix;
+        private Symbol suffix;
+        private Symbol inlinedNonTerm;
+        private Symbol term1;
+        private Symbol term2;
+        private Symbol term3;
+        private Symbol term4;
+        private Symbol term5;
+        private Symbol nestedNonTerm;
 
         [SetUp]
         public void SetUp()
         {
             this.originalGrammar = new EbnfGrammar();
             var symbols = originalGrammar.Symbols;
-            this.start  = symbols.Add("start").Index;
-            this.prefix = symbols.Add("prefix").Index;
-            this.suffix = symbols.Add("suffix").Index;
-            this.term1  = symbols.Add("term1").Index;
-            this.term2  = symbols.Add("term2").Index;
-            this.term3  = symbols.Add("term3").Index;
-            this.term4  = symbols.Add("term4").Index;
-            this.term5  = symbols.Add("term5").Index;
-            this.inlinedNonTerm = symbols.Add("inlinedNonTerm").Index;
-            this.nestedNonTerm = symbols.Add("nestedNonTerm").Index;
+            this.start  = symbols.Add("start");
+            this.prefix = symbols.Add("prefix");
+            this.suffix = symbols.Add("suffix");
+            this.term1  = symbols.Add("term1");
+            this.term2  = symbols.Add("term2");
+            this.term3  = symbols.Add("term3");
+            this.term4  = symbols.Add("term4");
+            this.term5  = symbols.Add("term5");
+            this.inlinedNonTerm = symbols.Add("inlinedNonTerm");
+            this.nestedNonTerm = symbols.Add("nestedNonTerm");
 
-            originalGrammar.StartToken = start;
+            originalGrammar.Start = start;
 
             originalGrammar.Productions.Add(start,  new[] { prefix, inlinedNonTerm, suffix });
         }
@@ -60,7 +60,7 @@ namespace IronText.Tests.Analysis
         [Test]
         public void EpsilonIsInlined()
         {
-            GivenInlinePatterns(new int[0]);
+            GivenInlinePatterns(new Symbol[0]);
 
             WhenGrammarIsInlined();
 
@@ -70,7 +70,7 @@ namespace IronText.Tests.Analysis
         [Test]
         public void UnaryTerminalIsInlined()
         {
-            GivenInlinePatterns(new int[] { term1 });
+            GivenInlinePatterns(new [] { term1 });
 
             WhenGrammarIsInlined();
 
@@ -80,7 +80,7 @@ namespace IronText.Tests.Analysis
         [Test]
         public void UnaryMultiTerminalsAreInlined()
         {
-            GivenInlinePatterns(new int[] { term1, term2, term3 });
+            GivenInlinePatterns(new [] { term1, term2, term3 });
 
             WhenGrammarIsInlined();
 
@@ -90,8 +90,8 @@ namespace IronText.Tests.Analysis
         [Test]
         public void NestedEpsilonIsInlined()
         {
-            GivenInlinePatterns(new int[] { nestedNonTerm });
-            originalGrammar.Productions.Add(nestedNonTerm, new int[0]);
+            GivenInlinePatterns(new [] { nestedNonTerm });
+            originalGrammar.Productions.Add(nestedNonTerm, new Symbol[0]);
 
             WhenGrammarIsInlined();
 
@@ -101,7 +101,7 @@ namespace IronText.Tests.Analysis
         [Test]
         public void NestedUnaryIsInlined()
         {
-            GivenInlinePatterns(new int[] { nestedNonTerm });
+            GivenInlinePatterns(new Symbol[] { nestedNonTerm });
             originalGrammar.Productions.Add(nestedNonTerm, new[] { term4 });
 
             WhenGrammarIsInlined();
@@ -112,7 +112,7 @@ namespace IronText.Tests.Analysis
         [Test]
         public void NestedMultitokenIsInlined()
         {
-            GivenInlinePatterns(new int[] { nestedNonTerm });
+            GivenInlinePatterns(new [] { nestedNonTerm });
             originalGrammar.Productions.Add(nestedNonTerm, new[] { term4, term5 });
 
             WhenGrammarIsInlined();
@@ -126,7 +126,7 @@ namespace IronText.Tests.Analysis
             this.resultGrammar = target.Inline();
         }
 
-        private void GivenInlinePatterns(params int[][] inlinePatterns)
+        private void GivenInlinePatterns(params Symbol[][] inlinePatterns)
         {
             foreach (var pattern in inlinePatterns)
             {
@@ -138,15 +138,15 @@ namespace IronText.Tests.Analysis
         {
             Assert.AreEqual(
                 0,
-                resultGrammar.Symbols[inlinedNonTerm].Productions.Count,
+                resultGrammar.Symbols[inlinedNonTerm.Index].Productions.Count,
                 "Inlined productions should be removed.");
         }
 
-        private void AssertFlattenedProductionsPatternsAre(params int[][] expectedFlattenedPatterns)
+        private void AssertFlattenedProductionsPatternsAre(params Symbol[][] expectedFlattenedPatterns)
         {
             Assert.AreEqual(
                 expectedFlattenedPatterns,
-                resultGrammar.Symbols[start].Productions.Select(p => p.Pattern).ToArray(),
+                resultGrammar.Symbols[start.Index].Productions.Select(p => p.PatternSymbols).ToArray(),
                 "Flattened patterns should have correct inlines.");
         }
 

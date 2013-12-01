@@ -37,5 +37,10 @@ namespace IronText.Framework.Reflection
         }
 
         protected abstract SymbolBase DoClone();
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

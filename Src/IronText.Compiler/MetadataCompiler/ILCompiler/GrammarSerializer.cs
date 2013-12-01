@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using IronText.Framework;
 using IronText.Framework.Collections;
@@ -126,22 +127,22 @@ namespace IronText.MetadataCompiler
                     .Stprop((EbnfGrammar g) => g.StartToken);
             }
 
-            foreach (var rule in grammar.Productions)
+            foreach (var production in grammar.Productions)
             {
-                if (rule.Outcome == EbnfGrammar.AugmentedStart)
+                if (production.OutcomeToken == EbnfGrammar.AugmentedStart)
                 {
                     // Start rule is defined automatically when first token is defined
                     continue;
                 }
 
                 emit
-                    .Ldc_I4(rule.Pattern.Length)
+                    .Ldc_I4(production.PatternTokens.Length)
                     .Newarr(emit.Types.Int32)
                     .Stloc(partsVar.GetRef())
                     ;
 
                 int i = 0;
-                foreach (int part in rule.Pattern)
+                foreach (int part in production.PatternTokens)
                 {
                     emit
                         .Ldloc(partsVar.GetRef())
@@ -155,9 +156,9 @@ namespace IronText.MetadataCompiler
                 emit
                     .Ldloc(resultVar.GetRef())
                     .Ldprop((EbnfGrammar g) => g.Productions)
-                    .Ldc_I4(rule.Outcome)
+                    .Ldc_I4(production.OutcomeToken)
                     .Ldloc(partsVar.GetRef())
-                    .Call((ProductionCollection prods, int l, int[] p) => prods.Add(l, p))
+                    .Call((ProductionCollection prods, int l, IEnumerable<int> p) => prods.Add(l, p))
                     .Pop()
                     ;
             }

@@ -73,7 +73,7 @@ namespace IronText.Framework
         {
             var rule = grammar.Productions[ruleIndex];
 
-            var tokenName = grammar.Symbols[rule.Outcome].Name;
+            var tokenName = grammar.Symbols[rule.OutcomeToken].Name;
 
             string label;
             if (showRules)

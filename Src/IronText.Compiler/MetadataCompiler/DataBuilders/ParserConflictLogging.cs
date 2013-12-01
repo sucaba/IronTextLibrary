@@ -107,9 +107,9 @@ namespace IronText.MetadataCompiler
             bool showLookaheads = true)
         {
             var rule = item.Rule;
-            output.Write(data.Grammar.Symbols[rule.Outcome].Name);
+            output.Write(data.Grammar.Symbols[rule.OutcomeToken].Name);
             output.Write(" ->");
-            for (int i = 0; i != rule.Pattern.Length; ++i)
+            for (int i = 0; i != rule.PatternTokens.Length; ++i)
             {
                 if (item.Position == i)
                 {
@@ -117,10 +117,10 @@ namespace IronText.MetadataCompiler
                 }
 
                 output.Write(" ");
-                output.Write(data.Grammar.Symbols[rule.Pattern[i]].Name);
+                output.Write(data.Grammar.Symbols[rule.PatternTokens[i]].Name);
             }
 
-            if (item.Position == rule.Pattern.Length)
+            if (item.Position == rule.PatternTokens.Length)
             {
                 output.Write(" .>");
             }
@@ -173,13 +173,13 @@ namespace IronText.MetadataCompiler
         {
             var rule = data.Grammar.Productions[ruleId];
 
-            output.Write(data.Grammar.Symbols[rule.Outcome].Name);
+            output.Write(data.Grammar.Symbols[rule.OutcomeToken].Name);
             output.Write(" ->");
 
-            for (int i = 0; i != rule.Pattern.Length; ++i)
+            for (int i = 0; i != rule.PatternTokens.Length; ++i)
             {
                 output.Write(" ");
-                output.Write(data.Grammar.Symbols[rule.Pattern[i]].Name);
+                output.Write(data.Grammar.Symbols[rule.PatternTokens[i]].Name);
             }
         }
     }

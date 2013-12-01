@@ -12,34 +12,39 @@ namespace IronText.Framework.Reflection
     [DebuggerDisplay("{DebugProductionText}")]
     public sealed class Production : IndexableObject<IEbnfContext>, ICloneable
     {
-        public Production()
+        public Production(Symbol outcome, IEnumerable<Symbol> pattern)
         {
+            if (outcome == null)
+            {
+                throw new ArgumentNullException("outcome");
+            }
+
+            if (pattern == null)
+            {
+                throw new ArgumentNullException("pattern");
+            }
+
+            OutcomeSymbol  = outcome;
+            OutcomeToken   = outcome.Index;
+            PatternSymbols = pattern.ToArray();
+            PatternTokens  = Array.ConvertAll(PatternSymbols, s => s == null ? -1 : s.Index);
+
             Actions = new ReferenceCollection<ProductionAction>();
         }
 
-        public int    Outcome    { get; set; }
+        public int    OutcomeToken    { get; private set; }
 
-        public int[]  Pattern    { get; set; }
+        public int[]  PatternTokens    { get; private set; }
 
-        public int Size { get { return Pattern.Length; } }
+        public int Size { get { return PatternTokens.Length; } }
 
-        public bool IsStart { get { return Context.StartToken == Outcome; } }
+        public bool IsStart { get { return Context.StartToken == OutcomeToken; } }
 
-        public bool IsAugmented { get { return EbnfGrammar.AugmentedStart == Outcome; } }
+        public bool IsAugmented { get { return EbnfGrammar.AugmentedStart == OutcomeToken; } }
 
-        public Symbol OutcomeSymbol
-        {
-            get { return (Symbol)Context.Symbols[Outcome]; }
-        }
+        public Symbol OutcomeSymbol { get; private set; }
 
-        public IEnumerable<Symbol> PatternSymbols
-        {
-            get
-            {
-                var symbols = Context.Symbols;
-                return (from t in Pattern select t >= 0 ? (Symbol)symbols[t] : null);
-            }
-        }
+        public Symbol[] PatternSymbols { get; private set; }
 
         public Precedence ExplicitPrecedence { get; set; }
 
@@ -52,8 +57,8 @@ namespace IronText.Framework.Reflection
                     return ExplicitPrecedence;
                 }
 
-                int index = Array.FindLastIndex(Pattern, t => Context.Symbols[t].IsTerminal);
-                return index < 0 ? null : Context.Symbols[Pattern[index]].Precedence;
+                int index = Array.FindLastIndex(PatternTokens, t => Context.Symbols[t].IsTerminal);
+                return index < 0 ? null : Context.Symbols[PatternTokens[index]].Precedence;
             }
         }
 
@@ -71,8 +76,8 @@ namespace IronText.Framework.Reflection
         {
             return other != null
                 && other.Index == Index
-                && other.Outcome == Outcome
-                && Enumerable.SequenceEqual(other.Pattern, Pattern)
+                && other.OutcomeToken == OutcomeToken
+                && Enumerable.SequenceEqual(other.PatternTokens, PatternTokens)
                 ;
         }
 
@@ -83,7 +88,7 @@ namespace IronText.Framework.Reflection
 
         public override int GetHashCode()
         {
-            return unchecked(Outcome + Pattern.Sum());
+            return unchecked(OutcomeToken + PatternTokens.Sum());
         }
 
         public string Describe(EbnfGrammar grammar, int pos)
@@ -121,7 +126,7 @@ namespace IronText.Framework.Reflection
                 ++i;
             }
 
-            if (pos == Pattern.Length)
+            if (pos == PatternTokens.Length)
             {
                 output.Write(" •");
             }
@@ -142,29 +147,41 @@ namespace IronText.Framework.Reflection
         {
             base.DoAttached();
 
-            Context.Symbols[Outcome].Productions.Add(this);
+            Context.Symbols[OutcomeToken].Productions.Add(this);
         }
 
         protected override void DoDetaching()
         {
-            Context.Symbols[Outcome].Productions.Remove(this);
+            Context.Symbols[OutcomeToken].Productions.Remove(this);
 
             base.DoDetaching();
         }
 
         public Production Clone()
         {
-            return new Production
+            return new Production(OutcomeSymbol, (Symbol[])PatternSymbols.Clone())
             {
-                Outcome            = Outcome,
-                Pattern            = (int[])Pattern.Clone(),
-                ExplicitPrecedence = ExplicitPrecedence,
+                ExplicitPrecedence = ExplicitPrecedence
             };
         }
 
         object ICloneable.Clone()
         {
             return Clone();
+        }
+
+        internal void SetAt(int pattIndex, Symbol symbol)
+        {
+            if (symbol == null)
+            {
+                PatternTokens[pattIndex]  = -1;
+                PatternSymbols[pattIndex] = null;
+            }
+            else
+            {
+                PatternTokens[pattIndex]  = symbol.Index;
+                PatternSymbols[pattIndex] = symbol;
+            }
         }
 
         public string DebugProductionText
@@ -175,9 +192,9 @@ namespace IronText.Framework.Reflection
                 if (IsDetached)
                 {                
                     output
-                        .Append(Outcome)
+                        .Append(OutcomeToken)
                         .Append(" ->")
-                        .Append(string.Join(" ", Pattern));
+                        .Append(string.Join(" ", PatternTokens));
                 }
                 else
                 {

@@ -15,7 +15,6 @@ namespace IronText.MetadataCompiler
     public class LanguageDerivedBuilder : IDerivedBuilder<CilDocumentSyntax>
     {
         private const string CreateGrammarMethodName            = "CreateGrammar";
-        private const string CreateExternalTokenMethodName      = "CreateExternalToken";
         private const string CreateTokenKeyToIdMethodName       = "CreateTokenKeyToId";
         private const string RuleActionMethodName               = "RuleAction";
         private const string MergeActionMethodName              = "MergeAction";
@@ -86,7 +85,6 @@ namespace IronText.MetadataCompiler
                     .Do(BuildMethod_TermFactory)
                     .Do(BuildMethod_GrammarAction)
                     .Do(BuildMethod_MergeAction)
-                    .Do(BuildMethod_CreateExternalToken)
                     .Do(BuildMethod_CreateStateToSymbol)
                     .Do(BuildMethod_CreateParserActionConflicts)
                     .Do(BuildMethod_CreateTokenComplexityTable)
@@ -104,44 +102,6 @@ namespace IronText.MetadataCompiler
 
             implementationGenerator.Generate(context);
             return result;
-        }
-
-        private ClassSyntax BuildMethod_CreateExternalToken(ClassSyntax code)
-        {
-            var generator = new SwitchFactoryGenerator(data.SwitchRules, data.TokenRefResolver);
-
-            var args = code.Method().Static
-                        .Returning(code.Types.Import(typeof(IReceiver<Msg>)))
-                        .Named(CreateExternalTokenMethodName)
-                        .BeginArgs();
-            
-            var contextArg = args.Args.Generate("context");
-            var thisIdArg  = args.Args.Generate("thisId");
-            var exitArg    = args.Args.Generate("exit");
-            var langArg    = args.Args.Generate("language");
-
-            var emit = args
-                    .Argument(code.Types.Object, contextArg)
-                    .Argument(code.Types.Int32, thisIdArg)
-                    .Argument(code.Types.Import(typeof(IReceiver<Msg>)), exitArg)
-                    .Argument(code.Types.Import(typeof(ILanguage)), langArg)
-                    .EndArgs()
-                .BeginBody();
-
-            var contextResolver = new ContextResolverCode(
-                                        emit,
-                                        il => il.Ldarg(contextArg.GetRef()),
-                                        null,
-                                        data.RootContextType);
-
-            generator.Build(
-                emit,
-                contextResolver,
-                il => il.Ldarg(thisIdArg.GetRef()),
-                il => il.Ldarg(exitArg.GetRef()),
-                il => il.Ldarg(langArg.GetRef()));
-
-            return emit.EndBody();
         }
 
         private ClassSyntax BuildMethod_GrammarAction(ClassSyntax context)
@@ -529,15 +489,6 @@ namespace IronText.MetadataCompiler
                         .EndArgs()
                     ))
                 .Stfld(LanguageBase.Fields.tokenComplexity)
-
-
-                // Init external token factory
-                .Ldarg(0)
-                .LdMethodDelegate(
-                    declaringTypeRef,
-                    CreateExternalTokenMethodName,
-                    typeof(SwitchFactory))
-                .Stfld(LanguageBase.Fields.switchFactory)
 
                 // Init grammarAction field
                 .Ldarg(0)

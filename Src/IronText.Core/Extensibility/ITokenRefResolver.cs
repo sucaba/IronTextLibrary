@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using IronText.Framework.Reflection;
 
 namespace IronText.Extensibility
 {
@@ -7,6 +8,8 @@ namespace IronText.Extensibility
         IEnumerable<TokenDef> Definitions { get; }
 
         TokenDef Resolve(TokenRef tokenRef);
+
+        Symbol GetSymbol(TokenRef tokenRef);
 
         int GetId(TokenRef tokenRef);
 

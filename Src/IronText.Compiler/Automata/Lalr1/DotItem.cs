@@ -21,16 +21,16 @@ namespace IronText.Automata.Lalr1
 
         public bool IsKernel
         {
-            get { return Pos != 0 || Rule.Outcome == EbnfGrammar.AugmentedStart; }
+            get { return Pos != 0 || Rule.OutcomeToken == EbnfGrammar.AugmentedStart; }
         }
 
         public int RuleId { get { return Rule.Index; } }
 
-        public bool IsReduce { get { return Pos == Rule.Pattern.Length; } }
+        public bool IsReduce { get { return Pos == Rule.PatternTokens.Length; } }
 
-        public bool IsShiftReduce { get { return (Rule.Pattern.Length - Pos) == 1; } }
+        public bool IsShiftReduce { get { return (Rule.PatternTokens.Length - Pos) == 1; } }
 
-        public int NextToken { get { return Rule.Pattern[Pos]; } }
+        public int NextToken { get { return Rule.PatternTokens[Pos]; } }
 
         public static bool operator ==(DotItem x, DotItem y) 
         { 

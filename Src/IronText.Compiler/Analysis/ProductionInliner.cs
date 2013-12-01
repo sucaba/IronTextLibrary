@@ -20,7 +20,6 @@ namespace IronText.Analysis
         public EbnfGrammar Inline()
         {
             var result = new EbnfGrammar();
-            result.StartToken = grammar.StartToken;
 
             foreach (var srcSymbol in grammar.Symbols)
             {
@@ -31,6 +30,11 @@ namespace IronText.Analysis
 
                 var destSymbol = (SymbolBase)srcSymbol.Clone();
                 result.Symbols.Add(destSymbol);
+
+                if (grammar.Start == srcSymbol)
+                {
+                    result.Start = (Symbol)destSymbol;
+                }
 
                 Debug.Assert(
                     destSymbol.Index == srcSymbol.Index,
@@ -56,7 +60,7 @@ namespace IronText.Analysis
                 var prod = item.Item2;
                 if (pos == prod.Size)
                 {
-                    if (!tokensToInline.Contains(prod.Outcome))
+                    if (!tokensToInline.Contains(prod.OutcomeToken))
                     {
                         result.Productions.Add(prod);
                     }
@@ -64,7 +68,7 @@ namespace IronText.Analysis
                     continue;
                 }
 
-                var token = prod.Pattern[pos];
+                var token = prod.PatternTokens[pos];
                 if (!tokensToInline.Contains(token))
                 {
                     prodStack.Push(Tuple.Create(pos + 1, prod));
@@ -101,12 +105,12 @@ namespace IronText.Analysis
             Production srcProduction,
             int        inlinePosition)
         {
-            var inlinedSymbol = grammar.Symbols[srcProduction.Pattern[inlinePosition]];
-            var oldPattern    = srcProduction.Pattern;
+            var inlinedSymbol = grammar.Symbols[srcProduction.PatternTokens[inlinePosition]];
+            var oldPattern    = srcProduction.PatternSymbols;
 
             foreach (var inlinedProd in inlinedSymbol.Productions)
             {
-                var newPattern = new int[oldPattern.Length - 1 + inlinedProd.Pattern.Length];
+                var newPattern = new Symbol[oldPattern.Length - 1 + inlinedProd.PatternTokens.Length];
 
                 int pos = 0;
 
@@ -119,7 +123,7 @@ namespace IronText.Analysis
                 // copy inline
                 for (int i = 0; i != inlinedProd.Size; ++i)
                 {
-                    newPattern[pos] = inlinedProd.Pattern[i];
+                    newPattern[pos] = inlinedProd.PatternSymbols[i];
                     ++pos;
                 }
 
@@ -130,11 +134,7 @@ namespace IronText.Analysis
                     ++pos;
                 }
 
-                var newProduction = new Production
-                {
-                    Outcome = srcProduction.Outcome,
-                    Pattern = newPattern,
-                };
+                var newProduction = new Production(srcProduction.OutcomeSymbol, newPattern);
 
                 foreach (var action in srcProduction.Actions)
                 {
