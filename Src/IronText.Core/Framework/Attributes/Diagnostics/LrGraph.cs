@@ -76,10 +76,10 @@ namespace IronText.Framework
                     break;
                 }
 
-                var rule = item.Rule;
+                var rule = item.Production;
                 output.AppendFormat(
                     @"<tr> <td align=""left"" port=""r0"">&#40;{0}&#41; {1} -&gt; ",
-                    item.Rule.Index,
+                    item.Production.Index,
                     TokenToHtml(rule.OutcomeToken)
                     );
 

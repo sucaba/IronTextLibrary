@@ -58,7 +58,7 @@ namespace IronText.Tests.Extensibility
                 return Enumerable.Empty<IScanRule>();
             }
 
-            public IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, TokenCategory category)
+            public IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category)
             {
                 return Enumerable.Empty<TokenRef>();
             }

@@ -103,19 +103,24 @@ namespace IronText.Compiler.Analysis
             get { return grammar.Symbols.OfType<AmbiguousSymbol>(); }
         }
 
-        public bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output)
+        public void AddFirst(DotItem item, MutableIntSet output)
         {
-            return tables.AddFirst(tokenChain, startIndex, output);
+            bool isNullable = tables.AddFirst(item.GetPattern(), item.Position, output);
+
+            if (isNullable)
+            {
+                output.AddAll(item.LA);
+            }
         }
 
-        public bool HasFirst(int[] tokenChain, int startIndex, int token)
+        public bool HasFirst(DotItem item, int token)
         {
-            return tables.HasFirst(tokenChain, startIndex, token);
+            return tables.HasFirst(item.GetPattern(), item.Position, token);
         }
 
-        public bool IsTailNullable(int[] tokens, int startIndex)
+        public bool IsTailNullable(DotItem item)
         {
-            return tables.IsTailNullable(tokens, startIndex);
+            return tables.IsTailNullable(item.GetPattern(), item.Position);
         }
 
         public int DefineAmbToken(int mainToken, IEnumerable<int> tokens)

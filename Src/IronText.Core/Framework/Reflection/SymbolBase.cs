@@ -16,9 +16,9 @@ namespace IronText.Framework.Reflection
         /// </summary>
         public string Name { get; protected set; }
 
-        public bool IsPredefined { get { return 0 <= Index && Index < EbnfGrammar.PredefinedTokenCount; } }
+        public bool IsPredefined { get { return 0 <= Index && Index < EbnfGrammar.PredefinedSymbolCount; } }
 
-        public abstract TokenCategory Categories { get; set; }
+        public abstract SymbolCategory Categories { get; set; }
 
         /// <summary>
         /// Determines whether symbol is terminal

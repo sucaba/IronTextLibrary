@@ -218,16 +218,16 @@ namespace IronText.Framework
         }
 
         private static StreamWriter DescribeItem(
-            IReportData data,
-            IParserDotItem item,
-            StreamWriter output,
+            IReportData     data,
+            IParserDotItem  item,
+            StreamWriter    output,
             bool showLookaheads = true)
         {
-            var production = item.Rule;
-            output.Write(production.OutcomeSymbol.Name);
+            var production = item.Production;
+            output.Write(production.Outcome.Name);
             output.Write(" ->");
             int i = 0;
-            foreach (var symbol in production.PatternSymbols)
+            foreach (var symbol in production.Pattern)
             {
                 if (item.Position == i)
                 {
@@ -259,10 +259,10 @@ namespace IronText.Framework
         {
             var rule = data.Grammar.Productions[ruleId];
 
-            output.Write(rule.OutcomeSymbol.Name);
+            output.Write(rule.Outcome.Name);
             output.Write(" ->");
 
-            foreach (var symbol in rule.PatternSymbols)
+            foreach (var symbol in rule.Pattern)
             {
                 output.Write(" ");
                 output.Write(symbol.Name);

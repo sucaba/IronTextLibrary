@@ -106,10 +106,10 @@ namespace IronText.MetadataCompiler
             IParserDotItem item,
             bool showLookaheads = true)
         {
-            var rule = item.Rule;
-            output.Write(data.Grammar.Symbols[rule.OutcomeToken].Name);
+            var prod = item.Production;
+            output.Write(prod.Outcome.Name);
             output.Write(" ->");
-            for (int i = 0; i != rule.PatternTokens.Length; ++i)
+            for (int i = 0; i != prod.Pattern.Length; ++i)
             {
                 if (item.Position == i)
                 {
@@ -117,10 +117,10 @@ namespace IronText.MetadataCompiler
                 }
 
                 output.Write(" ");
-                output.Write(data.Grammar.Symbols[rule.PatternTokens[i]].Name);
+                output.Write(prod.Pattern[i].Name);
             }
 
-            if (item.Position == rule.PatternTokens.Length)
+            if (item.Position == prod.Pattern.Length)
             {
                 output.Write(" .>");
             }

@@ -13,7 +13,7 @@ namespace IronText.Framework.Reflection
         {
         }
 
-        public Symbol Add(string name, TokenCategory categories = TokenCategory.None)
+        public Symbol Add(string name, SymbolCategory categories = SymbolCategory.None)
         {
             var result = new Symbol(name) { Categories = categories };
             Add(result);

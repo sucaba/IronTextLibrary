@@ -112,7 +112,7 @@ namespace IronText.Automata.Lalr1
                     else
                     {
                         var action = new ParserAction { Kind = ParserActionKind.Reduce, ProductionId = item.ProductionId };
-                        foreach (var lookahead in item.Lookaheads)
+                        foreach (var lookahead in item.LA)
                         {
                             AssignAction(i, lookahead, action);
                         }

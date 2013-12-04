@@ -146,13 +146,14 @@ namespace IronText.Tests.Analysis
         {
             Assert.AreEqual(
                 expectedFlattenedPatterns,
-                resultGrammar.Symbols[start.Index].Productions.Select(p => p.PatternSymbols).ToArray(),
+                resultGrammar.Symbols[start.Index].Productions.Select(p => p.Pattern).ToArray(),
                 "Flattened patterns should have correct inlines.");
         }
 
         private void AssertGrammarStartIsPreserved()
         {
-            Assert.AreEqual(originalGrammar.StartToken, resultGrammar.StartToken);
+            Assert.IsNotNull(resultGrammar.Start);
+            Assert.AreEqual(originalGrammar.Start.Index, resultGrammar.Start.Index);
         }
     }
 }

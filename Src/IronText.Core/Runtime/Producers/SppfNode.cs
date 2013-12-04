@@ -178,8 +178,8 @@ namespace IronText.Framework
                 else
                 {
                     var prod = grammar.Productions[-Id];
-                    output.Write("{0}Rule: {1} -> ", indent, prod.OutcomeSymbol.Name);
-                    output.WriteLine(string.Join(" ", from s in prod.PatternSymbols select s.Name));
+                    output.Write("{0}Rule: {1} -> ", indent, prod.Outcome.Name);
+                    output.WriteLine(string.Join(" ", from s in prod.Pattern select s.Name));
                 }
             }
 

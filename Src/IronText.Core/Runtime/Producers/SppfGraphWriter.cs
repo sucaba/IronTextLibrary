@@ -85,7 +85,7 @@ namespace IronText.Framework
 #endif
                         ,
                         tokenName,
-                        string.Join(" ", from s in rule.PatternSymbols select s.Name));
+                        string.Join(" ", from s in rule.Pattern select s.Name));
             }
             else
             {
@@ -162,11 +162,11 @@ namespace IronText.Framework
             {
                 return string.Format(
                         "{0} -> {1}",
-                        production.OutcomeSymbol.Name,
-                        string.Join(" ", from s in production.PatternSymbols select s.Name));
+                        production.Outcome.Name,
+                        string.Join(" ", from s in production.Pattern select s.Name));
             }
 
-            return production.OutcomeSymbol.Name;
+            return production.Outcome.Name;
         }
     }
 }

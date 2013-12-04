@@ -33,9 +33,9 @@ namespace IronText.Framework.Reflection
         /// </summary>
         public ReadOnlyCollection<int> Tokens { get; private set; }
 
-        public override TokenCategory Categories
+        public override SymbolCategory Categories
         {
-            get { return TokenCategory.None; }
+            get { return SymbolCategory.None; }
             set { }
         }
 

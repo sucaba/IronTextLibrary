@@ -88,7 +88,7 @@
     <Compile Include="Analysis\ProductionInliner.cs" />
     <Compile Include="Automata\Lalr1\CanonicalLrDfaTable.cs" />
     <Compile Include="Automata\Lalr1\ConfigurableLrTable.cs" />
-    <Compile Include="Automata\Lalr1\DotItem.cs" />
+    <Compile Include="Analysis\DotItem.cs" />
     <Compile Include="Automata\Lalr1\DotState.cs" />
     <Compile Include="Automata\Lalr1\DotTransition.cs" />
     <Compile Include="Automata\Lalr1\IDotItemSet.cs" />

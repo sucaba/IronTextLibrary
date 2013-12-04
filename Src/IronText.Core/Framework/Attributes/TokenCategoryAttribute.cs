@@ -8,17 +8,17 @@ namespace IronText.Framework
     [AttributeUsage(AttributeTargets.Class|AttributeTargets.Interface, AllowMultiple = true)]
     public class TokenCategoryAttribute : LanguageMetadataAttribute
     {
-        private TokenCategory categories;
+        private SymbolCategory categories;
 
         public TokenCategoryAttribute() { }
 
-        public TokenCategoryAttribute(Type type, TokenCategory category)
+        public TokenCategoryAttribute(Type type, SymbolCategory category)
         {
             this.TokenType = type;
             this.categories = category;
         }
 
-        public TokenCategoryAttribute(string text, TokenCategory category)
+        public TokenCategoryAttribute(string text, SymbolCategory category)
         {
             this.Text = text;
             this.categories = category;
@@ -28,7 +28,7 @@ namespace IronText.Framework
 
         public string Text { get; set; }
 
-        public override IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, TokenCategory requestedCategories)
+        public override IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory requestedCategories)
         {
             if ((requestedCategories & this.categories) == 0)
             {

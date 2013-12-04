@@ -82,7 +82,7 @@ namespace IronText.Framework
 
             this.terms = grammar
                             .EnumerateTokens()
-                            .Where(t => grammar.IsTerminal(t) && t >= EbnfGrammar.PredefinedTokenCount)
+                            .Where(t => grammar.IsTerminal(t) && t >= EbnfGrammar.PredefinedSymbolCount)
                             .ToArray();
         }
 
@@ -289,7 +289,7 @@ namespace IronText.Framework
                     foreach (int term in terms)
                     {
                         var categories = grammar.GetTokenCategories(term);
-                        if ((categories & TokenCategory.DoNotInsert) == 0)
+                        if ((categories & SymbolCategory.DoNotInsert) == 0)
                         {
                             yield return new Msg(term, null, Loc.Unknown); // TODO: Location and value
                         }
@@ -300,7 +300,7 @@ namespace IronText.Framework
                     foreach (int term in terms)
                     {
                         var categories = grammar.GetTokenCategories(term);
-                        if ((categories & TokenCategory.DoNotInsert) != 0)
+                        if ((categories & SymbolCategory.DoNotInsert) != 0)
                         {
                             yield return new Msg(term, null, Loc.Unknown); // TODO: Location and value
                         }

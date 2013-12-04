@@ -60,7 +60,7 @@ namespace IronText.MetadataCompiler
                 TokenRefResolver.Link(tid);
             }
 
-            var categories = new [] { TokenCategory.Beacon, TokenCategory.DoNotInsert, TokenCategory.DoNotDelete, TokenCategory.ExplicitlyUsed };
+            var categories = new [] { SymbolCategory.Beacon, SymbolCategory.DoNotInsert, SymbolCategory.DoNotDelete, SymbolCategory.ExplicitlyUsed };
 
             foreach (var category in categories)
             {

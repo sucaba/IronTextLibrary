@@ -7,7 +7,7 @@ namespace IronText.Framework.Reflection
 {
     public interface IEbnfContext
     {
-        int StartToken { get; }
+        Symbol Start { get; }
 
         SymbolCollection Symbols { get; }
 

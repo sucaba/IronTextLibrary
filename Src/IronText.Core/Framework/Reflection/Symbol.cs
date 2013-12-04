@@ -24,12 +24,12 @@ namespace IronText.Framework.Reflection
 
         public bool IsAugmentedStart { get { return EbnfGrammar.AugmentedStart == Index; } }
 
-        public bool IsStart { get { return Context.StartToken == Index; } }
+        public bool IsStart { get { return Context.Start == this; } }
 
         /// <summary>
         /// Categories token belongs to
         /// </summary>
-        public override TokenCategory Categories { get; set; }
+        public override SymbolCategory Categories { get; set; }
 
         /// <summary>
         /// Determines whether symbol is terminal

@@ -21,7 +21,7 @@ namespace IronText.Extensibility
 
         public MemberInfo Member { get; private set; }
 
-        public virtual IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, TokenCategory category)
+        public virtual IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category)
         {
             return Enumerable.Empty<TokenRef>();
         }

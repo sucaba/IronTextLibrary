@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using IronText.Compiler.Analysis;
 using IronText.Extensibility;
 
 namespace IronText.Automata.Lalr1
@@ -26,7 +27,7 @@ namespace IronText.Automata.Lalr1
             output.Append(grammar.SymbolName(item.Outcome)).Append(" ->");
             for (int i = 0; i != item.Size; ++i)
             {
-                if (item.Pos == i)
+                if (item.Position == i)
                 {
                     output.Append(" •");
                 }
@@ -48,7 +49,7 @@ namespace IronText.Automata.Lalr1
 
             if (showLookaheads)
             {
-                output.Append("  |LA = {").Append(string.Join(", ", item.Lookaheads.Select(grammar.SymbolName))).Append("}");
+                output.Append("  |LA = {").Append(string.Join(", ", item.LA.Select(grammar.SymbolName))).Append("}");
             }
 
             return output;
@@ -59,7 +60,7 @@ namespace IronText.Automata.Lalr1
         {
             var sourceItem = GetItem(lr0states, sourceItemId);
             var destItem = GetItem(lr0states, destinationItemId);
-            var lookaheads = sourceItem.Lookaheads.Except(destItem.Lookaheads).Select(grammar.SymbolName);
+            var lookaheads = sourceItem.LA.Except(destItem.LA).Select(grammar.SymbolName);
 
             var output = new StringBuilder();
             output.Append(">>> I").Append(sourceItemId.Item1).Append(": ");

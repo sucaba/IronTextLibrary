@@ -32,7 +32,7 @@ namespace IronText.Framework.Reflection
 
         public const int Error                 = 4;
 
-        public const int PredefinedTokenCount  = 5;
+        public const int PredefinedSymbolCount = 5;
 
         #endregion Predefined tokens
 
@@ -46,7 +46,7 @@ namespace IronText.Framework.Reflection
             productionActions = new ProductionActionCollection(this);
             symbols           = new SymbolCollection(this);
 
-            for (int i = PredefinedTokenCount; i != 0; --i)
+            for (int i = PredefinedSymbolCount; i != 0; --i)
             {
                 Symbols.Add(new Symbol("")); // stub
             }
@@ -56,9 +56,8 @@ namespace IronText.Framework.Reflection
             Symbols[AugmentedStart]  = new Symbol("$start");
             Symbols[Eoi]             = new Symbol("$")
                                           { 
-                                              Categories = 
-                                                         TokenCategory.DoNotInsert 
-                                                         | TokenCategory.DoNotDelete 
+                                              Categories = SymbolCategory.DoNotInsert 
+                                                         | SymbolCategory.DoNotDelete 
                                           };
             Symbols[Error]           = new Symbol("$error");
 
@@ -74,12 +73,11 @@ namespace IronText.Framework.Reflection
         public int StartToken
         {
             get { return AugmentedProduction.PatternTokens[0]; }
-            set { Start = value < 0 ? null : (Symbol)Symbols[value]; }
         }
 
         public Symbol Start
         {
-            get { return AugmentedProduction.PatternSymbols[0]; }
+            get { return AugmentedProduction.Pattern[0]; }
             set { AugmentedProduction.SetAt(0, value); }
         }
 
@@ -103,8 +101,8 @@ namespace IronText.Framework.Reflection
                     .AppendFormat(
                         "{0:D2}: {1} -> {2}",
                         prod.Index,
-                        prod.OutcomeSymbol.Name,
-                        string.Join(" ", from s in prod.PatternSymbols select s == null ? "<none>" : s.Name))
+                        prod.Outcome.Name,
+                        string.Join(" ", from s in prod.Pattern select s == null ? "<none>" : s.Name))
                     .AppendLine();
             }
 

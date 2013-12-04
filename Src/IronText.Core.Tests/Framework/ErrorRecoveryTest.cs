@@ -132,9 +132,9 @@ namespace IronText.Tests.Framework
 
             var context = new RecoveryLang();
 
-            Assert.IsTrue(lang.Grammar.Symbols[lang.Identify("beacon")].Categories.Has(TokenCategory.Beacon));
-            Assert.IsTrue(lang.Grammar.Symbols[lang.Identify("{")].Categories.Has(TokenCategory.DoNotInsert));
-            Assert.IsTrue(lang.Grammar.Symbols[lang.Identify("{")].Categories.Has(TokenCategory.DoNotDelete));
+            Assert.IsTrue(lang.Grammar.Symbols[lang.Identify("beacon")].Categories.Has(SymbolCategory.Beacon));
+            Assert.IsTrue(lang.Grammar.Symbols[lang.Identify("{")].Categories.Has(SymbolCategory.DoNotInsert));
+            Assert.IsTrue(lang.Grammar.Symbols[lang.Identify("{")].Categories.Has(SymbolCategory.DoNotDelete));
 
             Parse(
                 lang, 
@@ -167,8 +167,8 @@ namespace IronText.Tests.Framework
         [StaticContext(typeof(Builtins))]
         [ParserGraph("RecoveryLang_Parser.gv")]
         [ScannerGraph("RecoveryLang_Scanner.gv")]
-        [TokenCategory("beacon", TokenCategory.Beacon|TokenCategory.DoNotInsert)]
-        [TokenCategory("{", TokenCategory.DoNotInsert|TokenCategory.DoNotDelete)]
+        [TokenCategory("beacon", SymbolCategory.Beacon|SymbolCategory.DoNotInsert)]
+        [TokenCategory("{", SymbolCategory.DoNotInsert|SymbolCategory.DoNotDelete)]
         public class RecoveryLang
         {
             [Parse]

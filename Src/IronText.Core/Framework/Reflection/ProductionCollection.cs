@@ -39,9 +39,9 @@ namespace IronText.Framework.Reflection
             for (int i = 0; i != count; ++i)
             {
                 var prod = this[i];
-                if (prod.OutcomeSymbol == outcome
-                    && prod.PatternSymbols.Length == pattern.Length
-                    && Enumerable.SequenceEqual(prod.PatternSymbols, pattern))
+                if (prod.Outcome == outcome
+                    && prod.Pattern.Length == pattern.Length
+                    && Enumerable.SequenceEqual(prod.Pattern, pattern))
                 {
                     return prod;
                 }

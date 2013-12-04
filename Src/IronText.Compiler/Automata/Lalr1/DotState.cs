@@ -5,6 +5,7 @@ using IronText.Algorithm;
 using IronText.Framework;
 using System.Collections.ObjectModel;
 using IronText.Framework.Reflection;
+using IronText.Compiler.Analysis;
 
 namespace IronText.Automata.Lalr1
 {
@@ -65,9 +66,9 @@ namespace IronText.Automata.Lalr1
         {
             foreach (var item in Items)
             {
-                if (item.Pos != 0)
+                if (item.Position != 0)
                 {
-                    return item[item.Pos - 1];
+                    return item[item.Position - 1];
                 }
             }
 
@@ -114,11 +115,11 @@ namespace IronText.Automata.Lalr1
             return result;
         }
 
-        public DotItem GetItem(int ruleId, int dotPos)
+        public DotItem GetItem(int prodId, int dotPos)
         {
             foreach (var item in Items)
             {
-                if (item.ProductionId == ruleId && item.Pos == dotPos)
+                if (item.ProductionId == prodId && item.Position == dotPos)
                 {
                     return item;
                 }

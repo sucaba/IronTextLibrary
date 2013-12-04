@@ -54,7 +54,7 @@ namespace IronText.MetadataCompiler
                         .Stloc(symbolVar)
                         ;
 
-                    if (symbol.Categories != TokenCategory.None)
+                    if (symbol.Categories != SymbolCategory.None)
                     {
                         emit
                             .Ldloc(symbolVar)
@@ -119,12 +119,15 @@ namespace IronText.MetadataCompiler
                     ;
             }
 
-            if (grammar.StartToken > 0)
+            if (grammar.Start != null)
             {
                 emit
                     .Ldloc(resultVar.GetRef())
-                    .Ldc_I4(grammar.StartToken)
-                    .Stprop((EbnfGrammar g) => g.StartToken);
+                    .Dup()
+                    .Ldprop((EbnfGrammar g) => g.Symbols)
+                    .Ldc_I4(grammar.Start.Index)
+                    .Call((SymbolCollection coll, int index) => coll[index])
+                    .Stprop((EbnfGrammar g) => g.Start);
             }
 
             foreach (var production in grammar.Productions)

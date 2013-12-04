@@ -9,7 +9,7 @@ namespace IronText.Extensibility
 {
     public interface IParserDotItem
     {
-        Production Rule { get; }
+        Production Production { get; }
 
         int Position { get; }
 

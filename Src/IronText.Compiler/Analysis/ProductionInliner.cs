@@ -97,7 +97,7 @@ namespace IronText.Analysis
                 && (symbol.Productions.All(p => p.Size <= 1)
                     || 
                     symbol.Productions.All(
-                        p => p.PatternSymbols.All(
+                        p => p.Pattern.All(
                                 s => s.IsTerminal)));
         }
 
@@ -106,7 +106,7 @@ namespace IronText.Analysis
             int        inlinePosition)
         {
             var inlinedSymbol = grammar.Symbols[srcProduction.PatternTokens[inlinePosition]];
-            var oldPattern    = srcProduction.PatternSymbols;
+            var oldPattern    = srcProduction.Pattern;
 
             foreach (var inlinedProd in inlinedSymbol.Productions)
             {
@@ -123,7 +123,7 @@ namespace IronText.Analysis
                 // copy inline
                 for (int i = 0; i != inlinedProd.Size; ++i)
                 {
-                    newPattern[pos] = inlinedProd.PatternSymbols[i];
+                    newPattern[pos] = inlinedProd.Pattern[i];
                     ++pos;
                 }
 
@@ -134,7 +134,11 @@ namespace IronText.Analysis
                     ++pos;
                 }
 
-                var newProduction = new Production(srcProduction.OutcomeSymbol, newPattern);
+                var newProduction = new Production(srcProduction.Outcome, newPattern);
+                foreach (var action in srcProduction.Actions)
+                {
+                    newProduction.Actions.Add(action);
+                }
 
                 foreach (var action in srcProduction.Actions)
                 {

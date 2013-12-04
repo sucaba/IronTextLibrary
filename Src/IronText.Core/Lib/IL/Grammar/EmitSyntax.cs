@@ -320,6 +320,26 @@ namespace IronText.Lib.IL
             return emit .CallFromLambda(callExpr);
         }
 
+        public static EmitSyntax Call<R>(this EmitSyntax emit, Expression<Func<R>> callExpr)
+        {
+            return emit .CallFromLambda(callExpr);
+        }
+
+        public static EmitSyntax Call<T1,R>(this EmitSyntax emit, Expression<Func<T1,R>> callExpr)
+        {
+            return emit .CallFromLambda(callExpr);
+        }
+
+        public static EmitSyntax Call<T1,T2,R>(this EmitSyntax emit, Expression<Func<T1,T2,R>> callExpr)
+        {
+            return emit .CallFromLambda(callExpr);
+        }
+
+        public static EmitSyntax Call<T1,T2,T3,R>(this EmitSyntax emit, Expression<Func<T1,T2,T3,R>> callExpr)
+        {
+            return emit .CallFromLambda(callExpr);
+        }
+
         /// <summary>
         /// Create new object using default constructor of the specified type
         /// </summary>

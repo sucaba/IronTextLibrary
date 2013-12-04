@@ -17,7 +17,7 @@ namespace IronText.Extensibility
 
         void Bind(ILanguageMetadata parent, MemberInfo member);
 
-        IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, TokenCategory category);
+        IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category);
 
         IEnumerable<KeyValuePair<TokenRef,Precedence>> GetTokenPrecedence(ITokenPool tokenPool);
 

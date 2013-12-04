@@ -247,7 +247,7 @@ namespace IronText.MetadataCompiler
                 }
             }
 
-            grammar.StartToken = tokenResolver.GetId(definition.Start);
+            grammar.Start = tokenResolver.GetSymbol(definition.Start);
 
             ruleActionBuilders = new List<List<ProductionActionBuilder>> { null }; // first null is for the augumented start rule
 
@@ -322,7 +322,7 @@ namespace IronText.MetadataCompiler
 
                 foreach (var item in stateItems.Items)
                 {
-                    if (item.Pos == 0 || item.IsReduce)
+                    if (item.Position == 0 || item.IsReduce)
                     {
                         // Skip non-kernel, augmented (start rule) items and end-of-rule states
                         continue;
@@ -338,7 +338,7 @@ namespace IronText.MetadataCompiler
                         Debug.Assert(!parentRuleDef.Parts[0].IsLiteral);
                         Type contextTokenType = parentRuleDef.Parts[0].TokenType;
 
-                        TokenRef childToken = parentRuleDef.Parts[item.Pos];
+                        TokenRef childToken = parentRuleDef.Parts[item.Position];
 
                         foreach (ParseRule childRule in allParseRules)
                         {
@@ -358,7 +358,7 @@ namespace IronText.MetadataCompiler
                                 {
                                     ParentState = parentState,
                                     ContextTokenType = contextTokenType,
-                                    ContextLookbackPos = item.Pos,
+                                    ContextLookbackPos = item.Position,
                                     ChildType = childRule.InstanceDeclaringType
                                 };
 

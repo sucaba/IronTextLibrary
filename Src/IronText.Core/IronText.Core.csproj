@@ -148,7 +148,7 @@
     <Compile Include="Extensibility\Scanning\ScanRule.cs" />
     <Compile Include="Extensibility\SwitchRule.cs" />
     <Compile Include="Extensibility\TokenNaming.cs" />
-    <Compile Include="Framework\Attributes\TokenCategory.cs" />
+    <Compile Include="Framework\Attributes\SymbolCategory.cs" />
     <Compile Include="Framework\Attributes\TokenCategoryAttribute.cs" />
     <Compile Include="Framework\Attributes\Diagnostics\ParserGraphAttribute.cs" />
     <Compile Include="Framework\Attributes\Diagnostics\ScannerGraphAttribute.cs" />

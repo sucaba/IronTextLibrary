@@ -125,6 +125,7 @@ namespace CSharpParser
 
         [Literal(".")]
         public CsDot Dot() { return null; }
+
     #endregion
     }
 }

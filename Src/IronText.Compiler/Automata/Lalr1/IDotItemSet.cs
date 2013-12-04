@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using IronText.Compiler.Analysis;
 
 namespace IronText.Automata.Lalr1
 {

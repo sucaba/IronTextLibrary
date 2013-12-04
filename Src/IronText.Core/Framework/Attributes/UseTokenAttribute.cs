@@ -24,9 +24,9 @@ namespace IronText.Framework
 
         public string Text { get; set; }
 
-        public override IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, TokenCategory category)
+        public override IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category)
         {
-            if ((category & TokenCategory.ExplicitlyUsed) != TokenCategory.ExplicitlyUsed)
+            if ((category & SymbolCategory.ExplicitlyUsed) != SymbolCategory.ExplicitlyUsed)
             {
                 return Enumerable.Empty<TokenRef>();
             }

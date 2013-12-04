@@ -1,7 +1,7 @@
 ﻿
 namespace IronText.Framework
 {
-    public enum TokenCategory
+    public enum SymbolCategory
     {
         None            = 0x00,
 
@@ -11,9 +11,9 @@ namespace IronText.Framework
         DoNotDelete     = 0x08,
     }
 
-    public static class TokenCategoryExtensions
+    public static class SymbolCategoryExtensions
     {
-        public static bool Has(this TokenCategory self, TokenCategory flag)
+        public static bool Has(this SymbolCategory self, SymbolCategory flag)
         {
             return (self & flag) == flag;
         }

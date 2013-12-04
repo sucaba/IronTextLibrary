@@ -15,14 +15,14 @@ namespace IronText.Tests.Lib.IL.Generators
         public void Test()
         {
             var originalGrammar = new EbnfGrammar();
-            int red   = originalGrammar.Symbols.Add("red").Index;
-            int green = originalGrammar.Symbols.Add("green", TokenCategory.ExplicitlyUsed).Index;
-            int blue  = originalGrammar.Symbols.Add("blue").Index;
+            var red   = originalGrammar.Symbols.Add("red");
+            var green = originalGrammar.Symbols.Add("green", SymbolCategory.ExplicitlyUsed);
+            var blue  = originalGrammar.Symbols.Add("blue");
             originalGrammar.Productions.Add(red,  new[] { green, blue });
             originalGrammar.Productions.Add(blue, new[] { red, green });
-            originalGrammar.Productions.Add(blue, new int[0]);
+            originalGrammar.Productions.Add(blue, new Symbol[0]);
 
-            originalGrammar.StartToken = red;
+            originalGrammar.Start = red;
 
             GrammarSerializer target = new GrammarSerializer(originalGrammar);
             var factory = new CachedMethod<Func<EbnfGrammar>>("GrammarSerializerTest.Assembly0", (emit, args) => { target.Build(emit); return emit.Ret(); }).Delegate;

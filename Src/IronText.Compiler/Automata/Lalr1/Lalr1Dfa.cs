@@ -95,7 +95,7 @@ namespace IronText.Automata.Lalr1
             // symbol X to determine which lookaheads are spontaneously generated
             // for kernel items in GOTO(I, X), and from which items in I lookaheads
             // are propagated to kernel items in GOTO(I, X).
-            lr0states[0].KernelItems[0].Lookaheads.Add(EbnfGrammar.Eoi);
+            lr0states[0].KernelItems[0].LA.Add(EbnfGrammar.Eoi);
 
             var propogation = DetermineLookaheads(lr0states);
 
@@ -115,7 +115,7 @@ namespace IronText.Automata.Lalr1
                     foreach (var item in kernelSet)
                     {
                         List<Tuple<int, int, int>> propogatedItems;
-                        var itemId = Tuple.Create(from, item.ProductionId, item.Pos);
+                        var itemId = Tuple.Create(from, item.ProductionId, item.Position);
                         if (propogation.TryGetValue(itemId, out propogatedItems))
                         {
                             foreach (var propogatedItemId in propogatedItems)
@@ -123,13 +123,13 @@ namespace IronText.Automata.Lalr1
                                 var propogatedItem = lr0states[propogatedItemId.Item1].GetItem(propogatedItemId.Item2, propogatedItemId.Item3);
 
                                 // TODO: Optimize algorithm by introducing some modification timestamps on items
-                                if (!item.Lookaheads.IsSubsetOf(propogatedItem.Lookaheads))
+                                if (!item.LA.IsSubsetOf(propogatedItem.LA))
                                 {
 #if VERBOSE
                                     PrintPropogation(lr0states, itemId, propogatedItemId);
 #endif
 
-                                    propogatedItem.Lookaheads.AddAll(item.Lookaheads);
+                                    propogatedItem.LA.AddAll(item.LA);
                                     lookaheadsPropogated = true;
                                 }
                             }
@@ -180,7 +180,7 @@ namespace IronText.Automata.Lalr1
                         {
                             new DotItem(fromItem)
                             {
-                                Lookaheads = TokenSet.Of(EbnfGrammar.PropogatedToken).EditCopy()
+                                LA = TokenSet.Of(EbnfGrammar.PropogatedToken).EditCopy()
                             }
                         });
 
@@ -198,14 +198,14 @@ namespace IronText.Automata.Lalr1
                         var gotoX = gotoXstate == null ? -1 : gotoXstate.Index;
                         Debug.Assert(gotoX >= 0, "Internal error. Non-existing state.");
 
-                        var nextItemIds = Tuple.Create(gotoX, closedItem.ProductionId, closedItem.Pos + 1);
+                        var nextItemIds = Tuple.Create(gotoX, closedItem.ProductionId, closedItem.Position + 1);
 
-                        foreach (var lookahead in closedItem.Lookaheads)
+                        foreach (var lookahead in closedItem.LA)
                         {
                             if (lookahead == EbnfGrammar.PropogatedToken)
                             {
                                 List<Tuple<int, int, int>> propogatedItems;
-                                var key = Tuple.Create(from, fromItem.ProductionId, fromItem.Pos);
+                                var key = Tuple.Create(from, fromItem.ProductionId, fromItem.Position);
                                 if (!result.TryGetValue(key, out propogatedItems))
                                 {
                                     propogatedItems = new List<Tuple<int, int, int>>();
@@ -217,7 +217,7 @@ namespace IronText.Automata.Lalr1
                             else
                             {
                                 var nextItem = gotoXstate.GetItem(nextItemIds.Item2, nextItemIds.Item3);
-                                nextItem.Lookaheads.Add(lookahead);
+                                nextItem.LA.Add(lookahead);
                             }
                         }
                     }
@@ -241,7 +241,7 @@ namespace IronText.Automata.Lalr1
                 { 
                     new DotItem(grammar.AugmentedProduction, 0)
                     { 
-                        Lookaheads = TokenSet.Mutable() 
+                        LA = TokenSet.Mutable() 
                     }
                 });
             result.Add(new DotState(0, initialItemSet));
@@ -307,7 +307,7 @@ namespace IronText.Automata.Lalr1
             {
                 if (item.NextToken == token)
                 {
-                    result.Add(item.CreateNext());
+                    result.Add(item.CreateNextItem());
                 }
             }
 
@@ -339,7 +339,7 @@ namespace IronText.Automata.Lalr1
                         {
                             var newItem = new DotItem(childProd, 0)
                             { 
-                                Lookaheads = TokenSet.Mutable()
+                                LA = TokenSet.Mutable()
                             };
 
                             var index = result.IndexOf(newItem);
@@ -351,7 +351,7 @@ namespace IronText.Automata.Lalr1
                             else
                             {
                                 var existing = result[index];
-                                existing.Lookaheads.AddAll(newItem.Lookaheads);
+                                existing.LA.AddAll(newItem.LA);
                             }
                         }
                     }
@@ -394,24 +394,14 @@ namespace IronText.Automata.Lalr1
                                 int countBefore = 0;
                                 if (!modified)
                                 {
-                                    countBefore = toItem.Lookaheads.Count;
+                                    countBefore = toItem.LA.Count;
                                 }
 
-                                // TODO: Move outside of the loop. There is no childRule dependency 
-                                bool isNullable = grammar.AddFirst(
-                                                    fromItem.GetPattern(),
-                                                    fromItem.Pos + 1,
-                                                    toItem.Lookaheads);
-
-                                // For nullable rule's tail add also all lookahead tokens from the item
-                                if (isNullable)
-                                {
-                                    toItem.Lookaheads.AddAll(fromItem.Lookaheads);
-                                }
+                                grammar.AddFirst(fromItem.CreateNextItem(), toItem.LA);
 
                                 if (!modified)
                                 {
-                                    modified = toItem.Lookaheads.Count != countBefore;
+                                    modified = toItem.LA.Count != countBefore;
                                 }
                             }
                         }

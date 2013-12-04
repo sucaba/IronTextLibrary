@@ -45,17 +45,17 @@ namespace IronText.Framework
 
         public bool IsBeacon(int token)
         {
-            return grammar.Symbols[token].Categories.Has(TokenCategory.Beacon);
+            return grammar.Symbols[token].Categories.Has(SymbolCategory.Beacon);
         }
 
         public bool IsDontInsert(int token)
         {
-            return grammar.Symbols[token].Categories.Has(TokenCategory.DoNotInsert);
+            return grammar.Symbols[token].Categories.Has(SymbolCategory.DoNotInsert);
         }
 
         public bool IsDontDelete(int token)
         {
-            return grammar.Symbols[token].Categories.Has(TokenCategory.DoNotDelete);
+            return grammar.Symbols[token].Categories.Has(SymbolCategory.DoNotDelete);
         }
 
         public int SymbolCount 
@@ -68,7 +68,7 @@ namespace IronText.Framework
             return grammar.Symbols[token].Name;
         }
 
-        public TokenCategory GetTokenCategories(int token)
+        public SymbolCategory GetTokenCategories(int token)
         {
             return grammar.Symbols[token].Categories;
         }

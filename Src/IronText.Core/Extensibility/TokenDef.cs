@@ -11,7 +11,7 @@ namespace IronText.Extensibility
         public int Id { get { return Symbol == null ? -1 : Symbol.Index; } }
         public Symbol Symbol;
         public readonly HashSet<string> Literals = new HashSet<string>();
-        public TokenCategory Categories;
+        public SymbolCategory Categories;
 
         public Type TokenType { get; set; }
 

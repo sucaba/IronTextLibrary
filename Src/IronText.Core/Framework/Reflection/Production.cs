@@ -24,10 +24,10 @@ namespace IronText.Framework.Reflection
                 throw new ArgumentNullException("pattern");
             }
 
-            OutcomeSymbol  = outcome;
+            Outcome  = outcome;
             OutcomeToken   = outcome.Index;
-            PatternSymbols = pattern.ToArray();
-            PatternTokens  = Array.ConvertAll(PatternSymbols, s => s == null ? -1 : s.Index);
+            Pattern = pattern.ToArray();
+            PatternTokens  = Array.ConvertAll(Pattern, s => s == null ? -1 : s.Index);
 
             Actions = new ReferenceCollection<ProductionAction>();
         }
@@ -38,13 +38,13 @@ namespace IronText.Framework.Reflection
 
         public int Size { get { return PatternTokens.Length; } }
 
-        public bool IsStart { get { return Context.StartToken == OutcomeToken; } }
+        public bool IsStart { get { return Context.Start == Outcome; } }
 
         public bool IsAugmented { get { return EbnfGrammar.AugmentedStart == OutcomeToken; } }
 
-        public Symbol OutcomeSymbol { get; private set; }
+        public Symbol Outcome { get; private set; }
 
-        public Symbol[] PatternSymbols { get; private set; }
+        public Symbol[] Pattern { get; private set; }
 
         public Precedence ExplicitPrecedence { get; set; }
 
@@ -111,10 +111,10 @@ namespace IronText.Framework.Reflection
 
         public void Describe(int pos, TextWriter output)
         {
-            output.Write("{0} ->", OutcomeSymbol.Name);
+            output.Write("{0} ->", Outcome.Name);
 
             int i = 0;
-            foreach (var symbol in PatternSymbols)
+            foreach (var symbol in Pattern)
             {
                 if (pos == i)
                 {
@@ -134,9 +134,9 @@ namespace IronText.Framework.Reflection
 
         public void Describe(EbnfGrammar grammar, TextWriter output)
         {
-            output.Write("{0} ->", OutcomeSymbol.Name);
+            output.Write("{0} ->", Outcome.Name);
 
-            foreach (var symbol in PatternSymbols)
+            foreach (var symbol in Pattern)
             {
                 output.Write(" ");
                 output.Write(symbol.Name);
@@ -159,7 +159,7 @@ namespace IronText.Framework.Reflection
 
         public Production Clone()
         {
-            return new Production(OutcomeSymbol, (Symbol[])PatternSymbols.Clone())
+            return new Production(Outcome, (Symbol[])Pattern.Clone())
             {
                 ExplicitPrecedence = ExplicitPrecedence
             };
@@ -175,12 +175,12 @@ namespace IronText.Framework.Reflection
             if (symbol == null)
             {
                 PatternTokens[pattIndex]  = -1;
-                PatternSymbols[pattIndex] = null;
+                Pattern[pattIndex] = null;
             }
             else
             {
                 PatternTokens[pattIndex]  = symbol.Index;
-                PatternSymbols[pattIndex] = symbol;
+                Pattern[pattIndex] = symbol;
             }
         }
 
@@ -199,7 +199,7 @@ namespace IronText.Framework.Reflection
                 else
                 {
                     output
-                        .Append(OutcomeSymbol.Name)
+                        .Append(Outcome.Name)
                         .Append(" ->");
                     if (Size == 0)
                     {
@@ -207,7 +207,7 @@ namespace IronText.Framework.Reflection
                     }
                     else
                     {
-                        foreach (var symbol in PatternSymbols)
+                        foreach (var symbol in Pattern)
                         {
                             output.Append(" ").Append(symbol.Name);
                         }

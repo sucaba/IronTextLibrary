@@ -66,7 +66,7 @@ namespace IronText.Framework
             return result;
         }
 
-        public IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, TokenCategory category)
+        public IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category)
         {
             return Enumerable.Empty<TokenRef>();
         }
