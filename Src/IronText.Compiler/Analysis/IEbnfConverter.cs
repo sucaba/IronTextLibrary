@@ -8,11 +8,7 @@ namespace IronText.Analysis
 {
     interface IEbnfConverter
     {
-        SymbolBase Convert(SymbolBase source);
-
-        Symbol Convert(Symbol source);
-
-        AmbiguousSymbol Convert(AmbiguousSymbol source);
+        T Convert<T>(T source) where T : SymbolBase;
 
         Production Convert(Production source);
     }

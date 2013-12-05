@@ -16,9 +16,9 @@ namespace IronText.Analysis
             this.destination = destination;
         }
 
-        public SymbolBase Convert(SymbolBase source)
+        public T Convert<T>(T source) where T : SymbolBase
         {
-            SymbolBase result;
+            T result;
 
             if (source == null)
             {
@@ -34,25 +34,15 @@ namespace IronText.Analysis
             if (index < destination.Symbols.Count)
             {
                 // Symbol already exists
-                return destination.Symbols[index];
+                return (T)destination.Symbols[index];
             }
             else
             {
-                result = (SymbolBase)source.Clone();
+                result = (T)source.Clone();
                 destination.Symbols[index] = result;
             }
 
             return result;
-        }
-
-        public Symbol Convert(Symbol source)
-        {
-            return (Symbol)Convert((SymbolBase)source);
-        }
-
-        public AmbiguousSymbol Convert(AmbiguousSymbol source)
-        {
-            return (AmbiguousSymbol)Convert((SymbolBase)source);
         }
 
         public Production Convert(Production source)

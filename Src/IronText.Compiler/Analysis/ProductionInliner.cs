@@ -40,7 +40,6 @@ namespace IronText.Analysis
                 }
             }
 
-                                   
             var prodStack = new Stack<Tuple<int,Production>>(
                                 from p in grammar.Productions
                                 where !p.IsAugmented
