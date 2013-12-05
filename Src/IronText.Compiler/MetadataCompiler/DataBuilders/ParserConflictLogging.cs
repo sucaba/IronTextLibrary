@@ -131,7 +131,7 @@ namespace IronText.MetadataCompiler
                 output.Write(
                     string.Join(
                         ", ",
-                        from la in item.Lookaheads
+                        from la in item.LA
                         select data.Grammar.Symbols[la].Name));
                 output.Write("}");
             }

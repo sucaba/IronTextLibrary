@@ -13,6 +13,6 @@ namespace IronText.Extensibility
 
         int Position { get; }
 
-        IEnumerable<int> Lookaheads { get; }
+        IEnumerable<int> LA { get; }
     }
 }

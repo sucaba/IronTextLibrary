@@ -29,7 +29,12 @@ namespace IronText.Framework.Collections
             get { return indexToItem[index]; }
             set
             {
-                if (indexToItem[index] != null)
+                if (index >= indexToItem.Length)
+                {
+                    Array.Resize(ref indexToItem, index + 1);
+                    Count = index + 1;
+                }
+                else if (indexToItem[index] != null)
                 {
                     indexToItem[index].Detach(Context);
                 }
@@ -179,12 +184,12 @@ namespace IronText.Framework.Collections
             return this.GetEnumerator();
         }
 
-        void IOwner<T>.Own(T item)
+        void IOwner<T>.Acquire(T item)
         {
             Add(item);
         }
 
-        void IOwner<T>.Unown(T item)
+        void IOwner<T>.Release(T item)
         {
             Remove(item);
         }

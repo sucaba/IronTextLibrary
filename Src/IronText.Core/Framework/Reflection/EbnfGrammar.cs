@@ -9,6 +9,11 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
+    /// <summary>
+    /// TODO:
+    /// - Predefined entities should not be deletable.
+    /// - Organize API to avoid IsPredefined checks.
+    /// </summary>
     public sealed class EbnfGrammar : IEbnfContext
     {
         public const string UnnamedTokenName = "<unnamed token>";
@@ -69,11 +74,6 @@ namespace IronText.Framework.Reflection
         public ProductionCollection Productions { get { return productions; } }
 
         public Production AugmentedProduction { get; private set; }
-
-        public int StartToken
-        {
-            get { return AugmentedProduction.PatternTokens[0]; }
-        }
 
         public Symbol Start
         {

@@ -98,7 +98,7 @@ namespace IronText.Framework
                     output.Append("&bull;");
                 }
 
-                output.Append(" , ").Append(string.Join(" ", item.Lookaheads.Select(TokenToHtml)));
+                output.Append(" , ").Append(string.Join(" ", item.LA.Select(TokenToHtml)));
                 output.Append("</td> </tr>");
             }
 

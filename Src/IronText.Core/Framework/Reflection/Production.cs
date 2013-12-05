@@ -10,7 +10,7 @@ using IronText.Framework.Collections;
 namespace IronText.Framework.Reflection
 {
     [DebuggerDisplay("{DebugProductionText}")]
-    public sealed class Production : IndexableObject<IEbnfContext>, ICloneable
+    public sealed class Production : IndexableObject<IEbnfContext>
     {
         public Production(Symbol outcome, IEnumerable<Symbol> pattern)
         {
@@ -155,19 +155,6 @@ namespace IronText.Framework.Reflection
             Context.Symbols[OutcomeToken].Productions.Remove(this);
 
             base.DoDetaching();
-        }
-
-        public Production Clone()
-        {
-            return new Production(Outcome, (Symbol[])Pattern.Clone())
-            {
-                ExplicitPrecedence = ExplicitPrecedence
-            };
-        }
-
-        object ICloneable.Clone()
-        {
-            return Clone();
         }
 
         internal void SetAt(int pattIndex, Symbol symbol)

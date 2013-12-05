@@ -78,7 +78,7 @@ namespace IronText.Framework.Collections
         {
             if (owner != null)
             {
-                owner.Own(item);
+                owner.Acquire(item);
             }
         }
 

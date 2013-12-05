@@ -7,8 +7,8 @@ namespace IronText.Framework.Collections
 {
     public interface IOwner<T>
     {
-        void Own(T item);
+        void Acquire(T item);
 
-        void Unown(T item);
+        void Release(T item);
     }
 }

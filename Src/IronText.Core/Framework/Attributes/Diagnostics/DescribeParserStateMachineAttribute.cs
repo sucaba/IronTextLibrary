@@ -248,7 +248,7 @@ namespace IronText.Framework
             if (showLookaheads)
             {
                 output.Write("  |LA = {");
-                output.Write(string.Join(", ", (from la in item.Lookaheads select data.Grammar.Symbols[la].Name)));
+                output.Write(string.Join(", ", (from la in item.LA select data.Grammar.Symbols[la].Name)));
                 output.Write("}");
             }
 

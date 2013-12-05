@@ -21,37 +21,30 @@ namespace IronText.Analysis
         {
             var result = new EbnfGrammar();
 
+            IEbnfConverter converter = new IndexPreservingEbnfConverter(result);
+            var symbolsToInline = new HashSet<Symbol>();
+
             foreach (var srcSymbol in grammar.Symbols)
             {
-                if (srcSymbol.IsPredefined)
-                {
-                    continue;
-                }
+                // Ensure destSymbol exists
+                var destSymbol = converter.Convert(srcSymbol);
 
-                var destSymbol = (SymbolBase)srcSymbol.Clone();
-                result.Symbols.Add(destSymbol);
+                if (CanInline(srcSymbol as Symbol))
+                {
+                    symbolsToInline.Add((Symbol)destSymbol);
+                }
 
                 if (grammar.Start == srcSymbol)
                 {
                     result.Start = (Symbol)destSymbol;
                 }
-
-                Debug.Assert(
-                    destSymbol.Index == srcSymbol.Index,
-                    "Internal Error: copied symbol index does not match.");
             }
 
-            var symbolSetType = new BitSetType(grammar.Symbols.Count);
-
-            var tokensToInline = symbolSetType.Of(
-                                       from s in grammar.Symbols
-                                       where CanInline(s as Symbol)
-                                       select s.Index);
                                    
             var prodStack = new Stack<Tuple<int,Production>>(
                                 from p in grammar.Productions
                                 where !p.IsAugmented
-                                select Tuple.Create(0, p.Clone()));
+                                select Tuple.Create(0, converter.Convert(p)));
             
             while (prodStack.Count != 0)
             {
@@ -60,7 +53,7 @@ namespace IronText.Analysis
                 var prod = item.Item2;
                 if (pos == prod.Size)
                 {
-                    if (!tokensToInline.Contains(prod.OutcomeToken))
+                    if (!symbolsToInline.Contains(prod.Outcome))
                     {
                         result.Productions.Add(prod);
                     }
@@ -68,8 +61,8 @@ namespace IronText.Analysis
                     continue;
                 }
 
-                var token = prod.PatternTokens[pos];
-                if (!tokensToInline.Contains(token))
+                var symbol = prod.Pattern[pos];
+                if (!symbolsToInline.Contains(symbol))
                 {
                     prodStack.Push(Tuple.Create(pos + 1, prod));
                     continue;
@@ -110,7 +103,7 @@ namespace IronText.Analysis
 
             foreach (var inlinedProd in inlinedSymbol.Productions)
             {
-                var newPattern = new Symbol[oldPattern.Length - 1 + inlinedProd.PatternTokens.Length];
+                var newPattern = new Symbol[oldPattern.Length - 1 + inlinedProd.Pattern.Length];
 
                 int pos = 0;
 

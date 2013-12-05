@@ -88,6 +88,6 @@ namespace IronText.Compiler.Analysis
 
         int IParserDotItem.Position { get { return Position; } }
 
-        IEnumerable<int> IParserDotItem.Lookaheads { get { return LA; } }
+        IEnumerable<int> IParserDotItem.LA { get { return LA; } }
     }
 }
