@@ -9,16 +9,27 @@ namespace IronText.Framework.Reflection
 {
     public class ProductionAction : IndexableObject<IEbnfContext>, ICloneable
     {
-        public ProductionAction()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="start">Zero-based index relative to a production start</param>
+        /// <param name="argumentCount">Count of arguments consumed by the action</param>
+        public ProductionAction(int start, int argumentCount)
         {
-            this.Bindings = new Collection<IProductionActionBinding>();
+            this.Start         = start;
+            this.ArgumentCount = argumentCount;
+            this.Bindings      = new Collection<IProductionActionBinding>();
         }
+
+        public int Start { get; private set; }
+
+        public int ArgumentCount { get; private set; }
 
         public Collection<IProductionActionBinding> Bindings { get; private set; }
 
         public ProductionAction Clone()
         {
-            var result = new ProductionAction();
+            var result = new ProductionAction(Start, ArgumentCount);
             foreach (var binding in Bindings)
             {
                 result.Bindings.Add(binding);

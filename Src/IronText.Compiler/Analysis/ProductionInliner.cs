@@ -94,11 +94,11 @@ namespace IronText.Analysis
         }
 
         public IEnumerable<Production> Inline(
-            Production srcProduction,
+            Production parentProduction,
             int        inlinePosition)
         {
-            var inlinedSymbol = grammar.Symbols[srcProduction.PatternTokens[inlinePosition]];
-            var oldPattern    = srcProduction.Pattern;
+            var inlinedSymbol = grammar.Symbols[parentProduction.PatternTokens[inlinePosition]];
+            var oldPattern    = parentProduction.Pattern;
 
             foreach (var inlinedProd in inlinedSymbol.Productions)
             {
@@ -126,13 +126,8 @@ namespace IronText.Analysis
                     ++pos;
                 }
 
-                var newProduction = new Production(srcProduction.Outcome, newPattern);
-                foreach (var action in srcProduction.Actions)
-                {
-                    newProduction.Actions.Add(action);
-                }
-
-                foreach (var action in srcProduction.Actions)
+                var newProduction = new Production(parentProduction.Outcome, newPattern);
+                foreach (var action in parentProduction.Actions)
                 {
                     newProduction.Actions.Add(action.Clone());
                 }

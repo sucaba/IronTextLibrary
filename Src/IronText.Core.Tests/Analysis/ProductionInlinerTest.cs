@@ -45,7 +45,8 @@ namespace IronText.Tests.Analysis
 
             originalGrammar.Start = start;
 
-            originalGrammar.Productions.Add(start,  new[] { prefix, inlinedNonTerm, suffix });
+            var prod = originalGrammar.Productions.Add(start,  new[] { prefix, inlinedNonTerm, suffix });
+            prod.Actions.Add(new ProductionAction(0, 3));
         }
 
         [TearDown]
@@ -91,7 +92,7 @@ namespace IronText.Tests.Analysis
         public void NestedEpsilonIsInlined()
         {
             GivenInlinePatterns(new [] { nestedNonTerm });
-            originalGrammar.Productions.Add(nestedNonTerm, new Symbol[0]);
+            GivenNestedInlinePatterns(new Symbol[0]);
 
             WhenGrammarIsInlined();
 
@@ -102,7 +103,7 @@ namespace IronText.Tests.Analysis
         public void NestedUnaryIsInlined()
         {
             GivenInlinePatterns(new Symbol[] { nestedNonTerm });
-            originalGrammar.Productions.Add(nestedNonTerm, new[] { term4 });
+            GivenNestedInlinePatterns(new[] { term4 });
 
             WhenGrammarIsInlined();
 
@@ -113,17 +114,30 @@ namespace IronText.Tests.Analysis
         public void NestedMultitokenIsInlined()
         {
             GivenInlinePatterns(new [] { nestedNonTerm });
-            originalGrammar.Productions.Add(nestedNonTerm, new[] { term4, term5 });
+            GivenNestedInlinePatterns(new [] { term4, term5 });
 
             WhenGrammarIsInlined();
 
             AssertFlattenedProductionsPatternsAre(new[] { prefix, term4, term5, suffix });
         }
 
+        [Test]
+        public void InliningBuildAddsActions()
+        {
+        }
+
         private void WhenGrammarIsInlined()
         {
             IProductionInliner target = new ProductionInliner(originalGrammar);
             this.resultGrammar = target.Inline();
+        }
+
+        private void GivenNestedInlinePatterns(params Symbol[][] nestedInlinePatterns)
+        {
+            foreach (var pattern in nestedInlinePatterns)
+            {
+                originalGrammar.Productions.Add(nestedNonTerm, pattern);
+            }
         }
 
         private void GivenInlinePatterns(params Symbol[][] inlinePatterns)

@@ -263,7 +263,7 @@ namespace IronText.MetadataCompiler
                 {
                     ruleActionBuilders.Add(new List<ProductionActionBuilder>());
                     production.Actions.Add(
-                        new ProductionAction
+                        new ProductionAction(0, pattern.Length)
                         {
                             Bindings = {
                                 new CilProductionActionBinding(ruleDef.ActionBuilder)
