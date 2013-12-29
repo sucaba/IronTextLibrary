@@ -1,4 +1,7 @@
-﻿using IronText.Extensibility;
+﻿using System.Diagnostics;
+using System.Linq;
+using IronText.Extensibility;
+using IronText.Extensibility.Bindings.Cil;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 using IronText.Lib.IL;
@@ -91,7 +94,7 @@ namespace IronText.MetadataCompiler
 
             var defaultLabel = emit.Labels.Generate();
             var endWithSingleResultLabel = emit.Labels.Generate();
-            var jumpTable = new Ref<Labels>[data.RuleActionBuilders.Length];
+            var jumpTable = new Ref<Labels>[data.Grammar.Productions.Count];
             for (int i = 0; i != jumpTable.Length; ++i)
             {
                 jumpTable[i] = emit.Labels.Generate().GetRef();
@@ -102,25 +105,34 @@ namespace IronText.MetadataCompiler
                 .Switch(jumpTable)
                 .Br(defaultLabel.GetRef());
 
-            for (int i = 0; i != data.RuleActionBuilders.Length; ++i)
+            foreach (var prod in data.Grammar.Productions)
             {
-                emit.Label(jumpTable[i].Def);
-                if (data.RuleActionBuilders[i] != null)
+                Debug.Assert(prod != null);
+
+                emit.Label(jumpTable[prod.Index].Def);
+                if (prod.Actions.Count != 0)
                 {
                     bool first = true;
-                    foreach (var builder in data.RuleActionBuilders[i])
+                    foreach (var action in prod.Actions)
                     {
-                        if (first)
+                        foreach (var binding in action.Bindings)
                         {
-                            first = false;
-                        }
-                        else
-                        {
-                            // Result of this rule supersedes result of the prvious one
-                            code.Emit(il => il.Pop());
-                        }
+                            var cilBinding = binding as CilProductionActionBinding;
+                            if (cilBinding != null)
+                            {
+                                if (first)
+                                {
+                                    first = false;
+                                }
+                                else
+                                {
+                                    // Result of this rule supersedes result of the prvious one
+                                    code.Emit(il => il.Pop());
+                                }
 
-                        builder(code);
+                                cilBinding.Builder(code);
+                            }
+                        }
                     }
                 }
                 else

@@ -34,7 +34,6 @@ namespace IronText.MetadataCompiler
         internal ITokenRefResolver    TokenRefResolver; 
 
         // Rule ID -> ActionBuilder
-        public ProductionActionBuilder[][] RuleActionBuilders;
         public MergeRule[]            MergeRules;
         public SwitchRule[]           SwitchRules;
         public LocalParseContext[]    LocalParseContexts;

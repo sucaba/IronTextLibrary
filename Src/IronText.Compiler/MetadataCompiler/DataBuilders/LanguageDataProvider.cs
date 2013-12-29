@@ -55,8 +55,7 @@ namespace IronText.MetadataCompiler
 
             var tokenResolver = definition.TokenRefResolver;
 
-            List<List<ProductionActionBuilder>> ruleActionBuilders;
-            var grammar = BuildGrammar(definition, out ruleActionBuilders);
+            var grammar = BuildGrammar(definition);
             var grammarAnalysis = new EbnfGrammarAnalysis(grammar);
 
             foreach (SwitchRule switchRule in definition.SwitchRules)
@@ -120,7 +119,6 @@ namespace IronText.MetadataCompiler
             result.TokenRefResolver    = tokenResolver;
 
             result.LocalParseContexts  = localParseContexts.ToArray();
-            result.RuleActionBuilders  = ruleActionBuilders.Select(bs => bs == null ? null : bs.ToArray()).ToArray();
             result.MergeRules          = definition.MergeRules.ToArray();
             result.SwitchRules         = definition.SwitchRules.ToArray();
             result.ScanModes           = definition.ScanModes.ToArray();
@@ -224,11 +222,9 @@ namespace IronText.MetadataCompiler
             return true;
         }
 
-        private static EbnfGrammar BuildGrammar(
-            LanguageDefinition definition,
-            out List<List<ProductionActionBuilder>> ruleActionBuilders)
+        private static EbnfGrammar BuildGrammar(LanguageDefinition definition)
         {
-            var grammar = new EbnfGrammar();
+            var result = new EbnfGrammar();
 
             // Define grammar tokens
             var tokenResolver = definition.TokenRefResolver;
@@ -237,19 +233,17 @@ namespace IronText.MetadataCompiler
             {
                 if (def.TokenType == typeof(Exception))
                 {
-                    def.Symbol = (Symbol)grammar.Symbols[EbnfGrammar.Error];
+                    def.Symbol = (Symbol)result.Symbols[EbnfGrammar.Error];
                 }
                 else
                 {
                     var symbol = new Symbol(def.Name) { Categories = def.Categories };
-                    grammar.Symbols.Add(symbol);
+                    result.Symbols.Add(symbol);
                     def.Symbol = symbol;
                 }
             }
 
-            grammar.Start = tokenResolver.GetSymbol(definition.Start);
-
-            ruleActionBuilders = new List<List<ProductionActionBuilder>> { null }; // first null is for the augumented start rule
+            result.Start = tokenResolver.GetSymbol(definition.Start);
 
             // Define grammar rules
             foreach (var ruleDef in definition.ParseRules)
@@ -259,11 +253,10 @@ namespace IronText.MetadataCompiler
 
                 // Try to find existing rules whith same token-signature
                 Production production;
-                if (grammar.Productions.FindOrAdd(outcome, pattern, out production))
+                if (result.Productions.FindOrAdd(outcome, pattern, out production))
                 {
-                    ruleActionBuilders.Add(new List<ProductionActionBuilder>());
                     production.Actions.Add(
-                        new ProductionAction(0, pattern.Length)
+                        new ProductionAction(pattern.Length)
                         {
                             Bindings = {
                                 new CilProductionActionBinding(ruleDef.ActionBuilder)
@@ -275,14 +268,11 @@ namespace IronText.MetadataCompiler
                     // Note: Following adds action alternative as another
                     // binding such that stack reduction happens after all
                     // bindings are executed.  It would be mistake to do
-                    // Actions.Add(...) in this case because reduction happens
-                    // after each ProductionAction.
+                    // Actions.Add(...) in this case because semantical 
+                    // reduction happens after each ProductionAction.
                     production.Actions.First().Bindings.Add(
                         new CilProductionActionBinding(ruleDef.ActionBuilder));
                 }
-
-                // Each rule may have multiple action builders
-                ruleActionBuilders[production.Index].Add(ruleDef.ActionBuilder);
 
                 if (!AssignPrecedence(production, ruleDef.Precedence))
                 {
@@ -302,10 +292,10 @@ namespace IronText.MetadataCompiler
             foreach (KeyValuePair<TokenRef, Precedence> pair in definition.Precedence)
             {
                 int id = tokenResolver.GetId(pair.Key);
-                grammar.Symbols[id].Precedence = pair.Value;
+                result.Symbols[id].Precedence = pair.Value;
             }
 
-            return grammar;
+            return result;
         }
 
         private static List<LocalParseContext> CollectLocalContexts(
