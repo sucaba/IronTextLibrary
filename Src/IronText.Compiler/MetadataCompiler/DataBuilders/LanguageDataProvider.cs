@@ -255,12 +255,10 @@ namespace IronText.MetadataCompiler
                 Production production;
                 if (result.Productions.FindOrAdd(outcome, pattern, out production))
                 {
-                    production.Actions.Add(
+                    production.PlatformToAction.Set<CilPlatform>(
                         new ProductionAction(pattern.Length)
                         {
-                            Bindings = {
-                                new CilProductionActionBinding(ruleDef.ActionBuilder)
-                            }
+                            Bindings = { new CilProductionActionBinding(ruleDef.ActionBuilder) }
                         });
                 }
                 else
@@ -270,7 +268,7 @@ namespace IronText.MetadataCompiler
                     // bindings are executed.  It would be mistake to do
                     // Actions.Add(...) in this case because semantical 
                     // reduction happens after each ProductionAction.
-                    production.Actions.First().Bindings.Add(
+                    production.PlatformToAction.Get<CilPlatform>().Bindings.Add(
                         new CilProductionActionBinding(ruleDef.ActionBuilder));
                 }
 

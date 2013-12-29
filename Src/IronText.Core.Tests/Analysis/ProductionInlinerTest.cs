@@ -46,7 +46,7 @@ namespace IronText.Tests.Analysis
             originalGrammar.Start = start;
 
             var prod = originalGrammar.Productions.Add(start,  new[] { prefix, inlinedNonTerm, suffix });
-            prod.Actions.Add(new ProductionAction(0, 3));
+            prod.PlatformToAction.Set<TestPlatform>(new ProductionAction(0, 3));
         }
 
         [TearDown]
@@ -66,7 +66,28 @@ namespace IronText.Tests.Analysis
             WhenGrammarIsInlined();
 
             AssertFlattenedProductionsPatternsAre(new[] { prefix, suffix });
+            /*
+            AssertInlinedActionContainsSimpleActions(
+                new ProductionAction(2, 0),
+                new ProductionAction(3, 0));
+            */
         }
+
+#if false
+        private void AssertInlinedActionContainsSimpleActions(
+            params ProductionAction[] productionActions)
+        {
+            var prod = resultGrammar.Symbols[start.Index].Productions.Single();
+            int count = productionActions.Length;
+            for (int i = 0; i != count; ++i)
+            {
+                var expectedAction = productionActions[i];
+                ProductionAction gotAction = prod.Actions.First().Subactions[i];
+                Assert.AreEqual(expectedAction.BackOffset, gotAction.BackOffset);
+                Assert.AreEqual(expectedAction.ArgumentCount, gotAction.ArgumentCount);
+            }
+        }
+#endif
 
         [Test]
         public void UnaryTerminalIsInlined()
@@ -121,11 +142,6 @@ namespace IronText.Tests.Analysis
             AssertFlattenedProductionsPatternsAre(new[] { prefix, term4, term5, suffix });
         }
 
-        [Test]
-        public void InliningBuildAddsActions()
-        {
-        }
-
         private void WhenGrammarIsInlined()
         {
             IProductionInliner target = new ProductionInliner(originalGrammar);
@@ -169,5 +185,7 @@ namespace IronText.Tests.Analysis
             Assert.IsNotNull(resultGrammar.Start);
             Assert.AreEqual(originalGrammar.Start.Index, resultGrammar.Start.Index);
         }
+
+        interface TestPlatform { }
     }
 }

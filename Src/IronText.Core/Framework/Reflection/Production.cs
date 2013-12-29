@@ -29,7 +29,7 @@ namespace IronText.Framework.Reflection
             Pattern = pattern.ToArray();
             PatternTokens  = Array.ConvertAll(Pattern, s => s == null ? -1 : s.Index);
 
-            Actions = new ReferenceCollection<ProductionAction>();
+            PlatformToAction = new TypeMap<ProductionAction>();
         }
 
         public int    OutcomeToken    { get; private set; }
@@ -70,7 +70,7 @@ namespace IronText.Framework.Reflection
         /// when production is inlined there are multiple actions
         /// happing when this production being applied.
         /// </remarks>
-        public ReferenceCollection<ProductionAction> Actions { get; private set; }
+        public TypeMap<ProductionAction> PlatformToAction { get; private set; }
 
         public bool Equals(Production other)
         {

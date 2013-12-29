@@ -110,34 +110,34 @@ namespace IronText.MetadataCompiler
                 Debug.Assert(prod != null);
 
                 emit.Label(jumpTable[prod.Index].Def);
-                if (prod.Actions.Count != 0)
+                var action = prod.PlatformToAction.Get<CilPlatform>();
+                if (action != null && action.Bindings.Any())
                 {
                     bool first = true;
-                    foreach (var action in prod.Actions)
+                    foreach (var binding in action.Bindings)
                     {
-                        foreach (var binding in action.Bindings)
+                        var cilBinding = binding as CilProductionActionBinding;
+                        if (cilBinding != null)
                         {
-                            var cilBinding = binding as CilProductionActionBinding;
-                            if (cilBinding != null)
+                            if (first)
                             {
-                                if (first)
-                                {
-                                    first = false;
-                                }
-                                else
-                                {
-                                    // Result of this rule supersedes result of the prvious one
-                                    code.Emit(il => il.Pop());
-                                }
-
-                                cilBinding.Builder(code);
+                                first = false;
                             }
+                            else
+                            {
+                                // Result of this rule supersedes result of the prvious one
+                                code.Emit(il => il.Pop());
+                            }
+
+                            cilBinding.Builder(code);
                         }
                     }
                 }
                 else
                 {
                     // Augumented start rule has null action and should never be invoked.
+                    // Also it is possible that for some platforms production may have default
+                    // action.
                     emit.Ldnull();
                 }
 

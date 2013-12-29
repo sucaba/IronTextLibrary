@@ -127,9 +127,9 @@ namespace IronText.Analysis
                 }
 
                 var newProduction = new Production(parentProduction.Outcome, newPattern);
-                foreach (var action in parentProduction.Actions)
+                foreach (var platformToAction in parentProduction.PlatformToAction)
                 {
-                    newProduction.Actions.Add(action.Clone());
+                    newProduction.PlatformToAction.Set(platformToAction.Key, platformToAction.Value.Clone());
                 }
 
                 yield return newProduction;
