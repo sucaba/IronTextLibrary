@@ -110,7 +110,8 @@ namespace IronText.MetadataCompiler
                 Debug.Assert(prod != null);
 
                 emit.Label(jumpTable[prod.Index].Def);
-                var action = prod.PlatformToAction.Get<CilPlatform>();
+                // TODO: Support for CompositeProductionAction
+                var action = (SimpleProductionAction)prod.PlatformToAction.Get<CilPlatform>();
                 if (action != null && action.Bindings.Any())
                 {
                     bool first = true;

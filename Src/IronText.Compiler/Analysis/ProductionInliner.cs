@@ -129,11 +129,58 @@ namespace IronText.Analysis
                 var newProduction = new Production(parentProduction.Outcome, newPattern);
                 foreach (var platformToAction in parentProduction.PlatformToAction)
                 {
-                    newProduction.PlatformToAction.Set(platformToAction.Key, platformToAction.Value.Clone());
+                    Type platform = platformToAction.Key;
+                    newProduction.PlatformToAction.Set(
+                        platform, 
+                        InlineAction(
+                            platformToAction.Value,
+                            inlinedProd.PlatformToAction.Get(platform),
+                            inlinePosition));
                 }
 
                 yield return newProduction;
             }
+        }
+
+        private CompositeProductionAction InlineAction(
+            ProductionAction parentAction,
+            ProductionAction inlinedAction,
+            int              inlinePosition)
+        {
+            Debug.Assert(parentAction != null);
+            Debug.Assert(inlinedAction != null);
+
+            CompositeProductionAction result;
+            if (parentAction is CompositeProductionAction)
+            {
+                result = (CompositeProductionAction)parentAction.Clone();
+            }
+            else
+            {
+                result = new CompositeProductionAction();
+                result.Subactions.Add((SimpleProductionAction)parentAction.Clone());
+            }
+
+            IEnumerable<SimpleProductionAction> inlinedSubactions;
+            if (inlinedAction is CompositeProductionAction)
+            {
+                inlinedSubactions = ((CompositeProductionAction)inlinedAction).Subactions;
+            }
+            else
+            {
+                inlinedSubactions = new [] { (SimpleProductionAction)inlinedAction };
+            }
+
+            // Shift inlined actions and insert before all other subactions
+            int insertIndex = 0;
+            foreach (var subaction in inlinedSubactions)
+            {
+                var clone = new SimpleProductionAction(subaction.Offset + inlinePosition, subaction.ArgumentCount);
+                result.Subactions.Insert(insertIndex, clone);
+                ++insertIndex;
+            }
+
+            return result;
         }
     }
 }

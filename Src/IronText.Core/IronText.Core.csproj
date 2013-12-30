@@ -179,6 +179,7 @@
     <Compile Include="Collections\IIndexable.cs" />
     <Compile Include="Collections\IReferenceContainer.cs" />
     <Compile Include="Collections\IOwner.cs" />
+    <Compile Include="Framework\Reflection\CompositeProductionAction.cs" />
     <Compile Include="Framework\Reflection\IEbnfContext.cs" />
     <Compile Include="Framework\Reflection\NullableFirstTables.cs" />
     <Compile Include="Framework\Reflection\ProductionActionCollection.cs" />
@@ -186,6 +187,7 @@
     <Compile Include="Framework\Reflection\IProductionActionBinding.cs" />
     <Compile Include="Framework\Reflection\ProductionAction.cs" />
     <Compile Include="Framework\Reflection\ProductionCollection.cs" />
+    <Compile Include="Framework\Reflection\SimpleProductionAction.cs" />
     <Compile Include="Framework\Reflection\Symbol.cs" />
     <Compile Include="Framework\Reflection\SymbolBase.cs" />
     <Compile Include="Framework\Reflection\SymbolCollection.cs" />

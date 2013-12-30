@@ -256,7 +256,7 @@ namespace IronText.MetadataCompiler
                 if (result.Productions.FindOrAdd(outcome, pattern, out production))
                 {
                     production.PlatformToAction.Set<CilPlatform>(
-                        new ProductionAction(pattern.Length)
+                        new SimpleProductionAction(pattern.Length)
                         {
                             Bindings = { new CilProductionActionBinding(ruleDef.ActionBuilder) }
                         });
@@ -268,8 +268,8 @@ namespace IronText.MetadataCompiler
                     // bindings are executed.  It would be mistake to do
                     // Actions.Add(...) in this case because semantical 
                     // reduction happens after each ProductionAction.
-                    production.PlatformToAction.Get<CilPlatform>().Bindings.Add(
-                        new CilProductionActionBinding(ruleDef.ActionBuilder));
+                    var action = (SimpleProductionAction)production.PlatformToAction.Get<CilPlatform>();
+                    action.Bindings.Add(new CilProductionActionBinding(ruleDef.ActionBuilder));
                 }
 
                 if (!AssignPrecedence(production, ruleDef.Precedence))

@@ -46,7 +46,7 @@ namespace IronText.Tests.Analysis
             originalGrammar.Start = start;
 
             var prod = originalGrammar.Productions.Add(start,  new[] { prefix, inlinedNonTerm, suffix });
-            prod.PlatformToAction.Set<TestPlatform>(new ProductionAction(0, 3));
+            prod.PlatformToAction.Set<TestPlatform>(new SimpleProductionAction(0, 3));
         }
 
         [TearDown]
@@ -66,28 +66,11 @@ namespace IronText.Tests.Analysis
             WhenGrammarIsInlined();
 
             AssertFlattenedProductionsPatternsAre(new[] { prefix, suffix });
-            /*
-            AssertInlinedActionContainsSimpleActions(
-                new ProductionAction(2, 0),
-                new ProductionAction(3, 0));
-            */
-        }
 
-#if false
-        private void AssertInlinedActionContainsSimpleActions(
-            params ProductionAction[] productionActions)
-        {
-            var prod = resultGrammar.Symbols[start.Index].Productions.Single();
-            int count = productionActions.Length;
-            for (int i = 0; i != count; ++i)
-            {
-                var expectedAction = productionActions[i];
-                ProductionAction gotAction = prod.Actions.First().Subactions[i];
-                Assert.AreEqual(expectedAction.BackOffset, gotAction.BackOffset);
-                Assert.AreEqual(expectedAction.ArgumentCount, gotAction.ArgumentCount);
-            }
+            AssertInlinedActionContainsSimpleActions(
+                new SimpleProductionAction(1, 0),
+                new SimpleProductionAction(0, 3));
         }
-#endif
 
         [Test]
         public void UnaryTerminalIsInlined()
@@ -97,6 +80,10 @@ namespace IronText.Tests.Analysis
             WhenGrammarIsInlined();
 
             AssertFlattenedProductionsPatternsAre(new[] { prefix, term1, suffix });
+
+            AssertInlinedActionContainsSimpleActions(
+                new SimpleProductionAction(1, 1),
+                new SimpleProductionAction(0, 3));
         }
 
         [Test]
@@ -107,6 +94,10 @@ namespace IronText.Tests.Analysis
             WhenGrammarIsInlined();
 
             AssertFlattenedProductionsPatternsAre(new[] { prefix, term1, term2, term3, suffix });
+
+            AssertInlinedActionContainsSimpleActions(
+                new SimpleProductionAction(1, 3),
+                new SimpleProductionAction(0, 3));
         }
 
         [Test]
@@ -118,6 +109,11 @@ namespace IronText.Tests.Analysis
             WhenGrammarIsInlined();
 
             AssertFlattenedProductionsPatternsAre(new[] { prefix, suffix });
+
+            AssertInlinedActionContainsSimpleActions(
+                new SimpleProductionAction(1, 0),
+                new SimpleProductionAction(1, 1),
+                new SimpleProductionAction(0, 3));
         }
 
         [Test]
@@ -129,6 +125,11 @@ namespace IronText.Tests.Analysis
             WhenGrammarIsInlined();
 
             AssertFlattenedProductionsPatternsAre(new[] { prefix, term4, suffix });
+
+            AssertInlinedActionContainsSimpleActions(
+                new SimpleProductionAction(1, 1),
+                new SimpleProductionAction(1, 1),
+                new SimpleProductionAction(0, 3));
         }
 
         [Test]
@@ -140,6 +141,11 @@ namespace IronText.Tests.Analysis
             WhenGrammarIsInlined();
 
             AssertFlattenedProductionsPatternsAre(new[] { prefix, term4, term5, suffix });
+
+            AssertInlinedActionContainsSimpleActions(
+                new SimpleProductionAction(1, 2),
+                new SimpleProductionAction(1, 1),
+                new SimpleProductionAction(0, 3));
         }
 
         private void WhenGrammarIsInlined()
@@ -152,7 +158,9 @@ namespace IronText.Tests.Analysis
         {
             foreach (var pattern in nestedInlinePatterns)
             {
-                originalGrammar.Productions.Add(nestedNonTerm, pattern);
+                var prod = originalGrammar.Productions.Add(nestedNonTerm, pattern);
+                prod.PlatformToAction.Set<TestPlatform>(
+                    new SimpleProductionAction(pattern.Length));
             }
         }
 
@@ -160,7 +168,9 @@ namespace IronText.Tests.Analysis
         {
             foreach (var pattern in inlinePatterns)
             {
-                originalGrammar.Productions.Add(inlinedNonTerm, pattern);
+                var prod = originalGrammar.Productions.Add(inlinedNonTerm, pattern);
+                prod.PlatformToAction.Set<TestPlatform>(
+                    new SimpleProductionAction(pattern.Length));
             }
         }
 
@@ -178,6 +188,29 @@ namespace IronText.Tests.Analysis
                 expectedFlattenedPatterns,
                 resultGrammar.Symbols[start.Index].Productions.Select(p => p.Pattern).ToArray(),
                 "Flattened patterns should have correct inlines.");
+        }
+
+        private void AssertInlinedActionContainsSimpleActions(
+            params SimpleProductionAction[] productionActions)
+        {
+            var prod = resultGrammar.Symbols[start.Index].Productions.Single();
+            ProductionAction gotAction = prod.PlatformToAction.Get<TestPlatform>();
+            Assert.IsInstanceOf<CompositeProductionAction>(gotAction);
+            var composite = (CompositeProductionAction)gotAction;
+
+            int count = productionActions.Length;
+            Assert.AreEqual(count, composite.Subactions.Count);
+
+            for (int i = 0; i != count; ++i)
+            {
+                string context = "#" + i;
+
+                var expectedAction = productionActions[i];
+                var gotSubaction   = composite.Subactions[i]; 
+
+                Assert.AreEqual(expectedAction.Offset, gotSubaction.Offset, context);
+                Assert.AreEqual(expectedAction.ArgumentCount, gotSubaction.ArgumentCount, context);
+            }
         }
 
         private void AssertGrammarStartIsPreserved()
