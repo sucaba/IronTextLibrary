@@ -46,11 +46,6 @@ namespace IronText.Extensibility
             return Enumerable.Empty<MergeRule>();
         }
 
-        public virtual IEnumerable<SwitchRule> GetSwitchRules(IEnumerable<TokenRef> tokens, ITokenPool tokenPool)
-        {
-            return Enumerable.Empty<SwitchRule>();
-        }
-
         public virtual IEnumerable<IScanRule> GetScanRules(ITokenPool tokenPool)
         {
             return Enumerable.Empty<IScanRule>();

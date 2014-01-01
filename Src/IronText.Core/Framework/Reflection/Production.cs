@@ -147,12 +147,12 @@ namespace IronText.Framework.Reflection
         {
             base.DoAttached();
 
-            Context.Symbols[OutcomeToken].Productions.Add(this);
+            Outcome.Productions.Add(this);
         }
 
         protected override void DoDetaching()
         {
-            Context.Symbols[OutcomeToken].Productions.Remove(this);
+            Outcome.Productions.Remove(this);
 
             base.DoDetaching();
         }

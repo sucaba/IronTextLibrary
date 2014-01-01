@@ -106,11 +106,6 @@ namespace IronText.Framework
             yield break;
         }
 
-        public IEnumerable<SwitchRule> GetSwitchRules(IEnumerable<TokenRef> token, ITokenPool tokenPool)
-        {
-            return Enumerable.Empty<SwitchRule>();
-        }
-
         public virtual IEnumerable<ReportBuilder> GetReportBuilders()
         {
             return Enumerable.Empty<ReportBuilder>();

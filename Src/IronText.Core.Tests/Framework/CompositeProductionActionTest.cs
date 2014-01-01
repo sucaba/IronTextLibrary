@@ -11,7 +11,7 @@ namespace IronText.Tests.Framework
     public class CompositeProductionActionTest
     {
         [Test]
-        public void InliningBuildAddsActions()
+        public void HasCorrectArgumentCountTest()
         {
             var target = new CompositeProductionAction();
             // [A B C D E]

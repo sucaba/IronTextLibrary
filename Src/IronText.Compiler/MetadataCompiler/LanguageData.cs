@@ -35,7 +35,6 @@ namespace IronText.MetadataCompiler
 
         // Rule ID -> ActionBuilder
         public MergeRule[]            MergeRules;
-        public SwitchRule[]           SwitchRules;
         public LocalParseContext[]    LocalParseContexts;
         
         public ScanMode[]             ScanModes;

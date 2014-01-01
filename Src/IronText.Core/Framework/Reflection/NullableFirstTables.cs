@@ -74,11 +74,11 @@ namespace IronText.Framework.Reflection
             // Init FIRST using rules without recursion in first part
             foreach (var prod in grammar.Productions)
             {
-                if (prod.PatternTokens.Length == 0)
+                if (prod.Pattern.Length == 0)
                 {
                     firsts[prod.OutcomeToken].Add(EbnfGrammar.EpsilonToken);
                 }
-                else if (grammar.Symbols[prod.PatternTokens[0]].IsTerminal)
+                else if (prod.Pattern[0].IsTerminal)
                 {
                     firsts[prod.OutcomeToken].Add(prod.PatternTokens[0]);
                 }

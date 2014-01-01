@@ -34,6 +34,10 @@ namespace IronText.Framework.Collections
                     Array.Resize(ref indexToItem, index + 1);
                     Count = index + 1;
                 }
+                else if (index >= Count)
+                {
+                    Count = index + 1;
+                }
                 else if (indexToItem[index] != null)
                 {
                     indexToItem[index].Detach(Context);

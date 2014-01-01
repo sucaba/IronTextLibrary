@@ -14,6 +14,7 @@ using IronText.Framework.Reflection;
 using IronText.Extensibility.Bindings.Cil;
 using IronText.Compiler;
 using IronText.Compiler.Analysis;
+using IronText.Analysis;
 
 namespace IronText.MetadataCompiler
 {
@@ -56,15 +57,9 @@ namespace IronText.MetadataCompiler
             var tokenResolver = definition.TokenRefResolver;
 
             var grammar = BuildGrammar(definition);
+//            var inliner = new ProductionInliner(grammar);
+//            grammar = inliner.Inline();
             var grammarAnalysis = new EbnfGrammarAnalysis(grammar);
-
-            foreach (SwitchRule switchRule in definition.SwitchRules)
-            {
-                if (null == tokenResolver.Resolve(switchRule.Tid))
-                {
-                    throw new InvalidOperationException("No token identity");
-                }
-            }
 
             if (!bootstrap)
             {
@@ -120,7 +115,6 @@ namespace IronText.MetadataCompiler
 
             result.LocalParseContexts  = localParseContexts.ToArray();
             result.MergeRules          = definition.MergeRules.ToArray();
-            result.SwitchRules         = definition.SwitchRules.ToArray();
             result.ScanModes           = definition.ScanModes.ToArray();
 
             if (!bootstrap)

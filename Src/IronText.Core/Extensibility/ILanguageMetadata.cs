@@ -25,8 +25,6 @@ namespace IronText.Extensibility
 
         IEnumerable<MergeRule> GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool);
 
-        IEnumerable<SwitchRule> GetSwitchRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool);
-
         IEnumerable<IScanRule> GetScanRules(ITokenPool tokenPool);
 
         IEnumerable<Type> GetContextTypes();

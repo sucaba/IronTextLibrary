@@ -12,7 +12,6 @@ namespace IronText.MetadataCompiler
         private readonly List<ILanguageMetadata> allMetadata;
         private readonly List<ParseRule>      allParseRules;
         private readonly List<ScanMode>       allScanModes;
-        private readonly List<SwitchRule>     allSwitchRules;
         private readonly List<KeyValuePair<TokenRef,Precedence>> precedence;
 
         private readonly MergeRule[] allMergeRules;
@@ -34,7 +33,6 @@ namespace IronText.MetadataCompiler
 
             this.TokenRefResolver = new TokenRefResolver();
 
-            this.allSwitchRules = new List<SwitchRule>();
             this.Start = tokenPool.AugmentedStart;
 
 
@@ -86,27 +84,7 @@ namespace IronText.MetadataCompiler
                     .SelectMany(meta => meta.GetMergeRules(collector.AllTokens, this))
                     .ToArray();
 
-            var terminalsAndExternals = collector.AllTokens.Except(allParseRules.Select(r => r.Left).Distinct()).ToArray();
-
-            var terminals = terminalsAndExternals.Where(
-                                token =>
-                                {
-                                    if (token.IsExternal)
-                                    {
-                                        var tokens = new [] { token };
-                                        var switchRules = allMetadata.SelectMany(meta => meta.GetSwitchRules(tokens, this)).ToArray();
-                                        if (switchRules.Length != 0)
-                                        {
-                                            allSwitchRules.AddRange(switchRules);
-                                            return false;
-                                        }
-                                    }
-
-                                    return true;
-                                })
-                                // Because predicate has side-effects converting to array avoids 
-                                // multiple invocations of predicate.
-                                .ToArray();
+            var terminals = collector.AllTokens.Except(allParseRules.Select(r => r.Left).Distinct()).ToArray();
 
             var scanDataCollector = new ScanDataCollector(terminals, this, logging);
             scanDataCollector.AddScanMode(startType);
@@ -191,8 +169,6 @@ namespace IronText.MetadataCompiler
         public IList<MergeRule> MergeRules { get { return allMergeRules; } }
 
         public IList<ScanMode> ScanModes { get { return allScanModes; } }
-
-        public IList<SwitchRule> SwitchRules { get { return allSwitchRules; } }
 
         public IList<Type> ContextTypes { get; private set; }
 

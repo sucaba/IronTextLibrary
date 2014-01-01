@@ -22,7 +22,6 @@ namespace IronText.MetadataCompiler
         private readonly List<ILanguageMetadata> validMetadata   = new List<ILanguageMetadata>();
         private readonly List<ILanguageMetadata> invalidMetadata = new List<ILanguageMetadata>();
         private readonly List<ParseRule>         allParseRules   = new List<ParseRule>();
-        private readonly List<SwitchRule>        allSwitchRules  = new List<SwitchRule>();
         private readonly List<TokenRef>          allTokens       = new List<TokenRef>();
 
         private readonly ITokenPool              tokenPool;
@@ -97,16 +96,6 @@ namespace IronText.MetadataCompiler
             }
 
             this.AddToken(parseRule.Left);
-        }
-
-        public void AddSwitchRule(SwitchRule switchRule)
-        {
-            if (this.allSwitchRules.Contains(switchRule))
-            {
-                return;
-            }
-
-            allSwitchRules.Add(switchRule);
         }
 
         public void AddToken(TokenRef token)

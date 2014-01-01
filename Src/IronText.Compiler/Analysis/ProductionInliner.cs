@@ -89,8 +89,7 @@ namespace IronText.Analysis
                 && (symbol.Productions.All(p => p.Size <= 1)
                     || 
                     symbol.Productions.All(
-                        p => p.Pattern.All(
-                                s => s.IsTerminal)));
+                        p => p.Pattern.All(s => s.IsTerminal)));
         }
 
         public IEnumerable<Production> Inline(

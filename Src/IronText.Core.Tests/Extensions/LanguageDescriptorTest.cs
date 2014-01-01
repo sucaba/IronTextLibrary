@@ -68,11 +68,6 @@ namespace IronText.Tests.Extensibility
                 return Enumerable.Empty<Type>();
             }
 
-            public IEnumerable<SwitchRule> GetSwitchRules(IEnumerable<TokenRef> token, ITokenPool tokenPool)
-            {
-                return Enumerable.Empty<SwitchRule>();
-            }
-
             IEnumerable<KeyValuePair<TokenRef,Precedence>> ILanguageMetadata.GetTokenPrecedence(ITokenPool tokenPool)
             {
                 return Enumerable.Empty<KeyValuePair<TokenRef,Precedence>>();
