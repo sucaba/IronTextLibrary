@@ -181,11 +181,16 @@
     <Compile Include="Framework\Reflection\CompositeProductionAction.cs" />
     <Compile Include="Framework\Reflection\IEbnfContext.cs" />
     <Compile Include="Framework\Reflection\NullableFirstTables.cs" />
+    <Compile Include="Framework\Reflection\PlatformBindings\IScanConditionBinding.cs" />
     <Compile Include="Framework\Reflection\ProductionActionCollection.cs" />
     <Compile Include="Framework\Reflection\InlineProduction.cs" />
-    <Compile Include="Framework\Reflection\IProductionActionBinding.cs" />
+    <Compile Include="Framework\Reflection\PlatformBindings\IProductionActionBinding.cs" />
     <Compile Include="Framework\Reflection\ProductionAction.cs" />
     <Compile Include="Framework\Reflection\ProductionCollection.cs" />
+    <Compile Include="Framework\Reflection\ScanCondition.cs" />
+    <Compile Include="Framework\Reflection\ScanConditionCollection.cs" />
+    <Compile Include="Framework\Reflection\ScanProduction.cs" />
+    <Compile Include="Framework\Reflection\ScanProductionCollection.cs" />
     <Compile Include="Framework\Reflection\SimpleProductionAction.cs" />
     <Compile Include="Framework\Reflection\Symbol.cs" />
     <Compile Include="Framework\Reflection\SymbolBase.cs" />

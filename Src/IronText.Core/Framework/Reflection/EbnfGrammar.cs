@@ -44,16 +44,20 @@ namespace IronText.Framework.Reflection
         private readonly ProductionCollection       productions;
         private readonly ProductionActionCollection productionActions;
         private readonly SymbolCollection           symbols;
+        private readonly ScanConditionCollection    scanConditions;
+        private readonly ScanProductionCollection   scanProductions;
 
         public EbnfGrammar()
         {
             productions       = new ProductionCollection(this);
             productionActions = new ProductionActionCollection(this);
             symbols           = new SymbolCollection(this);
+            scanConditions    = new ScanConditionCollection(this);
+            scanProductions   = new ScanProductionCollection(this);
 
             for (int i = PredefinedSymbolCount; i != 0; --i)
             {
-                Symbols.Add(new Symbol("")); // stub
+                Symbols.Add(null); // stub
             }
 
             Symbols[PropogatedToken] = new Symbol("#");
@@ -69,11 +73,15 @@ namespace IronText.Framework.Reflection
             AugmentedProduction = Productions.Add((Symbol)Symbols[AugmentedStart], new Symbol[] { null });
         }
 
+        public Production AugmentedProduction { get; private set; }
+
         public SymbolCollection Symbols { get { return symbols; } }
 
         public ProductionCollection Productions { get { return productions; } }
 
-        public Production AugmentedProduction { get; private set; }
+        public ScanConditionCollection ScanConditions { get { return scanConditions; } }
+
+        public ScanProductionCollection ScanProducitons { get { return scanProductions; } }
 
         public Symbol Start
         {

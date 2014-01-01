@@ -16,8 +16,6 @@ namespace IronText.Extensibility
 
         public abstract IEnumerable<TokenRef[]> GetTokenRefGroups();
 
-        bool IScanRule.IsSortable { get {  return LiteralText != null; } }
-
         public string Pattern { get; set; }
 
         public string LiteralText { get; set; }
@@ -38,11 +36,6 @@ namespace IronText.Extensibility
 
         // for sorting
         internal int Priority { get; set; }
-
-        public static int ComparePriority(IScanRule x, IScanRule y)
-        {
-            return x.Index - y.Index;
-        }
 
         public override string ToString()
         {
