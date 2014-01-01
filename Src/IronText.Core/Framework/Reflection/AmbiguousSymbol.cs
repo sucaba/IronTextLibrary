@@ -22,6 +22,12 @@ namespace IronText.Framework.Reflection
             this.Tokens    = new ReadOnlyCollection<int>(tokens.ToArray());
         }
 
+        public AmbiguousSymbol(Symbol main, Symbol[] symbols)
+        {
+            this.MainToken = main == null ? -1 : main.Index;
+            this.Tokens    = new ReadOnlyCollection<int>((from s in symbols select s.Index).ToArray());
+        }
+
         /// <summary>
         /// The most probable mandatory token ID 
         /// or <c>-1</c> if there is no main token.

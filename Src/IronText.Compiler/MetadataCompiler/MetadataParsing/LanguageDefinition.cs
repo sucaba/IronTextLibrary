@@ -160,7 +160,7 @@ namespace IronText.MetadataCompiler
 
         public ReportBuilder[] ReportBuilders { get; private set; }
 
-        public TokenRefResolver TokenRefResolver { get; private set; }
+        public ITokenRefResolver TokenRefResolver { get; private set; }
 
         public IEnumerable<KeyValuePair<TokenRef,Precedence>> Precedence { get { return precedence; } }
 

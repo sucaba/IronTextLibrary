@@ -14,5 +14,7 @@ namespace IronText.Extensibility
         int GetId(TokenRef tokenRef);
 
         void Link(params TokenRef[] tokenRefs);
+
+        bool Contains(TokenRef tokenRef);
     }
 }

@@ -10,7 +10,7 @@ namespace IronText.Extensibility
 {
     public class ScanMode
     {
-        internal readonly List<IScanRule> scanRules = new List<IScanRule>();
+        private readonly List<IScanRule> scanRules = new List<IScanRule>();
         private int implicitRulesCount = 0;
 
         internal ScanMode(Type scanModeType)

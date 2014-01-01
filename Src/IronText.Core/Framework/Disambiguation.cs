@@ -11,6 +11,8 @@ namespace IronText.Framework
     /// </summary>
     public enum Disambiguation
     {
+        Undefined = 0,
+
         /// <summary>
         /// Alternative has priority over other non-exclusive alternatives.
         /// </summary>

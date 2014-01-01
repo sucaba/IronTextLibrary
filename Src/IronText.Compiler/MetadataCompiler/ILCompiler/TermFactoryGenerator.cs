@@ -47,7 +47,7 @@ namespace IronText.MetadataCompiler
             int ruleCount = scanModes.Sum(mode => mode.ScanRules.Count);
 #if DEBUG
             int[] ruleIndexes = scanModes
-                                    .SelectMany(mode => mode.scanRules)
+                                    .SelectMany(mode => mode.ScanRules)
                                     .Select(r => r.Index)
                                     .ToArray();
 #endif

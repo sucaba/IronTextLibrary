@@ -19,7 +19,8 @@ namespace IronText.Framework.Reflection
         {
             this.Name = name ?? EbnfGrammar.UnnamedTokenName;
 
-            this.productions = new ReferenceCollection<Production>();
+            this.productions    = new ReferenceCollection<Production>();
+            this.Bindings       = new Collection<ISymbolBinding>();
         }
 
         public bool IsAugmentedStart { get { return EbnfGrammar.AugmentedStart == Index; } }
@@ -46,6 +47,8 @@ namespace IronText.Framework.Reflection
         public override Precedence Precedence { get; set; }
 
         public override ReferenceCollection<Production> Productions { get { return productions; } }
+
+        public Collection<ISymbolBinding> Bindings { get; private set; }
 
         public override bool Equals(object obj)
         {

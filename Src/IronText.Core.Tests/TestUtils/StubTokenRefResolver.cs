@@ -31,5 +31,10 @@ namespace IronText.Tests.TestUtils
         {
             get { throw new NotImplementedException(); }
         }
+
+        public bool Contains(TokenRef tokenRef)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

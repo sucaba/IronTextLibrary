@@ -167,7 +167,7 @@ namespace IronText.MetadataCompiler
                 scanModeTypeToDfa[mode.ScanModeType] = tdfaData;
 
                 // For each action store information about produced tokens
-                foreach (var scanRule in mode.scanRules)
+                foreach (var scanRule in mode.ScanRules)
                 {
                     scanAmbiguityResolver.RegisterAction(
                         scanRule.Index,
@@ -276,18 +276,79 @@ namespace IronText.MetadataCompiler
                 ruleDef.Index = production.Index;
             }
 
-            foreach (var mergeRule in definition.MergeRules)
-            {
-                mergeRule.TokenId = tokenResolver.GetId(mergeRule.Token);
-            }
-
             foreach (KeyValuePair<TokenRef, Precedence> pair in definition.Precedence)
             {
                 int id = tokenResolver.GetId(pair.Key);
                 result.Symbols[id].Precedence = pair.Value;
             }
 
+            foreach (var scanMode in definition.ScanModes)
+            {
+                var condition = new ScanCondition();
+                result.ScanConditions.Add(condition);
+
+                foreach (var scanRule in scanMode.ScanRules)
+                {
+                    int mainToken = tokenResolver.GetId(scanRule.MainTokenRef);
+                    int[] tokens = scanRule
+                            .GetTokenRefGroups()
+                            .Select(trs => tokenResolver.GetId(trs[0]))
+                            .ToArray();
+
+                    SymbolBase outcome = GetResultSymbol(result, tokenResolver, scanRule.MainTokenRef, scanRule.GetTokenRefGroups());
+
+                    var asSingleToken = scanRule as ISingleTokenScanRule;
+                    ScanPattern pattern;
+                    if (asSingleToken != null && asSingleToken.LiteralText != null)
+                    {
+                        pattern = ScanPattern.CreateLiteral(asSingleToken.LiteralText);
+                    }
+                    else
+                    {
+                        pattern = ScanPattern.CreateRegular(scanRule.Pattern);
+                    }
+
+                    var scanProduction = new ScanProduction(pattern, outcome);
+                    condition.ScanProducitons.Add(scanProduction);
+                }
+            }
+
+            foreach (var mergeRule in definition.MergeRules)
+            {
+                int token = tokenResolver.GetId(mergeRule.Token);
+                mergeRule.TokenId = token;
+
+                var merger = new Merger((Symbol)result.Symbols[token]);
+                merger.Bindings.Add(new CilMergerBinding { Builder = mergeRule.ActionBuilder });
+                
+                result.Mergers.Add(merger);
+            }
+
             return result;
+        }
+
+        private static SymbolBase GetResultSymbol(
+            EbnfGrammar             grammar,
+            ITokenRefResolver       tokenResolver,
+            TokenRef                mainTokenRef,
+            IEnumerable<TokenRef[]> tokenRefGroups)
+        {
+            Symbol main = tokenResolver.GetSymbol(mainTokenRef);
+            Symbol[] other = (from g in tokenRefGroups
+                             select tokenResolver.GetSymbol(g[0]))
+                             .ToArray();
+
+            if (other.Length == 0)
+            {
+                return null;
+            }
+
+            if (other.Length == 1)
+            {
+                return main;
+            }
+
+            return new AmbiguousSymbol(main, other);
         }
 
         private static List<LocalParseContext> CollectLocalContexts(

@@ -6,10 +6,10 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public class ScanProductionCollection : IndexedCollection<ScanProduction,IEbnfContext>
+    public class ScanProductionCollection : IndexedCollection<ScanProduction,IScanConditionContext>
     {
-        public ScanProductionCollection(EbnfGrammar ebnfGrammar)
-            : base(ebnfGrammar)
+        public ScanProductionCollection(IScanConditionContext context)
+            : base(context)
         {
         }
     }

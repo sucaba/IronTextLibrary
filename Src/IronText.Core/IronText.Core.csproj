@@ -114,6 +114,7 @@
     <Compile Include="Diagnostics\GvGraphView.cs" />
     <Compile Include="Diagnostics\IGraphView.cs" />
     <Compile Include="Build\IDerivedBuilderMetadata.cs" />
+    <Compile Include="Extensibility\Bindings\Cil\CilMergerBinding.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilPlatform.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilProductionActionBinding.cs" />
     <Compile Include="Extensibility\Reporting\CharRange.cs" />
@@ -180,6 +181,11 @@
     <Compile Include="Collections\IOwner.cs" />
     <Compile Include="Framework\Reflection\CompositeProductionAction.cs" />
     <Compile Include="Framework\Reflection\IEbnfContext.cs" />
+    <Compile Include="Framework\Reflection\IScanConditionContext.cs" />
+    <Compile Include="Framework\Reflection\Merger.cs" />
+    <Compile Include="Framework\Reflection\MergerCollection.cs" />
+    <Compile Include="Framework\Reflection\PlatformBindings\IMergerBinding.cs" />
+    <Compile Include="Framework\Reflection\PlatformBindings\ISymbolBinding.cs" />
     <Compile Include="Framework\Reflection\NullableFirstTables.cs" />
     <Compile Include="Framework\Reflection\PlatformBindings\IScanConditionBinding.cs" />
     <Compile Include="Framework\Reflection\ProductionActionCollection.cs" />
@@ -189,6 +195,7 @@
     <Compile Include="Framework\Reflection\ProductionCollection.cs" />
     <Compile Include="Framework\Reflection\ScanCondition.cs" />
     <Compile Include="Framework\Reflection\ScanConditionCollection.cs" />
+    <Compile Include="Framework\Reflection\ScanPattern.cs" />
     <Compile Include="Framework\Reflection\ScanProduction.cs" />
     <Compile Include="Framework\Reflection\ScanProductionCollection.cs" />
     <Compile Include="Framework\Reflection\SimpleProductionAction.cs" />
