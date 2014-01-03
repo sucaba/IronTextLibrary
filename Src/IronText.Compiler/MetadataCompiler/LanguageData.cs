@@ -37,7 +37,6 @@ namespace IronText.MetadataCompiler
         public MergeRule[]            MergeRules;
         public LocalParseContext[]    LocalParseContexts;
         
-        public ScanMode[]             ScanModes;
         public Dictionary<Type, ITdfaData>  ScanModeTypeToDfa;
         public IIntMap<int>           AmbTokenToMainToken;
 
@@ -47,11 +46,6 @@ namespace IronText.MetadataCompiler
         public ParserConflictInfo[]   ParserConflicts;
 
         string IReportData.DestinationDirectory { get { return Name.SourceAssemblyDirectory; } }
-
-        ReadOnlyCollection<ScanMode> IReportData.ScanModes
-        {
-            get { return new ReadOnlyCollection<ScanMode>(ScanModes); }
-        }
 
         IScannerAutomata IReportData.GetScanModeDfa(Type scanModeType)
         {

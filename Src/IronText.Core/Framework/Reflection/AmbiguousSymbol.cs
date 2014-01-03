@@ -58,5 +58,31 @@ namespace IronText.Framework.Reflection
         {
             return new AmbiguousSymbol(MainToken, Tokens);
         }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+
+            builder.Append("{");
+
+            bool first = true;
+            foreach (var token in Tokens)
+            {
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    builder.Append("|");
+                }
+
+                builder.Append(Context.Symbols[token]);
+            }
+
+            builder.Append("}");
+
+            return builder.ToString();
+        }
     }
 }

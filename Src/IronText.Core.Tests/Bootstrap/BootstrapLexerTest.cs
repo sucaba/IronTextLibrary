@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using IronText.Extensibility;
+using IronText.Extensibility.Bindings.Cil;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 using IronText.Lib.Ctem;
 using IronText.MetadataCompiler;
 using IronText.Tests.TestUtils;
@@ -14,54 +16,75 @@ namespace IronText.Tests.Bootstrap
         [Test]
         public void Test()
         {
-            var scanRules = new ScanRule[]
-                {
-                    new SkipScanRule
-                    {
-                        //TokenId = -1,
-                        BootstrapRegexPattern = @"[ \t]+",
-                    },
-                    new SingleTokenScanRule
-                    {
-                        //TokenId = 0,
-                        BootstrapRegexPattern = @"[0-9]+(?:[.][0-9]+)? | [.][0-9]+",
-                        TokenType = typeof(Num)
-                    },
-                    new SingleTokenScanRule
-                    {
-                        //TokenId = 1,
-                        BootstrapRegexPattern = @"[a-zA-Z:.!@#$%^&|?*/+*=\\_-][a-zA-Z:\d.!@#$%^&|?*/+*=\\_-]*",
-                        TokenType = typeof(string)
-                    },
-                    new SingleTokenScanRule
-                    {
-                        //TokenId = 2,
-                        BootstrapRegexPattern = @"[""](?: \\[""] | [^""])* [""]",
-                        TokenType = typeof(QStr)
-                    },
-                    new SingleTokenScanRule
-                    {
-                        //TokenId = 3,
-                        LiteralText    = "(",
-                        BootstrapRegexPattern = @"\("
-                    },
-                    new SingleTokenScanRule
-                    {
-                        //TokenId = 4,
-                        LiteralText    = ")",
-                        BootstrapRegexPattern = @"\)"
-                    }
-                };
-            for (int i = 0; i != scanRules.Length; ++i)
+            var lParen = new Symbol("(");
+            var rParen = new Symbol(")");
+            var num    = new Symbol("NUM");
+            var ident  = new Symbol("ID");
+            var qStr   = new Symbol("QSTR");
+
+            var grammar = new EbnfGrammar
             {
-                ((IScanRule)scanRules[i]).Index = i;
-            }
+                Symbols = { 
+                    lParen,
+                    rParen,
+                    num,
+                    ident,
+                    qStr
+                },
+
+                ScanConditions =
+                {
+                    new ScanCondition("main")
+                    {
+                        ScanProductions = 
+                        {
+                            new ScanProduction(
+                                    ScanPattern.CreateRegular(
+                                        null,
+                                        @"[ \t]+"))
+                            {
+                                PlatformToBinding = {{ typeof(CilPlatform), new CilScanProductionBinding(typeof(void)) }}
+                            },
+                            new ScanProduction(
+                                    ScanPattern.CreateRegular(
+                                        null,
+                                        @"[0-9]+(?:[.][0-9]+)? | [.][0-9]+"), 
+                                    num)
+                            {
+                                PlatformToBinding = {{ typeof(CilPlatform), new CilScanProductionBinding(typeof(Num)) }}
+                            },
+                            new ScanProduction(
+                                    ScanPattern.CreateRegular(
+                                        null,
+                                        @"[a-zA-Z:.!@#$%^&|?*/+*=\\_-][a-zA-Z:\d.!@#$%^&|?*/+*=\\_-]*"),
+                                    ident)
+                            {
+                                PlatformToBinding = {{ typeof(CilPlatform), new CilScanProductionBinding(typeof(string)) }}
+                            },
+                            new ScanProduction(
+                                    ScanPattern.CreateRegular(
+                                        null,
+                                        @"[""](?: \\[""] | [^""])* [""]"),
+                                    qStr)
+                            {
+                                PlatformToBinding = {{ typeof(CilPlatform), new CilScanProductionBinding(typeof(QStr)) }}
+                            },
+                            new ScanProduction(
+                                    ScanPattern.CreateLiteral("("),
+                                    lParen),
+                            new ScanProduction(
+                                    ScanPattern.CreateLiteral(")"),
+                                    rParen),
+                        }
+                    }
+                }
+            };
 
             var target = new BootstrapScanner(
                 " (1 (\"bar\" +))",
                 ScannerDescriptor.FromScanRules(
                     GetType().Name + "_Lexer",
-                    scanRules,
+                    grammar.ScanConditions[0].ScanProductions,
                     ExceptionLogging.Instance),
                 null,
                 new StubTokenRefResolver(),

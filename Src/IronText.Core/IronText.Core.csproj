@@ -117,6 +117,8 @@
     <Compile Include="Extensibility\Bindings\Cil\CilMergerBinding.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilPlatform.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilProductionActionBinding.cs" />
+    <Compile Include="Extensibility\Bindings\Cil\CilScanConditionBinding.cs" />
+    <Compile Include="Extensibility\Bindings\Cil\CilScanProductionBinding.cs" />
     <Compile Include="Extensibility\Reporting\CharRange.cs" />
     <Compile Include="Extensibility\Reporting\IParserAutomata.cs" />
     <Compile Include="Extensibility\Reporting\IParserDotItem.cs" />
@@ -185,6 +187,7 @@
     <Compile Include="Framework\Reflection\Merger.cs" />
     <Compile Include="Framework\Reflection\MergerCollection.cs" />
     <Compile Include="Framework\Reflection\PlatformBindings\IMergerBinding.cs" />
+    <Compile Include="Framework\Reflection\PlatformBindings\IScanProductionBinding.cs" />
     <Compile Include="Framework\Reflection\PlatformBindings\ISymbolBinding.cs" />
     <Compile Include="Framework\Reflection\NullableFirstTables.cs" />
     <Compile Include="Framework\Reflection\PlatformBindings\IScanConditionBinding.cs" />

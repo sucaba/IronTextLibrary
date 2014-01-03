@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using IronText.Extensibility;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 using IronText.Lib.Ctem;
 using IronText.MetadataCompiler;
 using IronText.Tests.TestUtils;
@@ -14,56 +15,65 @@ namespace IronText.Tests.Algorithm
         [Test]
         public void Test()
         {
-            var scanRules = new ScanRule[]
-                {
-                    new SkipScanRule
-                    {
-                        Pattern = @"blank+",
-                    },
-                    new SingleTokenScanRule
-                    {
-                        Pattern = @"digit+ ('.' digit+)?  | '.' digit+",
-                        TokenType = typeof(Num)
-                    },
-                    new SingleTokenScanRule
-                    {
-                        Pattern = @"(alpha | [:.!@#$%^&|?*/+*=\\_-])
-                                       (alnum | [:.!@#$%^&|?*/+*=\\_-])*",
-                        TokenType = typeof(string)
-                    },
-                    new SingleTokenScanRule
-                    {
-                        Pattern = "'\"' ('\\\\\"' | ~'\"')* '\"'",
-                        TokenType = typeof(QStr)
-                    },
-                    new SingleTokenScanRule
-                    {
-                        LiteralText    = "(",
-                        Pattern = @"'('",
-                    },
-                    new SingleTokenScanRule
-                    {
-                        LiteralText    = ")",
-                        Pattern = @"')'"
-                    }
-                };
-            
-            for (int i = 0; i != scanRules.Length; ++i)
+            var lParen = new Symbol("(");
+            var rParen = new Symbol(")");
+            var num    = new Symbol("NUM");
+            var ident  = new Symbol("ID");
+            var qStr   = new Symbol("QSTR");
+
+            var grammar = new EbnfGrammar
             {
-                ((IScanRule)scanRules[i]).Index = i;
-            }
-            
+                Symbols = 
+                { 
+                    lParen,
+                    rParen,
+                    num,
+                    ident,
+                    qStr
+                },
+
+                ScanConditions =
+                {
+                    new ScanCondition("main")
+                    {
+                        ScanProductions = 
+                        {
+                            new ScanProduction(
+                                    @"blank+"),
+                            new ScanProduction(
+                                    @"digit+ ('.' digit+)?  | '.' digit+", 
+                                    num),
+                            new ScanProduction(
+                                    @"(alpha | [:.!@#$%^&|?*/+*=\\_-]) (alnum | [:.!@#$%^&|?*/+*=\\_-])*",
+                                    ident),
+                            new ScanProduction(
+                                    "'\"' ('\\\\\"' | ~'\"')* '\"'",
+                                    qStr),
+                            new ScanProduction(
+                                    ScanPattern.CreateLiteral("("),
+                                    lParen),
+                            new ScanProduction(
+                                    ScanPattern.CreateLiteral(")"),
+                                    rParen),
+                        }
+                    }
+                }
+            };
+           
             var target = new DfaSimulationLexer(
                 " (1 (\"bar\" +))",
                 ScannerDescriptor.FromScanRules(
                     GetType().Name + "_Lexer",
-                    scanRules,
+                    grammar.ScanConditions[0].ScanProductions,
                     ExceptionLogging.Instance));
 
             var collector = new Collector<Msg>();
             target.Accept(collector);
             Assert.AreEqual(
-                new object[] { null, new Num("1"), null, new QStr("bar"), "+", null, null },
+                new int[] { lParen.Index, num.Index, lParen.Index, qStr.Index, ident.Index, rParen.Index, rParen.Index },
+                collector.Select(msg => msg.Id).ToArray());
+            Assert.AreEqual(
+                new object[] { "(", "1", "(", "\"bar\"", "+", ")", ")" },
                 collector.Select(msg => msg.Value).ToArray());
         }
     }

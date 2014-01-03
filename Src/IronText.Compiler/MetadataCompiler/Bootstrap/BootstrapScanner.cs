@@ -6,7 +6,9 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using IronText.Extensibility;
+using IronText.Extensibility.Bindings.Cil;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 
 namespace IronText.MetadataCompiler
 {
@@ -49,25 +51,25 @@ namespace IronText.MetadataCompiler
             this.tokenRefResolver = tokenRefResolver;
             this.logging = logging;
 
-            var pattern = @"\G(?:" + string.Join("|", descriptor.Rules.Select(rule => "(" + GetPattern(rule) + ")")) + ")";
+            var pattern = @"\G(?:" + string.Join("|", descriptor.Productions.Select(scanProd => "(" + GetPattern(scanProd) + ")")) + ")";
             this.regex = new Regex(pattern, RegexOptions.IgnorePatternWhitespace);
             this.text = textSource.ReadToEnd();
 
-            int count = descriptor.Rules.Count;
+            int count = descriptor.Productions.Count;
             this.tokenFactories = new TokenFactoryDelegate[count];
 
             for (int i = 0; i != count; ++i)
             {
-                if (!(descriptor.Rules[i] is ISkipScanRule))
+                if (descriptor.Productions[i].Outcome != null)
                 {
-                    tokenFactories[i] = BuildTokenFactory((ISingleTokenScanRule)descriptor.Rules[i]);
+                    tokenFactories[i] = BuildTokenFactory(descriptor.Productions[i]);
                 }
             }
         }
 
-        private static string GetPattern(IScanRule rule)
+        private static string GetPattern(ScanProduction production)
         {
-            return ((IBootstrapScanRule)rule).BootstrapRegexPattern;
+            return production.Pattern.BootstrapRegexPattern;
         }
 
         public IReceiver<Msg> Accept(IReceiver<Msg> visitor)
@@ -77,7 +79,6 @@ namespace IronText.MetadataCompiler
 
         private IEnumerable<Msg> Tokenize()
         {
-            object term = null;
             int currentPos = 0;
 
             if (text.Length != 0)
@@ -90,22 +91,20 @@ namespace IronText.MetadataCompiler
                     int termIndex = Enumerable
                                     .Range(1, match.Groups.Count)
                                     .First(i => match.Groups[i].Success) - 1;
-                    var rule = descriptor.Rules[termIndex];
-
-
-                    if (rule is ISingleTokenScanRule)
+                    var production = descriptor.Productions[termIndex];
+                    if (production.Outcome == null)
                     {
-                        var singleTokenRule = (ISingleTokenScanRule)rule;
-
-                        term = tokenFactories[termIndex](match.Value, this.rootContext);
-
-                        int tokenId = tokenRefResolver.GetId(singleTokenRule.AnyTokenRef);
-                        yield return
-                            new Msg(
-                                tokenId,
-                                term,
-                                new Loc(Loc.MemoryString, match.Index, match.Length));
+                        continue;
                     }
+
+                    object termValue = tokenFactories[termIndex](match.Value, this.rootContext);
+                    int    tokenId = production.Outcome.Index;
+
+                    yield return
+                        new Msg(
+                            tokenId,
+                            termValue,
+                            new Loc(Loc.MemoryString, match.Index, match.Length));
 
                     if (currentPos == text.Length)
                     {
@@ -125,10 +124,8 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        private static TokenFactoryDelegate BuildTokenFactory(ISingleTokenScanRule scanRule)
+        private static TokenFactoryDelegate BuildTokenFactory(ScanProduction scanProduction)
         {
-            Type type = scanRule.TokenType;
-
             var method = new DynamicMethod(
                                 "Create",
                                 typeof(object), 
@@ -137,34 +134,45 @@ namespace IronText.MetadataCompiler
 
             var il = method.GetILGenerator(256);
 
-            MethodInfo parseMethod = GetStaticParseMethod(type);
-            if (parseMethod != null)
-            {
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Call, parseMethod);
-            }
-            else if (scanRule.LiteralText != null)
+            if (scanProduction.Pattern.IsLiteral)
             {
                 il.Emit(OpCodes.Ldnull);
             }
-            else if (type == typeof(string))
-            {
-                il.Emit(OpCodes.Ldarg_0);
-            }
             else
             {
-                ConstructorInfo constructor = null;
-                Type[] paramTypes = SelectConstructor(type, ref constructor);
-                if (paramTypes.Length > 0)
+                var binding = (CilScanProductionBinding)scanProduction.PlatformToBinding.Get<CilPlatform>();
+                if (binding == null)
                 {
-                    il.Emit(OpCodes.Ldarg_0);
-                    if (paramTypes.Length > 1)
-                    {
-                        il.Emit(OpCodes.Ldnull);
-                    }
+                    throw new InvalidOperationException("ScanProduction is missing CIL platform binding.");
                 }
 
-                il.Emit(OpCodes.Newobj, constructor);
+                Type type = binding.ResultTokenType;
+
+                MethodInfo parseMethod = GetStaticParseMethod(type);
+                if (parseMethod != null)
+                {
+                    il.Emit(OpCodes.Ldarg_0);
+                    il.Emit(OpCodes.Call, parseMethod);
+                }
+                else if (type == typeof(string))
+                {
+                    il.Emit(OpCodes.Ldarg_0);
+                }
+                else
+                {
+                    ConstructorInfo constructor = null;
+                    Type[] paramTypes = SelectConstructor(type, ref constructor);
+                    if (paramTypes.Length > 0)
+                    {
+                        il.Emit(OpCodes.Ldarg_0);
+                        if (paramTypes.Length > 1)
+                        {
+                            il.Emit(OpCodes.Ldnull);
+                        }
+                    }
+
+                    il.Emit(OpCodes.Newobj, constructor);
+                }
             }
 
             il.Emit(OpCodes.Ret);

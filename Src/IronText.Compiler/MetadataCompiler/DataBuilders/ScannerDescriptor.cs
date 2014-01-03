@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.Text;
 using IronText.Automata.Regular;
 using IronText.Extensibility;
+using IronText.Extensibility.Bindings.Cil;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 using IronText.Lib.RegularAst;
 using IronText.Lib.ScannerExpressions;
 
@@ -16,21 +18,21 @@ namespace IronText.MetadataCompiler
 
         public static ScannerDescriptor FromScanRules(
             string name,
-            IEnumerable<IScanRule> rules,
+            IEnumerable<ScanProduction> scanProductions,
             ILogging logging)
         {
-            CheckAllRulesHaveIndex(rules);
+            CheckAllRulesHaveIndex(scanProductions);
 
             var result = new ScannerDescriptor(name, logging);
-            foreach (var rule in rules)
+            foreach (var scanProduction in scanProductions)
             {
-                result.AddRule(rule);
+                result.AddRule(scanProduction);
             }
 
             return result;
         }
 
-        private readonly List<IScanRule> rules = new List<IScanRule>();
+        private readonly List<ScanProduction> productions = new List<ScanProduction>();
 
         public ScannerDescriptor(string name, ILogging logging) 
         { 
@@ -40,9 +42,9 @@ namespace IronText.MetadataCompiler
 
         public string Name { get; set; }
 
-        public ReadOnlyCollection<IScanRule> Rules { get { return rules.AsReadOnly(); } }
+        public ReadOnlyCollection<ScanProduction> Productions { get { return productions.AsReadOnly(); } }
 
-        public void AddRule(IScanRule rule) { rules.Add(rule); }
+        public void AddRule(ScanProduction production) { productions.Add(production); }
 
         public AstNode MakeAst()
         {
@@ -53,19 +55,16 @@ namespace IronText.MetadataCompiler
         {
             var descriptor = this;
 
-            var alternatives = new AstNode[descriptor.Rules.Count];
+            var alternatives = new AstNode[descriptor.Productions.Count];
             var pattern = new StringBuilder(128);
 
             pattern.Append("(");
             bool first = true;
-            foreach (var scanRule in descriptor.Rules)
+            foreach (var scanRule in descriptor.Productions)
             {
-                var asSingleTokenRule = scanRule as ISingleTokenScanRule;
-                if (asSingleTokenRule != null 
-                    && literalToAction != null 
-                    && asSingleTokenRule.LiteralText != null)
+                if (literalToAction != null && scanRule.Pattern.IsLiteral)
                 {
-                    literalToAction.Add(asSingleTokenRule.LiteralText, scanRule.Index);
+                    literalToAction.Add(scanRule.Pattern.Literal, scanRule.Index);
                     continue;
                 }
 
@@ -80,7 +79,7 @@ namespace IronText.MetadataCompiler
 
                 pattern
                     .Append("( ")
-                        .Append(scanRule.Pattern)
+                        .Append(scanRule.Pattern.Pattern)
                     .Append(" )")
                         .Append(' ')
                     .Append("action(").Append(scanRule.Index).Append(")");
@@ -110,13 +109,13 @@ namespace IronText.MetadataCompiler
                 return true;
             }
 
-            foreach (var scanRule in Rules)
+            foreach (var scanProduction in Productions)
             {
-                var asSingleTokenRule = scanRule as ISingleTokenScanRule;
+                var binding = (CilScanProductionBinding)scanProduction.PlatformToBinding.Get<CilPlatform>();
 
-                if (asSingleTokenRule != null && asSingleTokenRule.LiteralText != null)
+                if (scanProduction.Pattern.Literal != null)
                 {
-                    if (asSingleTokenRule.LiteralText == "")
+                    if (scanProduction.Pattern.Literal == "")
                     {
                         logging.Write(
                             new LogEntry
@@ -124,14 +123,14 @@ namespace IronText.MetadataCompiler
                                 Severity = Severity.Error,
                                 Message = string.Format(
                                             "Literal cannot be empty string.",
-                                            scanRule),
-                                Member = asSingleTokenRule.DefiningMember
+                                            scanProduction),
+                                Member = binding.DefiningMethod
                             });
                     }
                 }
                 else
                 {
-                    var ast = GetAst(scanRule.Pattern);
+                    var ast = GetAst(scanProduction.Pattern.Pattern);
                     if (IsNullable(ast))
                     {
                         logging.Write(
@@ -140,8 +139,8 @@ namespace IronText.MetadataCompiler
                                 Severity = Severity.Error,
                                 Message = string.Format(
                                             "Scan pattern cannot match empty string.",
-                                            scanRule),
-                                Member = scanRule.DefiningMember
+                                            scanProduction),
+                                Member = binding.DefiningMethod
                             });
                     }
                 }
@@ -172,13 +171,13 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        private static void CheckAllRulesHaveIndex(IEnumerable<IScanRule> rules)
+        private static void CheckAllRulesHaveIndex(IEnumerable<ScanProduction> scanProductions)
         {
-            foreach (var rule in rules)
+            foreach (var scanProduction in scanProductions)
             {
-                if (rule.Index < 0)
+                if (scanProduction.Index < 0)
                 {
-                    throw new ArgumentException("Rule " + rule + " has no index.", "rules");
+                    throw new ArgumentException("Rule " + scanProduction + " has no index.", "rules");
                 }
             }
         }

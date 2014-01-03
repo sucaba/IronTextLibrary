@@ -59,19 +59,22 @@ namespace IronText.MetadataCompiler
             var grammar = BuildGrammar(definition);
 //            var inliner = new ProductionInliner(grammar);
 //            grammar = inliner.Inline();
-            var grammarAnalysis = new EbnfGrammarAnalysis(grammar);
 
             if (!bootstrap)
             {
-                if (!BuildScanner(definition, grammarAnalysis, tokenResolver, result))
+                var conditionTypeToDfa = CompileScannerTdfas(grammar);
+                if (conditionTypeToDfa == null)
                 {
                     return false;
                 }
+                
+                result.ScanModeTypeToDfa = conditionTypeToDfa;
             }
 
             // Build parsing tables
             ILrDfa parserDfa = null;
 
+            var grammarAnalysis = new EbnfGrammarAnalysis(grammar);
             WithTimeLogging(
                 () =>
                 {
@@ -115,7 +118,6 @@ namespace IronText.MetadataCompiler
 
             result.LocalParseContexts  = localParseContexts.ToArray();
             result.MergeRules          = definition.MergeRules.ToArray();
-            result.ScanModes           = definition.ScanModes.ToArray();
 
             if (!bootstrap)
             {
@@ -128,28 +130,23 @@ namespace IronText.MetadataCompiler
             return true;
         }
 
-        private bool BuildScanner(
-            LanguageDefinition  definition,
-            EbnfGrammarAnalysis grammar,
-            ITokenRefResolver   tokenResolver,
-            LanguageData        result)
+        private Dictionary<Type, ITdfaData> CompileScannerTdfas(EbnfGrammar grammar)
         {
-            var scanModeTypeToDfa = new Dictionary<Type, ITdfaData>();
+            var result = new Dictionary<Type,ITdfaData>();
 
-            int actionCount = definition.ScanModes.Sum(m => m.ScanRules.Count);
+            var tokenSet = new BitSetType(grammar.Symbols.Count);
+
             IScanAmbiguityResolver scanAmbiguityResolver
-                                    = new ScanAmbiguityResolver(
-                                            grammar.TokenSet,
-                                            actionCount);
+                                = new ScanAmbiguityResolver(
+                                        tokenSet,
+                                        grammar.ScanProductions.Count);
 
-            int firstScanAction = 0;
-
-            foreach (ScanMode mode in definition.ScanModes)
+            foreach (var condition in grammar.ScanConditions)
             {
-                int count = mode.ScanRules.Count;
+                var conditionBinding = condition.Bindings.OfType<CilScanConditionBinding>().Single();
 
                 ITdfaData tdfaData;
-                if (!BuildScanModeDfa(logging, mode, out tdfaData))
+                if (!CompileTdfa(logging, condition, out tdfaData))
                 {
                     logging.Write(
                         new LogEntry
@@ -161,22 +158,15 @@ namespace IronText.MetadataCompiler
                                         languageName.DefinitionType)
                         });
 
-                    return false;
+                    return null;
                 }
 
-                scanModeTypeToDfa[mode.ScanModeType] = tdfaData;
+                result[conditionBinding.ConditionType] = tdfaData;
 
                 // For each action store information about produced tokens
-                foreach (var scanRule in mode.ScanRules)
+                foreach (var scanProduction in condition.ScanProductions)
                 {
-                    scanAmbiguityResolver.RegisterAction(
-                        scanRule.Index,
-                        scanRule.Disambiguation,
-                        tokenResolver.GetId(scanRule.MainTokenRef),
-                        scanRule
-                            .GetTokenRefGroups()
-                            .Select(trs => trs[0])
-                            .Select(tokenResolver.GetId));
+                    scanAmbiguityResolver.RegisterAction(scanProduction);
                 }
 
                 // For each 'ambiguous scanner state' deduce all tokens
@@ -185,23 +175,20 @@ namespace IronText.MetadataCompiler
                 {
                     scanAmbiguityResolver.RegisterState(state);
                 }
-
-                firstScanAction += count;
             }
 
             scanAmbiguityResolver.DefineAmbiguities(grammar);
 
-            result.ScanModeTypeToDfa = scanModeTypeToDfa;
-
-            return true;
+            return result;
         }
 
-        private static bool BuildScanModeDfa(ILogging logging, ScanMode scanMode, out ITdfaData tdfaData)
+        private static bool CompileTdfa(ILogging logging, ScanCondition condition, out ITdfaData tdfaData)
         {
             var descr = ScannerDescriptor.FromScanRules(
-                                        scanMode.ScanModeType.FullName,
-                                        scanMode.ScanRules,
+                                        condition.Name,
+                                        condition.ScanProductions,
                                         logging);
+
             var literalToAction = new Dictionary<string, int>();
             var ast = descr.MakeAst(literalToAction);
             if (ast == null)
@@ -284,8 +271,8 @@ namespace IronText.MetadataCompiler
 
             foreach (var scanMode in definition.ScanModes)
             {
-                var condition = new ScanCondition();
-                result.ScanConditions.Add(condition);
+                var condition = ConditionFromType(result, scanMode.ScanModeType);
+                
 
                 foreach (var scanRule in scanMode.ScanRules)
                 {
@@ -303,13 +290,26 @@ namespace IronText.MetadataCompiler
                     {
                         pattern = ScanPattern.CreateLiteral(asSingleToken.LiteralText);
                     }
+                    else if (scanRule is IBootstrapScanRule) 
+                    {
+                        pattern = ScanPattern.CreateRegular(
+                                    scanRule.Pattern,
+                                    ((IBootstrapScanRule)scanRule).BootstrapRegexPattern);
+                    }
                     else
                     {
                         pattern = ScanPattern.CreateRegular(scanRule.Pattern);
                     }
 
-                    var scanProduction = new ScanProduction(pattern, outcome);
-                    condition.ScanProducitons.Add(scanProduction);
+                    var scanProduction = new ScanProduction(
+                        pattern,
+                        outcome,
+                        nextCondition: ConditionFromType(result, scanRule.NextModeType),
+                        disambiguation: scanRule.Disambiguation);
+                    scanProduction.PlatformToBinding.Set<CilPlatform>(
+                        new CilScanProductionBinding(scanRule.DefiningMember, scanRule.ActionBuilder));
+
+                    condition.ScanProductions.Add(scanProduction);
                 }
             }
 
@@ -325,6 +325,28 @@ namespace IronText.MetadataCompiler
             }
 
             return result;
+        }
+
+        private static ScanCondition ConditionFromType(EbnfGrammar result, Type type)
+        {
+            if (type == null)
+            {
+                return null;
+            }
+
+            foreach (var cond in result.ScanConditions)
+            {
+                var binding = cond.Bindings.OfType<CilScanConditionBinding>().Single();
+                if (binding.ConditionType == type)
+                {
+                    return cond;
+                }
+            }
+
+            var condition = new ScanCondition(type.FullName);
+            condition.Bindings.Add(new CilScanConditionBinding(type));
+            result.ScanConditions.Add(condition);
+            return condition;
         }
 
         private static SymbolBase GetResultSymbol(

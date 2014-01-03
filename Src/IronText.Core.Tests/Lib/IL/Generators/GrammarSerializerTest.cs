@@ -18,9 +18,9 @@ namespace IronText.Tests.Lib.IL.Generators
             var red   = originalGrammar.Symbols.Add("red");
             var green = originalGrammar.Symbols.Add("green", SymbolCategory.ExplicitlyUsed);
             var blue  = originalGrammar.Symbols.Add("blue");
-            originalGrammar.Productions.Add(red,  new[] { green, blue });
-            originalGrammar.Productions.Add(blue, new[] { red, green });
-            originalGrammar.Productions.Add(blue, new Symbol[0]);
+            originalGrammar.Productions.Define(red,  new[] { green, blue });
+            originalGrammar.Productions.Define(blue, new[] { red, green });
+            originalGrammar.Productions.Define(blue, new Symbol[0]);
 
             originalGrammar.Start = red;
 

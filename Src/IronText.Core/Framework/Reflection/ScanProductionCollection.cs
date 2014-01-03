@@ -6,9 +6,9 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public class ScanProductionCollection : IndexedCollection<ScanProduction,IScanConditionContext>
+    public class ScanProductionCollection : IndexedCollection<ScanProduction,IEbnfContext>
     {
-        public ScanProductionCollection(IScanConditionContext context)
+        public ScanProductionCollection(IEbnfContext context)
             : base(context)
         {
         }

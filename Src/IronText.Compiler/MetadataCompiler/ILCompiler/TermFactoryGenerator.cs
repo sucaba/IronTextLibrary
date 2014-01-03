@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using IronText.Extensibility;
+using IronText.Extensibility.Bindings.Cil;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 using IronText.Lib.IL;
 using IronText.Lib.Shared;
 
@@ -9,22 +11,22 @@ namespace IronText.MetadataCompiler
 {
     class TermFactoryGenerator
     {
-        private readonly Ref<Types>    declaringType;
-        private readonly ScanMode[] scanModes;
+        private readonly Ref<Types>        declaringType;
+        private readonly ScanCondition[]   scanConditions;
         private readonly ITokenRefResolver tokenRefResolver;
 
-        public TermFactoryGenerator(ScanMode[] scanModes, Ref<Types> declaringType, ITokenRefResolver tokenRefResolver)
+        public TermFactoryGenerator(ScanConditionCollection scanModes, Ref<Types> declaringType, ITokenRefResolver tokenRefResolver)
         {
-            this.scanModes = scanModes;
-            this.declaringType = declaringType;
+            this.scanConditions        = scanModes.ToArray();
+            this.declaringType    = declaringType;
             this.tokenRefResolver = tokenRefResolver;
         }
 
         public void Build(
             EmitSyntax          emit,
             ContextResolverCode contextResolver,
-            Pipe<EmitSyntax>  ldCursor,
-            Pipe<EmitSyntax>  ldTokenPtr)
+            Pipe<EmitSyntax>    ldCursor,
+            Pipe<EmitSyntax>    ldTokenPtr)
         {
             var labels = emit.Labels;
             var locals = emit.Locals;
@@ -44,13 +46,7 @@ namespace IronText.MetadataCompiler
                 .Stloc(tokenId.GetRef())
                 ;
 
-            int ruleCount = scanModes.Sum(mode => mode.ScanRules.Count);
-#if DEBUG
-            int[] ruleIndexes = scanModes
-                                    .SelectMany(mode => mode.ScanRules)
-                                    .Select(r => r.Index)
-                                    .ToArray();
-#endif
+            int ruleCount = scanConditions.Sum(mode => mode.ScanProductions.Count);
 
             var action = new Ref<Labels>[ruleCount];
             for (int i = 0; i != ruleCount; ++i)
@@ -64,21 +60,25 @@ namespace IronText.MetadataCompiler
                 .Switch(action)
                 ;
 
-            var actionContext = new ScanActionCode(emit, contextResolver, ldCursor, declaringType, scanModes);
+            var actionContext = new ScanActionCode(emit, contextResolver, ldCursor, declaringType, scanConditions);
             actionContext.Init(emit, RETURN.GetRef());
 
-            foreach (var mode in scanModes)
+            foreach (var condition in scanConditions)
             {
+                var conditionBinding = condition.Bindings.OfType<CilScanConditionBinding>().SingleOrDefault();
+
                 // Each mode has its own root context type:
-                contextResolver.RootContextType = mode.ScanModeType;
-                foreach (var rule in mode.ScanRules)
+                contextResolver.RootContextType = conditionBinding.ConditionType;
+                foreach (var scanProduction in condition.ScanProductions)
                 {
                     emit
-                        .Label(action[rule.Index].Def)
-                        .Ldc_I4(GetRuleResultId(rule))
+                        .Label(action[scanProduction.Index].Def)
+                        .Ldc_I4(scanProduction.Outcome == null ? -1 : scanProduction.Outcome.Index)
                         .Stloc(tokenId.GetRef())
                         ;
-                    rule.ActionBuilder(actionContext);
+
+                    var productionBinding = (CilScanProductionBinding)scanProduction.PlatformToBinding.Get<CilPlatform>();
+                    productionBinding.Builder(actionContext);
                 }
             }
 
@@ -96,22 +96,6 @@ namespace IronText.MetadataCompiler
                 .Ldloc(tokenId.GetRef())
                 .Ret()
                 ;
-        }
-
-        private int GetRuleResultId(IScanRule rule)
-        {
-            if (rule is ISkipScanRule)
-            {
-                return -1;
-            }
-
-            var asSingleTokenRule = rule as ISingleTokenScanRule;
-            if (asSingleTokenRule == null)
-            {
-                throw new NotSupportedException("Internal error: multitoken rules are not supported.");
-            }
-
-            return tokenRefResolver.GetId(asSingleTokenRule.AnyTokenRef);
         }
     }
 }

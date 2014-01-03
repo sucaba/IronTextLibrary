@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
 using IronText.Extensibility;
+using IronText.Extensibility.Bindings.Cil;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 using IronText.Lib.IL;
 using IronText.Lib.Shared;
 
@@ -13,20 +16,20 @@ namespace IronText.MetadataCompiler
         private EmitSyntax emit;
         private readonly Pipe<EmitSyntax> ldCursor;
         private readonly Ref<Types> declaringType;
-        private readonly ScanMode[] scanModes;
+        private readonly ScanCondition[] scanConditions;
 
         public ScanActionCode(
             EmitSyntax              emit, 
             IContextResolverCode    contextResolver,
-            Pipe<EmitSyntax>      ldCursor,
-            Ref<Types>                 declaringType,
-            ScanMode[]              scanModes)
+            Pipe<EmitSyntax>        ldCursor,
+            Ref<Types>              declaringType,
+            ScanCondition[]         scanConditions)
         {
             this.emit            = emit;
             this.ldCursor        = ldCursor;
             this.ContextResolver = contextResolver;
             this.declaringType   = declaringType;
-            this.scanModes       = scanModes;
+            this.scanConditions  = scanConditions;
         }
 
         public IContextResolverCode ContextResolver { get; private set; }
@@ -110,27 +113,25 @@ namespace IronText.MetadataCompiler
                 .Stfld((ScanCursor c) => c.RootContext)
                 ;
 
-            ScanMode scanMode = null;
-            int modeIndex = 0;
-            foreach (var mode in scanModes)
+            ScanCondition foundCondition = null;
+            foreach (var condition in scanConditions)
             {
-                if (modeType.Equals(mode.ScanModeType))
+                var binding = condition.Bindings.OfType<CilScanConditionBinding>().Single();
+                if (modeType.Equals(binding.ConditionType))
                 {
-                    scanMode = mode;
+                    foundCondition = condition;
                     break;
                 }
-
-                ++modeIndex;
             }
 
-            if (modeIndex == scanModes.Length)
+            if (foundCondition == null)
             {
                 throw new InvalidOperationException("Internal Error: Mode not found.");
             }
 
             emit
                 .Do(ldCursor)
-                .LdMethodDelegate(declaringType, ScanModeMethods.GetMethodName(modeIndex), typeof(Scan1Delegate))
+                .LdMethodDelegate(declaringType, ScanModeMethods.GetMethodName(foundCondition.Index), typeof(Scan1Delegate))
                 .Stfld((ScanCursor c) => c.CurrentMode)
 
                 .Label(DONOT_CHANGE_MODE.Def)

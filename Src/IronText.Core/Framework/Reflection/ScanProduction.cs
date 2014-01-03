@@ -6,8 +6,21 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public class ScanProduction : IndexableObject<IScanConditionContext>
+    public class ScanProduction : IndexableObject<IEbnfContext>
     {
+        public ScanProduction(
+            string         pattern,
+            SymbolBase     outcome = null,
+            ScanCondition  nextCondition = null,
+            Disambiguation disambiguation = Disambiguation.Undefined)
+            : this(
+                ScanPattern.CreateRegular(pattern),
+                outcome,
+                nextCondition,
+                disambiguation)
+        {
+        }
+
         public ScanProduction(
             ScanPattern    pattern,
             SymbolBase     outcome        = null,
@@ -26,9 +39,9 @@ namespace IronText.Framework.Reflection
             {
                 this.Disambiguation = disambiguation;
             }
-        }
 
-        public ScanCondition Condition          { get { return Context.Condition; } }
+            this.PlatformToBinding = new TypeMap<IScanProductionBinding>();
+        }
 
         public ScanPattern      Pattern         { get; private set; }
 
@@ -37,5 +50,12 @@ namespace IronText.Framework.Reflection
         public SymbolBase       Outcome         { get; private set; }
 
         public ScanCondition    NextCondition   { get; private set; }
+
+        public TypeMap<IScanProductionBinding> PlatformToBinding { get; private set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0} -> {1}", Outcome, Pattern);
+        }
     }
 }

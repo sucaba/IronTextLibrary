@@ -45,7 +45,8 @@ namespace IronText.Framework.Reflection
         private readonly ProductionActionCollection productionActions;
         private readonly SymbolCollection           symbols;
         private readonly ScanConditionCollection    scanConditions;
-        private readonly MergerCollection mergers;
+        private readonly MergerCollection           mergers;
+        private readonly ScanProductionCollection   scanProductions;
 
         public EbnfGrammar()
         {
@@ -53,6 +54,7 @@ namespace IronText.Framework.Reflection
             productionActions = new ProductionActionCollection(this);
             symbols           = new SymbolCollection(this);
             scanConditions    = new ScanConditionCollection(this);
+            scanProductions   = new ScanProductionCollection(this);
             mergers           = new MergerCollection(this);
 
             for (int i = PredefinedSymbolCount; i != 0; --i)
@@ -70,7 +72,7 @@ namespace IronText.Framework.Reflection
                                           };
             Symbols[Error]           = new Symbol("$error");
 
-            AugmentedProduction = Productions.Add((Symbol)Symbols[AugmentedStart], new Symbol[] { null });
+            AugmentedProduction = Productions.Define((Symbol)Symbols[AugmentedStart], new Symbol[] { null });
         }
 
         public Production               AugmentedProduction { get; private set; }
@@ -78,6 +80,8 @@ namespace IronText.Framework.Reflection
         public SymbolCollection         Symbols { get { return symbols; } }
 
         public ProductionCollection     Productions { get { return productions; } }
+
+        public ScanProductionCollection ScanProductions { get { return scanProductions; } }
 
         public ScanConditionCollection  ScanConditions { get { return scanConditions; } }
 

@@ -45,7 +45,7 @@ namespace IronText.Tests.Analysis
 
             originalGrammar.Start = start;
 
-            var prod = originalGrammar.Productions.Add(start,  new[] { prefix, inlinedNonTerm, suffix });
+            var prod = originalGrammar.Productions.Define(start,  new[] { prefix, inlinedNonTerm, suffix });
             prod.PlatformToAction.Set<TestPlatform>(new SimpleProductionAction(0, 3));
         }
 
@@ -158,7 +158,7 @@ namespace IronText.Tests.Analysis
         {
             foreach (var pattern in nestedInlinePatterns)
             {
-                var prod = originalGrammar.Productions.Add(nestedNonTerm, pattern);
+                var prod = originalGrammar.Productions.Define(nestedNonTerm, pattern);
                 prod.PlatformToAction.Set<TestPlatform>(
                     new SimpleProductionAction(pattern.Length));
             }
@@ -168,7 +168,7 @@ namespace IronText.Tests.Analysis
         {
             foreach (var pattern in inlinePatterns)
             {
-                var prod = originalGrammar.Productions.Add(inlinedNonTerm, pattern);
+                var prod = originalGrammar.Productions.Define(inlinedNonTerm, pattern);
                 prod.PlatformToAction.Set<TestPlatform>(
                     new SimpleProductionAction(pattern.Length));
             }

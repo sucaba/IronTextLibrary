@@ -1,9 +1,11 @@
 ﻿using IronText.Extensibility;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 using IronText.Lib.Ctem;
 using IronText.MetadataCompiler;
 using IronText.Tests.TestUtils;
 using NUnit.Framework;
+using System.Linq;
 
 namespace IronText.Tests.Algorithm
 {
@@ -12,70 +14,81 @@ namespace IronText.Tests.Algorithm
     {
         [Test]
         public void Test()
-        {
-            var scanRules = new ScanRule[]
-                {
-                    new SingleTokenScanRule
-                    {
-                        Pattern = @"alpha alnum*",
-                        TokenType = typeof(string)
-                    },
-                    new SingleTokenScanRule
-                    {
-                        Pattern = @"digit+",
-                        TokenType = typeof(Num)
-                    },
-                    new SingleTokenScanRule
-                    {
-                        Pattern = @"[01234567]+ 'Q'",
-                        TokenType = typeof(Num)
-                    },
-                    new SingleTokenScanRule
-                    {
-                        Pattern = @"
-                                quot 
-                                    ~(quot | esc)*
-                                    (esc . ~(quot | esc)* )*
-                                quot
-                                ",
-                        TokenType = typeof(QStr)
-                    },
-                    new SingleTokenScanRule
-                    {
-                        LiteralText = "begin",
-                        Pattern     = @"'begin'",
-                    },
-                    new SingleTokenScanRule
-                    {
-                        LiteralText = "end",
-                        Pattern     = @"'end'"
-                    },
-                    new SingleTokenScanRule
-                    {
-                        LiteralText = ":=",
-                        Pattern     = @"':='"
-                    },
-                    new SingleTokenScanRule
-                    {
-                        Pattern   = @"blank+",
-                        TokenType = typeof(void)
-                    }
-                };
-            for (int i = 0; i != scanRules.Length; ++i)
+        {            
+            var num    = new Symbol("NUM");
+            var ident  = new Symbol("ID");
+            var qStr   = new Symbol("QSTR");
+            var begin  = new Symbol("begin");
+            var end    = new Symbol("end");
+            var assign = new Symbol(":=");
+
+            var grammar = new EbnfGrammar
             {
-                ((IScanRule)scanRules[i]).Index = i;
-            }
+                Symbols =
+                { 
+                    num,
+                    ident,
+                    qStr,
+                    begin,
+                    end,
+                    assign
+                },
+
+                ScanConditions =
+                {
+                    new ScanCondition("main")
+                    {
+                        ScanProductions = 
+                        {
+                            new ScanProduction(
+                                    @"digit+ ('.' digit+)?  | '.' digit+", 
+                                    num),
+                            new ScanProduction(
+                                    @"[01234567]+ 'Q'",
+                                    num),
+                            new ScanProduction(
+                                    @"alpha alnum*",
+                                    ident),
+                            new ScanProduction(
+                                    @"
+                                    quot 
+                                        ~(quot | esc)*
+                                        (esc . ~(quot | esc)* )*
+                                    quot
+                                    ",
+                                    qStr),
+                            new ScanProduction(
+                                    ScanPattern.CreateLiteral("begin"),
+                                    begin),
+                            new ScanProduction(
+                                    ScanPattern.CreateLiteral("end"),
+                                    end),
+                            new ScanProduction(
+                                    ScanPattern.CreateLiteral(":="),
+                                    assign),
+                            new ScanProduction(
+                                    @"blank+"),
+                        }
+                    }
+                }
+            };
             
             var target = new TdfaSimulationLexer(
                 "b:=10Q \"foo\"",
                 ScannerDescriptor.FromScanRules(
                     GetType().Name + "_Lexer",
-                    scanRules,
+                    grammar.ScanConditions[0].ScanProductions,
                     ExceptionLogging.Instance));
 
             var collector = new Collector<Msg>();
             target.Accept(collector);
-            Assert.AreEqual(4, collector.Count);
+
+            Assert.AreEqual(
+                new int[] { ident.Index, assign.Index, num.Index, qStr.Index },
+                collector.Select(msg => msg.Id).ToArray());
+            Assert.AreEqual(
+                new object[] { "b", ":=", "10Q", "\"foo\"" },
+                collector.Select(msg => msg.Value).ToArray());
         }
     }
 }

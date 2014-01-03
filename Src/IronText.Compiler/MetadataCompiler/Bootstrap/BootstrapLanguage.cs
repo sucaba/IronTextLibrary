@@ -50,7 +50,7 @@ namespace IronText.MetadataCompiler
                 document,
                 ScannerDescriptor.FromScanRules(
                     name.LanguageTypeName + "_Lexer",
-                    data.ScanModes[0].ScanRules,
+                    data.Grammar.ScanConditions[0].ScanProductions,
                     ExceptionLogging.Instance),
                 context,
                 data.TokenRefResolver,

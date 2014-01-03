@@ -19,10 +19,10 @@ namespace IronText.Tests.Framework
             var B = grammar.Symbols.Add("B");
 
             grammar.Start = S;
-            grammar.Productions.Add(S, new[] { b, A });
-            grammar.Productions.Add(A, new[] { a, A, B });
-            grammar.Productions.Add(A, new Symbol[0]);
-            grammar.Productions.Add(B, new Symbol[0]);
+            grammar.Productions.Define(S, new[] { b, A });
+            grammar.Productions.Define(A, new[] { a, A, B });
+            grammar.Productions.Define(A, new Symbol[0]);
+            grammar.Productions.Define(B, new Symbol[0]);
 
             var target = new RuntimeEbnfGrammar(grammar);
 

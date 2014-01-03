@@ -7,20 +7,33 @@ using IronText.Framework.Collections;
 
 namespace IronText.Framework.Reflection
 {
-    public class ScanCondition : IndexableObject<IEbnfContext>, IScanConditionContext
+    public class ScanCondition : IndexableObject<IEbnfContext>
     {
-        private readonly ScanProductionCollection   scanProductions;
-
-        public ScanCondition()
+        public ScanCondition(string name)
         {
-            this.scanProductions = new ScanProductionCollection(this);
+            this.Name            = name;
+            this.ScanProductions = new ReferenceCollection<ScanProduction>();
             this.Bindings        = new Collection<IScanConditionBinding>();
         }
 
-        public ScanProductionCollection ScanProducitons { get { return scanProductions; } }
+        public string Name { get; private set; }
+
+        public ReferenceCollection<ScanProduction> ScanProductions { get; private set; }
 
         public Collection<IScanConditionBinding> Bindings { get; private set; }
 
         public ScanCondition Condition { get { return this; } }
+
+        protected override void DoAttached()
+        {
+            base.DoAttached();
+            ScanProductions.Owner = Context.ScanProductions;
+        }
+
+        protected override void DoDetaching()
+        {
+            ScanProductions.Owner = null;
+            base.DoDetaching();
+        }
     }
 }

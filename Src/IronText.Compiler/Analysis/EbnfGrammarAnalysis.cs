@@ -122,12 +122,5 @@ namespace IronText.Compiler.Analysis
         {
             return tables.IsTailNullable(item.GetPattern(), item.Position);
         }
-
-        public int DefineAmbToken(int mainToken, IEnumerable<int> tokens)
-        {
-            var ambSymbol = new AmbiguousSymbol(mainToken, tokens);
-            grammar.Symbols.Add(ambSymbol);
-            return ambSymbol.Index;
-        }
     }
 }

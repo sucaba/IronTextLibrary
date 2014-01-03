@@ -12,5 +12,7 @@ namespace IronText.Framework.Reflection
         SymbolCollection Symbols { get; }
 
         ProductionCollection Productions { get; }
+        
+        ScanProductionCollection ScanProductions { get; }
     }
 }

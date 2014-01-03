@@ -8,7 +8,7 @@ namespace IronText.Extensibility
     public interface IScanRule
     {
         // Binding
-        MemberInfo DefiningMember { get; }
+        MethodInfo DefiningMember { get; }
 
         // Scan Produciton
         Disambiguation Disambiguation { get; }

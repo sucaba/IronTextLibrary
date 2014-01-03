@@ -8,7 +8,7 @@ namespace IronText.Extensibility
 {
     internal abstract class ScanRule : IScanRule, IBootstrapScanRule
     {
-        public MemberInfo DefiningMember { get; set; }
+        public MethodInfo DefiningMember { get; set; }
 
         public Disambiguation Disambiguation { get; set; }
 

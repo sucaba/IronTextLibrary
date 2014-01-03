@@ -103,6 +103,7 @@ namespace IronText.Tests.Framework
         [GrammarDocument("MiniInterpreter.gram")]
         [ScannerDocument("MiniInterpreter.scan")]
         [DescribeParserStateMachine("MiniInterpreter.info")]
+        [ScannerGraph("MiniInterpreter.gv")]
         public class MiniInterperter
         {
             public MiniInterperter()

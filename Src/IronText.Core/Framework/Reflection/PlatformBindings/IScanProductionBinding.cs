@@ -5,10 +5,7 @@ using System.Text;
 
 namespace IronText.Framework.Reflection
 {
-    public interface IScanConditionContext
+    public interface IScanProductionBinding
     {
-        IEbnfContext Parent { get; }
-
-        ScanCondition Condition { get; }
     }
 }

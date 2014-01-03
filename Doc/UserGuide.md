@@ -167,10 +167,11 @@ First one is fixed by incorporating powerful [GLR][] algorithm along with
 context-free language, including ambiguous ones.
 
 Second issue is fixed by using annotations (.Net attributes) instead of
-expressions and operator overloading. Later allows to make language grammars
-similar to a typical Object-Oriented API represented by interfaces, classes
-and their members. With IronText approach developer can think of his language
-specification as a Text API i.e. API which is invoked though the text.
+expressions and operator overloading. This approach allows makes language
+grammars code similar to a typical Object-Oriented API represented by
+interfaces, classes and their members. With IronText approach developer can
+think of his language specification as a Text API i.e. API which is invoked
+though the input text.
 
 IronText library is suitable for developing languages on the .Net framework
 only.  However general idea is suitable also for JVM or any other platform with
@@ -286,7 +287,7 @@ public interface IMyLanguage
 Example of parsing string content:
 ```cs
 IMyLanguage context = ...; // backend
-Language.Parse(context, "2+2"); // Throws on the first error, ignores warnings and messages
+Language.Parse(context, "2+2"); // Throws on a first error, ignores warnings and messages
 ```
 
 Example of parsing from a TextReader:
@@ -319,8 +320,9 @@ using (var interp = new Interpreter<IMyLanguage>(context))
 Example demostrates more advanced Interpreter class functionality:  
 - Parsing from a TextReader
 - Redirect error messages to console
-- Build parse tree. Actually it is more powerful construct called Shared Packed
-  Parse Forest (SPPF).
+- Build parse tree. Actually it not a tree but a more powerful construct called
+  Shared Packed Parse Forest (SPPF). It supports node sharing and ambiguous
+  productions.
 - Visit parse tree
 - Tokenize from TextReader
 

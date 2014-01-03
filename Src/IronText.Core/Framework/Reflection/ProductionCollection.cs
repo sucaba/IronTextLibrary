@@ -13,16 +13,16 @@ namespace IronText.Framework.Reflection
         {
         }
 
-        public Production Add(Symbol outcome, IEnumerable<Symbol> pattern)
+        public Production Define(Symbol outcome, IEnumerable<Symbol> pattern)
         {
             var result = new Production(outcome, pattern);
             return Add(result);
         }
 
         [Obsolete("Refactoring grammar indexing")]
-        public Production Add(int outcome, IEnumerable<int> pattern)
+        public Production Define(int outcome, IEnumerable<int> pattern)
         {
-            return Add(
+            return Define(
                 (Symbol)Context.Symbols[outcome],
                 pattern.Select(t => (Symbol)Context.Symbols[t]));
         }
@@ -63,7 +63,7 @@ namespace IronText.Framework.Reflection
 
             if (output == null)
             {
-                output = Add(outcome, pattern);
+                output = Define(outcome, pattern);
                 return true;
             }
 

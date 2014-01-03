@@ -161,7 +161,7 @@ namespace IronText.MetadataCompiler
                     .Ldprop((EbnfGrammar g) => g.Productions)
                     .Ldc_I4(production.OutcomeToken)
                     .Ldloc(partsVar.GetRef())
-                    .Call((ProductionCollection prods, int l, IEnumerable<int> p) => prods.Add(l, p))
+                    .Call((ProductionCollection prods, int l, IEnumerable<int> p) => prods.Define(l, p))
                     .Pop()
                     ;
             }

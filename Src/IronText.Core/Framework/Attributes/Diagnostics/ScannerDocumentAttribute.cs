@@ -25,13 +25,13 @@ namespace IronText.Framework
 
             using (var file = new StreamWriter(path, false, Encoding.UTF8))
             {
-                foreach (var scanMode in data.ScanModes)
+                foreach (var scanCondition in data.Grammar.ScanConditions)
                 {
                     file.WriteLine("-------------------------------------");
-                    file.WriteLine("ScanMode {0}:", scanMode.ScanModeType.FullName);
-                    foreach (ScanRule scanRule in scanMode.ScanRules)
+                    file.WriteLine("ScanMode {0}:", scanCondition.Name);
+                    foreach (var scanProduciton in scanCondition.ScanProductions)
                     {
-                        file.WriteLine(" " + scanRule.ToString());
+                        file.WriteLine(" " + scanProduciton.ToString());
                     }
                 }
             }

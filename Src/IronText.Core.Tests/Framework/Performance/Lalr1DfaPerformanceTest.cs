@@ -35,7 +35,7 @@ namespace IronText.Tests.Framework.Performance
                 int outcome = tokens[i];
                 int[] pattern = new int[ruleSize];
                 Array.Copy(tokens, i + 1, pattern, 0, ruleSize);
-                grammar.Productions.Add(outcome, pattern);
+                grammar.Productions.Define(outcome, pattern);
             }
 
             var target = new Lalr1Dfa(new EbnfGrammarAnalysis(grammar), LrTableOptimizations.Default);

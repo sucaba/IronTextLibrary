@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using IronText.Automata.Regular;
 using IronText.Build;
 using IronText.Extensibility;
+using IronText.Extensibility.Bindings.Cil;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 using IronText.Lib.IL;
@@ -127,11 +129,12 @@ namespace IronText.MetadataCompiler
                 });
 
             int modeIndex = 0;
-            foreach (var scanMode in data.ScanModes)
+            foreach (var condition in data.Grammar.ScanConditions)
             {
                 var methodName = ScanModeMethods.GetMethodName(modeIndex++);
+                var conditionBinding = condition.Bindings.OfType<CilScanConditionBinding>().Single();
 
-                var dfa = data.ScanModeTypeToDfa[scanMode.ScanModeType];
+                var dfa = data.ScanModeTypeToDfa[conditionBinding.ConditionType];
                 var dfaSerialization = new DfaSerialization(dfa);
                 var generator = new ScannerGenerator(dfaSerialization);
 
@@ -167,7 +170,7 @@ namespace IronText.MetadataCompiler
 
         private ClassSyntax BuildMethod_TermFactory(ClassSyntax context)
         {
-            var generator = new TermFactoryGenerator(data.ScanModes, declaringTypeRef, data.TokenRefResolver);
+            var generator = new TermFactoryGenerator(data.Grammar.ScanConditions, declaringTypeRef, data.TokenRefResolver);
 
             var args = context
                         .Method()

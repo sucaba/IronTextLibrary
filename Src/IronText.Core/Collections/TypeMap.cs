@@ -41,6 +41,11 @@ namespace IronText.Framework.Collections
             map[key] = value;
         }
 
+        public void Add(Type key, T value)
+        {
+            map.Add(key, value);
+        }
+
         public IEnumerator<KeyValuePair<Type, T>> GetEnumerator()
         {
             return map.GetEnumerator();

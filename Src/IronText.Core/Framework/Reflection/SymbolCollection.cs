@@ -19,5 +19,25 @@ namespace IronText.Framework.Reflection
             Add(result);
             return result;
         }
+
+        public AmbiguousSymbol FindOrAddAmbiguous(int mainToken, IEnumerable<int> tokens)
+        {
+            return FindAmbiguous(mainToken, tokens)
+                ?? (AmbiguousSymbol)Add(new AmbiguousSymbol(mainToken, tokens));
+        }
+
+        public AmbiguousSymbol FindAmbiguous(int mainToken, IEnumerable<int> tokens)
+        {
+            foreach (var symb in Context.Symbols)
+            {
+                var amb = symb as AmbiguousSymbol;
+                if (amb != null && amb.MainToken == mainToken && amb.Tokens.SequenceEqual(tokens))
+                {
+                    return amb;
+                }
+            }
+
+            return null;
+        }
     }
 }
