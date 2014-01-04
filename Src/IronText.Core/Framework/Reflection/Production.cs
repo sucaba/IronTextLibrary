@@ -5,13 +5,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using IronText.Framework.Collections;
+using IronText.Collections;
 
 namespace IronText.Framework.Reflection
 {
     [DebuggerDisplay("{DebugProductionText}")]
     public sealed class Production : IndexableObject<IEbnfContext>
     {
+        private ProductionAction _action;
+        
         public Production(Symbol outcome, IEnumerable<Symbol> pattern)
         {
             if (outcome == null)
@@ -29,7 +31,7 @@ namespace IronText.Framework.Reflection
             Pattern = pattern.ToArray();
             PatternTokens  = Array.ConvertAll(Pattern, s => s == null ? -1 : s.Index);
 
-            PlatformToAction = new TypeMap<ProductionAction>();
+            _action = new SimpleProductionAction(Size);
         }
 
         public int    OutcomeToken    { get; private set; }
@@ -63,14 +65,18 @@ namespace IronText.Framework.Reflection
         }
 
         /// <summary>
-        /// Semantic actions for the production
+        /// Semantic actions for the production.
         /// </summary>
         /// <remarks>
         /// Typically production contains single action, however
         /// when production is inlined there are multiple actions
         /// happing when this production being applied.
         /// </remarks>
-        public TypeMap<ProductionAction> PlatformToAction { get; private set; }
+        public ProductionAction Action
+        {
+            get { return _action; }
+            set { _action = value ?? new SimpleProductionAction(Size); }
+        }
 
         public bool Equals(Production other)
         {

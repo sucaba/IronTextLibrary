@@ -111,7 +111,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var scanProduction in Productions)
             {
-                var binding = (CilScanProductionBinding)scanProduction.PlatformToBinding.Get<CilPlatform>();
+                var binding = scanProduction.Joint.The<CilScanProductionBinding>();
 
                 if (scanProduction.Pattern.Literal != null)
                 {

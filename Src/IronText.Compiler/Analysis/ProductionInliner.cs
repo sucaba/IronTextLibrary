@@ -126,16 +126,11 @@ namespace IronText.Analysis
                 }
 
                 var newProduction = new Production(parentProduction.Outcome, newPattern);
-                foreach (var platformToAction in parentProduction.PlatformToAction)
-                {
-                    Type platform = platformToAction.Key;
-                    newProduction.PlatformToAction.Set(
-                        platform, 
-                        InlineAction(
-                            platformToAction.Value,
-                            inlinedProd.PlatformToAction.Get(platform),
-                            inlinePosition));
-                }
+                newProduction.Action = 
+                    InlineAction(
+                        parentProduction.Action,
+                        inlinedProd.Action,
+                        inlinePosition);
 
                 yield return newProduction;
             }

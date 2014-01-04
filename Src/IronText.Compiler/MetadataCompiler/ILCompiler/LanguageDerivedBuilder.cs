@@ -132,7 +132,7 @@ namespace IronText.MetadataCompiler
             foreach (var condition in data.Grammar.ScanConditions)
             {
                 var methodName = ScanModeMethods.GetMethodName(modeIndex++);
-                var conditionBinding = condition.Bindings.OfType<CilScanConditionBinding>().Single();
+                var conditionBinding = condition.Joint.The<CilScanConditionBinding>();
 
                 var dfa = data.ScanModeTypeToDfa[conditionBinding.ConditionType];
                 var dfaSerialization = new DfaSerialization(dfa);

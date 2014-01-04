@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using IronText.Collections;
 
 namespace IronText.Framework.Reflection
 {
@@ -20,10 +21,10 @@ namespace IronText.Framework.Reflection
         {
             this.Offset        = offset;
             this.ArgumentCount = argumentCount;
-            this.Bindings      = new Collection<IProductionActionBinding>();
+            this.Joint         = new Joint();
         }
 
-        public Collection<IProductionActionBinding> Bindings { get; private set; }
+        public Joint Joint { get; private set; }
 
         public int Offset { get; private set; }
 
@@ -32,11 +33,7 @@ namespace IronText.Framework.Reflection
         protected override ProductionAction DoClone()
         {
             var result = new SimpleProductionAction(Offset, ArgumentCount);
-            foreach (var binding in Bindings)
-            {
-                result.Bindings.Add(binding);
-            }
-
+            result.Joint.AddAll(this.Joint);
             return result;
         }
     }

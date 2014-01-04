@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace IronText.Framework.Collections
+namespace IronText.Collections
 {
     public class IndexedCollection<T, TContext> : IOwner<T>, IEnumerable<T>
         where T : class, IIndexable<TContext>

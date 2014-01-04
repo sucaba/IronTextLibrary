@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using IronText.Framework.Collections;
+using IronText.Collections;
 
 namespace IronText.Framework.Reflection
 {
@@ -13,14 +13,14 @@ namespace IronText.Framework.Reflection
         {
             this.Name            = name;
             this.ScanProductions = new ReferenceCollection<ScanProduction>();
-            this.Bindings        = new Collection<IScanConditionBinding>();
+            this.Joint           = new Joint();
         }
 
         public string Name { get; private set; }
 
         public ReferenceCollection<ScanProduction> ScanProductions { get; private set; }
 
-        public Collection<IScanConditionBinding> Bindings { get; private set; }
+        public Joint Joint { get; private set; }
 
         public ScanCondition Condition { get { return this; } }
 

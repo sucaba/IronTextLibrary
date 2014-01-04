@@ -143,7 +143,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var condition in grammar.ScanConditions)
             {
-                var conditionBinding = condition.Bindings.OfType<CilScanConditionBinding>().Single();
+                var conditionBinding = condition.Joint.The<CilScanConditionBinding>();
 
                 ITdfaData tdfaData;
                 if (!CompileTdfa(logging, condition, out tdfaData))
@@ -236,11 +236,11 @@ namespace IronText.MetadataCompiler
                 Production production;
                 if (result.Productions.FindOrAdd(outcome, pattern, out production))
                 {
-                    production.PlatformToAction.Set<CilPlatform>(
+                    production.Action =
                         new SimpleProductionAction(pattern.Length)
                         {
-                            Bindings = { new CilProductionActionBinding(ruleDef.ActionBuilder) }
-                        });
+                            Joint = { new CilProductionActionBinding(ruleDef.ActionBuilder) }
+                        };
                 }
                 else
                 {
@@ -249,8 +249,8 @@ namespace IronText.MetadataCompiler
                     // bindings are executed.  It would be mistake to do
                     // Actions.Add(...) in this case because semantical 
                     // reduction happens after each ProductionAction.
-                    var action = (SimpleProductionAction)production.PlatformToAction.Get<CilPlatform>();
-                    action.Bindings.Add(new CilProductionActionBinding(ruleDef.ActionBuilder));
+                    var action = (SimpleProductionAction)production.Action;
+                    action.Joint.Add(new CilProductionActionBinding(ruleDef.ActionBuilder));
                 }
 
                 if (!AssignPrecedence(production, ruleDef.Precedence))
@@ -306,7 +306,7 @@ namespace IronText.MetadataCompiler
                         outcome,
                         nextCondition: ConditionFromType(result, scanRule.NextModeType),
                         disambiguation: scanRule.Disambiguation);
-                    scanProduction.PlatformToBinding.Set<CilPlatform>(
+                    scanProduction.Joint.Add(
                         new CilScanProductionBinding(scanRule.DefiningMember, scanRule.ActionBuilder));
 
                     condition.ScanProductions.Add(scanProduction);
@@ -319,7 +319,7 @@ namespace IronText.MetadataCompiler
                 mergeRule.TokenId = token;
 
                 var merger = new Merger((Symbol)result.Symbols[token]);
-                merger.Bindings.Add(new CilMergerBinding { Builder = mergeRule.ActionBuilder });
+                merger.Joint.Add(new CilMergerBinding { Builder = mergeRule.ActionBuilder });
                 
                 result.Mergers.Add(merger);
             }
@@ -336,7 +336,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var cond in result.ScanConditions)
             {
-                var binding = cond.Bindings.OfType<CilScanConditionBinding>().Single();
+                var binding = cond.Joint.The<CilScanConditionBinding>();
                 if (binding.ConditionType == type)
                 {
                     return cond;
@@ -344,7 +344,7 @@ namespace IronText.MetadataCompiler
             }
 
             var condition = new ScanCondition(type.FullName);
-            condition.Bindings.Add(new CilScanConditionBinding(type));
+            condition.Joint.Add(new CilScanConditionBinding(type));
             result.ScanConditions.Add(condition);
             return condition;
         }

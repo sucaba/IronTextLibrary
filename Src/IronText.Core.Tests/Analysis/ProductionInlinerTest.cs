@@ -46,7 +46,7 @@ namespace IronText.Tests.Analysis
             originalGrammar.Start = start;
 
             var prod = originalGrammar.Productions.Define(start,  new[] { prefix, inlinedNonTerm, suffix });
-            prod.PlatformToAction.Set<TestPlatform>(new SimpleProductionAction(0, 3));
+            prod.Action = new SimpleProductionAction(0, 3);
         }
 
         [TearDown]
@@ -159,8 +159,7 @@ namespace IronText.Tests.Analysis
             foreach (var pattern in nestedInlinePatterns)
             {
                 var prod = originalGrammar.Productions.Define(nestedNonTerm, pattern);
-                prod.PlatformToAction.Set<TestPlatform>(
-                    new SimpleProductionAction(pattern.Length));
+                prod.Action = new SimpleProductionAction(pattern.Length);
             }
         }
 
@@ -169,8 +168,7 @@ namespace IronText.Tests.Analysis
             foreach (var pattern in inlinePatterns)
             {
                 var prod = originalGrammar.Productions.Define(inlinedNonTerm, pattern);
-                prod.PlatformToAction.Set<TestPlatform>(
-                    new SimpleProductionAction(pattern.Length));
+                prod.Action = new SimpleProductionAction(pattern.Length);
             }
         }
 
@@ -194,7 +192,7 @@ namespace IronText.Tests.Analysis
             params SimpleProductionAction[] productionActions)
         {
             var prod = resultGrammar.Symbols[start.Index].Productions.Single();
-            ProductionAction gotAction = prod.PlatformToAction.Get<TestPlatform>();
+            ProductionAction gotAction = prod.Action;
             Assert.IsInstanceOf<CompositeProductionAction>(gotAction);
             var composite = (CompositeProductionAction)gotAction;
 
@@ -218,7 +216,5 @@ namespace IronText.Tests.Analysis
             Assert.IsNotNull(resultGrammar.Start);
             Assert.AreEqual(originalGrammar.Start.Index, resultGrammar.Start.Index);
         }
-
-        interface TestPlatform { }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using IronText.Framework.Collections;
+using IronText.Collections;
 
 namespace IronText.Framework.Reflection
 {
@@ -40,7 +40,7 @@ namespace IronText.Framework.Reflection
                 this.Disambiguation = disambiguation;
             }
 
-            this.PlatformToBinding = new TypeMap<IScanProductionBinding>();
+            this.Joint = new Joint();
         }
 
         public ScanPattern      Pattern         { get; private set; }
@@ -51,7 +51,7 @@ namespace IronText.Framework.Reflection
 
         public ScanCondition    NextCondition   { get; private set; }
 
-        public TypeMap<IScanProductionBinding> PlatformToBinding { get; private set; }
+        public Joint Joint { get; private set; }
 
         public override string ToString()
         {

@@ -55,10 +55,7 @@ namespace IronText.Analysis
                 ExplicitPrecedence = source.ExplicitPrecedence,
             };
 
-            foreach (var pair in source.PlatformToAction)
-            {
-                result.PlatformToAction.Set(pair.Key, pair.Value.Clone());
-            }
+            result.Action = source.Action.Clone();
 
             return result;
         }

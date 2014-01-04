@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace IronText.Framework.Collections
+namespace IronText.Collections
 {
     public class ReferenceCollection<T> : IReferenceContainer<T>, IEnumerable<T>
         where T : class

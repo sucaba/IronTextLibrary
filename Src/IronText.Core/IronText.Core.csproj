@@ -110,12 +110,11 @@
     <Compile Include="Algorithm\IntegerSets\SetOrthohonator.cs" />
     <Compile Include="Algorithm\IntegerSets\SparseIntSetType.cs" />
     <Compile Include="Algorithm\IntInterval.cs" />
-    <Compile Include="Collections\TypeMap.cs" />
+    <Compile Include="Collections\Joint.cs" />
     <Compile Include="Diagnostics\GvGraphView.cs" />
     <Compile Include="Diagnostics\IGraphView.cs" />
     <Compile Include="Build\IDerivedBuilderMetadata.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilMergerBinding.cs" />
-    <Compile Include="Extensibility\Bindings\Cil\CilPlatform.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilProductionActionBinding.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilScanConditionBinding.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilScanProductionBinding.cs" />

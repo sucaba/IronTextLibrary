@@ -140,7 +140,7 @@ namespace IronText.MetadataCompiler
             }
             else
             {
-                var binding = (CilScanProductionBinding)scanProduction.PlatformToBinding.Get<CilPlatform>();
+                var binding = scanProduction.Joint.The<CilScanProductionBinding>();
                 if (binding == null)
                 {
                     throw new InvalidOperationException("ScanProduction is missing CIL platform binding.");

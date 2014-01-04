@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using IronText.Algorithm;
-using IronText.Framework.Collections;
+using IronText.Collections;
 
 namespace IronText.Framework.Reflection
 {

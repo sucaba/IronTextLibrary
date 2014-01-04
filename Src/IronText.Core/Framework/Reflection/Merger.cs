@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using IronText.Framework.Collections;
+using IronText.Collections;
 
 namespace IronText.Framework.Reflection
 {
@@ -14,9 +14,9 @@ namespace IronText.Framework.Reflection
         public Merger(Symbol symbol)
         {
             this.symbol = symbol;
-            this.Bindings = new Collection<IMergerBinding>();
+            this.Joint = new Joint();
         }
 
-        public Collection<IMergerBinding> Bindings { get; private set; }
+        public Joint Joint { get; private set; }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace IronText.Framework.Collections
+namespace IronText.Collections
 {
     public interface IReferenceContainer<T>
     {

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using IronText.Framework.Collections;
+using IronText.Collections;
 
 namespace IronText.Framework.Reflection
 {
@@ -19,8 +19,8 @@ namespace IronText.Framework.Reflection
         {
             this.Name = name ?? EbnfGrammar.UnnamedTokenName;
 
-            this.productions    = new ReferenceCollection<Production>();
-            this.Bindings       = new Collection<ISymbolBinding>();
+            this.productions = new ReferenceCollection<Production>();
+            this.Joint       = new Joint();
         }
 
         public bool IsAugmentedStart { get { return EbnfGrammar.AugmentedStart == Index; } }
@@ -48,7 +48,7 @@ namespace IronText.Framework.Reflection
 
         public override ReferenceCollection<Production> Productions { get { return productions; } }
 
-        public Collection<ISymbolBinding> Bindings { get; private set; }
+        public Joint Joint { get; private set; }
 
         public override bool Equals(object obj)
         {

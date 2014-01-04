@@ -65,7 +65,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var condition in scanConditions)
             {
-                var conditionBinding = condition.Bindings.OfType<CilScanConditionBinding>().SingleOrDefault();
+                var conditionBinding = condition.Joint.The<CilScanConditionBinding>();
 
                 // Each mode has its own root context type:
                 contextResolver.RootContextType = conditionBinding.ConditionType;
@@ -77,7 +77,7 @@ namespace IronText.MetadataCompiler
                         .Stloc(tokenId.GetRef())
                         ;
 
-                    var productionBinding = (CilScanProductionBinding)scanProduction.PlatformToBinding.Get<CilPlatform>();
+                    var productionBinding = scanProduction.Joint.The<CilScanProductionBinding>();
                     productionBinding.Builder(actionContext);
                 }
             }

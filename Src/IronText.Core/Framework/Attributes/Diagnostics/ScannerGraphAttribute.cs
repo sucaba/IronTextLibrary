@@ -30,7 +30,7 @@ namespace IronText.Framework
                 string path = Path.Combine(data.DestinationDirectory, scanModeFileName);
 
                 var condition = data.Grammar.ScanConditions[i];
-                var binding = condition.Bindings.OfType<CilScanConditionBinding>().Single();
+                var binding = condition.Joint.The<CilScanConditionBinding>();
 
                 var dfa = data.GetScanModeDfa(binding.ConditionType);
                 using (var graph = new GvGraphView(path))

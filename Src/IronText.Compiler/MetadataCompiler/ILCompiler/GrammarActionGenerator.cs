@@ -111,14 +111,13 @@ namespace IronText.MetadataCompiler
 
                 emit.Label(jumpTable[prod.Index].Def);
                 // TODO: Support for CompositeProductionAction
-                var action = (SimpleProductionAction)prod.PlatformToAction.Get<CilPlatform>();
-                if (action != null && action.Bindings.Any())
+                var action = (SimpleProductionAction)prod.Action;
+                if (action != null && action.Joint.Has<CilProductionActionBinding>())
                 {
                     bool first = true;
-                    foreach (var binding in action.Bindings)
+                    foreach (var binding in action.Joint.All<CilProductionActionBinding>())
                     {
-                        var cilBinding = binding as CilProductionActionBinding;
-                        if (cilBinding != null)
+                        if (binding != null)
                         {
                             if (first)
                             {
@@ -130,7 +129,7 @@ namespace IronText.MetadataCompiler
                                 code.Emit(il => il.Pop());
                             }
 
-                            cilBinding.Builder(code);
+                            binding.Builder(code);
                         }
                     }
                 }
