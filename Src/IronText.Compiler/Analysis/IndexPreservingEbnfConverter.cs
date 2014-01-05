@@ -11,9 +11,20 @@ namespace IronText.Analysis
     {
         private readonly EbnfGrammar destination;
 
-        public IndexPreservingEbnfConverter(EbnfGrammar destination)
+        public IndexPreservingEbnfConverter(EbnfGrammar source, EbnfGrammar destination)
         {
             this.destination = destination;
+
+            foreach (var srcSymbol in source.Symbols)
+            {
+                // Ensure destSymbol exists
+                var destSymbol = Convert(srcSymbol);
+
+                if (source.Start == srcSymbol)
+                {
+                    destination.Start = (Symbol)destSymbol;
+                }
+            }
         }
 
         public T Convert<T>(T source) where T : SymbolBase

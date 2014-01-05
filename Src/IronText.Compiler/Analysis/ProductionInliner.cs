@@ -21,22 +21,16 @@ namespace IronText.Analysis
         {
             var result = new EbnfGrammar();
 
-            IEbnfConverter converter = new IndexPreservingEbnfConverter(result);
+            IEbnfConverter converter = new IndexPreservingEbnfConverter(grammar, result);
+
             var symbolsToInline = new HashSet<Symbol>();
 
-            foreach (var srcSymbol in grammar.Symbols)
+            foreach (var symbol in grammar.Symbols)
             {
-                // Ensure destSymbol exists
-                var destSymbol = converter.Convert(srcSymbol);
-
-                if (CanInline(srcSymbol as Symbol))
+                var det = symbol as Symbol;
+                if (CanInline(det))
                 {
-                    symbolsToInline.Add((Symbol)destSymbol);
-                }
-
-                if (grammar.Start == srcSymbol)
-                {
-                    result.Start = (Symbol)destSymbol;
+                    symbolsToInline.Add(converter.Convert(det));
                 }
             }
 
