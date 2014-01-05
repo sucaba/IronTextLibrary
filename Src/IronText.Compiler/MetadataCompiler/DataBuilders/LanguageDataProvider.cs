@@ -117,7 +117,6 @@ namespace IronText.MetadataCompiler
             result.TokenRefResolver    = tokenResolver;
 
             result.LocalParseContexts  = localParseContexts.ToArray();
-            result.MergeRules          = definition.MergeRules.ToArray();
 
             if (!bootstrap)
             {

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using IronText.Algorithm;
 using IronText.Extensibility;
+using IronText.Extensibility.Bindings.Cil;
 using IronText.Framework;
 using IronText.Lib.IL;
 using IronText.Lib.IL.Generators;
@@ -71,7 +72,9 @@ namespace IronText.MetadataCompiler
             Ref<Args> ctx,
             Ref<Args> lookbackStart)
         {
-            if (data.MergeRules.Length == 0)
+            var mergers = data.Grammar.Mergers;
+
+            if (mergers.Count == 0)
             {
                 emit
                     .Ldarg(oldValue)
@@ -94,12 +97,12 @@ namespace IronText.MetadataCompiler
             };
 
             var tokenToRuleIndex = new MutableIntMap<int>(
-                                        data.MergeRules.Select(
-                                            (rule, index) => 
-                                                new IntArrow<int>(rule.TokenId, index)));
+                                        mergers.Select(
+                                            merger => 
+                                                new IntArrow<int>(merger.Symbol.Index, merger.Index)));
             tokenToRuleIndex.DefaultValue = -1;
 
-            var ids = data.MergeRules.Select(r => r.TokenId);
+            var ids = mergers.Select(m => m.Symbol.Index);
             IntInterval possibleBounds = new IntInterval(ids.Min(), ids.Max());
             var switchGenerator = SwitchGenerator.Sparse(tokenToRuleIndex, possibleBounds);
             switchGenerator.Build(
@@ -115,8 +118,8 @@ namespace IronText.MetadataCompiler
                     }
                     else
                     {
-                        var rule = data.MergeRules[value];
-                        rule.ActionBuilder(code);
+                        var merger = mergers[value];
+                        merger.Joint.The<CilMergerBinding>().Builder(code);
                         emit.Ret();
                     }
                 });

@@ -9,13 +9,13 @@ namespace IronText.Framework.Reflection
 {
     public class Merger : IndexableObject<IEbnfContext>
     {
-        private readonly Symbol symbol;
-
         public Merger(Symbol symbol)
         {
-            this.symbol = symbol;
+            this.Symbol = symbol;
             this.Joint = new Joint();
         }
+
+        public Symbol Symbol { get; private set; }
 
         public Joint Joint { get; private set; }
     }

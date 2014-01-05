@@ -34,7 +34,6 @@ namespace IronText.MetadataCompiler
         internal ITokenRefResolver    TokenRefResolver; 
 
         // Rule ID -> ActionBuilder
-        public MergeRule[]            MergeRules;
         public LocalParseContext[]    LocalParseContexts;
         
         public Dictionary<Type, ITdfaData>  ScanModeTypeToDfa;
