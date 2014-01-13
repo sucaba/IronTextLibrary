@@ -196,7 +196,6 @@
     <Compile Include="MetadataCompiler\ILCompiler\ScanActionCode.cs" />
     <Compile Include="MetadataCompiler\ILCompiler\ScanModeMethods.cs" />
     <Compile Include="MetadataCompiler\ILCompiler\ScannerGenerator.cs" />
-    <Compile Include="MetadataCompiler\ILCompiler\SwitchActionCode.cs" />
     <Compile Include="MetadataCompiler\ILCompiler\TermFactoryGenerator.cs" />
     <Compile Include="MetadataCompiler\ILCompiler\TokenIdentitiesSerializer.cs" />
     <Compile Include="MetadataCompiler\LanguageData.cs" />
@@ -207,6 +206,7 @@
     <Compile Include="MetadataCompiler\MetadataParsing\MetadataException.cs" />
     <Compile Include="MetadataCompiler\MetadataParsing\ScanDataCollector.cs" />
     <Compile Include="MetadataCompiler\NamedLanguageProvider.cs" />
+    <Compile Include="MetadataCompiler\ProductionContextLink.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

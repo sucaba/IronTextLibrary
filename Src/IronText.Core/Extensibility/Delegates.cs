@@ -1,4 +1,7 @@
-﻿namespace IronText.Extensibility
+﻿using IronText.Framework;
+using IronText.Lib.IL;
+
+namespace IronText.Extensibility
 {
     /// <summary>
     /// Parser action builder contract

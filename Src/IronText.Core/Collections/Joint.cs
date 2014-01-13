@@ -31,12 +31,18 @@ namespace IronText.Collections
 
         public void Add(object value)
         {
-            all.Add(value);
+            if (value != null)
+            {
+                all.Add(value);
+            }
         }
 
-        public void Add<T>(T value)
+        public void Add<T>(T value) where T : class
         {
-            all.Add(value);
+            if (value != null)
+            {
+                all.Add(value);
+            }
         }
 
         public void AddAll(Joint joint)

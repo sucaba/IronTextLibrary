@@ -71,9 +71,14 @@ namespace IronText.Framework
             return Enumerable.Empty<TokenRef>();
         }
 
-        public IEnumerable<KeyValuePair<TokenRef,Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
+        public IEnumerable<TokenFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
         {
-            return Enumerable.Empty<KeyValuePair<TokenRef,Precedence>>();
+            return Enumerable.Empty<TokenFeature<Precedence>>();
+        }
+
+        public IEnumerable<TokenFeature<ContextProvider>> GetTokenContextProvider(ITokenPool tokenPool)
+        {
+            return Enumerable.Empty<TokenFeature<ContextProvider>>();
         }
 
         private IEnumerable<ILanguageMetadata> EnumerateDirectChildren()
@@ -99,11 +104,6 @@ namespace IronText.Framework
         IEnumerable<IScanRule> ILanguageMetadata.GetScanRules(ITokenPool tokenPool)
         {
             return Enumerable.Empty<IScanRule>();
-        }
-
-        public IEnumerable<Type> GetContextTypes()
-        {
-            yield break;
         }
 
         public virtual IEnumerable<ReportBuilder> GetReportBuilders()

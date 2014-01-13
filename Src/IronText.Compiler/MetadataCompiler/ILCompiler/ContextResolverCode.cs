@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using IronText.Algorithm;
 using IronText.Extensibility;
+using IronText.Extensibility.Bindings.Cil;
 using IronText.Framework;
 using IronText.Lib.Ctem;
 using IronText.Lib.IL;
@@ -10,11 +14,11 @@ using IronText.Lib.Shared;
 
 namespace IronText.MetadataCompiler
 {
-    public class ContextResolverCode : IContextResolverCode
+    class ContextResolverCode : IContextResolverCode
     {
         private readonly EmitSyntax         emit;
         private readonly Pipe<EmitSyntax>   ldRootContext;
-        private LocalParseContext[]         localContexts;
+        private ProductionContextLink[]         localContexts;
         private Pipe<EmitSyntax>            ldLookback;
 
         public ContextResolverCode(
@@ -22,7 +26,7 @@ namespace IronText.MetadataCompiler
             Pipe<EmitSyntax>    ldRootContext,
             Pipe<EmitSyntax>    ldLookback,
             Type                rootContextType,
-            LocalParseContext[] localContexts = null)
+            ProductionContextLink[] localContexts = null)
         {
             this.emit = emit;
             this.ldRootContext   = ldRootContext;
@@ -33,13 +37,13 @@ namespace IronText.MetadataCompiler
 
         public Type RootContextType { get; set; }
 
-        public void LdContextType(Type type)
+        public void LdContextType(Type contextType)
         {
             if (localContexts != null && localContexts.Length != 0)
             {
                 var locals =
                     (from lc in localContexts
-                     where type.IsAssignableFrom(lc.ChildType)
+                     where contextType.IsAssignableFrom(lc.Joint.The<CilProductionContextBinding>().ContextType)
                      select lc)
                     .ToArray();
 
@@ -62,7 +66,7 @@ namespace IronText.MetadataCompiler
                                             map,
                                             labels.Length - 1,
                                             new IntInterval(0, short.MaxValue));
-                    System.Linq.Expressions.Expression<Action<IStackLookback<Msg>>> lookback = lb => lb.GetParentState();
+                    Expression<Action<IStackLookback<Msg>>> lookback = lb => lb.GetParentState();
                     switchGenerator.Build(
                         emit,
                         new Pipe<EmitSyntax>(il => il.Do(ldLookback).Call<IStackLookback<Msg>>(lookback)),
@@ -72,14 +76,14 @@ namespace IronText.MetadataCompiler
 
                             if (value == locals.Length)
                             {
-                                if (LdGlobalContext(type))
+                                if (LdGlobalContext(contextType))
                                 {
                                     il.Br(END);
                                 }
                                 else
                                 {
                                     il
-                                        .Ldstr(new QStr("Internal error: missing global context : " + type.FullName))
+                                        .Ldstr(new QStr("Internal error: missing global context : " + contextType.FullName))
                                         .Newobj((string msg) => new Exception(msg))
                                         .Throw()
                                         ;
@@ -88,16 +92,15 @@ namespace IronText.MetadataCompiler
                             else
                             {
                                 var lc = locals[value];
-                                if (LdRelativeContext(
-                                        lc.ContextTokenType,
-                                        il2 => il2
-                                            // Lookback for getting parent instance
+                                var fromType = lc.Joint.The<CilProductionContextProviderBinding>().TokenType;
+                                var path = new ContextBrowser(fromType).GetGetterPath(contextType);
+                                if (LdCallPath(path, il2 => il2
+                                    // Lookback for getting parent instance
                                                 .Do(ldLookback)
-                                                .Ldc_I4(lc.ContextLookbackPos)
-                                                .Call((IStackLookback<Msg> lb, int backOffset) 
+                                                .Ldc_I4(lc.ContextTokenLookback)
+                                                .Call((IStackLookback<Msg> lb, int backOffset)
                                                         => lb.GetValueAt(backOffset))
-                                                .Ldfld((Msg msg) => msg.Value),
-                                        type))
+                                                .Ldfld((Msg msg) => msg.Value)))
                                 {
                                     il.Br(END);
                                 }
@@ -114,30 +117,33 @@ namespace IronText.MetadataCompiler
                 }
             }
             
-            if (!LdGlobalContext(type))
+            if (!LdGlobalContext(contextType))
             {
                 throw new InvalidOperationException(
-                    "Context type '" + type.FullName + "' is not accessible.");
+                    "Context type '" + contextType.FullName + "' is not accessible.");
             }
         }
 
         private bool LdGlobalContext(Type type)
         {
-            return LdRelativeContext(RootContextType, ldRootContext, type); 
+            return LdRelativeContext(RootContextType, type, ldRootContext); 
         }
 
-        private bool LdRelativeContext(Type fromContext, Pipe<EmitSyntax> ldFromContext, Type type)
+        private bool LdRelativeContext(Type fromType, Type toType, Pipe<EmitSyntax> ldFromContext)
         {
-            var contextBrowser = new ContextBrowser(fromContext);
+            var path = new ContextBrowser(fromType).GetGetterPath(toType);
+            return LdCallPath(path, ldFromContext);
+        }
 
-            var path = contextBrowser.GetGetterPath(type);
+        private bool LdCallPath(IEnumerable<MethodInfo> path, Pipe<EmitSyntax> ldFrom)
+        {
             if (path == null)
             {
                 return false;
             }
 
-            // Load root context
-            emit.Do(ldFromContext);
+            // Load start value
+            emit.Do(ldFrom);
 
             foreach (var getter in path)
             {

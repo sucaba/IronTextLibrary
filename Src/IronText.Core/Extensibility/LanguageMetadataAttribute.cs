@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using IronText.Collections;
 using IronText.Framework;
 using IronText.Misc;
 
@@ -26,9 +27,14 @@ namespace IronText.Extensibility
             return Enumerable.Empty<TokenRef>();
         }
 
-        public virtual IEnumerable<KeyValuePair<TokenRef,Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
+        public virtual IEnumerable<TokenFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
         {
-            return Enumerable.Empty<KeyValuePair<TokenRef,Precedence>>();
+            return Enumerable.Empty<TokenFeature<Precedence>>();
+        }
+
+        public IEnumerable<TokenFeature<ContextProvider>> GetTokenContextProvider(ITokenPool tokenPool)
+        {
+            return Enumerable.Empty<TokenFeature<ContextProvider>>();
         }
 
         public virtual IEnumerable<ILanguageMetadata> GetChildren()
@@ -49,11 +55,6 @@ namespace IronText.Extensibility
         public virtual IEnumerable<IScanRule> GetScanRules(ITokenPool tokenPool)
         {
             return Enumerable.Empty<IScanRule>();
-        }
-
-        public virtual IEnumerable<Type> GetContextTypes()
-        {
-            return Enumerable.Empty<Type>();
         }
 
         public virtual IEnumerable<ReportBuilder> GetReportBuilders()

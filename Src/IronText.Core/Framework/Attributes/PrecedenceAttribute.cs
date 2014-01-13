@@ -31,7 +31,7 @@ namespace IronText.Framework
 
         public Associativity Associativity { get; set; }
 
-        public override IEnumerable<KeyValuePair<TokenRef,Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
+        public override IEnumerable<TokenFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
         {
             TokenRef token;
             if (TermText == null)
@@ -43,7 +43,7 @@ namespace IronText.Framework
                 token = tokenPool.GetLiteral(TermText);
             }
 
-            yield return new KeyValuePair<TokenRef,Precedence>(
+            yield return new TokenFeature<Precedence>(
                 token,
                 new Precedence(PrecedenceValue, Associativity));
         }

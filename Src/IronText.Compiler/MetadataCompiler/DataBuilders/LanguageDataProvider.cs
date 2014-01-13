@@ -223,6 +223,26 @@ namespace IronText.MetadataCompiler
                 }
             }
 
+            foreach (TokenFeature<ContextProvider> contextProvider in definition.ContextProviders)
+            {
+                var symbol = tokenResolver.GetSymbol(contextProvider.Token);
+                if (symbol == null)
+                {
+                    continue;
+                }
+
+                if (symbol.ProductionContextProvider == null)
+                {
+                    symbol.ProductionContextProvider = new ProductionContextProvider();
+                }
+
+                symbol.ProductionContextProvider.AvailableContexts.Add(
+                    new ProductionContext(contextProvider.Token.Name)
+                    {
+                        Joint = { new CilProductionContextBinding(contextProvider.Value.ContextType) }
+                    });
+            }
+
             result.Start = tokenResolver.GetSymbol(definition.Start);
 
             // Define grammar rules
@@ -252,26 +272,20 @@ namespace IronText.MetadataCompiler
                     action.Joint.Add(new CilProductionActionBinding(ruleDef.ActionBuilder));
                 }
 
-                if (!AssignPrecedence(production, ruleDef.Precedence))
-                {
-                    throw new InvalidOperationException(
-                        "Two or more production definitions have conflicting precedence: " +
-                        ruleDef);
-                }
+                production.ExplicitPrecedence = ruleDef.Precedence;
 
                 ruleDef.Index = production.Index;
             }
 
-            foreach (KeyValuePair<TokenRef, Precedence> pair in definition.Precedence)
+            foreach (TokenFeature<Precedence> feature in definition.Precedence)
             {
-                int id = tokenResolver.GetId(pair.Key);
-                result.Symbols[id].Precedence = pair.Value;
+                int id = tokenResolver.GetId(feature.Token);
+                result.Symbols[id].Precedence = feature.Value;
             }
 
             foreach (var scanMode in definition.ScanModes)
             {
                 var condition = ConditionFromType(result, scanMode.ScanModeType);
-                
 
                 foreach (var scanRule in scanMode.ScanRules)
                 {
@@ -372,12 +386,12 @@ namespace IronText.MetadataCompiler
             return new AmbiguousSymbol(main, other);
         }
 
-        private static List<LocalParseContext> CollectLocalContexts(
+        private static List<ProductionContextLink> CollectLocalContexts(
             EbnfGrammar      grammar,
             ILrDfa           lrDfa,
             IList<ParseRule> allParseRules)
         {
-            var result = new List<LocalParseContext>();
+            var result = new List<ProductionContextLink>();
             var states = lrDfa.States;
             int stateCount = states.Length;
             for (int parentState = 0; parentState != stateCount; ++parentState)
@@ -392,38 +406,46 @@ namespace IronText.MetadataCompiler
                         continue;
                     }
 
-                    foreach (var parentRuleDef in allParseRules)
+                    var parentProd = grammar.Productions[item.ProductionId];
+
+                    foreach (var parentRule in allParseRules)
                     {
-                        if (parentRuleDef.Index != item.ProductionId || !parentRuleDef.IsContextRule)
+                        if (parentRule.Index != item.ProductionId || !parentRule.IsContextRule)
                         {
                             continue;
                         }
 
-                        Debug.Assert(!parentRuleDef.Parts[0].IsLiteral);
-                        Type contextTokenType = parentRuleDef.Parts[0].TokenType;
+                        Debug.Assert(!parentRule.Parts[0].IsLiteral);
+                        Type contextTokenType = parentRule.Parts[0].TokenType;
 
-                        TokenRef childToken = parentRuleDef.Parts[item.Position];
+                        TokenRef childToken = parentRule.Parts[item.Position];
 
                         foreach (ParseRule childRule in allParseRules)
                         {
+                            var childProd = grammar.Productions[childRule.Index];
+
                             if (!childRule.Left.Equals(childToken) 
                                 || childRule.InstanceDeclaringType == null)
                             {
                                 continue;
                             }
 
-                            var contextBrowser = new ContextBrowser(contextTokenType);
-                            if (null == contextBrowser.GetGetterPath(childRule.InstanceDeclaringType))
+                            if (CanLinkProductionContext(contextTokenType, childRule))
                             {
                                 continue;
                             }
 
-                            var l = new LocalParseContext
+                            var l = new ProductionContextLink
                                 {
-                                    ParentState = parentState,
-                                    ContextTokenType = contextTokenType,
-                                    ContextLookbackPos = item.Position,
-                                    ChildType = childRule.InstanceDeclaringType
+                                    ParentState          = parentState,
+                                    ContextTokenLookback = item.Position,
+                                    Joint = 
+                                    {
+                                        childRule.InstanceDeclaringType == null 
+                                            ? null 
+                                            : new CilProductionContextBinding(childRule.InstanceDeclaringType),
+                                        new CilProductionContextProviderBinding(contextTokenType)
+                                    }
                                 };
 
                             if (!result.Contains(l))
@@ -438,12 +460,9 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        private static bool TypeHasContextPropertyOfType(
-            Type parentDeclaringType, 
-            Type childRuleDeclaringType)
+        private static bool CanLinkProductionContext(Type contextTokenType, ParseRule childRule)
         {
-            var contextBrowser = new ContextBrowser(parentDeclaringType);
-            return null != contextBrowser.GetGetterPath(childRuleDeclaringType);
+            return null == new ContextBrowser(contextTokenType).GetGetterPath(childRule.InstanceDeclaringType);
         }
 
         public override bool Equals(object obj)
@@ -496,38 +515,6 @@ namespace IronText.MetadataCompiler
                     Member = languageName.DefinitionType,
                     Message = string.Format(fmt, args)
                 });
-        }
-
-        private void Error(string fmt, params object[] args)
-        {
-            logging.Write(
-                new LogEntry
-                {
-                    Severity = Severity.Error,
-                    Member = languageName.DefinitionType,
-                    Message = string.Format(fmt, args)
-                });
-        }
-
-        private static bool AssignPrecedence(Production prod, Precedence value)
-        {
-            if (value != null)
-            {
-                var existingPrecedence = prod.ExplicitPrecedence;
-                if (existingPrecedence != null)
-                {
-                    if (!object.Equals(value, existingPrecedence))
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    prod.ExplicitPrecedence = value;
-                }
-            }
-
-            return true;
         }
     }
 }

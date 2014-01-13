@@ -73,11 +73,6 @@ namespace IronText.Framework
             }
         }
 
-        public override IEnumerable<Type> GetContextTypes()
-        {
-            yield break;
-        }
-
         protected TokenRef GetThisToken(ITokenPool tokenPool)
         {
             if (HasThisAsToken)

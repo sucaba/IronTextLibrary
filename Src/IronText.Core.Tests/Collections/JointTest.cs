@@ -41,6 +41,15 @@ namespace IronText.Tests.Collections
             Assert.AreEqual(instances, target.All<ITestService>().ToArray());
         }
 
+        [Test]
+        public void NullCanBeAddedAndHasNoEffect()
+        {
+            var target = new Joint();
+            target.Add(null);
+            Assert.IsFalse(target.Has<object>());
+            Assert.Throws<InvalidOperationException>(() => target.The<object>());
+        }
+
         public interface ITestService { }
 
         public class TestService : ITestService { }

@@ -1,5 +1,4 @@
-﻿
-namespace IronText.Framework
+﻿namespace IronText.Framework
 {
     public interface ILogging
     {

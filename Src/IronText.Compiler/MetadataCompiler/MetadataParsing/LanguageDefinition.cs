@@ -12,7 +12,7 @@ namespace IronText.MetadataCompiler
         private readonly List<ILanguageMetadata> allMetadata;
         private readonly List<ParseRule>      allParseRules;
         private readonly List<ScanMode>       allScanModes;
-        private readonly List<KeyValuePair<TokenRef,Precedence>> precedence;
+        private readonly List<TokenFeature<Precedence>> precedence;
 
         private readonly MergeRule[] allMergeRules;
 
@@ -77,8 +77,6 @@ namespace IronText.MetadataCompiler
                         startType.FullName));
             }
 
-            // allParseRules = allParseRules.Distinct().ToList();
-
             this.allMergeRules 
                 = allMetadata
                     .SelectMany(meta => meta.GetMergeRules(collector.AllTokens, this))
@@ -98,9 +96,9 @@ namespace IronText.MetadataCompiler
             allScanModes = scanDataCollector.ScanModes;
             LinkRelatedTokens(allScanModes);
 
-            precedence = allMetadata.SelectMany(m => m.GetTokenPrecedence(tokenPool)).ToList();
+            precedence          = allMetadata.SelectMany(m => m.GetTokenPrecedence(tokenPool)).ToList();
 
-            ContextTypes = allMetadata.SelectMany(m => m.GetContextTypes()).ToArray();
+            ContextProviders    = allMetadata.SelectMany(m => m.GetTokenContextProvider(tokenPool)).ToList();
 
             this.ReportBuilders = allMetadata.SelectMany(m => m.GetReportBuilders()).ToArray();
         }
@@ -162,7 +160,7 @@ namespace IronText.MetadataCompiler
 
         public ITokenRefResolver TokenRefResolver { get; private set; }
 
-        public IEnumerable<KeyValuePair<TokenRef,Precedence>> Precedence { get { return precedence; } }
+        public IEnumerable<TokenFeature<Precedence>> Precedence { get { return precedence; } }
 
         public IList<ParseRule> ParseRules { get { return allParseRules; } }
 
@@ -170,7 +168,7 @@ namespace IronText.MetadataCompiler
 
         public IList<ScanMode> ScanModes { get { return allScanModes; } }
 
-        public IList<Type> ContextTypes { get; private set; }
+        public IList<TokenFeature<ContextProvider>> ContextProviders { get; private set; }
 
         TokenRef ITokenPool.AugmentedStart
         {

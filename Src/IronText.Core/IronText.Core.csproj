@@ -116,8 +116,11 @@
     <Compile Include="Build\IDerivedBuilderMetadata.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilMergerBinding.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilProductionActionBinding.cs" />
+    <Compile Include="Extensibility\Bindings\Cil\CilProductionContextBinding.cs" />
+    <Compile Include="Extensibility\Bindings\Cil\CilProductionContextProviderBinding.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilScanConditionBinding.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilScanProductionBinding.cs" />
+    <Compile Include="Extensibility\ContextProvider.cs" />
     <Compile Include="Extensibility\Reporting\CharRange.cs" />
     <Compile Include="Extensibility\Reporting\IParserAutomata.cs" />
     <Compile Include="Extensibility\Reporting\IParserDotItem.cs" />
@@ -130,12 +133,12 @@
     <Compile Include="Extensibility\Reporting\IReportData.cs" />
     <Compile Include="Extensibility\IMergeActionCode.cs" />
     <Compile Include="Extensibility\Scanning\ISingleTokenScanRule.cs" />
-    <Compile Include="Extensibility\LocalParseContext.cs" />
     <Compile Include="Extensibility\Parsing\MergeRule.cs" />
     <Compile Include="Extensibility\Scanning\IScanRule.cs" />
     <Compile Include="Extensibility\Scanning\ISkipScanRule.cs" />
     <Compile Include="Extensibility\Scanning\SingleTokenScanRule.cs" />
     <Compile Include="Extensibility\Scanning\SkipScanRule.cs" />
+    <Compile Include="Extensibility\TokenFeature.cs" />
     <Compile Include="Framework\Attributes\LanguageFlags.cs" />
     <Compile Include="Framework\ILanguageRuntime.cs" />
     <Compile Include="Framework\ParserAction.cs" />
@@ -178,9 +181,9 @@
     <Compile Include="Collections\IndexedCollection.cs" />
     <Compile Include="Collections\ReferenceCollection.cs" />
     <Compile Include="Collections\IIndexable.cs" />
-    <Compile Include="Collections\IReferenceContainer.cs" />
     <Compile Include="Collections\IOwner.cs" />
     <Compile Include="Framework\Reflection\CompositeProductionAction.cs" />
+    <Compile Include="Framework\Reflection\ProductionContextProviderCollection.cs" />
     <Compile Include="Framework\Reflection\IEbnfContext.cs" />
     <Compile Include="Framework\Reflection\IScanConditionContext.cs" />
     <Compile Include="Framework\Reflection\Merger.cs" />
@@ -195,6 +198,9 @@
     <Compile Include="Framework\Reflection\PlatformBindings\IProductionActionBinding.cs" />
     <Compile Include="Framework\Reflection\ProductionAction.cs" />
     <Compile Include="Framework\Reflection\ProductionCollection.cs" />
+    <Compile Include="Framework\Reflection\ProductionContext.cs" />
+    <Compile Include="Framework\Reflection\ProductionContextCollection.cs" />
+    <Compile Include="Framework\Reflection\ProductionContextProvider.cs" />
     <Compile Include="Framework\Reflection\ScanCondition.cs" />
     <Compile Include="Framework\Reflection\ScanConditionCollection.cs" />
     <Compile Include="Framework\Reflection\ScanPattern.cs" />

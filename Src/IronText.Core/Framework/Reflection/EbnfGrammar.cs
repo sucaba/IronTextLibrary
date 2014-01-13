@@ -41,12 +41,14 @@ namespace IronText.Framework.Reflection
 
         #endregion Predefined tokens
 
-        private readonly ProductionCollection       productions;
-        private readonly ProductionActionCollection productionActions;
-        private readonly SymbolCollection           symbols;
-        private readonly ScanConditionCollection    scanConditions;
-        private readonly MergerCollection           mergers;
-        private readonly ScanProductionCollection   scanProductions;
+        private readonly ProductionCollection               productions;
+        private readonly ProductionActionCollection         productionActions;
+        private readonly SymbolCollection                   symbols;
+        private readonly ScanConditionCollection            scanConditions;
+        private readonly MergerCollection                   mergers;
+        private readonly ScanProductionCollection           scanProductions;
+        private readonly ProductionContextCollection         reductionContexts;
+        private readonly ProductionContextProviderCollection reductionContextProviders;
 
         public EbnfGrammar()
         {
@@ -56,6 +58,8 @@ namespace IronText.Framework.Reflection
             scanConditions    = new ScanConditionCollection(this);
             scanProductions   = new ScanProductionCollection(this);
             mergers           = new MergerCollection(this);
+            reductionContexts = new ProductionContextCollection(this);
+            reductionContextProviders = new ProductionContextProviderCollection(this);
 
             for (int i = PredefinedSymbolCount; i != 0; --i)
             {
@@ -75,17 +79,21 @@ namespace IronText.Framework.Reflection
             AugmentedProduction = Productions.Define((Symbol)Symbols[AugmentedStart], new Symbol[] { null });
         }
 
-        public Production               AugmentedProduction { get; private set; }
+        public Production                         AugmentedProduction       { get; private set; }
 
-        public SymbolCollection         Symbols { get { return symbols; } }
+        public SymbolCollection                   Symbols                   { get { return symbols; } }
 
-        public ProductionCollection     Productions { get { return productions; } }
+        public ProductionCollection               Productions               { get { return productions; } }
 
-        public ScanProductionCollection ScanProductions { get { return scanProductions; } }
+        public ScanProductionCollection           ScanProductions           { get { return scanProductions; } }
 
-        public ScanConditionCollection  ScanConditions { get { return scanConditions; } }
+        public ScanConditionCollection            ScanConditions            { get { return scanConditions; } }
 
-        public MergerCollection         Mergers { get { return mergers; } }
+        public MergerCollection                   Mergers                   { get { return mergers; } }
+
+        public ProductionContextCollection         ProductionContexts         { get { return reductionContexts; } }
+
+        public ProductionContextProviderCollection ProductionContextProviders { get { return reductionContextProviders; } }
 
         public Symbol Start
         {

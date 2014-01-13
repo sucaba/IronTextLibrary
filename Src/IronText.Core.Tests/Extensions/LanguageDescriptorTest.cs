@@ -63,14 +63,14 @@ namespace IronText.Tests.Extensibility
                 return Enumerable.Empty<TokenRef>();
             }
 
-            public IEnumerable<Type> GetContextTypes()
+            IEnumerable<TokenFeature<Precedence>> ILanguageMetadata.GetTokenPrecedence(ITokenPool tokenPool)
             {
-                return Enumerable.Empty<Type>();
+                return Enumerable.Empty<TokenFeature<Precedence>>();
             }
 
-            IEnumerable<KeyValuePair<TokenRef,Precedence>> ILanguageMetadata.GetTokenPrecedence(ITokenPool tokenPool)
+            IEnumerable<TokenFeature<ContextProvider>> ILanguageMetadata.GetTokenContextProvider(ITokenPool tokenPool)
             {
-                return Enumerable.Empty<KeyValuePair<TokenRef,Precedence>>();
+                return Enumerable.Empty<TokenFeature<ContextProvider>>();
             }
 
             IEnumerable<ReportBuilder> ILanguageMetadata.GetReportBuilders()

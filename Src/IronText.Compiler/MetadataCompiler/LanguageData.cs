@@ -34,7 +34,7 @@ namespace IronText.MetadataCompiler
         internal ITokenRefResolver    TokenRefResolver; 
 
         // Rule ID -> ActionBuilder
-        public LocalParseContext[]    LocalParseContexts;
+        public ProductionContextLink[]    LocalParseContexts;
         
         public Dictionary<Type, ITdfaData>  ScanModeTypeToDfa;
         public IIntMap<int>           AmbTokenToMainToken;

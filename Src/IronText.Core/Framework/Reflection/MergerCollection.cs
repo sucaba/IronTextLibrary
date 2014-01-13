@@ -8,8 +8,8 @@ namespace IronText.Framework.Reflection
 {
     public class MergerCollection : IndexedCollection<Merger, IEbnfContext>
     {
-        public MergerCollection(EbnfGrammar ebnfGrammar)
-            : base(ebnfGrammar)
+        public MergerCollection(IEbnfContext ebnfContext)
+            : base(ebnfContext)
         {
         }
     }

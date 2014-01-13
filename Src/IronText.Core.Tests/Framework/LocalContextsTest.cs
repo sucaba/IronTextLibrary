@@ -7,14 +7,14 @@ namespace IronText.Tests.Framework
     public class LocalContextsTest
     {
         [Test]
-        public void UnabigousGrammarTest()
+        public void UnambigousGrammarTest()
         {
             var context = new WithLocalScope();
             Language.Parse(context, "foo");
         }
 
         [Test]
-        public void AbigousGrammarTest()
+        public void AmbigousGrammarTest()
         {
             var context = new AmbiguousWithLocalScope();
             Language.Parse(context, "foo");

@@ -7,12 +7,16 @@ namespace IronText.Framework.Reflection
 {
     public interface IEbnfContext
     {
-        Symbol Start { get; }
+        Symbol                              Start                      { get; }
 
-        SymbolCollection Symbols { get; }
+        SymbolCollection                    Symbols                    { get; }
 
-        ProductionCollection Productions { get; }
+        ProductionCollection                Productions                { get; }
         
-        ScanProductionCollection ScanProductions { get; }
+        ScanProductionCollection            ScanProductions            { get; }
+
+        ProductionContextCollection         ProductionContexts         { get; }
+
+        ProductionContextProviderCollection ProductionContextProviders { get; }
     }
 }

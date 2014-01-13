@@ -10,22 +10,22 @@ namespace IronText.MetadataCompiler
 {
     class ContextBrowser
     {
-        private readonly Type rootContextType;
+        private readonly Type fromType;
 
-        public ContextBrowser(Type rootContextType)
+        public ContextBrowser(Type fromType)
         {
-            this.rootContextType = rootContextType;
+            this.fromType = fromType;
         }
 
         public IEnumerable<MethodInfo> GetGetterPath(Type type)
         {
-            if (type.IsAssignableFrom(rootContextType))
+            if (type.IsAssignableFrom(fromType))
             {
                 return Enumerable.Empty<MethodInfo>();
             }
 
             var path = Graph.Search(
-                        EnumerateContextGetters(rootContextType),
+                        EnumerateContextGetters(fromType),
                         m => EnumerateContextGetters(m.ReturnType),
                         m => type.IsAssignableFrom(m.ReturnType));
 

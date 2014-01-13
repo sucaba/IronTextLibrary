@@ -26,29 +26,31 @@ namespace IronText.Framework.Reflection
                 throw new ArgumentNullException("pattern");
             }
 
-            Outcome  = outcome;
-            OutcomeToken   = outcome.Index;
-            Pattern = pattern.ToArray();
-            PatternTokens  = Array.ConvertAll(Pattern, s => s == null ? -1 : s.Index);
+            Outcome       = outcome;
+            OutcomeToken  = outcome.Index;
+            Pattern       = pattern.ToArray();
+            PatternTokens = Array.ConvertAll(Pattern, s => s == null ? -1 : s.Index);
 
             _action = new SimpleProductionAction(Size);
         }
 
-        public int    OutcomeToken    { get; private set; }
+        public int               OutcomeToken   { get; private set; }
 
-        public int[]  PatternTokens    { get; private set; }
+        public int[]             PatternTokens  { get; private set; }
 
-        public int Size { get { return PatternTokens.Length; } }
+        public Symbol            Outcome        { get; private set; }
 
-        public bool IsStart { get { return Context.Start == Outcome; } }
+        public Symbol[]          Pattern        { get; private set; }
+
+        public ProductionContext ProductionContext { get; private set; }
+
+        public Precedence        ExplicitPrecedence { get; set; }
+
+        public int  Size        { get { return PatternTokens.Length; } }
+
+        public bool IsStart     { get { return Context.Start == Outcome; } }
 
         public bool IsAugmented { get { return EbnfGrammar.AugmentedStart == OutcomeToken; } }
-
-        public Symbol Outcome { get; private set; }
-
-        public Symbol[] Pattern { get; private set; }
-
-        public Precedence ExplicitPrecedence { get; set; }
 
         public Precedence EffectivePrecedence
         {

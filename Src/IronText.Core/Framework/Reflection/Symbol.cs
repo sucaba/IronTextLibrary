@@ -37,6 +37,12 @@ namespace IronText.Framework.Reflection
         /// </summary>
         public override bool IsTerminal { get { return Productions.Count == 0; } }
 
+        public override ReferenceCollection<Production> Productions { get { return productions; } }
+
+        public Joint Joint { get; private set; }
+
+        public ProductionContextProvider ProductionContextProvider { get; set; }
+
         /// <summary>
         /// Determines token-level precedence
         /// </summary>
@@ -45,10 +51,6 @@ namespace IronText.Framework.Reflection
         /// the last terminal token in a production pattern.
         /// </remarks>
         public override Precedence Precedence { get; set; }
-
-        public override ReferenceCollection<Production> Productions { get { return productions; } }
-
-        public Joint Joint { get; private set; }
 
         public override bool Equals(object obj)
         {

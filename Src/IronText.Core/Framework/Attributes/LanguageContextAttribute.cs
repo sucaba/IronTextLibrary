@@ -12,10 +12,5 @@ namespace IronText.Framework
         {
             return MetadataParser.EnumerateAndBind(((PropertyInfo)Member).PropertyType);
         }
-
-        public override IEnumerable<Type> GetContextTypes()
-        {
-            yield return ((PropertyInfo)Member).PropertyType;
-        }
     }
 }

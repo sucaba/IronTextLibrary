@@ -7,7 +7,7 @@ using System.Text;
 
 namespace IronText.Collections
 {
-    public class ReferenceCollection<T> : IReferenceContainer<T>, IEnumerable<T>
+    public class ReferenceCollection<T> : IEnumerable<T>
         where T : class
     {
         private const int InitialCapacity = 1;
@@ -32,7 +32,7 @@ namespace IronText.Collections
             return items[0];
         }
 
-        public IOwner<T> Owner
+        internal IOwner<T> Owner
         {
             get { return this.owner; }
             set

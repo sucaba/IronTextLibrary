@@ -17,17 +17,17 @@ namespace IronText.Extensibility
 
         void Bind(ILanguageMetadata parent, MemberInfo member);
 
-        IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category);
+        IEnumerable<TokenRef>      GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category);
 
-        IEnumerable<KeyValuePair<TokenRef,Precedence>> GetTokenPrecedence(ITokenPool tokenPool);
+        IEnumerable<TokenFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool);
 
-        IEnumerable<ParseRule> GetParseRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool);
+        IEnumerable<TokenFeature<ContextProvider>> GetTokenContextProvider(ITokenPool tokenPool);
 
-        IEnumerable<MergeRule> GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool);
+        IEnumerable<ParseRule>     GetParseRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool);
 
-        IEnumerable<IScanRule> GetScanRules(ITokenPool tokenPool);
+        IEnumerable<MergeRule>     GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool);
 
-        IEnumerable<Type> GetContextTypes();
+        IEnumerable<IScanRule>     GetScanRules(ITokenPool tokenPool);
 
         IEnumerable<ReportBuilder> GetReportBuilders();
     }
