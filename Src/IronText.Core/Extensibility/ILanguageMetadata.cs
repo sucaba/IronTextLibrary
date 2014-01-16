@@ -21,7 +21,7 @@ namespace IronText.Extensibility
 
         IEnumerable<TokenFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool);
 
-        IEnumerable<TokenFeature<ContextProvider>> GetTokenContextProvider(ITokenPool tokenPool);
+        IEnumerable<TokenFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool);
 
         IEnumerable<ParseRule>     GetParseRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool);
 

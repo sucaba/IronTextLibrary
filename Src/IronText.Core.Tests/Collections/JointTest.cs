@@ -20,6 +20,7 @@ namespace IronText.Tests.Collections
 
             Assert.IsTrue(target.Has<TestService>());
             Assert.AreSame(inst, target.The<TestService>());
+            Assert.AreSame(inst, target.Get<TestService>());
 
             Assert.IsTrue(target.Has<ITestService>());
             Assert.AreSame(inst, target.The<ITestService>());
@@ -39,6 +40,11 @@ namespace IronText.Tests.Collections
             Assert.IsTrue(target.Has<TestService>());
             Assert.AreEqual(instances, target.All<TestService>().ToArray());
             Assert.AreEqual(instances, target.All<ITestService>().ToArray());
+
+            Assert.Throws<InvalidOperationException>(() => target.The<TestService>());
+            Assert.Throws<InvalidOperationException>(() => target.The<ITestService>());
+            Assert.Throws<InvalidOperationException>(() => target.Get<ITestService>());
+            Assert.Throws<InvalidOperationException>(() => target.Get<TestService>());
         }
 
         [Test]
@@ -47,6 +53,7 @@ namespace IronText.Tests.Collections
             var target = new Joint();
             target.Add(null);
             Assert.IsFalse(target.Has<object>());
+            Assert.IsNull(target.Get<object>());
             Assert.Throws<InvalidOperationException>(() => target.The<object>());
         }
 

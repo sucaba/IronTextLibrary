@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using IronText.Algorithm;
@@ -11,6 +12,12 @@ namespace IronText.Tests.Framework
     [TestFixture]
     public class InheritanceTest
     {
+        [Test]
+        public void Dbg()
+        {
+            Console.WriteLine(Language.Get(typeof(MainLang)).Grammar);
+        }
+
         [Test]
         public void MainLanguageModuleProvidesRuleMethods()
         {

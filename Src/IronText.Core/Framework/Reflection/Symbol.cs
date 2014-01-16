@@ -13,14 +13,15 @@ namespace IronText.Framework.Reflection
     /// </summary>
     public class Symbol : SymbolBase
     {
-        public readonly ReferenceCollection<Production> productions;
+        private readonly ReferenceCollection<Production> _productions;
 
         public Symbol(string name)
         {
             this.Name = name ?? EbnfGrammar.UnnamedTokenName;
 
-            this.productions = new ReferenceCollection<Production>();
-            this.Joint       = new Joint();
+            this._productions              = new ReferenceCollection<Production>();
+            this.ProductionContextProvider = new ProductionContextProvider();
+            this.Joint                     = new Joint();
         }
 
         public bool IsAugmentedStart { get { return EbnfGrammar.AugmentedStart == Index; } }
@@ -37,11 +38,11 @@ namespace IronText.Framework.Reflection
         /// </summary>
         public override bool IsTerminal { get { return Productions.Count == 0; } }
 
-        public override ReferenceCollection<Production> Productions { get { return productions; } }
+        public override ReferenceCollection<Production> Productions { get { return _productions; } }
 
         public Joint Joint { get; private set; }
 
-        public ProductionContextProvider ProductionContextProvider { get; set; }
+        public ProductionContextProvider ProductionContextProvider { get; private set; }
 
         /// <summary>
         /// Determines token-level precedence

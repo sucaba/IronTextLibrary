@@ -43,7 +43,8 @@ namespace IronText.MetadataCompiler
             {
                 var locals =
                     (from lc in localContexts
-                     where contextType.IsAssignableFrom(lc.Joint.The<CilProductionContextBinding>().ContextType)
+                     let binding = lc.Joint.Get<CilProductionContextBinding>()
+                     where binding != null && contextType.IsAssignableFrom(binding.ContextType)
                      select lc)
                     .ToArray();
 
@@ -92,7 +93,7 @@ namespace IronText.MetadataCompiler
                             else
                             {
                                 var lc = locals[value];
-                                var fromType = lc.Joint.The<CilProductionContextProviderBinding>().TokenType;
+                                var fromType = lc.Joint.The<CilContextProvider>().ProviderType;
                                 var path = new ContextBrowser(fromType).GetGetterPath(contextType);
                                 if (LdCallPath(path, il2 => il2
                                     // Lookback for getting parent instance

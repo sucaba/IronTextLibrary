@@ -117,10 +117,9 @@
     <Compile Include="Extensibility\Bindings\Cil\CilMergerBinding.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilProductionActionBinding.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilProductionContextBinding.cs" />
-    <Compile Include="Extensibility\Bindings\Cil\CilProductionContextProviderBinding.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilScanConditionBinding.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilScanProductionBinding.cs" />
-    <Compile Include="Extensibility\ContextProvider.cs" />
+    <Compile Include="Extensibility\CilContextProvider.cs" />
     <Compile Include="Extensibility\Reporting\CharRange.cs" />
     <Compile Include="Extensibility\Reporting\IParserAutomata.cs" />
     <Compile Include="Extensibility\Reporting\IParserDotItem.cs" />

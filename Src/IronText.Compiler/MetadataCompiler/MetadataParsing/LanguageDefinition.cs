@@ -9,9 +9,9 @@ namespace IronText.MetadataCompiler
 {
     internal class LanguageDefinition : ITokenPool
     {
-        private readonly List<ILanguageMetadata> allMetadata;
-        private readonly List<ParseRule>      allParseRules;
-        private readonly List<ScanMode>       allScanModes;
+        private readonly List<ILanguageMetadata>        allMetadata;
+        private readonly List<ParseRule>                allParseRules;
+        private readonly List<ScanMode>                 allScanModes;
         private readonly List<TokenFeature<Precedence>> precedence;
 
         private readonly MergeRule[] allMergeRules;
@@ -47,8 +47,6 @@ namespace IronText.MetadataCompiler
             {
                 this.IsValid = false;
             }
-
-            // collector.AddMeta(new InheritanceMetadata());
 
             this.allMetadata = collector.AllMetadata;
             this.allParseRules = collector.AllParseRules;
@@ -98,7 +96,7 @@ namespace IronText.MetadataCompiler
 
             precedence          = allMetadata.SelectMany(m => m.GetTokenPrecedence(tokenPool)).ToList();
 
-            ContextProviders    = allMetadata.SelectMany(m => m.GetTokenContextProvider(tokenPool)).ToList();
+            ContextProviders    = allMetadata.SelectMany((m, index) => m.GetTokenContextProvider(tokenPool)).ToList();
 
             this.ReportBuilders = allMetadata.SelectMany(m => m.GetReportBuilders()).ToArray();
         }
@@ -168,7 +166,7 @@ namespace IronText.MetadataCompiler
 
         public IList<ScanMode> ScanModes { get { return allScanModes; } }
 
-        public IList<TokenFeature<ContextProvider>> ContextProviders { get; private set; }
+        public IList<TokenFeature<CilContextProvider>> ContextProviders { get; private set; }
 
         TokenRef ITokenPool.AugmentedStart
         {

@@ -24,6 +24,16 @@ namespace IronText.Collections
             return all.Where(type.IsInstanceOfType).Single();
         }
 
+        public T Get<T>()
+        {
+            return (T)Get(typeof(T));
+        }
+
+        private object Get(Type type)
+        {
+            return all.Where(type.IsInstanceOfType).SingleOrDefault();
+        }
+
         public IEnumerable<T> All<T>()
         {
             return all.OfType<T>();

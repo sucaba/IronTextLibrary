@@ -223,24 +223,20 @@ namespace IronText.MetadataCompiler
                 }
             }
 
-            foreach (TokenFeature<ContextProvider> contextProvider in definition.ContextProviders)
+            foreach (TokenFeature<Precedence> feature in definition.Precedence)
             {
-                var symbol = tokenResolver.GetSymbol(contextProvider.Token);
-                if (symbol == null)
-                {
-                    continue;
-                }
+                int id = tokenResolver.GetId(feature.Token);
+                result.Symbols[id].Precedence = feature.Value;
+            }
 
-                if (symbol.ProductionContextProvider == null)
+            foreach (TokenFeature<CilContextProvider> feature in definition.ContextProviders)
+            {
+                var symbol = tokenResolver.GetSymbol(feature.Token);
+                if (symbol != null)
                 {
-                    symbol.ProductionContextProvider = new ProductionContextProvider();
+                    // TODO: symbol.ProductionContextProvider.AvailableContexts.Add( );
+                    symbol.ProductionContextProvider.Joint.Add(feature.Value);
                 }
-
-                symbol.ProductionContextProvider.AvailableContexts.Add(
-                    new ProductionContext(contextProvider.Token.Name)
-                    {
-                        Joint = { new CilProductionContextBinding(contextProvider.Value.ContextType) }
-                    });
             }
 
             result.Start = tokenResolver.GetSymbol(definition.Start);
@@ -258,7 +254,11 @@ namespace IronText.MetadataCompiler
                     production.Action =
                         new SimpleProductionAction(pattern.Length)
                         {
-                            Joint = { new CilProductionActionBinding(ruleDef.ActionBuilder) }
+                            Joint = { 
+                                ruleDef.InstanceDeclaringType == null 
+                                    ? null 
+                                    : new CilProductionContextBinding(ruleDef.InstanceDeclaringType),
+                                new CilProductionActionBinding(ruleDef.ActionBuilder) }
                         };
                 }
                 else
@@ -275,12 +275,6 @@ namespace IronText.MetadataCompiler
                 production.ExplicitPrecedence = ruleDef.Precedence;
 
                 ruleDef.Index = production.Index;
-            }
-
-            foreach (TokenFeature<Precedence> feature in definition.Precedence)
-            {
-                int id = tokenResolver.GetId(feature.Token);
-                result.Symbols[id].Precedence = feature.Value;
             }
 
             foreach (var scanMode in definition.ScanModes)
@@ -407,52 +401,35 @@ namespace IronText.MetadataCompiler
                     }
 
                     var parentProd = grammar.Productions[item.ProductionId];
-
-                    foreach (var parentRule in allParseRules)
+                    if (!parentProd.Pattern[0].ProductionContextProvider.Joint.Has<CilContextProvider>())
                     {
-                        if (parentRule.Index != item.ProductionId || !parentRule.IsContextRule)
+                        continue;
+                    }
+
+                    var provider = parentProd.Pattern[0].ProductionContextProvider.Joint.The<CilContextProvider>();
+                    Type contextTokenType = provider.ProviderType;
+
+                    Symbol childSymbol = parentProd.Pattern[item.Position];
+
+                    foreach (var childProd in childSymbol.Productions)
+                    {
+                        if (CanLinkProductionContext(contextTokenType, childProd))
                         {
                             continue;
                         }
 
-                        Debug.Assert(!parentRule.Parts[0].IsLiteral);
-                        Type contextTokenType = parentRule.Parts[0].TokenType;
-
-                        TokenRef childToken = parentRule.Parts[item.Position];
-
-                        foreach (ParseRule childRule in allParseRules)
-                        {
-                            var childProd = grammar.Productions[childRule.Index];
-
-                            if (!childRule.Left.Equals(childToken) 
-                                || childRule.InstanceDeclaringType == null)
+                        var l = new ProductionContextLink
                             {
-                                continue;
-                            }
-
-                            if (CanLinkProductionContext(contextTokenType, childRule))
-                            {
-                                continue;
-                            }
-
-                            var l = new ProductionContextLink
+                                ParentState = parentState,
+                                ContextTokenLookback = item.Position,
+                                Joint = 
                                 {
-                                    ParentState          = parentState,
-                                    ContextTokenLookback = item.Position,
-                                    Joint = 
-                                    {
-                                        childRule.InstanceDeclaringType == null 
-                                            ? null 
-                                            : new CilProductionContextBinding(childRule.InstanceDeclaringType),
-                                        new CilProductionContextProviderBinding(contextTokenType)
-                                    }
-                                };
+                                    provider,
+                                    ((SimpleProductionAction)childProd.Action).Joint.Get<CilProductionContextBinding>(),
+                                }
+                            };
 
-                            if (!result.Contains(l))
-                            {
-                                result.Add(l);
-                            }
-                        }
+                        result.Add(l);
                     }
                 }
             }
@@ -460,9 +437,15 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        private static bool CanLinkProductionContext(Type contextTokenType, ParseRule childRule)
+        private static bool CanLinkProductionContext(Type contextTokenType, Production childProd)
         {
-            return null == new ContextBrowser(contextTokenType).GetGetterPath(childRule.InstanceDeclaringType);
+            var contextBinding = ((SimpleProductionAction)childProd.Action).Joint.Get<CilProductionContextBinding>();
+            if (contextBinding == null)
+            {
+                return false;
+            }
+
+            return null == new ContextBrowser(contextTokenType).GetGetterPath(contextBinding.ContextType);
         }
 
         public override bool Equals(object obj)

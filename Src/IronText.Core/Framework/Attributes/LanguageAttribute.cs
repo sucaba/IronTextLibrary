@@ -76,9 +76,9 @@ namespace IronText.Framework
             return Enumerable.Empty<TokenFeature<Precedence>>();
         }
 
-        public IEnumerable<TokenFeature<ContextProvider>> GetTokenContextProvider(ITokenPool tokenPool)
+        public IEnumerable<TokenFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool)
         {
-            return Enumerable.Empty<TokenFeature<ContextProvider>>();
+            return Enumerable.Empty<TokenFeature<CilContextProvider>>();
         }
 
         private IEnumerable<ILanguageMetadata> EnumerateDirectChildren()

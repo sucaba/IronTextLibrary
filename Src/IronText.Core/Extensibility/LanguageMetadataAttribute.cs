@@ -20,7 +20,7 @@ namespace IronText.Extensibility
 
         public ILanguageMetadata Parent { get; private set; }
 
-        public MemberInfo Member { get; private set; }
+        public MemberInfo Member { get; set; }
 
         public virtual IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category)
         {
@@ -32,9 +32,9 @@ namespace IronText.Extensibility
             return Enumerable.Empty<TokenFeature<Precedence>>();
         }
 
-        public IEnumerable<TokenFeature<ContextProvider>> GetTokenContextProvider(ITokenPool tokenPool)
+        public virtual IEnumerable<TokenFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool)
         {
-            return Enumerable.Empty<TokenFeature<ContextProvider>>();
+            return Enumerable.Empty<TokenFeature<CilContextProvider>>();
         }
 
         public virtual IEnumerable<ILanguageMetadata> GetChildren()
