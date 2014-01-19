@@ -190,6 +190,7 @@ namespace IronText.Framework
                     }
             );
 
+            rule.Hint = method;
             return new[] { rule };
         }
 

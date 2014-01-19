@@ -7,13 +7,15 @@ using IronText.Framework.Reflection;
 
 namespace IronText.Extensibility.Cil
 {
-    public class CilProductionActionBinding : IProductionActionBinding
+    public class CilProductionAction : IProductionActionBinding
     {
         public readonly ProductionActionBuilder Builder;
 
-        public CilProductionActionBinding(ProductionActionBuilder builder)
+        public CilProductionAction(ProductionActionBuilder builder)
         {
             this.Builder = builder;
         }
+
+        internal object Hint { get; set; }
     }
 }

@@ -18,26 +18,9 @@ namespace IronText.MetadataCompiler
             return new ContextBrowser(provider.ProviderType).GetGetterPath(type);
         }
 
-        public static bool CanProvideContextFor(this ProductionContextProvider provider, Production production)
+        public static IEnumerable<Type> GetAllContextTypes(this CilContextProvider provider)
         {
-            var binding = provider.Joint.Get<CilContextProvider>();
-            if (binding == null)
-            {
-                return false;
-            }
-
-            return binding.CanProvideContextFor(production);
-        }
-
-        public static bool CanProvideContextFor(this CilContextProvider provider, Production production)
-        {
-            var contextBinding = ((SimpleProductionAction)production.Action).Joint.Get<CilProductionContext>();
-            if (contextBinding == null)
-            {
-                return false;
-            }
-
-            return null != provider.GetGetterPath(contextBinding.ContextType);
+            return new ContextBrowser(provider.ProviderType).GetAllContextTypes();
         }
     }
 
@@ -65,7 +48,6 @@ namespace IronText.MetadataCompiler
             return path;
         }
 
-#if false
         public IEnumerable<Type> GetAllContextTypes()
         {
             var result = Graph.AllVertexes(
@@ -76,7 +58,6 @@ namespace IronText.MetadataCompiler
 
             return result;
         }
-#endif
 
         private static IEnumerable<MethodInfo> EnumerateContextGetters(Type type)
         {

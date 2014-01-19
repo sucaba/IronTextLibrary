@@ -115,7 +115,7 @@
     <Compile Include="Diagnostics\IGraphView.cs" />
     <Compile Include="Build\IDerivedBuilderMetadata.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilMergerBinding.cs" />
-    <Compile Include="Extensibility\Bindings\Cil\CilProductionActionBinding.cs" />
+    <Compile Include="Extensibility\Bindings\Cil\CilProductionAction.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilProductionContext.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilScanConditionBinding.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilScanProductionBinding.cs" />

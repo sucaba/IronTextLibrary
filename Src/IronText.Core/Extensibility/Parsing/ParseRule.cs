@@ -38,6 +38,8 @@ namespace IronText.Extensibility
 
         public ProductionActionBuilder ActionBuilder { get; private set; }
 
+        internal object Hint { get; set; }
+
         public override bool Equals(object obj)
         {
             var casted = obj as ParseRule;

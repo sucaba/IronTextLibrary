@@ -12,13 +12,14 @@ namespace IronText.Framework.Reflection
     /// </summary>
     public sealed class SimpleProductionAction : ProductionAction
     {
-        public SimpleProductionAction(int argumentCount)
-            : this(0, argumentCount)
+        public SimpleProductionAction(int argumentCount, ProductionContext context = null)
+            : this(0, argumentCount, context)
         {
         }
 
-        public SimpleProductionAction(int offset, int argumentCount)
+        public SimpleProductionAction(int offset, int argumentCount, ProductionContext context = null)
         {
+            this.Context       = context ?? ProductionContext.Global;
             this.Offset        = offset;
             this.ArgumentCount = argumentCount;
             this.Joint         = new Joint();
@@ -29,6 +30,8 @@ namespace IronText.Framework.Reflection
         public int Offset { get; private set; }
 
         public int ArgumentCount { get; private set; }
+
+        public ProductionContext Context { get; private set; }
 
         protected override ProductionAction DoClone()
         {

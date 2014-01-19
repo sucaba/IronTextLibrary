@@ -234,7 +234,17 @@ namespace IronText.MetadataCompiler
                 var symbol = tokenResolver.GetSymbol(feature.Token);
                 if (symbol != null)
                 {
-                    // TODO: symbol.ProductionContextProvider.AvailableContexts.Add( );
+                    foreach (var contextType in feature.Value.GetAllContextTypes())
+                    {
+                        ProductionContext context;
+                        if (result.ProductionContexts.FindOrAdd(contextType.AssemblyQualifiedName, out context))
+                        {
+                            context.Joint.Add(new CilProductionContext(contextType));
+                        }
+
+                        symbol.ProductionContextProvider.AvailableContexts.Add(context);
+                    }
+
                     symbol.ProductionContextProvider.Joint.Add(feature.Value);
                 }
             }
@@ -251,26 +261,24 @@ namespace IronText.MetadataCompiler
                 Production production;
                 if (result.Productions.FindOrAdd(outcome, pattern, out production))
                 {
-                    production.Action =
-                        new SimpleProductionAction(pattern.Length)
-                        {
-                            Joint = { 
-                                ruleDef.InstanceDeclaringType == null 
-                                    ? null 
-                                    : new CilProductionContext(ruleDef.InstanceDeclaringType),
-                                new CilProductionActionBinding(ruleDef.ActionBuilder) }
-                        };
+                    ProductionContext context;
+
+                    var contextType = ruleDef.InstanceDeclaringType;
+                    if (contextType == null)
+                    {
+                        context = ProductionContext.Global;
+                    }
+                    else if (result.ProductionContexts.FindOrAdd(contextType.AssemblyQualifiedName, out context))
+                    {
+                        context.Joint.Add(new CilProductionContext(contextType));
+                    }
+
+                    production.Action = new SimpleProductionAction(pattern.Length, context);
                 }
-                else
-                {
-                    // Note: Following adds action alternative as another
-                    // binding such that stack reduction happens after all
-                    // bindings are executed.  It would be mistake to do
-                    // Actions.Add(...) in this case because semantical 
-                    // reduction happens after each ProductionAction.
-                    var action = (SimpleProductionAction)production.Action;
-                    action.Joint.Add(new CilProductionActionBinding(ruleDef.ActionBuilder));
-                }
+
+                var action = (SimpleProductionAction)production.Action;
+
+                action.Joint.Add(new CilProductionAction(ruleDef.ActionBuilder) { Hint = ruleDef.Hint });
 
                 production.ExplicitPrecedence = ruleDef.Precedence;
 
@@ -386,42 +394,41 @@ namespace IronText.MetadataCompiler
             IList<ParseRule> allParseRules)
         {
             var result = new List<ProductionContextLink>();
-            var states = lrDfa.States;
+
+            var states     = lrDfa.States;
             int stateCount = states.Length;
+
             for (int parentState = 0; parentState != stateCount; ++parentState)
             {
-                var stateItems = states[parentState];
-
-                foreach (var item in stateItems.Items)
+                foreach (var item in states[parentState].Items)
                 {
                     if (item.Position == 0 || item.IsReduce)
                     {
                         // Skip items in which local context cannot be provided.
-                        // TODO: Can be tunnelled for the upper parent?
                         continue;
                     }
 
-                    var parentProd = grammar.Productions[item.ProductionId];
-                    // TODO: Take context not only from the first token in rule
-                    var provider = parentProd.Pattern[0].ProductionContextProvider;
-                    var childSymbol = parentProd.Pattern[item.Position];
+                    var providingProd = grammar.Productions[item.ProductionId];
+                    var provider      = providingProd.Pattern[0].ProductionContextProvider;
+                    var childSymbol   = providingProd.Pattern[item.Position];
 
-                    foreach (var childProd in childSymbol.Productions)
+                    foreach (var consumingProd in childSymbol.Productions)
                     {
-                        if (provider.CanProvideContextFor(childProd))
+                        var action = (SimpleProductionAction)consumingProd.Action;
+
+                        if (provider.AvailableContexts.Contains(action.Context))
                         {
-                            var l = new ProductionContextLink
+                            result.Add(
+                                new ProductionContextLink
                                 {
                                     ParentState = parentState,
                                     ContextTokenLookback = item.Position,
                                     Joint = 
                                     {
                                         provider.Joint.The<CilContextProvider>(),
-                                        ((SimpleProductionAction)childProd.Action).Joint.Get<CilProductionContext>(),
+                                        action.Context.Joint.Get<CilProductionContext>(),
                                     }
-                                };
-
-                            result.Add(l);
+                                });
                         }
                     }
                 }
