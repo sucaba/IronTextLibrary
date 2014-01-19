@@ -40,11 +40,11 @@ namespace IronText.Tests.Extensibility
 
             public IEnumerable<ILanguageMetadata> GetChildren() { return Enumerable.Empty<ILanguageMetadata>(); }
 
-            public IEnumerable<ParseRule> GetParseRules(IEnumerable<TokenRef> leftSides, ITokenPool moduleBuilder)
+            public IEnumerable<CilProductionDef> GetProductions(IEnumerable<TokenRef> leftSides, ITokenPool moduleBuilder)
             {
                 foreach (var leftSide in leftSides.ToArray())
                 {
-                    yield return new ParseRule
+                    yield return new CilProductionDef
                     (
                         left : moduleBuilder.GetToken(typeof(void)),
                         parts : new[] { moduleBuilder.GetToken(typeof(int)) },
@@ -79,9 +79,9 @@ namespace IronText.Tests.Extensibility
                 return Enumerable.Empty<ReportBuilder>();
             }
 
-            public IEnumerable<MergeRule> GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
+            public IEnumerable<CilMergerDef> GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
             {
-                return Enumerable.Empty<MergeRule>();
+                return Enumerable.Empty<CilMergerDef>();
             }
         }
     }

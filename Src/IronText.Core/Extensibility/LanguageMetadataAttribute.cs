@@ -43,14 +43,14 @@ namespace IronText.Extensibility
             return Enumerable.Empty<ILanguageMetadata>();
         }
 
-        public virtual IEnumerable<ParseRule> GetParseRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
+        public virtual IEnumerable<CilProductionDef> GetProductions(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
         {
-            return Enumerable.Empty<ParseRule>();
+            return Enumerable.Empty<CilProductionDef>();
         }
 
-        public virtual IEnumerable<MergeRule> GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
+        public virtual IEnumerable<CilMergerDef> GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
         {
-            return Enumerable.Empty<MergeRule>();
+            return Enumerable.Empty<CilMergerDef>();
         }
 
         public virtual IEnumerable<IScanRule> GetScanRules(ITokenPool tokenPool)

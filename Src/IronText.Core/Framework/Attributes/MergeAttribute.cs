@@ -11,7 +11,7 @@ namespace IronText.Framework
     {
         private MethodInfo Method { get { return (MethodInfo)Member; } }
 
-        public override IEnumerable<MergeRule> GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
+        public override IEnumerable<CilMergerDef> GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
         {
             var returnToken = tokenPool.GetToken(Method.ReturnType);
             if (leftSides.Contains(returnToken))
@@ -19,7 +19,7 @@ namespace IronText.Framework
                 var type = Method.ReturnType;
                 var method = Method;
 
-                yield return new MergeRule
+                yield return new CilMergerDef
                 {
                     Token = returnToken,
                     ActionBuilder = code =>

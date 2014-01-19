@@ -92,14 +92,14 @@ namespace IronText.Framework
             return result;
         }
 
-        IEnumerable<ParseRule> ILanguageMetadata.GetParseRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
+        IEnumerable<CilProductionDef> ILanguageMetadata.GetProductions(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
         {
-            return Enumerable.Empty<ParseRule>();
+            return Enumerable.Empty<CilProductionDef>();
         }
 
-        IEnumerable<MergeRule> ILanguageMetadata.GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
+        IEnumerable<CilMergerDef> ILanguageMetadata.GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
         {
-            return Enumerable.Empty<MergeRule>();
+            return Enumerable.Empty<CilMergerDef>();
         }
 
         IEnumerable<IScanRule> ILanguageMetadata.GetScanRules(ITokenPool tokenPool)

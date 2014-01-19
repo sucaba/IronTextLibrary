@@ -11,11 +11,11 @@ namespace IronText.MetadataCompiler
     internal class LanguageDefinition : ITokenPool
     {
         private readonly List<ILanguageMetadata>        allMetadata;
-        private readonly List<ParseRule>                allParseRules;
+        private readonly List<CilProductionDef>                allParseRules;
         private readonly List<ScanMode>                 allScanModes;
         private readonly List<TokenFeature<Precedence>> precedence;
 
-        private readonly MergeRule[] allMergeRules;
+        private readonly CilMergerDef[] allMergeRules;
 
         public LanguageDefinition(Type startType, ILogging logging)
         {
@@ -161,9 +161,9 @@ namespace IronText.MetadataCompiler
 
         public IEnumerable<TokenFeature<Precedence>> Precedence { get { return precedence; } }
 
-        public IList<ParseRule> ParseRules { get { return allParseRules; } }
+        public IList<CilProductionDef> ProductionDefs { get { return allParseRules; } }
 
-        public IList<MergeRule> MergeRules { get { return allMergeRules; } }
+        public IList<CilMergerDef> MergerDefs { get { return allMergeRules; } }
 
         public IList<ScanMode> ScanModes { get { return allScanModes; } }
 

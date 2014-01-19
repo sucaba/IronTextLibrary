@@ -2,11 +2,11 @@
 using System.Linq;
 using IronText.Framework;
 
-namespace IronText.Extensibility
+namespace IronText.Extensibility.Cil
 {
-    public sealed class ParseRule : IEquatable<ParseRule>
+    public sealed class CilProductionDef : IEquatable<CilProductionDef>
     {
-        public ParseRule(
+        public CilProductionDef(
             TokenRef             left,
             TokenRef[]           parts,
             ProductionActionBuilder actionBuilder,
@@ -42,11 +42,11 @@ namespace IronText.Extensibility
 
         public override bool Equals(object obj)
         {
-            var casted = obj as ParseRule;
+            var casted = obj as CilProductionDef;
             return Equals(casted);
         }
 
-        public bool Equals(ParseRule other)
+        public bool Equals(CilProductionDef other)
         {
             return other != null
                 && object.Equals(Left, other.Left)

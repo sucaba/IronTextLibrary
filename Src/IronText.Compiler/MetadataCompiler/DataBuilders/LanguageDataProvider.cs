@@ -100,7 +100,7 @@ namespace IronText.MetadataCompiler
                     });
             }
 
-            var localParseContexts = CollectLocalContexts(grammar, parserDfa, definition.ParseRules);
+            var localParseContexts = CollectLocalContexts(grammar, parserDfa, definition.ProductionDefs);
 
             // Prepare language data for the language assembly generation
             result.Name                = languageName;
@@ -252,10 +252,10 @@ namespace IronText.MetadataCompiler
             result.Start = tokenResolver.GetSymbol(definition.Start);
 
             // Define grammar rules
-            foreach (var ruleDef in definition.ParseRules)
+            foreach (var prodDef in definition.ProductionDefs)
             {
-                Symbol outcome = tokenResolver.GetSymbol(ruleDef.Left);
-                var pattern = Array.ConvertAll(ruleDef.Parts, tokenResolver.GetSymbol);
+                Symbol outcome = tokenResolver.GetSymbol(prodDef.Left);
+                var pattern = Array.ConvertAll(prodDef.Parts, tokenResolver.GetSymbol);
 
                 // Try to find existing rules whith same token-signature
                 Production production;
@@ -263,7 +263,7 @@ namespace IronText.MetadataCompiler
                 {
                     ProductionContext context;
 
-                    var contextType = ruleDef.InstanceDeclaringType;
+                    var contextType = prodDef.InstanceDeclaringType;
                     if (contextType == null)
                     {
                         context = ProductionContext.Global;
@@ -278,11 +278,11 @@ namespace IronText.MetadataCompiler
 
                 var action = (SimpleProductionAction)production.Action;
 
-                action.Joint.Add(new CilProductionAction(ruleDef.ActionBuilder) { Hint = ruleDef.Hint });
+                action.Joint.Add(prodDef);
 
-                production.ExplicitPrecedence = ruleDef.Precedence;
+                production.ExplicitPrecedence = prodDef.Precedence;
 
-                ruleDef.Index = production.Index;
+                prodDef.Index = production.Index;
             }
 
             foreach (var scanMode in definition.ScanModes)
@@ -328,14 +328,12 @@ namespace IronText.MetadataCompiler
                 }
             }
 
-            foreach (var mergeRule in definition.MergeRules)
+            foreach (var mergerDef in definition.MergerDefs)
             {
-                int token = tokenResolver.GetId(mergeRule.Token);
-                mergeRule.TokenId = token;
+                int token = tokenResolver.GetId(mergerDef.Token);
+                var symbol = (Symbol)result.Symbols[token];
 
-                var merger = new Merger((Symbol)result.Symbols[token]);
-                merger.Joint.Add(new CilMergerBinding { Builder = mergeRule.ActionBuilder });
-                
+                var merger = new Merger(symbol) { Joint = { mergerDef } };
                 result.Mergers.Add(merger);
             }
 
@@ -391,7 +389,7 @@ namespace IronText.MetadataCompiler
         private static List<ProductionContextLink> CollectLocalContexts(
             EbnfGrammar      grammar,
             ILrDfa           lrDfa,
-            IList<ParseRule> allParseRules)
+            IList<CilProductionDef> allParseRules)
         {
             var result = new List<ProductionContextLink>();
 

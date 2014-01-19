@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using IronText.Extensibility;
+using IronText.Extensibility.Cil;
 using IronText.Lib.IL;
 using IronText.Misc;
 
@@ -43,21 +44,21 @@ namespace IronText.Framework
 
         protected abstract TokenRef[] DoGetRuleMask(MethodInfo methodInfo, ITokenPool tokenPool);
 
-        public override IEnumerable<ParseRule> GetParseRules(IEnumerable<TokenRef> tokens, ITokenPool tokenPool)
+        public override IEnumerable<CilProductionDef> GetProductions(IEnumerable<TokenRef> tokens, ITokenPool tokenPool)
         {
             if (!isValid)
             {
-                return Enumerable.Empty<ParseRule>();
+                return Enumerable.Empty<CilProductionDef>();
             }
 
             return tokens.SelectMany(token => GetExpansionRules(token, tokenPool)).ToArray();
         }
 
-        private IEnumerable<ParseRule> GetExpansionRules(TokenRef token, ITokenPool tokenPool)
+        private IEnumerable<CilProductionDef> GetExpansionRules(TokenRef token, ITokenPool tokenPool)
         {
             if (token.IsLiteral)
             {
-                return Enumerable.Empty<ParseRule>();
+                return Enumerable.Empty<CilProductionDef>();
             }
 
             var method = this.Method;
@@ -69,7 +70,7 @@ namespace IronText.Framework
             }
             else
             {
-                return Enumerable.Empty<ParseRule>();
+                return Enumerable.Empty<CilProductionDef>();
             }
         }
 
@@ -108,13 +109,13 @@ namespace IronText.Framework
             }
         }
 
-        protected IEnumerable<ParseRule> DoGetRules(ITokenPool tokenPool, MethodInfo method, TokenRef leftSide)
+        protected IEnumerable<CilProductionDef> DoGetRules(ITokenPool tokenPool, MethodInfo method, TokenRef leftSide)
         {
             TokenRef left = tokenPool.GetToken(method.ReturnType);
 
             if (!object.Equals(left, leftSide))
             {
-                return Enumerable.Empty<ParseRule>();
+                return Enumerable.Empty<CilProductionDef>();
             }
 
             var parts = new List<TokenRef>();
@@ -131,7 +132,7 @@ namespace IronText.Framework
 
             SubstituteRuleMask(tokenPool, method, parts, ruleMask);
 
-            var rule = new ParseRule
+            var rule = new CilProductionDef
             (
                 left          : left,
                 parts         : parts.ToArray(),

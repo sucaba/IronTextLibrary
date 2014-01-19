@@ -114,8 +114,6 @@
     <Compile Include="Diagnostics\GvGraphView.cs" />
     <Compile Include="Diagnostics\IGraphView.cs" />
     <Compile Include="Build\IDerivedBuilderMetadata.cs" />
-    <Compile Include="Extensibility\Bindings\Cil\CilMergerBinding.cs" />
-    <Compile Include="Extensibility\Bindings\Cil\CilProductionAction.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilProductionContext.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilScanConditionBinding.cs" />
     <Compile Include="Extensibility\Bindings\Cil\CilScanProductionBinding.cs" />
@@ -132,7 +130,7 @@
     <Compile Include="Extensibility\Reporting\IReportData.cs" />
     <Compile Include="Extensibility\IMergeActionCode.cs" />
     <Compile Include="Extensibility\Scanning\ISingleTokenScanRule.cs" />
-    <Compile Include="Extensibility\Parsing\MergeRule.cs" />
+    <Compile Include="Extensibility\Parsing\CilMergerDef.cs" />
     <Compile Include="Extensibility\Scanning\IScanRule.cs" />
     <Compile Include="Extensibility\Scanning\ISkipScanRule.cs" />
     <Compile Include="Extensibility\Scanning\SingleTokenScanRule.cs" />
@@ -282,7 +280,7 @@
     <Compile Include="Misc\ExpressionUtils.cs" />
     <Compile Include="Misc\PropertyComparer.cs" />
     <Compile Include="Misc\ReflectionUtils.cs" />
-    <Compile Include="Extensibility\Parsing\ParseRule.cs" />
+    <Compile Include="Extensibility\Bindings\Cil\CilProductionDef.cs" />
     <Compile Include="Framework\Attributes\LanguageContextAttribute.cs" />
     <Compile Include="Framework\Attributes\UseTokenAttribute.cs" />
     <Compile Include="Framework\Attributes\ParseAttribute.cs" />

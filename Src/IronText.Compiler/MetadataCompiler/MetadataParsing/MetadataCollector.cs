@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using IronText.Extensibility;
+using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Misc;
 
@@ -21,7 +22,7 @@ namespace IronText.MetadataCompiler
     {
         private readonly List<ILanguageMetadata> validMetadata   = new List<ILanguageMetadata>();
         private readonly List<ILanguageMetadata> invalidMetadata = new List<ILanguageMetadata>();
-        private readonly List<ParseRule>         allParseRules   = new List<ParseRule>();
+        private readonly List<CilProductionDef>         allParseRules   = new List<CilProductionDef>();
         private readonly List<TokenRef>          allTokens       = new List<TokenRef>();
 
         private readonly ITokenPool              tokenPool;
@@ -37,7 +38,7 @@ namespace IronText.MetadataCompiler
 
         public List<ILanguageMetadata> AllMetadata { get { return validMetadata; } } 
 
-        public List<ParseRule> AllParseRules { get { return allParseRules; } } 
+        public List<CilProductionDef> AllParseRules { get { return allParseRules; } } 
 
         public List<TokenRef> AllTokens { get { return allTokens; } } 
 
@@ -65,7 +66,7 @@ namespace IronText.MetadataCompiler
             }
 
             // Provide new rules
-            var newParseRules = meta.GetParseRules(EnumerateSnapshot(allTokens), tokenPool);
+            var newParseRules = meta.GetProductions(EnumerateSnapshot(allTokens), tokenPool);
             foreach (var parseRule in newParseRules)
             {
                 this.AddRule(meta, parseRule);
@@ -78,7 +79,7 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        public void AddRule(ILanguageMetadata meta, ParseRule parseRule)
+        public void AddRule(ILanguageMetadata meta, CilProductionDef parseRule)
         {
             if (parseRule.Owner == meta || allParseRules.Any(r => r.Owner == meta && r.Equals(parseRule)))
             {
@@ -111,7 +112,7 @@ namespace IronText.MetadataCompiler
             var newTokens = new[] { token };
             foreach (var meta in validMetadata)
             {
-                var newParseRules = meta.GetParseRules(newTokens, tokenPool);
+                var newParseRules = meta.GetProductions(newTokens, tokenPool);
                 foreach (var parseRule in newParseRules)
                 {
                     this.AddRule(meta, parseRule);

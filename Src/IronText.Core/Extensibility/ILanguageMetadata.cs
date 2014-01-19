@@ -24,9 +24,9 @@ namespace IronText.Extensibility
 
         IEnumerable<TokenFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool);
 
-        IEnumerable<ParseRule>     GetParseRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool);
+        IEnumerable<CilProductionDef> GetProductions(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool);
 
-        IEnumerable<MergeRule>     GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool);
+        IEnumerable<CilMergerDef>     GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool);
 
         IEnumerable<IScanRule>     GetScanRules(ITokenPool tokenPool);
 
