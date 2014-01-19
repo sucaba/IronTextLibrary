@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 
 namespace IronText.Framework
 {
@@ -15,10 +14,10 @@ namespace IronText.Framework
 
         public bool Value { get; private set; }
 
-        public override IEnumerable<ILanguageMetadata> GetChildren()
+        public override IEnumerable<ICilMetadata> GetChildren()
         {
             var type = (Type)Member;
-            var result = new List<ILanguageMetadata>(EnumerateDirectChildren());
+            var result = new List<ICilMetadata>(EnumerateDirectChildren());
             result.AddRange(MetadataParser.GetTypeMetaChildren(Parent ?? this, type));
 
             return result.Where(child => !(child is ScanBaseAttribute));
@@ -40,7 +39,7 @@ namespace IronText.Framework
             return new TokenFeature<CilContextProvider>[0];
         }
 
-        private IEnumerable<ILanguageMetadata> EnumerateDirectChildren()
+        private IEnumerable<ICilMetadata> EnumerateDirectChildren()
         {
             var result = MetadataParser
                 .EnumerateAndBind(Member)

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IronText.Extensibility
 {
-    internal interface IBootstrapScanRule
+    internal interface ICilBootstrapScanRule
     {
         string BootstrapRegexPattern { get; }
     }

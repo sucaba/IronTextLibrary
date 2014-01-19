@@ -12,12 +12,12 @@ namespace IronText.Lib.Stem
     {
         public ClsAttribute() { }
 
-        protected override TokenRef[] DoGetRuleMask(MethodInfo methodInfo, ITokenPool tokenPool)
+        protected override CilSymbolRef[] DoGetRuleMask(MethodInfo methodInfo, ITokenPool tokenPool)
         {
-            var resultList = new List<TokenRef>();
+            var resultList = new List<CilSymbolRef>();
 
             resultList.AddRange(
-                Enumerable.Repeat(default(TokenRef),
+                Enumerable.Repeat(default(CilSymbolRef),
                 methodInfo.GetParameters().Length));
 
             resultList.Add(tokenPool.GetLiteral(StemScanner.RParen));

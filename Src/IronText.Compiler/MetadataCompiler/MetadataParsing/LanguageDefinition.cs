@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 using IronText.Framework;
 
 namespace IronText.MetadataCompiler
 {
     internal class LanguageDefinition : ITokenPool
     {
-        private readonly List<ILanguageMetadata>        allMetadata;
-        private readonly List<CilProductionDef>                allParseRules;
+        private readonly List<ICilMetadata>        allMetadata;
+        private readonly List<CilProductionDef>         allParseRules;
         private readonly List<ScanMode>                 allScanModes;
         private readonly List<TokenFeature<Precedence>> precedence;
 
@@ -102,7 +101,7 @@ namespace IronText.MetadataCompiler
             this.ReportBuilders = allMetadata.SelectMany(m => m.GetReportBuilders()).ToArray();
         }
 
-        private void CheckAllScanRulesDefined(List<TokenRef> undefinedTerminals, Type member, ILogging logging)
+        private void CheckAllScanRulesDefined(List<CilSymbolRef> undefinedTerminals, Type member, ILogging logging)
         {
             if (undefinedTerminals.Count == 0)
             {
@@ -142,7 +141,7 @@ namespace IronText.MetadataCompiler
             {
                 foreach (var scanRule in scanMode.ScanRules)
                 {
-                    foreach (TokenRef[] tokenGroup in scanRule.GetTokenRefGroups())
+                    foreach (CilSymbolRef[] tokenGroup in scanRule.GetTokenRefGroups())
                     {
                         if (tokenGroup.Any(TokenRefResolver.Contains))
                         {
@@ -153,7 +152,7 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        public TokenRef Start { get; set; }
+        public CilSymbolRef Start { get; set; }
 
         public ReportBuilder[] ReportBuilders { get; private set; }
 
@@ -169,24 +168,24 @@ namespace IronText.MetadataCompiler
 
         public IList<TokenFeature<CilContextProvider>> ContextProviders { get; private set; }
 
-        TokenRef ITokenPool.AugmentedStart
+        CilSymbolRef ITokenPool.AugmentedStart
         {
-            get { return TokenRef.Typed(typeof(void)); }
+            get { return CilSymbolRef.Typed(typeof(void)); }
         }
 
-        TokenRef ITokenPool.ScanSkipToken
+        CilSymbolRef ITokenPool.ScanSkipToken
         {
-            get { return TokenRef.Typed(typeof(void)); }
+            get { return CilSymbolRef.Typed(typeof(void)); }
         }
 
-        TokenRef ITokenPool.GetToken(Type tokenType)
+        CilSymbolRef ITokenPool.GetToken(Type tokenType)
         {
-            return TokenRef.Typed(tokenType);
+            return CilSymbolRef.Typed(tokenType);
         }
 
-        TokenRef ITokenPool.GetLiteral(string keyword)
+        CilSymbolRef ITokenPool.GetLiteral(string keyword)
         {
-            return TokenRef.Literal(keyword);
+            return CilSymbolRef.Literal(keyword);
         }
 
         private static IEnumerable<T> EnumerableMutable<T>(IList<T> list)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 using IronText.Lib.IL;
@@ -116,7 +115,7 @@ namespace IronText.MetadataCompiler
             ScanCondition foundCondition = null;
             foreach (var condition in scanConditions)
             {
-                var binding = condition.Joint.The<CilScanConditionBinding>();
+                var binding = condition.Joint.The<CilScanConditionDef>();
                 if (modeType.Equals(binding.ConditionType))
                 {
                     foundCondition = condition;

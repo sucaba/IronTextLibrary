@@ -7,32 +7,32 @@ namespace IronText.Tests.TestUtils
 {
     class StubTokenRefResolver : ITokenRefResolver
     {
-        public TokenDef Resolve(TokenRef tid)
+        public CilSymbolDef Resolve(CilSymbolRef tid)
         {
             throw new System.NotImplementedException();
         }
 
-        public Symbol GetSymbol(TokenRef tid)
+        public Symbol GetSymbol(CilSymbolRef tid)
         {
             return null;
         }
 
-        public int GetId(TokenRef tid)
+        public int GetId(CilSymbolRef tid)
         {
             return -1;
         }
 
-        public void Link(params TokenRef[] tokenRefs)
+        public void Link(params CilSymbolRef[] tokenRefs)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<TokenDef> Definitions
+        public IEnumerable<CilSymbolDef> Definitions
         {
             get { throw new NotImplementedException(); }
         }
 
-        public bool Contains(TokenRef tokenRef)
+        public bool Contains(CilSymbolRef tokenRef)
         {
             throw new NotImplementedException();
         }

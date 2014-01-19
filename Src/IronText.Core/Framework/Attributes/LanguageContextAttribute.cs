@@ -8,7 +8,7 @@ namespace IronText.Framework
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class SubContextAttribute : LanguageMetadataAttribute
     {
-        public override IEnumerable<ILanguageMetadata> GetChildren()
+        public override IEnumerable<ICilMetadata> GetChildren()
         {
             return MetadataParser.EnumerateAndBind(((PropertyInfo)Member).PropertyType);
         }

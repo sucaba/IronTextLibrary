@@ -10,13 +10,13 @@ namespace IronText.Extensibility
 {
     public class ScanMode
     {
-        private readonly List<IScanRule> scanRules = new List<IScanRule>();
+        private readonly List<ICilScanRule> scanRules = new List<ICilScanRule>();
         private int implicitRulesCount = 0;
 
         internal ScanMode(Type scanModeType)
         {
             this.ScanModeType = scanModeType;
-            this.ScanRules = new ReadOnlyCollection<IScanRule>(this.scanRules);
+            this.ScanRules = new ReadOnlyCollection<ICilScanRule>(this.scanRules);
         }
 
         public Type ScanModeType { get; private set; }
@@ -24,9 +24,9 @@ namespace IronText.Extensibility
         public int ActionIndexShift { get; internal set; }
 
         // Ordered scan rules
-        public ReadOnlyCollection<IScanRule> ScanRules { get; private set; }
+        public ReadOnlyCollection<ICilScanRule> ScanRules { get; private set; }
 
-        internal IScanRule AddImplicitLiteralRule(int ruleIndex, string literal)
+        internal ICilScanRule AddImplicitLiteralRule(int ruleIndex, string literal)
         {
             var result = CreateImplicitLiteralRule(literal);
             result.Index = ruleIndex;
@@ -35,15 +35,15 @@ namespace IronText.Extensibility
             return result;
         }
 
-        internal void AddRule(IScanRule rule)
+        internal void AddRule(ICilScanRule rule)
         {
             scanRules.Add(rule);
         }
 
-        private static IScanRule CreateImplicitLiteralRule(string literal)
+        private static ICilScanRule CreateImplicitLiteralRule(string literal)
         {
             // Generate implicit scan rule for the keyword
-            var result  = new SingleTokenScanRule
+            var result  = new CilSingleTokenScanRule
             {
                 LiteralText           = literal,
                 Disambiguation        = Disambiguation.Exclusive,

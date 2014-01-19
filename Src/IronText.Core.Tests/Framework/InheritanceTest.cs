@@ -75,9 +75,9 @@ namespace IronText.Tests.Framework
             }
         }
 
-        private readonly Dictionary<ILanguageMetadata, int> metaToIndent = new Dictionary<ILanguageMetadata, int>();
+        private readonly Dictionary<ICilMetadata, int> metaToIndent = new Dictionary<ICilMetadata, int>();
 
-        private IEnumerable<ILanguageMetadata> GetIndentedChildren(ILanguageMetadata parent)
+        private IEnumerable<ICilMetadata> GetIndentedChildren(ICilMetadata parent)
         {
             int indent;
             if (!metaToIndent.TryGetValue(parent, out indent))

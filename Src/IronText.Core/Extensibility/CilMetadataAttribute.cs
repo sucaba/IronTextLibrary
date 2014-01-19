@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using IronText.Collections;
-using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Misc;
 
 namespace IronText.Extensibility
 {
-    public abstract class LanguageMetadataAttribute : Attribute, ILanguageMetadata
+    public abstract class LanguageMetadataAttribute : Attribute, ICilMetadata
     {
-        public virtual void Bind(ILanguageMetadata parent, MemberInfo member)
+        public virtual void Bind(ICilMetadata parent, MemberInfo member)
         {
             this.Parent = parent;
             this.Member = member;
@@ -19,13 +18,13 @@ namespace IronText.Extensibility
 
         public virtual bool Validate(ILogging logging) { return true; }
 
-        public ILanguageMetadata Parent { get; private set; }
+        public ICilMetadata Parent { get; private set; }
 
         public MemberInfo Member { get; set; }
 
-        public virtual IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category)
+        public virtual IEnumerable<CilSymbolRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category)
         {
-            return Enumerable.Empty<TokenRef>();
+            return Enumerable.Empty<CilSymbolRef>();
         }
 
         public virtual IEnumerable<TokenFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
@@ -38,24 +37,24 @@ namespace IronText.Extensibility
             return Enumerable.Empty<TokenFeature<CilContextProvider>>();
         }
 
-        public virtual IEnumerable<ILanguageMetadata> GetChildren()
+        public virtual IEnumerable<ICilMetadata> GetChildren()
         {
-            return Enumerable.Empty<ILanguageMetadata>();
+            return Enumerable.Empty<ICilMetadata>();
         }
 
-        public virtual IEnumerable<CilProductionDef> GetProductions(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
+        public virtual IEnumerable<CilProductionDef> GetProductions(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool)
         {
             return Enumerable.Empty<CilProductionDef>();
         }
 
-        public virtual IEnumerable<CilMergerDef> GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
+        public virtual IEnumerable<CilMergerDef> GetMergeRules(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool)
         {
             return Enumerable.Empty<CilMergerDef>();
         }
 
-        public virtual IEnumerable<IScanRule> GetScanRules(ITokenPool tokenPool)
+        public virtual IEnumerable<ICilScanRule> GetScanRules(ITokenPool tokenPool)
         {
-            return Enumerable.Empty<IScanRule>();
+            return Enumerable.Empty<ICilScanRule>();
         }
 
         public virtual IEnumerable<ReportBuilder> GetReportBuilders()

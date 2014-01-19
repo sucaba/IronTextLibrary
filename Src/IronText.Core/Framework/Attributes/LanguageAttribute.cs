@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using IronText.Build;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 
 namespace IronText.Framework
 {
@@ -12,10 +11,10 @@ namespace IronText.Framework
     public class LanguageAttribute 
         : Attribute
         , IDerivedBuilderMetadata
-        , ILanguageMetadata
+        , ICilMetadata
     {
         private Type type;
-        private ILanguageMetadata parent;
+        private ICilMetadata parent;
 
         public LanguageAttribute() { }
 
@@ -48,17 +47,17 @@ namespace IronText.Framework
 
         bool IDerivedBuilderMetadata.IsIncludedInBuild(Type declaringType) { return true; }
 
-        ILanguageMetadata ILanguageMetadata.Parent { get { return parent; } }
+        ICilMetadata ICilMetadata.Parent { get { return parent; } }
 
-        MemberInfo ILanguageMetadata.Member { get { return type; } }
+        MemberInfo ICilMetadata.Member { get { return type; } }
 
-        void ILanguageMetadata.Bind(ILanguageMetadata parent, MemberInfo member)
+        void ICilMetadata.Bind(ICilMetadata parent, MemberInfo member)
         {
             this.parent = parent;
             this.type = (Type)member;
         }
 
-        IEnumerable<ILanguageMetadata> ILanguageMetadata.GetChildren()
+        IEnumerable<ICilMetadata> ICilMetadata.GetChildren()
         {
             var result = EnumerateDirectChildren()
                         .Concat(MetadataParser.GetTypeMetaChildren(parent, type))
@@ -67,9 +66,9 @@ namespace IronText.Framework
             return result;
         }
 
-        public IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category)
+        public IEnumerable<CilSymbolRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category)
         {
-            return Enumerable.Empty<TokenRef>();
+            return Enumerable.Empty<CilSymbolRef>();
         }
 
         public IEnumerable<TokenFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
@@ -82,7 +81,7 @@ namespace IronText.Framework
             return Enumerable.Empty<TokenFeature<CilContextProvider>>();
         }
 
-        private IEnumerable<ILanguageMetadata> EnumerateDirectChildren()
+        private IEnumerable<ICilMetadata> EnumerateDirectChildren()
         {
             var result = MetadataParser
                 .EnumerateAndBind(type)
@@ -92,19 +91,19 @@ namespace IronText.Framework
             return result;
         }
 
-        IEnumerable<CilProductionDef> ILanguageMetadata.GetProductions(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
+        IEnumerable<CilProductionDef> ICilMetadata.GetProductions(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool)
         {
             return Enumerable.Empty<CilProductionDef>();
         }
 
-        IEnumerable<CilMergerDef> ILanguageMetadata.GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
+        IEnumerable<CilMergerDef> ICilMetadata.GetMergeRules(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool)
         {
             return Enumerable.Empty<CilMergerDef>();
         }
 
-        IEnumerable<IScanRule> ILanguageMetadata.GetScanRules(ITokenPool tokenPool)
+        IEnumerable<ICilScanRule> ICilMetadata.GetScanRules(ITokenPool tokenPool)
         {
-            return Enumerable.Empty<IScanRule>();
+            return Enumerable.Empty<ICilScanRule>();
         }
 
         public virtual IEnumerable<ReportBuilder> GetReportBuilders()

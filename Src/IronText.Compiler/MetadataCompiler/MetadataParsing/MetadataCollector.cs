@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Misc;
 
@@ -20,10 +19,10 @@ namespace IronText.MetadataCompiler
     */
     class MetadataCollector : IMetadataCollector
     {
-        private readonly List<ILanguageMetadata> validMetadata   = new List<ILanguageMetadata>();
-        private readonly List<ILanguageMetadata> invalidMetadata = new List<ILanguageMetadata>();
+        private readonly List<ICilMetadata> validMetadata   = new List<ICilMetadata>();
+        private readonly List<ICilMetadata> invalidMetadata = new List<ICilMetadata>();
         private readonly List<CilProductionDef>         allParseRules   = new List<CilProductionDef>();
-        private readonly List<TokenRef>          allTokens       = new List<TokenRef>();
+        private readonly List<CilSymbolRef>          allTokens       = new List<CilSymbolRef>();
 
         private readonly ITokenPool              tokenPool;
         private readonly ILogging                logging;
@@ -36,17 +35,17 @@ namespace IronText.MetadataCompiler
 
         public bool HasInvalidData { get { return invalidMetadata.Count != 0; } }
 
-        public List<ILanguageMetadata> AllMetadata { get { return validMetadata; } } 
+        public List<ICilMetadata> AllMetadata { get { return validMetadata; } } 
 
         public List<CilProductionDef> AllParseRules { get { return allParseRules; } } 
 
-        public List<TokenRef> AllTokens { get { return allTokens; } } 
+        public List<CilSymbolRef> AllTokens { get { return allTokens; } } 
 
-        public void AddMeta(ILanguageMetadata meta)
+        public void AddMeta(ICilMetadata meta)
         {
-            if (validMetadata.Contains(meta, PropertyComparer<ILanguageMetadata>.Default)
+            if (validMetadata.Contains(meta, PropertyComparer<ICilMetadata>.Default)
                 ||
-                invalidMetadata.Contains(meta, PropertyComparer<ILanguageMetadata>.Default))
+                invalidMetadata.Contains(meta, PropertyComparer<ICilMetadata>.Default))
             {
                 return; 
             }
@@ -79,7 +78,7 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        public void AddRule(ILanguageMetadata meta, CilProductionDef parseRule)
+        public void AddRule(ICilMetadata meta, CilProductionDef parseRule)
         {
             if (parseRule.Owner == meta || allParseRules.Any(r => r.Owner == meta && r.Equals(parseRule)))
             {
@@ -99,7 +98,7 @@ namespace IronText.MetadataCompiler
             this.AddToken(parseRule.Left);
         }
 
-        public void AddToken(TokenRef token)
+        public void AddToken(CilSymbolRef token)
         {
             if (allTokens.Contains(token))
             {

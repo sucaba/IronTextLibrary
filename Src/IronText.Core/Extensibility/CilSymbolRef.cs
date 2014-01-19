@@ -4,31 +4,31 @@ using IronText.Framework;
 namespace IronText.Extensibility
 {
     [Serializable]
-    public class TokenRef : IEquatable<TokenRef>
+    public class CilSymbolRef : IEquatable<CilSymbolRef>
     {
         private readonly int hash;
 
-        public static TokenRef Typed(Type tokenType)
+        public static CilSymbolRef Typed(Type tokenType)
         {
             if (tokenType == null)
             {
                 throw new ArgumentException("tokenType");
             }
 
-            return new TokenRef(tokenType, null);
+            return new CilSymbolRef(tokenType, null);
         }
 
-        public static TokenRef Literal(string literal)
+        public static CilSymbolRef Literal(string literal)
         {
             if (string.IsNullOrEmpty(literal))
             {
                 throw new ArgumentException("literal");
             }
 
-            return new TokenRef(null, literal);
+            return new CilSymbolRef(null, literal);
         }
 
-        public TokenRef(Type tokenType, string literal)
+        public CilSymbolRef(Type tokenType, string literal)
         {
             this.TokenType   = tokenType;
             this.LiteralText = literal;
@@ -50,7 +50,7 @@ namespace IronText.Extensibility
             this.hash = hash;
         }
 
-        public bool Equals(TokenRef other)
+        public bool Equals(CilSymbolRef other)
         {
             return other != null
                 && hash == other.hash
@@ -60,7 +60,7 @@ namespace IronText.Extensibility
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as TokenRef);
+            return Equals(obj as CilSymbolRef);
         }
 
         public override int GetHashCode() { return hash; }

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using IronText.Algorithm;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 using IronText.Misc;

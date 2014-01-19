@@ -33,7 +33,7 @@ namespace IronText.Framework
 
         public override IEnumerable<TokenFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
         {
-            TokenRef token;
+            CilSymbolRef token;
             if (TermText == null)
             {
                 token = tokenPool.GetToken(TermType);

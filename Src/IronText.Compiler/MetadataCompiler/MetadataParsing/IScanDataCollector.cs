@@ -5,9 +5,9 @@ namespace IronText.MetadataCompiler
 {
     interface IScanDataCollector
     {
-        void AddMeta(ILanguageMetadata meta);
+        void AddMeta(ICilMetadata meta);
 
-        void AddScanRule(IScanRule rule);
+        void AddScanRule(ICilScanRule rule);
 
         void AddScanMode(Type modeType);
     }

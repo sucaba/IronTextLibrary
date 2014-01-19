@@ -6,7 +6,7 @@ using IronText.Framework.Reflection;
 
 namespace IronText.Extensibility
 {
-    class TokenDef
+    class CilSymbolDef
     {
         public int Id { get { return Symbol == null ? -1 : Symbol.Index; } }
         public Symbol Symbol;

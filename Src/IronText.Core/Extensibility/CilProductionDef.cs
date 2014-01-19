@@ -2,14 +2,14 @@
 using System.Linq;
 using IronText.Framework;
 
-namespace IronText.Extensibility.Cil
+namespace IronText.Extensibility
 {
     public sealed class CilProductionDef : IEquatable<CilProductionDef>
     {
         public CilProductionDef(
-            TokenRef             left,
-            TokenRef[]           parts,
-            ProductionActionBuilder actionBuilder,
+            CilSymbolRef             left,
+            CilSymbolRef[]           parts,
+            CilProductionActionBuilder actionBuilder,
             Type                 instanceDeclaringType,
             bool                 isContextRule = false,
             Precedence           precedence = null)
@@ -22,9 +22,9 @@ namespace IronText.Extensibility.Cil
             this.Precedence            = precedence;
         }
 
-        public TokenRef     Left { get; private set; }
+        public CilSymbolRef     Left { get; private set; }
 
-        public TokenRef[]   Parts { get; private set; }
+        public CilSymbolRef[]   Parts { get; private set; }
 
         public Type         InstanceDeclaringType { get; private set; }
 
@@ -34,9 +34,9 @@ namespace IronText.Extensibility.Cil
 
         internal int        Index  { get; set; }
 
-        internal ILanguageMetadata Owner { get; set; }
+        internal ICilMetadata Owner { get; set; }
 
-        public ProductionActionBuilder ActionBuilder { get; private set; }
+        public CilProductionActionBuilder ActionBuilder { get; private set; }
 
         internal object Hint { get; set; }
 

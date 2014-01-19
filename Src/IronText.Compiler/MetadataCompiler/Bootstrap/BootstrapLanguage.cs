@@ -80,12 +80,12 @@ namespace IronText.MetadataCompiler
 
         public int Identify(Type type)
         {
-            return data.TokenRefResolver.GetId(TokenRef.Typed(type));
+            return data.TokenRefResolver.GetId(CilSymbolRef.Typed(type));
         }
 
         public int Identify(string literal)
         {
-            return data.TokenRefResolver.GetId(TokenRef.Literal(literal));
+            return data.TokenRefResolver.GetId(CilSymbolRef.Literal(literal));
         }
 
         private ProductionActionDelegate BuildExecuteRuleAction()

@@ -5,20 +5,20 @@ using System.Reflection;
 using System.Text;
 using IronText.Framework.Reflection;
 
-namespace IronText.Extensibility.Cil
+namespace IronText.Extensibility
 {
-    public class CilScanProductionBinding : IScanProductionBinding
+    public class CilScanProductionDef
     {
-        public CilScanProductionBinding()
+        public CilScanProductionDef()
         {
         }
 
-        public CilScanProductionBinding(ScanActionBuilder builder)
+        public CilScanProductionDef(CilScanActionBuilder builder)
             : this((MethodInfo)null, builder)
         {
         }
 
-        public CilScanProductionBinding(MethodInfo definingMethod, ScanActionBuilder builder)
+        public CilScanProductionDef(MethodInfo definingMethod, CilScanActionBuilder builder)
         {
             if (builder == null)
             {
@@ -34,7 +34,7 @@ namespace IronText.Extensibility.Cil
             this.Builder        = builder;
         }
 
-        internal CilScanProductionBinding(Type resultTokenType)
+        internal CilScanProductionDef(Type resultTokenType)
         {
             this.ResultTokenType = resultTokenType;
             this.DefiningMethod = null;
@@ -42,7 +42,7 @@ namespace IronText.Extensibility.Cil
 
         public MethodInfo DefiningMethod { get; private set; }
 
-        public ScanActionBuilder Builder { get; private set; }
+        public CilScanActionBuilder Builder { get; private set; }
 
         internal Type ResultTokenType { get; private set; }
     }

@@ -28,11 +28,11 @@ namespace IronText.Framework
 
         public string Text { get; set; }
 
-        public override IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory requestedCategories)
+        public override IEnumerable<CilSymbolRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory requestedCategories)
         {
             if ((requestedCategories & this.categories) == 0)
             {
-                return Enumerable.Empty<TokenRef>();
+                return Enumerable.Empty<CilSymbolRef>();
             }
 
             if (Text == null)

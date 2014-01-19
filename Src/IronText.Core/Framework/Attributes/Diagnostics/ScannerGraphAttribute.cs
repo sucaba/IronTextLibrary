@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using IronText.Diagnostics;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 
 namespace IronText.Framework
 {
@@ -30,7 +29,7 @@ namespace IronText.Framework
                 string path = Path.Combine(data.DestinationDirectory, scanModeFileName);
 
                 var condition = data.Grammar.ScanConditions[i];
-                var binding = condition.Joint.The<CilScanConditionBinding>();
+                var binding = condition.Joint.The<CilScanConditionDef>();
 
                 var dfa = data.GetScanModeDfa(binding.ConditionType);
                 using (var graph = new GvGraphView(path))

@@ -69,7 +69,7 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        private void LdTid(EmitSyntax emit, TokenRef tid)
+        private void LdTid(EmitSyntax emit, CilSymbolRef tid)
         {
             if (tid.TokenType != null)
             {
@@ -93,7 +93,7 @@ namespace IronText.MetadataCompiler
             }
 
             emit
-                .Newobj(() => new TokenRef(default(Type), default(string)));
+                .Newobj(() => new CilSymbolRef(default(Type), default(string)));
         }
     }
 }

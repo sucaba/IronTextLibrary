@@ -8,7 +8,7 @@ namespace IronText.Framework
     [AttributeUsage(AttributeTargets.Class|AttributeTargets.Interface,AllowMultiple=false)]
     public sealed class VocabularyAttribute : LanguageMetadataAttribute
     {
-        public override IEnumerable<ILanguageMetadata> GetChildren()
+        public override IEnumerable<ICilMetadata> GetChildren()
         {
             var result = EnumerateDirectChildren()
                         .Concat(MetadataParser.GetTypeMetaChildren(Parent, (Type)Member))
@@ -17,7 +17,7 @@ namespace IronText.Framework
             return result;
         }
 
-        private IEnumerable<ILanguageMetadata> EnumerateDirectChildren()
+        private IEnumerable<ICilMetadata> EnumerateDirectChildren()
         {
             var result = MetadataParser
                 .EnumerateAndBind(Member)

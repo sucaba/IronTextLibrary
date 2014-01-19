@@ -5,24 +5,24 @@ using System.Text;
 
 namespace IronText.Extensibility
 {
-    internal class SingleTokenScanRule : ScanRule, ISingleTokenScanRule
+    internal class CilSingleTokenScanRule : CilScanRule, ICilSingleTokenScanRule
     {
-        public SingleTokenScanRule() { }
+        public CilSingleTokenScanRule() { }
 
-        public override TokenRef MainTokenRef { get { return AnyTokenRef; } }
+        public override CilSymbolRef MainTokenRef { get { return AnyTokenRef; } }
 
-        public TokenRef AnyTokenRef
+        public CilSymbolRef AnyTokenRef
         {
             get
             {
                 if (LiteralText != null)
                 {
-                    return TokenRef.Literal(LiteralText);
+                    return CilSymbolRef.Literal(LiteralText);
                 }
 
                 if (TokenType != null && TokenType != typeof(object))
                 {
-                    return TokenRef.Typed(TokenType);
+                    return CilSymbolRef.Typed(TokenType);
                 }
 
                 return null;
@@ -31,22 +31,22 @@ namespace IronText.Extensibility
 
         public Type TokenType { get; set; }
 
-        public override IEnumerable<TokenRef[]> GetTokenRefGroups()
+        public override IEnumerable<CilSymbolRef[]> GetTokenRefGroups()
         {
             yield return GetTokenGroup();
         }
 
-        private TokenRef[] GetTokenGroup()
+        private CilSymbolRef[] GetTokenGroup()
         {
-            List<TokenRef> group = new List<TokenRef>();
+            List<CilSymbolRef> group = new List<CilSymbolRef>();
             if (TokenType != null)
             {
-                group.Add(TokenRef.Typed(TokenType));
+                group.Add(CilSymbolRef.Typed(TokenType));
             }
 
             if (LiteralText != null)
             {
-                group.Add(TokenRef.Literal(LiteralText));
+                group.Add(CilSymbolRef.Literal(LiteralText));
             }
 
             return group.ToArray();

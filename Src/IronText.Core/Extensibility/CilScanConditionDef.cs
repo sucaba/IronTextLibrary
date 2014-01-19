@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using IronText.Framework.Reflection;
 
-namespace IronText.Extensibility.Cil
+namespace IronText.Extensibility
 {
-    public class CilScanConditionBinding : IScanConditionBinding
+    public class CilScanConditionDef
     {
-        public CilScanConditionBinding(Type type)
+        public CilScanConditionDef(Type type)
         {
             this.ConditionType = type;
         }

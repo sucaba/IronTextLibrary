@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 using IronText.Lib.IL;
 using IronText.Misc;
 
@@ -42,9 +41,9 @@ namespace IronText.Framework
             return isValid;
         }
 
-        protected abstract TokenRef[] DoGetRuleMask(MethodInfo methodInfo, ITokenPool tokenPool);
+        protected abstract CilSymbolRef[] DoGetRuleMask(MethodInfo methodInfo, ITokenPool tokenPool);
 
-        public override IEnumerable<CilProductionDef> GetProductions(IEnumerable<TokenRef> tokens, ITokenPool tokenPool)
+        public override IEnumerable<CilProductionDef> GetProductions(IEnumerable<CilSymbolRef> tokens, ITokenPool tokenPool)
         {
             if (!isValid)
             {
@@ -54,7 +53,7 @@ namespace IronText.Framework
             return tokens.SelectMany(token => GetExpansionRules(token, tokenPool)).ToArray();
         }
 
-        private IEnumerable<CilProductionDef> GetExpansionRules(TokenRef token, ITokenPool tokenPool)
+        private IEnumerable<CilProductionDef> GetExpansionRules(CilSymbolRef token, ITokenPool tokenPool)
         {
             if (token.IsLiteral)
             {
@@ -74,7 +73,7 @@ namespace IronText.Framework
             }
         }
 
-        protected TokenRef GetThisToken(ITokenPool tokenPool)
+        protected CilSymbolRef GetThisToken(ITokenPool tokenPool)
         {
             if (HasThisAsToken)
             {
@@ -89,7 +88,7 @@ namespace IronText.Framework
             return null;
         }
 
-        protected bool DetectThisAsToken(ITokenPool tokenPool, List<TokenRef> parts)
+        protected bool DetectThisAsToken(ITokenPool tokenPool, List<CilSymbolRef> parts)
         {
             if (HasThisAsToken)
             {
@@ -109,19 +108,19 @@ namespace IronText.Framework
             }
         }
 
-        protected IEnumerable<CilProductionDef> DoGetRules(ITokenPool tokenPool, MethodInfo method, TokenRef leftSide)
+        protected IEnumerable<CilProductionDef> DoGetRules(ITokenPool tokenPool, MethodInfo method, CilSymbolRef leftSide)
         {
-            TokenRef left = tokenPool.GetToken(method.ReturnType);
+            CilSymbolRef left = tokenPool.GetToken(method.ReturnType);
 
             if (!object.Equals(left, leftSide))
             {
                 return Enumerable.Empty<CilProductionDef>();
             }
 
-            var parts = new List<TokenRef>();
+            var parts = new List<CilSymbolRef>();
             int argShift = 0;
 
-            TokenRef thisToken = GetThisToken(tokenPool);
+            CilSymbolRef thisToken = GetThisToken(tokenPool);
             if (thisToken != null)
             {
                 ++argShift;
@@ -195,7 +194,7 @@ namespace IronText.Framework
             return new[] { rule };
         }
 
-        private static int NthEmptySlotIndex(TokenRef[] ruleMask, int n)
+        private static int NthEmptySlotIndex(CilSymbolRef[] ruleMask, int n)
         {
             int i = 0;
             for (; i != ruleMask.Length; ++i)
@@ -214,7 +213,7 @@ namespace IronText.Framework
             return i + n;
         }
 
-        private static void SubstituteRuleMask(ITokenPool tokenPool, MethodInfo method, List<TokenRef> parts, TokenRef[] ruleMask)
+        private static void SubstituteRuleMask(ITokenPool tokenPool, MethodInfo method, List<CilSymbolRef> parts, CilSymbolRef[] ruleMask)
         {
             int maskLength = ruleMask.Length;
             int paramCount = method.GetParameters().Length;

@@ -10,27 +10,27 @@ namespace IronText.MetadataCompiler
 {
     class ScanDataCollector : IScanDataCollector
     {
-        private readonly List<ILanguageMetadata> validMetadata;
-        private readonly List<ILanguageMetadata> invalidMetadata;
+        private readonly List<ICilMetadata> validMetadata;
+        private readonly List<ICilMetadata> invalidMetadata;
         private readonly List<ScanMode>          allScanModes;
-        private readonly List<TokenRef>          terminals;
+        private readonly List<CilSymbolRef>          terminals;
         private readonly ITokenPool              tokenPool;
 
         private readonly Stack<ScanMode> processedScanModes;
         private int totalRuleCount = 0;
-        private readonly TokenRef voidTerm;
+        private readonly CilSymbolRef voidTerm;
         private readonly ILogging logging;
 
         public ScanDataCollector(
-            IEnumerable<TokenRef> terminals,
+            IEnumerable<CilSymbolRef> terminals,
             ITokenPool tokenPool,
             ILogging logging)
         {
             this.logging = logging;
-            this.validMetadata  = new List<ILanguageMetadata>();
-            this.invalidMetadata  = new List<ILanguageMetadata>();
+            this.validMetadata  = new List<ICilMetadata>();
+            this.invalidMetadata  = new List<ICilMetadata>();
             this.allScanModes = new List<ScanMode>();
-            this.terminals    = new List<TokenRef>(terminals);
+            this.terminals    = new List<CilSymbolRef>(terminals);
             this.voidTerm = tokenPool.ScanSkipToken;
             //this.terminals.Add(voidTerm);
 
@@ -39,7 +39,7 @@ namespace IronText.MetadataCompiler
             processedScanModes = new Stack<ScanMode>();
         }
 
-        public List<TokenRef> UndefinedTerminals
+        public List<CilSymbolRef> UndefinedTerminals
         {
             get
             {
@@ -59,11 +59,11 @@ namespace IronText.MetadataCompiler
 
         public List<ScanMode> ScanModes { get { return allScanModes; } }
 
-        public void AddMeta(ILanguageMetadata meta)
+        public void AddMeta(ICilMetadata meta)
         {
-            if (validMetadata.Contains(meta, PropertyComparer<ILanguageMetadata>.Default)
+            if (validMetadata.Contains(meta, PropertyComparer<ICilMetadata>.Default)
                 ||
-                invalidMetadata.Contains(meta, PropertyComparer<ILanguageMetadata>.Default))
+                invalidMetadata.Contains(meta, PropertyComparer<ICilMetadata>.Default))
             {
                 return;
             }
@@ -102,7 +102,7 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        public void AddScanRule(IScanRule rule)
+        public void AddScanRule(ICilScanRule rule)
         {
             var currentScanMode = processedScanModes.Peek();
             currentScanMode.AddRule(rule);
@@ -141,7 +141,7 @@ namespace IronText.MetadataCompiler
                     .Except(
                         from mode in allScanModes
                         from rule in mode.ScanRules
-                        let singleTokenRule = (rule as ISingleTokenScanRule)
+                        let singleTokenRule = (rule as ICilSingleTokenScanRule)
                         where singleTokenRule != null
                             && singleTokenRule.LiteralText != null
                         select singleTokenRule.LiteralText)

@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 
@@ -140,7 +139,7 @@ namespace IronText.MetadataCompiler
             }
             else
             {
-                var binding = scanProduction.Joint.The<CilScanProductionBinding>();
+                var binding = scanProduction.Joint.The<CilScanProductionDef>();
                 if (binding == null)
                 {
                     throw new InvalidOperationException("ScanProduction is missing CIL platform binding.");

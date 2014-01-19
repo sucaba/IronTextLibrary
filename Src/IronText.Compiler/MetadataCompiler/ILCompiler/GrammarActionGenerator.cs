@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 using IronText.Lib.IL;

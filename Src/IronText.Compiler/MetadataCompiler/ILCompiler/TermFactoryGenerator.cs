@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 using IronText.Lib.IL;
@@ -65,7 +64,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var condition in scanConditions)
             {
-                var conditionBinding = condition.Joint.The<CilScanConditionBinding>();
+                var conditionBinding = condition.Joint.The<CilScanConditionDef>();
 
                 // Each mode has its own root context type:
                 contextResolver.RootContextType = conditionBinding.ConditionType;
@@ -77,7 +76,7 @@ namespace IronText.MetadataCompiler
                         .Stloc(tokenId.GetRef())
                         ;
 
-                    var productionBinding = scanProduction.Joint.The<CilScanProductionBinding>();
+                    var productionBinding = scanProduction.Joint.The<CilScanProductionDef>();
                     productionBinding.Builder(actionContext);
                 }
             }

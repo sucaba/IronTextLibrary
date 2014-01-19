@@ -8,14 +8,14 @@ namespace IronText.Extensibility
 {
     static class MetadataParser
     {
-        public static IEnumerable<ILanguageMetadata> EnumerateAndBind(MemberInfo member)
+        public static IEnumerable<ICilMetadata> EnumerateAndBind(MemberInfo member)
         {
             return EnumerateAndBind(null, member);
         }
 
-        public static IEnumerable<ILanguageMetadata> EnumerateAndBind(ILanguageMetadata parent, MemberInfo member)
+        public static IEnumerable<ICilMetadata> EnumerateAndBind(ICilMetadata parent, MemberInfo member)
         {
-            var result = Attributes.All<ILanguageMetadata>(member);
+            var result = Attributes.All<ICilMetadata>(member);
             foreach (var m in result)
             {
                 m.Bind(parent, member);
@@ -24,11 +24,11 @@ namespace IronText.Extensibility
             return result;
         }
 
-        public static IEnumerable<ILanguageMetadata> GetTypeMetaChildren(ILanguageMetadata parent, Type type)
+        public static IEnumerable<ICilMetadata> GetTypeMetaChildren(ICilMetadata parent, Type type)
         {
             const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
 
-            var result = new List<ILanguageMetadata>();
+            var result = new List<ICilMetadata>();
             foreach (var member in type.GetMembers(flags))
             {
                 GetMemberMetadata(parent, result, member);
@@ -47,7 +47,7 @@ namespace IronText.Extensibility
             return result;
         }
 
-        private static void GetMemberMetadata(ILanguageMetadata parent, List<ILanguageMetadata> result, MemberInfo member)
+        private static void GetMemberMetadata(ICilMetadata parent, List<ICilMetadata> result, MemberInfo member)
         {
             foreach (var attr in MetadataParser.EnumerateAndBind(parent, member))
             {

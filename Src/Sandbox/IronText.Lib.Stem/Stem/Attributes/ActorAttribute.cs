@@ -17,9 +17,9 @@ namespace IronText.Lib.Stem
         /// </summary>
         public string[] KeywordMask { get; set; }
 
-        protected override TokenRef[] DoGetRuleMask(MethodInfo methodInfo, ITokenPool tokenPool)
+        protected override CilSymbolRef[] DoGetRuleMask(MethodInfo methodInfo, ITokenPool tokenPool)
         {
-            var resultList = new List<TokenRef>();
+            var resultList = new List<CilSymbolRef>();
 
             resultList.Add(tokenPool.GetLiteral(StemScanner.LParen));
 
@@ -31,7 +31,7 @@ namespace IronText.Lib.Stem
                 throw new InvalidOperationException("Insufficient rule-method arguments.");
             }
 
-            resultList.AddRange(Enumerable.Repeat(default(TokenRef), nonMaskParameterCount));
+            resultList.AddRange(Enumerable.Repeat(default(CilSymbolRef), nonMaskParameterCount));
 
             resultList.Add(tokenPool.GetLiteral(StemScanner.RParen));
 

@@ -11,7 +11,7 @@ namespace IronText.Framework
 
         public Type ModuleType { get; set; }
 
-        public override IEnumerable<ILanguageMetadata> GetChildren()
+        public override IEnumerable<ICilMetadata> GetChildren()
         {
             return MetadataParser.EnumerateAndBind(ModuleType);
         }

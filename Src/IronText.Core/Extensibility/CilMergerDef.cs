@@ -10,7 +10,7 @@ namespace IronText.Extensibility
         /// <summary>
         /// Token reference which corresponds to the merged token type.
         /// </summary>
-        public TokenRef Token { get; set; }
-        public MergeActionBuilder ActionBuilder { get; set; }
+        public CilSymbolRef Token { get; set; }
+        public CilMergerActionBuilder ActionBuilder { get; set; }
     }
 }

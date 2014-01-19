@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace IronText.Framework.Reflection
+namespace IronText.Extensibility
 {
-    public interface IMergerBinding
+    public interface ICilSkipScanRule : ICilScanRule
     {
     }
 }

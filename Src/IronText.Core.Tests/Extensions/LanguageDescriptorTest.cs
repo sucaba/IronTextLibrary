@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.MetadataCompiler;
 using NUnit.Framework;
@@ -28,19 +27,19 @@ namespace IronText.Tests.Extensibility
         [SampleAttr]
         interface IMetadtaTest0 { }
 
-        internal class SampleAttr : Attribute, ILanguageMetadata
+        internal class SampleAttr : Attribute, ICilMetadata
         {
             public bool Validate(ILogging logging) { return true; }
 
             public System.Reflection.MemberInfo Member { get; private set; }
 
-            public ILanguageMetadata Parent { get; private set; }
+            public ICilMetadata Parent { get; private set; }
 
-            public void Bind(ILanguageMetadata parent, System.Reflection.MemberInfo member) { }
+            public void Bind(ICilMetadata parent, System.Reflection.MemberInfo member) { }
 
-            public IEnumerable<ILanguageMetadata> GetChildren() { return Enumerable.Empty<ILanguageMetadata>(); }
+            public IEnumerable<ICilMetadata> GetChildren() { return Enumerable.Empty<ICilMetadata>(); }
 
-            public IEnumerable<CilProductionDef> GetProductions(IEnumerable<TokenRef> leftSides, ITokenPool moduleBuilder)
+            public IEnumerable<CilProductionDef> GetProductions(IEnumerable<CilSymbolRef> leftSides, ITokenPool moduleBuilder)
             {
                 foreach (var leftSide in leftSides.ToArray())
                 {
@@ -54,32 +53,32 @@ namespace IronText.Tests.Extensibility
                 }
             }
 
-            public IEnumerable<IScanRule> GetScanRules(ITokenPool moduleBuilder)
+            public IEnumerable<ICilScanRule> GetScanRules(ITokenPool moduleBuilder)
             {
-                return Enumerable.Empty<IScanRule>();
+                return Enumerable.Empty<ICilScanRule>();
             }
 
-            public IEnumerable<TokenRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category)
+            public IEnumerable<CilSymbolRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category)
             {
-                return Enumerable.Empty<TokenRef>();
+                return Enumerable.Empty<CilSymbolRef>();
             }
 
-            IEnumerable<TokenFeature<Precedence>> ILanguageMetadata.GetTokenPrecedence(ITokenPool tokenPool)
+            IEnumerable<TokenFeature<Precedence>> ICilMetadata.GetTokenPrecedence(ITokenPool tokenPool)
             {
                 return Enumerable.Empty<TokenFeature<Precedence>>();
             }
 
-            IEnumerable<TokenFeature<CilContextProvider>> ILanguageMetadata.GetTokenContextProvider(ITokenPool tokenPool)
+            IEnumerable<TokenFeature<CilContextProvider>> ICilMetadata.GetTokenContextProvider(ITokenPool tokenPool)
             {
                 return Enumerable.Empty<TokenFeature<CilContextProvider>>();
             }
 
-            IEnumerable<ReportBuilder> ILanguageMetadata.GetReportBuilders()
+            IEnumerable<ReportBuilder> ICilMetadata.GetReportBuilders()
             {
                 return Enumerable.Empty<ReportBuilder>();
             }
 
-            public IEnumerable<CilMergerDef> GetMergeRules(IEnumerable<TokenRef> leftSides, ITokenPool tokenPool)
+            public IEnumerable<CilMergerDef> GetMergeRules(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool)
             {
                 return Enumerable.Empty<CilMergerDef>();
             }

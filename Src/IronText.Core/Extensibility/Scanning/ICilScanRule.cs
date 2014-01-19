@@ -5,7 +5,7 @@ using IronText.Framework;
 
 namespace IronText.Extensibility
 {
-    public interface IScanRule
+    public interface ICilScanRule
     {
         // Binding
         MethodInfo DefiningMember { get; }
@@ -16,16 +16,16 @@ namespace IronText.Extensibility
         // Scan Produciton
         string Pattern { get; }
 
-        ScanActionBuilder ActionBuilder { get; }
+        CilScanActionBuilder ActionBuilder { get; }
 
         // Scan Produciton: Mode object
         Type NextModeType { get; }
 
         // Scan Produciton: MainSymbol
-        TokenRef MainTokenRef { get; }
+        CilSymbolRef MainTokenRef { get; }
 
         // Main produced token
-        IEnumerable<TokenRef[]> GetTokenRefGroups();
+        IEnumerable<CilSymbolRef[]> GetTokenRefGroups();
 
         int Index { get; set; }
     }

@@ -30,12 +30,12 @@ namespace IronText.Framework
 
         internal string RegexPattern { get; set; }
 
-        public override IEnumerable<IScanRule> GetScanRules(ITokenPool tokenPool)
+        public override IEnumerable<ICilScanRule> GetScanRules(ITokenPool tokenPool)
         {
             var method = (MethodInfo)Member;
             var tokenType = method.ReturnType;
 
-            TokenRef thisToken;
+            CilSymbolRef thisToken;
             if (LiteralText == null || method.ReturnType == typeof(void))
             {
                 thisToken = tokenPool.GetToken(tokenType);
@@ -48,15 +48,15 @@ namespace IronText.Framework
             var nextModeType = GetNextModeType();
 
 
-            ScanRule scanRule;
+            CilScanRule scanRule;
 
             if (method.ReturnType == typeof(void))
             {
-                scanRule = new SkipScanRule();
+                scanRule = new CilSkipScanRule();
             }
             else
             {
-                var singleTokenScanRule = new SingleTokenScanRule();
+                var singleTokenScanRule = new CilSingleTokenScanRule();
                 singleTokenScanRule.TokenType = tokenType;
                 singleTokenScanRule.LiteralText = LiteralText;
                 scanRule = singleTokenScanRule;
@@ -182,17 +182,17 @@ namespace IronText.Framework
             }
         }
 
-        private TokenRef[] GetProducedTokens()
+        private CilSymbolRef[] GetProducedTokens()
         {
-            List<TokenRef> resultList = new List<TokenRef>();
+            List<CilSymbolRef> resultList = new List<CilSymbolRef>();
             if (LiteralText != null)
             {
-                resultList.Add(TokenRef.Literal(LiteralText));
+                resultList.Add(CilSymbolRef.Literal(LiteralText));
             }
 
             if (TokenType != null)
             {
-                resultList.Add(TokenRef.Typed(TokenType));
+                resultList.Add(CilSymbolRef.Typed(TokenType));
             }
 
             return resultList.ToArray();

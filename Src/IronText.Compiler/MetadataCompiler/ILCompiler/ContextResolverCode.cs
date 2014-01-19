@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using IronText.Algorithm;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Lib.Ctem;
 using IronText.Lib.IL;

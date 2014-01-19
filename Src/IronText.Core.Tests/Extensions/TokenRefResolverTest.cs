@@ -20,10 +20,10 @@ namespace IronText.Tests.Extensions
         public void Test()
         {
             var tokens = new[] {
-                TokenRef.Literal("foo"),
-                TokenRef.Literal("bar"),
-                TokenRef.Literal("other"),
-                TokenRef.Typed(typeof(string)),
+                CilSymbolRef.Literal("foo"),
+                CilSymbolRef.Literal("bar"),
+                CilSymbolRef.Literal("other"),
+                CilSymbolRef.Typed(typeof(string)),
             };
 
             foreach (var token in tokens)
@@ -49,7 +49,7 @@ namespace IronText.Tests.Extensions
             ExpectedMessage = "two types")]
         public void TestLinkTwoTypes()
         {
-            target.Link(TokenRef.Typed(typeof(string)), TokenRef.Typed(typeof(int)));
+            target.Link(CilSymbolRef.Typed(typeof(string)), CilSymbolRef.Typed(typeof(int)));
         }
 
         [Test]
@@ -59,8 +59,8 @@ namespace IronText.Tests.Extensions
             ExpectedMessage = "two types")]
         public void TestIndirectLinkTwoTypes()
         {
-            target.Link(TokenRef.Typed(typeof(string)), TokenRef.Literal("foo"));
-            target.Link(TokenRef.Typed(typeof(int)), TokenRef.Literal("foo"));
+            target.Link(CilSymbolRef.Typed(typeof(string)), CilSymbolRef.Literal("foo"));
+            target.Link(CilSymbolRef.Typed(typeof(int)), CilSymbolRef.Literal("foo"));
         }
 
         [Test]
@@ -70,10 +70,10 @@ namespace IronText.Tests.Extensions
             ExpectedMessage = "two types")]
         public void TestIndirectLinkOfExistingDefs()
         {
-            target.Link(TokenRef.Typed(typeof(string)), TokenRef.Literal("foo"));
-            target.Link(TokenRef.Typed(typeof(int)), TokenRef.Literal("bar"));
+            target.Link(CilSymbolRef.Typed(typeof(string)), CilSymbolRef.Literal("foo"));
+            target.Link(CilSymbolRef.Typed(typeof(int)), CilSymbolRef.Literal("bar"));
 
-            target.Link(TokenRef.Literal("foo"), TokenRef.Literal("bar"));
+            target.Link(CilSymbolRef.Literal("foo"), CilSymbolRef.Literal("bar"));
         }
     }
 }

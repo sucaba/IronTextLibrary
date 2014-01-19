@@ -4,7 +4,6 @@ using System.Reflection;
 using IronText.Automata.Regular;
 using IronText.Build;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 using IronText.Lib.IL;
@@ -132,7 +131,7 @@ namespace IronText.MetadataCompiler
             foreach (var condition in data.Grammar.ScanConditions)
             {
                 var methodName = ScanModeMethods.GetMethodName(modeIndex++);
-                var conditionBinding = condition.Joint.The<CilScanConditionBinding>();
+                var conditionBinding = condition.Joint.The<CilScanConditionDef>();
 
                 var dfa = data.ScanModeTypeToDfa[conditionBinding.ConditionType];
                 var dfaSerialization = new DfaSerialization(dfa);

@@ -1,12 +1,11 @@
 ﻿using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 
 namespace IronText.MetadataCompiler
 {
     interface IMetadataCollector
     {
-        void AddMeta(ILanguageMetadata meta);
-        void AddRule(ILanguageMetadata meta, CilProductionDef parseRule);
-        void AddToken(TokenRef token);
+        void AddMeta(ICilMetadata meta);
+        void AddRule(ICilMetadata meta, CilProductionDef parseRule);
+        void AddToken(CilSymbolRef token);
     }
 }

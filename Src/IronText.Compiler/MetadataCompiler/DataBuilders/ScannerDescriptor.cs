@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Text;
 using IronText.Automata.Regular;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 using IronText.Lib.RegularAst;
@@ -111,7 +110,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var scanProduction in Productions)
             {
-                var binding = scanProduction.Joint.The<CilScanProductionBinding>();
+                var binding = scanProduction.Joint.The<CilScanProductionDef>();
 
                 if (scanProduction.Pattern.Literal != null)
                 {

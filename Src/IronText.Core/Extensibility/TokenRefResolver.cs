@@ -7,20 +7,20 @@ namespace IronText.Extensibility
 {
     internal class TokenRefResolver : ITokenRefResolver
     {
-        private readonly Dictionary<TokenRef, TokenDef> ref2def = new Dictionary<TokenRef, TokenDef>();
+        private readonly Dictionary<CilSymbolRef, CilSymbolDef> ref2def = new Dictionary<CilSymbolRef, CilSymbolDef>();
         
         public TokenRefResolver()
         {
         }
 
-        public IEnumerable<TokenDef> Definitions
+        public IEnumerable<CilSymbolDef> Definitions
         {
             get { return ref2def.Values.Distinct(); }
         }
 
-        public TokenDef Resolve(TokenRef tid)
+        public CilSymbolDef Resolve(CilSymbolRef tid)
         {
-            TokenDef result;
+            CilSymbolDef result;
             if (tid == null || !ref2def.TryGetValue(tid, out result))
             {
                 result = null;
@@ -29,20 +29,20 @@ namespace IronText.Extensibility
             return result;
         }
 
-        public bool Contains(TokenRef tokenRef)
+        public bool Contains(CilSymbolRef tokenRef)
         {
             return ref2def.ContainsKey(tokenRef);
         }
 
-        public int GetId(TokenRef tid)
+        public int GetId(CilSymbolRef tid)
         {
             var symbol = GetSymbol(tid);
             return symbol == null ? -1 : symbol.Index;
         }
 
-        public Symbol GetSymbol(TokenRef tid)
+        public Symbol GetSymbol(CilSymbolRef tid)
         {
-            TokenDef def = Resolve(tid);
+            CilSymbolDef def = Resolve(tid);
             if (def == null)
             {
                 return null;
@@ -51,18 +51,18 @@ namespace IronText.Extensibility
             return def.Symbol;
         }
 
-        public void SetId(TokenRef tid, Symbol symbol)
+        public void SetId(CilSymbolRef tid, Symbol symbol)
         {
-            TokenDef def = Ensure(tid);
+            CilSymbolDef def = Ensure(tid);
             def.Symbol = symbol;
         }
 
-        private TokenDef Ensure(TokenRef tid)
+        private CilSymbolDef Ensure(CilSymbolRef tid)
         {
-            TokenDef def = Resolve(tid);
+            CilSymbolDef def = Resolve(tid);
             if (def == null)
             {
-                def = new TokenDef();
+                def = new CilSymbolDef();
                 if (tid.IsLiteral)
                 {
                     def.Literals.Add(tid.LiteralText);
@@ -78,7 +78,7 @@ namespace IronText.Extensibility
             return def;
         }
 
-        public void Link(params TokenRef[] tokenRefs)
+        public void Link(params CilSymbolRef[] tokenRefs)
         {
             if (tokenRefs.Length == 0)
             {
@@ -99,14 +99,14 @@ namespace IronText.Extensibility
             }
         }
 
-        private void Link2(TokenRef x, TokenRef y)
+        private void Link2(CilSymbolRef x, CilSymbolRef y)
         {
             var xDef = Resolve(x);
             var yDef = Resolve(y);
 
             if (xDef == null && yDef == null)
             {
-                var def = new TokenDef();
+                var def = new CilSymbolDef();
                 AttachRef(def, x);
                 AttachRef(def, y);
             }
@@ -125,7 +125,7 @@ namespace IronText.Extensibility
             }
         }
 
-        private void MergeDefs(TokenDef xDef, TokenDef yDef)
+        private void MergeDefs(CilSymbolDef xDef, CilSymbolDef yDef)
         {
             if (xDef.TokenType != null 
                 && yDef.TokenType != null
@@ -146,7 +146,7 @@ namespace IronText.Extensibility
             xDef.Literals.UnionWith(yDef.Literals);
         }
 
-        private void AttachRef(TokenDef def, TokenRef tokenRef)
+        private void AttachRef(CilSymbolDef def, CilSymbolRef tokenRef)
         {
             ref2def[tokenRef] = def;
 

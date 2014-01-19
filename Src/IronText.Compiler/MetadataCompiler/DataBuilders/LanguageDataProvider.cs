@@ -11,7 +11,6 @@ using IronText.Misc;
 using System.Text;
 using IronText.Algorithm;
 using IronText.Framework.Reflection;
-using IronText.Extensibility.Cil;
 using IronText.Compiler;
 using IronText.Compiler.Analysis;
 using IronText.Analysis;
@@ -142,7 +141,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var condition in grammar.ScanConditions)
             {
-                var conditionBinding = condition.Joint.The<CilScanConditionBinding>();
+                var conditionBinding = condition.Joint.The<CilScanConditionDef>();
 
                 ITdfaData tdfaData;
                 if (!CompileTdfa(logging, condition, out tdfaData))
@@ -299,17 +298,17 @@ namespace IronText.MetadataCompiler
 
                     SymbolBase outcome = GetResultSymbol(result, tokenResolver, scanRule.MainTokenRef, scanRule.GetTokenRefGroups());
 
-                    var asSingleToken = scanRule as ISingleTokenScanRule;
+                    var asSingleToken = scanRule as ICilSingleTokenScanRule;
                     ScanPattern pattern;
                     if (asSingleToken != null && asSingleToken.LiteralText != null)
                     {
                         pattern = ScanPattern.CreateLiteral(asSingleToken.LiteralText);
                     }
-                    else if (scanRule is IBootstrapScanRule) 
+                    else if (scanRule is ICilBootstrapScanRule) 
                     {
                         pattern = ScanPattern.CreateRegular(
                                     scanRule.Pattern,
-                                    ((IBootstrapScanRule)scanRule).BootstrapRegexPattern);
+                                    ((ICilBootstrapScanRule)scanRule).BootstrapRegexPattern);
                     }
                     else
                     {
@@ -322,7 +321,7 @@ namespace IronText.MetadataCompiler
                         nextCondition: ConditionFromType(result, scanRule.NextModeType),
                         disambiguation: scanRule.Disambiguation);
                     scanProduction.Joint.Add(
-                        new CilScanProductionBinding(scanRule.DefiningMember, scanRule.ActionBuilder));
+                        new CilScanProductionDef(scanRule.DefiningMember, scanRule.ActionBuilder));
 
                     condition.ScanProductions.Add(scanProduction);
                 }
@@ -349,7 +348,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var cond in result.ScanConditions)
             {
-                var binding = cond.Joint.The<CilScanConditionBinding>();
+                var binding = cond.Joint.The<CilScanConditionDef>();
                 if (binding.ConditionType == type)
                 {
                     return cond;
@@ -357,7 +356,7 @@ namespace IronText.MetadataCompiler
             }
 
             var condition = new ScanCondition(type.FullName);
-            condition.Joint.Add(new CilScanConditionBinding(type));
+            condition.Joint.Add(new CilScanConditionDef(type));
             result.ScanConditions.Add(condition);
             return condition;
         }
@@ -365,8 +364,8 @@ namespace IronText.MetadataCompiler
         private static SymbolBase GetResultSymbol(
             EbnfGrammar             grammar,
             ITokenRefResolver       tokenResolver,
-            TokenRef                mainTokenRef,
-            IEnumerable<TokenRef[]> tokenRefGroups)
+            CilSymbolRef                mainTokenRef,
+            IEnumerable<CilSymbolRef[]> tokenRefGroups)
         {
             Symbol main = tokenResolver.GetSymbol(mainTokenRef);
             Symbol[] other = (from g in tokenRefGroups

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using IronText.Extensibility;
-using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 using IronText.Lib.Ctem;
@@ -43,7 +42,7 @@ namespace IronText.Tests.Bootstrap
                                         null,
                                         @"[ \t]+"))
                             {
-                                Joint = { new CilScanProductionBinding(typeof(void)) }
+                                Joint = { new CilScanProductionDef(typeof(void)) }
                             },
                             new ScanProduction(
                                     ScanPattern.CreateRegular(
@@ -51,7 +50,7 @@ namespace IronText.Tests.Bootstrap
                                         @"[0-9]+(?:[.][0-9]+)? | [.][0-9]+"), 
                                     num)
                             {
-                                Joint = {  new CilScanProductionBinding(typeof(Num)) }
+                                Joint = {  new CilScanProductionDef(typeof(Num)) }
                             },
                             new ScanProduction(
                                     ScanPattern.CreateRegular(
@@ -59,7 +58,7 @@ namespace IronText.Tests.Bootstrap
                                         @"[a-zA-Z:.!@#$%^&|?*/+*=\\_-][a-zA-Z:\d.!@#$%^&|?*/+*=\\_-]*"),
                                     ident)
                             {
-                                Joint = { new CilScanProductionBinding(typeof(string)) }
+                                Joint = { new CilScanProductionDef(typeof(string)) }
                             },
                             new ScanProduction(
                                     ScanPattern.CreateRegular(
@@ -67,7 +66,7 @@ namespace IronText.Tests.Bootstrap
                                         @"[""](?: \\[""] | [^""])* [""]"),
                                     qStr)
                             {
-                                Joint = { new CilScanProductionBinding(typeof(QStr)) }
+                                Joint = { new CilScanProductionDef(typeof(QStr)) }
                             },
                             new ScanProduction(
                                     ScanPattern.CreateLiteral("("),

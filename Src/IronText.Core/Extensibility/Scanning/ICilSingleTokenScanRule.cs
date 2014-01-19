@@ -4,12 +4,12 @@ using System.Reflection;
 
 namespace IronText.Extensibility
 {
-    public interface ISingleTokenScanRule : IScanRule
+    public interface ICilSingleTokenScanRule : ICilScanRule
     {
         string LiteralText { get; }
 
         Type TokenType { get; }
 
-        TokenRef AnyTokenRef { get; }
+        CilSymbolRef AnyTokenRef { get; }
     }
 }
