@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using IronText.Diagnostics;
 using IronText.Extensibility;
-using IronText.Extensibility.Bindings.Cil;
+using IronText.Extensibility.Cil;
 
 namespace IronText.Framework
 {

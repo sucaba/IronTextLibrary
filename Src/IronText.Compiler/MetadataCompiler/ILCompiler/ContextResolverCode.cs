@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using IronText.Algorithm;
 using IronText.Extensibility;
-using IronText.Extensibility.Bindings.Cil;
+using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Lib.Ctem;
 using IronText.Lib.IL;
@@ -18,7 +18,7 @@ namespace IronText.MetadataCompiler
     {
         private readonly EmitSyntax         emit;
         private readonly Pipe<EmitSyntax>   ldRootContext;
-        private ProductionContextLink[]         localContexts;
+        private ProductionContextLink[]     localContexts;
         private Pipe<EmitSyntax>            ldLookback;
 
         public ContextResolverCode(
@@ -43,8 +43,8 @@ namespace IronText.MetadataCompiler
             {
                 var locals =
                     (from lc in localContexts
-                     let binding = lc.Joint.Get<CilProductionContextBinding>()
-                     where binding != null && contextType.IsAssignableFrom(binding.ContextType)
+                     let binding = lc.Joint.Get<CilProductionContext>()
+                     where binding != null && contextType == binding.ContextType
                      select lc)
                     .ToArray();
 
@@ -93,8 +93,8 @@ namespace IronText.MetadataCompiler
                             else
                             {
                                 var lc = locals[value];
-                                var fromType = lc.Joint.The<CilContextProvider>().ProviderType;
-                                var path = new ContextBrowser(fromType).GetGetterPath(contextType);
+                                var provider = lc.Joint.The<CilContextProvider>();
+                                var path = provider.GetGetterPath(contextType);
                                 if (LdCallPath(path, il2 => il2
                                     // Lookback for getting parent instance
                                                 .Do(ldLookback)

@@ -11,7 +11,7 @@ using IronText.Misc;
 using System.Text;
 using IronText.Algorithm;
 using IronText.Framework.Reflection;
-using IronText.Extensibility.Bindings.Cil;
+using IronText.Extensibility.Cil;
 using IronText.Compiler;
 using IronText.Compiler.Analysis;
 using IronText.Analysis;
@@ -257,7 +257,7 @@ namespace IronText.MetadataCompiler
                             Joint = { 
                                 ruleDef.InstanceDeclaringType == null 
                                     ? null 
-                                    : new CilProductionContextBinding(ruleDef.InstanceDeclaringType),
+                                    : new CilProductionContext(ruleDef.InstanceDeclaringType),
                                 new CilProductionActionBinding(ruleDef.ActionBuilder) }
                         };
                 }
@@ -396,56 +396,38 @@ namespace IronText.MetadataCompiler
                 {
                     if (item.Position == 0 || item.IsReduce)
                     {
-                        // Skip non-kernel, augmented (start rule) items and end-of-rule states
+                        // Skip items in which local context cannot be provided.
+                        // TODO: Can be tunnelled for the upper parent?
                         continue;
                     }
 
                     var parentProd = grammar.Productions[item.ProductionId];
-                    if (!parentProd.Pattern[0].ProductionContextProvider.Joint.Has<CilContextProvider>())
-                    {
-                        continue;
-                    }
-
-                    var provider = parentProd.Pattern[0].ProductionContextProvider.Joint.The<CilContextProvider>();
-                    Type contextTokenType = provider.ProviderType;
-
-                    Symbol childSymbol = parentProd.Pattern[item.Position];
+                    // TODO: Take context not only from the first token in rule
+                    var provider = parentProd.Pattern[0].ProductionContextProvider;
+                    var childSymbol = parentProd.Pattern[item.Position];
 
                     foreach (var childProd in childSymbol.Productions)
                     {
-                        if (CanLinkProductionContext(contextTokenType, childProd))
+                        if (provider.CanProvideContextFor(childProd))
                         {
-                            continue;
-                        }
-
-                        var l = new ProductionContextLink
-                            {
-                                ParentState = parentState,
-                                ContextTokenLookback = item.Position,
-                                Joint = 
+                            var l = new ProductionContextLink
                                 {
-                                    provider,
-                                    ((SimpleProductionAction)childProd.Action).Joint.Get<CilProductionContextBinding>(),
-                                }
-                            };
+                                    ParentState = parentState,
+                                    ContextTokenLookback = item.Position,
+                                    Joint = 
+                                    {
+                                        provider.Joint.The<CilContextProvider>(),
+                                        ((SimpleProductionAction)childProd.Action).Joint.Get<CilProductionContext>(),
+                                    }
+                                };
 
-                        result.Add(l);
+                            result.Add(l);
+                        }
                     }
                 }
             }
 
             return result;
-        }
-
-        private static bool CanLinkProductionContext(Type contextTokenType, Production childProd)
-        {
-            var contextBinding = ((SimpleProductionAction)childProd.Action).Joint.Get<CilProductionContextBinding>();
-            if (contextBinding == null)
-            {
-                return false;
-            }
-
-            return null == new ContextBrowser(contextTokenType).GetGetterPath(contextBinding.ContextType);
         }
 
         public override bool Equals(object obj)

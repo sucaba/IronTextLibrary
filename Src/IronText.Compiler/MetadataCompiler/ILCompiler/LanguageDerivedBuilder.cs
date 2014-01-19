@@ -4,7 +4,7 @@ using System.Reflection;
 using IronText.Automata.Regular;
 using IronText.Build;
 using IronText.Extensibility;
-using IronText.Extensibility.Bindings.Cil;
+using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 using IronText.Lib.IL;

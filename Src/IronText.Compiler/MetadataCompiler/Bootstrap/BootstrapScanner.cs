@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using IronText.Extensibility;
-using IronText.Extensibility.Bindings.Cil;
+using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 

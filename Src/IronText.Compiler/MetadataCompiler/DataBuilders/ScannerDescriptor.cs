@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using IronText.Automata.Regular;
 using IronText.Extensibility;
-using IronText.Extensibility.Bindings.Cil;
+using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Framework.Reflection;
 using IronText.Lib.RegularAst;

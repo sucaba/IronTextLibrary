@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using IronText.Algorithm;
 using IronText.Extensibility;
-using IronText.Extensibility.Bindings.Cil;
+using IronText.Extensibility.Cil;
 using IronText.Framework;
 using IronText.Lib.IL;
 using IronText.Lib.IL.Generators;

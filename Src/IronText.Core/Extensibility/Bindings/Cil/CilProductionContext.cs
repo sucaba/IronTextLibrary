@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace IronText.Extensibility.Bindings.Cil
+namespace IronText.Extensibility.Cil
 {
-    public class CilProductionContextBinding
+    public class CilProductionContext
     {
-        public CilProductionContextBinding(Type contextType)
+        public CilProductionContext(Type contextType)
         {
             this.ContextType = contextType;
         }

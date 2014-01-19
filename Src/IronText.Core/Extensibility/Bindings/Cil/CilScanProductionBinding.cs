@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using IronText.Framework.Reflection;
 
-namespace IronText.Extensibility.Bindings.Cil
+namespace IronText.Extensibility.Cil
 {
     public class CilScanProductionBinding : IScanProductionBinding
     {

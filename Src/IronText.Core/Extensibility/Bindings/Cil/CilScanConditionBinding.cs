@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using IronText.Framework.Reflection;
 
-namespace IronText.Extensibility.Bindings.Cil
+namespace IronText.Extensibility.Cil
 {
     public class CilScanConditionBinding : IScanConditionBinding
     {

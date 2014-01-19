@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using IronText.Extensibility;
+using IronText.Extensibility.Cil;
 using IronText.Framework;
 
 namespace IronText.MetadataCompiler
