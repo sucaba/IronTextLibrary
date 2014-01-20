@@ -241,10 +241,10 @@ namespace IronText.MetadataCompiler
                             context.Joint.Add(new CilProductionContext(contextType));
                         }
 
-                        symbol.ProductionContextProvider.AvailableContexts.Add(context);
+                        symbol.AvailableContexts.Add(context);
                     }
 
-                    symbol.ProductionContextProvider.Joint.Add(feature.Value);
+                    symbol.Joint.Add(feature.Value);
                 }
             }
 
@@ -406,7 +406,7 @@ namespace IronText.MetadataCompiler
                     }
 
                     var providingProd = grammar.Productions[item.ProductionId];
-                    var provider      = providingProd.Pattern[0].ProductionContextProvider;
+                    var provider      = providingProd.Pattern[0];
                     var childSymbol   = providingProd.Pattern[item.Position];
 
                     foreach (var consumingProd in childSymbol.Productions)

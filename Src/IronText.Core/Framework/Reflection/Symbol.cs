@@ -20,7 +20,7 @@ namespace IronText.Framework.Reflection
             this.Name = name ?? EbnfGrammar.UnnamedTokenName;
 
             this._productions              = new ReferenceCollection<Production>();
-            this.ProductionContextProvider = new ProductionContextProvider();
+            this.AvailableContexts         = new ReferenceCollection<ProductionContext>();
             this.Joint                     = new Joint();
         }
 
@@ -42,7 +42,7 @@ namespace IronText.Framework.Reflection
 
         public Joint Joint { get; private set; }
 
-        public ProductionContextProvider ProductionContextProvider { get; private set; }
+        public ReferenceCollection<ProductionContext> AvailableContexts { get; private set; }
 
         /// <summary>
         /// Determines token-level precedence

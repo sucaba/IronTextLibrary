@@ -16,7 +16,5 @@ namespace IronText.Framework.Reflection
         ScanProductionCollection            ScanProductions            { get; }
 
         ProductionContextCollection         ProductionContexts         { get; }
-
-        ProductionContextProviderCollection ProductionContextProviders { get; }
     }
 }

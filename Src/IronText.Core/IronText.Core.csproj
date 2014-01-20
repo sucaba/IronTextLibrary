@@ -180,7 +180,6 @@
     <Compile Include="Collections\IIndexable.cs" />
     <Compile Include="Collections\IOwner.cs" />
     <Compile Include="Framework\Reflection\CompositeProductionAction.cs" />
-    <Compile Include="Framework\Reflection\ProductionContextProviderCollection.cs" />
     <Compile Include="Framework\Reflection\IEbnfContext.cs" />
     <Compile Include="Framework\Reflection\IScanConditionContext.cs" />
     <Compile Include="Framework\Reflection\Merger.cs" />
@@ -192,7 +191,6 @@
     <Compile Include="Framework\Reflection\ProductionCollection.cs" />
     <Compile Include="Framework\Reflection\ProductionContext.cs" />
     <Compile Include="Framework\Reflection\ProductionContextCollection.cs" />
-    <Compile Include="Framework\Reflection\ProductionContextProvider.cs" />
     <Compile Include="Framework\Reflection\ScanCondition.cs" />
     <Compile Include="Framework\Reflection\ScanConditionCollection.cs" />
     <Compile Include="Framework\Reflection\ScanPattern.cs" />

@@ -48,7 +48,6 @@ namespace IronText.Framework.Reflection
         private readonly MergerCollection                   mergers;
         private readonly ScanProductionCollection           scanProductions;
         private readonly ProductionContextCollection         reductionContexts;
-        private readonly ProductionContextProviderCollection reductionContextProviders;
 
         public EbnfGrammar()
         {
@@ -59,7 +58,6 @@ namespace IronText.Framework.Reflection
             scanProductions   = new ScanProductionCollection(this);
             mergers           = new MergerCollection(this);
             reductionContexts = new ProductionContextCollection(this);
-            reductionContextProviders = new ProductionContextProviderCollection(this);
 
             for (int i = PredefinedSymbolCount; i != 0; --i)
             {
@@ -91,9 +89,7 @@ namespace IronText.Framework.Reflection
 
         public MergerCollection                   Mergers                   { get { return mergers; } }
 
-        public ProductionContextCollection         ProductionContexts         { get { return reductionContexts; } }
-
-        public ProductionContextProviderCollection ProductionContextProviders { get { return reductionContextProviders; } }
+        public ProductionContextCollection        ProductionContexts         { get { return reductionContexts; } }
 
         public Symbol Start
         {
