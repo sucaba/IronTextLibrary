@@ -26,7 +26,5 @@ namespace IronText.Extensibility
 
         // Main produced token
         IEnumerable<CilSymbolRef[]> GetTokenRefGroups();
-
-        int Index { get; set; }
     }
 }

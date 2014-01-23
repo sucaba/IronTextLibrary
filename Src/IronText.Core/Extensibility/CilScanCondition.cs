@@ -24,10 +24,9 @@ namespace IronText.Extensibility
         // Ordered scan rules
         public ReadOnlyCollection<ICilScanRule> ScanRules { get; private set; }
 
-        internal ICilScanRule AddImplicitLiteralRule(int ruleIndex, string literal)
+        internal ICilScanRule AddImplicitLiteralRule(string literal)
         {
             var result = CreateImplicitLiteralRule(literal);
-            result.Index = ruleIndex;
             scanRules.Insert(implicitRulesCount++, result);
 
             return result;

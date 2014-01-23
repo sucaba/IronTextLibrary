@@ -17,7 +17,6 @@ namespace IronText.MetadataCompiler
         private readonly ITokenPool             tokenPool;
 
         private readonly Stack<CilScanCondition> processedScanConditions;
-        private int totalRuleCount = 0;
         private readonly CilSymbolRef voidTerm;
         private readonly ILogging logging;
 
@@ -106,7 +105,6 @@ namespace IronText.MetadataCompiler
         {
             var currentScanMode = processedScanConditions.Peek();
             currentScanMode.AddRule(rule);
-            rule.Index = totalRuleCount++;
 
             if (rule.NextModeType != null)
             {
@@ -149,7 +147,7 @@ namespace IronText.MetadataCompiler
 
                 foreach (var literal in implicitLiterals)
                 {
-                    scanMode.AddImplicitLiteralRule(totalRuleCount++, literal);
+                    scanMode.AddImplicitLiteralRule(literal);
                 }
             }
 

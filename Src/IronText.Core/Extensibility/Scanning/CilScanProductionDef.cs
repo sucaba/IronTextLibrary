@@ -28,15 +28,6 @@ namespace IronText.Extensibility
 
         public Type NextModeType { get; set; }
 
-        // for bootstrap
-        internal bool ShouldSkip { get { return this is ICilSkipScanRule; } }
-
-        private int index = -1;
-        int ICilScanRule.Index { get { return index; } set { index = value; } }
-
-        // for sorting
-        internal int Priority { get; set; }
-
         public override string ToString()
         {
             if (DefiningMember != null)
