@@ -76,10 +76,10 @@ namespace IronText.Extensibility
             {
                 if (IsLiteral)
                 {
-                    return TokenNaming.GetLiteralName(LiteralText);
+                    return CilSymbolNaming.GetLiteralName(LiteralText);
                 }
 
-                return TokenNaming.GetTypeName(TokenType);
+                return CilSymbolNaming.GetTypeName(TokenType);
             }
         }
 

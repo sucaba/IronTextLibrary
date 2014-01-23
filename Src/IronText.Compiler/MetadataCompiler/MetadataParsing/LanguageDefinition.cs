@@ -9,10 +9,10 @@ namespace IronText.MetadataCompiler
 {
     internal class LanguageDefinition : ITokenPool
     {
-        private readonly List<ICilMetadata>        allMetadata;
-        private readonly List<CilProductionDef>         allParseRules;
-        private readonly List<ScanMode>                 allScanModes;
-        private readonly List<TokenFeature<Precedence>> precedence;
+        private readonly List<ICilMetadata>              allMetadata;
+        private readonly List<CilProductionDef>          allParseRules;
+        private readonly List<CilScanCondition>          allScanConditions;
+        private readonly List<SymbolFeature<Precedence>> precedence;
 
         private readonly CilMergerDef[] allMergeRules;
 
@@ -31,7 +31,7 @@ namespace IronText.MetadataCompiler
                         startType.FullName));
             }
 
-            this.TokenRefResolver = new TokenRefResolver();
+            this.TokenRefResolver = new CilSymbolRefResolver();
 
             this.Start = tokenPool.AugmentedStart;
 
@@ -91,8 +91,8 @@ namespace IronText.MetadataCompiler
 
             CheckAllScanRulesDefined(scanDataCollector.UndefinedTerminals, startType, logging);
 
-            allScanModes = scanDataCollector.ScanModes;
-            LinkRelatedTokens(allScanModes);
+            allScanConditions = scanDataCollector.ScanConditions;
+            LinkRelatedTokens(allScanConditions);
 
             precedence          = allMetadata.SelectMany(m => m.GetTokenPrecedence(tokenPool)).ToList();
 
@@ -135,7 +135,7 @@ namespace IronText.MetadataCompiler
 
         public bool IsValid { get; private set; }
 
-        private void LinkRelatedTokens(List<ScanMode> allScanModes)
+        private void LinkRelatedTokens(List<CilScanCondition> allScanModes)
         {
             foreach (var scanMode in allScanModes)
             {
@@ -158,15 +158,15 @@ namespace IronText.MetadataCompiler
 
         public ITokenRefResolver TokenRefResolver { get; private set; }
 
-        public IEnumerable<TokenFeature<Precedence>> Precedence { get { return precedence; } }
+        public IEnumerable<SymbolFeature<Precedence>> Precedence { get { return precedence; } }
 
         public IList<CilProductionDef> ProductionDefs { get { return allParseRules; } }
 
         public IList<CilMergerDef> MergerDefs { get { return allMergeRules; } }
 
-        public IList<ScanMode> ScanModes { get { return allScanModes; } }
+        public IList<CilScanCondition> ScanModes { get { return allScanConditions; } }
 
-        public IList<TokenFeature<CilContextProvider>> ContextProviders { get; private set; }
+        public IList<SymbolFeature<CilContextProvider>> ContextProviders { get; private set; }
 
         CilSymbolRef ITokenPool.AugmentedStart
         {

@@ -42,7 +42,7 @@ namespace IronText.MetadataCompiler
             {
                 var locals =
                     (from lc in localContexts
-                     let binding = lc.Joint.Get<CilProductionContext>()
+                     let binding = lc.Joint.Get<CilContextConsumer>()
                      where binding != null && contextType == binding.ContextType
                      select lc)
                     .ToArray();

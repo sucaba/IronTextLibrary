@@ -47,7 +47,7 @@ namespace IronText.Framework.Reflection
         private readonly ScanConditionCollection            scanConditions;
         private readonly MergerCollection                   mergers;
         private readonly ScanProductionCollection           scanProductions;
-        private readonly ProductionContextCollection         reductionContexts;
+        private readonly ProductionContextCollection        reductionContexts;
 
         public EbnfGrammar()
         {
@@ -89,7 +89,7 @@ namespace IronText.Framework.Reflection
 
         public MergerCollection                   Mergers                   { get { return mergers; } }
 
-        public ProductionContextCollection        ProductionContexts         { get { return reductionContexts; } }
+        public ProductionContextCollection        ProductionContexts        { get { return reductionContexts; } }
 
         public Symbol Start
         {

@@ -14,6 +14,7 @@ using IronText.Framework.Reflection;
 using IronText.Compiler;
 using IronText.Compiler.Analysis;
 using IronText.Analysis;
+using IronText.Logging;
 
 namespace IronText.MetadataCompiler
 {
@@ -38,7 +39,9 @@ namespace IronText.MetadataCompiler
 
             LanguageDefinition definition = null;
 
-            WithTimeLogging(
+            logging.WithTimeLogging(
+                languageName.Name,
+                languageName.DefinitionType,
                 () =>
                 {
                     definition = new LanguageDefinition(languageName.DefinitionType, logging);
@@ -74,7 +77,9 @@ namespace IronText.MetadataCompiler
             ILrDfa parserDfa = null;
 
             var grammarAnalysis = new EbnfGrammarAnalysis(grammar);
-            WithTimeLogging(
+            logging.WithTimeLogging(
+                languageName.Name,
+                languageName.DefinitionType,
                 () =>
                 {
                     parserDfa = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.Default);
@@ -222,13 +227,13 @@ namespace IronText.MetadataCompiler
                 }
             }
 
-            foreach (TokenFeature<Precedence> feature in definition.Precedence)
+            foreach (SymbolFeature<Precedence> feature in definition.Precedence)
             {
-                int id = tokenResolver.GetId(feature.Token);
-                result.Symbols[id].Precedence = feature.Value;
+                var symbol = tokenResolver.GetSymbol(feature.Token);
+                symbol.Precedence = feature.Value;
             }
 
-            foreach (TokenFeature<CilContextProvider> feature in definition.ContextProviders)
+            foreach (SymbolFeature<CilContextProvider> feature in definition.ContextProviders)
             {
                 var symbol = tokenResolver.GetSymbol(feature.Token);
                 if (symbol != null)
@@ -238,10 +243,10 @@ namespace IronText.MetadataCompiler
                         ProductionContext context;
                         if (result.ProductionContexts.FindOrAdd(contextType.AssemblyQualifiedName, out context))
                         {
-                            context.Joint.Add(new CilProductionContext(contextType));
+                            context.Joint.Add(new CilContextConsumer(contextType));
                         }
 
-                        symbol.AvailableContexts.Add(context);
+                        symbol.ProvidedContexts.Add(context);
                     }
 
                     symbol.Joint.Add(feature.Value);
@@ -269,14 +274,13 @@ namespace IronText.MetadataCompiler
                     }
                     else if (result.ProductionContexts.FindOrAdd(contextType.AssemblyQualifiedName, out context))
                     {
-                        context.Joint.Add(new CilProductionContext(contextType));
+                        context.Joint.Add(new CilContextConsumer(contextType));
                     }
 
                     production.Action = new SimpleProductionAction(pattern.Length, context);
                 }
 
                 var action = (SimpleProductionAction)production.Action;
-
                 action.Joint.Add(prodDef);
 
                 production.ExplicitPrecedence = prodDef.Precedence;
@@ -284,9 +288,9 @@ namespace IronText.MetadataCompiler
                 prodDef.Index = production.Index;
             }
 
-            foreach (var scanMode in definition.ScanModes)
+            foreach (CilScanCondition scanMode in definition.ScanModes)
             {
-                var condition = ConditionFromType(result, scanMode.ScanModeType);
+                var condition = ConditionFromType(result, scanMode);
 
                 foreach (var scanRule in scanMode.ScanRules)
                 {
@@ -339,14 +343,19 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        private static ScanCondition ConditionFromType(EbnfGrammar result, Type type)
+        private static ScanCondition ConditionFromType(EbnfGrammar result, CilScanCondition scanDef)
+        {
+            return ConditionFromType(result, scanDef.ScanModeType);
+        }
+
+        private static ScanCondition ConditionFromType(EbnfGrammar grammar, Type type)
         {
             if (type == null)
             {
                 return null;
             }
 
-            foreach (var cond in result.ScanConditions)
+            foreach (var cond in grammar.ScanConditions)
             {
                 var binding = cond.Joint.The<CilScanConditionDef>();
                 if (binding.ConditionType == type)
@@ -357,13 +366,13 @@ namespace IronText.MetadataCompiler
 
             var condition = new ScanCondition(type.FullName);
             condition.Joint.Add(new CilScanConditionDef(type));
-            result.ScanConditions.Add(condition);
+            grammar.ScanConditions.Add(condition);
             return condition;
         }
 
         private static SymbolBase GetResultSymbol(
-            EbnfGrammar             grammar,
-            ITokenRefResolver       tokenResolver,
+            EbnfGrammar                 grammar,
+            ITokenRefResolver           tokenResolver,
             CilSymbolRef                mainTokenRef,
             IEnumerable<CilSymbolRef[]> tokenRefGroups)
         {
@@ -386,8 +395,8 @@ namespace IronText.MetadataCompiler
         }
 
         private static List<ProductionContextLink> CollectLocalContexts(
-            EbnfGrammar      grammar,
-            ILrDfa           lrDfa,
+            EbnfGrammar             grammar,
+            ILrDfa                  lrDfa,
             IList<CilProductionDef> allParseRules)
         {
             var result = new List<ProductionContextLink>();
@@ -413,7 +422,7 @@ namespace IronText.MetadataCompiler
                     {
                         var action = (SimpleProductionAction)consumingProd.Action;
 
-                        if (provider.AvailableContexts.Contains(action.Context))
+                        if (provider.ProvidedContexts.Contains(action.Context))
                         {
                             result.Add(
                                 new ProductionContextLink
@@ -423,7 +432,7 @@ namespace IronText.MetadataCompiler
                                     Joint = 
                                     {
                                         provider.Joint.The<CilContextProvider>(),
-                                        action.Context.Joint.Get<CilProductionContext>(),
+                                        action.Context.Joint.Get<CilContextConsumer>(),
                                     }
                                 });
                         }
@@ -449,41 +458,6 @@ namespace IronText.MetadataCompiler
         public override string ToString()
         {
             return "LanguageData for " + languageName.DefinitionType.FullName;
-        }
-
-        private void WithTimeLogging(Action action, string activityName)
-        {
-            Verbose("Started {0} for {1}", activityName, languageName.Name);
-
-            try
-            {
-                action();
-            }
-            catch (Exception e)
-            {
-                logging.Write(
-                    new LogEntry
-                    {
-                        Severity = Severity.Error,
-                        Member   = languageName.DefinitionType,
-                        Message  = e.Message
-                    });
-            }
-            finally
-            {
-                Verbose("Done {0} for {1}", activityName, languageName.Name);
-            }
-        }
-
-        private void Verbose(string fmt, params object[] args)
-        {
-            logging.Write(
-                new LogEntry
-                {
-                    Severity = Severity.Verbose,
-                    Member = languageName.DefinitionType,
-                    Message = string.Format(fmt, args)
-                });
         }
     }
 }

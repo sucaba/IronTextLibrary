@@ -5,11 +5,11 @@ using IronText.Framework.Reflection;
 
 namespace IronText.Extensibility
 {
-    internal class TokenRefResolver : ITokenRefResolver
+    internal class CilSymbolRefResolver : ITokenRefResolver
     {
         private readonly Dictionary<CilSymbolRef, CilSymbolDef> ref2def = new Dictionary<CilSymbolRef, CilSymbolDef>();
         
-        public TokenRefResolver()
+        public CilSymbolRefResolver()
         {
         }
 

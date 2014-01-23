@@ -8,20 +8,18 @@ using IronText.Framework;
 
 namespace IronText.Extensibility
 {
-    public class ScanMode
+    public class CilScanCondition
     {
         private readonly List<ICilScanRule> scanRules = new List<ICilScanRule>();
         private int implicitRulesCount = 0;
 
-        internal ScanMode(Type scanModeType)
+        internal CilScanCondition(Type scanModeType)
         {
             this.ScanModeType = scanModeType;
             this.ScanRules = new ReadOnlyCollection<ICilScanRule>(this.scanRules);
         }
 
         public Type ScanModeType { get; private set; }
-
-        public int ActionIndexShift { get; internal set; }
 
         // Ordered scan rules
         public ReadOnlyCollection<ICilScanRule> ScanRules { get; private set; }

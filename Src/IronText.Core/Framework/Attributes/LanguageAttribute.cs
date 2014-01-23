@@ -71,14 +71,14 @@ namespace IronText.Framework
             return Enumerable.Empty<CilSymbolRef>();
         }
 
-        public IEnumerable<TokenFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
+        public IEnumerable<SymbolFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
         {
-            return Enumerable.Empty<TokenFeature<Precedence>>();
+            return Enumerable.Empty<SymbolFeature<Precedence>>();
         }
 
-        public IEnumerable<TokenFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool)
+        public IEnumerable<SymbolFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool)
         {
-            return Enumerable.Empty<TokenFeature<CilContextProvider>>();
+            return Enumerable.Empty<SymbolFeature<CilContextProvider>>();
         }
 
         private IEnumerable<ICilMetadata> EnumerateDirectChildren()

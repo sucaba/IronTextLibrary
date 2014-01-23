@@ -5,9 +5,9 @@ using System.Text;
 
 namespace IronText.Extensibility
 {
-    public class CilProductionContext
+    public class CilContextConsumer
     {
-        public CilProductionContext(Type contextType)
+        public CilContextConsumer(Type contextType)
         {
             this.ContextType = contextType;
         }

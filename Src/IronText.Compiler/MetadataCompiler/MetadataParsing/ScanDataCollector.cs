@@ -10,13 +10,13 @@ namespace IronText.MetadataCompiler
 {
     class ScanDataCollector : IScanDataCollector
     {
-        private readonly List<ICilMetadata> validMetadata;
-        private readonly List<ICilMetadata> invalidMetadata;
-        private readonly List<ScanMode>          allScanModes;
-        private readonly List<CilSymbolRef>          terminals;
-        private readonly ITokenPool              tokenPool;
+        private readonly List<ICilMetadata>     validMetadata;
+        private readonly List<ICilMetadata>     invalidMetadata;
+        private readonly List<CilScanCondition> allScanConditions;
+        private readonly List<CilSymbolRef>     terminals;
+        private readonly ITokenPool             tokenPool;
 
-        private readonly Stack<ScanMode> processedScanModes;
+        private readonly Stack<CilScanCondition> processedScanConditions;
         private int totalRuleCount = 0;
         private readonly CilSymbolRef voidTerm;
         private readonly ILogging logging;
@@ -29,14 +29,14 @@ namespace IronText.MetadataCompiler
             this.logging = logging;
             this.validMetadata  = new List<ICilMetadata>();
             this.invalidMetadata  = new List<ICilMetadata>();
-            this.allScanModes = new List<ScanMode>();
+            this.allScanConditions = new List<CilScanCondition>();
             this.terminals    = new List<CilSymbolRef>(terminals);
             this.voidTerm = tokenPool.ScanSkipToken;
             //this.terminals.Add(voidTerm);
 
             this.tokenPool    = tokenPool;
 
-            processedScanModes = new Stack<ScanMode>();
+            processedScanConditions = new Stack<CilScanCondition>();
         }
 
         public List<CilSymbolRef> UndefinedTerminals
@@ -46,7 +46,7 @@ namespace IronText.MetadataCompiler
                 return 
                     terminals
                     .Except(
-                        allScanModes
+                        allScanConditions
                         .SelectMany(mode => mode.ScanRules)
                         .SelectMany(rule => rule.GetTokenRefGroups())
                         .SelectMany(tokens => tokens)
@@ -57,7 +57,7 @@ namespace IronText.MetadataCompiler
 
         public bool HasInvalidData { get { return invalidMetadata.Count != 0; } }
 
-        public List<ScanMode> ScanModes { get { return allScanModes; } }
+        public List<CilScanCondition> ScanConditions { get { return allScanConditions; } }
 
         public void AddMeta(ICilMetadata meta)
         {
@@ -104,7 +104,7 @@ namespace IronText.MetadataCompiler
 
         public void AddScanRule(ICilScanRule rule)
         {
-            var currentScanMode = processedScanModes.Peek();
+            var currentScanMode = processedScanConditions.Peek();
             currentScanMode.AddRule(rule);
             rule.Index = totalRuleCount++;
 
@@ -116,30 +116,30 @@ namespace IronText.MetadataCompiler
 
         public void AddScanMode(Type modeType)
         {
-            if (allScanModes.Any(mode => object.Equals(mode.ScanModeType, modeType)))
+            if (allScanConditions.Any(mode => object.Equals(mode.ScanModeType, modeType)))
             {
                 return;
             }
 
-            var scanMode = new ScanMode(modeType);
+            var scanMode = new CilScanCondition(modeType);
 
-            allScanModes.Add(scanMode);
+            allScanConditions.Add(scanMode);
 
-            processedScanModes.Push(scanMode);
+            processedScanConditions.Push(scanMode);
 
             foreach (var meta in MetadataParser.EnumerateAndBind(modeType))
             {
                 AddMeta(meta);
             }
 
-            if (processedScanModes.Count == 1)
+            if (processedScanConditions.Count == 1)
             {
                 var implicitLiterals = 
                     (from t in terminals
                      where t.IsLiteral
                      select t.LiteralText)
                     .Except(
-                        from mode in allScanModes
+                        from mode in allScanConditions
                         from rule in mode.ScanRules
                         let singleTokenRule = (rule as ICilSingleTokenScanRule)
                         where singleTokenRule != null
@@ -153,7 +153,7 @@ namespace IronText.MetadataCompiler
                 }
             }
 
-            processedScanModes.Pop();
+            processedScanConditions.Pop();
         }
     }
 }

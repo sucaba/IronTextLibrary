@@ -19,9 +19,9 @@ namespace IronText.Extensibility
 
         IEnumerable<CilSymbolRef>      GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category);
 
-        IEnumerable<TokenFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool);
+        IEnumerable<SymbolFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool);
 
-        IEnumerable<TokenFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool);
+        IEnumerable<SymbolFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool);
 
         IEnumerable<CilProductionDef> GetProductions(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool);
 

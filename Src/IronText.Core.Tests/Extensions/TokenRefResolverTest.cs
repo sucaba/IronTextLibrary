@@ -8,12 +8,12 @@ namespace IronText.Tests.Extensions
     [TestFixture]
     public class TokenRefResolverTest
     {
-        TokenRefResolver target;
+        CilSymbolRefResolver target;
 
         [SetUp]
         public void SetUp()
         {
-            target = new TokenRefResolver();
+            target = new CilSymbolRefResolver();
         }
 
         [Test]

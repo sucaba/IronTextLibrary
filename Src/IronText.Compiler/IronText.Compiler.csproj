@@ -186,6 +186,7 @@
     <Compile Include="MetadataCompiler\Extensibility\ParserAutomata.cs" />
     <Compile Include="MetadataCompiler\Extensibility\ParserState.cs" />
     <Compile Include="MetadataCompiler\Extensibility\ParserTransition.cs" />
+    <Compile Include="MetadataCompiler\CilGrammarBuilder.cs" />
     <Compile Include="MetadataCompiler\ILCompiler\ContextResolverCode.cs" />
     <Compile Include="MetadataCompiler\ILCompiler\GrammarActionCode.cs" />
     <Compile Include="MetadataCompiler\ILCompiler\GrammarActionGenerator.cs" />

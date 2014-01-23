@@ -63,14 +63,14 @@ namespace IronText.Tests.Extensibility
                 return Enumerable.Empty<CilSymbolRef>();
             }
 
-            IEnumerable<TokenFeature<Precedence>> ICilMetadata.GetTokenPrecedence(ITokenPool tokenPool)
+            IEnumerable<SymbolFeature<Precedence>> ICilMetadata.GetTokenPrecedence(ITokenPool tokenPool)
             {
-                return Enumerable.Empty<TokenFeature<Precedence>>();
+                return Enumerable.Empty<SymbolFeature<Precedence>>();
             }
 
-            IEnumerable<TokenFeature<CilContextProvider>> ICilMetadata.GetTokenContextProvider(ITokenPool tokenPool)
+            IEnumerable<SymbolFeature<CilContextProvider>> ICilMetadata.GetTokenContextProvider(ITokenPool tokenPool)
             {
-                return Enumerable.Empty<TokenFeature<CilContextProvider>>();
+                return Enumerable.Empty<SymbolFeature<CilContextProvider>>();
             }
 
             IEnumerable<ReportBuilder> ICilMetadata.GetReportBuilders()

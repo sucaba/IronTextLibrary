@@ -5,12 +5,12 @@ using System.Text;
 
 namespace IronText.Extensibility
 {
-    public struct TokenFeature<T>
+    public struct SymbolFeature<T>
     {
         private readonly CilSymbolRef _token;
         private readonly T        _value;
 
-        public TokenFeature(CilSymbolRef token, T value)
+        public SymbolFeature(CilSymbolRef token, T value)
         {
             this._token = token;
             this._value = value;
@@ -18,6 +18,6 @@ namespace IronText.Extensibility
 
         public CilSymbolRef Token { get { return _token; } }
 
-        public T        Value { get { return _value; } }
+        public T            Value { get { return _value; } }
     }
 }

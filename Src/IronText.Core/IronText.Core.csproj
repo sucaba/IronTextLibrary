@@ -114,7 +114,7 @@
     <Compile Include="Diagnostics\GvGraphView.cs" />
     <Compile Include="Diagnostics\IGraphView.cs" />
     <Compile Include="Build\IDerivedBuilderMetadata.cs" />
-    <Compile Include="Extensibility\CilProductionContext.cs" />
+    <Compile Include="Extensibility\CilContextConsumer.cs" />
     <Compile Include="Extensibility\CilScanConditionDef.cs" />
     <Compile Include="Extensibility\CilScanProductionDef0.cs" />
     <Compile Include="Extensibility\CilContextProvider.cs" />
@@ -136,7 +136,7 @@
     <Compile Include="Extensibility\Scanning\ICilSkipScanRule.cs" />
     <Compile Include="Extensibility\Scanning\CilSingleTokenScanProductionDef.cs" />
     <Compile Include="Extensibility\Scanning\CilSkipScanRule.cs" />
-    <Compile Include="Extensibility\TokenFeature.cs" />
+    <Compile Include="Extensibility\SymbolFeature.cs" />
     <Compile Include="Framework\Attributes\LanguageFlags.cs" />
     <Compile Include="Framework\ILanguageRuntime.cs" />
     <Compile Include="Framework\ParserAction.cs" />
@@ -147,10 +147,10 @@
     <Compile Include="Extensibility\Code\IScanActionCode.cs" />
     <Compile Include="Extensibility\ICilSymbolPool.cs" />
     <Compile Include="Extensibility\CilMetadataAttribute.cs" />
-    <Compile Include="Extensibility\Reporting\ScanMode.cs" />
+    <Compile Include="Extensibility\CilScanCondition.cs" />
     <Compile Include="Extensibility\ScannerUtils.cs" />
     <Compile Include="Extensibility\Scanning\CilScanProductionDef.cs" />
-    <Compile Include="Extensibility\TokenNaming.cs" />
+    <Compile Include="Extensibility\CilSymbolNaming.cs" />
     <Compile Include="Framework\Attributes\SymbolCategory.cs" />
     <Compile Include="Framework\Attributes\TokenCategoryAttribute.cs" />
     <Compile Include="Framework\Attributes\Diagnostics\ParserGraphAttribute.cs" />
@@ -251,6 +251,7 @@
     <Compile Include="Framework\Associativity.cs" />
     <Compile Include="Framework\Reflection\Production.cs" />
     <Compile Include="Framework\Precedence.cs" />
+    <Compile Include="Logging\LoggingExtensions.cs" />
     <Compile Include="Logging\LoggingKind.cs" />
     <Compile Include="Logging\Severity.cs" />
     <Compile Include="Framework\Attributes\ScanBaseAttribute.cs" />
@@ -259,7 +260,7 @@
     <Compile Include="Framework\Delegates.cs" />
     <Compile Include="Extensibility\ICilSymbolRefResolver.cs" />
     <Compile Include="Extensibility\CilSymbolDef.cs" />
-    <Compile Include="Extensibility\TokenRefResolver.cs" />
+    <Compile Include="Extensibility\CilSymbolRefResolver.cs" />
     <Compile Include="Lib\Builtins.cs" />
     <Compile Include="Lib\Numbers.cs" />
     <Compile Include="Lib\Shared\Labels.cs" />

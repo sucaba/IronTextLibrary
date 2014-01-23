@@ -21,10 +21,10 @@ namespace IronText.Extensibility
             {
                 if (Literals.Count == 1)
                 {
-                    return TokenNaming.GetLiteralName(Literals.First());
+                    return CilSymbolNaming.GetLiteralName(Literals.First());
                 }
 
-                return TokenNaming.GetTypeName(TokenType);
+                return CilSymbolNaming.GetTypeName(TokenType);
             }
         }
 

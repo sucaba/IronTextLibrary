@@ -27,14 +27,14 @@ namespace IronText.Extensibility
             return Enumerable.Empty<CilSymbolRef>();
         }
 
-        public virtual IEnumerable<TokenFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
+        public virtual IEnumerable<SymbolFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
         {
-            return Enumerable.Empty<TokenFeature<Precedence>>();
+            return Enumerable.Empty<SymbolFeature<Precedence>>();
         }
 
-        public virtual IEnumerable<TokenFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool)
+        public virtual IEnumerable<SymbolFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool)
         {
-            return Enumerable.Empty<TokenFeature<CilContextProvider>>();
+            return Enumerable.Empty<SymbolFeature<CilContextProvider>>();
         }
 
         public virtual IEnumerable<ICilMetadata> GetChildren()

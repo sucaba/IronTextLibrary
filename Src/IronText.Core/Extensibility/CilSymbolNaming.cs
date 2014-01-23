@@ -3,7 +3,7 @@ using System.Text;
 
 namespace IronText.Extensibility
 {
-    static class TokenNaming
+    static class CilSymbolNaming
     {
         public const string StartTokenName = "void";
         public const string StringTokenName = "$id";
