@@ -7,20 +7,18 @@ namespace IronText.Extensibility
 {
     internal class CilSingleTokenScanRule : CilScanRule, ICilSingleTokenScanRule
     {
-        public override CilSymbolRef MainOutcome { get { return GetTokenGroup(); } }
+        public override CilSymbolRef MainOutcome { get { return GetTokenGroup(); } set { }  }
 
-        public CilSymbolRef AnyTokenRef { get { return GetTokenGroup(); } }
-
-        public override IEnumerable<CilSymbolRef> GetAllOutcomes()
+        public override IEnumerable<CilSymbolRef> AllOutcomes
         {
-            return new [] { GetTokenGroup() };
+            get { return new[] { GetTokenGroup() }; }
         }
 
         private CilSymbolRef GetTokenGroup()
         {
-            if (SymbolTypes.Count != 0 || LiteralText != null)
+            if (SymbolType != null || LiteralText != null)
             {
-                return new CilSymbolRef(SymbolTypes.FirstOrDefault(), LiteralText);
+                return new CilSymbolRef(SymbolType, LiteralText);
             }
 
             throw new InvalidOperationException();

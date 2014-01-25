@@ -296,11 +296,11 @@ namespace IronText.MetadataCompiler
                 {
                     int mainToken = tokenResolver.GetId(scanRule.MainOutcome);
                     int[] tokens = scanRule
-                            .GetAllOutcomes()
+                            .AllOutcomes
                             .Select(c => tokenResolver.GetId(c))
                             .ToArray();
 
-                    SymbolBase outcome = GetResultSymbol(result, tokenResolver, scanRule.MainOutcome, scanRule.GetAllOutcomes());
+                    SymbolBase outcome = GetResultSymbol(result, tokenResolver, scanRule.MainOutcome, scanRule.AllOutcomes);
 
                     var asSingleToken = scanRule as ICilSingleTokenScanRule;
                     ScanPattern pattern;
@@ -312,7 +312,7 @@ namespace IronText.MetadataCompiler
                     {
                         pattern = ScanPattern.CreateRegular(
                                     scanRule.Pattern,
-                                    ((ICilBootstrapScanRule)scanRule).BootstrapRegexPattern);
+                                    ((ICilBootstrapScanRule)scanRule).BootstrapPattern);
                     }
                     else
                     {

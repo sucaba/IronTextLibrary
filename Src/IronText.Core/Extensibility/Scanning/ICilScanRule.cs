@@ -7,18 +7,18 @@ namespace IronText.Extensibility
 {
     public interface ICilScanRule
     {
-        CilSymbolRef         MainOutcome  { get; }
+        CilSymbolRef              MainOutcome    { get; }
 
-        IEnumerable<CilSymbolRef> GetAllOutcomes();
+        IEnumerable<CilSymbolRef> AllOutcomes    { get; }
 
-        Type                 NextModeType   { get; }
+        Type                      NextModeType   { get; }
 
-        string               Pattern        { get; }
+        string                    Pattern        { get; }
 
-        MethodInfo           DefiningMethod { get; }
+        MethodInfo                DefiningMethod { get; }
 
-        Disambiguation       Disambiguation { get; }
+        Disambiguation            Disambiguation { get; }
 
-        CilScanActionBuilder Builder        { get; }
+        CilScanActionBuilder      Builder        { get; }
     }
 }

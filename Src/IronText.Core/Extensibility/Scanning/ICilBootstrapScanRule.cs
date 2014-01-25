@@ -7,6 +7,6 @@ namespace IronText.Extensibility
 {
     internal interface ICilBootstrapScanRule
     {
-        string BootstrapRegexPattern { get; }
+        string BootstrapPattern { get; }
     }
 }

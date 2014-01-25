@@ -30,7 +30,7 @@ namespace IronText.Framework.Reflection
 
         public virtual string Pattern { get { return null; } }
 
-        internal virtual string BootstrapRegexPattern { get { return null; } }
+        internal virtual string BootstrapPattern { get { return null; } }
 
         public abstract Disambiguation DefaultDisambiguation { get; }
 
@@ -56,7 +56,7 @@ namespace IronText.Framework.Reflection
 
         public override string Pattern { get { return pattern; } }
 
-        internal override string BootstrapRegexPattern { get { return regexPattern; } }
+        internal override string BootstrapPattern { get { return regexPattern; } }
 
         public override Disambiguation DefaultDisambiguation { get { return Disambiguation.Exclusive; } }
     }
@@ -76,7 +76,7 @@ namespace IronText.Framework.Reflection
 
         public override string Pattern { get { return pattern; } }
 
-        internal override string BootstrapRegexPattern { get { return regexPattern; } }
+        internal override string BootstrapPattern { get { return regexPattern; } }
 
         public override Disambiguation DefaultDisambiguation { get { return Disambiguation.Contextual; } }
     }

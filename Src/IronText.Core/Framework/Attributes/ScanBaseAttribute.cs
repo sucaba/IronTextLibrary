@@ -59,7 +59,7 @@ namespace IronText.Framework
 
                 if (tokenType != typeof(object))
                 {
-                    scanRule.SymbolTypes.Add(tokenType);
+                    scanRule.SymbolType = tokenType;
                 };
             }
 
@@ -67,7 +67,7 @@ namespace IronText.Framework
             scanRule.Disambiguation = Disambiguation;
             scanRule.LiteralText = LiteralText;
             scanRule.Pattern = Pattern;
-            scanRule.BootstrapRegexPattern = RegexPattern;
+            scanRule.BootstrapPattern = RegexPattern;
             scanRule.NextModeType = nextModeType;
             scanRule.Builder =
                 context =>

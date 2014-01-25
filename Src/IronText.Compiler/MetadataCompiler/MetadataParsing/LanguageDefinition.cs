@@ -141,7 +141,7 @@ namespace IronText.MetadataCompiler
             {
                 foreach (var scanRule in scanMode.ScanRules)
                 {
-                    foreach (CilSymbolRef symbolConstraint in scanRule.GetAllOutcomes())
+                    foreach (CilSymbolRef symbolConstraint in scanRule.AllOutcomes)
                     {
                         if (TokenRefResolver.Contains(symbolConstraint))
                         {

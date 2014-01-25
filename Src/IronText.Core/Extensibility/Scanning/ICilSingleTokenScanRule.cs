@@ -7,7 +7,5 @@ namespace IronText.Extensibility
     public interface ICilSingleTokenScanRule : ICilScanRule
     {
         string       LiteralText { get; }
-
-        CilSymbolRef AnyTokenRef { get; }
     }
 }

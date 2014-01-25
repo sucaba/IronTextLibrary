@@ -68,7 +68,7 @@ namespace IronText.MetadataCompiler
 
         private static string GetPattern(ScanProduction production)
         {
-            return production.Pattern.BootstrapRegexPattern;
+            return production.Pattern.BootstrapPattern;
         }
 
         public IReceiver<Msg> Accept(IReceiver<Msg> visitor)

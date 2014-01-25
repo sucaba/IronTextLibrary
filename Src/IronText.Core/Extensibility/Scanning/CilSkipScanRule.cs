@@ -9,11 +9,11 @@ namespace IronText.Extensibility
     {
         public CilSkipScanRule() { }
 
-        public override CilSymbolRef MainOutcome { get { return null; } }
+        public override CilSymbolRef MainOutcome { get { return null; } set { }  }
 
-        public override IEnumerable<CilSymbolRef> GetAllOutcomes()
+        public override IEnumerable<CilSymbolRef> AllOutcomes
         {
-            return Enumerable.Empty<CilSymbolRef>();
+            get { return Enumerable.Empty<CilSymbolRef>(); }
         }
 
         public override string ToString()

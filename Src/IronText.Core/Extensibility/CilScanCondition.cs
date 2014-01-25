@@ -45,7 +45,7 @@ namespace IronText.Extensibility
                 LiteralText           = literal,
                 Disambiguation        = Disambiguation.Exclusive,
                 Pattern               = ScannerUtils.Escape(literal),
-                BootstrapRegexPattern = Regex.Escape(literal),
+                BootstrapPattern = Regex.Escape(literal),
                 Builder = code =>
                 {
                     code
