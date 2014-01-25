@@ -7,41 +7,28 @@ namespace IronText.Extensibility
 {
     internal class CilSingleTokenScanRule : CilScanRule, ICilSingleTokenScanRule
     {
-        public override CilSymbolRef MainTokenRef { get { return GetTokenGroup().FirstOrDefault(); } }
+        public override CilSymbolRef MainOutcome { get { return GetTokenGroup(); } }
 
-        public CilSymbolRef AnyTokenRef { get { return GetTokenGroup().FirstOrDefault(); } }
+        public CilSymbolRef AnyTokenRef { get { return GetTokenGroup(); } }
 
-        public override IEnumerable<CilSymbolRef[]> GetTokenRefGroups()
+        public override IEnumerable<CilSymbolRef> GetAllOutcomes()
         {
-            return new [] { GetTokenGroup().ToArray() };
+            return new [] { GetTokenGroup() };
         }
 
-        private IEnumerable<CilSymbolRef> GetTokenGroup()
+        private CilSymbolRef GetTokenGroup()
         {
-            if (SymbolTypes.Count != 0)
+            if (SymbolTypes.Count != 0 || LiteralText != null)
             {
-                yield return CilSymbolRef.Typed(SymbolTypes[0]);
+                return new CilSymbolRef(SymbolTypes.FirstOrDefault(), LiteralText);
             }
 
-            if (LiteralText != null)
-            {
-                yield return CilSymbolRef.Literal(LiteralText);
-            }
+            throw new InvalidOperationException();
         }
 
         public override string ToString()
         {
-            var group = GetTokenGroup().ToArray();
-            string leftSide;
-            if (group.Length > 1)
-            {
-                leftSide = string.Format("{{{0}}}", string.Join<string>(" | ", group.Select(tid => tid.Name)));
-            }
-            else
-            {
-                leftSide = group[0].Name;
-            }
-
+            var leftSide = GetTokenGroup().ToString();
             return string.Format("{0} -> {1}", leftSide, Pattern);
         }
     }

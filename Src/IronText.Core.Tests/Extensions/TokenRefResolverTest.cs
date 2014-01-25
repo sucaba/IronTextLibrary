@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using IronText.Extensibility;
 using IronText.Framework.Reflection;
 using NUnit.Framework;
@@ -19,11 +20,15 @@ namespace IronText.Tests.Extensions
         [Test]
         public void Test()
         {
-            var tokens = new[] {
+            var tokens = new []
+            {
                 CilSymbolRef.Literal("foo"),
                 CilSymbolRef.Literal("bar"),
                 CilSymbolRef.Literal("other"),
                 CilSymbolRef.Typed(typeof(string)),
+                CilSymbolRef.Create(typeof(string), "foo"),   // links foo and string
+                CilSymbolRef.Create(typeof(string), "bar"),   // links bar and string
+                CilSymbolRef.Create(typeof(string), "other"), // links other and string
             };
 
             foreach (var token in tokens)
@@ -31,7 +36,7 @@ namespace IronText.Tests.Extensions
                 target.Link(token);
             }
 
-            target.Link(tokens);
+            Assert.AreEqual(1, target.Definitions.Count());
 
             var SYM1 = new Symbol("123");
             target.SetId(tokens[0], SYM1);
@@ -43,37 +48,11 @@ namespace IronText.Tests.Extensions
         }
 
         [Test]
-        [ExpectedException(
-            ExpectedException=typeof(InvalidOperationException),
-            MatchType = MessageMatch.Contains,
-            ExpectedMessage = "two types")]
         public void TestLinkTwoTypes()
         {
-            target.Link(CilSymbolRef.Typed(typeof(string)), CilSymbolRef.Typed(typeof(int)));
-        }
-
-        [Test]
-        [ExpectedException(
-            ExpectedException=typeof(InvalidOperationException),
-            MatchType = MessageMatch.Contains,
-            ExpectedMessage = "two types")]
-        public void TestIndirectLinkTwoTypes()
-        {
-            target.Link(CilSymbolRef.Typed(typeof(string)), CilSymbolRef.Literal("foo"));
-            target.Link(CilSymbolRef.Typed(typeof(int)), CilSymbolRef.Literal("foo"));
-        }
-
-        [Test]
-        [ExpectedException(
-            ExpectedException=typeof(InvalidOperationException),
-            MatchType = MessageMatch.Contains,
-            ExpectedMessage = "two types")]
-        public void TestIndirectLinkOfExistingDefs()
-        {
-            target.Link(CilSymbolRef.Typed(typeof(string)), CilSymbolRef.Literal("foo"));
-            target.Link(CilSymbolRef.Typed(typeof(int)), CilSymbolRef.Literal("bar"));
-
-            target.Link(CilSymbolRef.Literal("foo"), CilSymbolRef.Literal("bar"));
+            target.Link(CilSymbolRef.Create(typeof(string), "foo"));
+            Assert.Throws<InvalidOperationException>(
+                () => target.Link(CilSymbolRef.Create(typeof(int), "foo")));
         }
     }
 }

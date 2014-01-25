@@ -13,7 +13,7 @@ namespace IronText.Extensibility
 
         int GetId(CilSymbolRef tokenRef);
 
-        void Link(params CilSymbolRef[] tokenRefs);
+        void Link(CilSymbolRef tokenRefs);
 
         bool Contains(CilSymbolRef tokenRef);
     }

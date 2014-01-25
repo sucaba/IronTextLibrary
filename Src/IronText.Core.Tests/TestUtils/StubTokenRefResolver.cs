@@ -22,7 +22,7 @@ namespace IronText.Tests.TestUtils
             return -1;
         }
 
-        public void Link(params CilSymbolRef[] tokenRefs)
+        public void Link(CilSymbolRef tokenRefs)
         {
             throw new NotImplementedException();
         }

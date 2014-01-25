@@ -13,7 +13,7 @@ namespace IronText.Extensibility
             this.SymbolTypes = new List<Type>();
         }
 
-        public MethodInfo           DefiningMember         { get; set; }
+        public MethodInfo           DefiningMethod         { get; set; }
 
         public Disambiguation       Disambiguation         { get; set; }
 
@@ -25,21 +25,21 @@ namespace IronText.Extensibility
 
         public List<Type>           SymbolTypes            { get; private set; }
 
-        public CilScanActionBuilder ActionBuilder          { get; set; }
+        public CilScanActionBuilder Builder          { get; set; }
 
         public Type                 NextModeType           { get; set; }
         
-        public abstract CilSymbolRef MainTokenRef { get; }
+        public abstract CilSymbolRef MainOutcome { get; }
 
-        public abstract IEnumerable<CilSymbolRef[]> GetTokenRefGroups();
+        public abstract IEnumerable<CilSymbolRef> GetAllOutcomes();
 
         string ICilBootstrapScanRule.BootstrapRegexPattern { get { return BootstrapRegexPattern; } }
 
         public override string ToString()
         {
-            if (DefiningMember != null)
+            if (DefiningMethod != null)
             {
-                return DefiningMember.ToString();
+                return DefiningMethod.ToString();
             }
             else if (LiteralText != null)
             {

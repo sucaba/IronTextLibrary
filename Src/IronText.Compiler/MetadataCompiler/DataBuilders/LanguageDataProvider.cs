@@ -294,13 +294,13 @@ namespace IronText.MetadataCompiler
 
                 foreach (var scanRule in scanMode.ScanRules)
                 {
-                    int mainToken = tokenResolver.GetId(scanRule.MainTokenRef);
+                    int mainToken = tokenResolver.GetId(scanRule.MainOutcome);
                     int[] tokens = scanRule
-                            .GetTokenRefGroups()
-                            .Select(trs => tokenResolver.GetId(trs[0]))
+                            .GetAllOutcomes()
+                            .Select(c => tokenResolver.GetId(c))
                             .ToArray();
 
-                    SymbolBase outcome = GetResultSymbol(result, tokenResolver, scanRule.MainTokenRef, scanRule.GetTokenRefGroups());
+                    SymbolBase outcome = GetResultSymbol(result, tokenResolver, scanRule.MainOutcome, scanRule.GetAllOutcomes());
 
                     var asSingleToken = scanRule as ICilSingleTokenScanRule;
                     ScanPattern pattern;
@@ -325,7 +325,7 @@ namespace IronText.MetadataCompiler
                         nextCondition: ConditionFromType(result, scanRule.NextModeType),
                         disambiguation: scanRule.Disambiguation);
                     scanProduction.Joint.Add(
-                        new CilScanProductionDef(scanRule.DefiningMember, scanRule.ActionBuilder));
+                        new CilScanProductionDef(scanRule.DefiningMethod, scanRule.Builder));
 
                     condition.ScanProductions.Add(scanProduction);
                 }
@@ -374,11 +374,11 @@ namespace IronText.MetadataCompiler
             EbnfGrammar                 grammar,
             ITokenRefResolver           tokenResolver,
             CilSymbolRef                mainTokenRef,
-            IEnumerable<CilSymbolRef[]> tokenRefGroups)
+            IEnumerable<CilSymbolRef>   tokenRefGroups)
         {
             Symbol main = tokenResolver.GetSymbol(mainTokenRef);
             Symbol[] other = (from g in tokenRefGroups
-                             select tokenResolver.GetSymbol(g[0]))
+                             select tokenResolver.GetSymbol(g))
                              .ToArray();
 
             if (other.Length == 0)

@@ -46,7 +46,7 @@ namespace IronText.Extensibility
                 Disambiguation        = Disambiguation.Exclusive,
                 Pattern               = ScannerUtils.Escape(literal),
                 BootstrapRegexPattern = Regex.Escape(literal),
-                ActionBuilder = code =>
+                Builder = code =>
                 {
                     code
                         .Emit(il => il.Ldnull())

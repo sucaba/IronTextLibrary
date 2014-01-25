@@ -7,24 +7,18 @@ namespace IronText.Extensibility
 {
     public interface ICilScanRule
     {
-        // Binding
-        MethodInfo DefiningMember { get; }
+        CilSymbolRef         MainOutcome  { get; }
 
-        // Scan Produciton
-        Disambiguation Disambiguation { get; }
+        IEnumerable<CilSymbolRef> GetAllOutcomes();
 
-        // Scan Produciton
-        string Pattern { get; }
+        Type                 NextModeType   { get; }
 
-        CilScanActionBuilder ActionBuilder { get; }
+        string               Pattern        { get; }
 
-        // Scan Produciton: Mode object
-        Type NextModeType { get; }
+        MethodInfo           DefiningMethod { get; }
 
-        // Scan Produciton: MainSymbol
-        CilSymbolRef MainTokenRef { get; }
+        Disambiguation       Disambiguation { get; }
 
-        // Main produced token
-        IEnumerable<CilSymbolRef[]> GetTokenRefGroups();
+        CilScanActionBuilder Builder        { get; }
     }
 }

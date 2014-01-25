@@ -47,28 +47,29 @@ namespace IronText.Framework
 
             var nextModeType = GetNextModeType();
 
-
             CilScanRule scanRule;
 
-            if (method.ReturnType == typeof(void))
+            if (tokenType == typeof(void))
             {
                 scanRule = new CilSkipScanRule();
             }
             else
             {
-                scanRule = new CilSingleTokenScanRule
+                scanRule = new CilSingleTokenScanRule();
+
+                if (tokenType != typeof(object))
                 {
-                    SymbolTypes = { method.ReturnType }
+                    scanRule.SymbolTypes.Add(tokenType);
                 };
             }
 
-            scanRule.DefiningMember = method;
+            scanRule.DefiningMethod = method;
             scanRule.Disambiguation = Disambiguation;
             scanRule.LiteralText = LiteralText;
             scanRule.Pattern = Pattern;
             scanRule.BootstrapRegexPattern = RegexPattern;
             scanRule.NextModeType = nextModeType;
-            scanRule.ActionBuilder =
+            scanRule.Builder =
                 context =>
                 {
                     if (!method.IsStatic)

@@ -141,11 +141,11 @@ namespace IronText.MetadataCompiler
             {
                 foreach (var scanRule in scanMode.ScanRules)
                 {
-                    foreach (CilSymbolRef[] tokenGroup in scanRule.GetTokenRefGroups())
+                    foreach (CilSymbolRef symbolConstraint in scanRule.GetAllOutcomes())
                     {
-                        if (tokenGroup.Any(TokenRefResolver.Contains))
+                        if (TokenRefResolver.Contains(symbolConstraint))
                         {
-                            TokenRefResolver.Link(tokenGroup);
+                            TokenRefResolver.Link(symbolConstraint);
                         }
                     }
                 }

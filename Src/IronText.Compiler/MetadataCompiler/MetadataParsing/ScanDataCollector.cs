@@ -47,8 +47,7 @@ namespace IronText.MetadataCompiler
                     .Except(
                         allScanConditions
                         .SelectMany(mode => mode.ScanRules)
-                        .SelectMany(rule => rule.GetTokenRefGroups())
-                        .SelectMany(tokens => tokens)
+                        .SelectMany(rule => rule.GetAllOutcomes())
                         .Distinct())
                     .ToList();
             }
