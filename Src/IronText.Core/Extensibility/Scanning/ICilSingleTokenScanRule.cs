@@ -8,8 +8,6 @@ namespace IronText.Extensibility
     {
         string LiteralText { get; }
 
-        Type TokenType { get; }
-
         CilSymbolRef AnyTokenRef { get; }
     }
 }

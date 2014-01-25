@@ -7,54 +7,31 @@ namespace IronText.Extensibility
 {
     internal class CilSingleTokenScanRule : CilScanRule, ICilSingleTokenScanRule
     {
-        public CilSingleTokenScanRule() { }
+        public override CilSymbolRef MainTokenRef { get { return GetTokenGroup().FirstOrDefault(); } }
 
-        public override CilSymbolRef MainTokenRef { get { return AnyTokenRef; } }
-
-        public CilSymbolRef AnyTokenRef
-        {
-            get
-            {
-                if (LiteralText != null)
-                {
-                    return CilSymbolRef.Literal(LiteralText);
-                }
-
-                if (TokenType != null && TokenType != typeof(object))
-                {
-                    return CilSymbolRef.Typed(TokenType);
-                }
-
-                return null;
-            }
-        }
-
-        public Type TokenType { get; set; }
+        public CilSymbolRef AnyTokenRef { get { return GetTokenGroup().FirstOrDefault(); } }
 
         public override IEnumerable<CilSymbolRef[]> GetTokenRefGroups()
         {
-            yield return GetTokenGroup();
+            return new [] { GetTokenGroup().ToArray() };
         }
 
-        private CilSymbolRef[] GetTokenGroup()
+        private IEnumerable<CilSymbolRef> GetTokenGroup()
         {
-            List<CilSymbolRef> group = new List<CilSymbolRef>();
-            if (TokenType != null)
+            if (SymbolTypes.Count != 0)
             {
-                group.Add(CilSymbolRef.Typed(TokenType));
+                yield return CilSymbolRef.Typed(SymbolTypes[0]);
             }
 
             if (LiteralText != null)
             {
-                group.Add(CilSymbolRef.Literal(LiteralText));
+                yield return CilSymbolRef.Literal(LiteralText);
             }
-
-            return group.ToArray();
         }
 
         public override string ToString()
         {
-            var group = GetTokenGroup();
+            var group = GetTokenGroup().ToArray();
             string leftSide;
             if (group.Length > 1)
             {

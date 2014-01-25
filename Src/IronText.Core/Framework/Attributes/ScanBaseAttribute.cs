@@ -56,14 +56,15 @@ namespace IronText.Framework
             }
             else
             {
-                var singleTokenScanRule = new CilSingleTokenScanRule();
-                singleTokenScanRule.TokenType = tokenType;
-                singleTokenScanRule.LiteralText = LiteralText;
-                scanRule = singleTokenScanRule;
+                scanRule = new CilSingleTokenScanRule
+                {
+                    SymbolTypes = { method.ReturnType }
+                };
             }
 
             scanRule.DefiningMember = method;
             scanRule.Disambiguation = Disambiguation;
+            scanRule.LiteralText = LiteralText;
             scanRule.Pattern = Pattern;
             scanRule.BootstrapRegexPattern = RegexPattern;
             scanRule.NextModeType = nextModeType;

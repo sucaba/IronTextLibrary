@@ -8,25 +8,32 @@ namespace IronText.Extensibility
 {
     internal abstract class CilScanRule : ICilScanRule, ICilBootstrapScanRule
     {
-        public MethodInfo DefiningMember { get; set; }
+        public CilScanRule()
+        {
+            this.SymbolTypes = new List<Type>();
+        }
 
-        public Disambiguation Disambiguation { get; set; }
+        public MethodInfo           DefiningMember         { get; set; }
 
+        public Disambiguation       Disambiguation         { get; set; }
+
+        public string               Pattern                { get; set; }
+
+        internal string             BootstrapRegexPattern  { get; set; }
+
+        public string               LiteralText            { get; set; }
+
+        public List<Type>           SymbolTypes            { get; private set; }
+
+        public CilScanActionBuilder ActionBuilder          { get; set; }
+
+        public Type                 NextModeType           { get; set; }
+        
         public abstract CilSymbolRef MainTokenRef { get; }
 
         public abstract IEnumerable<CilSymbolRef[]> GetTokenRefGroups();
 
-        public string Pattern { get; set; }
-
-        public string LiteralText { get; set; }
-
         string ICilBootstrapScanRule.BootstrapRegexPattern { get { return BootstrapRegexPattern; } }
-
-        internal string BootstrapRegexPattern { get; set; }
-
-        public CilScanActionBuilder ActionBuilder { get; set; }
-
-        public Type NextModeType { get; set; }
 
         public override string ToString()
         {

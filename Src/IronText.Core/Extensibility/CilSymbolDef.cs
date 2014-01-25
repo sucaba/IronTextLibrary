@@ -8,12 +8,23 @@ namespace IronText.Extensibility
 {
     class CilSymbolDef
     {
-        public int Id { get { return Symbol == null ? -1 : Symbol.Index; } }
-        public Symbol Symbol;
-        public readonly HashSet<string> Literals = new HashSet<string>();
-        public SymbolCategory Categories;
+        public CilSymbolDef()
+        {
+            this.Literals = new HashSet<string>();
+        }
 
-        public Type TokenType { get; set; }
+        public Symbol          Symbol     { get; set; }
+
+        public Type            TokenType  { get; set; }
+
+        public HashSet<string> Literals   { get; private set; }
+
+        public SymbolCategory  Categories { get; set; }
+
+        public int Id        
+        { 
+            get { return Symbol == null ? -1 : Symbol.Index; } 
+        }
 
         public string Name
         {
