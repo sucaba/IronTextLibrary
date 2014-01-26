@@ -7,27 +7,28 @@ namespace IronText.Extensibility
 {
     public interface ICilMetadata
     {
-        bool Validate(ILogging logging);
-
-        IEnumerable<ICilMetadata> GetChildren();
-
         ICilMetadata Parent { get; }
 
         MemberInfo   Member { get; }
 
+
+        bool Validate(ILogging logging);
+
+        IEnumerable<ICilMetadata> GetChildren();
+
         void Bind(ICilMetadata parent, MemberInfo member);
 
-        IEnumerable<CilSymbolRef> GetTokensInCategory(SymbolCategory category);
+        IEnumerable<CilSymbolFeature<Precedence>> GetSymbolPrecedence();
 
-        IEnumerable<CilSymbolFeature<Precedence>> GetTokenPrecedence();
+        IEnumerable<CilSymbolFeature<CilContextProvider>> GetSymbolContextProviders();
 
-        IEnumerable<CilSymbolFeature<CilContextProvider>> GetTokenContextProvider();
+        IEnumerable<CilSymbolRef> GetSymbolsInCategory(SymbolCategory category);
 
-        IEnumerable<CilProduction> GetProductions(IEnumerable<CilSymbolRef> leftSides);
+        IEnumerable<CilProduction> GetProductions(IEnumerable<CilSymbolRef> outcomes);
 
-        IEnumerable<CilMerger> GetMergeRules(IEnumerable<CilSymbolRef> leftSides);
+        IEnumerable<CilMerger> GetMergers(IEnumerable<CilSymbolRef> symbols);
 
-        IEnumerable<CilScanProduction> GetScanRules();
+        IEnumerable<CilScanProduction> GetScanProductions();
 
         IEnumerable<ReportBuilder> GetReportBuilders();
     }

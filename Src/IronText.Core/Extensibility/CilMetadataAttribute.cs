@@ -22,17 +22,17 @@ namespace IronText.Extensibility
 
         public MemberInfo Member { get; set; }
 
-        public virtual IEnumerable<CilSymbolRef> GetTokensInCategory(SymbolCategory category)
+        public virtual IEnumerable<CilSymbolRef> GetSymbolsInCategory(SymbolCategory category)
         {
             return Enumerable.Empty<CilSymbolRef>();
         }
 
-        public virtual IEnumerable<CilSymbolFeature<Precedence>> GetTokenPrecedence()
+        public virtual IEnumerable<CilSymbolFeature<Precedence>> GetSymbolPrecedence()
         {
             return Enumerable.Empty<CilSymbolFeature<Precedence>>();
         }
 
-        public virtual IEnumerable<CilSymbolFeature<CilContextProvider>> GetTokenContextProvider()
+        public virtual IEnumerable<CilSymbolFeature<CilContextProvider>> GetSymbolContextProviders()
         {
             return Enumerable.Empty<CilSymbolFeature<CilContextProvider>>();
         }
@@ -47,12 +47,12 @@ namespace IronText.Extensibility
             return Enumerable.Empty<CilProduction>();
         }
 
-        public virtual IEnumerable<CilMerger> GetMergeRules(IEnumerable<CilSymbolRef> leftSides)
+        public virtual IEnumerable<CilMerger> GetMergers(IEnumerable<CilSymbolRef> leftSides)
         {
             return Enumerable.Empty<CilMerger>();
         }
 
-        public virtual IEnumerable<CilScanProduction> GetScanRules()
+        public virtual IEnumerable<CilScanProduction> GetScanProductions()
         {
             return Enumerable.Empty<CilScanProduction>();
         }

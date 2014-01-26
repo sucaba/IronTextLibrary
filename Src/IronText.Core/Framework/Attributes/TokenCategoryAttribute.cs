@@ -28,7 +28,7 @@ namespace IronText.Framework
 
         public string Text { get; set; }
 
-        public override IEnumerable<CilSymbolRef> GetTokensInCategory(SymbolCategory requestedCategories)
+        public override IEnumerable<CilSymbolRef> GetSymbolsInCategory(SymbolCategory requestedCategories)
         {
             if ((requestedCategories & this.categories) == 0)
             {

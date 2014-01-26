@@ -58,7 +58,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var category in categories)
             {
-                foreach (var tokenRef in allMetadata.SelectMany(m => m.GetTokensInCategory(category)))
+                foreach (var tokenRef in allMetadata.SelectMany(m => m.GetSymbolsInCategory(category)))
                 {
                     var def = SymbolResolver.Resolve(tokenRef);
                     def.Categories |= category; 
@@ -75,7 +75,7 @@ namespace IronText.MetadataCompiler
 
             this.allMergeRules 
                 = allMetadata
-                    .SelectMany(meta => meta.GetMergeRules(collector.AllTokens))
+                    .SelectMany(meta => meta.GetMergers(collector.AllTokens))
                     .ToArray();
 
             var terminals = collector.AllTokens.Except(allParseRules.Select(r => r.Left).Distinct()).ToArray();
@@ -109,9 +109,9 @@ namespace IronText.MetadataCompiler
 
             CheckAllScanRulesDefined(undefinedTerminals, startType, logging);
 
-            precedence = allMetadata.SelectMany(m => m.GetTokenPrecedence()).ToList();
+            precedence = allMetadata.SelectMany(m => m.GetSymbolPrecedence()).ToList();
 
-            ContextProviders = allMetadata.SelectMany((m, index) => m.GetTokenContextProvider()).ToList();
+            ContextProviders = allMetadata.SelectMany((m, index) => m.GetSymbolContextProviders()).ToList();
 
             this.ReportBuilders = allMetadata.SelectMany(m => m.GetReportBuilders()).ToArray();
         }

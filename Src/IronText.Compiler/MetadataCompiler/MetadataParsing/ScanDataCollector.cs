@@ -52,7 +52,7 @@ namespace IronText.MetadataCompiler
 
             validMetadata.Add(meta);
 
-            foreach (var scanRule in meta.GetScanRules())
+            foreach (var scanRule in meta.GetScanProductions())
             {
                 /*
                 var asSkipRule = scanRule as ISkipScanRule;
@@ -89,20 +89,20 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        public void AddScanMode(Type modeType)
+        public void AddScanMode(Type conditionType)
         {
-            if (allScanConditions.Any(mode => object.Equals(mode.ConditionType, modeType)))
+            if (allScanConditions.Any(mode => object.Equals(mode.ConditionType, conditionType)))
             {
                 return;
             }
 
-            var scanMode = new CilScanCondition(modeType);
+            var scanMode = new CilScanCondition(conditionType);
 
             allScanConditions.Add(scanMode);
 
             processedScanConditions.Push(scanMode);
 
-            foreach (var meta in MetadataParser.EnumerateAndBind(modeType))
+            foreach (var meta in MetadataParser.EnumerateAndBind(conditionType))
             {
                 AddMeta(meta);
             }

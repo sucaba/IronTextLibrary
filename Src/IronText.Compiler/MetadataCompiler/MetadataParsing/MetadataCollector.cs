@@ -57,7 +57,7 @@ namespace IronText.MetadataCompiler
             validMetadata.Add(meta);
 
             // Provide new explicitly used tokens
-            foreach (var token in meta.GetTokensInCategory(SymbolCategory.ExplicitlyUsed))
+            foreach (var token in meta.GetSymbolsInCategory(SymbolCategory.ExplicitlyUsed))
             {
                 this.AddToken(token);
             }

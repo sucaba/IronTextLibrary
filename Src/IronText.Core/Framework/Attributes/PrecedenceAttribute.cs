@@ -31,7 +31,7 @@ namespace IronText.Framework
 
         public Associativity Associativity { get; set; }
 
-        public override IEnumerable<CilSymbolFeature<Precedence>> GetTokenPrecedence()
+        public override IEnumerable<CilSymbolFeature<Precedence>> GetSymbolPrecedence()
         {
             CilSymbolRef token;
             if (TermText == null)

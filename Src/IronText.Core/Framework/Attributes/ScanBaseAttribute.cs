@@ -31,7 +31,7 @@ namespace IronText.Framework
 
         internal string RegexPattern { get; set; }
 
-        public override IEnumerable<CilScanProduction> GetScanRules()
+        public override IEnumerable<CilScanProduction> GetScanProductions()
         {
             var method       = (MethodInfo)Member;
             var tokenType    = method.ReturnType;

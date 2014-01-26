@@ -52,22 +52,22 @@ namespace IronText.Tests.Extensibility
                 }
             }
 
-            public IEnumerable<CilScanProduction> GetScanRules()
+            public IEnumerable<CilScanProduction> GetScanProductions()
             {
                 return Enumerable.Empty<CilScanProduction>();
             }
 
-            public IEnumerable<CilSymbolRef> GetTokensInCategory(SymbolCategory category)
+            public IEnumerable<CilSymbolRef> GetSymbolsInCategory(SymbolCategory category)
             {
                 return Enumerable.Empty<CilSymbolRef>();
             }
 
-            IEnumerable<CilSymbolFeature<Precedence>> ICilMetadata.GetTokenPrecedence()
+            IEnumerable<CilSymbolFeature<Precedence>> ICilMetadata.GetSymbolPrecedence()
             {
                 return Enumerable.Empty<CilSymbolFeature<Precedence>>();
             }
 
-            IEnumerable<CilSymbolFeature<CilContextProvider>> ICilMetadata.GetTokenContextProvider()
+            IEnumerable<CilSymbolFeature<CilContextProvider>> ICilMetadata.GetSymbolContextProviders()
             {
                 return Enumerable.Empty<CilSymbolFeature<CilContextProvider>>();
             }
@@ -77,7 +77,7 @@ namespace IronText.Tests.Extensibility
                 return Enumerable.Empty<ReportBuilder>();
             }
 
-            public IEnumerable<CilMerger> GetMergeRules(IEnumerable<CilSymbolRef> leftSides)
+            public IEnumerable<CilMerger> GetMergers(IEnumerable<CilSymbolRef> leftSides)
             {
                 return Enumerable.Empty<CilMerger>();
             }
