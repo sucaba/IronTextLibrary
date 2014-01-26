@@ -34,7 +34,7 @@ namespace IronText.Framework
 
         public string[] KeywordMask { get; set; }
 
-        protected override CilSymbolRef[] DoGetRuleMask(MethodInfo methodInfo, ITokenPool tokenPool)
+        protected override CilSymbolRef[] DoGetRuleMask(MethodInfo methodInfo)
         {
             int placeholderCount = KeywordMask.Count(item => item == null);
             int nonPlaceholderParameterCount = methodInfo.GetParameters().Length - placeholderCount;
@@ -44,7 +44,7 @@ namespace IronText.Framework
             }
 
             return KeywordMask
-                .Select(item => item == null ? null : tokenPool.GetLiteral(item))
+                .Select(item => item == null ? null : CilSymbolRef.Literal(item))
                 .ToArray();
         }
     }

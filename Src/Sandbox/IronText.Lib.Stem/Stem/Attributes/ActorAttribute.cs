@@ -17,13 +17,13 @@ namespace IronText.Lib.Stem
         /// </summary>
         public string[] KeywordMask { get; set; }
 
-        protected override CilSymbolRef[] DoGetRuleMask(MethodInfo methodInfo, ITokenPool tokenPool)
+        protected override CilSymbolRef[] DoGetRuleMask(MethodInfo methodInfo)
         {
             var resultList = new List<CilSymbolRef>();
 
-            resultList.Add(tokenPool.GetLiteral(StemScanner.LParen));
+            resultList.Add(CilSymbolRef.Literal(StemScanner.LParen));
 
-            resultList.AddRange(KeywordMask.Select(item => item == null ? null : tokenPool.GetLiteral(item)));
+            resultList.AddRange(KeywordMask.Select(item => item == null ? null : CilSymbolRef.Literal(item)));
 
             int nonMaskParameterCount = methodInfo.GetParameters().Length - KeywordMask.Count(item => item == null);
             if (nonMaskParameterCount < 0)
@@ -33,7 +33,7 @@ namespace IronText.Lib.Stem
 
             resultList.AddRange(Enumerable.Repeat(default(CilSymbolRef), nonMaskParameterCount));
 
-            resultList.Add(tokenPool.GetLiteral(StemScanner.RParen));
+            resultList.Add(CilSymbolRef.Literal(StemScanner.RParen));
 
             return resultList.ToArray(); ;
         }

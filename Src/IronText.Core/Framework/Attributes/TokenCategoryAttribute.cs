@@ -28,7 +28,7 @@ namespace IronText.Framework
 
         public string Text { get; set; }
 
-        public override IEnumerable<CilSymbolRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory requestedCategories)
+        public override IEnumerable<CilSymbolRef> GetTokensInCategory(SymbolCategory requestedCategories)
         {
             if ((requestedCategories & this.categories) == 0)
             {
@@ -37,11 +37,11 @@ namespace IronText.Framework
 
             if (Text == null)
             {
-                return new[] { tokenPool.GetToken(TokenType) };
+                return new[] { CilSymbolRef.Typed(TokenType) };
             }
             else
             {
-                return new[] { tokenPool.GetLiteral(Text) };
+                return new[] { CilSymbolRef.Literal(Text) };
             }
         }
     }

@@ -31,16 +31,16 @@ namespace IronText.Framework
 
         public Associativity Associativity { get; set; }
 
-        public override IEnumerable<CilSymbolFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
+        public override IEnumerable<CilSymbolFeature<Precedence>> GetTokenPrecedence()
         {
             CilSymbolRef token;
             if (TermText == null)
             {
-                token = tokenPool.GetToken(TermType);
+                token = CilSymbolRef.Typed(TermType);
             }
             else
             {
-                token = tokenPool.GetLiteral(TermText);
+                token = CilSymbolRef.Literal(TermText);
             }
 
             yield return new CilSymbolFeature<Precedence>(

@@ -24,12 +24,10 @@ namespace IronText.MetadataCompiler
         private readonly List<CilProduction>         allParseRules   = new List<CilProduction>();
         private readonly List<CilSymbolRef>          allTokens       = new List<CilSymbolRef>();
 
-        private readonly ITokenPool              tokenPool;
         private readonly ILogging                logging;
 
-        public MetadataCollector(ITokenPool tokenPool, ILogging logging)
+        public MetadataCollector(ILogging logging)
         {
-            this.tokenPool = tokenPool;
             this.logging = logging;
         }
 
@@ -59,13 +57,13 @@ namespace IronText.MetadataCompiler
             validMetadata.Add(meta);
 
             // Provide new explicitly used tokens
-            foreach (var token in meta.GetTokensInCategory(tokenPool, SymbolCategory.ExplicitlyUsed))
+            foreach (var token in meta.GetTokensInCategory(SymbolCategory.ExplicitlyUsed))
             {
                 this.AddToken(token);
             }
 
             // Provide new rules
-            var newParseRules = meta.GetProductions(EnumerateSnapshot(allTokens), tokenPool);
+            var newParseRules = meta.GetProductions(EnumerateSnapshot(allTokens));
             foreach (var parseRule in newParseRules)
             {
                 this.AddRule(meta, parseRule);
@@ -111,7 +109,7 @@ namespace IronText.MetadataCompiler
             var newTokens = new[] { token };
             foreach (var meta in validMetadata)
             {
-                var newParseRules = meta.GetProductions(newTokens, tokenPool);
+                var newParseRules = meta.GetProductions(newTokens);
                 foreach (var parseRule in newParseRules)
                 {
                     this.AddRule(meta, parseRule);

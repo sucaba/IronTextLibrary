@@ -12,7 +12,7 @@ namespace IronText.Lib.Stem
     {
         public ClsAttribute() { }
 
-        protected override CilSymbolRef[] DoGetRuleMask(MethodInfo methodInfo, ITokenPool tokenPool)
+        protected override CilSymbolRef[] DoGetRuleMask(MethodInfo methodInfo)
         {
             var resultList = new List<CilSymbolRef>();
 
@@ -20,7 +20,7 @@ namespace IronText.Lib.Stem
                 Enumerable.Repeat(default(CilSymbolRef),
                 methodInfo.GetParameters().Length));
 
-            resultList.Add(tokenPool.GetLiteral(StemScanner.RParen));
+            resultList.Add(CilSymbolRef.Literal(StemScanner.RParen));
 
             return resultList.ToArray(); ;
         }

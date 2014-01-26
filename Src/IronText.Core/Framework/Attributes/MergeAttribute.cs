@@ -11,9 +11,9 @@ namespace IronText.Framework
     {
         private MethodInfo Method { get { return (MethodInfo)Member; } }
 
-        public override IEnumerable<CilMerger> GetMergeRules(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool)
+        public override IEnumerable<CilMerger> GetMergeRules(IEnumerable<CilSymbolRef> leftSides)
         {
-            var returnToken = tokenPool.GetToken(Method.ReturnType);
+            var returnToken = CilSymbolRef.Typed(Method.ReturnType);
             if (leftSides.Contains(returnToken))
             {
                 var type = Method.ReturnType;

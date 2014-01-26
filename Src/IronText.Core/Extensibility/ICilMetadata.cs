@@ -13,21 +13,21 @@ namespace IronText.Extensibility
 
         ICilMetadata Parent { get; }
 
-        MemberInfo Member { get; }
+        MemberInfo   Member { get; }
 
         void Bind(ICilMetadata parent, MemberInfo member);
 
-        IEnumerable<CilSymbolRef>      GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category);
+        IEnumerable<CilSymbolRef> GetTokensInCategory(SymbolCategory category);
 
-        IEnumerable<CilSymbolFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool);
+        IEnumerable<CilSymbolFeature<Precedence>> GetTokenPrecedence();
 
-        IEnumerable<CilSymbolFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool);
+        IEnumerable<CilSymbolFeature<CilContextProvider>> GetTokenContextProvider();
 
-        IEnumerable<CilProduction> GetProductions(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool);
+        IEnumerable<CilProduction> GetProductions(IEnumerable<CilSymbolRef> leftSides);
 
-        IEnumerable<CilMerger>     GetMergeRules(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool);
+        IEnumerable<CilMerger> GetMergeRules(IEnumerable<CilSymbolRef> leftSides);
 
-        IEnumerable<CilScanProduction>     GetScanRules(ITokenPool tokenPool);
+        IEnumerable<CilScanProduction> GetScanRules();
 
         IEnumerable<ReportBuilder> GetReportBuilders();
     }

@@ -14,26 +14,17 @@ namespace IronText.MetadataCompiler
         private readonly List<ICilMetadata>     invalidMetadata;
         private readonly List<CilScanCondition> allScanConditions;
         private readonly List<CilSymbolRef>     terminals;
-        private readonly ITokenPool             tokenPool;
 
         private readonly Stack<CilScanCondition> processedScanConditions;
-        private readonly CilSymbolRef voidTerm;
         private readonly ILogging logging;
 
-        public ScanDataCollector(
-            IEnumerable<CilSymbolRef> terminals,
-            ITokenPool tokenPool,
-            ILogging logging)
+        public ScanDataCollector(IEnumerable<CilSymbolRef> terminals, ILogging logging)
         {
             this.logging = logging;
             this.validMetadata  = new List<ICilMetadata>();
             this.invalidMetadata  = new List<ICilMetadata>();
             this.allScanConditions = new List<CilScanCondition>();
             this.terminals    = new List<CilSymbolRef>(terminals);
-            this.voidTerm = tokenPool.ScanSkipToken;
-            //this.terminals.Add(voidTerm);
-
-            this.tokenPool    = tokenPool;
 
             processedScanConditions = new Stack<CilScanCondition>();
         }
@@ -61,7 +52,7 @@ namespace IronText.MetadataCompiler
 
             validMetadata.Add(meta);
 
-            foreach (var scanRule in meta.GetScanRules(tokenPool))
+            foreach (var scanRule in meta.GetScanRules())
             {
                 /*
                 var asSkipRule = scanRule as ISkipScanRule;

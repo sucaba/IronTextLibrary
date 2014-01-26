@@ -7,7 +7,7 @@ using IronText.Framework;
 
 namespace IronText.MetadataCompiler
 {
-    internal class LanguageDefinition : ITokenPool
+    internal class LanguageDefinition
     {
         private readonly List<ICilMetadata>              allMetadata;
         private readonly List<CilProduction>          allParseRules;
@@ -20,8 +20,6 @@ namespace IronText.MetadataCompiler
         {
             this.IsValid = true;
 
-            ITokenPool tokenPool = this;
-
             var startMeta = MetadataParser.EnumerateAndBind(startType);
             if (startMeta.Count() == 0)
             {
@@ -33,10 +31,10 @@ namespace IronText.MetadataCompiler
 
             this.SymbolResolver = new CilSymbolRefResolver();
 
-            this.Start = tokenPool.AugmentedStart;
+            this.Start = CilSymbolRef.Typed(typeof(void));
 
 
-            var collector = new MetadataCollector(this, logging);
+            var collector = new MetadataCollector(logging);
             collector.AddToken(Start);
             foreach (var meta in startMeta)
             {
@@ -60,7 +58,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var category in categories)
             {
-                foreach (var tokenRef in allMetadata.SelectMany(m => m.GetTokensInCategory(this, category)))
+                foreach (var tokenRef in allMetadata.SelectMany(m => m.GetTokensInCategory(category)))
                 {
                     var def = SymbolResolver.Resolve(tokenRef);
                     def.Categories |= category; 
@@ -77,12 +75,12 @@ namespace IronText.MetadataCompiler
 
             this.allMergeRules 
                 = allMetadata
-                    .SelectMany(meta => meta.GetMergeRules(collector.AllTokens, this))
+                    .SelectMany(meta => meta.GetMergeRules(collector.AllTokens))
                     .ToArray();
 
             var terminals = collector.AllTokens.Except(allParseRules.Select(r => r.Left).Distinct()).ToArray();
 
-            var scanDataCollector = new ScanDataCollector(terminals, this, logging);
+            var scanDataCollector = new ScanDataCollector(terminals, logging);
             scanDataCollector.AddScanMode(startType);
             if (scanDataCollector.HasInvalidData)
             {
@@ -111,9 +109,9 @@ namespace IronText.MetadataCompiler
 
             CheckAllScanRulesDefined(undefinedTerminals, startType, logging);
 
-            precedence          = allMetadata.SelectMany(m => m.GetTokenPrecedence(tokenPool)).ToList();
+            precedence = allMetadata.SelectMany(m => m.GetTokenPrecedence()).ToList();
 
-            ContextProviders    = allMetadata.SelectMany((m, index) => m.GetTokenContextProvider(tokenPool)).ToList();
+            ContextProviders = allMetadata.SelectMany((m, index) => m.GetTokenContextProvider()).ToList();
 
             this.ReportBuilders = allMetadata.SelectMany(m => m.GetReportBuilders()).ToArray();
         }
@@ -187,26 +185,6 @@ namespace IronText.MetadataCompiler
         public IList<CilScanCondition> ScanConditions { get { return allScanConditions; } }
 
         public IList<CilSymbolFeature<CilContextProvider>> ContextProviders { get; private set; }
-
-        CilSymbolRef ITokenPool.AugmentedStart
-        {
-            get { return CilSymbolRef.Typed(typeof(void)); }
-        }
-
-        CilSymbolRef ITokenPool.ScanSkipToken
-        {
-            get { return CilSymbolRef.Typed(typeof(void)); }
-        }
-
-        CilSymbolRef ITokenPool.GetToken(Type tokenType)
-        {
-            return CilSymbolRef.Typed(tokenType);
-        }
-
-        CilSymbolRef ITokenPool.GetLiteral(string keyword)
-        {
-            return CilSymbolRef.Literal(keyword);
-        }
 
         private static IEnumerable<T> EnumerableMutable<T>(IList<T> list)
         {

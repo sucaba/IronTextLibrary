@@ -22,17 +22,17 @@ namespace IronText.Extensibility
 
         public MemberInfo Member { get; set; }
 
-        public virtual IEnumerable<CilSymbolRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category)
+        public virtual IEnumerable<CilSymbolRef> GetTokensInCategory(SymbolCategory category)
         {
             return Enumerable.Empty<CilSymbolRef>();
         }
 
-        public virtual IEnumerable<CilSymbolFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool)
+        public virtual IEnumerable<CilSymbolFeature<Precedence>> GetTokenPrecedence()
         {
             return Enumerable.Empty<CilSymbolFeature<Precedence>>();
         }
 
-        public virtual IEnumerable<CilSymbolFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool)
+        public virtual IEnumerable<CilSymbolFeature<CilContextProvider>> GetTokenContextProvider()
         {
             return Enumerable.Empty<CilSymbolFeature<CilContextProvider>>();
         }
@@ -42,17 +42,17 @@ namespace IronText.Extensibility
             return Enumerable.Empty<ICilMetadata>();
         }
 
-        public virtual IEnumerable<CilProduction> GetProductions(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool)
+        public virtual IEnumerable<CilProduction> GetProductions(IEnumerable<CilSymbolRef> leftSides)
         {
             return Enumerable.Empty<CilProduction>();
         }
 
-        public virtual IEnumerable<CilMerger> GetMergeRules(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool)
+        public virtual IEnumerable<CilMerger> GetMergeRules(IEnumerable<CilSymbolRef> leftSides)
         {
             return Enumerable.Empty<CilMerger>();
         }
 
-        public virtual IEnumerable<CilScanProduction> GetScanRules(ITokenPool tokenPool)
+        public virtual IEnumerable<CilScanProduction> GetScanRules()
         {
             return Enumerable.Empty<CilScanProduction>();
         }

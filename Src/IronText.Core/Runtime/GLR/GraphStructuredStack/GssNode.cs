@@ -100,7 +100,7 @@ namespace IronText.Framework
 
         State IStackLookback<T>.GetParentState() { return State; }
 
-        T IStackLookback<T>.GetValueAt(State count)
+        T IStackLookback<T>.GetValueAt(int count)
         {
             GssNode<T> node = this;
 

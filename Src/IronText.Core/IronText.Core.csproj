@@ -137,7 +137,6 @@
     <Compile Include="Extensibility\Code\CilDelegates.cs" />
     <Compile Include="Extensibility\Code\IContextResolverCode.cs" />
     <Compile Include="Extensibility\Code\IScanActionCode.cs" />
-    <Compile Include="Extensibility\ICilSymbolPool.cs" />
     <Compile Include="Extensibility\CilMetadataAttribute.cs" />
     <Compile Include="Extensibility\CilScanCondition.cs" />
     <Compile Include="Extensibility\ScannerUtils.cs" />
