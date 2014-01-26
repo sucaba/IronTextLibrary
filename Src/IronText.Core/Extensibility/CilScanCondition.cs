@@ -11,44 +11,44 @@ namespace IronText.Extensibility
 {
     internal class CilScanCondition
     {
-        private readonly List<CilScanRule> scanRules = new List<CilScanRule>();
+        private readonly List<CilScanProduction> productions = new List<CilScanProduction>();
         private int implicitRulesCount = 0;
 
-        internal CilScanCondition(Type scanModeType)
+        public CilScanCondition(Type conditionType)
         {
-            this.ScanModeType = scanModeType;
-            this.ScanRules = new ReadOnlyCollection<CilScanRule>(this.scanRules);
+            this.ConditionType = conditionType;
+            this.Productions   = new ReadOnlyCollection<CilScanProduction>(this.productions);
         }
 
-        public Type ScanModeType { get; private set; }
+        public Type ConditionType { get; private set; }
 
         // Ordered scan rules
-        public ReadOnlyCollection<CilScanRule> ScanRules { get; private set; }
+        public ReadOnlyCollection<CilScanProduction> Productions { get; private set; }
 
-        internal CilScanRule AddImplicitLiteralRule(string literal)
+        internal CilScanProduction AddImplicitLiteralRule(string literal)
         {
             var result = CreateImplicitLiteralRule(literal);
-            scanRules.Insert(implicitRulesCount++, result);
+            productions.Insert(implicitRulesCount++, result);
 
             return result;
         }
 
-        internal void AddRule(CilScanRule rule)
+        internal void AddRule(CilScanProduction rule)
         {
-            scanRules.Add(rule);
+            productions.Add(rule);
         }
 
-        private static CilScanRule CreateImplicitLiteralRule(string literal)
+        private static CilScanProduction CreateImplicitLiteralRule(string literal)
         {
             var outcome = CilSymbolRef.Literal(literal);
 
             // Generate implicit scan rule for the keyword
-            var result  = new CilScanRule
+            var result  = new CilScanProduction
             {
                 MainOutcome      = outcome,
                 AllOutcomes      = { outcome },
                 Disambiguation   = Disambiguation.Exclusive,
-                ScanPattern      = ScanPattern.CreateLiteral(literal),
+                Pattern      = ScanPattern.CreateLiteral(literal),
                 Builder          = code =>
                 {
                     code

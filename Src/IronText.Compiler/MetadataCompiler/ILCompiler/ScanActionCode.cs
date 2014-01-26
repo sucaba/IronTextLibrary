@@ -115,7 +115,7 @@ namespace IronText.MetadataCompiler
             ScanCondition foundCondition = null;
             foreach (var condition in scanConditions)
             {
-                var binding = condition.Joint.The<CilScanConditionDef>();
+                var binding = condition.Joint.The<CilScanCondition>();
                 if (modeType.Equals(binding.ConditionType))
                 {
                     foundCondition = condition;

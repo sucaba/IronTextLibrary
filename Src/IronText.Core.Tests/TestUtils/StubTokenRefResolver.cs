@@ -5,7 +5,7 @@ using IronText.Framework.Reflection;
 
 namespace IronText.Tests.TestUtils
 {
-    class StubTokenRefResolver : ITokenRefResolver
+    class StubTokenRefResolver : ICilSymbolResolver
     {
         public CilSymbolDef Resolve(CilSymbolRef tid)
         {

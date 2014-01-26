@@ -131,7 +131,7 @@ namespace IronText.MetadataCompiler
             foreach (var condition in data.Grammar.ScanConditions)
             {
                 var methodName = ScanModeMethods.GetMethodName(modeIndex++);
-                var conditionBinding = condition.Joint.The<CilScanConditionDef>();
+                var conditionBinding = condition.Joint.The<CilScanCondition>();
 
                 var dfa = data.ScanModeTypeToDfa[conditionBinding.ConditionType];
                 var dfaSerialization = new DfaSerialization(dfa);
@@ -169,7 +169,7 @@ namespace IronText.MetadataCompiler
 
         private ClassSyntax BuildMethod_TermFactory(ClassSyntax context)
         {
-            var generator = new TermFactoryGenerator(data.Grammar.ScanConditions, declaringTypeRef, data.TokenRefResolver);
+            var generator = new TermFactoryGenerator(data.Grammar.ScanConditions, declaringTypeRef, data.SymbolResolver);
 
             var args = context
                         .Method()
@@ -211,7 +211,7 @@ namespace IronText.MetadataCompiler
 
         private ClassSyntax BuildMethod_CreateTokenIdentities(ClassSyntax context)
         {
-            var generator = new TokenIdentitiesSerializer(data.TokenRefResolver);
+            var generator = new TokenIdentitiesSerializer(data.SymbolResolver);
 
             return context
                 .Method().Private.Static

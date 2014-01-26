@@ -42,7 +42,7 @@ namespace IronText.Tests.Bootstrap
                                         null,
                                         @"[ \t]+"))
                             {
-                                Joint = { new CilScanProductionDef(typeof(void)) }
+                                Joint = { new CilScanProduction(typeof(void)) }
                             },
                             new ScanProduction(
                                     ScanPattern.CreateRegular(
@@ -50,7 +50,7 @@ namespace IronText.Tests.Bootstrap
                                         @"[0-9]+(?:[.][0-9]+)? | [.][0-9]+"), 
                                     num)
                             {
-                                Joint = {  new CilScanProductionDef(typeof(Num)) }
+                                Joint = {  new CilScanProduction(typeof(Num)) }
                             },
                             new ScanProduction(
                                     ScanPattern.CreateRegular(
@@ -58,7 +58,7 @@ namespace IronText.Tests.Bootstrap
                                         @"[a-zA-Z:.!@#$%^&|?*/+*=\\_-][a-zA-Z:\d.!@#$%^&|?*/+*=\\_-]*"),
                                     ident)
                             {
-                                Joint = { new CilScanProductionDef(typeof(string)) }
+                                Joint = { new CilScanProduction(typeof(string)) }
                             },
                             new ScanProduction(
                                     ScanPattern.CreateRegular(
@@ -66,7 +66,7 @@ namespace IronText.Tests.Bootstrap
                                         @"[""](?: \\[""] | [^""])* [""]"),
                                     qStr)
                             {
-                                Joint = { new CilScanProductionDef(typeof(QStr)) }
+                                Joint = { new CilScanProduction(typeof(QStr)) }
                             },
                             new ScanProduction(
                                     ScanPattern.CreateLiteral("("),

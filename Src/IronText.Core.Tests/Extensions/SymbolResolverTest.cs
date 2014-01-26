@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace IronText.Tests.Extensions
 {
     [TestFixture]
-    public class TokenRefResolverTest
+    public class SymbolResolverTest
     {
         CilSymbolRefResolver target;
 

@@ -53,7 +53,7 @@ namespace IronText.MetadataCompiler
                     data.Grammar.ScanConditions[0].ScanProductions,
                     ExceptionLogging.Instance),
                 context,
-                data.TokenRefResolver,
+                data.SymbolResolver,
                 logging);
         }
 
@@ -80,12 +80,12 @@ namespace IronText.MetadataCompiler
 
         public int Identify(Type type)
         {
-            return data.TokenRefResolver.GetId(CilSymbolRef.Typed(type));
+            return data.SymbolResolver.GetId(CilSymbolRef.Typed(type));
         }
 
         public int Identify(string literal)
         {
-            return data.TokenRefResolver.GetId(CilSymbolRef.Literal(literal));
+            return data.SymbolResolver.GetId(CilSymbolRef.Literal(literal));
         }
 
         private ProductionActionDelegate BuildExecuteRuleAction()

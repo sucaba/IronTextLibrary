@@ -27,7 +27,7 @@ namespace IronText.Extensibility
 
         IEnumerable<CilMergerDef>     GetMergeRules(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool);
 
-        IEnumerable<CilScanRule>     GetScanRules(ITokenPool tokenPool);
+        IEnumerable<CilScanProduction>     GetScanRules(ITokenPool tokenPool);
 
         IEnumerable<ReportBuilder> GetReportBuilders();
     }

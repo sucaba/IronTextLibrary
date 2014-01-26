@@ -18,10 +18,10 @@ namespace IronText.Tests.Extensibility
             var target = new LanguageDefinition(typeof(IMetadtaTest0), logging);
             ITokenPool tokenPool = target;
             Assert.AreEqual(tokenPool.GetToken(typeof(void)), target.Start);
-            Assert.AreEqual(2, target.TokenRefResolver.Definitions.Count());
+            Assert.AreEqual(2, target.SymbolResolver.Definitions.Count());
             Assert.AreEqual(
                 new [] { typeof(void), typeof(int) },
-                target.TokenRefResolver.Definitions.Select(def => def.TokenType).ToArray());
+                target.SymbolResolver.Definitions.Select(def => def.TokenType).ToArray());
         }
 
         [SampleAttr]
@@ -53,9 +53,9 @@ namespace IronText.Tests.Extensibility
                 }
             }
 
-            public IEnumerable<CilScanRule> GetScanRules(ITokenPool moduleBuilder)
+            public IEnumerable<CilScanProduction> GetScanRules(ITokenPool moduleBuilder)
             {
-                return Enumerable.Empty<CilScanRule>();
+                return Enumerable.Empty<CilScanProduction>();
             }
 
             public IEnumerable<CilSymbolRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category)

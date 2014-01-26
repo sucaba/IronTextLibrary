@@ -115,8 +115,6 @@
     <Compile Include="Diagnostics\IGraphView.cs" />
     <Compile Include="Build\IDerivedBuilderMetadata.cs" />
     <Compile Include="Extensibility\CilContextConsumer.cs" />
-    <Compile Include="Extensibility\CilScanConditionDef.cs" />
-    <Compile Include="Extensibility\CilScanProductionDef0.cs" />
     <Compile Include="Extensibility\CilContextProvider.cs" />
     <Compile Include="Extensibility\Reporting\CharRange.cs" />
     <Compile Include="Extensibility\Reporting\Delegates.cs" />
@@ -143,7 +141,7 @@
     <Compile Include="Extensibility\CilMetadataAttribute.cs" />
     <Compile Include="Extensibility\CilScanCondition.cs" />
     <Compile Include="Extensibility\ScannerUtils.cs" />
-    <Compile Include="Extensibility\Scanning\CilScanProductionDef.cs" />
+    <Compile Include="Extensibility\CilScanProduction.cs" />
     <Compile Include="Extensibility\CilSymbolNaming.cs" />
     <Compile Include="Framework\Attributes\SymbolCategory.cs" />
     <Compile Include="Framework\Attributes\TokenCategoryAttribute.cs" />
@@ -246,7 +244,7 @@
     <Compile Include="Framework\Attributes\RuleMethodAttribute.cs" />
     <Compile Include="Framework\Attributes\DemandAttribute.cs" />
     <Compile Include="Framework\Delegates.cs" />
-    <Compile Include="Extensibility\ICilSymbolRefResolver.cs" />
+    <Compile Include="Extensibility\ICilSymbolResolver.cs" />
     <Compile Include="Extensibility\CilSymbolDef.cs" />
     <Compile Include="Extensibility\CilSymbolRefResolver.cs" />
     <Compile Include="Lib\Builtins.cs" />

@@ -29,7 +29,7 @@ namespace IronText.Framework
                 string path = Path.Combine(data.DestinationDirectory, scanModeFileName);
 
                 var condition = data.Grammar.ScanConditions[i];
-                var binding = condition.Joint.The<CilScanConditionDef>();
+                var binding = condition.Joint.The<CilScanCondition>();
 
                 var dfa = data.GetScanModeDfa(binding.ConditionType);
                 using (var graph = new GvGraphView(path))

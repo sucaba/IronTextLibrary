@@ -101,9 +101,9 @@ namespace IronText.Framework
             return Enumerable.Empty<CilMergerDef>();
         }
 
-        IEnumerable<CilScanRule> ICilMetadata.GetScanRules(ITokenPool tokenPool)
+        IEnumerable<CilScanProduction> ICilMetadata.GetScanRules(ITokenPool tokenPool)
         {
-            return Enumerable.Empty<CilScanRule>();
+            return Enumerable.Empty<CilScanProduction>();
         }
 
         public virtual IEnumerable<ReportBuilder> GetReportBuilders()

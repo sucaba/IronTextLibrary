@@ -90,7 +90,7 @@
     <Compile Include="Algorithm\SetOrthohonatorTest.cs" />
     <Compile Include="Algorithm\UnicodeIntSetTypeTest.cs" />
     <Compile Include="Extensions\LanguageDescriptorTest.cs" />
-    <Compile Include="Extensions\TokenRefResolverTest.cs" />
+    <Compile Include="Extensions\SymbolResolverTest.cs" />
     <Compile Include="Framework\Attributes\ParseGetSetAttributeTest.cs" />
     <Compile Include="Framework\Attributes\DanglingElseTest.cs" />
     <Compile Include="Framework\Attributes\MetaAttributeTests.cs" />

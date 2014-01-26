@@ -110,7 +110,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var scanProduction in Productions)
             {
-                var binding = scanProduction.Joint.The<CilScanProductionDef>();
+                var binding = scanProduction.Joint.The<CilScanProduction>();
 
                 if (scanProduction.Pattern.Literal != null)
                 {

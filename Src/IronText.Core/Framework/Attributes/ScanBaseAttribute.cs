@@ -31,13 +31,13 @@ namespace IronText.Framework
 
         internal string RegexPattern { get; set; }
 
-        public override IEnumerable<CilScanRule> GetScanRules(ITokenPool tokenPool)
+        public override IEnumerable<CilScanProduction> GetScanRules(ITokenPool tokenPool)
         {
             var method       = (MethodInfo)Member;
             var tokenType    = method.ReturnType;
             var nextModeType = GetNextModeType();
 
-            var scanRule = new CilScanRule();
+            var scanRule = new CilScanProduction();
 
             if (tokenType != typeof(void))
             {
@@ -50,11 +50,11 @@ namespace IronText.Framework
             scanRule.Disambiguation = Disambiguation;
             if (LiteralText == null)
             {
-                scanRule.ScanPattern = ScanPattern.CreateRegular(Pattern, RegexPattern);
+                scanRule.Pattern = ScanPattern.CreateRegular(Pattern, RegexPattern);
             }
             else
             {
-                scanRule.ScanPattern = ScanPattern.CreateLiteral(LiteralText);
+                scanRule.Pattern = ScanPattern.CreateLiteral(LiteralText);
             }
 
             scanRule.NextModeType = nextModeType;

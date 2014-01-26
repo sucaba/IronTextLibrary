@@ -9,9 +9,9 @@ namespace IronText.MetadataCompiler
 {
     class TokenIdentitiesSerializer
     {
-        private readonly ITokenRefResolver tokenRefResolver;
+        private readonly ICilSymbolResolver tokenRefResolver;
 
-        public TokenIdentitiesSerializer(ITokenRefResolver tokenRefResolver)
+        public TokenIdentitiesSerializer(ICilSymbolResolver tokenRefResolver)
         {
             this.tokenRefResolver = tokenRefResolver;
         }

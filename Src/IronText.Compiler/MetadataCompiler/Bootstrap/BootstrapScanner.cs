@@ -25,14 +25,14 @@ namespace IronText.MetadataCompiler
         private ScannerDescriptor descriptor;
         private TokenFactoryDelegate[] tokenFactories;
         private readonly object rootContext;
-        private readonly ITokenRefResolver tokenRefResolver;
+        private readonly ICilSymbolResolver tokenRefResolver;
         private readonly ILogging logging;
 
         public BootstrapScanner(
                 string input,
                 ScannerDescriptor descriptor,
                 object rootContext,
-                ITokenRefResolver tokenRefResolver,
+                ICilSymbolResolver tokenRefResolver,
                 ILogging logging)
             : this(new StringReader(input), Loc.MemoryString, descriptor, rootContext, tokenRefResolver, logging)
         { }
@@ -42,7 +42,7 @@ namespace IronText.MetadataCompiler
                 string            document,
                 ScannerDescriptor descriptor,
                 object            rootContext,
-                ITokenRefResolver tokenRefResolver,
+                ICilSymbolResolver tokenRefResolver,
                 ILogging          logging)
         {
             this.descriptor = descriptor;
@@ -139,13 +139,13 @@ namespace IronText.MetadataCompiler
             }
             else
             {
-                var binding = scanProduction.Joint.The<CilScanProductionDef>();
+                var binding = scanProduction.Joint.The<CilScanProduction>();
                 if (binding == null)
                 {
                     throw new InvalidOperationException("ScanProduction is missing CIL platform binding.");
                 }
 
-                Type type = binding.ResultTokenType;
+                Type type = binding.BootstrapResultType;
 
                 MethodInfo parseMethod = GetStaticParseMethod(type);
                 if (parseMethod != null)

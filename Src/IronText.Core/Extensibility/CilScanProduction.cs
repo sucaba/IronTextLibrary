@@ -7,20 +7,26 @@ using IronText.Framework.Reflection;
 
 namespace IronText.Extensibility
 {
-    public class CilScanRule
+    public class CilScanProduction
     {
-        public CilScanRule()
+        public CilScanProduction()
         {
             this.AllOutcomes = new List<CilSymbolRef>();
+        }
+
+        internal CilScanProduction(Type outcomeType)
+            : this()
+        {
+            var outcome = CilSymbolRef.Typed(outcomeType);
+            MainOutcome = outcome;
+            AllOutcomes.Add(outcome);
         }
         
         public MethodInfo           DefiningMethod         { get; set; }
 
         public Disambiguation       Disambiguation         { get; set; }
 
-        public ScanPattern          ScanPattern            { get; set; }
-
-        internal string             BootstrapPattern       { get; set; }
+        public ScanPattern          Pattern                { get; set; }
 
         public CilScanActionBuilder Builder                { get; set; }
 
@@ -30,10 +36,21 @@ namespace IronText.Extensibility
 
         public List<CilSymbolRef>   AllOutcomes            { get; private set; }
 
+        internal Type               BootstrapResultType
+        {
+            get
+            {
+                return (from outcome in AllOutcomes
+                       where outcome.TokenType != null
+                       select outcome.TokenType)
+                       .FirstOrDefault();
+            }
+        }
+
         public override string ToString()
         {
             var outcomeName = ((object)AllOutcomes.FirstOrDefault() ?? "void").ToString();
-            return string.Format("{0} -> {1}", outcomeName, ScanPattern);
+            return string.Format("{0} -> {1}", outcomeName, Pattern);
         }
     }
 }

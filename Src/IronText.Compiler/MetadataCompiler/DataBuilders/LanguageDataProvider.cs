@@ -56,7 +56,7 @@ namespace IronText.MetadataCompiler
 
             var reportBuilders = new List<ReportBuilder>(definition.ReportBuilders);
 
-            var tokenResolver = definition.TokenRefResolver;
+            var tokenResolver = definition.SymbolResolver;
 
             var grammar = BuildGrammar(definition);
 //            var inliner = new ProductionInliner(grammar);
@@ -104,7 +104,7 @@ namespace IronText.MetadataCompiler
                     });
             }
 
-            var localParseContexts = CollectLocalContexts(grammar, parserDfa, definition.ProductionDefs);
+            var localParseContexts = CollectLocalContexts(grammar, parserDfa, definition.Productions);
 
             // Prepare language data for the language assembly generation
             result.Name                = languageName;
@@ -118,7 +118,7 @@ namespace IronText.MetadataCompiler
             result.ParserConflictActionTable = lrTable.GetConflictActionTable();
             result.ParserConflicts     = lrTable.Conflicts;
 
-            result.TokenRefResolver    = tokenResolver;
+            result.SymbolResolver    = tokenResolver;
 
             result.LocalParseContexts  = localParseContexts.ToArray();
 
@@ -146,7 +146,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var condition in grammar.ScanConditions)
             {
-                var conditionBinding = condition.Joint.The<CilScanConditionDef>();
+                var conditionBinding = condition.Joint.The<CilScanCondition>();
 
                 ITdfaData tdfaData;
                 if (!CompileTdfa(logging, condition, out tdfaData))
@@ -211,7 +211,7 @@ namespace IronText.MetadataCompiler
             var result = new EbnfGrammar();
 
             // Define grammar tokens
-            var tokenResolver = definition.TokenRefResolver;
+            var tokenResolver = definition.SymbolResolver;
 
             foreach (var def in tokenResolver.Definitions)
             {
@@ -256,10 +256,10 @@ namespace IronText.MetadataCompiler
             result.Start = tokenResolver.GetSymbol(definition.Start);
 
             // Define grammar rules
-            foreach (var prodDef in definition.ProductionDefs)
+            foreach (var cilProduction in definition.Productions)
             {
-                Symbol outcome = tokenResolver.GetSymbol(prodDef.Left);
-                var pattern = Array.ConvertAll(prodDef.Parts, tokenResolver.GetSymbol);
+                Symbol outcome = tokenResolver.GetSymbol(cilProduction.Left);
+                var pattern = Array.ConvertAll(cilProduction.Parts, tokenResolver.GetSymbol);
 
                 // Try to find existing rules whith same token-signature
                 Production production;
@@ -267,7 +267,7 @@ namespace IronText.MetadataCompiler
                 {
                     ProductionContext context;
 
-                    var contextType = prodDef.InstanceDeclaringType;
+                    var contextType = cilProduction.InstanceDeclaringType;
                     if (contextType == null)
                     {
                         context = ProductionContext.Global;
@@ -281,78 +281,47 @@ namespace IronText.MetadataCompiler
                 }
 
                 var action = (SimpleProductionAction)production.Action;
-                action.Joint.Add(prodDef);
+                action.Joint.Add(cilProduction);
 
-                production.ExplicitPrecedence = prodDef.Precedence;
+                production.ExplicitPrecedence = cilProduction.Precedence;
 
-                prodDef.Index = production.Index;
+                cilProduction.Index = production.Index;
             }
 
-            foreach (CilScanCondition scanMode in definition.ScanModes)
+            // Create conditions to allow referencing them from scan productions
+            foreach (CilScanCondition cilCondition in definition.ScanConditions)
             {
-                var condition = ConditionFromType(result, scanMode);
+                CreateCondtion(result, cilCondition);
+            }
 
-                foreach (var scanRule in scanMode.ScanRules)
+            // Create scan productions
+            foreach (CilScanCondition cilCondition in definition.ScanConditions)
+            {
+                var condition = ConditionFromType(result, cilCondition.ConditionType);
+
+                foreach (var scanProd in cilCondition.Productions)
                 {
-                    int mainToken = tokenResolver.GetId(scanRule.MainOutcome);
-                    int[] tokens = scanRule
-                            .AllOutcomes
-                            .Select(c => tokenResolver.GetId(c))
-                            .ToArray();
-
-                    SymbolBase  outcome = GetResultSymbol(result, tokenResolver, scanRule.MainOutcome, scanRule.AllOutcomes);
-                    ScanPattern pattern = CreateScanPattern(scanRule);
+                    SymbolBase outcome = GetResultSymbol(result, tokenResolver, scanProd.MainOutcome, scanProd.AllOutcomes);
 
                     var scanProduction = new ScanProduction(
-                        pattern,
+                        scanProd.Pattern,
                         outcome,
-                        nextCondition: ConditionFromType(result, scanRule.NextModeType),
-                        disambiguation: scanRule.Disambiguation);
-                    scanProduction.Joint.Add(
-                        new CilScanProductionDef(scanRule.DefiningMethod, scanRule.Builder));
+                        nextCondition: ConditionFromType(result, scanProd.NextModeType),
+                        disambiguation: scanProd.Disambiguation);
+                    scanProduction.Joint.Add(scanProd);
 
                     condition.ScanProductions.Add(scanProduction);
                 }
             }
 
-            foreach (var mergerDef in definition.MergerDefs)
+            foreach (var cilMerger in definition.Mergers)
             {
-                int token = tokenResolver.GetId(mergerDef.Token);
-                var symbol = (Symbol)result.Symbols[token];
-
-                var merger = new Merger(symbol) { Joint = { mergerDef } };
+                var symbol  = tokenResolver.GetSymbol(cilMerger.Token);
+                var merger = new Merger(symbol) { Joint = { cilMerger } };
                 result.Mergers.Add(merger);
             }
 
             return result;
-        }
-
-        private static ScanPattern CreateScanPattern(CilScanRule scanRule)
-        {
-            return scanRule.ScanPattern;
-#if false
-            var    bootstrap        = scanRule as IHasBootstrapPattern;
-            string bootstrapPattern = bootstrap == null ? null : bootstrap.BootstrapPattern;
-
-            ScanPattern result;
-
-            var asSingleToken = scanRule as ICilSingleTokenScanRule;
-            if (asSingleToken != null && asSingleToken.LiteralText != null)
-            {
-                result = ScanPattern.CreateLiteral(asSingleToken.LiteralText);
-            }
-            else
-            {
-                result = ScanPattern.CreateRegular(scanRule.Pattern, bootstrapPattern);
-            }
-
-            return result;
-#endif
-        }
-
-        private static ScanCondition ConditionFromType(EbnfGrammar result, CilScanCondition scanDef)
-        {
-            return ConditionFromType(result, scanDef.ScanModeType);
         }
 
         private static ScanCondition ConditionFromType(EbnfGrammar grammar, Type type)
@@ -364,41 +333,45 @@ namespace IronText.MetadataCompiler
 
             foreach (var cond in grammar.ScanConditions)
             {
-                var binding = cond.Joint.The<CilScanConditionDef>();
+                var binding = cond.Joint.The<CilScanCondition>();
                 if (binding.ConditionType == type)
                 {
                     return cond;
                 }
             }
 
-            var condition = new ScanCondition(type.FullName);
-            condition.Joint.Add(new CilScanConditionDef(type));
-            grammar.ScanConditions.Add(condition);
-            return condition;
+            throw new InvalidOperationException("Undefined condition: " + type.FullName);
+        }
+
+        private static ScanCondition CreateCondtion(EbnfGrammar grammar, CilScanCondition cilCondition)
+        {
+            var result = new ScanCondition(cilCondition.ConditionType.FullName)
+            {
+                Joint = { cilCondition }
+            };
+
+            grammar.ScanConditions.Add(result);
+
+            return result;
         }
 
         private static SymbolBase GetResultSymbol(
             EbnfGrammar                 grammar,
-            ITokenRefResolver           tokenResolver,
-            CilSymbolRef                mainTokenRef,
-            IEnumerable<CilSymbolRef>   tokenRefGroups)
+            ICilSymbolResolver           tokenResolver,
+            CilSymbolRef                mainOutcome,
+            IEnumerable<CilSymbolRef>   allOutcomes)
         {
-            Symbol main = tokenResolver.GetSymbol(mainTokenRef);
-            Symbol[] other = (from g in tokenRefGroups
-                             select tokenResolver.GetSymbol(g))
+            Symbol main = tokenResolver.GetSymbol(mainOutcome);
+            Symbol[] all = (from outcome in allOutcomes
+                             select tokenResolver.GetSymbol(outcome))
                              .ToArray();
 
-            if (other.Length == 0)
+            switch (all.Length)
             {
-                return null;
+                case 0:  return null;
+                case 1:  return main;
+                default: return new AmbiguousSymbol(main, all);
             }
-
-            if (other.Length == 1)
-            {
-                return main;
-            }
-
-            return new AmbiguousSymbol(main, other);
         }
 
         private static List<ProductionContextLink> CollectLocalContexts(

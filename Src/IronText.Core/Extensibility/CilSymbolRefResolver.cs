@@ -5,7 +5,7 @@ using IronText.Framework.Reflection;
 
 namespace IronText.Extensibility
 {
-    internal class CilSymbolRefResolver : ITokenRefResolver
+    internal class CilSymbolRefResolver : ICilSymbolResolver
     {
         private readonly Dictionary<object, CilSymbolDef> ref2def = new Dictionary<object, CilSymbolDef>();
         

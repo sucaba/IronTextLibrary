@@ -31,7 +31,7 @@ namespace IronText.MetadataCompiler
                         startType.FullName));
             }
 
-            this.TokenRefResolver = new CilSymbolRefResolver();
+            this.SymbolResolver = new CilSymbolRefResolver();
 
             this.Start = tokenPool.AugmentedStart;
 
@@ -53,7 +53,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var tid in collector.AllTokens)
             {
-                TokenRefResolver.Link(tid);
+                SymbolResolver.Link(tid);
             }
 
             var categories = new [] { SymbolCategory.Beacon, SymbolCategory.DoNotInsert, SymbolCategory.DoNotDelete, SymbolCategory.ExplicitlyUsed };
@@ -62,7 +62,7 @@ namespace IronText.MetadataCompiler
             {
                 foreach (var tokenRef in allMetadata.SelectMany(m => m.GetTokensInCategory(this, category)))
                 {
-                    var def = TokenRefResolver.Resolve(tokenRef);
+                    var def = SymbolResolver.Resolve(tokenRef);
                     def.Categories |= category; 
                 }
             }
@@ -93,15 +93,15 @@ namespace IronText.MetadataCompiler
             LinkRelatedTokens(allScanConditions);
 
             var allTerms = (from t in scanDataCollector.Terminals
-                           let def = TokenRefResolver.Resolve(t)
+                           let def = SymbolResolver.Resolve(t)
                            where def != null
                            select def)
                            .Distinct();
             var termsProducedByScanner =
                             (from cond in scanDataCollector.ScanConditions
-                             from rule in cond.ScanRules
+                             from rule in cond.Productions
                              from outcome in rule.AllOutcomes
-                             let def = TokenRefResolver.Resolve(outcome)
+                             let def = SymbolResolver.Resolve(outcome)
                              where def != null
                              select def)
                             .Distinct();
@@ -159,13 +159,13 @@ namespace IronText.MetadataCompiler
         {
             foreach (var scanMode in allScanModes)
             {
-                foreach (var scanRule in scanMode.ScanRules)
+                foreach (var scanRule in scanMode.Productions)
                 {
                     foreach (CilSymbolRef symbolConstraint in scanRule.AllOutcomes)
                     {
-                        if (TokenRefResolver.Contains(symbolConstraint))
+                        if (SymbolResolver.Contains(symbolConstraint))
                         {
-                            TokenRefResolver.Link(symbolConstraint);
+                            SymbolResolver.Link(symbolConstraint);
                         }
                     }
                 }
@@ -176,15 +176,15 @@ namespace IronText.MetadataCompiler
 
         public ReportBuilder[] ReportBuilders { get; private set; }
 
-        public ITokenRefResolver TokenRefResolver { get; private set; }
+        public ICilSymbolResolver SymbolResolver { get; private set; }
 
         public IEnumerable<SymbolFeature<Precedence>> Precedence { get { return precedence; } }
 
-        public IList<CilProductionDef> ProductionDefs { get { return allParseRules; } }
+        public IList<CilProductionDef> Productions { get { return allParseRules; } }
 
-        public IList<CilMergerDef> MergerDefs { get { return allMergeRules; } }
+        public IList<CilMergerDef> Mergers { get { return allMergeRules; } }
 
-        public IList<CilScanCondition> ScanModes { get { return allScanConditions; } }
+        public IList<CilScanCondition> ScanConditions { get { return allScanConditions; } }
 
         public IList<SymbolFeature<CilContextProvider>> ContextProviders { get; private set; }
 

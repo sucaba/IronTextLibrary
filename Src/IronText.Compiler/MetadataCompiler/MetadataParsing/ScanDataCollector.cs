@@ -87,7 +87,7 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        public void AddScanRule(CilScanRule rule)
+        public void AddScanRule(CilScanProduction rule)
         {
             var currentScanMode = processedScanConditions.Peek();
             currentScanMode.AddRule(rule);
@@ -100,7 +100,7 @@ namespace IronText.MetadataCompiler
 
         public void AddScanMode(Type modeType)
         {
-            if (allScanConditions.Any(mode => object.Equals(mode.ScanModeType, modeType)))
+            if (allScanConditions.Any(mode => object.Equals(mode.ConditionType, modeType)))
             {
                 return;
             }
@@ -124,9 +124,9 @@ namespace IronText.MetadataCompiler
                      select t.LiteralText)
                     .Except(
                         from mode in allScanConditions
-                        from rule in mode.ScanRules
-                        where rule.ScanPattern.IsLiteral
-                        select rule.ScanPattern.Literal)
+                        from rule in mode.Productions
+                        where rule.Pattern.IsLiteral
+                        select rule.Pattern.Literal)
                         .ToArray();
 
                 foreach (var literal in implicitLiterals)

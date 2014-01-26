@@ -12,9 +12,9 @@ namespace IronText.MetadataCompiler
     {
         private readonly Ref<Types>        declaringType;
         private readonly ScanCondition[]   scanConditions;
-        private readonly ITokenRefResolver tokenRefResolver;
+        private readonly ICilSymbolResolver tokenRefResolver;
 
-        public TermFactoryGenerator(ScanConditionCollection scanModes, Ref<Types> declaringType, ITokenRefResolver tokenRefResolver)
+        public TermFactoryGenerator(ScanConditionCollection scanModes, Ref<Types> declaringType, ICilSymbolResolver tokenRefResolver)
         {
             this.scanConditions        = scanModes.ToArray();
             this.declaringType    = declaringType;
@@ -64,7 +64,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var condition in scanConditions)
             {
-                var conditionBinding = condition.Joint.The<CilScanConditionDef>();
+                var conditionBinding = condition.Joint.The<CilScanCondition>();
 
                 // Each mode has its own root context type:
                 contextResolver.RootContextType = conditionBinding.ConditionType;
@@ -76,7 +76,7 @@ namespace IronText.MetadataCompiler
                         .Stloc(tokenId.GetRef())
                         ;
 
-                    var productionBinding = scanProduction.Joint.The<CilScanProductionDef>();
+                    var productionBinding = scanProduction.Joint.The<CilScanProduction>();
                     productionBinding.Builder(actionContext);
                 }
             }

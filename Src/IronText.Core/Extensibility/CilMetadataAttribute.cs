@@ -52,9 +52,9 @@ namespace IronText.Extensibility
             return Enumerable.Empty<CilMergerDef>();
         }
 
-        public virtual IEnumerable<CilScanRule> GetScanRules(ITokenPool tokenPool)
+        public virtual IEnumerable<CilScanProduction> GetScanRules(ITokenPool tokenPool)
         {
-            return Enumerable.Empty<CilScanRule>();
+            return Enumerable.Empty<CilScanProduction>();
         }
 
         public virtual IEnumerable<ReportBuilder> GetReportBuilders()
