@@ -12,13 +12,11 @@ namespace IronText.MetadataCompiler
     {
         private readonly Ref<Types>        declaringType;
         private readonly ScanCondition[]   scanConditions;
-        private readonly ICilSymbolResolver tokenRefResolver;
 
-        public TermFactoryGenerator(ScanConditionCollection scanModes, Ref<Types> declaringType, ICilSymbolResolver tokenRefResolver)
+        public TermFactoryGenerator(ScanConditionCollection conditions, Ref<Types> declaringType)
         {
-            this.scanConditions        = scanModes.ToArray();
+            this.scanConditions   = conditions.ToArray();
             this.declaringType    = declaringType;
-            this.tokenRefResolver = tokenRefResolver;
         }
 
         public void Build(
@@ -45,7 +43,7 @@ namespace IronText.MetadataCompiler
                 .Stloc(tokenId.GetRef())
                 ;
 
-            int ruleCount = scanConditions.Sum(mode => mode.ScanProductions.Count);
+            int ruleCount = scanConditions.Sum(cond => cond.ScanProductions.Count);
 
             var action = new Ref<Labels>[ruleCount];
             for (int i = 0; i != ruleCount; ++i)

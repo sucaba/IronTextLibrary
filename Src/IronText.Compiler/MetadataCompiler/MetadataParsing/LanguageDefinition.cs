@@ -9,12 +9,11 @@ namespace IronText.MetadataCompiler
 {
     internal class LanguageDefinition
     {
-        private readonly List<ICilMetadata>              allMetadata;
-        private readonly List<CilProduction>          allParseRules;
-        private readonly List<CilScanCondition>          allScanConditions;
+        private readonly List<ICilMetadata>                 allMetadata;
+        private readonly List<CilProduction>                allParseRules;
+        private readonly List<CilScanCondition>             allScanConditions;
+        private readonly CilMerger[]                        allMergeRules;
         private readonly List<CilSymbolFeature<Precedence>> precedence;
-
-        private readonly CilMerger[] allMergeRules;
 
         public LanguageDefinition(Type startType, ILogging logging)
         {

@@ -118,8 +118,6 @@ namespace IronText.MetadataCompiler
             result.ParserConflictActionTable = lrTable.GetConflictActionTable();
             result.ParserConflicts     = lrTable.Conflicts;
 
-            result.SymbolResolver    = tokenResolver;
-
             result.LocalParseContexts  = localParseContexts.ToArray();
 
             if (!bootstrap)
@@ -213,17 +211,25 @@ namespace IronText.MetadataCompiler
             // Define grammar tokens
             var tokenResolver = definition.SymbolResolver;
 
-            foreach (var def in tokenResolver.Definitions)
+            foreach (var cilSymbol in tokenResolver.Definitions)
             {
-                if (def.SymbolType == typeof(Exception))
+                Symbol symbol;
+                if (cilSymbol.SymbolType == typeof(Exception))
                 {
-                    def.Symbol = (Symbol)result.Symbols[EbnfGrammar.Error];
+                    cilSymbol.Symbol = symbol = (Symbol)result.Symbols[EbnfGrammar.Error];
+                    symbol.Joint.Add(
+                        new CilSymbol 
+                        { 
+                            SymbolType = typeof(Exception),
+                            Symbol     = symbol,
+                            Categories = SymbolCategory.DoNotDelete | SymbolCategory.DoNotInsert
+                        });
                 }
                 else
                 {
-                    var symbol = new Symbol(def.Name) { Categories = def.Categories };
+                    symbol = new Symbol(cilSymbol.Name) { Categories = cilSymbol.Categories, Joint = { cilSymbol } };
                     result.Symbols.Add(symbol);
-                    def.Symbol = symbol;
+                    cilSymbol.Symbol = symbol;
                 }
             }
 

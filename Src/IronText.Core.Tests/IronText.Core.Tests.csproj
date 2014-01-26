@@ -145,7 +145,6 @@
     <Compile Include="TestUtils\Collector.cs" />
     <Compile Include="TestUtils\ProgramExecutor.cs" />
     <Compile Include="DeploymentItemAttribute.cs" />
-    <Compile Include="TestUtils\StubTokenRefResolver.cs" />
     <Compile Include="UseCases\ImplicitAstUseCase.cs" />
     <Compile Include="UseCases\MatchExtensions.cs" />
   </ItemGroup>

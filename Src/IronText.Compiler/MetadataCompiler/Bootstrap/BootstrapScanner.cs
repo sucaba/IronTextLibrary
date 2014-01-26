@@ -25,16 +25,14 @@ namespace IronText.MetadataCompiler
         private ScannerDescriptor descriptor;
         private TokenFactoryDelegate[] tokenFactories;
         private readonly object rootContext;
-        private readonly ICilSymbolResolver tokenRefResolver;
         private readonly ILogging logging;
 
         public BootstrapScanner(
                 string input,
                 ScannerDescriptor descriptor,
                 object rootContext,
-                ICilSymbolResolver tokenRefResolver,
                 ILogging logging)
-            : this(new StringReader(input), Loc.MemoryString, descriptor, rootContext, tokenRefResolver, logging)
+            : this(new StringReader(input), Loc.MemoryString, descriptor, rootContext, logging)
         { }
 
         public BootstrapScanner(
@@ -42,12 +40,10 @@ namespace IronText.MetadataCompiler
                 string            document,
                 ScannerDescriptor descriptor,
                 object            rootContext,
-                ICilSymbolResolver tokenRefResolver,
                 ILogging          logging)
         {
             this.descriptor = descriptor;
             this.rootContext = rootContext;
-            this.tokenRefResolver = tokenRefResolver;
             this.logging = logging;
 
             var pattern = @"\G(?:" + string.Join("|", descriptor.Productions.Select(scanProd => "(" + GetPattern(scanProd) + ")")) + ")";

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using IronText.Extensibility;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 using IronText.Lib.Ctem;
 using IronText.Lib.IL;
 
@@ -9,11 +11,11 @@ namespace IronText.MetadataCompiler
 {
     class TokenIdentitiesSerializer
     {
-        private readonly ICilSymbolResolver tokenRefResolver;
+        private readonly EbnfGrammar grammar;
 
-        public TokenIdentitiesSerializer(ICilSymbolResolver tokenRefResolver)
+        public TokenIdentitiesSerializer(EbnfGrammar grammar)
         {
-            this.tokenRefResolver = tokenRefResolver;
+            this.grammar = grammar;
         }
 
         public EmitSyntax Build(EmitSyntax emit)
@@ -55,16 +57,28 @@ namespace IronText.MetadataCompiler
 
         private IEnumerable<Tuple<object,int>> EnumerateTokenKeyToId()
         {
-            foreach (var def in tokenRefResolver.Definitions)
+            foreach (var symbolBase in grammar.Symbols)
             {
-                foreach (var literal in def.Literals)
+                var symbol = symbolBase as Symbol;
+                if (symbol == null)
                 {
-                    yield return Tuple.Create((object)literal, def.Id);
+                    continue;
                 }
 
-                if (def.SymbolType != null)
+                var cilSymbol = symbol.Joint.Get<CilSymbol>();
+                if (cilSymbol == null)
                 {
-                    yield return Tuple.Create((object)def.SymbolType, def.Id);
+                    continue;
+                }
+
+                foreach (var literal in cilSymbol.Literals)
+                {
+                    yield return Tuple.Create((object)literal, cilSymbol.Id);
+                }
+
+                if (cilSymbol.SymbolType != null)
+                {
+                    yield return Tuple.Create((object)cilSymbol.SymbolType, cilSymbol.Id);
                 }
             }
         }

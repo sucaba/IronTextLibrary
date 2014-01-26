@@ -169,7 +169,7 @@ namespace IronText.MetadataCompiler
 
         private ClassSyntax BuildMethod_TermFactory(ClassSyntax context)
         {
-            var generator = new TermFactoryGenerator(data.Grammar.ScanConditions, declaringTypeRef, data.SymbolResolver);
+            var generator = new TermFactoryGenerator(data.Grammar.ScanConditions, declaringTypeRef);
 
             var args = context
                         .Method()
@@ -211,7 +211,7 @@ namespace IronText.MetadataCompiler
 
         private ClassSyntax BuildMethod_CreateTokenIdentities(ClassSyntax context)
         {
-            var generator = new TokenIdentitiesSerializer(data.SymbolResolver);
+            var generator = new TokenIdentitiesSerializer(data.Grammar);
 
             return context
                 .Method().Private.Static

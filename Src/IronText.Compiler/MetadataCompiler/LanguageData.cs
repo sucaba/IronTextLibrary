@@ -31,8 +31,6 @@ namespace IronText.MetadataCompiler
 
         public DotState[]             ParserStates;
 
-        internal ICilSymbolResolver   SymbolResolver; 
-
         // Rule ID -> ActionBuilder
         public ProductionContextLink[]    LocalParseContexts;
         

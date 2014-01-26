@@ -86,7 +86,6 @@ namespace IronText.Tests.Bootstrap
                     grammar.ScanConditions[0].ScanProductions,
                     ExceptionLogging.Instance),
                 null,
-                new StubTokenRefResolver(),
                 ExceptionLogging.Instance);
 
             var collector = new Collector<Msg>();
