@@ -6,22 +6,22 @@ using IronText.Framework.Reflection;
 
 namespace IronText.Extensibility
 {
-    class CilSymbolDef
+    class CilSymbol
     {
-        public CilSymbolDef()
+        public CilSymbol()
         {
             this.Literals = new HashSet<string>();
         }
 
         public Symbol          Symbol     { get; set; }
 
-        public Type            TokenType  { get; set; }
+        public Type            SymbolType  { get; set; }
 
         public HashSet<string> Literals   { get; private set; }
 
         public SymbolCategory  Categories { get; set; }
 
-        public int Id        
+        public int Id
         { 
             get { return Symbol == null ? -1 : Symbol.Index; } 
         }
@@ -35,7 +35,7 @@ namespace IronText.Extensibility
                     return CilSymbolNaming.GetLiteralName(Literals.First());
                 }
 
-                return CilSymbolNaming.GetTypeName(TokenType);
+                return CilSymbolNaming.GetTypeName(SymbolType);
             }
         }
 

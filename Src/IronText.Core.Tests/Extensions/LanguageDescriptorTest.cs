@@ -21,7 +21,7 @@ namespace IronText.Tests.Extensibility
             Assert.AreEqual(2, target.SymbolResolver.Definitions.Count());
             Assert.AreEqual(
                 new [] { typeof(void), typeof(int) },
-                target.SymbolResolver.Definitions.Select(def => def.TokenType).ToArray());
+                target.SymbolResolver.Definitions.Select(def => def.SymbolType).ToArray());
         }
 
         [SampleAttr]
@@ -39,11 +39,11 @@ namespace IronText.Tests.Extensibility
 
             public IEnumerable<ICilMetadata> GetChildren() { return Enumerable.Empty<ICilMetadata>(); }
 
-            public IEnumerable<CilProductionDef> GetProductions(IEnumerable<CilSymbolRef> leftSides, ITokenPool moduleBuilder)
+            public IEnumerable<CilProduction> GetProductions(IEnumerable<CilSymbolRef> leftSides, ITokenPool moduleBuilder)
             {
                 foreach (var leftSide in leftSides.ToArray())
                 {
-                    yield return new CilProductionDef
+                    yield return new CilProduction
                     (
                         left : moduleBuilder.GetToken(typeof(void)),
                         parts : new[] { moduleBuilder.GetToken(typeof(int)) },
@@ -63,14 +63,14 @@ namespace IronText.Tests.Extensibility
                 return Enumerable.Empty<CilSymbolRef>();
             }
 
-            IEnumerable<SymbolFeature<Precedence>> ICilMetadata.GetTokenPrecedence(ITokenPool tokenPool)
+            IEnumerable<CilSymbolFeature<Precedence>> ICilMetadata.GetTokenPrecedence(ITokenPool tokenPool)
             {
-                return Enumerable.Empty<SymbolFeature<Precedence>>();
+                return Enumerable.Empty<CilSymbolFeature<Precedence>>();
             }
 
-            IEnumerable<SymbolFeature<CilContextProvider>> ICilMetadata.GetTokenContextProvider(ITokenPool tokenPool)
+            IEnumerable<CilSymbolFeature<CilContextProvider>> ICilMetadata.GetTokenContextProvider(ITokenPool tokenPool)
             {
-                return Enumerable.Empty<SymbolFeature<CilContextProvider>>();
+                return Enumerable.Empty<CilSymbolFeature<CilContextProvider>>();
             }
 
             IEnumerable<ReportBuilder> ICilMetadata.GetReportBuilders()
@@ -78,9 +78,9 @@ namespace IronText.Tests.Extensibility
                 return Enumerable.Empty<ReportBuilder>();
             }
 
-            public IEnumerable<CilMergerDef> GetMergeRules(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool)
+            public IEnumerable<CilMerger> GetMergeRules(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool)
             {
-                return Enumerable.Empty<CilMergerDef>();
+                return Enumerable.Empty<CilMerger>();
             }
         }
     }

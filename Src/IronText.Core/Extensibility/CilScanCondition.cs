@@ -49,7 +49,7 @@ namespace IronText.Extensibility
                 AllOutcomes      = { outcome },
                 Disambiguation   = Disambiguation.Exclusive,
                 Pattern      = ScanPattern.CreateLiteral(literal),
-                Builder          = code =>
+                ActionBuilder          = code =>
                 {
                     code
                         .Emit(il => il.Ldnull())

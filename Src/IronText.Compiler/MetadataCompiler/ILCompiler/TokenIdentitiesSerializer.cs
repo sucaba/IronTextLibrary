@@ -62,9 +62,9 @@ namespace IronText.MetadataCompiler
                     yield return Tuple.Create((object)literal, def.Id);
                 }
 
-                if (def.TokenType != null)
+                if (def.SymbolType != null)
                 {
-                    yield return Tuple.Create((object)def.TokenType, def.Id);
+                    yield return Tuple.Create((object)def.SymbolType, def.Id);
                 }
             }
         }

@@ -5,9 +5,9 @@ namespace IronText.Extensibility
 {
     interface ICilSymbolResolver
     {
-        IEnumerable<CilSymbolDef> Definitions { get; }
+        IEnumerable<CilSymbol> Definitions { get; }
 
-        CilSymbolDef Resolve(CilSymbolRef symbol);
+        CilSymbol Resolve(CilSymbolRef symbol);
 
         Symbol GetSymbol(CilSymbolRef symbol);
 

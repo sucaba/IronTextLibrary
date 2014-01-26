@@ -43,21 +43,21 @@ namespace IronText.Framework
 
         protected abstract CilSymbolRef[] DoGetRuleMask(MethodInfo methodInfo, ITokenPool tokenPool);
 
-        public override IEnumerable<CilProductionDef> GetProductions(IEnumerable<CilSymbolRef> tokens, ITokenPool tokenPool)
+        public override IEnumerable<CilProduction> GetProductions(IEnumerable<CilSymbolRef> tokens, ITokenPool tokenPool)
         {
             if (!isValid)
             {
-                return Enumerable.Empty<CilProductionDef>();
+                return Enumerable.Empty<CilProduction>();
             }
 
             return tokens.SelectMany(token => GetExpansionRules(token, tokenPool)).ToArray();
         }
 
-        private IEnumerable<CilProductionDef> GetExpansionRules(CilSymbolRef token, ITokenPool tokenPool)
+        private IEnumerable<CilProduction> GetExpansionRules(CilSymbolRef token, ITokenPool tokenPool)
         {
             if (token.IsLiteral)
             {
-                return Enumerable.Empty<CilProductionDef>();
+                return Enumerable.Empty<CilProduction>();
             }
 
             var method = this.Method;
@@ -69,7 +69,7 @@ namespace IronText.Framework
             }
             else
             {
-                return Enumerable.Empty<CilProductionDef>();
+                return Enumerable.Empty<CilProduction>();
             }
         }
 
@@ -108,13 +108,13 @@ namespace IronText.Framework
             }
         }
 
-        protected IEnumerable<CilProductionDef> DoGetRules(ITokenPool tokenPool, MethodInfo method, CilSymbolRef leftSide)
+        protected IEnumerable<CilProduction> DoGetRules(ITokenPool tokenPool, MethodInfo method, CilSymbolRef leftSide)
         {
             CilSymbolRef left = tokenPool.GetToken(method.ReturnType);
 
             if (!object.Equals(left, leftSide))
             {
-                return Enumerable.Empty<CilProductionDef>();
+                return Enumerable.Empty<CilProduction>();
             }
 
             var parts = new List<CilSymbolRef>();
@@ -131,7 +131,7 @@ namespace IronText.Framework
 
             SubstituteRuleMask(tokenPool, method, parts, ruleMask);
 
-            var rule = new CilProductionDef
+            var rule = new CilProduction
             (
                 left          : left,
                 parts         : parts.ToArray(),

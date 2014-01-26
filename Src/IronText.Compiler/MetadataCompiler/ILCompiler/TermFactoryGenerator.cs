@@ -77,7 +77,7 @@ namespace IronText.MetadataCompiler
                         ;
 
                     var productionBinding = scanProduction.Joint.The<CilScanProduction>();
-                    productionBinding.Builder(actionContext);
+                    productionBinding.ActionBuilder(actionContext);
                 }
             }
 

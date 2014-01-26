@@ -10,11 +10,11 @@ namespace IronText.MetadataCompiler
     internal class LanguageDefinition : ITokenPool
     {
         private readonly List<ICilMetadata>              allMetadata;
-        private readonly List<CilProductionDef>          allParseRules;
+        private readonly List<CilProduction>          allParseRules;
         private readonly List<CilScanCondition>          allScanConditions;
-        private readonly List<SymbolFeature<Precedence>> precedence;
+        private readonly List<CilSymbolFeature<Precedence>> precedence;
 
-        private readonly CilMergerDef[] allMergeRules;
+        private readonly CilMerger[] allMergeRules;
 
         public LanguageDefinition(Type startType, ILogging logging)
         {
@@ -119,7 +119,7 @@ namespace IronText.MetadataCompiler
         }
 
         private void CheckAllScanRulesDefined(
-            IEnumerable<CilSymbolDef> undefinedTerminals,
+            IEnumerable<CilSymbol> undefinedTerminals,
             Type                      member,
             ILogging                  logging)
         {
@@ -178,15 +178,15 @@ namespace IronText.MetadataCompiler
 
         public ICilSymbolResolver SymbolResolver { get; private set; }
 
-        public IEnumerable<SymbolFeature<Precedence>> Precedence { get { return precedence; } }
+        public IEnumerable<CilSymbolFeature<Precedence>> Precedence { get { return precedence; } }
 
-        public IList<CilProductionDef> Productions { get { return allParseRules; } }
+        public IList<CilProduction> Productions { get { return allParseRules; } }
 
-        public IList<CilMergerDef> Mergers { get { return allMergeRules; } }
+        public IList<CilMerger> Mergers { get { return allMergeRules; } }
 
         public IList<CilScanCondition> ScanConditions { get { return allScanConditions; } }
 
-        public IList<SymbolFeature<CilContextProvider>> ContextProviders { get; private set; }
+        public IList<CilSymbolFeature<CilContextProvider>> ContextProviders { get; private set; }
 
         CilSymbolRef ITokenPool.AugmentedStart
         {
@@ -216,9 +216,9 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        private static bool IsSpecialSymbolDef(CilSymbolDef def)
+        private static bool IsSpecialSymbolDef(CilSymbol def)
         {
-            return def.TokenType == typeof(Exception);
+            return def.SymbolType == typeof(Exception);
         }
     }
 }

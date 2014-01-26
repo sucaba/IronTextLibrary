@@ -127,8 +127,8 @@
     <Compile Include="Extensibility\Reporting\IScannerState.cs" />
     <Compile Include="Extensibility\Reporting\IReportData.cs" />
     <Compile Include="Extensibility\Code\IMergeActionCode.cs" />
-    <Compile Include="Extensibility\CilMergerDef.cs" />
-    <Compile Include="Extensibility\SymbolFeature.cs" />
+    <Compile Include="Extensibility\CilMerger.cs" />
+    <Compile Include="Extensibility\CilSymbolFeature.cs" />
     <Compile Include="Framework\Attributes\LanguageFlags.cs" />
     <Compile Include="Framework\ILanguageRuntime.cs" />
     <Compile Include="Framework\ParserAction.cs" />
@@ -245,7 +245,7 @@
     <Compile Include="Framework\Attributes\DemandAttribute.cs" />
     <Compile Include="Framework\Delegates.cs" />
     <Compile Include="Extensibility\ICilSymbolResolver.cs" />
-    <Compile Include="Extensibility\CilSymbolDef.cs" />
+    <Compile Include="Extensibility\CilSymbol.cs" />
     <Compile Include="Extensibility\CilSymbolRefResolver.cs" />
     <Compile Include="Lib\Builtins.cs" />
     <Compile Include="Lib\Numbers.cs" />
@@ -260,7 +260,7 @@
     <Compile Include="Misc\ExpressionUtils.cs" />
     <Compile Include="Misc\PropertyComparer.cs" />
     <Compile Include="Misc\ReflectionUtils.cs" />
-    <Compile Include="Extensibility\CilProductionDef.cs" />
+    <Compile Include="Extensibility\CilProduction.cs" />
     <Compile Include="Framework\Attributes\LanguageContextAttribute.cs" />
     <Compile Include="Framework\Attributes\UseTokenAttribute.cs" />
     <Compile Include="Framework\Attributes\ParseAttribute.cs" />

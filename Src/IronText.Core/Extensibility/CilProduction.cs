@@ -4,9 +4,9 @@ using IronText.Framework;
 
 namespace IronText.Extensibility
 {
-    public sealed class CilProductionDef : IEquatable<CilProductionDef>
+    public sealed class CilProduction : IEquatable<CilProduction>
     {
-        public CilProductionDef(
+        public CilProduction(
             CilSymbolRef             left,
             CilSymbolRef[]           parts,
             CilProductionActionBuilder actionBuilder,
@@ -42,11 +42,11 @@ namespace IronText.Extensibility
 
         public override bool Equals(object obj)
         {
-            var casted = obj as CilProductionDef;
+            var casted = obj as CilProduction;
             return Equals(casted);
         }
 
-        public bool Equals(CilProductionDef other)
+        public bool Equals(CilProduction other)
         {
             return other != null
                 && object.Equals(Left, other.Left)

@@ -58,7 +58,7 @@ namespace IronText.Framework
             }
 
             scanRule.NextModeType = nextModeType;
-            scanRule.Builder =
+            scanRule.ActionBuilder =
                 context =>
                 {
                     if (!method.IsStatic)

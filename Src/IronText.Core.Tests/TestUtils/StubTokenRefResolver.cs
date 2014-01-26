@@ -7,7 +7,7 @@ namespace IronText.Tests.TestUtils
 {
     class StubTokenRefResolver : ICilSymbolResolver
     {
-        public CilSymbolDef Resolve(CilSymbolRef tid)
+        public CilSymbol Resolve(CilSymbolRef tid)
         {
             throw new System.NotImplementedException();
         }
@@ -27,7 +27,7 @@ namespace IronText.Tests.TestUtils
             throw new NotImplementedException();
         }
 
-        public IEnumerable<CilSymbolDef> Definitions
+        public IEnumerable<CilSymbol> Definitions
         {
             get { throw new NotImplementedException(); }
         }

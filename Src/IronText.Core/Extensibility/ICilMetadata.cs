@@ -19,13 +19,13 @@ namespace IronText.Extensibility
 
         IEnumerable<CilSymbolRef>      GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category);
 
-        IEnumerable<SymbolFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool);
+        IEnumerable<CilSymbolFeature<Precedence>> GetTokenPrecedence(ITokenPool tokenPool);
 
-        IEnumerable<SymbolFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool);
+        IEnumerable<CilSymbolFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool);
 
-        IEnumerable<CilProductionDef> GetProductions(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool);
+        IEnumerable<CilProduction> GetProductions(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool);
 
-        IEnumerable<CilMergerDef>     GetMergeRules(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool);
+        IEnumerable<CilMerger>     GetMergeRules(IEnumerable<CilSymbolRef> leftSides, ITokenPool tokenPool);
 
         IEnumerable<CilScanProduction>     GetScanRules(ITokenPool tokenPool);
 

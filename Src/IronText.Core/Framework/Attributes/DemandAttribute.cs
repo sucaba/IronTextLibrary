@@ -23,20 +23,20 @@ namespace IronText.Framework
             return result.Where(child => !(child is ScanBaseAttribute));
         }
 
-        public override IEnumerable<SymbolFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool)
+        public override IEnumerable<CilSymbolFeature<CilContextProvider>> GetTokenContextProvider(ITokenPool tokenPool)
         {
             if (Parent == null)
             {
                 var type = (Type)Member;
                 return new[]
                 { 
-                    new SymbolFeature<CilContextProvider>(
+                    new CilSymbolFeature<CilContextProvider>(
                             tokenPool.GetToken(type),
                             new CilContextProvider(type))
                 };
             }
 
-            return new SymbolFeature<CilContextProvider>[0];
+            return new CilSymbolFeature<CilContextProvider>[0];
         }
 
         private IEnumerable<ICilMetadata> EnumerateDirectChildren()

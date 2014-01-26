@@ -7,18 +7,18 @@ namespace IronText.Extensibility
 {
     internal class CilSymbolRefResolver : ICilSymbolResolver
     {
-        private readonly Dictionary<object, CilSymbolDef> ref2def = new Dictionary<object, CilSymbolDef>();
+        private readonly Dictionary<object, CilSymbol> ref2def = new Dictionary<object, CilSymbol>();
         
         public CilSymbolRefResolver()
         {
         }
 
-        public IEnumerable<CilSymbolDef> Definitions
+        public IEnumerable<CilSymbol> Definitions
         {
             get { return ref2def.Values.Distinct(); }
         }
 
-        public CilSymbolDef Resolve(CilSymbolRef tid)
+        public CilSymbol Resolve(CilSymbolRef tid)
         {
             if (tid == null)
             {
@@ -36,26 +36,26 @@ namespace IronText.Extensibility
             return literalDef ?? tokenTypeDef;
         }
 
-        private CilSymbolDef ResolveLiteral(string literal)
+        private CilSymbol ResolveLiteral(string literal)
         {
             if (literal == null)
             {
                 return null;
             }
 
-            CilSymbolDef result;
+            CilSymbol result;
             ref2def.TryGetValue(literal, out result);
             return result;
         }
 
-        private CilSymbolDef ResolveTokenType(Type tokenType)
+        private CilSymbol ResolveTokenType(Type tokenType)
         {
             if (tokenType == null)
             {
                 return null;
             }
 
-            CilSymbolDef result;
+            CilSymbol result;
             ref2def.TryGetValue(tokenType, out result);
             return result;
         }
@@ -75,27 +75,27 @@ namespace IronText.Extensibility
 
         public Symbol GetSymbol(CilSymbolRef tid)
         {
-            CilSymbolDef def = Resolve(tid);
+            CilSymbol def = Resolve(tid);
             return def == null ? null : def.Symbol;
         }
 
         public void SetId(CilSymbolRef tid, Symbol symbol)
         {
-            CilSymbolDef def = Ensure(tid);
+            CilSymbol def = Ensure(tid);
             def.Symbol = symbol;
         }
 
-        private CilSymbolDef Ensure(CilSymbolRef tid)
+        private CilSymbol Ensure(CilSymbolRef tid)
         {
-            CilSymbolDef literalDef   = ResolveLiteral(tid.LiteralText);
-            CilSymbolDef tokenTypeDef = ResolveTokenType(tid.TokenType);
-            CilSymbolDef def          = MergeDefs(literalDef, tokenTypeDef);
+            CilSymbol literalDef   = ResolveLiteral(tid.LiteralText);
+            CilSymbol tokenTypeDef = ResolveTokenType(tid.TokenType);
+            CilSymbol def          = MergeDefs(literalDef, tokenTypeDef);
 
             if (def == null)
             {
-                 def = new CilSymbolDef();
+                 def = new CilSymbol();
             }
-            else if (tid.TokenType != null && def.TokenType != null && def.TokenType != tid.TokenType)
+            else if (tid.TokenType != null && def.SymbolType != null && def.SymbolType != tid.TokenType)
             {
                 throw new InvalidOperationException("Incompatible symbol constraints.");
             }
@@ -103,7 +103,7 @@ namespace IronText.Extensibility
             // Add token to a defintion
             if (tid.TokenType != null)
             {
-                def.TokenType = tid.TokenType;
+                def.SymbolType = tid.TokenType;
             }
 
             if (tid.IsLiteral)
@@ -117,9 +117,9 @@ namespace IronText.Extensibility
                 ref2def[literal] = def;
             }
 
-            if (def.TokenType != null)
+            if (def.SymbolType != null)
             {
-                ref2def[def.TokenType] = def;
+                ref2def[def.SymbolType] = def;
             }
 
             return def;
@@ -130,7 +130,7 @@ namespace IronText.Extensibility
             Ensure(first);
         }
 
-        private CilSymbolDef MergeDefs(CilSymbolDef xDef, CilSymbolDef yDef)
+        private CilSymbol MergeDefs(CilSymbol xDef, CilSymbol yDef)
         {
             if (xDef == null)
             {
@@ -147,20 +147,20 @@ namespace IronText.Extensibility
                 return xDef;
             }
 
-            if (xDef.TokenType != null 
-                && yDef.TokenType != null
-                && xDef.TokenType != yDef.TokenType)
+            if (xDef.SymbolType != null 
+                && yDef.SymbolType != null
+                && xDef.SymbolType != yDef.SymbolType)
             {
                 var msg = string.Format(
                     "Internal error: attemt to identify single token by two types: '{0}' and '{1}'",
-                    xDef.TokenType,
-                    yDef.TokenType);
+                    xDef.SymbolType,
+                    yDef.SymbolType);
                 throw new InvalidOperationException(msg);
             }
 
-            if (xDef.TokenType == null)
+            if (xDef.SymbolType == null)
             {
-                xDef.TokenType = yDef.TokenType;
+                xDef.SymbolType = yDef.SymbolType;
             }
 
             xDef.Literals.UnionWith(yDef.Literals);
@@ -168,7 +168,7 @@ namespace IronText.Extensibility
             return xDef;
         }
 
-        private void AttachRef(CilSymbolDef def, CilSymbolRef tokenRef)
+        private void AttachRef(CilSymbol def, CilSymbolRef tokenRef)
         {
             ref2def[tokenRef] = def;
 
@@ -178,16 +178,16 @@ namespace IronText.Extensibility
             }
             else
             {
-                if (def.TokenType != null && def.TokenType != tokenRef.TokenType)
+                if (def.SymbolType != null && def.SymbolType != tokenRef.TokenType)
                 {
                     var msg = string.Format(
                         "Internal error: attemt to identify single token by two types: '{0}' and '{1}'",
-                        def.TokenType,
+                        def.SymbolType,
                         tokenRef.TokenType);
                     throw new InvalidOperationException(msg);
                 }
 
-                def.TokenType = tokenRef.TokenType;
+                def.SymbolType = tokenRef.TokenType;
             }
         }
     }

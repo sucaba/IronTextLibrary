@@ -28,7 +28,7 @@ namespace IronText.Extensibility
 
         public ScanPattern          Pattern                { get; set; }
 
-        public CilScanActionBuilder Builder                { get; set; }
+        public CilScanActionBuilder ActionBuilder          { get; set; }
 
         public Type                 NextModeType           { get; set; }
 

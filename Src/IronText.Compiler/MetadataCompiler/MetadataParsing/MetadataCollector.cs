@@ -21,7 +21,7 @@ namespace IronText.MetadataCompiler
     {
         private readonly List<ICilMetadata> validMetadata   = new List<ICilMetadata>();
         private readonly List<ICilMetadata> invalidMetadata = new List<ICilMetadata>();
-        private readonly List<CilProductionDef>         allParseRules   = new List<CilProductionDef>();
+        private readonly List<CilProduction>         allParseRules   = new List<CilProduction>();
         private readonly List<CilSymbolRef>          allTokens       = new List<CilSymbolRef>();
 
         private readonly ITokenPool              tokenPool;
@@ -37,7 +37,7 @@ namespace IronText.MetadataCompiler
 
         public List<ICilMetadata> AllMetadata { get { return validMetadata; } } 
 
-        public List<CilProductionDef> AllParseRules { get { return allParseRules; } } 
+        public List<CilProduction> AllParseRules { get { return allParseRules; } } 
 
         public List<CilSymbolRef> AllTokens { get { return allTokens; } } 
 
@@ -78,7 +78,7 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        public void AddRule(ICilMetadata meta, CilProductionDef parseRule)
+        public void AddRule(ICilMetadata meta, CilProduction parseRule)
         {
             if (parseRule.Owner == meta || allParseRules.Any(r => r.Owner == meta && r.Equals(parseRule)))
             {

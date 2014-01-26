@@ -215,7 +215,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var def in tokenResolver.Definitions)
             {
-                if (def.TokenType == typeof(Exception))
+                if (def.SymbolType == typeof(Exception))
                 {
                     def.Symbol = (Symbol)result.Symbols[EbnfGrammar.Error];
                 }
@@ -227,15 +227,15 @@ namespace IronText.MetadataCompiler
                 }
             }
 
-            foreach (SymbolFeature<Precedence> feature in definition.Precedence)
+            foreach (CilSymbolFeature<Precedence> feature in definition.Precedence)
             {
-                var symbol = tokenResolver.GetSymbol(feature.Token);
+                var symbol = tokenResolver.GetSymbol(feature.Symbol);
                 symbol.Precedence = feature.Value;
             }
 
-            foreach (SymbolFeature<CilContextProvider> feature in definition.ContextProviders)
+            foreach (CilSymbolFeature<CilContextProvider> feature in definition.ContextProviders)
             {
-                var symbol = tokenResolver.GetSymbol(feature.Token);
+                var symbol = tokenResolver.GetSymbol(feature.Symbol);
                 if (symbol != null)
                 {
                     foreach (var contextType in feature.Value.GetAllContextTypes())
@@ -316,7 +316,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var cilMerger in definition.Mergers)
             {
-                var symbol  = tokenResolver.GetSymbol(cilMerger.Token);
+                var symbol  = tokenResolver.GetSymbol(cilMerger.Symbol);
                 var merger = new Merger(symbol) { Joint = { cilMerger } };
                 result.Mergers.Add(merger);
             }
@@ -377,7 +377,7 @@ namespace IronText.MetadataCompiler
         private static List<ProductionContextLink> CollectLocalContexts(
             EbnfGrammar             grammar,
             ILrDfa                  lrDfa,
-            IList<CilProductionDef> allParseRules)
+            IList<CilProduction> allParseRules)
         {
             var result = new List<ProductionContextLink>();
 
