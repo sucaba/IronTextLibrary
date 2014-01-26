@@ -176,7 +176,7 @@ namespace IronText.Lib.IL.Backend.Cecil
         ClassExtendsSyntax ClassIdSyntax.Named(string className)
         {
             string @namespace, name;
-            TypeSig.SplitFullName(className, out @namespace, out name);
+            SignatureUtils.SplitFullName(className, out @namespace, out name);
 
             this.type = new TypeDefinition(
                                 @namespace,

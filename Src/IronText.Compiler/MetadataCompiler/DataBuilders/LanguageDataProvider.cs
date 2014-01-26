@@ -300,24 +300,8 @@ namespace IronText.MetadataCompiler
                             .Select(c => tokenResolver.GetId(c))
                             .ToArray();
 
-                    SymbolBase outcome = GetResultSymbol(result, tokenResolver, scanRule.MainOutcome, scanRule.AllOutcomes);
-
-                    var asSingleToken = scanRule as ICilSingleTokenScanRule;
-                    ScanPattern pattern;
-                    if (asSingleToken != null && asSingleToken.LiteralText != null)
-                    {
-                        pattern = ScanPattern.CreateLiteral(asSingleToken.LiteralText);
-                    }
-                    else if (scanRule is ICilBootstrapScanRule) 
-                    {
-                        pattern = ScanPattern.CreateRegular(
-                                    scanRule.Pattern,
-                                    ((ICilBootstrapScanRule)scanRule).BootstrapPattern);
-                    }
-                    else
-                    {
-                        pattern = ScanPattern.CreateRegular(scanRule.Pattern);
-                    }
+                    SymbolBase  outcome = GetResultSymbol(result, tokenResolver, scanRule.MainOutcome, scanRule.AllOutcomes);
+                    ScanPattern pattern = CreateScanPattern(scanRule);
 
                     var scanProduction = new ScanProduction(
                         pattern,
@@ -341,6 +325,29 @@ namespace IronText.MetadataCompiler
             }
 
             return result;
+        }
+
+        private static ScanPattern CreateScanPattern(CilScanRule scanRule)
+        {
+            return scanRule.ScanPattern;
+#if false
+            var    bootstrap        = scanRule as IHasBootstrapPattern;
+            string bootstrapPattern = bootstrap == null ? null : bootstrap.BootstrapPattern;
+
+            ScanPattern result;
+
+            var asSingleToken = scanRule as ICilSingleTokenScanRule;
+            if (asSingleToken != null && asSingleToken.LiteralText != null)
+            {
+                result = ScanPattern.CreateLiteral(asSingleToken.LiteralText);
+            }
+            else
+            {
+                result = ScanPattern.CreateRegular(scanRule.Pattern, bootstrapPattern);
+            }
+
+            return result;
+#endif
         }
 
         private static ScanCondition ConditionFromType(EbnfGrammar result, CilScanCondition scanDef)

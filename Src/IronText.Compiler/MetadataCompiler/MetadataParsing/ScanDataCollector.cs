@@ -87,7 +87,7 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        public void AddScanRule(ICilScanRule rule)
+        public void AddScanRule(CilScanRule rule)
         {
             var currentScanMode = processedScanConditions.Peek();
             currentScanMode.AddRule(rule);
@@ -125,10 +125,8 @@ namespace IronText.MetadataCompiler
                     .Except(
                         from mode in allScanConditions
                         from rule in mode.ScanRules
-                        let singleTokenRule = (rule as ICilSingleTokenScanRule)
-                        where singleTokenRule != null
-                            && singleTokenRule.LiteralText != null
-                        select singleTokenRule.LiteralText)
+                        where rule.ScanPattern.IsLiteral
+                        select rule.ScanPattern.Literal)
                         .ToArray();
 
                 foreach (var literal in implicitLiterals)

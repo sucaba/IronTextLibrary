@@ -5,26 +5,27 @@ using System.Text.RegularExpressions;
 using IronText.Algorithm;
 using System.Collections.ObjectModel;
 using IronText.Framework;
+using IronText.Framework.Reflection;
 
 namespace IronText.Extensibility
 {
-    public class CilScanCondition
+    internal class CilScanCondition
     {
-        private readonly List<ICilScanRule> scanRules = new List<ICilScanRule>();
+        private readonly List<CilScanRule> scanRules = new List<CilScanRule>();
         private int implicitRulesCount = 0;
 
         internal CilScanCondition(Type scanModeType)
         {
             this.ScanModeType = scanModeType;
-            this.ScanRules = new ReadOnlyCollection<ICilScanRule>(this.scanRules);
+            this.ScanRules = new ReadOnlyCollection<CilScanRule>(this.scanRules);
         }
 
         public Type ScanModeType { get; private set; }
 
         // Ordered scan rules
-        public ReadOnlyCollection<ICilScanRule> ScanRules { get; private set; }
+        public ReadOnlyCollection<CilScanRule> ScanRules { get; private set; }
 
-        internal ICilScanRule AddImplicitLiteralRule(string literal)
+        internal CilScanRule AddImplicitLiteralRule(string literal)
         {
             var result = CreateImplicitLiteralRule(literal);
             scanRules.Insert(implicitRulesCount++, result);
@@ -32,24 +33,22 @@ namespace IronText.Extensibility
             return result;
         }
 
-        internal void AddRule(ICilScanRule rule)
+        internal void AddRule(CilScanRule rule)
         {
             scanRules.Add(rule);
         }
 
-        private static ICilScanRule CreateImplicitLiteralRule(string literal)
+        private static CilScanRule CreateImplicitLiteralRule(string literal)
         {
             var outcome = CilSymbolRef.Literal(literal);
 
             // Generate implicit scan rule for the keyword
-            var result  = new CilSingleTokenScanRule
+            var result  = new CilScanRule
             {
                 MainOutcome      = outcome,
                 AllOutcomes      = { outcome },
-                LiteralText      = literal,
                 Disambiguation   = Disambiguation.Exclusive,
-                Pattern          = ScannerUtils.Escape(literal),
-                BootstrapPattern = Regex.Escape(literal),
+                ScanPattern      = ScanPattern.CreateLiteral(literal),
                 Builder          = code =>
                 {
                     code

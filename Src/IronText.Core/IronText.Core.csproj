@@ -127,15 +127,9 @@
     <Compile Include="Extensibility\Reporting\IScannerAutomata.cs" />
     <Compile Include="Extensibility\Reporting\IScannerTransition.cs" />
     <Compile Include="Extensibility\Reporting\IScannerState.cs" />
-    <Compile Include="Extensibility\Scanning\ICilBootstrapScanRule.cs" />
     <Compile Include="Extensibility\Reporting\IReportData.cs" />
     <Compile Include="Extensibility\Code\IMergeActionCode.cs" />
-    <Compile Include="Extensibility\Scanning\ICilSingleTokenScanRule.cs" />
     <Compile Include="Extensibility\CilMergerDef.cs" />
-    <Compile Include="Extensibility\Scanning\ICilScanRule.cs" />
-    <Compile Include="Extensibility\Scanning\ICilSkipScanRule.cs" />
-    <Compile Include="Extensibility\Scanning\CilSingleTokenScanProductionDef.cs" />
-    <Compile Include="Extensibility\Scanning\CilSkipScanRule.cs" />
     <Compile Include="Extensibility\SymbolFeature.cs" />
     <Compile Include="Framework\Attributes\LanguageFlags.cs" />
     <Compile Include="Framework\ILanguageRuntime.cs" />
@@ -235,7 +229,7 @@
     <Compile Include="Lib\IL\Grammar\Scopes\IResolutionScopeNs.cs" />
     <Compile Include="Lib\IL\Grammar\Scopes\ITypeNs.cs" />
     <Compile Include="Lib\IL\Grammar\Scopes\TypeSpec.cs" />
-    <Compile Include="Lib\IL\Grammar\TypeSig.cs" />
+    <Compile Include="Lib\IL\Grammar\SignatureUtils.cs" />
     <Compile Include="Logging\ILogging.cs" />
     <Compile Include="Logging\HLoc.cs" />
     <Compile Include="Framework\IParsing.cs" />

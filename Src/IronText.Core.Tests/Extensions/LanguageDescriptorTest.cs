@@ -53,9 +53,9 @@ namespace IronText.Tests.Extensibility
                 }
             }
 
-            public IEnumerable<ICilScanRule> GetScanRules(ITokenPool moduleBuilder)
+            public IEnumerable<CilScanRule> GetScanRules(ITokenPool moduleBuilder)
             {
-                return Enumerable.Empty<ICilScanRule>();
+                return Enumerable.Empty<CilScanRule>();
             }
 
             public IEnumerable<CilSymbolRef> GetTokensInCategory(ITokenPool tokenPool, SymbolCategory category)

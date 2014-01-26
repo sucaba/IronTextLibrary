@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using IronText.Extensibility;
+using IronText.Framework.Reflection;
 using IronText.Lib.IL;
 using IronText.Lib.Shared;
 
@@ -30,22 +31,16 @@ namespace IronText.Framework
 
         internal string RegexPattern { get; set; }
 
-        public override IEnumerable<ICilScanRule> GetScanRules(ITokenPool tokenPool)
+        public override IEnumerable<CilScanRule> GetScanRules(ITokenPool tokenPool)
         {
             var method       = (MethodInfo)Member;
             var tokenType    = method.ReturnType;
             var nextModeType = GetNextModeType();
 
-            CilScanRule scanRule;
+            var scanRule = new CilScanRule();
 
-            if (tokenType == typeof(void))
+            if (tokenType != typeof(void))
             {
-                scanRule = new CilSkipScanRule();
-            }
-            else
-            {
-                scanRule = new CilSingleTokenScanRule();
-
                 var outcome = CilSymbolRef.Create(tokenType, LiteralText);
                 scanRule.MainOutcome = outcome;
                 scanRule.AllOutcomes.Add(outcome);
@@ -53,9 +48,15 @@ namespace IronText.Framework
 
             scanRule.DefiningMethod = method;
             scanRule.Disambiguation = Disambiguation;
-            scanRule.LiteralText = LiteralText;
-            scanRule.Pattern = Pattern;
-            scanRule.BootstrapPattern = RegexPattern;
+            if (LiteralText == null)
+            {
+                scanRule.ScanPattern = ScanPattern.CreateRegular(Pattern, RegexPattern);
+            }
+            else
+            {
+                scanRule.ScanPattern = ScanPattern.CreateLiteral(LiteralText);
+            }
+
             scanRule.NextModeType = nextModeType;
             scanRule.Builder =
                 context =>

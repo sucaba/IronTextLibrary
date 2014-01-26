@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace IronText.Lib.IL
 {
-    class TypeSig
+    class SignatureUtils
     {
         public static void SplitFullName (string fullname, out string @namespace, out string name)
         {
@@ -23,5 +23,4 @@ namespace IronText.Lib.IL
             }
         }
     }
-
 }
