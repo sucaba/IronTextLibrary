@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using IronText.Diagnostics;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 
 namespace IronText.Framework
 {

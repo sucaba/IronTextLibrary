@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using IronText.Analysis;
 using IronText.Framework;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 using NUnit.Framework;
 
 namespace IronText.Tests.Analysis

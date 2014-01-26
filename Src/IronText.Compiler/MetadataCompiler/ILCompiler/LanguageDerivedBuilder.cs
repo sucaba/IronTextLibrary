@@ -5,7 +5,7 @@ using IronText.Automata.Regular;
 using IronText.Build;
 using IronText.Extensibility;
 using IronText.Framework;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 using IronText.Lib.IL;
 using IronText.Lib.IL.Generators;
 using IronText.Lib.Shared;

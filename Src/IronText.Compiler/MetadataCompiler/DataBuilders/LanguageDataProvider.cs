@@ -10,7 +10,7 @@ using IronText.Framework;
 using IronText.Misc;
 using System.Text;
 using IronText.Algorithm;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 using IronText.Compiler;
 using IronText.Compiler.Analysis;
 using IronText.Analysis;
@@ -363,13 +363,13 @@ namespace IronText.MetadataCompiler
 
         private static SymbolBase GetResultSymbol(
             EbnfGrammar                 grammar,
-            ICilSymbolResolver           tokenResolver,
+            ICilSymbolResolver          symbolResolver,
             CilSymbolRef                mainOutcome,
             IEnumerable<CilSymbolRef>   allOutcomes)
         {
-            Symbol main = tokenResolver.GetSymbol(mainOutcome);
+            Symbol main = symbolResolver.GetSymbol(mainOutcome);
             Symbol[] all = (from outcome in allOutcomes
-                             select tokenResolver.GetSymbol(outcome))
+                             select symbolResolver.GetSymbol(outcome))
                              .ToArray();
 
             switch (all.Length)

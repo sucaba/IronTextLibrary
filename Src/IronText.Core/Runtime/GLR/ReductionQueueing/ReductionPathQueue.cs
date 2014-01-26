@@ -3,7 +3,7 @@
 namespace IronText.Framework
 {
     using System.Diagnostics;
-    using IronText.Framework.Reflection;
+    using IronText.Reflection;
 
     sealed class ReductionPathQueue<T> : IReductionQueue<T>
     {

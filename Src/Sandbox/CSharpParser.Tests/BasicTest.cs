@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using IronText.Algorithm;
 using IronText.Diagnostics;
 using IronText.Framework;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 using IronText.MetadataCompiler;
 using NUnit.Framework;
 

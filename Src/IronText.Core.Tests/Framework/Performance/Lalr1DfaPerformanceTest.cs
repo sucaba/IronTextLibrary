@@ -3,7 +3,7 @@ using IronText.Automata.Lalr1;
 using IronText.Compiler;
 using IronText.Compiler.Analysis;
 using IronText.Framework;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 using NUnit.Framework;
 
 namespace IronText.Tests.Framework.Performance

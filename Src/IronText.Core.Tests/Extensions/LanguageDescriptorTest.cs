@@ -4,6 +4,7 @@ using System.Linq;
 using IronText.Extensibility;
 using IronText.Framework;
 using IronText.MetadataCompiler;
+using IronText.Reflection;
 using NUnit.Framework;
 
 namespace IronText.Tests.Extensibility

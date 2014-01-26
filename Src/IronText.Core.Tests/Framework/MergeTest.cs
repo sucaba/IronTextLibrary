@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using IronText.Diagnostics;
 using IronText.Framework;
+using IronText.Reflection;
 using NUnit.Framework;
 
 namespace IronText.Tests.Framework

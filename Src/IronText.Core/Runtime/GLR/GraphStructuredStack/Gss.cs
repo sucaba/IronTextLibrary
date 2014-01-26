@@ -7,7 +7,7 @@ using IronText.Diagnostics;
 
 namespace IronText.Framework
 {
-    using IronText.Framework.Reflection;
+    using IronText.Reflection;
     using State = System.Int32;
 
     sealed class Gss<T>

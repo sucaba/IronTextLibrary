@@ -5,7 +5,7 @@ using System.Text;
 using IronText.Automata.Regular;
 using IronText.Extensibility;
 using IronText.Framework;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 using IronText.Lib.RegularAst;
 using IronText.Lib.ScannerExpressions;
 

@@ -1,5 +1,5 @@
 ﻿using IronText.Algorithm;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 
 namespace IronText.Framework
 {

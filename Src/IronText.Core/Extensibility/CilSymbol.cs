@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IronText.Framework;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 
 namespace IronText.Extensibility
 {

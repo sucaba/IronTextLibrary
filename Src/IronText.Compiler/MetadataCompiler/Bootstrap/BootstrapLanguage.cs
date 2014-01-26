@@ -2,7 +2,7 @@
 using System.IO;
 using IronText.Extensibility;
 using IronText.Framework;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 using IronText.Lib.IL;
 
 namespace IronText.MetadataCompiler

@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using IronText.Extensibility;
 using IronText.Framework;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 
 namespace IronText.MetadataCompiler
 {

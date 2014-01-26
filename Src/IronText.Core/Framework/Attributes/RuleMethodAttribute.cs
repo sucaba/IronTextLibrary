@@ -5,6 +5,7 @@ using System.Reflection;
 using IronText.Extensibility;
 using IronText.Lib.IL;
 using IronText.Misc;
+using IronText.Reflection;
 
 namespace IronText.Framework
 {

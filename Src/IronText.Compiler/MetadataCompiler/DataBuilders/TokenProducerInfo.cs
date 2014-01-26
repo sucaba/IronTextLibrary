@@ -5,7 +5,7 @@ using System.Text;
 using IronText.Algorithm;
 using IronText.Automata.Regular;
 using IronText.Framework;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 
 namespace IronText.MetadataCompiler
 {

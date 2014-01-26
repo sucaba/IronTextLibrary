@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using IronText.Framework;
 using IronText.Algorithm;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 
 namespace IronText.Compiler.Analysis
 {

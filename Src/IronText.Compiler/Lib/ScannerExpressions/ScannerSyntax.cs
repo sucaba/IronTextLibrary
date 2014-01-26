@@ -4,6 +4,7 @@ using IronText.Algorithm;
 using IronText.Framework;
 using IronText.Lib.Ctem;
 using IronText.Lib.RegularAst;
+using IronText.Reflection;
 
 namespace IronText.Lib.ScannerExpressions
 {

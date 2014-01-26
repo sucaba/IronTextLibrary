@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 using IronText.Automata.Regular;
 using IronText.Extensibility;
 using IronText.Framework;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 using IronText.MetadataCompiler;
 
 namespace IronText.Tests.Algorithm

@@ -1,4 +1,6 @@
-﻿namespace IronText.Framework
+﻿using IronText.Reflection;
+
+namespace IronText.Framework
 {
     public class ScanAttribute : ScanBaseAttribute
     {

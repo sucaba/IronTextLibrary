@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using IronText.Extensibility;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 
 namespace IronText.Framework
 {

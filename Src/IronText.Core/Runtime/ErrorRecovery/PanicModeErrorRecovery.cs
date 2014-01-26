@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 
 namespace IronText.Framework
 {

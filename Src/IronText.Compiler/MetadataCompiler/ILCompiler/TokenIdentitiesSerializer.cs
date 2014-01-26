@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using IronText.Extensibility;
 using IronText.Framework;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 using IronText.Lib.Ctem;
 using IronText.Lib.IL;
 

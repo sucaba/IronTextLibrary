@@ -7,7 +7,7 @@ using IronText.Extensibility;
 using System.Linq;
 using IronText.Automata.Regular;
 using IronText.Automata.Lalr1;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 using IronText.Compiler;
 using IronText.Compiler.Analysis;
 

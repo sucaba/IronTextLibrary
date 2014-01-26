@@ -5,7 +5,7 @@ using System.Reflection;
 using IronText.Algorithm;
 using IronText.Extensibility;
 using IronText.Framework;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 using IronText.Misc;
 
 namespace IronText.MetadataCompiler

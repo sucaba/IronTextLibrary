@@ -4,7 +4,7 @@ using System.Web;
 using IronText.Algorithm;
 using IronText.Diagnostics;
 using IronText.Extensibility;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 
 namespace IronText.Framework
 {

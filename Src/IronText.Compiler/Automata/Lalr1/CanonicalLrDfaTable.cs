@@ -5,7 +5,7 @@ using IronText.Algorithm;
 using IronText.Extensibility;
 using IronText.Framework;
 using System.Collections.ObjectModel;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 using IronText.Compiler;
 using IronText.Compiler.Analysis;
 

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using IronText.Algorithm;
 using System.Collections.ObjectModel;
 using IronText.Framework;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 
 namespace IronText.Extensibility
 {

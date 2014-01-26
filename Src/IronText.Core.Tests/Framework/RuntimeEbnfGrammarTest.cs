@@ -1,5 +1,5 @@
 ﻿using IronText.Framework;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 using NUnit.Framework;
 
 namespace IronText.Tests.Framework

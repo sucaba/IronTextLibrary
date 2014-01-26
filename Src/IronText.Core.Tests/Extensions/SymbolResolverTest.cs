@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using IronText.Extensibility;
-using IronText.Framework.Reflection;
+using IronText.Reflection;
 using NUnit.Framework;
 
 namespace IronText.Tests.Extensions
