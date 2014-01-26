@@ -3,7 +3,7 @@ using System.Linq;
 using IronText.Framework;
 using IronText.Reflection;
 
-namespace IronText.Extensibility
+namespace IronText.Reflection.Managed
 {
     public sealed class CilProduction : IEquatable<CilProduction>
     {
@@ -35,7 +35,7 @@ namespace IronText.Extensibility
 
         internal int        Index  { get; set; }
 
-        internal ICilMetadata Owner { get; set; }
+        internal object     Owner { get; set; }
 
         public CilProductionActionBuilder ActionBuilder { get; private set; }
 

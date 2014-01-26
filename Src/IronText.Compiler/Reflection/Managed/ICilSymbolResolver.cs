@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using IronText.Reflection;
 
-namespace IronText.Extensibility
+namespace IronText.Reflection.Managed
 {
     interface ICilSymbolResolver
     {

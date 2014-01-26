@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace IronText.Extensibility
+namespace IronText.Reflection.Managed
 {
     public class CilContextConsumer
     {

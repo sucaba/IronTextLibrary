@@ -7,6 +7,7 @@ using IronText.Lib.IL;
 using IronText.Logging;
 using IronText.Misc;
 using IronText.Reflection;
+using IronText.Reflection.Managed;
 
 namespace IronText.Framework
 {

@@ -17,6 +17,7 @@ using IronText.Analysis;
 using IronText.Logging;
 using IronText.Reporting;
 using IronText.Runtime;
+using IronText.Reflection.Managed;
 
 namespace IronText.MetadataCompiler
 {

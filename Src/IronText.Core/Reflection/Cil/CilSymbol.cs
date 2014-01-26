@@ -4,7 +4,7 @@ using System.Linq;
 using IronText.Framework;
 using IronText.Reflection;
 
-namespace IronText.Extensibility
+namespace IronText.Reflection.Managed
 {
     class CilSymbol
     {

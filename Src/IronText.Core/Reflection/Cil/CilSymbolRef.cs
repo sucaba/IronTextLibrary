@@ -1,7 +1,7 @@
 ﻿using System;
 using IronText.Framework;
 
-namespace IronText.Extensibility
+namespace IronText.Reflection.Managed
 {
     [Serializable]
     public class CilSymbolRef : IEquatable<CilSymbolRef>

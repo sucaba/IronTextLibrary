@@ -5,8 +5,9 @@ using IronText.Framework;
 using IronText.Logging;
 using IronText.Misc;
 using IronText.Reflection;
+using IronText.Reflection.Managed;
 
-namespace IronText.MetadataCompiler
+namespace IronText.Reflection.Managed
 {
     /* Collector with recursive logic:
         --------------------------------------------------------

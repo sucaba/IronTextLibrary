@@ -11,6 +11,7 @@ using IronText.Lib.IL;
 using IronText.Lib.IL.Generators;
 using IronText.Lib.Shared;
 using IronText.Runtime;
+using IronText.Reflection.Managed;
 
 namespace IronText.MetadataCompiler
 {

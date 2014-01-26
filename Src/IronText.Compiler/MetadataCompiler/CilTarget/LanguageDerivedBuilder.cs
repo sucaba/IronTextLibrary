@@ -12,6 +12,7 @@ using IronText.Lib.Shared;
 using IronText.Misc;
 using IronText.Logging;
 using IronText.Runtime;
+using IronText.Reflection.Managed;
 
 namespace IronText.MetadataCompiler
 {

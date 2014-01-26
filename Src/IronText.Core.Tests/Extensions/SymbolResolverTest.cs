@@ -2,6 +2,7 @@
 using System.Linq;
 using IronText.Extensibility;
 using IronText.Reflection;
+using IronText.Reflection.Managed;
 using NUnit.Framework;
 
 namespace IronText.Tests.Extensions

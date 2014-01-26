@@ -141,6 +141,8 @@
     <Compile Include="Build\Engine\ResourceGetter.cs" />
     <Compile Include="Build\MetadataSyntax\CompositeDerivedBuilder.cs" />
     <Compile Include="Build\MetadataSyntax\TypesMetadataSyntax.cs" />
+    <Compile Include="Reflection\Managed\CilSymbolRefResolver.cs" />
+    <Compile Include="Reflection\Managed\ICilSymbolResolver.cs" />
     <Compile Include="Runtime\Loaders\LanguageLoader.cs" />
     <Compile Include="Lib\IL\Backend\Cecil\CecilBackend.Main.cs" />
     <Compile Include="Lib\IL\Backend\Cecil\CecilBackend.Private.cs" />
@@ -187,25 +189,25 @@
     <Compile Include="Reporting\ParserState.cs" />
     <Compile Include="Reporting\ParserTransition.cs" />
     <Compile Include="MetadataCompiler\CilGrammarBuilder.cs" />
-    <Compile Include="MetadataCompiler\CilTarget\ContextResolverCode.cs" />
-    <Compile Include="MetadataCompiler\CilTarget\GrammarActionCode.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\Code\ContextResolverCode.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\Code\GrammarActionCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\GrammarActionGenerator.cs" />
     <Compile Include="MetadataCompiler\CilTarget\GrammarSerializer.cs" />
     <Compile Include="MetadataCompiler\CilTarget\LanguageDerivedBuilder.cs" />
-    <Compile Include="MetadataCompiler\CilTarget\MergeActionCode.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\Code\MergeActionCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\MergeActionGenerator.cs" />
-    <Compile Include="MetadataCompiler\CilTarget\ScanActionCode.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\Code\ScanActionCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\ScanModeMethods.cs" />
     <Compile Include="MetadataCompiler\CilTarget\ScannerGenerator.cs" />
     <Compile Include="MetadataCompiler\CilTarget\TermFactoryGenerator.cs" />
     <Compile Include="MetadataCompiler\CilTarget\TokenIdentitiesSerializer.cs" />
     <Compile Include="MetadataCompiler\LanguageData.cs" />
-    <Compile Include="MetadataCompiler\MetadataParsing\IMetadataCollector.cs" />
-    <Compile Include="MetadataCompiler\MetadataParsing\IScanDataCollector.cs" />
-    <Compile Include="MetadataCompiler\MetadataParsing\LanguageDefinition.cs" />
-    <Compile Include="MetadataCompiler\MetadataParsing\MetadataCollector.cs" />
-    <Compile Include="MetadataCompiler\MetadataParsing\MetadataException.cs" />
-    <Compile Include="MetadataCompiler\MetadataParsing\ScanDataCollector.cs" />
+    <Compile Include="Reflection\Managed\IMetadataCollector.cs" />
+    <Compile Include="Reflection\Managed\IScanDataCollector.cs" />
+    <Compile Include="Reflection\Managed\LanguageDefinition.cs" />
+    <Compile Include="Reflection\Managed\MetadataCollector.cs" />
+    <Compile Include="Reflection\Managed\MetadataException.cs" />
+    <Compile Include="Reflection\Managed\ScanDataCollector.cs" />
     <Compile Include="MetadataCompiler\NamedLanguageProvider.cs" />
     <Compile Include="MetadataCompiler\ProductionContextLink.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -231,7 +233,9 @@
   <ItemGroup>
     <Content Include="Algorithm\Unicode\ucd2cs.py" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="MetadataCompiler\MetadataParsing\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

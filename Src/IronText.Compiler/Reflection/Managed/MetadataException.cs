@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IronText.MetadataCompiler
+namespace IronText.Reflection.Managed
 {
     class MetadataException : Exception
     {

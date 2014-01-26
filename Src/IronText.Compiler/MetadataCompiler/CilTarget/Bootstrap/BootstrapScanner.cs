@@ -9,6 +9,7 @@ using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Logging;
 using IronText.Reflection;
+using IronText.Reflection.Managed;
 using IronText.Runtime;
 
 namespace IronText.MetadataCompiler

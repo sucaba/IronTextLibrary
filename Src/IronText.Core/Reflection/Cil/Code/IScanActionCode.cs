@@ -2,7 +2,7 @@
 using IronText.Framework;
 using IronText.Lib.IL;
 
-namespace IronText.Extensibility
+namespace IronText.Reflection.Managed
 {
     public interface IScanActionCode
     {

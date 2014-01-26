@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using IronText.Extensibility;
 using IronText.Reflection;
+using IronText.Reflection.Managed;
 
 namespace IronText.Framework
 {

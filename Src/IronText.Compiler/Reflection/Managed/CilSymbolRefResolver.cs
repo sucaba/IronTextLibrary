@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using IronText.Reflection;
 
-namespace IronText.Extensibility
+namespace IronText.Reflection.Managed
 {
     internal class CilSymbolRefResolver : ICilSymbolResolver
     {

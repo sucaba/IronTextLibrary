@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IronText.Extensibility
+namespace IronText.Reflection.Managed
 {
     public interface IContextResolverCode
     {

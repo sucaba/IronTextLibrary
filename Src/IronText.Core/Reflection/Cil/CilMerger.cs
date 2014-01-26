@@ -1,5 +1,5 @@
 ﻿
-namespace IronText.Extensibility
+namespace IronText.Reflection.Managed
 {
     public class CilMerger
     {

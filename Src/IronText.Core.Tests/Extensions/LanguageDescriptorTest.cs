@@ -6,6 +6,7 @@ using IronText.Framework;
 using IronText.Logging;
 using IronText.MetadataCompiler;
 using IronText.Reflection;
+using IronText.Reflection.Managed;
 using IronText.Reporting;
 using NUnit.Framework;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace IronText.Extensibility
+namespace IronText.Reflection.Managed
 {
     static class CilSymbolNaming
     {

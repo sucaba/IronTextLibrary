@@ -7,7 +7,7 @@ using IronText.Misc;
 using IronText.Algorithm;
 using IronText.Logging;
 
-namespace IronText.MetadataCompiler
+namespace IronText.Reflection.Managed
 {
     class ScanDataCollector : IScanDataCollector
     {

@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using IronText.Framework;
 using IronText.Reflection;
 
-namespace IronText.Extensibility
+namespace IronText.Reflection.Managed
 {
     internal class CilScanCondition
     {

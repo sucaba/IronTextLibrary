@@ -8,7 +8,7 @@ using IronText.Logging;
 using IronText.Reflection;
 using IronText.Reporting;
 
-namespace IronText.MetadataCompiler
+namespace IronText.Reflection.Managed
 {
     internal class LanguageDefinition
     {

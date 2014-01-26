@@ -7,6 +7,7 @@ using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Reflection;
 using IronText.Misc;
+using IronText.Reflection.Managed;
 
 namespace IronText.MetadataCompiler
 {

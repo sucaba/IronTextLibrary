@@ -8,6 +8,7 @@ using IronText.Tests.TestUtils;
 using NUnit.Framework;
 using IronText.Logging;
 using IronText.Runtime;
+using IronText.Reflection.Managed;
 
 namespace IronText.Tests.Bootstrap
 {

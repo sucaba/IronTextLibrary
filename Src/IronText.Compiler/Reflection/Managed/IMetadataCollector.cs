@@ -1,6 +1,7 @@
 ﻿using IronText.Extensibility;
+using IronText.Reflection.Managed;
 
-namespace IronText.MetadataCompiler
+namespace IronText.Reflection.Managed
 {
     interface IMetadataCollector
     {

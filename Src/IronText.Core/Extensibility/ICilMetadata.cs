@@ -4,6 +4,7 @@ using System.Reflection;
 using IronText.Framework;
 using IronText.Logging;
 using IronText.Reflection;
+using IronText.Reflection.Managed;
 using IronText.Reporting;
 
 namespace IronText.Extensibility

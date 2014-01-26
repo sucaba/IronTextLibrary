@@ -7,6 +7,7 @@ using IronText.Reflection;
 using IronText.Lib.Ctem;
 using IronText.Lib.IL;
 using IronText.Runtime;
+using IronText.Reflection.Managed;
 
 namespace IronText.MetadataCompiler
 {

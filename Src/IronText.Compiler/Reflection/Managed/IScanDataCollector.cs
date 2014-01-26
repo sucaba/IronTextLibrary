@@ -1,7 +1,7 @@
 ﻿using System;
 using IronText.Extensibility;
 
-namespace IronText.MetadataCompiler
+namespace IronText.Reflection.Managed
 {
     interface IScanDataCollector
     {
