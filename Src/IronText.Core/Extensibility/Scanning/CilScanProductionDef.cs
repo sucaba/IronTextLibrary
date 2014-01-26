@@ -8,6 +8,11 @@ namespace IronText.Extensibility
 {
     internal abstract class CilScanRule : ICilScanRule, ICilBootstrapScanRule
     {
+        public CilScanRule()
+        {
+            this.AllOutcomes = new List<CilSymbolRef>();
+        }
+        
         public MethodInfo           DefiningMethod         { get; set; }
 
         public Disambiguation       Disambiguation         { get; set; }
@@ -18,31 +23,20 @@ namespace IronText.Extensibility
 
         public string               LiteralText            { get; set; }
 
-        public Type                 SymbolType             { get; set; }
-
         public CilScanActionBuilder Builder                { get; set; }
 
         public Type                 NextModeType           { get; set; }
 
+        public CilSymbolRef         MainOutcome            { get; set; }
 
-        public abstract CilSymbolRef MainOutcome { get; set; }
+        public List<CilSymbolRef>   AllOutcomes            { get; private set; }
 
-        public abstract IEnumerable<CilSymbolRef> AllOutcomes { get; }
-
-        string ICilBootstrapScanRule.BootstrapPattern { get { return BootstrapPattern; } }
+        string ICilBootstrapScanRule.BootstrapPattern      { get { return BootstrapPattern; } }
 
         public override string ToString()
         {
-            if (DefiningMethod != null)
-            {
-                return DefiningMethod.ToString();
-            }
-            else if (LiteralText != null)
-            {
-                return LiteralText;
-            }
-
-            return base.ToString();
+            var outcomeName = ((object)AllOutcomes.FirstOrDefault() ?? "void").ToString();
+            return string.Format("{0} -> {1}", outcomeName, Pattern);
         }
     }
 }

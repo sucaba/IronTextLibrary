@@ -39,14 +39,18 @@ namespace IronText.Extensibility
 
         private static ICilScanRule CreateImplicitLiteralRule(string literal)
         {
+            var outcome = CilSymbolRef.Literal(literal);
+
             // Generate implicit scan rule for the keyword
             var result  = new CilSingleTokenScanRule
             {
-                LiteralText           = literal,
-                Disambiguation        = Disambiguation.Exclusive,
-                Pattern               = ScannerUtils.Escape(literal),
+                MainOutcome      = outcome,
+                AllOutcomes      = { outcome },
+                LiteralText      = literal,
+                Disambiguation   = Disambiguation.Exclusive,
+                Pattern          = ScannerUtils.Escape(literal),
                 BootstrapPattern = Regex.Escape(literal),
-                Builder = code =>
+                Builder          = code =>
                 {
                     code
                         .Emit(il => il.Ldnull())

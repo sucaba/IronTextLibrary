@@ -28,6 +28,9 @@ namespace IronText.Tests.Framework.Attributes
         }
 
         [Language]
+        [GrammarDocument("MyServiceConsumer.gram")]
+        [DescribeParserStateMachine("MyServiceConsumer.info")]
+        [ScannerDocument("MyServiceConsumer.scan")]
         public class MyServiceConsumer
         {
             public bool HasScanning;

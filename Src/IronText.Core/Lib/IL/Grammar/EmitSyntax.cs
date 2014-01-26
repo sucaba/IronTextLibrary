@@ -11,7 +11,6 @@ namespace IronText.Lib.IL
     [Demand]
     [StaticContext(typeof(Builtins))]
     [StaticContext(typeof(Numbers))]
-    [StaticContext(typeof(Signatures))]
     public interface EmitSyntax
     {
         [SubContext]
@@ -135,21 +134,9 @@ namespace IronText.Lib.IL
 
         EmitSyntax Ldsfld(SR.FieldInfo fieldInfo);
 
-        [Parse("ldfld", null)]
-        EmitSyntax Ldfld(FieldSig fieldSig);
-
-        [Parse("ldsfld", null)]
-        EmitSyntax Ldsfld(FieldSig fieldSig);
-
         EmitSyntax Stfld(SR.FieldInfo fieldInfo);
 
-        [Parse("stfld", null)]
-        EmitSyntax Stfld(FieldSig fieldSig);
-
         EmitSyntax Stsfld(SR.FieldInfo fieldInfo);
-
-        [Parse("stsfld", null)]
-        EmitSyntax Stsfld(FieldSig fieldSig);
 
         [Parse("ldloc.0")]
         EmitSyntax Ldloc0();
@@ -238,7 +225,6 @@ namespace IronText.Lib.IL
         [Parse("unbox.any", null)]
         EmitSyntax Unbox_Any(Ref<Types> type);
 
-        [Parse("ldtoken", null)]
         EmitSyntax Ldtoken(SR.FieldInfo token);
 
         [Parse("ldtoken", null)]

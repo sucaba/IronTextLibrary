@@ -32,19 +32,8 @@ namespace IronText.Framework
 
         public override IEnumerable<ICilScanRule> GetScanRules(ITokenPool tokenPool)
         {
-            var method = (MethodInfo)Member;
-            var tokenType = method.ReturnType;
-
-            CilSymbolRef thisToken;
-            if (LiteralText == null || method.ReturnType == typeof(void))
-            {
-                thisToken = tokenPool.GetToken(tokenType);
-            }
-            else
-            {
-                thisToken = tokenPool.GetLiteral(LiteralText);
-            }
-
+            var method       = (MethodInfo)Member;
+            var tokenType    = method.ReturnType;
             var nextModeType = GetNextModeType();
 
             CilScanRule scanRule;
@@ -57,10 +46,9 @@ namespace IronText.Framework
             {
                 scanRule = new CilSingleTokenScanRule();
 
-                if (tokenType != typeof(object))
-                {
-                    scanRule.SymbolType = tokenType;
-                };
+                var outcome = CilSymbolRef.Create(tokenType, LiteralText);
+                scanRule.MainOutcome = outcome;
+                scanRule.AllOutcomes.Add(outcome);
             }
 
             scanRule.DefiningMethod = method;

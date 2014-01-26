@@ -224,7 +224,6 @@
     <Compile Include="Lib\IL\Grammar\ClassSyntax.cs" />
     <Compile Include="Lib\IL\Grammar\CustomAttributesSyntax.cs" />
     <Compile Include="Lib\IL\Grammar\EmitSyntax.cs" />
-    <Compile Include="Lib\IL\Grammar\FieldAttr.cs" />
     <Compile Include="Lib\IL\Grammar\FieldAttrSyntax.cs" />
     <Compile Include="Lib\IL\Grammar\ImplAttrSyntax.cs" />
     <Compile Include="Lib\IL\Grammar\MethAttrSyntax.cs" />
@@ -236,12 +235,7 @@
     <Compile Include="Lib\IL\Grammar\Scopes\IResolutionScopeNs.cs" />
     <Compile Include="Lib\IL\Grammar\Scopes\ITypeNs.cs" />
     <Compile Include="Lib\IL\Grammar\Scopes\TypeSpec.cs" />
-    <Compile Include="Lib\IL\Grammar\Signatures.cs" />
-    <Compile Include="Lib\IL\Tokens\FieldSig.cs" />
-    <Compile Include="Lib\IL\Tokens\MethodSig.cs" />
-    <Compile Include="Lib\IL\Tokens\ParamAttr.cs" />
-    <Compile Include="Lib\IL\Tokens\ParamSig.cs" />
-    <Compile Include="Lib\IL\Tokens\TypeSig.cs" />
+    <Compile Include="Lib\IL\Grammar\TypeSig.cs" />
     <Compile Include="Logging\ILogging.cs" />
     <Compile Include="Logging\HLoc.cs" />
     <Compile Include="Framework\IParsing.cs" />

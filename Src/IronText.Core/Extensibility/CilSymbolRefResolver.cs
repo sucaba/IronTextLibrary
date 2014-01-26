@@ -30,7 +30,7 @@ namespace IronText.Extensibility
 
             if (literalDef != null && tokenTypeDef != null && literalDef != tokenTypeDef)
             {
-                throw new InvalidOperationException("Unable to resolve conflicting token reference.");
+                throw new InvalidOperationException("Unable to resolve conflicting token reference: " + tid);
             }
 
             return literalDef ?? tokenTypeDef;

@@ -9,7 +9,7 @@ namespace IronText.Extensibility
     {
         CilSymbolRef              MainOutcome    { get; }
 
-        IEnumerable<CilSymbolRef> AllOutcomes    { get; }
+        List<CilSymbolRef>        AllOutcomes    { get; }
 
         Type                      NextModeType   { get; }
 

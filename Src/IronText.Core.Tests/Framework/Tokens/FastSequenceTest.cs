@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using IronText.Framework;
@@ -72,7 +73,8 @@ namespace IronText.Tests.Framework.Tokens
 
         [Language]
         [StaticContext(typeof(Builtins))]
-        [DescribeParserStateMachine("FastSeqLang.info")]
+        // [ScannerDocument("FastSeqLang.scan")]
+        // [DescribeParserStateMachine("FastSeqLang.info")]
         public class FastSeqLang
         {
             [ParseResult]
@@ -89,6 +91,9 @@ namespace IronText.Tests.Framework.Tokens
             { 
                 return new Coll<string> { Items = items };  
             }
+
+            [Literal("foo")]
+            public static string FakeScanRule() { throw new NotImplementedException(); }
         }
 
         public class TestInfo

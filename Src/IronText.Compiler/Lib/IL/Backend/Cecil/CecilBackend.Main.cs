@@ -472,21 +472,9 @@ namespace IronText.Lib.IL.Backend.Cecil
             return this;
         }
 
-        public EmitSyntax Ldfld(FieldSig fieldSig)
-        {
-            Emit(OpCodes.Ldfld, GetField(fieldSig));
-            return this;
-        }
-
         public EmitSyntax Ldsfld(System.Reflection.FieldInfo fieldInfo)
         {
             Emit(OpCodes.Ldsfld, module.Import(fieldInfo));
-            return this;
-        }
-
-        public EmitSyntax Ldsfld(FieldSig fieldSig)
-        {
-            Emit(OpCodes.Ldsfld, GetField(fieldSig));
             return this;
         }
 
@@ -496,21 +484,9 @@ namespace IronText.Lib.IL.Backend.Cecil
             return this;
         }
 
-        public EmitSyntax Stfld(FieldSig fieldSig)
-        {
-            Emit(OpCodes.Stfld, GetField(fieldSig));
-            return this;
-        }
-
         public EmitSyntax Stsfld(System.Reflection.FieldInfo fieldInfo)
         {
             Emit(OpCodes.Stsfld, module.Import(fieldInfo));
-            return this;
-        }
-
-        public EmitSyntax Stsfld(FieldSig fieldSig)
-        {
-            Emit(OpCodes.Stsfld, GetField(fieldSig));
             return this;
         }
 
@@ -923,14 +899,6 @@ namespace IronText.Lib.IL.Backend.Cecil
             pendingLabelMarks.Clear();
 
             body.Append(instruction);
-        }
-
-        private FieldReference GetField(FieldSig fieldSig)
-        {
-            TypeDefinition typeDef = module.GetType(fieldSig.DeclaringTypeSig.TypeName);
-            //TypeDefinition typeDef = types.GetTypeReference(fieldSig.DeclaringTypeSig).Resolve();
-
-            return typeDef.Fields.Where(f => f.Name == fieldSig.Name).Single();
         }
 
         void IAssemblyReader.Read(string path)

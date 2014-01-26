@@ -89,10 +89,27 @@ namespace IronText.MetadataCompiler
                 this.IsValid = false;
             }
 
-            CheckAllScanRulesDefined(scanDataCollector.UndefinedTerminals, startType, logging);
-
             allScanConditions = scanDataCollector.ScanConditions;
             LinkRelatedTokens(allScanConditions);
+
+            var allTerms = (from t in scanDataCollector.Terminals
+                           let def = TokenRefResolver.Resolve(t)
+                           where def != null
+                           select def)
+                           .Distinct();
+            var termsProducedByScanner =
+                            (from cond in scanDataCollector.ScanConditions
+                             from rule in cond.ScanRules
+                             from outcome in rule.AllOutcomes
+                             let def = TokenRefResolver.Resolve(outcome)
+                             where def != null
+                             select def)
+                            .Distinct();
+            var undefinedTerminals = allTerms
+                .Where(def => !IsSpecialSymbolDef(def))
+                .Except(termsProducedByScanner);
+
+            CheckAllScanRulesDefined(undefinedTerminals, startType, logging);
 
             precedence          = allMetadata.SelectMany(m => m.GetTokenPrecedence(tokenPool)).ToList();
 
@@ -101,9 +118,12 @@ namespace IronText.MetadataCompiler
             this.ReportBuilders = allMetadata.SelectMany(m => m.GetReportBuilders()).ToArray();
         }
 
-        private void CheckAllScanRulesDefined(List<CilSymbolRef> undefinedTerminals, Type member, ILogging logging)
+        private void CheckAllScanRulesDefined(
+            IEnumerable<CilSymbolDef> undefinedTerminals,
+            Type                      member,
+            ILogging                  logging)
         {
-            if (undefinedTerminals.Count == 0)
+            if (undefinedTerminals.Count() == 0)
             {
                 return;
             }
@@ -121,7 +141,7 @@ namespace IronText.MetadataCompiler
                     message.Append(", ");
                 }
 
-                message.Append(term.TokenType.Name);
+                message.Append(term.ToString());
             }
 
             logging.Write(
@@ -194,6 +214,11 @@ namespace IronText.MetadataCompiler
             {
                 yield return list[i];
             }
+        }
+
+        private static bool IsSpecialSymbolDef(CilSymbolDef def)
+        {
+            return def.TokenType == typeof(Exception);
         }
     }
 }

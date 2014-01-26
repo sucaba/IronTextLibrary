@@ -38,20 +38,7 @@ namespace IronText.MetadataCompiler
             processedScanConditions = new Stack<CilScanCondition>();
         }
 
-        public List<CilSymbolRef> UndefinedTerminals
-        {
-            get
-            {
-                return 
-                    terminals
-                    .Except(
-                        allScanConditions
-                        .SelectMany(mode => mode.ScanRules)
-                        .SelectMany(rule => rule.AllOutcomes)
-                        .Distinct())
-                    .ToList();
-            }
-        }
+        public List<CilSymbolRef> Terminals { get { return terminals; } }
 
         public bool HasInvalidData { get { return invalidMetadata.Count != 0; } }
 

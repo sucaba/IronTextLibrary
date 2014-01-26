@@ -43,10 +43,9 @@ namespace IronText.Tests.Framework
         public enum ASB { Value = 1 }
 
         [Language]
-        [UseToken(typeof(ASB))]
         public class WithSentinel
         {
-            public WithSentinel Result { get; [Parse] set; }
+            public ASB Result { get; [Parse] set; }
 
             [Scan(@"'a' zero 'b'")]
             public ASB Asb() { return ASB.Value; }

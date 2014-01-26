@@ -121,7 +121,7 @@ namespace IronText.Framework
 
             Clear();
 
-            var scanner = language.CreateScanner(context, input, document, GetCurrentLogging());
+            var scanner  = language.CreateScanner(context, input, document, GetCurrentLogging());
             var producer = NullProducer<int>.Instance;
             var parser   = language.CreateParser(producer, GetCurrentLogging());
             scanner.Accept(parser);

@@ -256,26 +256,6 @@ namespace IronText.Lib.IL.Backend.ReflectionEmit
             return this;
         }
 
-        public EmitSyntax Ldfld(FieldSig fieldSig)
-        {
-            throw new NotImplementedException();
-        }
-
-        public EmitSyntax Stfld(FieldSig fieldSig)
-        {
-            throw new NotImplementedException();
-        }
-
-        public EmitSyntax Ldsfld(FieldSig fieldSig)
-        {
-            throw new NotImplementedException();
-        }
-
-        public EmitSyntax Stsfld(FieldSig fieldSig)
-        {
-            throw new NotImplementedException();
-        }
-
         public EmitSyntax Ldloc0()
         {
             il.Emit(OpCodes.Ldloc_0);
