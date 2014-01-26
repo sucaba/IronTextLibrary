@@ -8,6 +8,8 @@ using IronText.Compiler.Analysis;
 using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Reflection;
+using IronText.Reporting;
+using IronText.Runtime;
 
 namespace IronText.Automata.Lalr1
 {

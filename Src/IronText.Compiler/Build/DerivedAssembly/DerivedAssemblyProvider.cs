@@ -6,6 +6,7 @@ using IronText.Framework;
 using IronText.Lib.Ctem;
 using IronText.Lib.IL;
 using IronText.Lib.IL.Backend.Cecil;
+using IronText.Logging;
 
 namespace IronText.Build
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using IronText.Reflection;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
 
     sealed class ReductionQueue<T> : IReductionQueue<T>

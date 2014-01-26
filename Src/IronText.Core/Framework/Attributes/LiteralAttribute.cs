@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using IronText.Extensibility;
+using IronText.Logging;
 using IronText.Reflection;
 
 namespace IronText.Framework

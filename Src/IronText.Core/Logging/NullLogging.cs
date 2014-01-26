@@ -1,4 +1,4 @@
-﻿namespace IronText.Framework
+﻿namespace IronText.Logging
 {
     sealed class NullLogging : ILogging
     {

@@ -7,6 +7,9 @@ using IronText.Framework;
 using IronText.Extensibility;
 using System.IO;
 using System.CodeDom.Compiler;
+using IronText.Reporting;
+using IronText.Logging;
+using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {

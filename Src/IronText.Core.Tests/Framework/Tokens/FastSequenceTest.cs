@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using IronText.Framework;
 using IronText.Lib;
+using IronText.Runtime;
 using NUnit.Framework;
 
 namespace IronText.Tests.Framework.Tokens

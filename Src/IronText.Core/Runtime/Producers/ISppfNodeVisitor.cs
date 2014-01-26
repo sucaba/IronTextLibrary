@@ -1,5 +1,7 @@
-﻿
-namespace IronText.Framework
+﻿using IronText.Framework;
+using IronText.Logging;
+
+namespace IronText.Runtime
 {
     public interface ISppfNodeVisitor
     {

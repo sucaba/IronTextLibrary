@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using IronText.Algorithm;
 using IronText.Reflection;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     sealed class GssReducePath<T>
     {

@@ -5,6 +5,8 @@ using IronText.Algorithm;
 using IronText.Diagnostics;
 using IronText.Extensibility;
 using IronText.Reflection;
+using IronText.Reporting;
+using IronText.Runtime;
 
 namespace IronText.Framework
 {

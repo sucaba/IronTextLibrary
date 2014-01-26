@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using IronText.Extensibility;
+using IronText.Reporting;
 
 namespace IronText.Framework
 {

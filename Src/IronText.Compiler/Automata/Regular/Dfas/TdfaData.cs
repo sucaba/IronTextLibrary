@@ -5,12 +5,11 @@ using IronText.Diagnostics;
 using IronText.Extensibility;
 using System.Collections.ObjectModel;
 using System.Text;
+using IronText.Reporting;
 
 namespace IronText.Automata.Regular
 {
-    public sealed class TdfaData 
-        : ITdfaData
-        , IScannerAutomata
+    public sealed class TdfaData : ITdfaData , IScannerAutomata
     {
         public static readonly SparseIntSetType StateSetType = SparseIntSetType.Instance;
         public static readonly SparseIntSetType PositionSetType = SparseIntSetType.Instance;

@@ -5,6 +5,7 @@ using System.Linq;
 using IronText.Algorithm;
 using IronText.Extensibility;
 using IronText.Framework;
+using IronText.Runtime;
 using NUnit.Framework;
 
 namespace IronText.Tests.Framework

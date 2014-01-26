@@ -4,9 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using IronText.Extensibility;
+using IronText.Framework;
+using IronText.Logging;
 using IronText.Reflection;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     class DeterministicParser<TNode> : IPushParser
     {

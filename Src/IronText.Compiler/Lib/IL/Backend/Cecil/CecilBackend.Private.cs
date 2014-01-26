@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using IronText.Framework;
 using IronText.Lib.Shared;
+using IronText.Logging;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     using System.Diagnostics;
     using IronText.Reflection;

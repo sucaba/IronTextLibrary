@@ -6,6 +6,8 @@ using IronText.Lib.Ctem;
 using IronText.MetadataCompiler;
 using IronText.Tests.TestUtils;
 using NUnit.Framework;
+using IronText.Logging;
+using IronText.Runtime;
 
 namespace IronText.Tests.Algorithm
 {

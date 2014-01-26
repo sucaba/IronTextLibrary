@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text;
 using IronText.Framework;
+using IronText.Logging;
 
 namespace IronText.Build
 {

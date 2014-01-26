@@ -1,5 +1,5 @@
 ﻿
-namespace IronText.Framework
+namespace IronText.Logging
 {
     public enum Severity : short
     {

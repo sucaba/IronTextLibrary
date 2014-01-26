@@ -1,5 +1,5 @@
 ﻿
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     /// <summary>
     /// Contract for allocating important memory resources and measuring statistics

@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using IronText.Framework;
+using IronText.Runtime;
 
 namespace IronText.Tests.MetdataCompiler
 {
@@ -14,7 +15,7 @@ namespace IronText.Tests.MetdataCompiler
                 ParserActionKind.Reduce,
                 ParserActionKind.Shift
                 )] 
-                    ParserActionKind kind,
+                ParserActionKind kind,
             [Values(0, 1, 1024, ushort.MaxValue)] 
                     int value1)
         {

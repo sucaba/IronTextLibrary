@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using IronText.Framework;
+using IronText.Logging;
 
 namespace IronText.Lib.Sre
 {   

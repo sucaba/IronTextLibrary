@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using IronText.Logging;
 using IronText.Reflection;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     class PanicModeErrorRecovery : IReceiver<Msg>
     {

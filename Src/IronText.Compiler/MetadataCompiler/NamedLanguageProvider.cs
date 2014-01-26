@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using IronText.Build;
 using IronText.Extensibility;
 using IronText.Framework;
+using IronText.Logging;
 using IronText.Misc;
+using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {

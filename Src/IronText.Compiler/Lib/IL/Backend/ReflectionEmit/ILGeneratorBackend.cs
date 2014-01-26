@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 using IronText.Framework;
 using IronText.Lib.Ctem;
 using IronText.Lib.Shared;
+using IronText.Logging;
 
 namespace IronText.Lib.IL.Backend.ReflectionEmit
 {

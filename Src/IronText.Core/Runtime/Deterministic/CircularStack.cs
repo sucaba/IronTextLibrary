@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     internal sealed class CircularStack<T>
     {

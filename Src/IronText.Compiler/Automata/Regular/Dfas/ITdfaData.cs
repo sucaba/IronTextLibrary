@@ -2,6 +2,7 @@
 using IronText.Algorithm;
 using IronText.Diagnostics;
 using IronText.Extensibility;
+using IronText.Reporting;
 
 namespace IronText.Automata.Regular
 {

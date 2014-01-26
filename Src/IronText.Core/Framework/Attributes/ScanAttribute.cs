@@ -1,4 +1,5 @@
-﻿using IronText.Reflection;
+﻿using IronText.Logging;
+using IronText.Reflection;
 
 namespace IronText.Framework
 {

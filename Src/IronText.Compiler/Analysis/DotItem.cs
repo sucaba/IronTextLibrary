@@ -3,6 +3,7 @@ using IronText.Framework;
 using System.Collections.Generic;
 using IronText.Extensibility;
 using IronText.Reflection;
+using IronText.Reporting;
 
 namespace IronText.Compiler.Analysis
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using IronText.Reflection;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     internal class RuntimeEbnfGrammar
     {

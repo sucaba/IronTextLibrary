@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using IronText.Logging;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     sealed class Scanner
         : IScanner

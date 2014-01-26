@@ -13,6 +13,8 @@ using IronText.Framework;
 using IronText.Reflection;
 using IronText.MetadataCompiler;
 using NUnit.Framework;
+using IronText.Logging;
+using IronText.Runtime;
 
 namespace CSharpParser.Tests
 {

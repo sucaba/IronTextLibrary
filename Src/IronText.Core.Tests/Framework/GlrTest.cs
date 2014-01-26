@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using IronText.Framework;
+using IronText.Logging;
+using IronText.Runtime;
 using Moq;
 using NUnit.Framework;
 

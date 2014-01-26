@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using IronText.Framework;
+using IronText.Runtime;
 using NUnit.Framework;
 
 namespace IronText.Tests.Framework

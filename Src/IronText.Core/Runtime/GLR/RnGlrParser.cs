@@ -7,9 +7,11 @@ using IronText.Extensibility;
 using System.Text;
 using IronText.Reflection;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     using State = System.Int32;
+    using IronText.Logging;
+    using IronText.Framework;
 
     sealed class RnGlrParser<T> : IPushParser
     {

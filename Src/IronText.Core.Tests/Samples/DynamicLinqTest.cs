@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using IronText.Framework;
+using IronText.Runtime;
 using NUnit.Framework;
 
 namespace IronText.Tests.Samples

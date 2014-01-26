@@ -1,4 +1,6 @@
 ﻿using IronText.Framework;
+using IronText.Logging;
+using IronText.Runtime;
 using NUnit.Framework;
 
 namespace IronText.Tests.Framework.Attributes

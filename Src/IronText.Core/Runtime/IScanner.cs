@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     public interface IScanner 
         : ISequence<Msg>

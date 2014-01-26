@@ -1,6 +1,6 @@
 ﻿
 using System.Collections.Generic;
-namespace IronText.Framework
+namespace IronText.Logging
 {
     public struct HLoc
     {

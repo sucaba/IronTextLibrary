@@ -4,6 +4,7 @@ using System.Diagnostics;
 using IronText.Diagnostics;
 using IronText.Framework;
 using IronText.Reflection;
+using IronText.Runtime;
 using NUnit.Framework;
 
 namespace IronText.Tests.Framework

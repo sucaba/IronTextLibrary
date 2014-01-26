@@ -1,7 +1,6 @@
 ﻿
-namespace IronText.Framework
+namespace IronText.Runtime
 {
-
     public interface IPushParser : IReceiver<Msg>
     {
         /// <summary>

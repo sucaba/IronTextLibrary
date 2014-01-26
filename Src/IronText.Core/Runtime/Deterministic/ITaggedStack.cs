@@ -1,6 +1,6 @@
 ﻿using IronText.Algorithm;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     interface ITaggedStack<T>
     {

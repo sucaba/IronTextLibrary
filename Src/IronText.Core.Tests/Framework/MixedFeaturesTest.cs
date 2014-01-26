@@ -7,6 +7,7 @@ using IronText.Lib.Ctem;
 using IronText.Lib.Shared;
 using NUnit.Framework;
 using IronText.Algorithm;
+using IronText.Runtime;
 
 namespace IronText.Tests.Framework
 {

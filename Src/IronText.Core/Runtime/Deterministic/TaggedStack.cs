@@ -1,7 +1,7 @@
 ﻿using System;
 using IronText.Algorithm;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     sealed class TaggedStack<T> 
         : IStackLookback<T>

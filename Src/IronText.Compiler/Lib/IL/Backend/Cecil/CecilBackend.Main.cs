@@ -5,6 +5,7 @@ using System.Linq;
 using IronText.Framework;
 using IronText.Lib.Ctem;
 using IronText.Lib.Shared;
+using IronText.Logging;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 

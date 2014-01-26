@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using IronText.Diagnostics;
+using IronText.Logging;
 using IronText.Reflection;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     sealed class SppfGraphWriter : ISppfNodeVisitor
     {

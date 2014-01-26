@@ -1,6 +1,7 @@
 ﻿using System;
+using IronText.Logging;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     public class MsgData
     {

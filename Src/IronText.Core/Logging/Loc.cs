@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace IronText.Framework
+namespace IronText.Logging
 {
     /// <summary>
     /// Represents location in text source.

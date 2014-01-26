@@ -5,6 +5,8 @@ using System.Text;
 using IronText.Framework;
 using System.IO;
 using System.Diagnostics;
+using IronText.Logging;
+using IronText.Runtime;
 
 namespace CSharpParser
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace IronText.Framework
+namespace IronText.Logging
 {
     sealed class TextLogging : ILogging
     {

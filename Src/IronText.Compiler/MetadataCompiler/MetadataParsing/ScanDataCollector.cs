@@ -5,6 +5,7 @@ using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Misc;
 using IronText.Algorithm;
+using IronText.Logging;
 
 namespace IronText.MetadataCompiler
 {

@@ -2,7 +2,7 @@
 using IronText.Diagnostics;
 using IronText.Reflection;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     interface IGss<T>
     {

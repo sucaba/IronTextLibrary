@@ -3,11 +3,11 @@ using IronText.Algorithm;
 using System.Collections.ObjectModel;
 using System.Linq;
 using IronText.Extensibility;
+using IronText.Reporting;
 
 namespace IronText.Automata.Regular
 {
-    public sealed class TdfaState 
-        : IScannerState
+    public sealed class TdfaState : IScannerState
     {
         private ReadOnlyCollection<IScannerTransition> transitions;
         private readonly ITdfaData container;

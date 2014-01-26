@@ -8,7 +8,7 @@ using IronText.Automata.Lalr1;
 using System.Diagnostics;
 using IronText.Framework;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     using State = System.Int32;
     using RuleIndex = System.Int32;

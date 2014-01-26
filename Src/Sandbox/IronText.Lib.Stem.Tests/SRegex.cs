@@ -8,6 +8,7 @@ using IronText.Lib.NfaVM.Runtime;
 using IronText.Lib.RegularAst;
 using IronText.Lib.RegularAst.Backend.InMemoryNfaCompiler;
 using IronText.Lib.Shared;
+using IronText.Runtime;
 using IronText.Tests.Algorithm;
 
 namespace IronText.Lib.Sre

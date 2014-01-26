@@ -1,4 +1,4 @@
-﻿namespace IronText.Framework
+﻿namespace IronText.Runtime
 {
     public class ScanCursor
     {

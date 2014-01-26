@@ -1,5 +1,5 @@
 ﻿
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     sealed class GssReduceNode<T>
     {

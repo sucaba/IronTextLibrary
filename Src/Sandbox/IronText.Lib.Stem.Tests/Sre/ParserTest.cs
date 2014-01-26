@@ -1,5 +1,6 @@
 ﻿using IronText.Framework;
 using IronText.Lib.Sre;
+using IronText.Runtime;
 using NUnit.Framework;
 
 namespace IronText.Tests.Lib.Sre

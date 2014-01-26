@@ -8,6 +8,8 @@ using IronText.Framework;
 using IronText.Reflection;
 using IronText.Lib.RegularAst;
 using IronText.Lib.ScannerExpressions;
+using IronText.Logging;
+using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {

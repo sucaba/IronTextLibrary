@@ -1,6 +1,6 @@
 ﻿using IronText.Reflection;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     interface IReductionQueue<TNode>
     {

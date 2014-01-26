@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
 using IronText.Extensibility;
+using IronText.Reporting;
 
 namespace IronText.Automata.Regular
 {

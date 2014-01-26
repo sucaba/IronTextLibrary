@@ -10,6 +10,8 @@ using IronText.Automata.Lalr1;
 using IronText.Reflection;
 using IronText.Compiler;
 using IronText.Compiler.Analysis;
+using IronText.Reporting;
+using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {

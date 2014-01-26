@@ -5,7 +5,7 @@ using System.Linq;
 using IronText.Algorithm;
 using IronText.Diagnostics;
 
-namespace IronText.Framework
+namespace IronText.Runtime
 {
     using IronText.Reflection;
     using State = System.Int32;

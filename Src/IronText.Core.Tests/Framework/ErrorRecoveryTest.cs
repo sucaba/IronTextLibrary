@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using IronText.Framework;
 using IronText.Lib;
+using IronText.Logging;
 using IronText.Reflection;
+using IronText.Runtime;
 using NUnit.Framework;
 
 namespace IronText.Tests.Framework
