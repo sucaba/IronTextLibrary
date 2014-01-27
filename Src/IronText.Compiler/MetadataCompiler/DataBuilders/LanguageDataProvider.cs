@@ -217,13 +217,13 @@ namespace IronText.MetadataCompiler
             foreach (var cilSymbol in tokenResolver.Definitions)
             {
                 Symbol symbol;
-                if (cilSymbol.SymbolType == typeof(Exception))
+                if (cilSymbol.Type == typeof(Exception))
                 {
                     cilSymbol.Symbol = symbol = (Symbol)result.Symbols[EbnfGrammar.Error];
                     symbol.Joint.Add(
                         new CilSymbol 
                         { 
-                            SymbolType = typeof(Exception),
+                            Type = typeof(Exception),
                             Symbol     = symbol,
                             Categories = SymbolCategory.DoNotDelete | SymbolCategory.DoNotInsert
                         });

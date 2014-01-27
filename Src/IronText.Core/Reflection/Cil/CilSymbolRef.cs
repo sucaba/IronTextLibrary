@@ -6,22 +6,22 @@ namespace IronText.Reflection.Managed
     [Serializable]
     public class CilSymbolRef : IEquatable<CilSymbolRef>
     {
-        public static CilSymbolRef Create(Type tokenType, string literal)
+        public static CilSymbolRef Create(Type type, string literal)
         {
-            return new CilSymbolRef(tokenType, literal);
+            return new CilSymbolRef(type, literal);
         }
         
-        public static CilSymbolRef Typed(Type tokenType)
+        public static CilSymbolRef Create(Type type)
         {
-            if (tokenType == null)
+            if (type == null)
             {
-                throw new ArgumentException("tokenType");
+                throw new ArgumentException("type");
             }
 
-            return new CilSymbolRef(tokenType, null);
+            return new CilSymbolRef(type, null);
         }
 
-        public static CilSymbolRef Literal(string literal)
+        public static CilSymbolRef Create(string literal)
         {
             if (string.IsNullOrEmpty(literal))
             {
@@ -31,17 +31,17 @@ namespace IronText.Reflection.Managed
             return new CilSymbolRef(null, literal);
         }
 
-        public CilSymbolRef(Type tokenType, string literal)
+        public CilSymbolRef(Type type, string literal)
         {
-            this.TokenType   = tokenType;
-            this.LiteralText = literal;
+            this.Type    = type;
+            this.Literal = literal;
         }
 
         public bool Equals(CilSymbolRef other)
         {
             return other != null
-                && (LiteralText == other.LiteralText 
-                   && TokenType == other.TokenType);
+                && (Literal == other.Literal 
+                   && Type == other.Type);
         }
 
         public override bool Equals(object obj)
@@ -54,14 +54,14 @@ namespace IronText.Reflection.Managed
             int result = 0;
             unchecked
             {
-                if (TokenType != null)
+                if (Type != null)
                 {
-                    result += TokenType.GetHashCode();
+                    result += Type.GetHashCode();
                 }
 
-                if (LiteralText != null)
+                if (Literal != null)
                 {
-                    result += LiteralText.GetHashCode();
+                    result += Literal.GetHashCode();
                 }
             }
 
@@ -70,25 +70,13 @@ namespace IronText.Reflection.Managed
 
         public override string ToString()
         {
-            return string.Format("TID({0}, {1})", TokenType, LiteralText);
+            return string.Format("TID({0}, {1})", Type, Literal);
         }
 
-        public bool IsLiteral
-        {
-            get { return LiteralText != null; }
-        }
+        public bool HasLiteral { get { return Literal != null; } }
 
-        /// <summary>
-        /// Determines whether token is no-operation token.
-        /// </summary>
-        public bool IsNopToken
-        {
-            get { return TokenType == typeof(void); }
-        }
+        public Type   Type     { get; private set; }
 
-        public Type TokenType { get; private set; }
-
-        public string LiteralText { get; private set; }
-        
+        public string Literal  { get; private set; }
     }
 }

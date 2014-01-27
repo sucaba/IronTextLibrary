@@ -15,7 +15,7 @@ namespace IronText.Reflection.Managed
 
         public Symbol          Symbol     { get; set; }
 
-        public Type            SymbolType  { get; set; }
+        public Type            Type       { get; set; }
 
         public HashSet<string> Literals   { get; private set; }
 
@@ -35,7 +35,7 @@ namespace IronText.Reflection.Managed
                     return CilSymbolNaming.GetLiteralName(Literals.First());
                 }
 
-                return CilSymbolNaming.GetTypeName(SymbolType);
+                return CilSymbolNaming.GetTypeName(Type);
             }
         }
 

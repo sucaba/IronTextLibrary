@@ -78,19 +78,19 @@ namespace IronText.MetadataCompiler
                     yield return Tuple.Create((object)literal, cilSymbol.Id);
                 }
 
-                if (cilSymbol.SymbolType != null)
+                if (cilSymbol.Type != null)
                 {
-                    yield return Tuple.Create((object)cilSymbol.SymbolType, cilSymbol.Id);
+                    yield return Tuple.Create((object)cilSymbol.Type, cilSymbol.Id);
                 }
             }
         }
 
         private void LdTid(EmitSyntax emit, CilSymbolRef tid)
         {
-            if (tid.TokenType != null)
+            if (tid.Type != null)
             {
                 emit
-                    .Ldtoken(emit.Types.Import(tid.TokenType))
+                    .Ldtoken(emit.Types.Import(tid.Type))
                     .Call((RuntimeTypeHandle h) => Type.GetTypeFromHandle(h))
                     ;
             }
@@ -99,13 +99,13 @@ namespace IronText.MetadataCompiler
                 emit.Ldnull();
             }
 
-            if (tid.LiteralText == null)
+            if (tid.Literal == null)
             {
                 emit.Ldnull();
             }
             else
             {
-                emit.Ldstr(new QStr(tid.LiteralText));
+                emit.Ldstr(new QStr(tid.Literal));
             }
 
             emit

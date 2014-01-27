@@ -7,8 +7,8 @@ namespace IronText.Reflection.Managed
     {
         void AddMeta(ICilMetadata meta);
 
-        void AddScanRule(CilScanProduction rule);
+        void AddProduction(CilScanProduction rule);
 
-        void AddScanMode(Type modeType);
+        void AddCondition(Type conditionType);
     }
 }

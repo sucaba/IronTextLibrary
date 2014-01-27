@@ -17,7 +17,7 @@ namespace IronText.Reflection.Managed
         internal CilScanProduction(Type outcomeType)
             : this()
         {
-            var outcome = CilSymbolRef.Typed(outcomeType);
+            var outcome = CilSymbolRef.Create(outcomeType);
             MainOutcome = outcome;
             AllOutcomes.Add(outcome);
         }
@@ -41,8 +41,8 @@ namespace IronText.Reflection.Managed
             get
             {
                 return (from outcome in AllOutcomes
-                       where outcome.TokenType != null
-                       select outcome.TokenType)
+                       where outcome.Type != null
+                       select outcome.Type)
                        .FirstOrDefault();
             }
         }

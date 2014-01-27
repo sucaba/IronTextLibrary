@@ -40,7 +40,7 @@ namespace IronText.Reflection.Managed
 
         private static CilScanProduction CreateImplicitLiteralRule(string literal)
         {
-            var outcome = CilSymbolRef.Literal(literal);
+            var outcome = CilSymbolRef.Create(literal);
 
             // Generate implicit scan rule for the keyword
             var result  = new CilScanProduction

@@ -70,7 +70,7 @@ namespace IronText.Reflection.Managed
                 }
                 */
 
-                AddScanRule(scanRule);
+                AddProduction(scanRule);
             }
 
             foreach (var childMeta in meta.GetChildren())
@@ -79,18 +79,18 @@ namespace IronText.Reflection.Managed
             }
         }
 
-        public void AddScanRule(CilScanProduction rule)
+        public void AddProduction(CilScanProduction rule)
         {
             var currentScanMode = processedScanConditions.Peek();
             currentScanMode.AddRule(rule);
 
             if (rule.NextModeType != null)
             {
-                AddScanMode(rule.NextModeType);
+                AddCondition(rule.NextModeType);
             }
         }
 
-        public void AddScanMode(Type conditionType)
+        public void AddCondition(Type conditionType)
         {
             if (allScanConditions.Any(mode => object.Equals(mode.ConditionType, conditionType)))
             {
@@ -112,8 +112,8 @@ namespace IronText.Reflection.Managed
             {
                 var implicitLiterals = 
                     (from t in terminals
-                     where t.IsLiteral
-                     select t.LiteralText)
+                     where t.HasLiteral
+                     select t.Literal)
                     .Except(
                         from mode in allScanConditions
                         from rule in mode.Productions

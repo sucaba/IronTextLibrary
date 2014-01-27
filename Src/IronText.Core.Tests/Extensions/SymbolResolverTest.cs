@@ -23,10 +23,10 @@ namespace IronText.Tests.Extensions
         {
             var tokens = new []
             {
-                CilSymbolRef.Literal("foo"),
-                CilSymbolRef.Literal("bar"),
-                CilSymbolRef.Literal("other"),
-                CilSymbolRef.Typed(typeof(string)),
+                CilSymbolRef.Create("foo"),
+                CilSymbolRef.Create("bar"),
+                CilSymbolRef.Create("other"),
+                CilSymbolRef.Create(typeof(string)),
                 CilSymbolRef.Create(typeof(string), "foo"),   // links foo and string
                 CilSymbolRef.Create(typeof(string), "bar"),   // links bar and string
                 CilSymbolRef.Create(typeof(string), "other"), // links other and string

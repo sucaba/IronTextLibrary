@@ -25,11 +25,11 @@ namespace IronText.Framework
                 throw new InvalidOperationException("Insufficient rule-method arguments.");
             }
 
-            resultList.Add(CilSymbolRef.Literal(StemScanner.LParen));
+            resultList.Add(CilSymbolRef.Create(StemScanner.LParen));
 
             resultList.AddRange(
                 KeywordMask
-                .Select(item => item == null ? null : CilSymbolRef.Literal(item)));
+                .Select(item => item == null ? null : CilSymbolRef.Create(item)));
 
             return resultList.ToArray();
         }

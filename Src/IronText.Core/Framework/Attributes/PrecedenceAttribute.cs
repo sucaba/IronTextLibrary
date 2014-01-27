@@ -38,11 +38,11 @@ namespace IronText.Framework
             CilSymbolRef token;
             if (TermText == null)
             {
-                token = CilSymbolRef.Typed(TermType);
+                token = CilSymbolRef.Create(TermType);
             }
             else
             {
-                token = CilSymbolRef.Literal(TermText);
+                token = CilSymbolRef.Create(TermText);
             }
 
             yield return new CilSymbolFeature<Precedence>(

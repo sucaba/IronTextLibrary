@@ -33,7 +33,7 @@ namespace IronText.Reflection.Managed
 
             this.SymbolResolver = new CilSymbolRefResolver();
 
-            this.Start = CilSymbolRef.Typed(typeof(void));
+            this.Start = CilSymbolRef.Create(typeof(void));
 
 
             var collector = new MetadataCollector(logging);
@@ -83,7 +83,7 @@ namespace IronText.Reflection.Managed
             var terminals = collector.AllTokens.Except(allParseRules.Select(r => r.Left).Distinct()).ToArray();
 
             var scanDataCollector = new ScanDataCollector(terminals, logging);
-            scanDataCollector.AddScanMode(startType);
+            scanDataCollector.AddCondition(startType);
             if (scanDataCollector.HasInvalidData)
             {
                 this.IsValid = false;
@@ -198,7 +198,7 @@ namespace IronText.Reflection.Managed
 
         private static bool IsSpecialSymbolDef(CilSymbol def)
         {
-            return def.SymbolType == typeof(Exception);
+            return def.Type == typeof(Exception);
         }
     }
 }

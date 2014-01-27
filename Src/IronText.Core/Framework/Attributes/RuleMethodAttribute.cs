@@ -58,14 +58,14 @@ namespace IronText.Framework
 
         private IEnumerable<CilProduction> GetExpansionRules(CilSymbolRef token)
         {
-            if (token.IsLiteral)
+            if (token.HasLiteral)
             {
                 return Enumerable.Empty<CilProduction>();
             }
 
             var method = this.Method;
             var pattern = new TypePattern(method);
-            MethodInfo producer = pattern.MakeProducer(token.TokenType);
+            MethodInfo producer = pattern.MakeProducer(token.Type);
             if (producer != null)
             {
                 return DoGetRules(producer, token);
@@ -82,10 +82,10 @@ namespace IronText.Framework
             {
                 if (Parent != null && Parent.Member is Type)
                 {
-                    return CilSymbolRef.Typed((Type)Parent.Member);
+                    return CilSymbolRef.Create((Type)Parent.Member);
                 }
 
-                return CilSymbolRef.Typed(Member.DeclaringType);
+                return CilSymbolRef.Create(Member.DeclaringType);
             }
 
             return null;
@@ -95,7 +95,7 @@ namespace IronText.Framework
         {
             if (HasThisAsToken)
             {
-                parts.Add(CilSymbolRef.Typed(Member.DeclaringType));
+                parts.Add(CilSymbolRef.Create(Member.DeclaringType));
                 return true;
             }
 
@@ -113,7 +113,7 @@ namespace IronText.Framework
 
         protected IEnumerable<CilProduction> DoGetRules(MethodInfo method, CilSymbolRef leftSide)
         {
-            CilSymbolRef left = CilSymbolRef.Typed(method.ReturnType);
+            CilSymbolRef left = CilSymbolRef.Create(method.ReturnType);
 
             if (!object.Equals(left, leftSide))
             {
@@ -237,7 +237,7 @@ namespace IronText.Framework
                 {
                     // Mask slot or there are parameters after mask
                     var p = method.GetParameters()[paramIndex++];
-                    parts.Add(CilSymbolRef.Typed(p.ParameterType));
+                    parts.Add(CilSymbolRef.Create(p.ParameterType));
                 }
                 else
                 {

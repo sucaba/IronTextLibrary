@@ -32,7 +32,7 @@ namespace IronText.Framework
                 return new[]
                 { 
                     new CilSymbolFeature<CilContextProvider>(
-                            CilSymbolRef.Typed(type),
+                            CilSymbolRef.Create(type),
                             new CilContextProvider(type))
                 };
             }

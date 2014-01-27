@@ -46,7 +46,7 @@ namespace IronText.Framework
             }
 
             return KeywordMask
-                .Select(item => item == null ? null : CilSymbolRef.Literal(item))
+                .Select(item => item == null ? null : CilSymbolRef.Create(item))
                 .ToArray();
         }
     }

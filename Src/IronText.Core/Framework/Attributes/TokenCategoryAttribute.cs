@@ -39,11 +39,11 @@ namespace IronText.Framework
 
             if (Text == null)
             {
-                return new[] { CilSymbolRef.Typed(TokenType) };
+                return new[] { CilSymbolRef.Create(TokenType) };
             }
             else
             {
-                return new[] { CilSymbolRef.Literal(Text) };
+                return new[] { CilSymbolRef.Create(Text) };
             }
         }
     }

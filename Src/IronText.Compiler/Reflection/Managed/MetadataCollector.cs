@@ -120,9 +120,9 @@ namespace IronText.Reflection.Managed
             }
 
             // Provide new meta (DemandAttribute)
-            if (!token.IsLiteral)
+            if (!token.HasLiteral)
             {
-                foreach (var meta in MetadataParser.EnumerateAndBind(token.TokenType))
+                foreach (var meta in MetadataParser.EnumerateAndBind(token.Type))
                 {
                     this.AddMeta(meta);
                 }

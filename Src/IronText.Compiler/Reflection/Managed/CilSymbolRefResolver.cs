@@ -18,19 +18,19 @@ namespace IronText.Reflection.Managed
             get { return ref2def.Values.Distinct(); }
         }
 
-        public CilSymbol Resolve(CilSymbolRef tid)
+        public CilSymbol Resolve(CilSymbolRef symbolRef)
         {
-            if (tid == null)
+            if (symbolRef == null)
             {
                 return null;
             }
 
-            var literalDef   = ResolveLiteral(tid.LiteralText);
-            var tokenTypeDef = ResolveTokenType(tid.TokenType);
+            var literalDef   = ResolveLiteral(symbolRef.Literal);
+            var tokenTypeDef = ResolveTokenType(symbolRef.Type);
 
             if (literalDef != null && tokenTypeDef != null && literalDef != tokenTypeDef)
             {
-                throw new InvalidOperationException("Unable to resolve conflicting token reference: " + tid);
+                throw new InvalidOperationException("Unable to resolve conflicting token reference: " + symbolRef);
             }
 
             return literalDef ?? tokenTypeDef;
@@ -48,23 +48,23 @@ namespace IronText.Reflection.Managed
             return result;
         }
 
-        private CilSymbol ResolveTokenType(Type tokenType)
+        private CilSymbol ResolveTokenType(Type type)
         {
-            if (tokenType == null)
+            if (type == null)
             {
                 return null;
             }
 
             CilSymbol result;
-            ref2def.TryGetValue(tokenType, out result);
+            ref2def.TryGetValue(type, out result);
             return result;
         }
 
-        public bool Contains(CilSymbolRef tokenRef)
+        public bool Contains(CilSymbolRef symbolRef)
         {
-            return tokenRef != null
-                && (ResolveLiteral(tokenRef.LiteralText) != null
-                    || ResolveTokenType(tokenRef.TokenType) != null);
+            return symbolRef != null
+                && (ResolveLiteral(symbolRef.Literal) != null
+                    || ResolveTokenType(symbolRef.Type) != null);
         }
 
         public int GetId(CilSymbolRef tid)
@@ -85,30 +85,30 @@ namespace IronText.Reflection.Managed
             def.Symbol = symbol;
         }
 
-        private CilSymbol Ensure(CilSymbolRef tid)
+        private CilSymbol Ensure(CilSymbolRef symbolRef)
         {
-            CilSymbol literalDef   = ResolveLiteral(tid.LiteralText);
-            CilSymbol tokenTypeDef = ResolveTokenType(tid.TokenType);
-            CilSymbol def          = MergeDefs(literalDef, tokenTypeDef);
+            CilSymbol literalDef = ResolveLiteral(symbolRef.Literal);
+            CilSymbol typeDef    = ResolveTokenType(symbolRef.Type);
+            CilSymbol def        = MergeDefs(literalDef, typeDef);
 
             if (def == null)
             {
                  def = new CilSymbol();
             }
-            else if (tid.TokenType != null && def.SymbolType != null && def.SymbolType != tid.TokenType)
+            else if (symbolRef.Type != null && def.Type != null && def.Type != symbolRef.Type)
             {
                 throw new InvalidOperationException("Incompatible symbol constraints.");
             }
 
             // Add token to a defintion
-            if (tid.TokenType != null)
+            if (symbolRef.Type != null)
             {
-                def.SymbolType = tid.TokenType;
+                def.Type = symbolRef.Type;
             }
 
-            if (tid.IsLiteral)
+            if (symbolRef.HasLiteral)
             {
-                def.Literals.Add(tid.LiteralText);
+                def.Literals.Add(symbolRef.Literal);
             }
 
             // Update index
@@ -117,9 +117,9 @@ namespace IronText.Reflection.Managed
                 ref2def[literal] = def;
             }
 
-            if (def.SymbolType != null)
+            if (def.Type != null)
             {
-                ref2def[def.SymbolType] = def;
+                ref2def[def.Type] = def;
             }
 
             return def;
@@ -147,48 +147,25 @@ namespace IronText.Reflection.Managed
                 return xDef;
             }
 
-            if (xDef.SymbolType != null 
-                && yDef.SymbolType != null
-                && xDef.SymbolType != yDef.SymbolType)
+            if (xDef.Type != null 
+                && yDef.Type != null
+                && xDef.Type != yDef.Type)
             {
                 var msg = string.Format(
                     "Internal error: attemt to identify single token by two types: '{0}' and '{1}'",
-                    xDef.SymbolType,
-                    yDef.SymbolType);
+                    xDef.Type,
+                    yDef.Type);
                 throw new InvalidOperationException(msg);
             }
 
-            if (xDef.SymbolType == null)
+            if (xDef.Type == null)
             {
-                xDef.SymbolType = yDef.SymbolType;
+                xDef.Type = yDef.Type;
             }
 
             xDef.Literals.UnionWith(yDef.Literals);
 
             return xDef;
-        }
-
-        private void AttachRef(CilSymbol def, CilSymbolRef tokenRef)
-        {
-            ref2def[tokenRef] = def;
-
-            if (tokenRef.IsLiteral)
-            {
-                def.Literals.Add(tokenRef.LiteralText);
-            }
-            else
-            {
-                if (def.SymbolType != null && def.SymbolType != tokenRef.TokenType)
-                {
-                    var msg = string.Format(
-                        "Internal error: attemt to identify single token by two types: '{0}' and '{1}'",
-                        def.SymbolType,
-                        tokenRef.TokenType);
-                    throw new InvalidOperationException(msg);
-                }
-
-                def.SymbolType = tokenRef.TokenType;
-            }
         }
     }
 }

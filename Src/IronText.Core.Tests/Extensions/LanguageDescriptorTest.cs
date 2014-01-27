@@ -20,11 +20,11 @@ namespace IronText.Tests.Extensibility
         {
             ILogging logging = new MemoryLogging();
             var target = new LanguageDefinition(typeof(IMetadtaTest0), logging);
-            Assert.AreEqual(CilSymbolRef.Typed(typeof(void)), target.Start);
+            Assert.AreEqual(CilSymbolRef.Create(typeof(void)), target.Start);
             Assert.AreEqual(2, target.SymbolResolver.Definitions.Count());
             Assert.AreEqual(
                 new [] { typeof(void), typeof(int) },
-                target.SymbolResolver.Definitions.Select(def => def.SymbolType).ToArray());
+                target.SymbolResolver.Definitions.Select(def => def.Type).ToArray());
         }
 
         [SampleAttr]
@@ -48,8 +48,8 @@ namespace IronText.Tests.Extensibility
                 {
                     yield return new CilProduction
                     (
-                        left : CilSymbolRef.Typed(typeof(void)),
-                        parts : new[] { CilSymbolRef.Typed(typeof(int)) },
+                        left : CilSymbolRef.Create(typeof(void)),
+                        parts : new[] { CilSymbolRef.Create(typeof(int)) },
                         actionBuilder: code => { code.Emit(il => il.Ldnull().Ret()); },
                         instanceDeclaringType : typeof(IMetadtaTest0)
                     );

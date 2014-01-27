@@ -22,9 +22,9 @@ namespace IronText.Lib.Stem
         {
             var resultList = new List<CilSymbolRef>();
 
-            resultList.Add(CilSymbolRef.Literal(StemScanner.LParen));
+            resultList.Add(CilSymbolRef.Create(StemScanner.LParen));
 
-            resultList.AddRange(KeywordMask.Select(item => item == null ? null : CilSymbolRef.Literal(item)));
+            resultList.AddRange(KeywordMask.Select(item => item == null ? null : CilSymbolRef.Create(item)));
 
             int nonMaskParameterCount = methodInfo.GetParameters().Length - KeywordMask.Count(item => item == null);
             if (nonMaskParameterCount < 0)
@@ -34,7 +34,7 @@ namespace IronText.Lib.Stem
 
             resultList.AddRange(Enumerable.Repeat(default(CilSymbolRef), nonMaskParameterCount));
 
-            resultList.Add(CilSymbolRef.Literal(StemScanner.RParen));
+            resultList.Add(CilSymbolRef.Create(StemScanner.RParen));
 
             return resultList.ToArray(); ;
         }

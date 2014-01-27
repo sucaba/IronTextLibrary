@@ -14,7 +14,7 @@ namespace IronText.Framework
 
         public override IEnumerable<CilMerger> GetMergers(IEnumerable<CilSymbolRef> leftSides)
         {
-            var returnToken = CilSymbolRef.Typed(Method.ReturnType);
+            var returnToken = CilSymbolRef.Create(Method.ReturnType);
             if (leftSides.Contains(returnToken))
             {
                 var type = Method.ReturnType;

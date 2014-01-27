@@ -179,12 +179,12 @@ namespace IronText.Framework
             List<CilSymbolRef> resultList = new List<CilSymbolRef>();
             if (LiteralText != null)
             {
-                resultList.Add(CilSymbolRef.Literal(LiteralText));
+                resultList.Add(CilSymbolRef.Create(LiteralText));
             }
 
             if (TokenType != null)
             {
-                resultList.Add(CilSymbolRef.Typed(TokenType));
+                resultList.Add(CilSymbolRef.Create(TokenType));
             }
 
             return resultList.ToArray();

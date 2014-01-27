@@ -21,7 +21,7 @@ namespace IronText.Lib.Stem
                 Enumerable.Repeat(default(CilSymbolRef),
                 methodInfo.GetParameters().Length));
 
-            resultList.Add(CilSymbolRef.Literal(StemScanner.RParen));
+            resultList.Add(CilSymbolRef.Create(StemScanner.RParen));
 
             return resultList.ToArray(); ;
         }
