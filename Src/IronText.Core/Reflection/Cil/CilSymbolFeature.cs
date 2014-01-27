@@ -7,17 +7,17 @@ namespace IronText.Reflection.Managed
 {
     public struct CilSymbolFeature<T>
     {
-        private readonly CilSymbolRef _symbol;
+        private readonly CilSymbolRef _symbolRef;
         private readonly T            _value;
 
-        public CilSymbolFeature(CilSymbolRef symbol, T value)
+        public CilSymbolFeature(CilSymbolRef symbolRef, T value)
         {
-            this._symbol = symbol;
+            this._symbolRef = symbolRef;
             this._value = value;
         }
 
-        public CilSymbolRef Symbol { get { return _symbol; } }
+        public CilSymbolRef SymbolRef { get { return _symbolRef; } }
 
-        public T            Value { get { return _value; } }
+        public T            Value     { get { return _value; } }
     }
 }

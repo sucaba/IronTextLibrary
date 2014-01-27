@@ -67,22 +67,10 @@ namespace IronText.Reflection.Managed
                     || ResolveTokenType(symbolRef.Type) != null);
         }
 
-        public int GetId(CilSymbolRef tid)
-        {
-            var symbol = GetSymbol(tid);
-            return symbol == null ? -1 : symbol.Index;
-        }
-
         public Symbol GetSymbol(CilSymbolRef tid)
         {
             CilSymbol def = Resolve(tid);
             return def == null ? null : def.Symbol;
-        }
-
-        public void SetId(CilSymbolRef tid, Symbol symbol)
-        {
-            CilSymbol def = Ensure(tid);
-            def.Symbol = symbol;
         }
 
         private CilSymbol Ensure(CilSymbolRef symbolRef)

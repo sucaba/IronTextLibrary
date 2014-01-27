@@ -238,13 +238,13 @@ namespace IronText.MetadataCompiler
 
             foreach (CilSymbolFeature<Precedence> feature in definition.Precedence)
             {
-                var symbol = tokenResolver.GetSymbol(feature.Symbol);
+                var symbol = tokenResolver.GetSymbol(feature.SymbolRef);
                 symbol.Precedence = feature.Value;
             }
 
             foreach (CilSymbolFeature<CilContextProvider> feature in definition.ContextProviders)
             {
-                var symbol = tokenResolver.GetSymbol(feature.Symbol);
+                var symbol = tokenResolver.GetSymbol(feature.SymbolRef);
                 if (symbol != null)
                 {
                     foreach (var contextType in feature.Value.GetAllContextTypes())

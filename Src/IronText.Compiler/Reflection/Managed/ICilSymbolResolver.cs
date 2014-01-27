@@ -11,8 +11,6 @@ namespace IronText.Reflection.Managed
 
         Symbol    GetSymbol(CilSymbolRef symbol);
 
-        int       GetId(CilSymbolRef symbol);
-
         void      Link(CilSymbolRef symbol);
 
         bool      Contains(CilSymbolRef symbol);

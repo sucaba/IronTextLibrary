@@ -40,7 +40,7 @@ namespace IronText.Tests.Extensions
             Assert.AreEqual(1, target.Definitions.Count());
 
             var SYM1 = new Symbol("123");
-            target.SetId(tokens[0], SYM1);
+            target.Resolve(tokens[0]).Symbol = SYM1;
             for (int i = 1; i != tokens.Length; ++i)
             {
                 var context = "#" + i;
