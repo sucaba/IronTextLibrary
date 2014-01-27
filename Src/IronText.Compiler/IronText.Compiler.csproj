@@ -141,6 +141,7 @@
     <Compile Include="Build\Engine\ResourceGetter.cs" />
     <Compile Include="Build\MetadataSyntax\CompositeDerivedBuilder.cs" />
     <Compile Include="Build\MetadataSyntax\TypesMetadataSyntax.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\CilGrammarBuilder.cs" />
     <Compile Include="Reflection\Managed\CilSymbolRefResolver.cs" />
     <Compile Include="Reflection\Managed\ICilSymbolResolver.cs" />
     <Compile Include="Runtime\Loaders\LanguageLoader.cs" />
@@ -188,7 +189,6 @@
     <Compile Include="Reporting\ParserAutomata.cs" />
     <Compile Include="Reporting\ParserState.cs" />
     <Compile Include="Reporting\ParserTransition.cs" />
-    <Compile Include="MetadataCompiler\CilGrammarBuilder.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\ContextResolverCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\GrammarActionCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\GrammarActionGenerator.cs" />
