@@ -8,38 +8,30 @@ namespace IronText.Reflection.Managed
     public sealed class CilProduction : IEquatable<CilProduction>
     {
         public CilProduction(
-            CilSymbolRef             left,
-            CilSymbolRef[]           parts,
+            CilSymbolRef         outcome,
+            CilSymbolRef[]       pattern,
             CilProductionActionBuilder actionBuilder,
-            Type                 instanceDeclaringType,
-            bool                 isContextRule = false,
+            Type                 contextType,
             Precedence           precedence = null)
         {
-            this.Left                  = left;
-            this.Parts                 = parts;
-            this.ActionBuilder         = actionBuilder;
-            this.InstanceDeclaringType = instanceDeclaringType;
-            this.IsContextRule         = isContextRule;
-            this.Precedence            = precedence;
+            this.Outcome        = outcome;
+            this.Pattern        = pattern;
+            this.ActionBuilder  = actionBuilder;
+            this.ContextType    = contextType;
+            this.Precedence     = precedence;
         }
 
-        public CilSymbolRef     Left { get; private set; }
+        public CilSymbolRef   Outcome       { get; private set; }
 
-        public CilSymbolRef[]   Parts { get; private set; }
+        public CilSymbolRef[] Pattern       { get; private set; }
 
-        public Type         InstanceDeclaringType { get; private set; }
+        public Type           ContextType   { get; private set; }
 
-        public Precedence   Precedence { get; private set; }
+        public Precedence     Precedence    { get; private set; }
 
-        public bool         IsContextRule { get; private set; }
-
-        internal int        Index  { get; set; }
-
-        internal object     Owner { get; set; }
+        internal object       Owner         { get; set; }
 
         public CilProductionActionBuilder ActionBuilder { get; private set; }
-
-        internal object Hint { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -50,8 +42,8 @@ namespace IronText.Reflection.Managed
         public bool Equals(CilProduction other)
         {
             return other != null
-                && object.Equals(Left, other.Left)
-                && Enumerable.SequenceEqual(Parts, other.Parts)
+                && object.Equals(Outcome, other.Outcome)
+                && Enumerable.SequenceEqual(Pattern, other.Pattern)
                 ;
         }
 
@@ -59,8 +51,8 @@ namespace IronText.Reflection.Managed
         {
             unchecked
             {
-                return Left.GetHashCode() 
-                    + Parts.Aggregate(0, (a, p) => a + p.GetHashCode());
+                return Outcome.GetHashCode() 
+                    + Pattern.Aggregate(0, (a, p) => a + p.GetHashCode());
             }
         }
     }

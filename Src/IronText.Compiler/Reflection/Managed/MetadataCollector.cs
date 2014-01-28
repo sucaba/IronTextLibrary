@@ -14,20 +14,19 @@ namespace IronText.Reflection.Managed
         event     => effect
         --------------------------------------------------------
         new meta  => can provide new meta-children tree
-        new meta  => can provide new rules
+        new meta  => can provide new prodss
         new meta  => can provide new explicitly used tokens
-        new rule  => can provide new tokens
-        new token => can provide new rules from existing meta
+        new prod  => can provide new tokens
+        new token => can provide new prods from existing meta
         new token => can provide new meta (DemandAttribute)
     */
     class MetadataCollector : IMetadataCollector
     {
-        private readonly List<ICilMetadata> validMetadata   = new List<ICilMetadata>();
-        private readonly List<ICilMetadata> invalidMetadata = new List<ICilMetadata>();
-        private readonly List<CilProduction>         allParseRules   = new List<CilProduction>();
-        private readonly List<CilSymbolRef>          allTokens       = new List<CilSymbolRef>();
-
-        private readonly ILogging                logging;
+        private readonly List<ICilMetadata>  validMetadata   = new List<ICilMetadata>();
+        private readonly List<ICilMetadata>  invalidMetadata = new List<ICilMetadata>();
+        private readonly List<CilProduction> productions     = new List<CilProduction>();
+        private readonly List<CilSymbolRef>  symbols         = new List<CilSymbolRef>();
+        private readonly ILogging            logging;
 
         public MetadataCollector(ILogging logging)
         {
@@ -36,11 +35,11 @@ namespace IronText.Reflection.Managed
 
         public bool HasInvalidData { get { return invalidMetadata.Count != 0; } }
 
-        public List<ICilMetadata> AllMetadata { get { return validMetadata; } } 
+        public List<ICilMetadata>  Metadata    { get { return validMetadata; } } 
 
-        public List<CilProduction> AllParseRules { get { return allParseRules; } } 
+        public List<CilProduction> Productions { get { return productions; } } 
 
-        public List<CilSymbolRef> AllTokens { get { return allTokens; } } 
+        public List<CilSymbolRef>  Symbols     { get { return symbols; } } 
 
         public void AddMeta(ICilMetadata meta)
         {
@@ -62,14 +61,14 @@ namespace IronText.Reflection.Managed
             // Provide new explicitly used tokens
             foreach (var token in meta.GetSymbolsInCategory(SymbolCategory.ExplicitlyUsed))
             {
-                this.AddToken(token);
+                this.AddSymbol(token);
             }
 
             // Provide new rules
-            var newParseRules = meta.GetProductions(EnumerateSnapshot(allTokens));
+            var newParseRules = meta.GetProductions(EnumerateSnapshot(symbols));
             foreach (var parseRule in newParseRules)
             {
-                this.AddRule(meta, parseRule);
+                this.AddProduction(meta, parseRule);
             }
 
             // Provide new meta children
@@ -79,34 +78,34 @@ namespace IronText.Reflection.Managed
             }
         }
 
-        public void AddRule(ICilMetadata meta, CilProduction parseRule)
+        public void AddProduction(ICilMetadata meta, CilProduction parseRule)
         {
-            if (parseRule.Owner == meta || allParseRules.Any(r => r.Owner == meta && r.Equals(parseRule)))
+            if (parseRule.Owner == meta || productions.Any(r => r.Owner == meta && r.Equals(parseRule)))
             {
                 return;
             }
 
             parseRule.Owner = meta;
 
-            allParseRules.Add(parseRule);
+            productions.Add(parseRule);
 
             // Provide new tokens
-            foreach (var part in parseRule.Parts)
+            foreach (var part in parseRule.Pattern)
             {
-                this.AddToken(part);
+                this.AddSymbol(part);
             }
 
-            this.AddToken(parseRule.Left);
+            this.AddSymbol(parseRule.Outcome);
         }
 
-        public void AddToken(CilSymbolRef token)
+        public void AddSymbol(CilSymbolRef token)
         {
-            if (allTokens.Contains(token))
+            if (symbols.Contains(token))
             {
                 return;
             }
 
-            allTokens.Add(token);
+            symbols.Add(token);
 
             // Provide new rules from existing meta
             var newTokens = new[] { token };
@@ -115,7 +114,7 @@ namespace IronText.Reflection.Managed
                 var newParseRules = meta.GetProductions(newTokens);
                 foreach (var parseRule in newParseRules)
                 {
-                    this.AddRule(meta, parseRule);
+                    this.AddProduction(meta, parseRule);
                 }
             }
 

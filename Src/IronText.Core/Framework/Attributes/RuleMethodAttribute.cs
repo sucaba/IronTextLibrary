@@ -76,9 +76,9 @@ namespace IronText.Framework
             }
         }
 
-        protected CilSymbolRef GetThisToken()
+        protected CilSymbolRef GetThisSymbol()
         {
-            if (HasThisAsToken)
+            if (HasThisAsSymbol)
             {
                 if (Parent != null && Parent.Member is Type)
                 {
@@ -93,7 +93,7 @@ namespace IronText.Framework
 
         protected bool DetectThisAsToken(List<CilSymbolRef> parts)
         {
-            if (HasThisAsToken)
+            if (HasThisAsSymbol)
             {
                 parts.Add(CilSymbolRef.Create(Member.DeclaringType));
                 return true;
@@ -102,44 +102,43 @@ namespace IronText.Framework
             return false;
         }
 
-        private bool HasThisAsToken
+        private bool HasThisAsSymbol
         {
             get
             {
-                var thisAsTokenAttr = Attributes.First<DemandAttribute>(Member.DeclaringType);
-                return thisAsTokenAttr != null && thisAsTokenAttr.Value;
+                var demandAttr = Attributes.First<DemandAttribute>(Member.DeclaringType);
+                return demandAttr != null && demandAttr.Value;
             }
         }
 
         protected IEnumerable<CilProduction> DoGetRules(MethodInfo method, CilSymbolRef leftSide)
         {
-            CilSymbolRef left = CilSymbolRef.Create(method.ReturnType);
+            var outcome = CilSymbolRef.Create(method.ReturnType);
 
-            if (!object.Equals(left, leftSide))
+            if (!object.Equals(outcome, leftSide))
             {
                 return Enumerable.Empty<CilProduction>();
             }
 
-            var parts = new List<CilSymbolRef>();
+            var pattern = new List<CilSymbolRef>();
             int argShift = 0;
 
-            CilSymbolRef thisToken = GetThisToken();
-            if (thisToken != null)
+            CilSymbolRef thisSymbol = GetThisSymbol();
+            if (thisSymbol != null)
             {
                 ++argShift;
-                parts.Add(thisToken);
+                pattern.Add(thisSymbol);
             }
 
             var ruleMask = DoGetRuleMask(method);
 
-            SubstituteRuleMask(method, parts, ruleMask);
+            SubstituteRuleMask(method, pattern, ruleMask);
 
             var rule = new CilProduction
             (
-                left          : left,
-                parts         : parts.ToArray(),
-                instanceDeclaringType : method.IsStatic ? null : method.DeclaringType,
-                isContextRule : thisToken != null,
+                outcome       : outcome,
+                pattern       : pattern.ToArray(),
+                contextType   : method.IsStatic ? null : method.DeclaringType,
                 precedence    : GetPrecedence(),
                 actionBuilder :
                     code =>
@@ -148,7 +147,7 @@ namespace IronText.Framework
                         if (method.IsStatic)
                         {
                         }
-                        else if (thisToken != null)
+                        else if (thisSymbol != null)
                         {
                             code.LdRuleArg(0, method.DeclaringType);
                         }
@@ -166,7 +165,7 @@ namespace IronText.Framework
                         {
                             var param = method.GetParameters()[i];
                             int ruleArgIndex = NthEmptySlotIndex(ruleMask, i);
-                            if (thisToken != null)
+                            if (thisSymbol != null)
                             {
                                 ++ruleArgIndex;
                             }
@@ -193,7 +192,6 @@ namespace IronText.Framework
                     }
             );
 
-            rule.Hint = method;
             return new[] { rule };
         }
 

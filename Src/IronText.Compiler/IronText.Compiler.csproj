@@ -204,7 +204,7 @@
     <Compile Include="MetadataCompiler\LanguageData.cs" />
     <Compile Include="Reflection\Managed\IMetadataCollector.cs" />
     <Compile Include="Reflection\Managed\IScanDataCollector.cs" />
-    <Compile Include="Reflection\Managed\LanguageDefinition.cs" />
+    <Compile Include="Reflection\Managed\CilEbnfGrammar.cs" />
     <Compile Include="Reflection\Managed\MetadataCollector.cs" />
     <Compile Include="Reflection\Managed\MetadataException.cs" />
     <Compile Include="Reflection\Managed\ScanDataCollector.cs" />
@@ -233,9 +233,7 @@
   <ItemGroup>
     <Content Include="Algorithm\Unicode\ucd2cs.py" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="MetadataCompiler\MetadataParsing\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

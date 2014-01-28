@@ -31,14 +31,14 @@ namespace IronText.MetadataCompiler
         {
             this.logging = logging;
 
-            LanguageDefinition definition = null;
+            CilEbnfGrammar definition = null;
 
             logging.WithTimeLogging(
                 languageName.Name,
                 languageName.DefinitionType,
                 () =>
                 {
-                    definition = new LanguageDefinition(languageName.DefinitionType, logging);
+                    definition = new CilEbnfGrammar(languageName.DefinitionType, logging);
                 },
                 "parsing language definition");
                 
@@ -49,22 +49,20 @@ namespace IronText.MetadataCompiler
 
             _reportBuilders.AddRange(definition.ReportBuilders);
 
-            var tokenResolver = definition.SymbolResolver;
-
             var grammar = BuildGrammar(definition);
 //            var inliner = new ProductionInliner(grammar);
 //            grammar = inliner.Inline();
             return grammar;
         }
 
-        private static EbnfGrammar BuildGrammar(LanguageDefinition definition)
+        private static EbnfGrammar BuildGrammar(CilEbnfGrammar definition)
         {
             var result = new EbnfGrammar();
 
-            // Define grammar tokens
-            var tokenResolver = definition.SymbolResolver;
+            var symbolResolver = definition.SymbolResolver;
 
-            foreach (var cilSymbol in tokenResolver.Definitions)
+            // Define grammar tokens
+            foreach (var cilSymbol in symbolResolver.Definitions)
             {
                 Symbol symbol;
                 if (cilSymbol.Type == typeof(Exception))
@@ -73,7 +71,7 @@ namespace IronText.MetadataCompiler
                     symbol.Joint.Add(
                         new CilSymbol 
                         { 
-                            Type = typeof(Exception),
+                            Type       = typeof(Exception),
                             Symbol     = symbol,
                             Categories = SymbolCategory.DoNotDelete | SymbolCategory.DoNotInsert
                         });
@@ -88,13 +86,13 @@ namespace IronText.MetadataCompiler
 
             foreach (CilSymbolFeature<Precedence> feature in definition.Precedence)
             {
-                var symbol = tokenResolver.GetSymbol(feature.SymbolRef);
+                var symbol = symbolResolver.GetSymbol(feature.SymbolRef);
                 symbol.Precedence = feature.Value;
             }
 
             foreach (CilSymbolFeature<CilContextProvider> feature in definition.ContextProviders)
             {
-                var symbol = tokenResolver.GetSymbol(feature.SymbolRef);
+                var symbol = symbolResolver.GetSymbol(feature.SymbolRef);
                 if (symbol != null)
                 {
                     foreach (var contextType in feature.Value.GetAllContextTypes())
@@ -112,13 +110,13 @@ namespace IronText.MetadataCompiler
                 }
             }
 
-            result.Start = tokenResolver.GetSymbol(definition.Start);
+            result.Start = symbolResolver.GetSymbol(definition.Start);
 
             // Define grammar rules
             foreach (var cilProduction in definition.Productions)
             {
-                Symbol outcome = tokenResolver.GetSymbol(cilProduction.Left);
-                var pattern = Array.ConvertAll(cilProduction.Parts, tokenResolver.GetSymbol);
+                Symbol outcome = symbolResolver.GetSymbol(cilProduction.Outcome);
+                var pattern = Array.ConvertAll(cilProduction.Pattern, symbolResolver.GetSymbol);
 
                 // Try to find existing rules whith same token-signature
                 Production production;
@@ -126,7 +124,7 @@ namespace IronText.MetadataCompiler
                 {
                     ProductionContext context;
 
-                    var contextType = cilProduction.InstanceDeclaringType;
+                    var contextType = cilProduction.ContextType;
                     if (contextType == null)
                     {
                         context = ProductionContext.Global;
@@ -143,8 +141,6 @@ namespace IronText.MetadataCompiler
                 action.Joint.Add(cilProduction);
 
                 production.ExplicitPrecedence = cilProduction.Precedence;
-
-                cilProduction.Index = production.Index;
             }
 
             // Create conditions to allow referencing them from scan productions
@@ -160,7 +156,7 @@ namespace IronText.MetadataCompiler
 
                 foreach (var scanProd in cilCondition.Productions)
                 {
-                    SymbolBase outcome = GetScanProductionOutcomeSymbol(result, tokenResolver, scanProd.MainOutcome, scanProd.AllOutcomes);
+                    SymbolBase outcome = GetScanProductionOutcomeSymbol(result, symbolResolver, scanProd.MainOutcome, scanProd.AllOutcomes);
 
                     var scanProduction = new ScanProduction(
                         scanProd.Pattern,
@@ -175,7 +171,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var cilMerger in definition.Mergers)
             {
-                var symbol  = tokenResolver.GetSymbol(cilMerger.Symbol);
+                var symbol  = symbolResolver.GetSymbol(cilMerger.Symbol);
                 var merger = new Merger(symbol) { Joint = { cilMerger } };
                 result.Mergers.Add(merger);
             }

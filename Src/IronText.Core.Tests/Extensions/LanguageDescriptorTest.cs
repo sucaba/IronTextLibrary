@@ -19,7 +19,7 @@ namespace IronText.Tests.Extensibility
         public void LanguageDescriptorCollectDataFromTypeMetadata()
         {
             ILogging logging = new MemoryLogging();
-            var target = new LanguageDefinition(typeof(IMetadtaTest0), logging);
+            var target = new CilEbnfGrammar(typeof(IMetadtaTest0), logging);
             Assert.AreEqual(CilSymbolRef.Create(typeof(void)), target.Start);
             Assert.AreEqual(2, target.SymbolResolver.Definitions.Count());
             Assert.AreEqual(
@@ -48,10 +48,10 @@ namespace IronText.Tests.Extensibility
                 {
                     yield return new CilProduction
                     (
-                        left : CilSymbolRef.Create(typeof(void)),
-                        parts : new[] { CilSymbolRef.Create(typeof(int)) },
+                        outcome : CilSymbolRef.Create(typeof(void)),
+                        pattern : new[] { CilSymbolRef.Create(typeof(int)) },
                         actionBuilder: code => { code.Emit(il => il.Ldnull().Ret()); },
-                        instanceDeclaringType : typeof(IMetadtaTest0)
+                        contextType : typeof(IMetadtaTest0)
                     );
                 }
             }

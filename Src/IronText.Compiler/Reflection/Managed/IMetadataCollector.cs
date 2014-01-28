@@ -6,7 +6,9 @@ namespace IronText.Reflection.Managed
     interface IMetadataCollector
     {
         void AddMeta(ICilMetadata meta);
-        void AddRule(ICilMetadata meta, CilProduction parseRule);
-        void AddToken(CilSymbolRef token);
+
+        void AddProduction(ICilMetadata meta, CilProduction production);
+
+        void AddSymbol(CilSymbolRef symbol);
     }
 }

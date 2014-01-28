@@ -1,0 +1,195 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using IronText.Extensibility;
+using IronText.Framework;
+using IronText.Logging;
+using IronText.Reflection;
+using IronText.Reporting;
+
+namespace IronText.Reflection.Managed
+{
+    internal class CilEbnfGrammar
+    {
+        private readonly List<ICilMetadata>                 metadata;
+        private readonly List<CilProduction>                productions;
+        private readonly List<CilScanCondition>             scanConditions;
+        private readonly CilMerger[]                        mergers;
+        private readonly List<CilSymbolFeature<Precedence>> precedence;
+
+        public CilEbnfGrammar(Type definitionType, ILogging logging)
+        {
+            this.IsValid = true;
+
+            var startMeta = MetadataParser.EnumerateAndBind(definitionType);
+            if (startMeta.Count() == 0)
+            {
+                throw new InvalidOperationException(
+                    string.Format(
+                        "No metadata found in language definition '{0}'",
+                        definitionType.FullName));
+            }
+
+            this.SymbolResolver = new CilSymbolRefResolver();
+
+            this.Start = CilSymbolRef.Create(typeof(void));
+
+            var collector = new MetadataCollector(logging);
+            collector.AddSymbol(Start);
+            foreach (var meta in startMeta)
+            {
+                collector.AddMeta(meta);
+            }
+
+            if (collector.HasInvalidData)
+            {
+                this.IsValid = false;
+            }
+
+            this.metadata = collector.Metadata;
+            this.productions = collector.Productions;
+
+            foreach (var tid in collector.Symbols)
+            {
+                SymbolResolver.Link(tid);
+            }
+
+            var categories = new [] { SymbolCategory.Beacon, SymbolCategory.DoNotInsert, SymbolCategory.DoNotDelete, SymbolCategory.ExplicitlyUsed };
+
+            foreach (var category in categories)
+            {
+                foreach (var symbol in metadata.SelectMany(m => m.GetSymbolsInCategory(category)))
+                {
+                    var def = SymbolResolver.Resolve(symbol);
+                    def.Categories |= category; 
+                }
+            }
+
+            if (productions.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    string.Format(
+                        "Language definition '{0}' should have at least one parse production",
+                        definitionType.FullName));
+            }
+
+            this.mergers 
+                = metadata
+                    .SelectMany(meta => meta.GetMergers(collector.Symbols))
+                    .ToArray();
+
+            var terminals = collector.Symbols.Except(productions.Select(r => r.Outcome).Distinct()).ToArray();
+
+            var scanDataCollector = new ScanDataCollector(terminals, logging);
+            scanDataCollector.AddCondition(definitionType);
+            if (scanDataCollector.HasInvalidData)
+            {
+                this.IsValid = false;
+            }
+
+            scanConditions = scanDataCollector.ScanConditions;
+            LinkRelatedTokens(scanConditions);
+
+            var allTerms = (from t in scanDataCollector.Terminals
+                           let def = SymbolResolver.Resolve(t)
+                           where def != null
+                           select def)
+                           .Distinct();
+            var termsProducedByScanner =
+                            (from cond in scanDataCollector.ScanConditions
+                             from prod in cond.Productions
+                             from outcome in prod.AllOutcomes
+                             let def = SymbolResolver.Resolve(outcome)
+                             where def != null
+                             select def)
+                            .Distinct();
+            var undefinedTerminals = allTerms
+                .Where(symbol => !IsSpecialSymbol(symbol))
+                .Except(termsProducedByScanner);
+
+            CheckAllScanRulesDefined(undefinedTerminals, definitionType, logging);
+
+            precedence = metadata.SelectMany(m => m.GetSymbolPrecedence()).ToList();
+
+            ContextProviders = metadata.SelectMany((m, index) => m.GetSymbolContextProviders());
+
+            this.ReportBuilders = metadata.SelectMany(m => m.GetReportBuilders()).ToArray();
+        }
+
+        private void CheckAllScanRulesDefined(
+            IEnumerable<CilSymbol> undefinedTerminals,
+            Type                   member,
+            ILogging               logging)
+        {
+            if (undefinedTerminals.Count() == 0)
+            {
+                return;
+            }
+
+            var message = new StringBuilder("Undefined scan or parse productions for tokens: ");
+            bool first = true;
+            foreach (var term in undefinedTerminals)
+            {
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    message.Append(", ");
+                }
+
+                message.Append(term.ToString());
+            }
+
+            logging.Write(
+                new LogEntry
+                {
+                    Severity = Severity.Warning,
+                    Message  = message.ToString(),
+                    Member   = member,
+                });
+        }
+
+        public bool IsValid { get; private set; }
+
+        private void LinkRelatedTokens(List<CilScanCondition> conditions)
+        {
+            foreach (var condition in conditions)
+            {
+                foreach (var scanProd in condition.Productions)
+                {
+                    foreach (CilSymbolRef symbol in scanProd.AllOutcomes)
+                    {
+                        if (SymbolResolver.Contains(symbol))
+                        {
+                            SymbolResolver.Link(symbol);
+                        }
+                    }
+                }
+            }
+        }
+
+        public CilSymbolRef            Start          { get; private set; }
+
+        public ReportBuilder[]         ReportBuilders { get; private set; }
+
+        public ICilSymbolResolver      SymbolResolver { get; private set; }
+
+        public IList<CilProduction>    Productions    { get { return productions; } }
+
+        public IList<CilMerger>        Mergers        { get { return mergers; } }
+
+        public IList<CilScanCondition> ScanConditions { get { return scanConditions; } }
+
+        public IEnumerable<CilSymbolFeature<Precedence>> Precedence { get { return precedence; } }
+
+        public IEnumerable<CilSymbolFeature<CilContextProvider>> ContextProviders { get; private set; }
+
+        private static bool IsSpecialSymbol(CilSymbol symbol)
+        {
+            return symbol.Type == typeof(Exception);
+        }
+    }
+}
