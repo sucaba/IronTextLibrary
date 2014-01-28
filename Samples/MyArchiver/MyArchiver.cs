@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using IronText.Framework;
 using IronText.Lib;
+using IronText.Runtime;
 
 namespace Samples
 {

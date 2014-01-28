@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using IronText.Framework;
+using IronText.Logging;
+using IronText.Runtime;
 
 namespace Samples
 {

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using IronText.Framework;
 using IronText.Lib.Ctem;
+using IronText.Runtime;
 using Microsoft.CSharp;
 
 namespace Samples

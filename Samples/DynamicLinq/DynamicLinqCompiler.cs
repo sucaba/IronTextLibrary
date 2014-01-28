@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using IronText.Framework;
+using IronText.Logging;
+using IronText.Runtime;
 
 namespace Samples
 {
