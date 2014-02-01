@@ -292,7 +292,7 @@ namespace IronText.MetadataCompiler
             return context
                 .Method()   
                     .Private.Static
-                    .Returning(context.Types.Import(typeof(EbnfGrammar)))
+                    .Returning(context.Types.Import(typeof(Grammar)))
                     .Named(CreateGrammarMethodName)
                         .BeginArgs()
                         .EndArgs()
@@ -448,7 +448,7 @@ namespace IronText.MetadataCompiler
                 .Call(emit.Methods.Method(
                     _=>_
                         .StartSignature
-                        .Returning(emit.Types.Import(typeof(EbnfGrammar)))
+                        .Returning(emit.Types.Import(typeof(Grammar)))
                         .DecaringType(declaringTypeRef)
                         .Named(CreateGrammarMethodName)
                         .BeginArgs()

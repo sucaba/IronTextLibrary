@@ -13,9 +13,9 @@ namespace IronText.MetadataCompiler
 {
     class TokenIdentitiesSerializer
     {
-        private readonly EbnfGrammar grammar;
+        private readonly Grammar grammar;
 
-        public TokenIdentitiesSerializer(EbnfGrammar grammar)
+        public TokenIdentitiesSerializer(Grammar grammar)
         {
             this.grammar = grammar;
         }

@@ -6,7 +6,7 @@ using IronText.Reflection;
 
 namespace IronText.Analysis
 {
-    interface IEbnfConverter
+    interface IGrammarConverter
     {
         T Convert<T>(T source) where T : SymbolBase;
 

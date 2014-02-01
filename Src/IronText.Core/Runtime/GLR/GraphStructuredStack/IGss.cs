@@ -18,7 +18,7 @@ namespace IronText.Runtime
 
         Gss<T> CloneWithoutData();
 
-        void WriteGraph(IGraphView view, RuntimeEbnfGrammar grammar, int[] stateToSymbol);
+        void WriteGraph(IGraphView view, RuntimeGrammar grammar, int[] stateToSymbol);
 
         void PushLayer();
 

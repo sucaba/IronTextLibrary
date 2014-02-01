@@ -4,9 +4,9 @@ namespace IronText.Runtime
 {
     sealed class ResourceAllocator : IResourceAllocator
     {
-        private readonly RuntimeEbnfGrammar grammar;
+        private readonly RuntimeGrammar grammar;
 
-        public ResourceAllocator(RuntimeEbnfGrammar grammar)
+        public ResourceAllocator(RuntimeGrammar grammar)
         {
             this.grammar = grammar;
         }

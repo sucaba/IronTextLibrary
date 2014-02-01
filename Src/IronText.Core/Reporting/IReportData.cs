@@ -16,7 +16,7 @@ namespace IronText.Reporting
 
         LanguageName Name { get; }
 
-        EbnfGrammar Grammar { get; }
+        Grammar Grammar { get; }
 
         IScannerAutomata GetScanModeDfa(Type scanModeType);
 

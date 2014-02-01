@@ -70,7 +70,7 @@ namespace IronText.Runtime
             return HLoc.Sum(errorItems);
         }
 
-        public string FormatMessage(RuntimeEbnfGrammar grammar, List<Msg> source, List<Msg> corrected)
+        public string FormatMessage(RuntimeGrammar grammar, List<Msg> source, List<Msg> corrected)
         {
             var output = new StringBuilder();
             ProcessMessageFormat(grammar, source, corrected, output);
@@ -78,7 +78,7 @@ namespace IronText.Runtime
         }
 
         private void ProcessMessageFormat(
-            RuntimeEbnfGrammar grammar,
+            RuntimeGrammar grammar,
             List<Msg>          source,
             List<Msg>          corrected,
             StringBuilder      output)
@@ -117,7 +117,7 @@ namespace IronText.Runtime
             }
         }
 
-        private string FormatToken(RuntimeEbnfGrammar grammar, Msg msg)
+        private string FormatToken(RuntimeGrammar grammar, Msg msg)
         {
             if (msg.Id == PredefinedTokens.Eoi)
             {

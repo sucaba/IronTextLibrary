@@ -84,8 +84,8 @@
     <Compile Include="Algorithm\Unicode\UnicodeIntSetType.cs" />
     <Compile Include="Algorithm\Unicode\UnicodeIntSetType.Data.cs" />
     <Compile Include="Algorithm\Unicode\UnicodeIntSetType.Disp.cs" />
-    <Compile Include="Analysis\IEbnfConverter.cs" />
-    <Compile Include="Analysis\IndexPreservingEbnfConverter.cs" />
+    <Compile Include="Analysis\IGrammarConverter.cs" />
+    <Compile Include="Analysis\IndexPreservingGrammarConverter.cs" />
     <Compile Include="Analysis\IProductionInliner.cs" />
     <Compile Include="Analysis\ProductionInliner.cs" />
     <Compile Include="Automata\Lalr1\CanonicalLrDfaTable.cs" />
@@ -176,7 +176,7 @@
     <Compile Include="Lib\RegularAst\IAstNodeVisitor.cs" />
     <Compile Include="Lib\ScannerExpressions\Chr.cs" />
     <Compile Include="Lib\ScannerExpressions\ScannerSyntax.cs" />
-    <Compile Include="Analysis\EbnfGrammarAnalysis.cs" />
+    <Compile Include="Analysis\GrammarAnalysis.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Bootstrap\BootstrapLanguage.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Bootstrap\BootstrapScanner.cs" />
     <Compile Include="MetadataCompiler\CompiledLanguageProvider.cs" />
@@ -204,7 +204,7 @@
     <Compile Include="MetadataCompiler\LanguageData.cs" />
     <Compile Include="Reflection\Managed\IMetadataCollector.cs" />
     <Compile Include="Reflection\Managed\IScanDataCollector.cs" />
-    <Compile Include="Reflection\Managed\CilEbnfGrammar.cs" />
+    <Compile Include="Reflection\Managed\CilGrammar.cs" />
     <Compile Include="Reflection\Managed\MetadataCollector.cs" />
     <Compile Include="Reflection\Managed\MetadataException.cs" />
     <Compile Include="Reflection\Managed\ScanDataCollector.cs" />

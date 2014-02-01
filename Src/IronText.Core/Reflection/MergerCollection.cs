@@ -6,9 +6,9 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class MergerCollection : IndexedCollection<Merger, IEbnfEntities>
+    public class MergerCollection : IndexedCollection<Merger, ISharedGrammarEntities>
     {
-        public MergerCollection(IEbnfEntities ebnfContext)
+        public MergerCollection(ISharedGrammarEntities ebnfContext)
             : base(ebnfContext)
         {
         }

@@ -6,7 +6,7 @@ namespace IronText.Runtime
 {
     class PanicModeErrorRecovery : IReceiver<Msg>
     {
-        private readonly RuntimeEbnfGrammar grammar;
+        private readonly RuntimeGrammar grammar;
         private readonly IPushParser exit;
         private readonly ILogging logging;
         private Loc errorLocation = Loc.Unknown;
@@ -14,7 +14,7 @@ namespace IronText.Runtime
         private readonly List<Msg> collectedInput = new List<Msg>();
         private IReceiver<Msg> validPrefixVerifier;
 
-        public PanicModeErrorRecovery(RuntimeEbnfGrammar grammar, IPushParser exit, ILogging logging)
+        public PanicModeErrorRecovery(RuntimeGrammar grammar, IPushParser exit, ILogging logging)
         {
             this.grammar = grammar;
             this.exit    = exit;

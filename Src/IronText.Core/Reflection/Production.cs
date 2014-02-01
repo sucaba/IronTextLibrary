@@ -10,7 +10,7 @@ using IronText.Collections;
 namespace IronText.Reflection
 {
     [DebuggerDisplay("{DebugProductionText}")]
-    public sealed class Production : IndexableObject<IEbnfEntities>
+    public sealed class Production : IndexableObject<ISharedGrammarEntities>
     {
         private ProductionAction _action;
         
@@ -99,7 +99,7 @@ namespace IronText.Reflection
             return unchecked(OutcomeToken + PatternTokens.Sum());
         }
 
-        public string Describe(EbnfGrammar grammar, int pos)
+        public string Describe(Grammar grammar, int pos)
         {
             using (var writer = new StringWriter())
             {
@@ -108,7 +108,7 @@ namespace IronText.Reflection
             }
         }
 
-        public string Describe(EbnfGrammar grammar)
+        public string Describe(Grammar grammar)
         {
             using (var writer = new StringWriter())
             {
@@ -140,7 +140,7 @@ namespace IronText.Reflection
             }
         }
 
-        public void Describe(EbnfGrammar grammar, TextWriter output)
+        public void Describe(Grammar grammar, TextWriter output)
         {
             output.Write("{0} ->", Outcome.Name);
 

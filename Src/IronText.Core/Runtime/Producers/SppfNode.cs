@@ -66,7 +66,7 @@ namespace IronText.Runtime
 #endif
         }
 
-        public int GetTokenId(EbnfGrammar grammar)
+        public int GetTokenId(Grammar grammar)
         {
             if (Id < 0)
             {
@@ -164,7 +164,7 @@ namespace IronText.Runtime
             }
         }
 
-        public void WriteIndented(EbnfGrammar grammar, TextWriter output, int indentLevel)
+        public void WriteIndented(Grammar grammar, TextWriter output, int indentLevel)
         {
             const int IndentStep = 2;
 
@@ -198,7 +198,7 @@ namespace IronText.Runtime
             }
         }
 
-        public void WriteGraph(IGraphView graph, EbnfGrammar grammar, bool showRules = false)
+        public void WriteGraph(IGraphView graph, Grammar grammar, bool showRules = false)
         {
             var graphWriter = new SppfGraphWriter(grammar, graph, showRules: showRules);
             graphWriter.WriteGraph(this);

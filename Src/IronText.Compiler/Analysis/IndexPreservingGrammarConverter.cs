@@ -7,11 +7,11 @@ using IronText.Reflection;
 
 namespace IronText.Analysis
 {
-    class IndexPreservingEbnfConverter : IEbnfConverter
+    class IndexPreservingGrammarConverter : IGrammarConverter
     {
-        private readonly EbnfGrammar destination;
+        private readonly Grammar destination;
 
-        public IndexPreservingEbnfConverter(EbnfGrammar source, EbnfGrammar destination)
+        public IndexPreservingGrammarConverter(Grammar source, Grammar destination)
         {
             this.destination = destination;
 

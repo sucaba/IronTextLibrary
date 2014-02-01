@@ -99,7 +99,7 @@
     <Compile Include="Framework\Attributes\LanguageServiceAttributeTest.cs" />
     <Compile Include="Framework\Attributes\ThisAsTokenAttributeTest.cs" />
     <Compile Include="Framework\CompositeProductionActionTest.cs" />
-    <Compile Include="Framework\RuntimeEbnfGrammarTest.cs" />
+    <Compile Include="Framework\RuntimeGrammarTest.cs" />
     <Compile Include="Framework\InheritanceTest.cs" />
     <Compile Include="Framework\LineColumnHandlingTest.cs" />
     <Compile Include="Framework\LocalContextsTest.cs" />

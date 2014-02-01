@@ -17,7 +17,7 @@ namespace IronText.Reflection
 
         public Symbol(string name)
         {
-            this.Name             = name ?? EbnfGrammar.UnnamedTokenName;
+            this.Name             = name ?? Grammar.UnnamedTokenName;
             this._productions     = new ReferenceCollection<Production>();
             this.ProvidedContexts = new ReferenceCollection<ProductionContext>();
             this.Joint            = new Joint();

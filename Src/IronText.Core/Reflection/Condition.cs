@@ -7,7 +7,7 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class Condition : IndexableObject<IEbnfEntities>
+    public class Condition : IndexableObject<ISharedGrammarEntities>
     {
         public Condition(string name)
         {

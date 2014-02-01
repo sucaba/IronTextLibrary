@@ -12,12 +12,12 @@ namespace IronText.Compiler.Analysis
     /// <summary>
     /// Prebuilds various tables related to <see cref="IronText.Framework.BnfGrammar"/>
     /// </summary>
-    sealed class EbnfGrammarAnalysis
+    sealed class GrammarAnalysis
     {
-        private readonly EbnfGrammar grammar;
+        private readonly Grammar grammar;
         private readonly IBuildtimeNullableFirstTables tables;
 
-        public EbnfGrammarAnalysis(EbnfGrammar grammar)
+        public GrammarAnalysis(Grammar grammar)
         {
             this.grammar = grammar;
             this.tables = new NullableFirstTables(grammar);

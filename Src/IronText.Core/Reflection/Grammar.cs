@@ -14,82 +14,51 @@ namespace IronText.Reflection
     /// - Predefined entities should not be deletable.
     /// - Organize API to avoid IsPredefined checks.
     /// </summary>
-    public sealed class Grammar : IEbnfEntities
+    public sealed class Grammar : ISharedGrammarEntities
     {
         public const string UnnamedTokenName = "<unnamed token>";
         public const string UnknownTokenName = "<unknown token>";
 
-        #region Reserved tokens
-
-        internal const int NoToken             = -1;
-        internal const int EpsilonToken        = 0;
-        internal const int PropogatedToken     = 1;
-
-        public const int ReservedTokenCount    = 2;
-
-        #endregion Reserved tokens
-
-        #region Predefined tokens
-
-        public const int AugmentedStartToken   = 2;
-
-        public const int EoiToken              = 3;
-
-        public const int ErrorToken            = 4;
-
-        public const int PredefinedSymbolCount = 5;
-
-        #endregion Predefined tokens
-
-        private readonly ProductionCollection         productions;
-        private readonly ProductionActionCollection   productionActions;
-        private readonly SymbolCollection             symbols;
-        private readonly ConditionCollection          conditions;
-        private readonly MergerCollection             mergers;
-        private readonly MatcherCollection            matchers;
-        private readonly ProductionContextCollection  reductionContexts;
-
         public Grammar()
         {
-            productions       = new ProductionCollection(this);
-            productionActions = new ProductionActionCollection(this);
-            symbols           = new SymbolCollection(this);
-            conditions        = new ConditionCollection(this);
-            matchers          = new MatcherCollection(this);
-            mergers           = new MergerCollection(this);
-            reductionContexts = new ProductionContextCollection(this);
+            Productions        = new ProductionCollection(this);
+            Symbols            = new SymbolCollection(this);
+            Conditions         = new ConditionCollection(this);
+            Matchers           = new MatcherCollection(this);
+            Mergers            = new MergerCollection(this);
+            ProductionContexts = new ProductionContextCollection(this);
 
-            for (int i = PredefinedSymbolCount; i != 0; --i)
+            for (int i = PredefinedTokens.Count; i != 0; --i)
             {
                 Symbols.Add(null); // stub
             }
 
-            Symbols[PropogatedToken]      = new Symbol("#");
-            Symbols[EpsilonToken]         = new Symbol("$eps");
-            Symbols[AugmentedStartToken]  = new Symbol("$start");
-            Symbols[EoiToken]             = new Symbol("$")
+            Symbols[PredefinedTokens.Propagated]      = new Symbol("#");
+            Symbols[PredefinedTokens.Epsilon]         = new Symbol("$eps");
+            Symbols[PredefinedTokens.AugmentedStart]  = new Symbol("$start");
+            Symbols[PredefinedTokens.Eoi]             = new Symbol("$")
                                           { 
                                               Categories = SymbolCategory.DoNotInsert 
                                                          | SymbolCategory.DoNotDelete 
                                           };
-            Symbols[ErrorToken]           = new Symbol("$error");
+            Symbols[PredefinedTokens.Error]           = new Symbol("$error");
 
-            AugmentedProduction = Productions.Define((Symbol)Symbols[AugmentedStartToken], new Symbol[] { null });
+            AugmentedProduction = Productions.Define((Symbol)Symbols[PredefinedTokens.AugmentedStart], new Symbol[] { null });
         }
 
-        public Production                  AugmentedProduction { get; private set; }
+        public Production           AugmentedProduction { get; private set; }
 
-        public SymbolCollection            Symbols             { get { return symbols; } }
+        public SymbolCollection     Symbols             { get; private set; }
 
-        public ProductionCollection        Productions         { get { return productions; } }
+        public ProductionCollection Productions         { get; private set; }
 
-        public MatcherCollection           Matchers            { get { return matchers; } }
+        public MatcherCollection    Matchers            { get; private set; }
 
-        public ConditionCollection         Conditions          { get { return conditions; } }
+        public ConditionCollection  Conditions          { get; private set; }
 
-        public MergerCollection            Mergers             { get { return mergers; } }
+        public MergerCollection     Mergers             { get; private set; }
 
-        public ProductionContextCollection ProductionContexts  { get { return reductionContexts; } }
+        public ProductionContextCollection ProductionContexts  { get; private set; }
 
         public Symbol Start
         {

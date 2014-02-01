@@ -172,7 +172,7 @@
     <Compile Include="Collections\IIndexable.cs" />
     <Compile Include="Collections\IOwner.cs" />
     <Compile Include="Reflection\CompositeProductionAction.cs" />
-    <Compile Include="Reflection\IEbnfEntities.cs" />
+    <Compile Include="Reflection\ISharedGrammarEntities.cs" />
     <Compile Include="Reflection\Merger.cs" />
     <Compile Include="Reflection\MergerCollection.cs" />
     <Compile Include="Runtime\Tables\NullableFirstTables.cs" />
@@ -307,10 +307,10 @@
     <Compile Include="Runtime\Producers\IProducer.cs" />
     <Compile Include="Runtime\Deterministic\TaggedStack.cs" />
     <Compile Include="Runtime\GLR\RnGlrParser.cs" />
-    <Compile Include="Runtime\RuntimeEbnfGrammar.cs" />
+    <Compile Include="Runtime\RuntimeGrammar.cs" />
     <Compile Include="Runtime\Scanning\ScanCursor.cs" />
     <Compile Include="Runtime\Scanning\Scanner.cs" />
-    <Compile Include="Reflection\EbnfGrammar.cs" />
+    <Compile Include="Reflection\Grammar.cs" />
     <Compile Include="Runtime\Language.cs" />
     <Compile Include="Runtime\Deterministic\DeterministicParser.cs" />
     <Compile Include="Logging\Loc.cs" />

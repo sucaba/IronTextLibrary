@@ -41,7 +41,7 @@ namespace IronText.MetadataCompiler
             result = new LanguageData();
 
             ICilGrammarBuilder grammarBuilder = new CilGrammarBuilder();
-            EbnfGrammar grammar = grammarBuilder.Build(languageName, logging);
+            Grammar grammar = grammarBuilder.Build(languageName, logging);
 
             var reportBuilders = new List<ReportBuilder>(grammarBuilder.ReportBuilders);
 
@@ -60,7 +60,7 @@ namespace IronText.MetadataCompiler
             // Build parsing tables
             ILrDfa parserDfa = null;
 
-            var grammarAnalysis = new EbnfGrammarAnalysis(grammar);
+            var grammarAnalysis = new GrammarAnalysis(grammar);
             logging.WithTimeLogging(
                 languageName.Name,
                 languageName.DefinitionType,
@@ -115,7 +115,7 @@ namespace IronText.MetadataCompiler
             return true;
         }
 
-        private Dictionary<Type, ITdfaData> CompileScannerTdfas(EbnfGrammar grammar)
+        private Dictionary<Type, ITdfaData> CompileScannerTdfas(Grammar grammar)
         {
             var result = new Dictionary<Type,ITdfaData>();
 
@@ -188,7 +188,7 @@ namespace IronText.MetadataCompiler
             return true;
         }
 
-        private static List<ProductionContextLink> CollectLocalContexts(EbnfGrammar grammar, ILrDfa lrDfa)
+        private static List<ProductionContextLink> CollectLocalContexts(Grammar grammar, ILrDfa lrDfa)
         {
             var result = new List<ProductionContextLink>();
 

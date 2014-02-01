@@ -10,7 +10,7 @@ namespace IronText.Runtime
     {
         LanguageName Name { get; }
 
-        EbnfGrammar  Grammar { get; }
+        Grammar  Grammar { get; }
 
         /// <summary>
         /// Determines whether parsing algorithm being used is deterministic.

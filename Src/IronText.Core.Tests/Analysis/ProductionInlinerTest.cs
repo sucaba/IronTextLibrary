@@ -13,8 +13,8 @@ namespace IronText.Tests.Analysis
     [TestFixture]
     public class ProductionInlinerTest
     {
-        private EbnfGrammar originalGrammar;
-        private EbnfGrammar resultGrammar;
+        private Grammar originalGrammar;
+        private Grammar resultGrammar;
 
         private Symbol start;
         private Symbol prefix;
@@ -30,7 +30,7 @@ namespace IronText.Tests.Analysis
         [SetUp]
         public void SetUp()
         {
-            this.originalGrammar = new EbnfGrammar();
+            this.originalGrammar = new Grammar();
             var symbols = originalGrammar.Symbols;
             this.start  = symbols.Add("start");
             this.prefix = symbols.Add("prefix");

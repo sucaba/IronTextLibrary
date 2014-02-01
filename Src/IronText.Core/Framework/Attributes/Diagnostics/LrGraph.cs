@@ -12,7 +12,7 @@ namespace IronText.Framework
 {
     sealed class LrGraph
     {
-        private readonly EbnfGrammar grammar;
+        private readonly Grammar grammar;
         private readonly IReportData data;
 
         public LrGraph(IReportData data)

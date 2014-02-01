@@ -14,7 +14,7 @@ namespace IronText.Runtime
     {
         private const int InitialValueStackSize = 32;
 
-        private readonly RuntimeEbnfGrammar     grammar;
+        private readonly RuntimeGrammar     grammar;
         private readonly TransitionDelegate     actionTable;
 
         private readonly TaggedStack<TNode> stateStack;
@@ -29,7 +29,7 @@ namespace IronText.Runtime
 
         public DeterministicParser(
             IProducer<TNode>      producer,
-            RuntimeEbnfGrammar     grammar,
+            RuntimeGrammar     grammar,
             TransitionDelegate    actionTable,
             ResourceAllocator     allocator,
             ILogging              logging
@@ -47,7 +47,7 @@ namespace IronText.Runtime
 
         private DeterministicParser(
             IProducer<TNode>      producer,
-            RuntimeEbnfGrammar    grammar,
+            RuntimeGrammar    grammar,
             TransitionDelegate    actionTable,
             ResourceAllocator     allocator,
             ILogging              logging,

@@ -6,12 +6,12 @@ using NUnit.Framework;
 namespace IronText.Tests.Framework
 {
     [TestFixture]
-    public class RuntimeBnfGrammarTest
+    public class RuntimeGrammarTest
     {
         [Test]
         public void IsNullableTest()
         {
-            var grammar = new EbnfGrammar();
+            var grammar = new Grammar();
 
             var S = grammar.Symbols.Add("S");
             var a = grammar.Symbols.Add("a");
@@ -25,7 +25,7 @@ namespace IronText.Tests.Framework
             grammar.Productions.Define(A, new Symbol[0]);
             grammar.Productions.Define(B, new Symbol[0]);
 
-            var target = new RuntimeEbnfGrammar(grammar);
+            var target = new RuntimeGrammar(grammar);
 
             Assert.IsTrue(target.IsNullable(A.Index));
             Assert.IsTrue(target.IsNullable(B.Index));

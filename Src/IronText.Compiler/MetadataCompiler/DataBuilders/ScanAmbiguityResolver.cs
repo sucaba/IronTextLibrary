@@ -35,7 +35,7 @@ namespace IronText.MetadataCompiler
         /// Define ambiguous tokens
         /// </summary>
         /// <param name="grammar"></param>
-        void DefineAmbiguities(EbnfGrammar grammar);
+        void DefineAmbiguities(Grammar grammar);
     }
 
     class ScanAmbiguityResolver : IScanAmbiguityResolver
@@ -126,7 +126,7 @@ namespace IronText.MetadataCompiler
             state.Actions.Sort();
         }
 
-        public void DefineAmbiguities(EbnfGrammar grammar)
+        public void DefineAmbiguities(Grammar grammar)
         {
             foreach (var prod in stateToTokenProducer.Values)
             {

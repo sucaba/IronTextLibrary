@@ -24,11 +24,11 @@ namespace IronText.Automata.Lalr1
         private readonly BitSetType TokenSet;
         private BitSetType StateSet;
 
-        private readonly EbnfGrammarAnalysis grammar;
+        private readonly GrammarAnalysis grammar;
 
         private DotState[] states;
 
-        public Lalr1Dfa(EbnfGrammarAnalysis grammar, LrTableOptimizations optimizations)
+        public Lalr1Dfa(GrammarAnalysis grammar, LrTableOptimizations optimizations)
         {
             this.grammar       = grammar;
             this.Optimizations = optimizations;
@@ -74,7 +74,7 @@ namespace IronText.Automata.Lalr1
             }
         }
 
-        public EbnfGrammarAnalysis Grammar { get { return grammar; } }
+        public GrammarAnalysis GrammarAnalysis { get { return grammar; } }
 
         public DotState[] States { get { return this.states; } }
 
@@ -363,7 +363,7 @@ namespace IronText.Automata.Lalr1
         }
 
         // TODO: Performance
-        private static void CollectClosureLookaheads(IDotItemSet result, EbnfGrammarAnalysis grammar)
+        private static void CollectClosureLookaheads(IDotItemSet result, GrammarAnalysis grammar)
         {
             int count = result.Count;
             if (count == 0)

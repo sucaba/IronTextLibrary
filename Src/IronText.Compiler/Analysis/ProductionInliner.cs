@@ -10,18 +10,18 @@ namespace IronText.Analysis
 {
     public class ProductionInliner : IProductionInliner
     {
-        private readonly EbnfGrammar grammar;
+        private readonly Grammar grammar;
 
-        public ProductionInliner(EbnfGrammar sourceGrammar)
+        public ProductionInliner(Grammar sourceGrammar)
         {
             this.grammar = sourceGrammar;
         }
 
-        public EbnfGrammar Inline()
+        public Grammar Inline()
         {
-            var result = new EbnfGrammar();
+            var result = new Grammar();
 
-            IEbnfConverter converter = new IndexPreservingEbnfConverter(grammar, result);
+            IGrammarConverter converter = new IndexPreservingGrammarConverter(grammar, result);
 
             var symbolsToInline = new HashSet<Symbol>();
 

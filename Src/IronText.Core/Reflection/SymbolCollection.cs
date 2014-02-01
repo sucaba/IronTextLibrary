@@ -6,9 +6,9 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class SymbolCollection : IndexedCollection<SymbolBase, IEbnfEntities>
+    public class SymbolCollection : IndexedCollection<SymbolBase, ISharedGrammarEntities>
     {
-        public SymbolCollection(IEbnfEntities context)
+        public SymbolCollection(ISharedGrammarEntities context)
             : base(context)
         {
         }

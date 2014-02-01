@@ -15,7 +15,7 @@ namespace IronText.Runtime
 
     sealed class RnGlrParser<T> : IPushParser
     {
-        private readonly RuntimeEbnfGrammar    grammar;
+        private readonly RuntimeGrammar    grammar;
         private readonly int[]                conflictActionsTable;
         private readonly int[]                stateToPriorToken;
         private readonly TransitionDelegate   transition;
@@ -37,7 +37,7 @@ namespace IronText.Runtime
         private bool isVerifier;
 
         public RnGlrParser(
-            RuntimeEbnfGrammar   grammar,
+            RuntimeGrammar   grammar,
             int[]               tokenComplexity,
             TransitionDelegate  transition,
             int[]               stateToPriorToken,
@@ -59,7 +59,7 @@ namespace IronText.Runtime
         }
 
         private RnGlrParser(
-            RuntimeEbnfGrammar   grammar,
+            RuntimeGrammar   grammar,
             int[]               tokenComplexity,
             TransitionDelegate  transition,
             int[]               stateToPriorToken,

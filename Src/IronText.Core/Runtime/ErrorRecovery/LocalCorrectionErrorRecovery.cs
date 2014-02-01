@@ -68,12 +68,12 @@ namespace IronText.Runtime
                 ("Expected %0 %1 before $1 but got $0.") // ("$0 before $1 is replaced by %0 %1." ) 
                 { Insertion, Insertion, 1, }, 
         };
-        private readonly RuntimeEbnfGrammar grammar;
+        private readonly RuntimeGrammar grammar;
         private readonly int[] terms;
         private readonly ILogging logging;
 
         public LocalCorrectionErrorRecovery(
-            RuntimeEbnfGrammar  grammar,
+            RuntimeGrammar  grammar,
             IPushParser exit,
             ILogging    logging)
         {

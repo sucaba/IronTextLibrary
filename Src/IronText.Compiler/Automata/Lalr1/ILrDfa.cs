@@ -9,7 +9,7 @@ namespace IronText.Automata.Lalr1
 {
     interface ILrDfa
     {
-        EbnfGrammarAnalysis Grammar { get; }
+        GrammarAnalysis GrammarAnalysis { get; }
 
         LrTableOptimizations Optimizations { get; }
 

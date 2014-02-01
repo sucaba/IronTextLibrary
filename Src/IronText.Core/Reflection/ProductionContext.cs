@@ -6,7 +6,7 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class ProductionContext : IndexableObject<IEbnfEntities>
+    public class ProductionContext : IndexableObject<ISharedGrammarEntities>
     {
         public static readonly ProductionContext Global = new ProductionContext("$global");
 

@@ -14,7 +14,7 @@ namespace IronText.Tests.Lib.IL.Generators
         [Test]
         public void Test()
         {
-            var originalGrammar = new EbnfGrammar();
+            var originalGrammar = new Grammar();
             var red   = originalGrammar.Symbols.Add("red");
             var green = originalGrammar.Symbols.Add("green", SymbolCategory.ExplicitlyUsed);
             var blue  = originalGrammar.Symbols.Add("blue");
@@ -25,14 +25,14 @@ namespace IronText.Tests.Lib.IL.Generators
             originalGrammar.Start = red;
 
             GrammarSerializer target = new GrammarSerializer(originalGrammar);
-            var factory = new CachedMethod<Func<EbnfGrammar>>("GrammarSerializerTest.Assembly0", (emit, args) => { target.Build(emit); return emit.Ret(); }).Delegate;
+            var factory = new CachedMethod<Func<Grammar>>("GrammarSerializerTest.Assembly0", (emit, args) => { target.Build(emit); return emit.Ret(); }).Delegate;
 
             var recreated = factory();
 
             Assert.IsTrue(GrammarEquals(originalGrammar, recreated));
         }
 
-        public static bool GrammarEquals(EbnfGrammar x, EbnfGrammar y)
+        public static bool GrammarEquals(Grammar x, Grammar y)
         {
             return x == y
                 || (x != null

@@ -8,6 +8,6 @@ namespace IronText.Analysis
 {
     internal interface IProductionInliner
     {
-        EbnfGrammar Inline();
+        Grammar Inline();
     }
 }

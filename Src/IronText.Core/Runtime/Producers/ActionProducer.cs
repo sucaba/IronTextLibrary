@@ -11,7 +11,7 @@ namespace IronText.Runtime
         , IProducer<Msg>
         , IParsing
     {
-        private readonly RuntimeEbnfGrammar grammar;
+        private readonly RuntimeGrammar grammar;
         private readonly ProductionActionDelegate grammarAction;
         private readonly MergeDelegate merge;
         private readonly object context;
@@ -20,7 +20,7 @@ namespace IronText.Runtime
         private readonly object[] ruleArgBuffer;
 
         public ActionProducer(
-            RuntimeEbnfGrammar grammar,
+            RuntimeGrammar grammar,
             object context,
             ProductionActionDelegate grammarAction,
             MergeDelegate merge)

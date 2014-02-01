@@ -8,7 +8,7 @@ namespace IronText.Runtime
 {
     sealed class SppfGraphWriter : ISppfNodeVisitor
     {
-        private readonly EbnfGrammar grammar;
+        private readonly Grammar grammar;
         private readonly IGraphView graph;
         private readonly bool showRules;
         private HashSet<SppfNode> visited;
@@ -16,7 +16,7 @@ namespace IronText.Runtime
         private object currentNodeIdentity;
         private SppfNode currentNode;
 
-        public SppfGraphWriter(EbnfGrammar grammar, IGraphView graph, bool showRules)
+        public SppfGraphWriter(Grammar grammar, IGraphView graph, bool showRules)
         {
             this.grammar   = grammar;
             this.graph     = graph;

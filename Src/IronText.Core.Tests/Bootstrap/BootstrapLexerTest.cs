@@ -24,7 +24,7 @@ namespace IronText.Tests.Bootstrap
             var ident  = new Symbol("ID");
             var qStr   = new Symbol("QSTR");
 
-            var grammar = new EbnfGrammar
+            var grammar = new Grammar
             {
                 Symbols = { 
                     lParen,

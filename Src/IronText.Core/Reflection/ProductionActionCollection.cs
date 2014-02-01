@@ -6,9 +6,9 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class ProductionActionCollection : IndexedCollection<Production, IEbnfEntities>
+    public class ProductionActionCollection : IndexedCollection<Production, ISharedGrammarEntities>
     {
-        public ProductionActionCollection(IEbnfEntities context)
+        public ProductionActionCollection(ISharedGrammarEntities context)
             : base(context)
         {
         }

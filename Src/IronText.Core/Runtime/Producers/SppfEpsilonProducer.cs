@@ -5,13 +5,13 @@ namespace IronText.Runtime
 {
     class SppfEpsilonProducer
     {
-        private readonly RuntimeEbnfGrammar grammar;
+        private readonly RuntimeGrammar grammar;
         private SppfNode[] tokenCache;
         private SppfNode[] ruleCache;
         private int[] ruleOffsetInCache;
         private int[] ruleEndOffsetInCache;
 
-        public SppfEpsilonProducer(RuntimeEbnfGrammar grammar)
+        public SppfEpsilonProducer(RuntimeGrammar grammar)
         {
             this.grammar = grammar;
             BuildCache();

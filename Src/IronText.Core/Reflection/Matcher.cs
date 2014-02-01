@@ -6,7 +6,7 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class Matcher : IndexableObject<IEbnfEntities>
+    public class Matcher : IndexableObject<ISharedGrammarEntities>
     {
         public Matcher(
             string         pattern,

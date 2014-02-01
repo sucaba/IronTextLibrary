@@ -8,7 +8,7 @@ namespace IronText.Runtime
         : SppfEpsilonProducer
         , IProducer<SppfNode>
     {
-        public SppfProducer(RuntimeEbnfGrammar grammar)
+        public SppfProducer(RuntimeGrammar grammar)
             : base(grammar)
         {
         }

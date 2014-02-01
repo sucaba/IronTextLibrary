@@ -14,7 +14,7 @@ namespace IronText.Automata.Lalr1
 {
     class ReductionModifiedLrDfaTable : ILrParserTable
     {
-        private readonly EbnfGrammarAnalysis grammar;
+        private readonly GrammarAnalysis grammar;
         private readonly Dictionary<TransitionKey, ParserConflictInfo> transitionToConflict 
             = new Dictionary<TransitionKey, ParserConflictInfo>();
         private readonly IMutableTable<int> actionTable;
@@ -26,9 +26,9 @@ namespace IronText.Automata.Lalr1
             var flag = LrTableOptimizations.EliminateLr0ReduceStates;
             this.canOptimizeReduceStates = (dfa.Optimizations & flag) == flag;
 
-            this.grammar = dfa.Grammar;
+            this.grammar = dfa.GrammarAnalysis;
             var states = dfa.States;
-            this.actionTable = actionTable ?? new MutableTable<int>(states.Length, dfa.Grammar.Symbols.Count);
+            this.actionTable = actionTable ?? new MutableTable<int>(states.Length, dfa.GrammarAnalysis.Symbols.Count);
             FillDfaTable(states);
             BuildConflictActionTable();
         }

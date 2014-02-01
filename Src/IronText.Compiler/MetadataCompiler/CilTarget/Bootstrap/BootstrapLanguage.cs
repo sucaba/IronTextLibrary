@@ -16,7 +16,7 @@ namespace IronText.MetadataCompiler
         private readonly ProductionActionDelegate grammarAction;
         private readonly MergeDelegate merge;
         private ResourceAllocator allocator;
-        private RuntimeEbnfGrammar runtimeGrammar;
+        private RuntimeGrammar runtimeGrammar;
 
         public BootstrapLanguage(LanguageName name, LanguageData data)
         {
@@ -28,7 +28,7 @@ namespace IronText.MetadataCompiler
 
         public void Init()
         {
-            this.runtimeGrammar = new RuntimeEbnfGrammar(data.Grammar);
+            this.runtimeGrammar = new RuntimeGrammar(data.Grammar);
             this.allocator = new ResourceAllocator(runtimeGrammar);
         }
 
@@ -36,7 +36,7 @@ namespace IronText.MetadataCompiler
 
         public LanguageName Name { get { return name; } }
 
-        public EbnfGrammar Grammar { get { return data.Grammar; } }
+        public Grammar Grammar { get { return data.Grammar; } }
 
         public void Heatup() { }
 
@@ -102,7 +102,7 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        RuntimeEbnfGrammar ILanguageRuntime.RuntimeGrammar
+        RuntimeGrammar ILanguageRuntime.RuntimeGrammar
         {
             get { return runtimeGrammar; }
         }

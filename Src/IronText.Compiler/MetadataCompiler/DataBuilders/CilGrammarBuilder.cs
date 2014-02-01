@@ -14,7 +14,7 @@ namespace IronText.MetadataCompiler
     {
         IEnumerable<ReportBuilder> ReportBuilders { get; }
 
-        EbnfGrammar Build(LanguageName languageName, ILogging logging);
+        Grammar Build(LanguageName languageName, ILogging logging);
     }
 
     class CilGrammarBuilder : ICilGrammarBuilder
@@ -27,18 +27,18 @@ namespace IronText.MetadataCompiler
             get { return _reportBuilders; }
         }
 
-        public EbnfGrammar Build(LanguageName languageName, ILogging logging)
+        public Grammar Build(LanguageName languageName, ILogging logging)
         {
             this.logging = logging;
 
-            CilEbnfGrammar definition = null;
+            CilGrammar definition = null;
 
             logging.WithTimeLogging(
                 languageName.Name,
                 languageName.DefinitionType,
                 () =>
                 {
-                    definition = new CilEbnfGrammar(languageName.DefinitionType, logging);
+                    definition = new CilGrammar(languageName.DefinitionType, logging);
                 },
                 "parsing language definition");
                 
@@ -55,9 +55,9 @@ namespace IronText.MetadataCompiler
             return grammar;
         }
 
-        private static EbnfGrammar BuildGrammar(CilEbnfGrammar definition)
+        private static Grammar BuildGrammar(CilGrammar definition)
         {
-            var result = new EbnfGrammar();
+            var result = new Grammar();
 
             var symbolResolver = definition.SymbolResolver;
 
@@ -179,7 +179,7 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        private static Condition ConditionFromType(EbnfGrammar grammar, Type type)
+        private static Condition ConditionFromType(Grammar grammar, Type type)
         {
             if (type == null)
             {
@@ -198,7 +198,7 @@ namespace IronText.MetadataCompiler
             throw new InvalidOperationException("Undefined condition: " + type.FullName);
         }
 
-        private static Condition CreateCondtion(EbnfGrammar grammar, CilCondition cilCondition)
+        private static Condition CreateCondtion(Grammar grammar, CilCondition cilCondition)
         {
             var result = new Condition(cilCondition.ConditionType.FullName)
             {
@@ -211,7 +211,7 @@ namespace IronText.MetadataCompiler
         }
 
         private static SymbolBase GetScanProductionOutcomeSymbol(
-            EbnfGrammar                 grammar,
+            Grammar                 grammar,
             ICilSymbolResolver          symbolResolver,
             CilSymbolRef                mainOutcome,
             IEnumerable<CilSymbolRef>   allOutcomes)

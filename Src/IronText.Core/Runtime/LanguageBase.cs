@@ -43,7 +43,7 @@ namespace IronText.Runtime
         }
 
         protected internal bool          isDeterministic;
-        protected EbnfGrammar            grammar;
+        protected Grammar            grammar;
         protected TransitionDelegate     getParserAction;
         protected Dictionary<object,int> tokenKeyToId;
         protected Scan1Delegate          scan1;
@@ -57,7 +57,7 @@ namespace IronText.Runtime
         private ResourceAllocator        allocator;
         protected Func<object>           createDefaultContext;
         private const int maxActionCount = 16;
-        private RuntimeEbnfGrammar runtimeGrammar;
+        private RuntimeGrammar runtimeGrammar;
 
         public LanguageBase(LanguageName name) 
         { 
@@ -69,13 +69,13 @@ namespace IronText.Runtime
 
         public void Init()
         {
-            this.runtimeGrammar = new RuntimeEbnfGrammar(grammar);
+            this.runtimeGrammar = new RuntimeGrammar(grammar);
             this.allocator = new ResourceAllocator(runtimeGrammar);
         }
 
         public LanguageName Name { get { return name; } }
 
-        public EbnfGrammar Grammar { get { return grammar; } }
+        public Grammar Grammar { get { return grammar; } }
 
         public void Heatup()
         {
@@ -204,7 +204,7 @@ namespace IronText.Runtime
             return result;
         }
 
-        RuntimeEbnfGrammar ILanguageRuntime.RuntimeGrammar
+        RuntimeGrammar ILanguageRuntime.RuntimeGrammar
         {
             get { return runtimeGrammar; }
         }

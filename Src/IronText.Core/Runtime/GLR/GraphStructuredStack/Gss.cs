@@ -201,7 +201,7 @@ namespace IronText.Runtime
             return string.Format("{0}:{1}", node.State, node.Stage);
         }
 
-        public void WriteGraph(IGraphView view, RuntimeEbnfGrammar grammar, int[] stateToSymbol)
+        public void WriteGraph(IGraphView view, RuntimeGrammar grammar, int[] stateToSymbol)
         {
             var allAccessibleByLayer = GetAllNodes().GroupBy(state => state.Layer);
 

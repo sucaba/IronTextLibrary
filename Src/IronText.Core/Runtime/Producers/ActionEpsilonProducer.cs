@@ -7,11 +7,11 @@ namespace IronText.Runtime
 {
     class ActionEpsilonProducer
     {
-        private readonly RuntimeEbnfGrammar       grammar;
+        private readonly RuntimeGrammar       grammar;
         private readonly ProductionActionDelegate productionAction;
         private readonly object                   context;
 
-        public ActionEpsilonProducer(RuntimeEbnfGrammar grammar, object context, ProductionActionDelegate productionAction)
+        public ActionEpsilonProducer(RuntimeGrammar grammar, object context, ProductionActionDelegate productionAction)
         {
             this.grammar          = grammar;
             this.context          = context;

@@ -6,13 +6,13 @@ using IronText.Reflection;
 
 namespace IronText.Runtime
 {
-    internal class RuntimeEbnfGrammar
+    internal class RuntimeGrammar
     {
-        private readonly EbnfGrammar grammar;
-        private readonly bool[]      isNullable;
-        private readonly int         symbolCount;
+        private readonly Grammar grammar;
+        private readonly bool[]  isNullable;
+        private readonly int     symbolCount;
 
-        public RuntimeEbnfGrammar(EbnfGrammar grammar)
+        public RuntimeGrammar(Grammar grammar)
         {
             this.grammar = grammar;
             IRuntimeNullableFirstTables tables = new NullableFirstTables(grammar);

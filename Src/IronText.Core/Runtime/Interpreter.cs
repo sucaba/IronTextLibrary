@@ -72,7 +72,7 @@ namespace IronText.Runtime
             }
         }
 
-        public EbnfGrammar Grammar { get { return language.Grammar; } }
+        public Grammar Grammar { get { return language.Grammar; } }
 
         public object Context
         {

@@ -30,9 +30,9 @@ namespace IronText.Runtime
         private MutableIntSet[] firsts;
         private bool[]          isNullable;
 
-        protected EbnfGrammar grammar;
+        protected Grammar grammar;
 
-        public NullableFirstTables(EbnfGrammar grammar)
+        public NullableFirstTables(Grammar grammar)
         {
             this.grammar    = grammar;
             int count       = grammar.Symbols.Count;

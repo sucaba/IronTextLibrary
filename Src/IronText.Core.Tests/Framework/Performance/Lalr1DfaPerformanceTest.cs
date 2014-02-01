@@ -12,7 +12,7 @@ namespace IronText.Tests.Framework.Performance
     [Explicit]
     public class Lalr1DfaPerformanceTest
     {
-        private EbnfGrammar grammar;
+        private Grammar grammar;
 
         [Test]
         public void Test()
@@ -22,7 +22,7 @@ namespace IronText.Tests.Framework.Performance
 
             int[] tokens = new int[tokenCount];
             
-            this.grammar = new EbnfGrammar();
+            this.grammar = new Grammar();
 
             for (int i = 0; i != tokenCount; ++i)
             {
@@ -38,7 +38,7 @@ namespace IronText.Tests.Framework.Performance
                 grammar.Productions.Define(outcome, pattern);
             }
 
-            var target = new Lalr1Dfa(new EbnfGrammarAnalysis(grammar), LrTableOptimizations.Default);
+            var target = new Lalr1Dfa(new GrammarAnalysis(grammar), LrTableOptimizations.Default);
         }
     }
 }

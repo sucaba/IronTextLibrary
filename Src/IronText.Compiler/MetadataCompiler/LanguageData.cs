@@ -22,9 +22,9 @@ namespace IronText.MetadataCompiler
     {
         public LanguageName           Name { get; set; }
 
-        public EbnfGrammar            Grammar { get; set; }
+        public Grammar            Grammar { get; set; }
 
-        public EbnfGrammarAnalysis    GrammarAnalysis { get; set; }
+        public GrammarAnalysis    GrammarAnalysis { get; set; }
 
         public bool                         IsDeterministic;
         public Type                         DefinitionType;

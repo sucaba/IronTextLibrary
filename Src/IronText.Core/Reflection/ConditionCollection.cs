@@ -6,9 +6,9 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class ConditionCollection : IndexedCollection<Condition,IEbnfEntities>
+    public class ConditionCollection : IndexedCollection<Condition,ISharedGrammarEntities>
     {
-        public ConditionCollection(EbnfGrammar ebnfGrammar)
+        public ConditionCollection(Grammar ebnfGrammar)
             : base(ebnfGrammar)
         {
         }

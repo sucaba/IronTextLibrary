@@ -11,13 +11,13 @@ using IronText.Misc;
 namespace IronText.MetadataCompiler
 {
     /// <summary>
-    /// Generates IL code for creating <see cref="EbnfGrammar"/> instance 
+    /// Generates IL code for creating <see cref="Grammar"/> instance 
     /// </summary>
     public class GrammarSerializer
     {
-        private EbnfGrammar grammar;
+        private Grammar grammar;
 
-        public GrammarSerializer(EbnfGrammar grammar)
+        public GrammarSerializer(Grammar grammar)
         {
             this.grammar = grammar;
         }
@@ -29,12 +29,12 @@ namespace IronText.MetadataCompiler
             var symbolVar   = emit.Locals.Generate("symbol").GetRef();
             var intArrayVar = emit.Locals.Generate("intArray").GetRef();
             emit
-                .Local(resultVar,       emit.Types.Import(typeof(EbnfGrammar)))
+                .Local(resultVar,       emit.Types.Import(typeof(Grammar)))
                 .Local(partsVar,        emit.Types.Import(typeof(int[])))
                 .Local(symbolVar.Def,   emit.Types.Import(typeof(SymbolBase)))
                 .Local(intArrayVar.Def, emit.Types.Array(emit.Types.Int32))
 
-                .Newobj(() => new EbnfGrammar())
+                .Newobj(() => new Grammar())
                 .Stloc(resultVar.GetRef())
                 ;
 
@@ -112,7 +112,7 @@ namespace IronText.MetadataCompiler
 
                 emit
                     .Ldloc(resultVar.GetRef())
-                    .Ldprop((EbnfGrammar g) => g.Symbols)
+                    .Ldprop((Grammar g) => g.Symbols)
                     .Ldloc(symbolVar)
                     .Call((SymbolCollection coll, Symbol sym) => coll.Add(sym))
                     .Pop()
@@ -124,10 +124,10 @@ namespace IronText.MetadataCompiler
                 emit
                     .Ldloc(resultVar.GetRef())
                     .Dup()
-                    .Ldprop((EbnfGrammar g) => g.Symbols)
+                    .Ldprop((Grammar g) => g.Symbols)
                     .Ldc_I4(grammar.Start.Index)
                     .Call((SymbolCollection coll, int index) => coll[index])
-                    .Stprop((EbnfGrammar g) => g.Start);
+                    .Stprop((Grammar g) => g.Start);
             }
 
             foreach (var production in grammar.Productions)
@@ -158,7 +158,7 @@ namespace IronText.MetadataCompiler
 
                 emit
                     .Ldloc(resultVar.GetRef())
-                    .Ldprop((EbnfGrammar g) => g.Productions)
+                    .Ldprop((Grammar g) => g.Productions)
                     .Ldc_I4(production.OutcomeToken)
                     .Ldloc(partsVar.GetRef())
                     .Call((ProductionCollection prods, int l, IEnumerable<int> p) => prods.Define(l, p))

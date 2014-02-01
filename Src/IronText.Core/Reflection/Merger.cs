@@ -7,7 +7,7 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class Merger : IndexableObject<IEbnfEntities>
+    public class Merger : IndexableObject<ISharedGrammarEntities>
     {
         public Merger(Symbol symbol)
         {

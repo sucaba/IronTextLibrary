@@ -24,7 +24,7 @@ namespace IronText.Tests.Algorithm
             var end    = new Symbol("end");
             var assign = new Symbol(":=");
 
-            var grammar = new EbnfGrammar
+            var grammar = new Grammar
             {
                 Symbols =
                 { 

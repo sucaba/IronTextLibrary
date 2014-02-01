@@ -10,15 +10,15 @@ using IronText.Reporting;
 
 namespace IronText.Reflection.Managed
 {
-    internal class CilEbnfGrammar
+    internal class CilGrammar
     {
         private readonly List<ICilMetadata>                 metadata;
         private readonly List<CilProduction>                productions;
-        private readonly List<CilCondition>             scanConditions;
+        private readonly List<CilCondition>                 conditions;
         private readonly CilMerger[]                        mergers;
         private readonly List<CilSymbolFeature<Precedence>> precedence;
 
-        public CilEbnfGrammar(Type definitionType, ILogging logging)
+        public CilGrammar(Type definitionType, ILogging logging)
         {
             this.IsValid = true;
 
@@ -88,8 +88,8 @@ namespace IronText.Reflection.Managed
                 this.IsValid = false;
             }
 
-            scanConditions = scanDataCollector.ScanConditions;
-            LinkRelatedTokens(scanConditions);
+            conditions = scanDataCollector.ScanConditions;
+            LinkRelatedTokens(conditions);
 
             var allTerms = (from t in scanDataCollector.Terminals
                            let def = SymbolResolver.Resolve(t)
@@ -181,7 +181,7 @@ namespace IronText.Reflection.Managed
 
         public IList<CilMerger>        Mergers        { get { return mergers; } }
 
-        public IList<CilCondition> ScanConditions { get { return scanConditions; } }
+        public IList<CilCondition> ScanConditions { get { return conditions; } }
 
         public IEnumerable<CilSymbolFeature<Precedence>> Precedence { get { return precedence; } }
 

@@ -7,6 +7,6 @@ namespace IronText.Runtime
 {
     internal interface ILanguageRuntime
     {
-        RuntimeEbnfGrammar RuntimeGrammar { get; }
+        RuntimeGrammar RuntimeGrammar { get; }
     }
 }

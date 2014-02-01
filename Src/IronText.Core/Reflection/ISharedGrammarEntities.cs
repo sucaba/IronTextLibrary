@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IronText.Reflection
 {
-    public interface IEbnfEntities
+    public interface ISharedGrammarEntities
     {
         Symbol                      Start               { get; }
 
@@ -14,7 +14,5 @@ namespace IronText.Reflection
         ProductionCollection        Productions         { get; }
         
         MatcherCollection           Matchers            { get; }
-
-        ProductionContextCollection ProductionContexts  { get; }
     }
 }
