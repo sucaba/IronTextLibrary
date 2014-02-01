@@ -83,7 +83,7 @@ namespace IronText.Runtime
 
             this.terms = grammar
                             .EnumerateTokens()
-                            .Where(t => grammar.IsTerminal(t) && t >= EbnfGrammar.PredefinedSymbolCount)
+                            .Where(t => grammar.IsTerminal(t) && t >= PredefinedTokens.Count)
                             .ToArray();
         }
 
@@ -91,7 +91,7 @@ namespace IronText.Runtime
         {
             failedInput.Add(item);
 
-            if (failedInput.Count == FailurePatternSize || item.Id == EbnfGrammar.EoiToken)
+            if (failedInput.Count == FailurePatternSize || item.Id == PredefinedTokens.Eoi)
             {
                 return Recover(false);
             }
@@ -119,7 +119,7 @@ namespace IronText.Runtime
                     return false;
                 }
 
-                if (pos >= minLength && (EbnfGrammar.EoiToken == msg.Id || grammar.IsBeacon(msg.Id)))
+                if (pos >= minLength && (PredefinedTokens.Eoi == msg.Id || grammar.IsBeacon(msg.Id)))
                 {
                     return true;
                 }

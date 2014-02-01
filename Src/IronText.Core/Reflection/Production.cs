@@ -50,7 +50,7 @@ namespace IronText.Reflection
 
         public bool IsStart     { get { return Context.Start == Outcome; } }
 
-        public bool IsAugmented { get { return EbnfGrammar.AugmentedStartToken == OutcomeToken; } }
+        public bool IsAugmented { get { return PredefinedTokens.AugmentedStart == OutcomeToken; } }
 
         public Precedence EffectivePrecedence
         {

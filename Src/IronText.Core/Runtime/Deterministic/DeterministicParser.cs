@@ -84,7 +84,7 @@ namespace IronText.Runtime
                 hLocation = new HLoc(1, 1, 1, 1);
             }
 
-            var eoi = new Msg(EbnfGrammar.EoiToken, null, location, hLocation);
+            var eoi = new Msg(PredefinedTokens.Eoi, null, location, hLocation);
             return Next(eoi);
         }
 
@@ -182,7 +182,7 @@ namespace IronText.Runtime
 
         private IReceiver<Msg> RecoverFromError(Msg currentInput)
         {
-            if (currentInput.Id == EbnfGrammar.EoiToken)
+            if (currentInput.Id == PredefinedTokens.Eoi)
             {
                 if (!isVerifier)
                 {

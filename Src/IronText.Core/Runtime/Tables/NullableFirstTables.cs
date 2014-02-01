@@ -77,7 +77,7 @@ namespace IronText.Runtime
             {
                 if (prod.Pattern.Length == 0)
                 {
-                    firsts[prod.OutcomeToken].Add(EbnfGrammar.EpsilonToken);
+                    firsts[prod.OutcomeToken].Add(PredefinedTokens.Epsilon);
                 }
                 else if (prod.Pattern[0].IsTerminal)
                 {
@@ -107,11 +107,11 @@ namespace IronText.Runtime
 
             for (int i = 0; i != count; ++i)
             {
-                bool hasEpsilon = firsts[i].Contains(EbnfGrammar.EpsilonToken);
+                bool hasEpsilon = firsts[i].Contains(PredefinedTokens.Epsilon);
                 if (hasEpsilon)
                 {
                     isNullable[i] = hasEpsilon;
-                    firsts[i].Remove(EbnfGrammar.EpsilonToken);
+                    firsts[i].Remove(PredefinedTokens.Epsilon);
                 }
             }
         }
@@ -128,7 +128,7 @@ namespace IronText.Runtime
                 bool itemNullable = false;
                 foreach (var f in firsts[item].ToArray())
                 {
-                    if (f == EbnfGrammar.EpsilonToken)
+                    if (f == PredefinedTokens.Epsilon)
                     {
                         itemNullable = true; // current part is nullable
                         continue;
@@ -148,9 +148,9 @@ namespace IronText.Runtime
                 }
             }
 
-            if (nullable && !result.Contains(EbnfGrammar.EpsilonToken))
+            if (nullable && !result.Contains(PredefinedTokens.Epsilon))
             {
-                result.Add(EbnfGrammar.EpsilonToken);
+                result.Add(PredefinedTokens.Epsilon);
                 changed = true;
             }
 

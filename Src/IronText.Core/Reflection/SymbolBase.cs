@@ -16,7 +16,7 @@ namespace IronText.Reflection
         /// </summary>
         public string Name { get; protected set; }
 
-        public bool IsPredefined { get { return 0 <= Index && Index < EbnfGrammar.PredefinedSymbolCount; } }
+        public bool IsPredefined { get { return 0 <= Index && Index < PredefinedTokens.Count; } }
 
         public abstract SymbolCategory Categories { get; set; }
 

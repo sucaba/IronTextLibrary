@@ -116,6 +116,7 @@
     <Compile Include="Algorithm\Build\IDerivedBuilderMetadata.cs" />
     <Compile Include="Reflection\Cil\CilContextConsumer.cs" />
     <Compile Include="Reflection\Cil\CilContextProvider.cs" />
+    <Compile Include="Reflection\PredefinedTokens.cs" />
     <Compile Include="Reporting\CharRange.cs" />
     <Compile Include="Reporting\Delegates.cs" />
     <Compile Include="Reporting\IParserAutomata.cs" />

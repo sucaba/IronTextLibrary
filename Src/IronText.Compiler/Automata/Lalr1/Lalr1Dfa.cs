@@ -95,7 +95,7 @@ namespace IronText.Automata.Lalr1
             // symbol X to determine which lookaheads are spontaneously generated
             // for kernel items in GOTO(I, X), and from which items in I lookaheads
             // are propagated to kernel items in GOTO(I, X).
-            lr0states[0].KernelItems[0].LA.Add(EbnfGrammar.EoiToken);
+            lr0states[0].KernelItems[0].LA.Add(PredefinedTokens.Eoi);
 
             var propogation = DetermineLookaheads(lr0states);
 
@@ -180,7 +180,7 @@ namespace IronText.Automata.Lalr1
                         {
                             new DotItem(fromItem)
                             {
-                                LA = TokenSet.Of(EbnfGrammar.PropogatedToken).EditCopy()
+                                LA = TokenSet.Of(PredefinedTokens.Propagated).EditCopy()
                             }
                         });
 
@@ -202,7 +202,7 @@ namespace IronText.Automata.Lalr1
 
                         foreach (var lookahead in closedItem.LA)
                         {
-                            if (lookahead == EbnfGrammar.PropogatedToken)
+                            if (lookahead == PredefinedTokens.Propagated)
                             {
                                 List<Tuple<int, int, int>> propogatedItems;
                                 var key = Tuple.Create(from, fromItem.ProductionId, fromItem.Position);

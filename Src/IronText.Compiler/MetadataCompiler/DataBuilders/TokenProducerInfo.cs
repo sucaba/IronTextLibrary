@@ -13,7 +13,7 @@ namespace IronText.MetadataCompiler
     {
         public TokenProducerInfo()
         {
-            MainTokenId    = EbnfGrammar.NoToken;
+            MainTokenId = PredefinedTokens.NoToken;
         }
 
         public TdfaState State { get; set; }
@@ -82,13 +82,13 @@ namespace IronText.MetadataCompiler
             if (result == null)
             {
                 result = new TokenProducerInfo { Disambiguation = Disambiguation.Exclusive };
-                int mainToken = EbnfGrammar.NoToken;
+                int mainToken = PredefinedTokens.NoToken;
                 var allPossible = tokenSetType.Mutable();
                 var allActions = SparseIntSetType.Instance.Mutable();
 
                 foreach (var item in items)
                 {
-                    if (mainToken != EbnfGrammar.NoToken && item.MainTokenId != EbnfGrammar.NoToken)
+                    if (mainToken != PredefinedTokens.NoToken && item.MainTokenId != PredefinedTokens.NoToken)
                     {
                         mainToken = item.MainTokenId;
                     }

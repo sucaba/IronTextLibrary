@@ -32,7 +32,7 @@ namespace IronText.Compiler.Analysis
         {
             var result = Enumerable.Repeat(-1, grammar.Symbols.Count).ToArray();
             var sortedTokens = Graph.TopologicalSort(
-                                new [] { EbnfGrammar.AugmentedStartToken },
+                                new [] { PredefinedTokens.AugmentedStart },
                                 GetDependantTokens)
                                 .ToArray();
             for (int i = 0; i != sortedTokens.Length; ++i)

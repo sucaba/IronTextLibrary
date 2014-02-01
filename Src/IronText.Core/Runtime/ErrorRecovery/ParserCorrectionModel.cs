@@ -119,7 +119,7 @@ namespace IronText.Runtime
 
         private string FormatToken(RuntimeEbnfGrammar grammar, Msg msg)
         {
-            if (msg.Id == EbnfGrammar.EoiToken)
+            if (msg.Id == PredefinedTokens.Eoi)
             {
                 return "end of file";
             }

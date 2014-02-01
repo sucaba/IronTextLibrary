@@ -85,7 +85,7 @@ namespace IronText.Runtime
             object ignore;
             scanAction(cursor, out ignore);
             grammarAction(grammar.AugmentedProduction.Index, new Msg[0], 0, null, null);
-            merge(EbnfGrammar.AugmentedStartToken, null, null, null, null);
+            merge(PredefinedTokens.AugmentedStart, null, null, null, null);
         }
 
         public object CreateDefaultContext()
