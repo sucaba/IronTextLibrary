@@ -6,6 +6,7 @@ using IronText.Runtime;
 namespace Samples
 {
     [Language]
+    [GrammarDocument("MyConfig.gram")]
     public class MyConfig
     {
         // Initialize instance of CtemScanner sub-context

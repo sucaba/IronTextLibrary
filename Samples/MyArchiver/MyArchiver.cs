@@ -8,6 +8,7 @@ using IronText.Runtime;
 namespace Samples
 {
     [Language]
+    [GrammarDocument("MyArchiver.gram")]
     [StaticContext(typeof(Builtins))]
     public class MyArchiver
     {

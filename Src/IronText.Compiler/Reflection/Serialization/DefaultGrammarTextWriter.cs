@@ -28,12 +28,12 @@ namespace IronText.Reflection
         {
             output.WriteLine("/*");
             ++output.Indent;
-            output.WriteLine("Symbols      : {0}", grammar.Symbols.Count);
-            output.WriteLine("Terminals    : {0}", grammar.Symbols.Where(s => s.IsTerminal).Count());
-            output.WriteLine("NonTerminals : {0}", grammar.Symbols.Where(s => !s.IsTerminal).Count());
-            output.WriteLine("Productions  : {0}", grammar.Productions.Count);
-            output.WriteLine("Mergers      : {0}", grammar.Mergers.Count);
-            output.WriteLine("Matchers     : {0}", grammar.Matchers.Count);
+            output.WriteLine("symbols       : {0}", grammar.Symbols.Count);
+            output.WriteLine("terminals     : {0}", grammar.Symbols.Where(s => s.IsTerminal).Count());
+            output.WriteLine("non-terminals : {0}", grammar.Symbols.Where(s => !s.IsTerminal).Count());
+            output.WriteLine("productions   : {0}", grammar.Productions.Count);
+            output.WriteLine("mergers       : {0}", grammar.Mergers.Count);
+            output.WriteLine("matchers      : {0}", grammar.Matchers.Count);
             --output.Indent;
             output.WriteLine("*/");
             output.WriteLine();
@@ -79,7 +79,14 @@ namespace IronText.Reflection
 
                 foreach (var matcher in condition.Matchers)
                 {
-                    output.WriteLine("{0} : /{1}/;", Name(matcher.Outcome), matcher.Pattern);
+                    var transition = matcher.NextCondition == null 
+                                   ? "" 
+                                   : string.Format("{{goto {0}}}", matcher.NextCondition.Name);
+                    output.WriteLine(
+                        "{0} {1}: /{2}/;",
+                        Name(matcher.Outcome),
+                        transition,
+                        matcher.Pattern);
                 }
 
                 --output.Indent;
@@ -90,7 +97,7 @@ namespace IronText.Reflection
 
         private static string Name(SymbolBase symbol)
         {
-            return symbol == null ? "" : symbol.Name; 
+            return symbol == null ? "$skip" : symbol.Name; 
         }
     }
 }

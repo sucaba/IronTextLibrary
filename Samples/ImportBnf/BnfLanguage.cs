@@ -4,6 +4,7 @@ using IronText.Lib.Ctem;
 namespace Samples
 {
     [Language]
+    [GrammarDocument("Bnf.gram")]
     // [DescribeParserStateMachine("BnfLanguage.info")]
     // [ScannerDocument("BnfLanguage.scan")]
     // [ScannerGraph("BnfLanguage.gv")]

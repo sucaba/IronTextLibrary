@@ -5,6 +5,7 @@ using IronText.Framework;
 namespace Samples
 {
     [Language]
+    [GrammarDocument("NestedCommentSyntax.gram")]
     public class NestedCommentSyntax
     {
         [Outcome] 

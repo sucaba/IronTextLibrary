@@ -9,6 +9,7 @@ using IronText.Runtime;
 namespace Samples
 {
     [Language]
+    [GrammarDocument("DynamicLinq.gram")]
     [Precedence(">", 1)]
     [Precedence(".", 10)]
     public class DynamicLinqCompiler

@@ -13,6 +13,7 @@ namespace Calculator
     [Precedence("/", 2)]
     [Precedence("%", 2)]
     [Precedence("^", 10, Associativity.Right)]
+    [GrammarDocument("Calculator.gram")]
     // [DescribeParserStateMachine("Calculator.info")]
     // [ParserGraph("Calculator.gv")]
     public class Calculator
