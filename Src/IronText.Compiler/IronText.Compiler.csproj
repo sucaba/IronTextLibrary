@@ -144,6 +144,8 @@
     <Compile Include="MetadataCompiler\DataBuilders\CilGrammarBuilder.cs" />
     <Compile Include="Reflection\Managed\CilSymbolRefResolver.cs" />
     <Compile Include="Reflection\Managed\ICilSymbolResolver.cs" />
+    <Compile Include="Reflection\Serialization\DefaultGrammarTextWriter.cs" />
+    <Compile Include="Reflection\Serialization\IdentedTextWriter.cs" />
     <Compile Include="Runtime\Loaders\LanguageLoader.cs" />
     <Compile Include="Lib\IL\Backend\Cecil\CecilBackend.Main.cs" />
     <Compile Include="Lib\IL\Backend\Cecil\CecilBackend.Private.cs" />

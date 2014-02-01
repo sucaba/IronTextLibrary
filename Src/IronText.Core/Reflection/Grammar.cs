@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using IronText.Algorithm;
@@ -68,30 +69,19 @@ namespace IronText.Reflection
 
         public override string ToString()
         {
-            var output = new StringBuilder();
-            output
-                .Append("Terminals: ")
-                .Append(string.Join(" ", (from s in Symbols where s.IsTerminal select s.Name)))
-                .AppendLine()
-                .Append("Non-Terminals: ")
-                .Append(string.Join(" ", (from s in Symbols where !s.IsTerminal select s.Name)))
-                .AppendLine()
-                .AppendFormat("Start Token: {0}", Start == null ? "<undefined>" : Start.Name)
-                .AppendLine()
-                .Append("Productions:")
-                .AppendLine();
-            foreach (var prod in Productions)
+            var writerType = Type.GetType("IronText.Reflection.DefaultTextGrammarWriter, IronText.Compiler");
+            if (writerType == null)
             {
-                output
-                    .AppendFormat(
-                        "{0:D2}: {1} -> {2}",
-                        prod.Index,
-                        prod.Outcome.Name,
-                        string.Join(" ", from s in prod.Pattern select s == null ? "<none>" : s.Name))
-                    .AppendLine();
+                return "IronText.Reflection.Grammar";
             }
 
-            return output.ToString();
+            var writer = (IGrammarTextWriter)Activator.CreateInstance(writerType);
+
+            using (var output = new StringWriter())
+            {
+                writer.Write(this, output);
+                return output.ToString();
+            }
         }
     }
 }
