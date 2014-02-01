@@ -9,7 +9,7 @@ using IronText.Collections;
 namespace IronText.Reflection
 {
     [DebuggerDisplay("Name = {Name}")]
-    public abstract class SymbolBase : IndexableObject<IEbnfContext>, ICloneable
+    public abstract class SymbolBase : IndexableObject<IEbnfEntities>, ICloneable
     {
         /// <summary>
         /// Display name

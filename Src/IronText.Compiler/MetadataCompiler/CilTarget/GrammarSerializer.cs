@@ -132,7 +132,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var production in grammar.Productions)
             {
-                if (production.OutcomeToken == EbnfGrammar.AugmentedStart)
+                if (production.OutcomeToken == EbnfGrammar.AugmentedStartToken)
                 {
                     // Start rule is defined automatically when first token is defined
                     continue;

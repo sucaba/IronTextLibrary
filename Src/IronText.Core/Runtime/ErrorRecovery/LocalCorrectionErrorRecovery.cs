@@ -91,7 +91,7 @@ namespace IronText.Runtime
         {
             failedInput.Add(item);
 
-            if (failedInput.Count == FailurePatternSize || item.Id == EbnfGrammar.Eoi)
+            if (failedInput.Count == FailurePatternSize || item.Id == EbnfGrammar.EoiToken)
             {
                 return Recover(false);
             }
@@ -119,7 +119,7 @@ namespace IronText.Runtime
                     return false;
                 }
 
-                if (pos >= minLength && (EbnfGrammar.Eoi == msg.Id || grammar.IsBeacon(msg.Id)))
+                if (pos >= minLength && (EbnfGrammar.EoiToken == msg.Id || grammar.IsBeacon(msg.Id)))
                 {
                     return true;
                 }

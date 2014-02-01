@@ -6,10 +6,10 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class MergerCollection : IndexedCollection<Merger, IEbnfEntities>
+    public class MatcherCollection : IndexedCollection<Matcher,IEbnfEntities>
     {
-        public MergerCollection(IEbnfEntities ebnfContext)
-            : base(ebnfContext)
+        public MatcherCollection(IEbnfEntities context)
+            : base(context)
         {
         }
     }

@@ -34,7 +34,7 @@ namespace IronText.Runtime
                 }
             }
 
-            var error = new Msg(EbnfGrammar.Error, null, errorLocation); // TODO: Location?
+            var error = new Msg(EbnfGrammar.ErrorToken, null, errorLocation); // TODO: Location?
             if (null != exit.CloneVerifier().ForceNext(error, item))
             {
                 ReportError();

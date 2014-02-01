@@ -171,7 +171,7 @@
     <Compile Include="Collections\IIndexable.cs" />
     <Compile Include="Collections\IOwner.cs" />
     <Compile Include="Reflection\CompositeProductionAction.cs" />
-    <Compile Include="Reflection\IEbnfContext.cs" />
+    <Compile Include="Reflection\IEbnfEntities.cs" />
     <Compile Include="Reflection\Merger.cs" />
     <Compile Include="Reflection\MergerCollection.cs" />
     <Compile Include="Runtime\Tables\NullableFirstTables.cs" />

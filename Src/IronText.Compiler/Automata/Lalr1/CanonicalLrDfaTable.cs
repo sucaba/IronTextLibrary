@@ -109,7 +109,7 @@ namespace IronText.Automata.Lalr1
                     else if (item.IsAugmented)
                     {
                         var action = new ParserAction { Kind = ParserActionKind.Accept };
-                        AssignAction(i, EbnfGrammar.Eoi, action);
+                        AssignAction(i, EbnfGrammar.EoiToken, action);
                     }
                     else
                     {

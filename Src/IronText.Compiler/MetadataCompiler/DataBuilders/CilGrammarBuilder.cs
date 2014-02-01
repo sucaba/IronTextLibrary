@@ -67,7 +67,7 @@ namespace IronText.MetadataCompiler
                 Symbol symbol;
                 if (cilSymbol.Type == typeof(Exception))
                 {
-                    cilSymbol.Symbol = symbol = (Symbol)result.Symbols[EbnfGrammar.Error];
+                    cilSymbol.Symbol = symbol = (Symbol)result.Symbols[EbnfGrammar.ErrorToken];
                     symbol.Joint.Add(
                         new CilSymbol 
                         { 

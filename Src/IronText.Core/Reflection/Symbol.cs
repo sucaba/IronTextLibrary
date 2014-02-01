@@ -23,7 +23,7 @@ namespace IronText.Reflection
             this.Joint            = new Joint();
         }
 
-        public bool IsAugmentedStart { get { return EbnfGrammar.AugmentedStart == Index; } }
+        public bool IsAugmentedStart { get { return EbnfGrammar.AugmentedStartToken == Index; } }
 
         public bool IsStart { get { return Context.Start == this; } }
 

@@ -95,7 +95,7 @@ namespace IronText.Automata.Lalr1
             // symbol X to determine which lookaheads are spontaneously generated
             // for kernel items in GOTO(I, X), and from which items in I lookaheads
             // are propagated to kernel items in GOTO(I, X).
-            lr0states[0].KernelItems[0].LA.Add(EbnfGrammar.Eoi);
+            lr0states[0].KernelItems[0].LA.Add(EbnfGrammar.EoiToken);
 
             var propogation = DetermineLookaheads(lr0states);
 

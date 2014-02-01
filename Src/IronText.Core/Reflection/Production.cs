@@ -10,7 +10,7 @@ using IronText.Collections;
 namespace IronText.Reflection
 {
     [DebuggerDisplay("{DebugProductionText}")]
-    public sealed class Production : IndexableObject<IEbnfContext>
+    public sealed class Production : IndexableObject<IEbnfEntities>
     {
         private ProductionAction _action;
         
@@ -50,7 +50,7 @@ namespace IronText.Reflection
 
         public bool IsStart     { get { return Context.Start == Outcome; } }
 
-        public bool IsAugmented { get { return EbnfGrammar.AugmentedStart == OutcomeToken; } }
+        public bool IsAugmented { get { return EbnfGrammar.AugmentedStartToken == OutcomeToken; } }
 
         public Precedence EffectivePrecedence
         {

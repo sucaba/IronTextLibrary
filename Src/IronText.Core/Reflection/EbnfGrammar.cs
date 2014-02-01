@@ -14,7 +14,7 @@ namespace IronText.Reflection
     /// - Predefined entities should not be deletable.
     /// - Organize API to avoid IsPredefined checks.
     /// </summary>
-    public sealed class EbnfGrammar : IEbnfContext
+    public sealed class EbnfGrammar : IEbnfEntities
     {
         public const string UnnamedTokenName = "<unnamed token>";
         public const string UnknownTokenName = "<unknown token>";
@@ -31,11 +31,11 @@ namespace IronText.Reflection
 
         #region Predefined tokens
 
-        public const int AugmentedStart        = 2;
+        public const int AugmentedStartToken   = 2;
 
-        public const int Eoi                   = 3;
+        public const int EoiToken              = 3;
 
-        public const int Error                 = 4;
+        public const int ErrorToken            = 4;
 
         public const int PredefinedSymbolCount = 5;
 
@@ -64,32 +64,32 @@ namespace IronText.Reflection
                 Symbols.Add(null); // stub
             }
 
-            Symbols[PropogatedToken] = new Symbol("#");
-            Symbols[EpsilonToken]    = new Symbol("$eps");
-            Symbols[AugmentedStart]  = new Symbol("$start");
-            Symbols[Eoi]             = new Symbol("$")
+            Symbols[PropogatedToken]      = new Symbol("#");
+            Symbols[EpsilonToken]         = new Symbol("$eps");
+            Symbols[AugmentedStartToken]  = new Symbol("$start");
+            Symbols[EoiToken]             = new Symbol("$")
                                           { 
                                               Categories = SymbolCategory.DoNotInsert 
                                                          | SymbolCategory.DoNotDelete 
                                           };
-            Symbols[Error]           = new Symbol("$error");
+            Symbols[ErrorToken]           = new Symbol("$error");
 
-            AugmentedProduction = Productions.Define((Symbol)Symbols[AugmentedStart], new Symbol[] { null });
+            AugmentedProduction = Productions.Define((Symbol)Symbols[AugmentedStartToken], new Symbol[] { null });
         }
 
-        public Production                  AugmentedProduction       { get; private set; }
+        public Production                  AugmentedProduction { get; private set; }
 
-        public SymbolCollection            Symbols                   { get { return symbols; } }
+        public SymbolCollection            Symbols             { get { return symbols; } }
 
-        public ProductionCollection        Productions               { get { return productions; } }
+        public ProductionCollection        Productions         { get { return productions; } }
 
-        public MatcherCollection           Matchers                  { get { return matchers; } }
+        public MatcherCollection           Matchers            { get { return matchers; } }
 
-        public ConditionCollection         Conditions                { get { return conditions; } }
+        public ConditionCollection         Conditions          { get { return conditions; } }
 
-        public MergerCollection            Mergers                   { get { return mergers; } }
+        public MergerCollection            Mergers             { get { return mergers; } }
 
-        public ProductionContextCollection ProductionContexts        { get { return reductionContexts; } }
+        public ProductionContextCollection ProductionContexts  { get { return reductionContexts; } }
 
         public Symbol Start
         {

@@ -49,7 +49,7 @@ namespace IronText.Reporting
                 {
                     var list = new List<IParserTransition>();
                     int tokenCount = data.Grammar.Symbols.Count;
-                    for (int token = EbnfGrammar.Eoi; token != tokenCount; ++token)
+                    for (int token = EbnfGrammar.EoiToken; token != tokenCount; ++token)
                     {
                         var actions = GetAllParserActions(dotState.Index, token);
                         if (actions.Count() != 0)

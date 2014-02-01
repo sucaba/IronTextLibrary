@@ -55,7 +55,7 @@ namespace IronText.Runtime
         {
             if (token == null)
             {
-                return EbnfGrammar.Eoi;
+                return EbnfGrammar.EoiToken;
             }
 
             return @this.Identify(token.GetType());
