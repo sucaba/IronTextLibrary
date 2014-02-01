@@ -6,7 +6,7 @@ namespace IronText.Lib
     [Vocabulary]
     public static class Numbers
     {
-        [Parse]
+        [Produce]
         public static int Int32(Num num) { return int.Parse(num.Text); }
     }
 }

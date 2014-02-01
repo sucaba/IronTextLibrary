@@ -11,7 +11,7 @@ namespace IronText.Lib.Shared
         [LanguageService]
         public IParsing Parsing { get; set; }
 
-        [Parse]
+        [Produce]
         public Ref<TNs> Reference(string var)
         {
             Def<TNs> result = Get(var);
@@ -23,7 +23,7 @@ namespace IronText.Lib.Shared
             return result.GetRef();
         }
 
-        [Parse]
+        [Produce]
         public Def<TNs> Definition(string var)
         {
             if (Frame.Get(var) != null)

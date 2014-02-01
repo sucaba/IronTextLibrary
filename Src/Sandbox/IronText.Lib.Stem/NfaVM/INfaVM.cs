@@ -14,10 +14,10 @@ namespace IronText.Lib.NfaVM
         [SubContext]
         OnDemandNs<Labels> Labels { get; }
 
-        [Parse]
+        [Produce]
         void Program(Zom_<INfaVM> entries);
 
-        [Parse]
+        [Produce]
         INfaVM Label(Def<Labels> label);
 
         /// <summary> Put next input character to the current value register. Initially current value is undefined. </summary>
@@ -39,7 +39,7 @@ namespace IronText.Lib.NfaVM
         [Actor("save")]
         INfaVM Save(int slotIndex);
 
-        [Parse]
+        [Produce]
         int IntNum(Num num);
     }
 }

@@ -17,14 +17,14 @@ namespace IronText.MetadataCompiler
         private EmitSyntax emit;
         private readonly Pipe<EmitSyntax> ldCursor;
         private readonly Ref<Types> declaringType;
-        private readonly ScanCondition[] scanConditions;
+        private readonly Condition[] scanConditions;
 
         public ScanActionCode(
             EmitSyntax              emit, 
             IContextResolverCode    contextResolver,
             Pipe<EmitSyntax>        ldCursor,
             Ref<Types>              declaringType,
-            ScanCondition[]         scanConditions)
+            Condition[]         scanConditions)
         {
             this.emit            = emit;
             this.ldCursor        = ldCursor;
@@ -114,10 +114,10 @@ namespace IronText.MetadataCompiler
                 .Stfld((ScanCursor c) => c.RootContext)
                 ;
 
-            ScanCondition foundCondition = null;
+            Condition foundCondition = null;
             foreach (var condition in scanConditions)
             {
-                var binding = condition.Joint.The<CilScanCondition>();
+                var binding = condition.Joint.The<CilCondition>();
                 if (modeType.Equals(binding.ConditionType))
                 {
                     foundCondition = condition;

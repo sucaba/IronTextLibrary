@@ -10,19 +10,19 @@ namespace CSharpParser
     [Vocabulary]
     public class CsScanner
     {
-        [Scan(@"'//' ~('\r' | '\n' | u0085 | u2028 | u2029)*")]
+        [Match(@"'//' ~('\r' | '\n' | u0085 | u2028 | u2029)*")]
         public void LineComment() { }
 
-        [Scan("'/*' (~'*'* | '*' ~'/')* '*/'")]
+        [Match("'/*' (~'*'* | '*' ~'/')* '*/'")]
         public void MultiLineComment() { }
 
-        [Scan(@"'\r'? '\n' | u0085 | u2028 | u2029")]
+        [Match(@"'\r'? '\n' | u0085 | u2028 | u2029")]
         public void NewLine() { }
 
-        [Scan("(Zs | '\t' | u000B | u000C)+")]
+        [Match("(Zs | '\t' | u000B | u000C)+")]
         public void WhiteSpace() { }
 
-        [Scan(@"
+        [Match(@"
                 '@'?
                 ('_' | Lu | Ll | Lt | Lm | Lo | Nl)
                 (Pc | Lu | Ll | Lt | Lm | Lo | Nl | Nd | Mn | Mc | Cf)*
@@ -69,19 +69,19 @@ namespace CSharpParser
         [Literal("false")]
         public CsBoolean BooleanFalse(string text) { return null; }
 
-        [Scan("digit+ ([Uu] | [Ll]  | 'UL' | 'Ul' | 'uL' | 'ul' | 'LU' | 'Lu' | 'lU' | 'lu')?")]
+        [Match("digit+ ([Uu] | [Ll]  | 'UL' | 'Ul' | 'uL' | 'ul' | 'LU' | 'Lu' | 'lU' | 'lu')?")]
         public CsInteger DecimalInteger(string text) { return null; }
 
-        [Scan("'0x' hex+ ([Uu] | [Ll]  | 'UL' | 'Ul' | 'uL' | 'ul' | 'LU' | 'Lu' | 'lU' | 'lu')?")]
+        [Match("'0x' hex+ ([Uu] | [Ll]  | 'UL' | 'Ul' | 'uL' | 'ul' | 'LU' | 'Lu' | 'lU' | 'lu')?")]
         public CsInteger HexInteger(string text) { return null; }
 
-        [Scan("digit+ '.' digit+ ([eE] [+-]? digit+)? [FfDdMm]?")]
-        [Scan("       '.' digit+ ([eE] [+-]? digit+)? [FfDdMm]?")]
-        [Scan("digit+            ([eE] [+-]? digit+)  [FfDdMm]?")]
-        [Scan("digit+                                 [FfDdMm]")]
+        [Match("digit+ '.' digit+ ([eE] [+-]? digit+)? [FfDdMm]?")]
+        [Match("       '.' digit+ ([eE] [+-]? digit+)? [FfDdMm]?")]
+        [Match("digit+            ([eE] [+-]? digit+)  [FfDdMm]?")]
+        [Match("digit+                                 [FfDdMm]")]
         public CsReal Real(string text) { return null; }
 
-        [Scan(@"['] 
+        [Match(@"['] 
                 ( ~(u0027 | u005c | '\n')
                 | esc ['""\\0abfnrtv]
                 | esc hex {1,4}
@@ -90,7 +90,7 @@ namespace CSharpParser
                 [']")]
         public CsChar Char(string text) { return null; } 
 
-        [Scan(@"
+        [Match(@"
                 quot
                 ( ~(quot | u005c | '\n')
                 | '\\' ['""\\0abfnrtv]
@@ -101,13 +101,13 @@ namespace CSharpParser
               ")]
         public CsString RegularString(string text) { return null; }
 
-        [Scan("'@' quot (~quot | quot quot)* quot")]
+        [Match("'@' quot (~quot | quot quot)* quot")]
         public CsString VerbatimString(string text) { return null; }
 
         [Literal("null")]
         public CsNull Null() { return null; }
 
-        [Parse]
+        [Produce]
         public CsDimSeparators DimSeparators(CsCommas commas) { return null; }
 
     #region Typed keywords

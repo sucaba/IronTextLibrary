@@ -88,7 +88,7 @@ namespace IronText.MetadataCompiler
                                             emit,
                                             il => il.Ldarg(ctx),
                                             il => il.Ldarg(lookbackStart),
-                                            data.RootContextType,
+                                            data.DefinitionType,
                                             data.LocalParseContexts);
 
             var code = new MergeActionCode(emit, contextResolverCode)

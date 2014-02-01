@@ -35,9 +35,9 @@ namespace IronText.Tests.Framework
             [SubContext]
             public MyScope Scope { get; private set; }
 
-            public string Result { get; [Parse] set; }
+            public string Result { get; [Produce] set; }
 
-            [Parse("foo")]
+            [Produce("foo")]
             public string SingleLiteralArg() 
             { 
                 ++SingleLiterArgInvocationCount;
@@ -50,7 +50,7 @@ namespace IronText.Tests.Framework
         {
             public int SingleLiterArgInvocationCount = 0;
 
-            [Parse("foo")]
+            [Produce("foo")]
             public string SingleLiteralArg() 
             {
                 ++SingleLiterArgInvocationCount;

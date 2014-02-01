@@ -11,10 +11,10 @@ namespace IronText.Lib.IL
         [SubContext]
         IMethodNs Methods { get; }
 
-        [Parse("}")]
+        [Produce("}")]
         CilDocumentSyntax EndClass();
 
-        [Parse(".method")]
+        [Produce(".method")]
         WantMethAttr Method();
     }
 
@@ -54,7 +54,7 @@ namespace IronText.Lib.IL
     [Demand]
     public interface WantOpenArgs
     {
-        [Parse("(")]
+        [Produce("(")]
         WantArgs BeginArgs();
     }
 
@@ -68,7 +68,7 @@ namespace IronText.Lib.IL
     [Demand]
     public interface WantMethodBody
     {
-        [Parse("{")]
+        [Produce("{")]
         EmitSyntax BeginBody();
     }
 }

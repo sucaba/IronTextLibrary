@@ -46,18 +46,18 @@ namespace IronText.Tests.Framework.Attributes
         [Precedence("else", 2, Associativity.None)]
         public class ParseAttributeTestLang : CtemScanner
         {
-            public Stmt Result { get; [Parse] set; }
+            public Stmt Result { get; [Produce] set; }
 
-            [Parse("true")]
+            [Produce("true")]
             public Expr<bool> TrueBoolExpr() { return null; }
 
-            [Parse(Precedence = 1, KeywordMask= new [] { "if", null, null })]
+            [Produce(Precedence = 1, KeywordMask= new [] { "if", null, null })]
             public Stmt IfStmt(Expr<bool> cond, Stmt @then) { return null; }
 
-            [Parse("if", null, null, "else", null)]
+            [Produce("if", null, null, "else", null)]
             public Stmt IfStmt(Expr<bool> cond, Stmt @then, Stmt @else) { return null; }
 
-            [Parse("print")]
+            [Produce("print")]
             public Stmt PrintStmt(QStr message) { return null; }
         }
     }

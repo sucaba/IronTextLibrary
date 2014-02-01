@@ -13,7 +13,7 @@ namespace CSharpParser
         [SubContext]
         CsScanner Scanner { get; }
 
-        [ParseResult]
+        [Outcome]
         CsCompilationUnit Result { get; set; }
     }
 }

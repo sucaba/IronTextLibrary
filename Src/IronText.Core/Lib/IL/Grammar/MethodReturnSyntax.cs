@@ -6,7 +6,7 @@ namespace IronText.Lib.IL
     [Demand]
     public interface WantReturnTypeThen<TNext>
     {
-        [Parse]
+        [Produce]
         TNext Returning(Ref<Types> resultType);
     }
 }

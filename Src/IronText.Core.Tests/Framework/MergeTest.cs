@@ -70,14 +70,14 @@ namespace IronText.Tests.Framework
             public bool IsFinalRuleCalledLast = false;
             public bool WasMergeCalled = false;
 
-            [Parse]
+            [Produce]
             public void All(A a)
             {
                 IsFinalRuleCalledLast = true;
                 Debug.WriteLine("void -> A // report result"); 
             }
 
-            [Parse("d")]
+            [Produce("d")]
             public A Ad() 
             {  
                 IsFinalRuleCalledLast = false;
@@ -85,14 +85,14 @@ namespace IronText.Tests.Framework
                 return null;
             } 
 
-            [Parse]
+            [Produce]
             public A A(B b) 
             {  
                 IsFinalRuleCalledLast = false;
                 Debug.WriteLine("A -> B"); return null; 
             } 
 
-            [Parse("d")]
+            [Produce("d")]
             public B Bd() 
             {  
                 IsFinalRuleCalledLast = false;
@@ -122,41 +122,41 @@ namespace IronText.Tests.Framework
 #endif
         public class AmbiguousCalculator
         {
-            [ParseResult]
+            [Outcome]
             public Expr Result { get; set; }
 
-            [Parse(null, "+", null)]
+            [Produce(null, "+", null)]
             public Expr Plus(Expr x, Expr y)
             {
                 return new Expr(x.Value + y.Value, precedence: 1, assoc: Associativity.Left);
             }
 
-            [Parse("+", null)]
+            [Produce("+", null)]
             public Expr UnaryPlus(Expr x)
             {
                 return new Expr(x.Value, precedence: 3, assoc: Associativity.Left);
             }
 
-            [Parse("-", null)]
+            [Produce("-", null)]
             public Expr UnaryMinus(Expr x)
             {
                 return new Expr(-x.Value, precedence: 3, assoc: Associativity.Right);
             }
 
-            [Parse(null, "*", null)]    // explicit multiplication
-            [Parse]                     // implicit multiplication
+            [Produce(null, "*", null)]    // explicit multiplication
+            [Produce]                     // implicit multiplication
             public Expr Mult(Expr x, Expr y)
             {
                 return new Expr(x.Value * y.Value, precedence: 2, assoc: Associativity.Left);
             }
 
-            [Parse(null, "/", null)]
+            [Produce(null, "/", null)]
             public Expr Div(Expr x, Expr y)
             {
                 return new Expr(x.Value / y.Value, precedence: 2, assoc: Associativity.Left);
             }
 
-            [Parse]
+            [Produce]
             public Expr Constant(double value)
             {
                 return new Expr(value, precedence: 10);
@@ -187,10 +187,10 @@ namespace IronText.Tests.Framework
                 }
             }
 
-            [Scan("digit+ ('.' digit*)? | '.' digit+")]
+            [Match("digit+ ('.' digit*)? | '.' digit+")]
             public double Real(string text) { return double.Parse(text); }
 
-            [Scan("blank+")]
+            [Match("blank+")]
             public void Blank() {}
         }
 

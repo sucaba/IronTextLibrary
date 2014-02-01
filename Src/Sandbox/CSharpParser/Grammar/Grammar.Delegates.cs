@@ -8,7 +8,7 @@ namespace CSharpParser
 {
     public partial interface ICsGrammar
     {
-        [Parse(null, null, "delegate", null, null, null, "(", null, ")", null, ";")]
+        [Produce(null, null, "delegate", null, null, null, "(", null, ")", null, ";")]
         CsDelegateDeclaration DelegateDeclaration(
                 Opt<CsAttributes>        attributes,
                 Opt<CsList<CsDelegateModifier>> modifiers,
@@ -18,11 +18,11 @@ namespace CSharpParser
                 Opt<CsFormalParameterList>      formalParams,
                 Opt<CsList<CsTypeParameterConstraintClause>> typeParameterConstraints);
 
-        [Parse("new")]
-        [Parse("public")]
-        [Parse("protected")]
-        [Parse("internal")]
-        [Parse("private")]
+        [Produce("new")]
+        [Produce("public")]
+        [Produce("protected")]
+        [Produce("internal")]
+        [Produce("private")]
         CsDelegateModifier DelegateModifier();
     }
 }

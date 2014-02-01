@@ -12,7 +12,7 @@ namespace IronText.Lib.IL
         [SubContext]
         ITypeNs Types { get; }
 
-        [Parse(")")]
+        [Produce(")")]
         WantImplAttr EndArgs();
 
         WantMoreArgs Argument(Ref<Types> type, Def<Args> name);
@@ -23,7 +23,7 @@ namespace IronText.Lib.IL
         : WantArgsBase
         , ParamAttrSyntax1<WantArgs>
     {
-        [Parse]
+        [Produce]
         new WantMoreArgs Argument(Ref<Types> type, Def<Args> name);
     }
 
@@ -32,7 +32,7 @@ namespace IronText.Lib.IL
         : WantArgsBase
         , ParamAttrSyntax1<WantMoreArgs>
     {
-        [Parse(",")]
+        [Produce(",")]
         new WantMoreArgs Argument(Ref<Types> type, Def<Args> name);
     }
 }

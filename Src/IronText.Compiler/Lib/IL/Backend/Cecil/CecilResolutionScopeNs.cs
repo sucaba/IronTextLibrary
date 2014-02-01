@@ -31,7 +31,7 @@ namespace IronText.Lib.IL.Backend.Cecil
             return def.GetRef();
         }
 
-        [Parse]
+        [Produce]
         public Def<ResolutionScopes> DefineReferencedAssemblyName(Name1 assemblyName)
         {
             IMetadataScope scope;

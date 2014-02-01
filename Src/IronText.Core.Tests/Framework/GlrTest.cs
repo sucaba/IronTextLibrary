@@ -113,22 +113,22 @@ namespace IronText.Tests.Framework
         [DescribeParserStateMachine("NullableStart.info")]
         public interface NullableStart
         {
-            [Parse]
+            [Produce]
             void All(A a);
     
-            [Parse]
+            [Produce]
             void All(B s);
 
-            [Parse]
+            [Produce]
             A Aempty();
 
-            [Parse("a")]
+            [Produce("a")]
             A A();
 
-            [Parse]
+            [Produce]
             B Bempty();
 
-            [Parse("b")]
+            [Produce("b")]
             B B();
         }
 
@@ -139,16 +139,16 @@ namespace IronText.Tests.Framework
         [DescribeParserStateMachine("SimpleAmbiguousGrammar.info")]
         public interface SimpleAmbiguousGrammar
         {
-            [Parse("a", null, "a")]
+            [Produce("a", null, "a")]
             void All(D s);
 
-            [Parse]
+            [Produce]
             D D(B b);
 
-            [Parse("a")]
+            [Produce("a")]
             D D();
 
-            [Parse("a")]
+            [Produce("a")]
             B B(D d);
         }
 
@@ -160,13 +160,13 @@ namespace IronText.Tests.Framework
         [DescribeParserStateMachine("HiddenLeftRecursion.info")]
         public interface HiddenLeftRecursion
         {
-            [Parse]
+            [Produce]
             void All(S s);
 
-            [Parse]
+            [Produce]
             S S();
 
-            [Parse(null, null, "a")]
+            [Produce(null, null, "a")]
             S S(S s1, S s2);
         }
 
@@ -177,38 +177,38 @@ namespace IronText.Tests.Framework
         [DescribeParserStateMachine("LangForTomitaAlogirthm2.info")]
         public interface HiddenRightRecursion
         {
-            [Parse("b")]
+            [Produce("b")]
             void All(A s);
 
-            [Parse]
+            [Produce]
             A A();
 
-            [Parse("a")]
+            [Produce("a")]
             A A(A a, B b);
 
-            [Parse]
+            [Produce]
             B B();
         }
 
         [Language(LanguageFlags.ForceNonDeterministic)]
         public interface RightNullable
         {
-            [Parse(null, null, "a", "b")]
+            [Produce(null, null, "a", "b")]
             void S(B b, D d);
 
-            [Parse("a", null, "a", "d")]
+            [Produce("a", null, "a", "d")]
             void S(D d);
 
-            [Parse("a")]
+            [Produce("a")]
             D D(A a, B b);
 
-            [Parse("a")]
+            [Produce("a")]
             A A(B b1, B b2);
 
-            [Parse]
+            [Produce]
             A A();
 
-            [Parse]
+            [Produce]
             B B();
         }
 
@@ -219,23 +219,23 @@ namespace IronText.Tests.Framework
         [ParserGraph("RightNullable0.gv")]
         public interface RightNullable0
         {
-            [Parse]
+            [Produce]
             void All(S s);
 
-            [Parse]
+            [Produce]
             S S();
 
-            [Parse("a")]
+            [Produce("a")]
             S S(S s, A a);
 
-            [Parse]
+            [Produce]
             A A();
         }
 
         [Language(LanguageFlags.ForceNonDeterministic)]
         public interface NonAmbiguous
         {
-            [Parse("foo", "bar")]
+            [Produce("foo", "bar")]
             void All();
         }
 
@@ -243,20 +243,20 @@ namespace IronText.Tests.Framework
         [DescribeParserStateMachine("Trivial.info")]
         public interface Trivial
         {
-            [Parse]
+            [Produce]
             void All();
         }
 
         [Language(LanguageFlags.ForceNonDeterministic)]
         public interface NondeterministicReduce
         {
-            [Parse]
+            [Produce]
             void All(E e);
 
-            [Parse(null, "+", null)]
+            [Produce(null, "+", null)]
             E Add(E e1, E e2);
 
-            [Parse("b")]
+            [Produce("b")]
             E B();
         }
 
@@ -266,13 +266,13 @@ namespace IronText.Tests.Framework
         {
             public readonly List<double> Results = new List<double>();
 
-            [Parse]
+            [Produce]
             public void AddResult(double e) { Results.Add(e); }
 
-            [Parse(null, "^", null)]
+            [Produce(null, "^", null)]
             public double Pow(double e1, double e2) { return Math.Pow(e1, e2); }
 
-            [Parse("3")]
+            [Produce("3")]
             public double Number() { return 3; }
         }
 

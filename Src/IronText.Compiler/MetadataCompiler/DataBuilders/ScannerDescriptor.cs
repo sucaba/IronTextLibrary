@@ -20,7 +20,7 @@ namespace IronText.MetadataCompiler
 
         public static ScannerDescriptor FromScanRules(
             string name,
-            IEnumerable<ScanProduction> scanProductions,
+            IEnumerable<Matcher> scanProductions,
             ILogging logging)
         {
             CheckAllRulesHaveIndex(scanProductions);
@@ -34,7 +34,7 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        private readonly List<ScanProduction> productions = new List<ScanProduction>();
+        private readonly List<Matcher> productions = new List<Matcher>();
 
         public ScannerDescriptor(string name, ILogging logging) 
         { 
@@ -44,9 +44,9 @@ namespace IronText.MetadataCompiler
 
         public string Name { get; set; }
 
-        public ReadOnlyCollection<ScanProduction> Productions { get { return productions.AsReadOnly(); } }
+        public ReadOnlyCollection<Matcher> Productions { get { return productions.AsReadOnly(); } }
 
-        public void AddRule(ScanProduction production) { productions.Add(production); }
+        public void AddRule(Matcher production) { productions.Add(production); }
 
         public AstNode MakeAst()
         {
@@ -113,7 +113,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var scanProduction in Productions)
             {
-                var binding = scanProduction.Joint.The<CilScanProduction>();
+                var binding = scanProduction.Joint.The<CilMatcher>();
 
                 if (scanProduction.Pattern.Literal != null)
                 {
@@ -173,7 +173,7 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        private static void CheckAllRulesHaveIndex(IEnumerable<ScanProduction> scanProductions)
+        private static void CheckAllRulesHaveIndex(IEnumerable<Matcher> scanProductions)
         {
             foreach (var scanProduction in scanProductions)
             {

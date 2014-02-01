@@ -20,31 +20,28 @@ namespace IronText.MetadataCompiler
     /// </summary>
     internal class LanguageData : IReportData
     {
-        public LanguageName Name { get; set; }
+        public LanguageName           Name { get; set; }
 
-        public EbnfGrammar Grammar { get; set; }
+        public EbnfGrammar            Grammar { get; set; }
 
-        public EbnfGrammarAnalysis GrammarAnalysis { get; set; }
+        public EbnfGrammarAnalysis    GrammarAnalysis { get; set; }
 
-        public int TokenCount { get { return Grammar.Symbols.Count; } }
+        public bool                         IsDeterministic;
+        public Type                         DefinitionType;
+        public DotState[]                   ParserStates;
 
-        public bool                   IsDeterministic;
-        public Type                   RootContextType;
+        public ProductionContextLink[]      LocalParseContexts;
+        public Dictionary<Type,ITdfaData>   ScanModeTypeToDfa;
+        public IIntMap<int>                 AmbTokenToMainToken;
+        public ITable<int>                  ParserActionTable;
+        public int[]                        ParserConflictActionTable;
+        public int[]                        StateToSymbolTable;
+        public ParserConflictInfo[]         ParserConflicts;
 
-        public DotState[]             ParserStates;
-
-        // Rule ID -> ActionBuilder
-        public ProductionContextLink[]    LocalParseContexts;
-        
-        public Dictionary<Type, ITdfaData>  ScanModeTypeToDfa;
-        public IIntMap<int>           AmbTokenToMainToken;
-
-        public ITable<int>            ParserActionTable;
-        public int[]                  ParserConflictActionTable;
-        public int[]                  StateToSymbolTable;
-        public ParserConflictInfo[]   ParserConflicts;
-
-        string IReportData.DestinationDirectory { get { return Name.SourceAssemblyDirectory; } }
+        string IReportData.DestinationDirectory 
+        { 
+            get { return Name.SourceAssemblyDirectory; } 
+        }
 
         IScannerAutomata IReportData.GetScanModeDfa(Type scanModeType)
         {

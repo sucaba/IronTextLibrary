@@ -18,8 +18,6 @@ namespace IronText.Reporting
 
         EbnfGrammar Grammar { get; }
 
-        int TokenCount { get; }
-
         IScannerAutomata GetScanModeDfa(Type scanModeType);
 
         IParserAutomata ParserAutomata { get; }

@@ -36,22 +36,22 @@ namespace IronText.Tests.Algorithm
                     assign
                 },
 
-                ScanConditions =
+                Conditions =
                 {
-                    new ScanCondition("main")
+                    new Condition("main")
                     {
-                        ScanProductions = 
+                        Matchers = 
                         {
-                            new ScanProduction(
+                            new Matcher(
                                     @"digit+ ('.' digit+)?  | '.' digit+", 
                                     num),
-                            new ScanProduction(
+                            new Matcher(
                                     @"[01234567]+ 'Q'",
                                     num),
-                            new ScanProduction(
+                            new Matcher(
                                     @"alpha alnum*",
                                     ident),
-                            new ScanProduction(
+                            new Matcher(
                                     @"
                                     quot 
                                         ~(quot | esc)*
@@ -59,16 +59,16 @@ namespace IronText.Tests.Algorithm
                                     quot
                                     ",
                                     qStr),
-                            new ScanProduction(
+                            new Matcher(
                                     ScanPattern.CreateLiteral("begin"),
                                     begin),
-                            new ScanProduction(
+                            new Matcher(
                                     ScanPattern.CreateLiteral("end"),
                                     end),
-                            new ScanProduction(
+                            new Matcher(
                                     ScanPattern.CreateLiteral(":="),
                                     assign),
-                            new ScanProduction(
+                            new Matcher(
                                     @"blank+"),
                         }
                     }
@@ -79,7 +79,7 @@ namespace IronText.Tests.Algorithm
                 "b:=10Q \"foo\"",
                 ScannerDescriptor.FromScanRules(
                     GetType().Name + "_Lexer",
-                    grammar.ScanConditions[0].ScanProductions,
+                    grammar.Conditions[0].Matchers,
                     ExceptionLogging.Instance));
 
             var collector = new Collector<Msg>();

@@ -8,20 +8,20 @@ namespace CSharpParser
 {
     public partial interface ICsGrammar
     {
-        [Parse]
+        [Produce]
         CsArrayType ArrayType(
                 CsNonArrayType          elementType,
                 CsList<CsRankSpecifier> rankSpecifiers);
 
-        [Parse("{", null, "}")]
+        [Produce("{", null, "}")]
         CsArrayInitializer ArrayInitializer(
                 Opt<CsCommaList<CsVariableInitializer>> initialziers);
 
-        [Parse("{", null, ",", "}")]
+        [Produce("{", null, ",", "}")]
         CsArrayInitializer ArrayInitializer(
                 CsCommaList<CsVariableInitializer> initialziers);
 
-        [Parse]
+        [Produce]
         CsNonArrayType NonArrayType(CsType type);
     }
 }

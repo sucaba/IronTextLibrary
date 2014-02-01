@@ -8,7 +8,7 @@ namespace CSharpParser
 {
     public partial interface ICsGrammar
     {
-        [Parse(null, null, "enum", null, null, null)]
+        [Produce(null, null, "enum", null, null, null)]
         CsEnumDeclaration EnumDeclaration(
                 Opt<CsAttributes>     attributes,
                 Opt<CsList<CsEnumModifier>>  modifiers,
@@ -17,30 +17,30 @@ namespace CSharpParser
                 CsEnumBody                   body,
                 Opt<CsSemicolon>             semi);
 
-        [Parse(":", null)]
+        [Produce(":", null)]
         CsEnumBase EnumBase(CsIntegralType type);
 
-        [Parse("{", null, "}")]
+        [Produce("{", null, "}")]
         CsEnumBody EnumBody(
                 Opt<CsCommaList<CsEnumMemberDeclaration>> declarations);
 
-        [Parse("{", null, ",", "}")]
+        [Produce("{", null, ",", "}")]
         CsEnumBody EnumBody(
                 CsCommaList<CsEnumMemberDeclaration> declarations);
 
-        [Parse("new")]
-        [Parse("public")]
-        [Parse("protected")]
-        [Parse("internal")]
-        [Parse("private")]
+        [Produce("new")]
+        [Produce("public")]
+        [Produce("protected")]
+        [Produce("internal")]
+        [Produce("private")]
         CsEnumModifier EnumModifier();
 
-        [Parse]
+        [Produce]
         CsEnumMemberDeclaration EnumMemberDeclaration(
                 Opt<CsAttributes>     attributes,
                 CsIdentifier                 id);
 
-        [Parse(null, null, "=", null)]
+        [Produce(null, null, "=", null)]
         CsEnumMemberDeclaration EnumMemberDeclaration(
                 Opt<CsAttributes>     attributes,
                 CsIdentifier                 id,

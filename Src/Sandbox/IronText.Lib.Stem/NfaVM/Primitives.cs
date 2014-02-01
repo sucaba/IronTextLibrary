@@ -7,10 +7,10 @@ namespace IronText.Lib.NfaVM
     [Vocabulary]
     public static class Primitives
     {
-        [Parse]
+        [Produce]
         public static Zom_<T> Zom_<T>() { return null; }
 
-        [Parse]
+        [Produce]
         public static Zom_<T> Zom_<T>(Zom_<T> items, T item) { return null; }
 
         public static Zom_<T> Zom_<T>(params T[] items)

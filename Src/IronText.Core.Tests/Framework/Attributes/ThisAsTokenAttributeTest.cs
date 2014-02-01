@@ -21,15 +21,15 @@ namespace IronText.Tests.Framework.Attributes
         [Language]
         public class RootContext
         {
-            public double Result { get; [Parse] set; }
+            public double Result { get; [Produce] set; }
 
-            [Parse]
+            [Produce]
             public Accumulator Seed(int initial) { return new Accumulator(initial); }
 
-            [Scan("digit+")]
+            [Match("digit+")]
             public int Number(string text) { return int.Parse(text); }
 
-            [Scan("blank+")]
+            [Match("blank+")]
             public void Space() { }
         }
 
@@ -45,15 +45,15 @@ namespace IronText.Tests.Framework.Attributes
                 value = initial;
             }
 
-            [Parse("add")]
+            [Produce("add")]
             public Accumulator Add(int x) { value += x; return this; }
 
-            [Parse("remove")]
+            [Produce("remove")]
             public Accumulator Remove(int x) { value -= x; return this; }
 
             public interface Start { }
 
-            [Parse("end")]
+            [Produce("end")]
             public double End() { return value; }
 
             //[Pattern("end")]

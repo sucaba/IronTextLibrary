@@ -35,7 +35,7 @@ namespace IronText.Framework
             //graph.SetGraphProperties(RankDir.LeftToRight);
 
             int stateCount = data.ParserAutomata.States.Count;
-            int tokenCount = data.TokenCount;
+            int tokenCount = data.Grammar.Symbols.Count;
 
             foreach (var state in data.ParserAutomata.States)
             {

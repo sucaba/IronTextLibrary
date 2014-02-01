@@ -6,7 +6,7 @@ namespace IronText.Lib.IL
     [Demand]
     public interface CustomAttributesSyntax<T>
     {
-        [Parse(".custom")]
+        [Produce(".custom")]
         T CustomAttribute(Ref<Types> customType);
     }
 }

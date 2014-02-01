@@ -4,31 +4,31 @@ namespace CSharpParser
 {
     public partial interface ICsGrammar
     {
-        [Parse]
+        [Produce]
         CsTypeName TypeName(CsNamespaceOrTypeName name);
 
-        [Parse]
+        [Produce]
         CsNamespaceName NamespaceName(CsNamespaceOrTypeName name);
 
-        [Parse]
+        [Produce]
         CsNamespaceOrTypeName NamespaceOrTypeName(
                 CsIdentifier            name, 
                 Opt<CsTypeArgumentList> typeArgs);
 
-        [Parse(null, ".", null)]
+        [Produce(null, ".", null)]
         CsNamespaceOrTypeName NamespaceOrTypeName(
                 CsNamespaceOrTypeName   declaring,
                 CsIdentifier            identifier,
                 Opt<CsTypeArgumentList> typeArgs);
 
-        [Parse]
+        [Produce]
         CsNamespaceOrTypeName NamespaceOrTypeName(
             CsQualifiedAliasMember qualifiedAliasMember);
 
-        [Parse]
+        [Produce]
         CsType Type(CsValueType valueType);
 
-        [Parse]
+        [Produce]
         CsType Type(CsReferenceType referenceType);
 
         /* TODO: Syntactic ambiguity with other types referenced by name
@@ -36,96 +36,96 @@ namespace CSharpParser
         CsType Type(CsTypeParameter typeParameter);
         */
 
-        [Parse]
+        [Produce]
         CsValueType ValueType(CsStructType structType);
 
-        [Parse]
+        [Produce]
         CsValueType ValueType(CsEnumType structType);
 
-        [Parse]
+        [Produce]
         CsStructType StructType(CsTypeName name);
 
-        [Parse]
+        [Produce]
         CsStructType StructType(CsSimpleType simpleType);
 
-        [Parse]
+        [Produce]
         CsStructType StructType(CsNullableType nullable);
 
-        [Parse]
+        [Produce]
         CsSimpleType SimpleType(CsNumericType numeric);
 
-        [Parse("bool")]
+        [Produce("bool")]
         CsSimpleType SimpleType();
 
-        [Parse]
+        [Produce]
         CsNumericType NumericType(CsIntegralType type);
 
-        [Parse]
+        [Produce]
         CsNumericType NumericType(CsFloatingPointType type);
 
-        [Parse("decimal")]
+        [Produce("decimal")]
         CsNumericType NumericType();
 
-        [Parse("sbyte")]
-        [Parse("byte")]
-        [Parse("short")]
-        [Parse("ushort")]
-        [Parse("int")]
-        [Parse("uint")]
-        [Parse("long")]
-        [Parse("ulong")]
-        [Parse("char")]
+        [Produce("sbyte")]
+        [Produce("byte")]
+        [Produce("short")]
+        [Produce("ushort")]
+        [Produce("int")]
+        [Produce("uint")]
+        [Produce("long")]
+        [Produce("ulong")]
+        [Produce("char")]
         CsIntegralType IntegralType();
 
-        [Parse("float")]
-        [Parse("double")]
+        [Produce("float")]
+        [Produce("double")]
         CsFloatingPointType FloatingPointType();
 
-        [Parse(null, "?")]
+        [Produce(null, "?")]
         CsNullableType NullableType(CsNonNullableValueType type);
 
-        [Parse]
+        [Produce]
         CsNonNullableValueType NonNullableValueType(CsType type);
 
-        [Parse]
+        [Produce]
         CsEnumType EnumType(CsTypeName typeName);
 
-        [Parse]
+        [Produce]
         CsReferenceType ReferenceType(CsClassType type);
 
-        [Parse]
+        [Produce]
         CsReferenceType ReferenceType(CsInterfaceType type);
 
-        [Parse]
+        [Produce]
         CsReferenceType ReferenceType(CsArrayType type);
 
-        [Parse]
+        [Produce]
         CsReferenceType ReferenceType(CsDelegateType type);
 
-        [Parse]
+        [Produce]
         CsClassType ClassType(CsTypeName typeName);
 
-        [Parse("object")]
-        [Parse("dynamic")]
-        [Parse("string")]
+        [Produce("object")]
+        [Produce("dynamic")]
+        [Produce("string")]
         CsClassType ClassType();
 
-        [Parse]
+        [Produce]
         CsInterfaceType InterfaceType(CsTypeName typeName);
 
-        [Parse("[", null, "]")]
+        [Produce("[", null, "]")]
         CsRankSpecifier RankSpecifier(CsDimSeparators dim);
 
-        [Parse]
+        [Produce]
         CsDelegateType DelegateType(CsTypeName typeName);
 
-        [Parse("<", null, ">")]
+        [Produce("<", null, ">")]
         CsTypeArgumentList TypeArguments(CsCommaList<CsTypeArgument> typeArgs);
 
-        [Parse]
+        [Produce]
         CsTypeArgument TypeArgument(CsType type);
 
-        [Parse]
+        [Produce]
         CsTypeParameter TypeParameter(CsIdentifier id);
     }
 }

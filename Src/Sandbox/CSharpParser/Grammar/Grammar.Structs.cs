@@ -8,7 +8,7 @@ namespace CSharpParser
 {
     public partial interface ICsGrammar
     {
-        [Parse(null, null, null, "struct", null, null, null, null, null, ";")]
+        [Produce(null, null, null, "struct", null, null, null, null, null, ";")]
         CsStructDeclaration StructDeclaration(
                 Opt<CsAttributes>      attributes,
                 Opt<CsList<CsStructModifier>> modifier,
@@ -20,57 +20,57 @@ namespace CSharpParser
                 CsStructBody                  body);
 
 
-        [Parse("new")]
-        [Parse("public")]
-        [Parse("protected")]
-        [Parse("internal")]
-        [Parse("private")]
+        [Produce("new")]
+        [Produce("public")]
+        [Produce("protected")]
+        [Produce("internal")]
+        [Produce("private")]
         CsStructModifier StructModifier();
 
-        [Parse(":", null)]
+        [Produce(":", null)]
         CsStructInterfaces StructInterfaces(CsCommaList<CsInterfaceType> interfaces);
 
-        [Parse("{", null, "}")]
+        [Produce("{", null, "}")]
         CsStructBody StructBody(
                 Opt<CsList<CsStructMemberDeclaration>> declarations);
 
-        [Parse]
+        [Produce]
         CsStructMemberDeclaration StructMemberDeclaration(
                 CsConstantDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsStructMemberDeclaration StructMemberDeclaration(
                 CsFieldDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsStructMemberDeclaration StructMemberDeclaration(
                 CsMethodDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsStructMemberDeclaration StructMemberDeclaration(
                 CsPropertyDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsStructMemberDeclaration StructMemberDeclaration(
                 CsEventDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsStructMemberDeclaration StructMemberDeclaration(
                 CsIndexerDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsStructMemberDeclaration StructMemberDeclaration(
                 CsOperatorDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsStructMemberDeclaration StructMemberDeclaration(
                 CsConstructorDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsStructMemberDeclaration StructMemberDeclaration(
                 CsStaticConstructorDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsStructMemberDeclaration StructMemberDeclaration(
                 CsTypeDeclaration decl);
     }

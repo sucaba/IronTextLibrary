@@ -8,71 +8,71 @@ namespace CSharpParser
 {
     public partial interface ICsGrammar
     {
-        [Parse]
+        [Produce]
         CsCompilationUnit CompilationUnit(
                 Opt<CsList<CsExternAliasDirective>>        externAliasDirectives,
                 Opt<CsList<CsUsingDirective>>              usingDirectives,
                 Opt<CsGlobalAttributes>                    globalAttributes,
                 Opt<CsList<CsNamespaceMemberDeclaration>>  nsMemberDeclarations);
 
-        [Parse("namespace", null, null)]
-        [Parse("namespace", null, null, ";")]
+        [Produce("namespace", null, null)]
+        [Produce("namespace", null, null, ";")]
         CsNamespaceDeclaration NamespaceDeclaration(
                 CsQualifiedIdentifier               name,
                 CsNamespaceBody                     body);
 
-        [Parse]
+        [Produce]
         CsQualifiedIdentifier QualifiedIdentifier(CsDotList<CsIdentifier> identifiers);
 
-        [Parse("{", null, null, null, "}")]
+        [Produce("{", null, null, null, "}")]
         CsNamespaceBody NamespaceBody(
                 Opt<CsList<CsExternAliasDirective>>        externAliasDirectives,
                 Opt<CsList<CsUsingDirective>>              usingDirectives,
                 Opt<CsList<CsNamespaceMemberDeclaration>>  nsMemberDeclarations);
 
-        [Parse("extern", "alias", null)]
+        [Produce("extern", "alias", null)]
         CsExternAliasDirective ExternAliasDirective(
                 CsIdentifier identifier);
 
-        [Parse]
+        [Produce]
         CsUsingDirective UsingDirective(CsUsingAliasDirective directive);
 
-        [Parse]
+        [Produce]
         CsUsingDirective UsingDirective(CsUsingNamespaceDirective directive);
 
-        [Parse("using", null, "=", null, ";")]
+        [Produce("using", null, "=", null, ";")]
         CsUsingAliasDirective UsingAliasDirective(
                 CsIdentifier          identifier,
                 CsNamespaceOrTypeName namespaceOrTypeName);
 
-        [Parse("using", null, ";")]
+        [Produce("using", null, ";")]
         CsUsingNamespaceDirective UsingNamespaceDirective(
                 CsNamespaceName       namespaceName);
 
-        [Parse]
+        [Produce]
         CsNamespaceMemberDeclaration NamespaceMemberDeclaration(
                 CsNamespaceDeclaration declaration);
 
-        [Parse]
+        [Produce]
         CsNamespaceMemberDeclaration NamespaceMemberDeclaration(
                 CsTypeDeclaration declaration);
 
-        [Parse]
+        [Produce]
         CsTypeDeclaration TypeDeclaration(CsClassDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsTypeDeclaration TypeDeclaration(CsStructDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsTypeDeclaration TypeDeclaration(CsInterfaceDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsTypeDeclaration TypeDeclaration(CsEnumDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsTypeDeclaration TypeDeclaration(CsDelegateDeclaration decl);
 
-        [Parse(null, "::", null, null)]
+        [Produce(null, "::", null, null)]
         CsQualifiedAliasMember QualifiedAliasMember(
                 CsIdentifier            id1,
                 CsIdentifier            id2,

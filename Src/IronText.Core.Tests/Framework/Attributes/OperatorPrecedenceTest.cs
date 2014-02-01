@@ -54,20 +54,20 @@ namespace IronText.Tests.Framework
         [DescribeParserStateMachine("OperatorPrecedenceLang.info")]
         public class OperatorPrecedenceLang
         {
-            [ParseResult]
+            [Outcome]
             public int Result { get; set; }
 
-            [Parse(null, "+", null)]
+            [Produce(null, "+", null)]
             public int Plus(int x, int y) { return x + y; }
 
-            [Parse(null, "*", null)]
-            [Parse(Associativity.Left, Precedence = 1)]
+            [Produce(null, "*", null)]
+            [Produce(Associativity.Left, Precedence = 1)]
             public int Multiply(int x, int y) { return x * y; }
 
-            [Parse(null, "/", null)]
+            [Produce(null, "/", null)]
             public int Divide(int x, int y) { return x / y; }
 
-            [Parse(null, "^", null)]
+            [Produce(null, "^", null)]
             public int Pow(int x, int y) 
             {
                 int result = 1;
@@ -79,16 +79,16 @@ namespace IronText.Tests.Framework
                 return result; 
             }
 
-            [Parse("(", null, ")")]
+            [Produce("(", null, ")")]
             public int Parenthes(int inner) { return inner; }
 
-            [Parse]
+            [Produce]
             public int Integer(Num num) { return int.Parse(num.Text); }
 
-            [Scan("digit+")]
+            [Match("digit+")]
             public Num Num(string text) { return new Num(text); }
 
-            [Scan("blank+")]
+            [Match("blank+")]
             public void Space() { }
         }
     }

@@ -48,7 +48,7 @@ namespace IronText.Reporting
                 if (transitions == null)
                 {
                     var list = new List<IParserTransition>();
-                    int tokenCount = data.TokenCount;
+                    int tokenCount = data.Grammar.Symbols.Count;
                     for (int token = EbnfGrammar.Eoi; token != tokenCount; ++token)
                     {
                         var actions = GetAllParserActions(dotState.Index, token);

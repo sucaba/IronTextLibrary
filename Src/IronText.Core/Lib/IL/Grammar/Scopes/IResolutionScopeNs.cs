@@ -6,13 +6,13 @@ namespace IronText.Lib.IL
     [Vocabulary]
     public interface IResolutionScopeNs
     {
-        [Parse("[", null, "]")]
+        [Produce("[", null, "]")]
         Ref<ResolutionScopes> FromAssemblyName(Name1 name1);
 
-        [Parse("[", ".module", null, "]")]
+        [Produce("[", ".module", null, "]")]
         Ref<ResolutionScopes> FromModuleName(Name1 name1);
 
-        [Parse]
+        [Produce]
         Def<ResolutionScopes> DefineReferencedAssemblyName(Name1 name1);
     }
 }

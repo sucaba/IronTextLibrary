@@ -21,12 +21,12 @@ namespace IronText.Tests.Framework
         [Language]
         public class EmptyChainLang
         {
-            public EmptyChain Result { get; [Parse] set; }
+            public EmptyChain Result { get; [Produce] set; }
 
-            [Parse]
+            [Produce]
             public Empty1 Empty1() { return new Empty1(); }
 
-            [Parse("(", "list", null, ")")]
+            [Produce("(", "list", null, ")")]
             public EmptyChain List(Empty1 e1) { return new EmptyChain(); }
         }
 

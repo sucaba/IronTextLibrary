@@ -6,7 +6,7 @@ namespace IronText.Lib.IL
     public interface AssemblyInfoSyntax
         : CustomAttributesSyntax<AssemblyInfoSyntax>
     {
-        [Parse("}")]
+        [Produce("}")]
         CilDocumentSyntax EndAssembly();
     }
 }

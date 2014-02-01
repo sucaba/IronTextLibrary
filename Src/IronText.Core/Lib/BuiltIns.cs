@@ -6,22 +6,22 @@ namespace IronText.Lib
     [Vocabulary]
     public static class Builtins
     {
-        [Parse]
+        [Produce]
         public static List<T> List<T>() { return new List<T>(4); }
 
-        [Parse]
+        [Produce]
         public static List<T> List<T>(List<T> items, T item) { items.Add(item); return items; }
 
-        [Parse]
+        [Produce]
         public static T[] Array<T>(T x) { return new T[] { x }; }
 
-        [Parse]
+        [Produce]
         public static T[] Array<T>(T x, T y) { return new T[] { x, y }; }
 
-        [Parse]
+        [Produce]
         public static T[] Array<T>(T x, T y, T z) { return new T[] { x, y, z }; }
 
-        [Parse]
+        [Produce]
         public static T[] Array<T>(T x, T y, T z, T t, List<T> more) 
         {
             T[] result = new T[4 + more.Count];

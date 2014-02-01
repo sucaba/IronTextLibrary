@@ -21,7 +21,7 @@ namespace Samples
             Language.Parse(this, commandLine);
         }
 
-        [Parse("add")]
+        [Produce("add")]
         public void Add(FileInfo archive, List<Option> options, FileInfo[] files)
         {
             Console.WriteLine("compressing{1} archive '{0}' ...", archive, IsSfx ? " self-extracting" : "");
@@ -33,55 +33,55 @@ namespace Samples
             Console.WriteLine("done!");
         }
 
-        [Parse("test")]
+        [Produce("test")]
         public void Test(FileInfo archive)
         {
             Console.WriteLine("testing archive '{0}' ...", archive);
             Console.WriteLine("done!");
         }
 
-        [Parse("extract")]
+        [Produce("extract")]
         public void Extract(FileInfo archive, List<Option> options)
         {
             Console.WriteLine("extracting archive '{0}' to '{1}' ...", archive, OutputDir);
             Console.WriteLine("done!");
         }
 
-        [Parse("--compress")]
-        [Parse("-c")]
+        [Produce("--compress")]
+        [Produce("-c")]
         public Option Compress(int level) { this.CompressLevel = level; return null; }
 
-        [Parse("--format")]
-        [Parse("-f")]
+        [Produce("--format")]
+        [Produce("-f")]
         public Option Format(string format) { this.ArchiveFormat = format; return null; }
 
-        [Parse("--sfx")]
+        [Produce("--sfx")]
         public Option Sfx() { this.IsSfx = true; return null; }
 
-        [Parse("--output")]
-        [Parse("-o")]
+        [Produce("--output")]
+        [Produce("-o")]
         public Option OutputDirectory(DirectoryInfo dir) { this.OutputDir = dir; return null; }
 
-        [Parse]
+        [Produce]
         public FileInfo FileInfo(string word) { return new FileInfo(word); }
 
-        [Parse]
+        [Produce]
         public DirectoryInfo DirectoryInfo(string word) { return new DirectoryInfo(word); }
 
-        [Scan("digit+")]
+        [Match("digit+")]
         public int Integer(string text) { return int.Parse(text); }
 
-        [Scan("quot ~quot* quot")]
+        [Match("quot ~quot* quot")]
         public string QuotedWord(char[] buffer, int start, int length)
         {
             string text = new string(buffer, start + 1, length - 2);
             return text;
         }
 
-        [Scan("~(blank | quot | '-') ~(blank | quot)*")]
+        [Match("~(blank | quot | '-') ~(blank | quot)*")]
         public string Word(string name) { return name; }
 
-        [Scan("blank+")]
+        [Match("blank+")]
         public void Blank() { }
     }
 

@@ -47,18 +47,18 @@ namespace IronText.Tests.Framework
         [Language]
         public class WithSentinel
         {
-            public ASB Result { get; [Parse] set; }
+            public ASB Result { get; [Produce] set; }
 
-            [Scan(@"'a' zero 'b'")]
+            [Match(@"'a' zero 'b'")]
             public ASB Asb() { return ASB.Value; }
         }
 
         [Language]
         public class LineComment
         {
-            public string Result { get; [Parse] set; }
+            public string Result { get; [Produce] set; }
 
-            [Scan(@"~[a]")]
+            [Match(@"~[a]")]
             public string Asb(string text) { return text; }
         }
     }

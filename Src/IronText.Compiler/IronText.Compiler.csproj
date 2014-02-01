@@ -153,7 +153,7 @@
     <Compile Include="Lib\IL\Backend\Cecil\IGenericContext.cs" />
     <Compile Include="Lib\IL\Backend\Cecil\RewriteScopeResolver.cs" />
     <Compile Include="Lib\IL\Backend\ReflectionEmit\ILGeneratorBackend.cs" />
-    <Compile Include="Lib\IL\CilLanguage.cs" />
+    <Compile Include="Lib\IL\CilBackend.cs" />
     <Compile Include="Lib\IL\Generators\ArrayLoopGenerator.cs" />
     <Compile Include="Lib\IL\Generators\ContiguousSwitchGenerator.cs" />
     <Compile Include="Algorithm\DecisionTree\IDecisionTreeGenerationStrategy.cs" />

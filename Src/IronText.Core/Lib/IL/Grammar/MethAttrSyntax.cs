@@ -57,13 +57,13 @@ namespace IronText.Lib.IL
         [ParseGet("reqsecobj")]
         TNext Reqsecobj { get; }
 
-        [Parse("pinvokeimpl", "(", null, "as", null)]
+        [Produce("pinvokeimpl", "(", null, "as", null)]
         PInvAttrSyntax BeginPinvokeimpl(QStr s1, QStr s2);
 
-        [Parse("pinvokeimpl", "(", null)]
+        [Produce("pinvokeimpl", "(", null)]
         PInvAttrSyntax BeginPinvokeimpl(QStr s);
 
-        [Parse("pinvokeimpl", "(")]
+        [Produce("pinvokeimpl", "(")]
         PInvAttrSyntax BeginPinvokeimpl();
     }
 }

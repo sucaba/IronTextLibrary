@@ -99,13 +99,13 @@ namespace IronText.Tests.Framework
         [Vocabulary]
         public class BaseLang
         {
-            [Parse]
+            [Produce]
             public void Result(ResultOf<BaseLang> main) { }
 
-            [Parse("baseLang")]
+            [Produce("baseLang")]
             public ResultOf<BaseLang> ParseBaseLang() { return null; }
 
-            [Parse("staticBaseLang")]
+            [Produce("staticBaseLang")]
             public static ResultOf<BaseLang> StaticBaseLang() { return null; }
         }
 
@@ -115,39 +115,39 @@ namespace IronText.Tests.Framework
         [DescribeParserStateMachine("InheritanceTest.info")]
         public class MainLang : BaseLang
         {
-            [Parse]
+            [Produce]
             public void Result(ResultOf<MainLang> main) { }
 
-            [Parse("mainLang")]
+            [Produce("mainLang")]
             public ResultOf<MainLang> ParseMainLang() { return null; }
 
-            [Parse("mainLang")]
+            [Produce("mainLang")]
             public ResultOf<MainLang> ParseMainLang(ResultOf<Loop1Syntax> loop1Result) { return null; }
 
-            [Parse]
+            [Produce]
             public Loop1Syntax SeedLoop1Syntax() { return new Loop1Syntax(); }
 
-            [Scan("blank+")]
+            [Match("blank+")]
             public static void Blank() { }
         }
 
         [Demand]
         public abstract class Loop1SyntaxBase
         {
-            [Parse("loop1Base")]
+            [Produce("loop1Base")]
             public Loop1SyntaxBase ParseBase() { return this; }
 
-            [Parse("endBase")]
+            [Produce("endBase")]
             public ResultOf<Loop1Syntax> EndBase() { return null; }
         }
 
         [Demand]
         public class Loop1Syntax : Loop1SyntaxBase // inheritance should add new rules with modified context-token
         {
-            [Parse("loop1")]
+            [Produce("loop1")]
             public Loop1Syntax Parse() { return this; }
 
-            [Parse("end")]
+            [Produce("end")]
             public ResultOf<Loop1Syntax> End() { return null; }
         }
     }

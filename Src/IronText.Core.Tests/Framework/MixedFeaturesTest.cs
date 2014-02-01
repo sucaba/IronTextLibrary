@@ -113,7 +113,7 @@ namespace IronText.Tests.Framework
                 this.Scanner = new CtemScanner();
             }
 
-            public double Result { get; [Parse] set; }
+            public double Result { get; [Produce] set; }
 
             [SubContext]
             public CtemScanner Scanner { get; private set; }
@@ -124,23 +124,23 @@ namespace IronText.Tests.Framework
             public DefFirstNs<Locals> Scope { get; private set; }
 
             // Static method
-            [Parse]
+            [Produce]
             public static double Num(Num num) { return double.Parse(num.Text); }
 
-            [Parse("(", "let", null, null, ")")]
+            [Produce("(", "let", null, null, ")")]
             public double Let(Def<Locals> def, double rexpr)
             {
                 def.Value = rexpr;
                 return 0;
             }
 
-            [Parse]
+            [Produce]
             public double VarRef(Ref<Locals> v) { return (double)v.Value; }
 
-            [Parse("(", "begin", null, null, null, ")")]
+            [Produce("(", "begin", null, null, null, ")")]
             public double Begin(Push<Locals> push, List<double> exprs, Pop<Locals> pop) { return exprs.LastOrDefault(); }
 
-            [Parse("(", null, null, ")")]
+            [Produce("(", null, null, ")")]
             public double Apply(Ref<Locals> f, List<double> args)
             {
                 var lambda = (Lambda<Locals, object>)f.Value;
@@ -163,31 +163,31 @@ namespace IronText.Tests.Framework
                 }
             }
 
-            [Parse("(", "eval", null, ")")]
+            [Produce("(", "eval", null, ")")]
             public double Eval(QStr str) 
             { 
                 return Language.Parse(this, str.Text).Result; 
             }
 
-            [Parse("(", "+", null, null, ")")]
+            [Produce("(", "+", null, null, ")")]
             public double Plus(double x, double y) { return x + y; }
 
-            [Parse("(", "-", null, null, ")")]
+            [Produce("(", "-", null, null, ")")]
             public double Minus(double x, double y) { return x - y; }
 
-            [Parse("(", "*", null, null, ")")]
+            [Produce("(", "*", null, null, ")")]
             public double Multiply(double x, double y) { return x * y; }
 
-            [Parse("(", "/", null, null, ")")]
+            [Produce("(", "/", null, null, ")")]
             public double Divide(double x, double y) { return x / y; }
 
-            [Parse("(", "^", null, null, ")")]
+            [Produce("(", "^", null, null, ")")]
             public double Pow(double x, double y) { return Math.Pow(x, y); }
 
-            [Parse(null, "^", null)]
+            [Produce(null, "^", null)]
             public double InfixPow(double x, Num y) { return Math.Pow(x, Num(y)); }
 
-            [Parse("(", "sum", null, ")")]
+            [Produce("(", "sum", null, ")")]
             public double Sum(List<double> args) { return args.Sum(); }
 
 

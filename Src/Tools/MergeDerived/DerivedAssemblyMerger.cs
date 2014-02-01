@@ -52,7 +52,7 @@ namespace NDerive
             Pipe<CilDocumentSyntax> compile,
             FileInfo           destination)
         {
-            CilSyntax context = CilLanguage.CreateCompiler(null);
+            CilSyntax context = CilBackend.CreateCompiler(null);
             context
             .BeginDocument()
                 .AssemblyRewrite(source.FullName)

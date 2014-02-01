@@ -93,7 +93,7 @@ namespace IronText.MetadataCompiler
             // Prepare language data for the language assembly generation
             result.Name                = languageName;
             result.IsDeterministic     = !lrTable.RequiresGlr;
-            result.RootContextType     = languageName.DefinitionType;
+            result.DefinitionType     = languageName.DefinitionType;
             result.Grammar             = grammar;
             result.GrammarAnalysis     = grammarAnalysis;
             result.ParserStates        = parserDfa.States;
@@ -124,11 +124,11 @@ namespace IronText.MetadataCompiler
             IScanAmbiguityResolver scanAmbiguityResolver
                                 = new ScanAmbiguityResolver(
                                         tokenSet,
-                                        grammar.ScanProductions.Count);
+                                        grammar.Matchers.Count);
 
-            foreach (var condition in grammar.ScanConditions)
+            foreach (var condition in grammar.Conditions)
             {
-                var conditionBinding = condition.Joint.The<CilScanCondition>();
+                var conditionBinding = condition.Joint.The<CilCondition>();
 
                 ITdfaData tdfaData;
                 if (!CompileTdfa(logging, condition, out tdfaData))
@@ -149,7 +149,7 @@ namespace IronText.MetadataCompiler
                 result[conditionBinding.ConditionType] = tdfaData;
 
                 // For each action store information about produced tokens
-                foreach (var scanProduction in condition.ScanProductions)
+                foreach (var scanProduction in condition.Matchers)
                 {
                     scanAmbiguityResolver.RegisterAction(scanProduction);
                 }
@@ -167,11 +167,11 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        private static bool CompileTdfa(ILogging logging, ScanCondition condition, out ITdfaData tdfaData)
+        private static bool CompileTdfa(ILogging logging, Condition condition, out ITdfaData tdfaData)
         {
             var descr = ScannerDescriptor.FromScanRules(
                                         condition.Name,
-                                        condition.ScanProductions,
+                                        condition.Matchers,
                                         logging);
 
             var literalToAction = new Dictionary<string, int>();

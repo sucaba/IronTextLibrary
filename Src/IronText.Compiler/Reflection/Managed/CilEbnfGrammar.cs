@@ -14,7 +14,7 @@ namespace IronText.Reflection.Managed
     {
         private readonly List<ICilMetadata>                 metadata;
         private readonly List<CilProduction>                productions;
-        private readonly List<CilScanCondition>             scanConditions;
+        private readonly List<CilCondition>             scanConditions;
         private readonly CilMerger[]                        mergers;
         private readonly List<CilSymbolFeature<Precedence>> precedence;
 
@@ -154,7 +154,7 @@ namespace IronText.Reflection.Managed
 
         public bool IsValid { get; private set; }
 
-        private void LinkRelatedTokens(List<CilScanCondition> conditions)
+        private void LinkRelatedTokens(List<CilCondition> conditions)
         {
             foreach (var condition in conditions)
             {
@@ -181,7 +181,7 @@ namespace IronText.Reflection.Managed
 
         public IList<CilMerger>        Mergers        { get { return mergers; } }
 
-        public IList<CilScanCondition> ScanConditions { get { return scanConditions; } }
+        public IList<CilCondition> ScanConditions { get { return scanConditions; } }
 
         public IEnumerable<CilSymbolFeature<Precedence>> Precedence { get { return precedence; } }
 

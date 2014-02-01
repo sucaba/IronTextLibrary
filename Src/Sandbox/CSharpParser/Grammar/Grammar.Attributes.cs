@@ -8,74 +8,74 @@ namespace CSharpParser
 {
     public partial interface ICsGrammar
     {
-        [Parse]
+        [Produce]
         CsGlobalAttributes GlobalAttributes(
                 CsList<CsGlobalAttributeSection> sections);
 
-        [Parse("[", null, ":", null, "]")]
-        [Parse("[", null, ":", null, ",", "]")]
+        [Produce("[", null, ":", null, "]")]
+        [Produce("[", null, ":", null, ",", "]")]
         CsGlobalAttributeSection GlobalAttributeSection(
                 CsGlobalAttributeTarget  target,
                 CsCommaList<CsAttribute> attributes);
 
-        [Parse("assembly")]
-        [Parse("module")]
+        [Produce("assembly")]
+        [Produce("module")]
         CsGlobalAttributeTarget GlobalAttributeTarget();
 
-        [Parse]
+        [Produce]
         CsAttributes Attributes(CsList<CsAttributeSection> sections);
 
-        [Parse("[", null, null, "]")]
-        [Parse("[", null, null, ",", "]")]
+        [Produce("[", null, null, "]")]
+        [Produce("[", null, null, ",", "]")]
         CsAttributeSection AttributeSection(
                 Opt<CsAttributeTargetSpecifier> specifier,
                 CsCommaList<CsAttribute>        attributes);
 
-        [Parse(null, ":")]
+        [Produce(null, ":")]
         CsAttributeTargetSpecifier AttributeTargetSpecifier(
                 CsAttributeTarget target);
 
-        [Parse("field")]
-        [Parse("event")]
-        [Parse("method")]
-        [Parse("param")]
-        [Parse("property")]
-        [Parse("return")]
-        [Parse("type")]
+        [Produce("field")]
+        [Produce("event")]
+        [Produce("method")]
+        [Produce("param")]
+        [Produce("property")]
+        [Produce("return")]
+        [Produce("type")]
         CsAttributeTarget AttributeTarget();
 
-        [Parse]
+        [Produce]
         CsAttribute Attribute(
                 CsAttributeName           name,
                 Opt<CsAttributeArguments> args);
 
-        [Parse]
+        [Produce]
         CsAttributeName AttributeName(CsTypeName typeName); // also trim "Attribute" suffix
 
-        [Parse("(", null, ")")]
+        [Produce("(", null, ")")]
         CsAttributeArguments AttributeArguments(
                 Opt<CsCommaList<CsPositionalArgument>> args);
 
-        [Parse("(", null, ",", null, ")")]
+        [Produce("(", null, ",", null, ")")]
         CsAttributeArguments AttributeArguments(
                 CsCommaList<CsPositionalArgument> args,
                 CsCommaList<CsNamedArgument>      namedArgs);
 
-        [Parse("(", null, ")")]
+        [Produce("(", null, ")")]
         CsAttributeArguments AttributeArguments(
                 CsCommaList<CsNamedArgument>      namedArgs);
 
-        [Parse]
+        [Produce]
         CsPositionalArgument PositionalArgument(
                 Opt<CsArgumentName>             name,
                 CsAttributeArgumentExpression   expression);
 
-        [Parse(null, "=", null)]
+        [Produce(null, "=", null)]
         CsNamedArgument NamedArgument(
                 CsIdentifier                  identifier,
                 CsAttributeArgumentExpression expression);
 
-        [Parse]
+        [Produce]
         CsAttributeArgumentExpression AttributeArgumentExpression(
                 CsExpression expression);
     }

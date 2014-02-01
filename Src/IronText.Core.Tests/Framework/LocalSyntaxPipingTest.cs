@@ -85,7 +85,7 @@ namespace IronText.Tests.Framework
         [StaticContext(typeof(Utils))]
         public interface SyntaxPipingLang
         {
-            [ParseResult]
+            [Outcome]
             MethodSig Result { get; set; }
 
             // Instead of C parameter there is Pipe<A,C> wich is 
@@ -95,10 +95,10 @@ namespace IronText.Tests.Framework
             // as additional indirection level which can be used
             // for more convenient programmatic code generation
             // (see test code for more details).
-            [Parse("method")]
+            [Produce("method")]
             MethodSig Method(Pipe<SyntaxPipingLang,DoneMethod> code);
 
-            [Parse("call")]
+            [Produce("call")]
             MethodCall Call(Pipe<SyntaxPipingLang,DoneMethod> code);
 
             [ParseGet]
@@ -108,13 +108,13 @@ namespace IronText.Tests.Framework
         [Vocabulary]
         public static class Utils
         {
-            [Parse]
+            [Produce]
             public static Pipe<S,R> Pipe<S,R>(R ret) { return start => ret; }
 
-            [Scan("alpha alnum+")]
+            [Match("alpha alnum+")]
             public static string Identifier(string id) { return id; }
 
-            [Scan("blank+")]
+            [Match("blank+")]
             public static void Blank() { }
         }
 
@@ -141,21 +141,21 @@ namespace IronText.Tests.Framework
         [Demand]
         public interface WantReturnThen<TNext>
         {
-            [Parse]
+            [Produce]
             TNext Return(string value);
         }
 
         [Demand]
         public interface WantNameThen<TNext>
         {
-            [Parse(null, "(", ")")]
+            [Produce(null, "(", ")")]
             TNext Name(string value);
         }
 
         [Demand]
         public interface EmptyThen<TNext>
         {
-            [Parse]
+            [Produce]
             TNext End();
         }
 

@@ -8,7 +8,7 @@ namespace CSharpParser
 {
     public partial interface ICsGrammar
     {
-        [Parse(null, null, null, "class")]
+        [Produce(null, null, null, "class")]
         CsClassDeclaration ClassDeclaration(
                 Opt<CsAttributes>            attributes,
                 Opt<CsList<CsClassModifier>>   modifiers,
@@ -19,173 +19,173 @@ namespace CSharpParser
                 Opt<CsList<CsTypeParameterConstraintClause>> typeParamConstraints,
                 CsClassBody                  body);
 
-        [Parse("new")]
-        [Parse("public")]
-        [Parse("protected")]
-        [Parse("internal")]
-        [Parse("private")]
-        [Parse("abstract")]
-        [Parse("sealed")]
-        [Parse("static")]
+        [Produce("new")]
+        [Produce("public")]
+        [Produce("protected")]
+        [Produce("internal")]
+        [Produce("private")]
+        [Produce("abstract")]
+        [Produce("sealed")]
+        [Produce("static")]
         CsClassModifier ClassModifier();
 
-        [Parse("<", null, ">")]
+        [Produce("<", null, ">")]
         CsTypeParameterList TypeParameterList(CsCommaList<CsTypeParameterEntry> param);
 
-        [Parse]
+        [Produce]
         CsTypeParameterEntry TypeParameters(Opt<CsAttributes> attributes, CsTypeParameter param);
 
-        [Parse(":", null)]
+        [Produce(":", null)]
         CsClassBase ClassBase(CsClassType type);
 
-        [Parse(":", null)]
+        [Produce(":", null)]
         CsClassBase ClassBase(CsCommaList<CsInterfaceType> type);
 
-        [Parse(":", null, ",", null)]
+        [Produce(":", null, ",", null)]
         CsClassBase ClassBase(CsClassBase baseType, CsCommaList<CsInterfaceType> type);
 
-        [Parse("where", null, ":", null)]
+        [Produce("where", null, ":", null)]
         CsTypeParameterConstraintClause TypeParameterConstraintClause(
                 CsTypeParameter            typeParameter,
                 CsTypeParameterConstraints constraints);
 
-        [Parse]
+        [Produce]
         CsTypeParameterConstraints TypeParameterConstraints(
                 CsPrimaryConstraint constraint);
 
-        [Parse]
+        [Produce]
         CsTypeParameterConstraints TypeParameterConstraints(
                 CsCommaList<CsSecondaryConstraint> constraints);
 
-        [Parse]
+        [Produce]
         CsTypeParameterConstraints TypeParameterConstraints(
                 CsConstructorConstraint constraint);
 
-        [Parse(null, ",", null)]
+        [Produce(null, ",", null)]
         CsTypeParameterConstraints TypeParameterConstraints(
                 CsPrimaryConstraint    constraint,
                 CsCommaList<CsSecondaryConstraint> secondaryConstraints);
         
-        [Parse(null, ",", null)]
+        [Produce(null, ",", null)]
         CsTypeParameterConstraints TypeParameterConstraints(
                 CsPrimaryConstraint     constraint,
                 CsConstructorConstraint constructorConstraint);
 
-        [Parse(null, ",", null)]
+        [Produce(null, ",", null)]
         CsTypeParameterConstraints TypeParameterConstraints(
                 CsCommaList<CsSecondaryConstraint>  constraints,
                 CsConstructorConstraint constructorConstraint);
 
-        [Parse(null, ",", null, ",", null)]
+        [Produce(null, ",", null, ",", null)]
         CsTypeParameterConstraints TypeParameterConstraints(
                 CsPrimaryConstraint     constraint,
                 CsCommaList<CsSecondaryConstraint>  constraints,
                 CsConstructorConstraint constructorConstraint);
 
-        [Parse]
+        [Produce]
         CsPrimaryConstraint PrimaryConstraint(CsClassType type);
 
-        [Parse("class")]
-        [Parse("struct")]
+        [Produce("class")]
+        [Produce("struct")]
         CsPrimaryConstraint PrimaryConstraint();
 
-        [Parse]
+        [Produce]
         CsSecondaryConstraint SecondaryConstraint(CsInterfaceType type);
 
-        [Parse]
+        [Produce]
         CsSecondaryConstraint SecondaryConstraint(CsTypeParameter type);
 
-        [Parse("new", "(", ")")]
+        [Produce("new", "(", ")")]
         CsConstructorConstraint ConstructorConstraint();
 
-        [Parse("{", null, "}")]
+        [Produce("{", null, "}")]
         CsClassBody ClassBody(Opt<CsList<CsClassMemberDeclaration>> declarations);
 
-        [Parse]
+        [Produce]
         CsClassMemberDeclaration ClassMemberDeclaration(CsConstantDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsClassMemberDeclaration ClassMemberDeclaration(CsFieldDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsClassMemberDeclaration ClassMemberDeclaration(CsMethodDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsClassMemberDeclaration ClassMemberDeclaration(CsPropertyDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsClassMemberDeclaration ClassMemberDeclaration(CsEventDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsClassMemberDeclaration ClassMemberDeclaration(CsIndexerDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsClassMemberDeclaration ClassMemberDeclaration(CsOperatorDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsClassMemberDeclaration ClassMemberDeclaration(CsConstructorDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsClassMemberDeclaration ClassMemberDeclaration(CsDestructorDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsClassMemberDeclaration ClassMemberDeclaration(CsStaticConstructorDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsClassMemberDeclaration ClassMemberDeclaration(CsTypeDeclaration decl);
 
-        [Parse(null, null, "const", null, null, ";")]
+        [Produce(null, null, "const", null, null, ";")]
         CsConstantDeclaration ConstantDeclaration(
                 Opt<CsAttributes>                  attributes,
                 Opt<CsList<CsConstantModifier>>      modifiers,
                 CsType                             type,
                 CsCommaList<CsConstantDeclarator>  declarators);
 
-        [Parse("new")]
-        [Parse("public")]
-        [Parse("protected")]
-        [Parse("internal")]
-        [Parse("private")]
+        [Produce("new")]
+        [Produce("public")]
+        [Produce("protected")]
+        [Produce("internal")]
+        [Produce("private")]
         CsConstantModifier ConstantModifier();
 
-        [Parse(null, null, null, null, ";")]
+        [Produce(null, null, null, null, ";")]
         CsFieldDeclaration FieldDeclaration(
                 Opt<CsAttributes>                 attributes,
                 Opt<CsList<CsFieldModifiers>>       modifiers,
                 CsType                            type,
                 CsCommaList<CsVariableDeclarator> declarators);
 
-        [Parse("new")]
-        [Parse("public")]
-        [Parse("protected")]
-        [Parse("internal")]
-        [Parse("private")]
-        [Parse("static")]
-        [Parse("readonly")]
-        [Parse("volatile")]
+        [Produce("new")]
+        [Produce("public")]
+        [Produce("protected")]
+        [Produce("internal")]
+        [Produce("private")]
+        [Produce("static")]
+        [Produce("readonly")]
+        [Produce("volatile")]
         CsFieldModifiers FieldModifiers();
 
-        [Parse]
+        [Produce]
         CsVariableDeclarator VariableDeclarator(
                 CsIdentifier          id);
 
-        [Parse(null, "=", null)]
+        [Produce(null, "=", null)]
         CsVariableDeclarator VariableDeclarator(
                 CsIdentifier          id,
                 CsVariableInitializer initializer);
 
-        [Parse]
+        [Produce]
         CsVariableInitializer VariableInitializer(CsExpression expression);
 
-        [Parse]
+        [Produce]
         CsVariableInitializer VariableInitializer(CsArrayInitializer initializer);
 
-        [Parse]
+        [Produce]
         CsMethodDeclaration MethodDeclaration(
                 CsMethodHeader header,
                 CsMethodBody body);
 
-        [Parse(null, null, null, null, null, null, "(", null, ")", null)]
+        [Produce(null, null, null, null, null, null, "(", null, ")", null)]
         CsMethodHeader MethodHeader(
                 Opt<CsAttributes>      attributes,
                 Opt<CsList<CsMethodModifier>> modifiers,
@@ -196,42 +196,42 @@ namespace CSharpParser
                 Opt<CsFormalParameterList>    formalParams,
                 Opt<CsList<CsTypeParameterConstraintClause>> typeParamConstraints);
 
-        [Parse("new")]
-        [Parse("public")]
-        [Parse("protected")]
-        [Parse("internal")]
-        [Parse("private")]
-        [Parse("static")]
-        [Parse("virtual")]
-        [Parse("sealed")]
-        [Parse("override")]
-        [Parse("abstract")]
-        [Parse("extern")]
+        [Produce("new")]
+        [Produce("public")]
+        [Produce("protected")]
+        [Produce("internal")]
+        [Produce("private")]
+        [Produce("static")]
+        [Produce("virtual")]
+        [Produce("sealed")]
+        [Produce("override")]
+        [Produce("abstract")]
+        [Produce("extern")]
         CsMethodModifier MethodModifier();
 
-        [Parse("void")]
+        [Produce("void")]
         CsReturnType ReturnType();
 
-        [Parse]
+        [Produce]
         CsReturnType ReturnType(CsType type);
 
-        [Parse]
+        [Produce]
         CsMethodBody MethodBody(CsBlock block);
 
-        [Parse]
+        [Produce]
         CsFormalParameterList FormalParameterList(
                 CsCommaList<CsFixedParameter> fixedParameters);
 
-        [Parse(null, ",", null)]
+        [Produce(null, ",", null)]
         CsFormalParameterList FormalParameterList(
                 CsCommaList<CsFixedParameter> fixedParameters,
                 CsParameterArray              parameterArray);
 
-        [Parse]
+        [Produce]
         CsFormalParameterList FormalParameterList(
                 CsParameterArray              parameterArray);
 
-        [Parse]
+        [Produce]
         CsFixedParameter FixedParameter(
                 Opt<CsAttributes> attributes,
                 Opt<CsParameterModifier> modfier,
@@ -239,21 +239,21 @@ namespace CSharpParser
                 CsIdentifier             id,
                 Opt<CsDefaultArgument>   defaultArgument);
 
-        [Parse]
+        [Produce]
         CsDefaultArgument DefaultArgument(CsExpression expression);
 
-        [Parse("ref")]
-        [Parse("out")]
-        [Parse("this")]
+        [Produce("ref")]
+        [Produce("out")]
+        [Produce("this")]
         CsParameterModifier ParameterModifier();
 
-        [Parse(null, "params", null, null)]
+        [Produce(null, "params", null, null)]
         CsParameterArray ParameterArray(
                 Opt<CsAttributes>  attributes,
                 CsArrayType               arrayType,
                 CsIdentifier              identifier);
 
-        [Parse(null, null, null, null, "{", null, "}")]
+        [Produce(null, null, null, null, "{", null, "}")]
         CsPropertyDeclaration PropertyDeclaration(
                 Opt<CsAttributes>        attributes,
                 Opt<CsList<CsPropertyModifier>> modifiers,
@@ -261,70 +261,70 @@ namespace CSharpParser
                 CsMemberName                    name,
                 CsAccessorDecrations            accessors);
 
-        [Parse("new")]
-        [Parse("public")]
-        [Parse("protected")]
-        [Parse("internal")]
-        [Parse("private")]
-        [Parse("static")]
-        [Parse("virtual")]
-        [Parse("sealed")]
-        [Parse("override")]
-        [Parse("abstract")]
-        [Parse("extern")]
+        [Produce("new")]
+        [Produce("public")]
+        [Produce("protected")]
+        [Produce("internal")]
+        [Produce("private")]
+        [Produce("static")]
+        [Produce("virtual")]
+        [Produce("sealed")]
+        [Produce("override")]
+        [Produce("abstract")]
+        [Produce("extern")]
         CsPropertyModifier PropertyModifier();
 
-        [Parse]
+        [Produce]
         CsMemberName MemberName(CsIdentifier id);
 
-        [Parse(null, ".", null)]
+        [Produce(null, ".", null)]
         CsMemberName MemberName(
                 CsInterfaceType interfacetype,
                 CsIdentifier id);
 
-        [Parse]
+        [Produce]
         CsAccessorDecrations AccessorDecrations(
                 CsGetAccessorDeclaration getter,
                 Opt<CsSetAccessorDeclaration> setter);
 
-        [Parse]
+        [Produce]
         CsAccessorDecrations AccessorDecrations(
                 CsSetAccessorDeclaration setter,
                 Opt<CsGetAccessorDeclaration> getter);
 
-        [Parse(null, null, "get", null)]
+        [Produce(null, null, "get", null)]
         CsGetAccessorDeclaration GetAccessorDeclaration(
                 Opt<CsAttributes>    attributes,
                 Opt<CsAccessorModifier>     modifier,
                 CsAccessorBody              body);
 
-        [Parse(null, null, "set", null)]
+        [Produce(null, null, "set", null)]
         CsSetAccessorDeclaration SetAccessorDeclaration(
                 Opt<CsAttributes>    attributes,
                 Opt<CsAccessorModifier>     modifier,
                 CsAccessorBody              body);
 
-        [Parse("protected")]
-        [Parse("internal")]
-        [Parse("private")]
-        [Parse("protected", "internal")]
-        [Parse("internal", "protected")]
+        [Produce("protected")]
+        [Produce("internal")]
+        [Produce("private")]
+        [Produce("protected", "internal")]
+        [Produce("internal", "protected")]
         CsAccessorModifier AccessorModifier();
 
-        [Parse(";")]
+        [Produce(";")]
         CsAccessorBody AccessorBody();
 
-        [Parse]
+        [Produce]
         CsAccessorBody AccessorBody(CsBlock block);
 
-        [Parse(null, null, "event", null, null, ";")]
+        [Produce(null, null, "event", null, null, ";")]
         CsEventDeclaration EventDeclaration(
                 Opt<CsAttributes>          attributes,
                 Opt<CsList<CsEventModifier>>      modifiers,
                 CsType                            type,
                 CsCommaList<CsVariableDeclarator> variableDeclarators);
 
-        [Parse(null, null, "event", null, null, "{", null, "}")]
+        [Produce(null, null, "event", null, null, "{", null, "}")]
         CsEventDeclaration EventDeclaration(
                 Opt<CsAttributes>          attributes,
                 Opt<CsList<CsEventModifier>>      modifiers,
@@ -332,104 +332,104 @@ namespace CSharpParser
                 CsMemberName                      memberName,
                 CsEventAccessorDeclarations       accessorDeclarations);
 
-        [Parse("new")]
-        [Parse("public")]
-        [Parse("protected")]
-        [Parse("internal")]
-        [Parse("private")]
-        [Parse("static")]
-        [Parse("virtual")]
-        [Parse("sealed")]
-        [Parse("override")]
-        [Parse("abstract")]
-        [Parse("extern")]
+        [Produce("new")]
+        [Produce("public")]
+        [Produce("protected")]
+        [Produce("internal")]
+        [Produce("private")]
+        [Produce("static")]
+        [Produce("virtual")]
+        [Produce("sealed")]
+        [Produce("override")]
+        [Produce("abstract")]
+        [Produce("extern")]
         CsEventModifier EventModifier();
 
-        [Parse]
+        [Produce]
         CsEventAccessorDeclarations EventAccessorDeclarations(
                 CsAddAccessorDeclaration    adder,
                 CsRemoveAccessorDeclaration remover);
 
-        [Parse(null, "add", null)]
+        [Produce(null, "add", null)]
         CsAddAccessorDeclaration AddAccessorDeclaration(
                 Opt<CsAttributes>    attributes,
                 CsBlock                     block);
 
-        [Parse(null, "remove", null)]
+        [Produce(null, "remove", null)]
         CsRemoveAccessorDeclaration RemoveAccessorDeclaration(
                 Opt<CsAttributes>    attributes,
                 CsBlock                     block);
 
-        [Parse(null, null, null, "{", null, "}")]
+        [Produce(null, null, null, "{", null, "}")]
         CsIndexerDeclaration IndexerDeclaration(
                 Opt<CsAttributes>       attributes,
                 Opt<CsList<CsIndexerModifier>> modifiers,
                 CsIndexerDeclarator            declarator,
                 CsAccessorDecrations           accessorDeclarations);
 
-        [Parse("new")]
-        [Parse("public")]
-        [Parse("protected")]
-        [Parse("internal")]
-        [Parse("private")]
-        [Parse("static")]
-        [Parse("virtual")]
-        [Parse("sealed")]
-        [Parse("override")]
-        [Parse("abstract")]
-        [Parse("extern")]
+        [Produce("new")]
+        [Produce("public")]
+        [Produce("protected")]
+        [Produce("internal")]
+        [Produce("private")]
+        [Produce("static")]
+        [Produce("virtual")]
+        [Produce("sealed")]
+        [Produce("override")]
+        [Produce("abstract")]
+        [Produce("extern")]
         CsIndexerModifier IndexerModifier();
 
-        [Parse(null, "this", "[", null, "]")]
+        [Produce(null, "this", "[", null, "]")]
         CsIndexerDeclarator IndexerDeclarator(
                 CsType                type,
                 CsFormalParameterList paramList);
 
-        [Parse(null, null, ".", "this", "[", null, "]")]
+        [Produce(null, null, ".", "this", "[", null, "]")]
         CsIndexerDeclarator IndexerDeclarator(
                 CsType                type,
                 CsInterfaceType       interfaceType,
                 CsFormalParameterList paramList);
 
-        [Parse]
+        [Produce]
         CsOperatorDeclaration OperatorDeclaration(
                 Opt<CsAttributes>    attributes,
                 CsList<CsOperatorModifier>  modifiers,
                 CsOperatorDeclarator        declarator,
                 CsOperatorBody              operatorBody);
 
-        [Parse("public")]
-        [Parse("static")]
-        [Parse("extern")]
+        [Produce("public")]
+        [Produce("static")]
+        [Produce("extern")]
         CsOperatorModifier OperatorModifier();
 
-        [Parse]
+        [Produce]
         CsOperatorDeclarator OperatorDeclarator(CsUnaryOperatorDeclarator decl);
 
-        [Parse]
+        [Produce]
         CsOperatorDeclarator OperatorDeclarator(CsBinaryOperatorDeclarator decl);
 
-        [Parse]
+        [Produce]
         CsOperatorDeclarator OperatorDeclarator(CsConversionOperatorDeclarator decl);
 
-        [Parse(null, "operator", null, "(", null, null, ")")]
+        [Produce(null, "operator", null, "(", null, null, ")")]
         CsUnaryOperatorDeclarator UnaryOperatorDeclarator(
                 CsType                      type,
                 CsOverloadableUnaryOperator op,
                 CsType                      paramType,
                 CsIdentifier                paramId);
 
-        [Parse("+")]
-        [Parse("-")]
-        [Parse("!")]
-        [Parse("~")]
-        [Parse("++")]
-        [Parse("--")]
-        [Parse("true")]
-        [Parse("false")]
+        [Produce("+")]
+        [Produce("-")]
+        [Produce("!")]
+        [Produce("~")]
+        [Produce("++")]
+        [Produce("--")]
+        [Produce("true")]
+        [Produce("false")]
         CsOverloadableUnaryOperator OverloadableUnaryOperator();
 
-        [Parse(null, "operator", null, "(", null, null, ",", null, null, ")")]
+        [Produce(null, "operator", null, "(", null, null, ",", null, null, ")")]
         CsBinaryOperatorDeclarator BinaryOperatorDeclarator(
                 CsType                       type,
                 CsOverloadableBinaryOperator op,
@@ -438,98 +438,98 @@ namespace CSharpParser
                 CsType                       paramType2,
                 CsIdentifier                 paramId2);
 
-        [Parse("+")]
-        [Parse("-")]
-        [Parse("*")]
-        [Parse("/")]
-        [Parse("%")]
-        [Parse("&")]
-        [Parse("||")]
-        [Parse("^")]
-        [Parse("<<")]
-        [Parse(">>")]
-        [Parse("==")]
-        [Parse("!=")]
-        [Parse(">")]
-        [Parse("<")]
-        [Parse(">=")]
-        [Parse("<=")]
+        [Produce("+")]
+        [Produce("-")]
+        [Produce("*")]
+        [Produce("/")]
+        [Produce("%")]
+        [Produce("&")]
+        [Produce("||")]
+        [Produce("^")]
+        [Produce("<<")]
+        [Produce(">>")]
+        [Produce("==")]
+        [Produce("!=")]
+        [Produce(">")]
+        [Produce("<")]
+        [Produce(">=")]
+        [Produce("<=")]
         CsOverloadableBinaryOperator OverloadableBinaryOperator();
 
-        [Parse("implicit", "operator", null, "(", null, null, ")")]
-        [Parse("explicit", "operator", null, "(", null, null, ")")]
+        [Produce("implicit", "operator", null, "(", null, null, ")")]
+        [Produce("explicit", "operator", null, "(", null, null, ")")]
         CsConversionOperatorDeclarator ConversionOperatorDeclarator(
                 CsType       type,
                 CsType       paramType,
                 CsIdentifier paramId);
 
-        [Parse]
+        [Produce]
         CsOperatorBody OperatorBody(CsBlock block);
 
-        [Parse(";")]
+        [Produce(";")]
         CsOperatorBody OperatorBody();
 
-        [Parse]
+        [Produce]
         CsConstructorDeclaration ConstructorDeclaration(
                 Opt<CsAttributes>    attributes,
                 Opt<CsList<CsConstructorModifier>> modifiers,
                 CsConstructorDeclarator     declarator,
                 CsConstructorBody           body);
 
-        [Parse("public")]
-        [Parse("protected")]
-        [Parse("internal")]
-        [Parse("private")]
-        [Parse("extern")]
+        [Produce("public")]
+        [Produce("protected")]
+        [Produce("internal")]
+        [Produce("private")]
+        [Produce("extern")]
         CsConstructorModifier ConstructorModifier();
 
-        [Parse(null, "(", null, ")", null)]
+        [Produce(null, "(", null, ")", null)]
         CsConstructorDeclarator ConstructorDeclarator(
                 CsIdentifier                  id,
                 Opt<CsFormalParameterList>    formalParams,
                 Opt<CsConstructorInitializer> initializer);
         
-        [Parse(":", "base", "(", null, ")")]
-        [Parse(":", "this", "(", null, ")")]
+        [Produce(":", "base", "(", null, ")")]
+        [Produce(":", "this", "(", null, ")")]
         CsConstructorInitializer ConstructorInitializer(
             Opt<CsArgumentList> args);
 
-        [Parse]
+        [Produce]
         CsConstructorBody ConstructorBody(CsBlock block);
 
-        [Parse(";")]
+        [Produce(";")]
         CsConstructorBody ConstructorBody();
 
-        [Parse(null, null, null, "(", ")", null)]
+        [Produce(null, null, null, "(", ")", null)]
         CsStaticConstructorDeclaration StaticConstructorDeclaration(
             Opt<CsAttributes>               attributes,
             CsStaticConstructorModifiers    modifiers,
             CsIdentifier                    id,
             CsStaticConstructorBody         body);
 
-        [Parse("extern")]
-        [Parse("static")]
-        [Parse("extern", "static")]
-        [Parse("static", "extern")]
+        [Produce("extern")]
+        [Produce("static")]
+        [Produce("extern", "static")]
+        [Produce("static", "extern")]
         CsStaticConstructorModifiers StaticConstructorModifiers();
 
-        [Parse]
+        [Produce]
         CsStaticConstructorBody StaticConstructorBody(CsBlock block);
 
-        [Parse(";")]
+        [Produce(";")]
         CsStaticConstructorBody StaticConstructorBody();
 
-        [Parse(null, null, "~", null, "(", ")", null)]
+        [Produce(null, null, "~", null, "(", ")", null)]
         CsDestructorDeclaration DestructorDeclaration(
                 Opt<CsAttributes>    attributes,
                 Opt<CsExtern>        externModifier,
                 CsIdentifier         id,
                 CsDestructorBody     body);
 
-        [Parse]
+        [Produce]
         CsDestructorBody DestructorBody(CsBlock block);
 
-        [Parse(";")]
+        [Produce(";")]
         CsDestructorBody DestructorBody();
     }
 }

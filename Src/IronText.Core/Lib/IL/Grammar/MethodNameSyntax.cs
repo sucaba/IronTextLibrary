@@ -5,7 +5,7 @@ namespace IronText.Lib.IL
     [Demand]
     public interface WantNameThen<TNext>
     {
-        [Parse]
+        [Produce]
         TNext Named(string methodName);
     }
 }

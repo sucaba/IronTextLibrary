@@ -174,26 +174,26 @@ namespace IronText.Tests.Framework
         [TokenCategory("{", SymbolCategory.DoNotInsert|SymbolCategory.DoNotDelete)]
         public class RecoveryLang
         {
-            [Parse]
+            [Produce]
             public void Start(Stmt stmt) { }
 
-            [Parse("{", null, "}")]
+            [Produce("{", null, "}")]
             public Stmt Block(List<Stmt> stmts) { return null; }
 
-            [Parse("beacon")]
+            [Produce("beacon")]
             public Stmt BeaconStmt() { return null; }
 
             // Method body is never executed because action
             // producer was replaced with null-producer after
             // first error is detected. However method signature
             // is used for error-production recovery.
-            [Parse("{", null, "}")]
+            [Produce("{", null, "}")]
             public Stmt BlockError(Exception error) { return null; }
 
-            [Parse("callFunc", "(", ")", ";")]
+            [Produce("callFunc", "(", ")", ";")]
             public Stmt CallFunc() { return null; }
 
-            [Scan("([\n\r] | blank)+")]
+            [Match("([\n\r] | blank)+")]
             public void Blank() { }
         }
 

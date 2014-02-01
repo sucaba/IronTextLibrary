@@ -13,10 +13,10 @@ namespace IronText.Reflection.Managed
     {
         private readonly List<ICilMetadata>     validMetadata;
         private readonly List<ICilMetadata>     invalidMetadata;
-        private readonly List<CilScanCondition> allScanConditions;
+        private readonly List<CilCondition> allScanConditions;
         private readonly List<CilSymbolRef>     terminals;
 
-        private readonly Stack<CilScanCondition> processedScanConditions;
+        private readonly Stack<CilCondition> processedScanConditions;
         private readonly ILogging logging;
 
         public ScanDataCollector(IEnumerable<CilSymbolRef> terminals, ILogging logging)
@@ -24,17 +24,17 @@ namespace IronText.Reflection.Managed
             this.logging = logging;
             this.validMetadata  = new List<ICilMetadata>();
             this.invalidMetadata  = new List<ICilMetadata>();
-            this.allScanConditions = new List<CilScanCondition>();
+            this.allScanConditions = new List<CilCondition>();
             this.terminals    = new List<CilSymbolRef>(terminals);
 
-            processedScanConditions = new Stack<CilScanCondition>();
+            processedScanConditions = new Stack<CilCondition>();
         }
 
         public List<CilSymbolRef> Terminals { get { return terminals; } }
 
         public bool HasInvalidData { get { return invalidMetadata.Count != 0; } }
 
-        public List<CilScanCondition> ScanConditions { get { return allScanConditions; } }
+        public List<CilCondition> ScanConditions { get { return allScanConditions; } }
 
         public void AddMeta(ICilMetadata meta)
         {
@@ -79,7 +79,7 @@ namespace IronText.Reflection.Managed
             }
         }
 
-        public void AddProduction(CilScanProduction rule)
+        public void AddProduction(CilMatcher rule)
         {
             var currentScanMode = processedScanConditions.Peek();
             currentScanMode.AddRule(rule);
@@ -97,7 +97,7 @@ namespace IronText.Reflection.Managed
                 return;
             }
 
-            var scanMode = new CilScanCondition(conditionType);
+            var scanMode = new CilCondition(conditionType);
 
             allScanConditions.Add(scanMode);
 

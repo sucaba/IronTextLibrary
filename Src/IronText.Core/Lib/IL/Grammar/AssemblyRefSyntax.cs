@@ -7,22 +7,22 @@ namespace IronText.Lib.IL
     public interface AssemblyRefSyntax
         : CustomAttributesSyntax<AssemblyRefSyntax>
     {
-        [Parse(".hash", "=")]
+        [Produce(".hash", "=")]
         AssemblyRefSyntax Hash(Bytes hashBytes);
 
-        [Parse(".publickeytoken", "=")]
+        [Produce(".publickeytoken", "=")]
         AssemblyRefSyntax PublicKeyToken(Bytes keyBytes);
 
-        [Parse(".ver", null, ":", null, ":", null, ":", null)]
+        [Produce(".ver", null, ":", null, ":", null, ":", null)]
         AssemblyRefSyntax Version(int major, int minor, int build, int revision);
 
-        [Parse(".locale")]
+        [Produce(".locale")]
         AssemblyRefSyntax Locale(QStr qstr);
 
-        [Parse(".locale", "=")]
+        [Produce(".locale", "=")]
         AssemblyRefSyntax Locale(Bytes localeBytes);
 
-        [Parse("}")]
+        [Produce("}")]
         CilDocumentSyntax EndAssemblyExtern();
     }
 }

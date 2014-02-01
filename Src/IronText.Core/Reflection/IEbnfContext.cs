@@ -13,7 +13,7 @@ namespace IronText.Reflection
 
         ProductionCollection                Productions                { get; }
         
-        ScanProductionCollection            ScanProductions            { get; }
+        MatcherCollection            Matchers            { get; }
 
         ProductionContextCollection         ProductionContexts         { get; }
     }

@@ -46,7 +46,7 @@ namespace IronText.Tests.Framework.Attributes
                 Nested = new MyNestedServiceConsumer();
             }
 
-            public string Result { get; [Parse] set; }
+            public string Result { get; [Produce] set; }
 
             [SubContext]
             public MyNestedServiceConsumer Nested { get; private set; }
@@ -60,7 +60,7 @@ namespace IronText.Tests.Framework.Attributes
             [LanguageService]
             public ILanguage Language { get; set; }
 
-            [Parse("foo")]
+            [Produce("foo")]
             public string Start() 
             {
                 HasParsing = Parsing != null;
@@ -107,7 +107,7 @@ namespace IronText.Tests.Framework.Attributes
             [LanguageService]
             public ILogging Logging { get; set; }
 
-            [Parse("barr")]
+            [Produce("barr")]
             public string NestedStart() 
             {
                 HasParsing = Parsing != null;

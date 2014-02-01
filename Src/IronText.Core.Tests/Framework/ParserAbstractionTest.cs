@@ -31,18 +31,18 @@ namespace IronText.Tests.Framework
         [Language]
         public abstract class CalcExprBaseModule
         {
-            public CalcExprBase Result { get; [Parse] set; }
+            public CalcExprBase Result { get; [Produce] set; }
 
             [SubContext]
             public abstract CtemScanner Scanner { get; }
 
-            [Parse]
+            [Produce]
             public abstract CalcExprBase Number(Num num);
 
-            [Parse("(", "+", null, null, ")")]
+            [Produce("(", "+", null, null, ")")]
             public abstract CalcExprBase Plus(CalcExprBase x, CalcExprBase y);
 
-            [Parse("(", "-", null, null, ")")]
+            [Produce("(", "-", null, null, ")")]
             public abstract CalcExprBase Minus(CalcExprBase x, CalcExprBase y);
         }
 
@@ -75,18 +75,18 @@ namespace IronText.Tests.Framework
         [Language]
         public interface ICalcExprBaseModule2
         {
-            ICalcExprBase2 Result { get; [Parse] set; }
+            ICalcExprBase2 Result { get; [Produce] set; }
 
             [SubContext]
             CtemScanner Scanner { get; }
 
-            [Parse]
+            [Produce]
             ICalcExprBase2 Number(Num num);
 
-            [Parse("(", "+", null, null, ")")]
+            [Produce("(", "+", null, null, ")")]
             ICalcExprBase2 Plus(ICalcExprBase2 x, ICalcExprBase2 y);
 
-            [Parse("(", "-", null, null, ")")]
+            [Produce("(", "-", null, null, ")")]
             ICalcExprBase2 Minus(ICalcExprBase2 x, ICalcExprBase2 y);
         }
 

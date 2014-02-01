@@ -11,10 +11,10 @@ namespace IronText.Tests.Framework.Attributes
         [Test]
         public void Test()
         {
-            var x = new ScanAttribute("foo");   x.Bind(null, typeof(string));
-            var x2 = new ScanAttribute("foo"); x2.Bind(null, typeof(string));
-            var y = new ScanAttribute("foo");   y.Bind(null, typeof(object));
-            var y2 = new ScanAttribute("bar"); y2.Bind(null, typeof(string));
+            var x = new MatchAttribute("foo");   x.Bind(null, typeof(string));
+            var x2 = new MatchAttribute("foo"); x2.Bind(null, typeof(string));
+            var y = new MatchAttribute("foo");   y.Bind(null, typeof(object));
+            var y2 = new MatchAttribute("bar"); y2.Bind(null, typeof(string));
 
             var type = typeof(ScanBaseAttribute);
             FieldInfo[] fields = type.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);

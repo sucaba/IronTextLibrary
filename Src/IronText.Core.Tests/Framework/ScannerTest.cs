@@ -153,15 +153,15 @@ namespace IronText.Tests.Syntax.Re2IL
         [UseToken(")")]
         public class MyMiniLexer
         {
-            public MyMiniLexer Result { get; [Parse] set; }
+            public MyMiniLexer Result { get; [Produce] set; }
 
-            [Scan("blank+")]
+            [Match("blank+")]
             public void WhiteSpace() { }
 
-            [Scan(@"';' ~[\r\n]*")]
+            [Match(@"';' ~[\r\n]*")]
             public void LineComment() { }
 
-            [Scan("digit {2,}")]
+            [Match("digit {2,}")]
             public Num Number(string token) { return new Num(token); }
 
             // Two literals on the same method
@@ -170,18 +170,18 @@ namespace IronText.Tests.Syntax.Re2IL
             public WhileKwd WhileKeyword(string text) { return null; }
             
             // Two scan methods on the same method
-            [Scan("'%'")]
-            [Scan("'$'")]
+            [Match("'%'")]
+            [Match("'$'")]
             public SpecSymb SpecSymb() { return null; }
 
             // Type-token :
             [Literal("if")]
             public IfKwd IfKeyword(string text) { return null; }
 
-            [Scan("alpha alnum{0,10}")]
+            [Match("alpha alnum{0,10}")]
             public string Identifier(string token) { return token; }
 
-            [Scan(@"
+            [Match(@"
                 quot 
                 ~(quot | esc)*
                 (esc . ~(quot | esc)* )*
@@ -192,14 +192,14 @@ namespace IronText.Tests.Syntax.Re2IL
             }
 
             // Two ways to represent A with a grave accent on top
-            [Scan("u00c0")]
-            [Scan("u00C0")]
-            [Scan("u0060 'A'")]
+            [Match("u00c0")]
+            [Match("u00C0")]
+            [Match("u0060 'A'")]
             public GraveAccentA GraveAccent(string text) { return null; }
 
             // Surrogate sample
-            [Scan("U0010ffff")]
-            [Scan("U0010FFFF")]
+            [Match("U0010ffff")]
+            [Match("U0010FFFF")]
             public Surrogate1 Surrogate1(string text) { return null; }
         }
 

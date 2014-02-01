@@ -156,7 +156,7 @@ namespace IronText.Stem.Tests.Lib.IL
 
         public CecilBackendLanguage(string filePath)
         {
-            Syntax = CilLanguage.CreateCompiler(filePath);
+            Syntax = CilBackend.CreateCompiler(filePath);
             outputPath = Path.GetFileNameWithoutExtension(filePath) + ".exe";
         }
 

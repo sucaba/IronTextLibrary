@@ -32,7 +32,7 @@ namespace IronText.Extensibility
 
         IEnumerable<CilMerger> GetMergers(IEnumerable<CilSymbolRef> symbols);
 
-        IEnumerable<CilScanProduction> GetScanProductions();
+        IEnumerable<CilMatcher> GetScanProductions();
 
         IEnumerable<ReportBuilder> GetReportBuilders();
     }

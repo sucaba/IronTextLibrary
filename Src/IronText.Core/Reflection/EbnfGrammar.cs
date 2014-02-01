@@ -41,21 +41,21 @@ namespace IronText.Reflection
 
         #endregion Predefined tokens
 
-        private readonly ProductionCollection               productions;
-        private readonly ProductionActionCollection         productionActions;
-        private readonly SymbolCollection                   symbols;
-        private readonly ScanConditionCollection            scanConditions;
-        private readonly MergerCollection                   mergers;
-        private readonly ScanProductionCollection           scanProductions;
-        private readonly ProductionContextCollection        reductionContexts;
+        private readonly ProductionCollection         productions;
+        private readonly ProductionActionCollection   productionActions;
+        private readonly SymbolCollection             symbols;
+        private readonly ConditionCollection          conditions;
+        private readonly MergerCollection             mergers;
+        private readonly MatcherCollection            matchers;
+        private readonly ProductionContextCollection  reductionContexts;
 
         public EbnfGrammar()
         {
             productions       = new ProductionCollection(this);
             productionActions = new ProductionActionCollection(this);
             symbols           = new SymbolCollection(this);
-            scanConditions    = new ScanConditionCollection(this);
-            scanProductions   = new ScanProductionCollection(this);
+            conditions        = new ConditionCollection(this);
+            matchers          = new MatcherCollection(this);
             mergers           = new MergerCollection(this);
             reductionContexts = new ProductionContextCollection(this);
 
@@ -77,19 +77,19 @@ namespace IronText.Reflection
             AugmentedProduction = Productions.Define((Symbol)Symbols[AugmentedStart], new Symbol[] { null });
         }
 
-        public Production                         AugmentedProduction       { get; private set; }
+        public Production                  AugmentedProduction       { get; private set; }
 
-        public SymbolCollection                   Symbols                   { get { return symbols; } }
+        public SymbolCollection            Symbols                   { get { return symbols; } }
 
-        public ProductionCollection               Productions               { get { return productions; } }
+        public ProductionCollection        Productions               { get { return productions; } }
 
-        public ScanProductionCollection           ScanProductions           { get { return scanProductions; } }
+        public MatcherCollection           Matchers                  { get { return matchers; } }
 
-        public ScanConditionCollection            ScanConditions            { get { return scanConditions; } }
+        public ConditionCollection         Conditions                { get { return conditions; } }
 
-        public MergerCollection                   Mergers                   { get { return mergers; } }
+        public MergerCollection            Mergers                   { get { return mergers; } }
 
-        public ProductionContextCollection        ProductionContexts        { get { return reductionContexts; } }
+        public ProductionContextCollection ProductionContexts        { get { return reductionContexts; } }
 
         public Symbol Start
         {

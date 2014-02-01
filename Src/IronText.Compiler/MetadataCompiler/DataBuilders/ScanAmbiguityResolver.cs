@@ -22,7 +22,7 @@ namespace IronText.MetadataCompiler
         /// <param name="disambiguation"></param>
         /// <param name="mainToken"></param>
         /// <param name="tokens"></param>
-        void RegisterAction(ScanProduction scanProduction);
+        void RegisterAction(Matcher scanProduction);
 
         /// <summary>
         /// Register actions invoked in state
@@ -51,7 +51,7 @@ namespace IronText.MetadataCompiler
             this.tokenSetType = tokenSetType;
         }
 
-        public void RegisterAction(ScanProduction scanProduction)
+        public void RegisterAction(Matcher scanProduction)
         {
             SymbolBase      outcome = scanProduction.Outcome;
             AmbiguousSymbol ambiguous;

@@ -12,47 +12,47 @@ namespace Samples
         [SubContext]
         CtemScanner Scanner { get; }
 
-        [Parse]
+        [Produce]
         WantDocument BeginDocument();
     }
 
     [Demand]
     public interface WantDocument
     {
-        [Parse(null, ":")]
+        [Produce(null, ":")]
         WantRule BeginRule(string tokenName);
 
-        [Parse]
+        [Produce]
         void EndDocument();
     }
 
     [Demand]
     public interface WantRule
     {
-        [Parse]
+        [Produce]
         WantBranch Branch();
     }
     
     [Demand]
     public interface WantRuleAlternative
     {
-        [Parse("|")]
+        [Produce("|")]
         WantBranch Branch();
 
-        [Parse(";")]
+        [Produce(";")]
         WantDocument EndRule();
     }
 
     [Demand]
     public interface WantBranch
     {
-        [Parse]
+        [Produce]
         WantBranch Token(string tokenName);
 
-        [Parse]
+        [Produce]
         WantBranch Literal(QStr literal);
 
-        [Parse]
+        [Produce]
         WantRuleAlternative EndBranch();
     }
 }

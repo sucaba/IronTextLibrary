@@ -5,7 +5,7 @@ namespace IronText.Lib.IL
     [Demand]
     public interface PInvAttrSyntax
     {
-        [Parse(")")]
+        [Produce(")")]
         WantMethAttr EndPinvokeimpl();
 
         [ParseGet("nomangle")]

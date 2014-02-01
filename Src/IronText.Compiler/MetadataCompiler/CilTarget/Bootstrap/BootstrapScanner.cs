@@ -65,7 +65,7 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        private static string GetPattern(ScanProduction production)
+        private static string GetPattern(Matcher production)
         {
             return production.Pattern.BootstrapPattern;
         }
@@ -122,7 +122,7 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        private static TokenFactoryDelegate BuildTokenFactory(ScanProduction scanProduction)
+        private static TokenFactoryDelegate BuildTokenFactory(Matcher scanProduction)
         {
             var method = new DynamicMethod(
                                 "Create",
@@ -138,7 +138,7 @@ namespace IronText.MetadataCompiler
             }
             else
             {
-                var binding = scanProduction.Joint.The<CilScanProduction>();
+                var binding = scanProduction.Joint.The<CilMatcher>();
                 if (binding == null)
                 {
                     throw new InvalidOperationException("ScanProduction is missing CIL platform binding.");

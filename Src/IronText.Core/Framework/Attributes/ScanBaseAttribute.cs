@@ -32,13 +32,13 @@ namespace IronText.Framework
 
         internal string RegexPattern { get; set; }
 
-        public override IEnumerable<CilScanProduction> GetScanProductions()
+        public override IEnumerable<CilMatcher> GetScanProductions()
         {
             var method       = (MethodInfo)Member;
             var tokenType    = method.ReturnType;
             var nextModeType = GetNextModeType();
 
-            var scanRule = new CilScanProduction();
+            var scanRule = new CilMatcher();
 
             if (tokenType != typeof(void))
             {

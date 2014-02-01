@@ -21,7 +21,7 @@ namespace IronText.Tests.Framework.Attributes
         [Language]
         public class ParseGetSetTestLang
         {
-            [ParseResult]
+            [Outcome]
             public Tag Result { get; set; }
 
             [ParseGet]
@@ -30,7 +30,7 @@ namespace IronText.Tests.Framework.Attributes
             [ParseGet("literal")]
             public Tag ProduceLiteral { get { return new Tag("literal"); } }
 
-            [Scan("blank+")]
+            [Match("blank+")]
             public void Blank () {}
         }
 

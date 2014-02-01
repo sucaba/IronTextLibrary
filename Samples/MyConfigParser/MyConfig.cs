@@ -16,7 +16,7 @@ namespace Samples
             Language.Parse(this, input);
         }
 
-        [ParseResult]
+        [Outcome]
         public Dictionary<string, object> Parameters { get; set; }
 
         // Use relevant scan and parse rules from this vocabulary during
@@ -25,13 +25,13 @@ namespace Samples
         [SubContext]
         public CtemScanner Scanner { get; private set; }
 
-        [Parse]
+        [Produce]
         public Dictionary<string, object> Empty()
         {
             return new Dictionary<string, object>();
         }
 
-        [Parse(null, null, "=", null)]
+        [Produce(null, null, "=", null)]
         public Dictionary<string, object> AddPair(
                 Dictionary<string, object> items,
                 string name,
@@ -41,13 +41,13 @@ namespace Samples
             return items;
         }
 
-        [Parse]
+        [Produce]
         public Variant QuotedStringValue(QStr str)
         {
             return new Variant(str.Text);
         }
 
-        [Parse]
+        [Produce]
         public Variant NumberValue(Num num)
         {
             return new Variant(

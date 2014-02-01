@@ -31,103 +31,103 @@ namespace IronText.Lib.IL
         [SubContext]
         IMethodNs Methods { get; }
 
-        [Parse("}")]
+        [Produce("}")]
         ClassSyntax EndBody();
 
-        [Parse(null, ":")]
+        [Produce(null, ":")]
         EmitSyntax Label(Def<Labels> label);
 
-        [Parse(".override", "method")]
+        [Produce(".override", "method")]
         EmitSyntax Override(Ref<Methods> method);
 
-        [Parse(".locals", null, null)]
+        [Produce(".locals", null, null)]
         EmitSyntax Local(Def<Locals> name, Ref<Types> type);
 
-        [Parse("br.s", null)]
+        [Produce("br.s", null)]
         EmitSyntax Br_S(Ref<Labels> label);
 
-        [Parse("break")]
+        [Produce("break")]
         EmitSyntax Break();
 
-        [Parse("brtrue.s", null)]
+        [Produce("brtrue.s", null)]
         EmitSyntax Brtrue_S(Ref<Labels> label);
 
-        [Parse("brtrue", null)]
+        [Produce("brtrue", null)]
         EmitSyntax Brtrue(Ref<Labels> label);
 
-        [Parse("brfalse.s", null)]
+        [Produce("brfalse.s", null)]
         EmitSyntax Brfalse_S(Ref<Labels> label);
 
-        [Parse("brfalse", null)]
+        [Produce("brfalse", null)]
         EmitSyntax Brfalse(Ref<Labels> label);
 
-        [Parse("br", null)]
+        [Produce("br", null)]
         EmitSyntax Br(Ref<Labels> label);
 
-        [Parse("bne_un", null)]
+        [Produce("bne_un", null)]
         EmitSyntax Bne_Un(Ref<Labels> label);
 
-        [Parse("beq", null)]
+        [Produce("beq", null)]
         EmitSyntax Beq(Ref<Labels> label);
 
-        [Parse("bgt", null)]
+        [Produce("bgt", null)]
         EmitSyntax Bgt(Ref<Labels> label);
 
-        [Parse("blt", null)]
+        [Produce("blt", null)]
         EmitSyntax Blt(Ref<Labels> label);
 
-        [Parse("bge", null)]
+        [Produce("bge", null)]
         EmitSyntax Bge(Ref<Labels> label);
 
-        [Parse("ble", null)]
+        [Produce("ble", null)]
         EmitSyntax Ble(Ref<Labels> label);
 
-        [Parse("jmp", null)]
+        [Produce("jmp", null)]
         EmitSyntax Jmp(Ref<Methods> method);
 
-        [Parse("switch", "(", null, ")")]
+        [Produce("switch", "(", null, ")")]
         EmitSyntax Switch(params Ref<Labels>[] labels);
 
-        [Parse("call", null)]
+        [Produce("call", null)]
         EmitSyntax Call(Ref<Methods> method);
 
-        [Parse("callvirt", null)]
+        [Produce("callvirt", null)]
         EmitSyntax Callvirt(Ref<Methods> method);
 
-        [Parse(".entrypoint")]
+        [Produce(".entrypoint")]
         EmitSyntax EntryPoint();
 
-        [Parse("ldarg", null)]
+        [Produce("ldarg", null)]
         EmitSyntax Ldarg(Ref<Args> arg);
 
-        [Parse("ldarga", null)]
+        [Produce("ldarga", null)]
         EmitSyntax Ldarga(Ref<Args> arg);
 
-        [Parse("ldarg", null)]
+        [Produce("ldarg", null)]
         EmitSyntax Ldarg(int argIndex);
         
-        [Parse("ldarga", null)]
+        [Produce("ldarga", null)]
         EmitSyntax Ldarga(int argIndex);
 
-        [Parse("starg", null)]
+        [Produce("starg", null)]
         EmitSyntax Starg(int argIndex);
 
-        [Parse("ldc.i4", null)]
+        [Produce("ldc.i4", null)]
         EmitSyntax Ldc_I4(int constant);
 
-        [Parse("ldc.i4.0")]
+        [Produce("ldc.i4.0")]
         EmitSyntax Ldc_I4_0();
 
-        [Parse("ldc.i4.1")]
+        [Produce("ldc.i4.1")]
         EmitSyntax Ldc_I4_1();
 
-        [Parse("ldind.i4")]
+        [Produce("ldind.i4")]
         EmitSyntax Ldind_I4();
         
-        [Parse("ldloc", null)]
+        [Produce("ldloc", null)]
         EmitSyntax Ldloc(Ref<Locals> id);
 
-        [Parse("ldloca", null)]
+        [Produce("ldloca", null)]
         EmitSyntax Ldloca(Ref<Locals> id);
 
         EmitSyntax Ldfld(SR.FieldInfo fieldInfo);
@@ -138,99 +138,99 @@ namespace IronText.Lib.IL
 
         EmitSyntax Stsfld(SR.FieldInfo fieldInfo);
 
-        [Parse("ldloc.0")]
+        [Produce("ldloc.0")]
         EmitSyntax Ldloc0();
 
-        [Parse("ldelem", null)]
+        [Produce("ldelem", null)]
         EmitSyntax Ldelem(Ref<Types> type);
 
-        [Parse("ldelem.ref")]
+        [Produce("ldelem.ref")]
         EmitSyntax Ldelem_Ref();
 
-        [Parse("ldelem.i4")]
+        [Produce("ldelem.i4")]
         EmitSyntax Ldelem_I4();
 
-        [Parse("ldelem.u2")]
+        [Produce("ldelem.u2")]
         EmitSyntax Ldelem_U2();
 
-        [Parse("ldelema", null)]
+        [Produce("ldelema", null)]
         EmitSyntax Ldelema(Ref<Types> type);
 
-        [Parse("ldlen")]
+        [Produce("ldlen")]
         EmitSyntax Ldlen();
 
-        [Parse("ldnull")]
+        [Produce("ldnull")]
         EmitSyntax Ldnull();
 
-        [Parse("ldstr", null)]
+        [Produce("ldstr", null)]
         EmitSyntax Ldstr(QStr str);
 
-        [Parse("throw")]
+        [Produce("throw")]
         EmitSyntax Throw();
 
-        [Parse("mul")]
+        [Produce("mul")]
         EmitSyntax Mul();
 
-        [Parse("newarr", null)]
+        [Produce("newarr", null)]
         EmitSyntax Newarr(TypeSpec elementType);
 
-        [Parse("newobj", null)]
+        [Produce("newobj", null)]
         EmitSyntax Newobj(Ref<Methods> constructor);
 
-        [Parse("initobj", null)]
+        [Produce("initobj", null)]
         EmitSyntax Initobj(Ref<Types> valueType);
 
-        [Parse("nop")]
+        [Produce("nop")]
         EmitSyntax Nop();
 
-        [Parse("dup")]
+        [Produce("dup")]
         EmitSyntax Dup();
 
-        [Parse("pop")]
+        [Produce("pop")]
         EmitSyntax Pop();
 
-        [Parse("ret")]
+        [Produce("ret")]
         EmitSyntax Ret();
 
-        [Parse("stelem.ref")]
+        [Produce("stelem.ref")]
         EmitSyntax Stelem_Ref();
 
-        [Parse("stelem.i4")]
+        [Produce("stelem.i4")]
         EmitSyntax Stelem_I4();
 
-        [Parse("stelem", null)]
+        [Produce("stelem", null)]
         EmitSyntax Stelem(Ref<Types> type);
 
-        [Parse("stind.i4")]
+        [Produce("stind.i4")]
         EmitSyntax Stind_I4();
 
-        [Parse("stind.ref")]
+        [Produce("stind.ref")]
         EmitSyntax Stind_Ref();
 
-        [Parse("stloc", null)]
+        [Produce("stloc", null)]
         EmitSyntax Stloc(Ref<Locals> id);
 
-        [Parse("stloc.0")]
+        [Produce("stloc.0")]
         EmitSyntax Stloc0();
 
-        [Parse("add")]
+        [Produce("add")]
         EmitSyntax Add();
 
-        [Parse("sub")]
+        [Produce("sub")]
         EmitSyntax Sub();
 
-        [Parse("box", null)]
+        [Produce("box", null)]
         EmitSyntax Box(Ref<Types> type);
 
-        [Parse("unbox.any", null)]
+        [Produce("unbox.any", null)]
         EmitSyntax Unbox_Any(Ref<Types> type);
 
         EmitSyntax Ldtoken(SR.FieldInfo token);
 
-        [Parse("ldtoken", null)]
+        [Produce("ldtoken", null)]
         EmitSyntax Ldtoken(Ref<Types> token);
 
-        [Parse("ldftn", null)]
+        [Produce("ldftn", null)]
         EmitSyntax Ldftn(Ref<Methods> method);
     }
 

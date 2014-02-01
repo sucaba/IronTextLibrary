@@ -31,7 +31,7 @@ namespace IronText.Lib.IL
         [SubContext]
         IMethodNs Methods { get; }
 
-        [Parse]
+        [Produce]
         CilDocumentSyntax BeginDocument();
     }
 }

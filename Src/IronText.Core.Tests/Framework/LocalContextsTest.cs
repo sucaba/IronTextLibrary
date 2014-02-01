@@ -27,7 +27,7 @@ namespace IronText.Tests.Framework
         [DescribeParserStateMachine("WithLocalState.info")]
         public class WithLocalScope
         {
-            [Parse]
+            [Produce]
             public TestSyntax StartSyntax() { return new TestSyntax(); }
         }
 
@@ -36,11 +36,11 @@ namespace IronText.Tests.Framework
         public class AmbiguousWithLocalScope
         {
             // Choice #1: Reduce
-            [Parse]
+            [Produce]
             public TestSyntax StartSyntax() { return new TestSyntax(); }
 
             // Choice #2: Shift
-            [Parse("foo", "bar")]
+            [Produce("foo", "bar")]
             public TestSyntax FooBar() { return new TestSyntax(); }
         }
 
@@ -53,14 +53,14 @@ namespace IronText.Tests.Framework
             [SubContext]
             public MyScope Scope { get { return new MyScope(); } }
 
-            [Parse]
+            [Produce]
             public void Done(TestRef id) { }
         }
 
         [Vocabulary]
         public class MyScope
         {
-            [Parse("foo")]
+            [Produce("foo")]
             public TestRef GetRef() { return new TestRef(); }
         }
     }

@@ -5,25 +5,25 @@ namespace IronText.Lib.IL
     [Demand]
     public interface FieldAttrSyntax
     {
-        [Parse("static")]
+        [Produce("static")]
         FieldAttrSyntax Static();
 
-        [Parse("public")]
+        [Produce("public")]
         FieldAttrSyntax Public();
 
-        [Parse("private")]
+        [Produce("private")]
         FieldAttrSyntax Private();
 
-        [Parse("family")]
+        [Produce("family")]
         FieldAttrSyntax Family();
 
-        [Parse("initonly")]
+        [Produce("initonly")]
         FieldAttrSyntax Initonly();
 
-        [Parse("rtspecialname")]
+        [Produce("rtspecialname")]
         FieldAttrSyntax Rtspecialname();
 
-        [Parse("specialname")]
+        [Produce("specialname")]
         FieldAttrSyntax Specialname();
 
 #if false
@@ -32,22 +32,22 @@ namespace IronText.Lib.IL
         FieldAttrSyntax Marshal(nativeType);
 #endif
     
-        [Parse("assembly")]
+        [Produce("assembly")]
         FieldAttrSyntax Assembly();
 
-        [Parse("famandassem")]
+        [Produce("famandassem")]
         FieldAttrSyntax Famandassem();
 
-        [Parse("famorassem")]
+        [Produce("famorassem")]
         FieldAttrSyntax Famorassem();
 
-        [Parse("privatescope")]
+        [Produce("privatescope")]
         FieldAttrSyntax Privatescope();
 
-        [Parse("literal")]
+        [Produce("literal")]
         FieldAttrSyntax Literal();
 
-        [Parse("notserialized")]
+        [Produce("notserialized")]
         FieldAttrSyntax Notserialized();
     }
 }

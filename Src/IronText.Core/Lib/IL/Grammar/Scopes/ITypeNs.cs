@@ -9,16 +9,16 @@ namespace IronText.Lib.IL
     {
         Ref<Types> Import(Type type);
 
-        [Parse]
+        [Produce]
         ClassName ClassNameInScope(Ref<ResolutionScopes> resolutionScope, SlashedName slashedName);
 
-        [Parse]
+        [Produce]
         TypeSpec TypeSpec(ClassName className);
 
-        [Parse]
+        [Produce]
         TypeSpec TypeSpec(Ref<Types> type);
 
-        [Parse("class", null)]
+        [Produce("class", null)]
         Ref<Types> Class_(ClassName className);
 
         [ParseGet("object")]
@@ -27,33 +27,33 @@ namespace IronText.Lib.IL
         [ParseGet("string")]
         Ref<Types> String { get; }
 
-        [Parse("valuetype", null)]
-        [Parse("value", "class", null)]
+        [Produce("valuetype", null)]
+        [Produce("value", "class", null)]
         Ref<Types> Value(ClassName className);
 
-        [Parse(null, "[", "]")]
+        [Produce(null, "[", "]")]
         Ref<Types> Array(Ref<Types> elementType);
 
         // TODO: array bounds support
         //[Parse(null, "[", null, "]")]
         Ref<Types> Array(Ref<Types> elementType, Bounds1 bounds);
 
-        [Parse(null, "&")]
+        [Produce(null, "&")]
         Ref<Types> Reference(Ref<Types> elementType);
 
-        [Parse(null, "*")]
+        [Produce(null, "*")]
         Ref<Types> Pointer(Ref<Types> elementType);
 
-        [Parse(null, "pinned")]
+        [Produce(null, "pinned")]
         Ref<Types> Pinned(Ref<Types> elementType);
 
-        [Parse(null, "modreq", "(", null, ")")]
+        [Produce(null, "modreq", "(", null, ")")]
         Ref<Types> RequiredModifier(Ref<Types> elementType, ClassName className);
 
-        [Parse(null, "modopt", "(", null, ")")]
+        [Produce(null, "modopt", "(", null, ")")]
         Ref<Types> OptionalModifier(Ref<Types> elementType, ClassName className);
 
-        [Parse("!")]
+        [Produce("!")]
         Ref<Types> GenericArg(int genericArgIndex);
 
         // TODO: method pointer type

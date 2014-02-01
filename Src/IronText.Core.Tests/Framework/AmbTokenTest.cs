@@ -51,19 +51,19 @@ namespace IronText.Tests.Framework
         {
             public readonly List<Type> ResultTypes = new List<Type>();
 
-            [Parse("$ident")]
+            [Produce("$ident")]
             public void Done(Identifier id) { ResultTypes.Add(typeof(Identifier)); }
 
-            [Parse("$keyword")]
+            [Produce("$keyword")]
             public void Done(WhileKwd kwd) { ResultTypes.Add(typeof(WhileKwd)); }
 
-            [Scan("alpha alnum*")]
+            [Match("alpha alnum*")]
             public Identifier Ident() { return null; }
 
             [Literal("while", Disambiguation.Contextual)]
             public WhileKwd WhileKwd() { return null; }
 
-            [Scan("blank+")]
+            [Match("blank+")]
             public void WhiteSpace() { }
         }
 
@@ -74,19 +74,19 @@ namespace IronText.Tests.Framework
         {
             public readonly List<Type> ResultTypes = new List<Type>();
 
-            [Parse(null, "$ident")]
+            [Produce(null, "$ident")]
             public void Done(Identifier id) { ResultTypes.Add(typeof(Identifier)); }
 
-            [Parse(null, "$keyword")]
+            [Produce(null, "$keyword")]
             public void Done(WhileKwd kwd) { ResultTypes.Add(typeof(WhileKwd)); }
 
-            [Scan("alpha alnum*")]
+            [Match("alpha alnum*")]
             public Identifier Ident() { return null; }
 
             [Literal("while", Disambiguation.Contextual)]
             public WhileKwd WhileKwd() { return null; }
 
-            [Scan("blank+")]
+            [Match("blank+")]
             public void WhiteSpace() { }
         }
 

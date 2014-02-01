@@ -125,14 +125,14 @@ namespace Samples
             int index = literalMask.FindLastIndex(literal => literal != null);
             literalMask.RemoveRange(index + 1, literalMask.Count - index - 1);
 
-            var parseAttribute = CreateCodeAttribute<ParseAttribute>();
+            var parseAttribute = CreateCodeAttribute<ProduceAttribute>();
             foreach (var literal in literalMask)
             {
                 parseAttribute.Arguments.Add(
                     new CodeAttributeArgument(new CodePrimitiveExpression(literal)));
             }
 
-            AddParseMethodOrAttribute(method, parseAttribute);
+            AddProduceMethodOrAttribute(method, parseAttribute);
             currentAtoms.Clear();
             return this; 
         }
@@ -203,7 +203,7 @@ namespace Samples
             method.Parameters.Add(new CodeParameterDeclarationExpression(argType, argName));
         }
 
-        private void AddParseMethodOrAttribute(CodeMemberMethod method, CodeAttributeDeclaration parseAttribute)
+        private void AddProduceMethodOrAttribute(CodeMemberMethod method, CodeAttributeDeclaration parseAttribute)
         {
             var existingMethod =
                 languageDefType

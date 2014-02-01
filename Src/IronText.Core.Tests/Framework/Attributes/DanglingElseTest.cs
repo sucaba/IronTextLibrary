@@ -33,21 +33,21 @@ namespace IronText.Core.Tests.Framework.Attributes
         [Precedence("else", 1, Associativity.None)]
         public class DanglingElseLang
         {
-            public Stmt Result { get; [Parse] set; }
+            public Stmt Result { get; [Produce] set; }
 
-            [Parse("if", null, "then", null, "else", null)]
+            [Produce("if", null, "then", null, "else", null)]
             public Stmt IfThenElse(Expr cond, Stmt t, Stmt e) { return null; }
 
-            [Parse("if", null, "then", null)]
+            [Produce("if", null, "then", null)]
             public Stmt IfThen(Expr cond, Stmt then) { return null; }
 
-            [Parse("mystmt")]
+            [Produce("mystmt")]
             public Stmt MyStmt() { return null; }
 
-            [Parse("myexpr")]
+            [Produce("myexpr")]
             public Expr MyExpr() { return null; }
 
-            [Scan("blank+")]
+            [Match("blank+")]
             public void Space() { }
         }
     }

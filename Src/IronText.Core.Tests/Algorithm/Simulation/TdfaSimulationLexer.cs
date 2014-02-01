@@ -128,7 +128,7 @@ namespace IronText.Tests.Algorithm
             return visitor.Done();
         }
 
-        private static TokenFactoryDelegate BuildTokenFactory(ScanProduction scanProduction)
+        private static TokenFactoryDelegate BuildTokenFactory(Matcher scanProduction)
         {
             return text => text;
         }

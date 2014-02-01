@@ -12,7 +12,7 @@ namespace IronText.Lib.IL
         [ParseGet]
         WantMethodSig StartSignature { get; }
 
-        [Parse]
+        [Produce]
         Ref<Methods> Method(Pipe<IMethodNs,DoneMethodSig> code);
     }
 
@@ -46,7 +46,7 @@ namespace IronText.Lib.IL
     public interface WantDeclTypeSig
         : WantNameSig
     {
-        [Parse(null, "::")]
+        [Produce(null, "::")]
         WantNameSig DecaringType(TypeSpec typeSpec);
     }
 
@@ -59,7 +59,7 @@ namespace IronText.Lib.IL
     [Demand]
     public interface WantOpenArgsSig
     {
-        [Parse("(")]
+        [Produce("(")]
         WantArgsSig BeginArgs();
     }
 
@@ -68,7 +68,7 @@ namespace IronText.Lib.IL
     [Demand]
     public interface WantArgsSigBase
     {
-        [Parse(")")]
+        [Produce(")")]
         DoneMethodSig EndArgs();
 
         WantMoreArgsSig Argument(Ref<Types> type, string argName);
@@ -79,7 +79,7 @@ namespace IronText.Lib.IL
         : WantArgsSigBase
         , ParamAttrSyntax1<WantArgsSig>
     {
-        [Parse]
+        [Produce]
         new WantMoreArgsSig Argument(Ref<Types> type, string argName);
     }
 
@@ -88,7 +88,7 @@ namespace IronText.Lib.IL
         : WantArgsSigBase
         , ParamAttrSyntax1<WantMoreArgsSig>
     {
-        [Parse(",")]
+        [Produce(",")]
         new WantMoreArgsSig Argument(Ref<Types> type, string argName);
     }
 }

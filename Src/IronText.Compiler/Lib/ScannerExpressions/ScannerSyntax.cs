@@ -33,10 +33,10 @@ namespace IronText.Lib.ScannerExpressions
         [LanguageService]
         public IParsing Parsing { get; set; }
 
-        [ParseResult]
+        [Outcome]
         public Regexp Result { get; set; }
 
-        [Parse]
+        [Produce]
         public Regexp Regexp(Branch item) 
         { 
             var result = new Regexp();
@@ -44,51 +44,51 @@ namespace IronText.Lib.ScannerExpressions
             return result;
         }
 
-        [Parse(null, "|", null)]
+        [Produce(null, "|", null)]
         public Regexp Regexp(Regexp regexp, Branch item) 
         {
             regexp.Branches.Add(item.Node);
             return regexp;
         }
 
-        [Parse]
+        [Produce]
         public Branch EmptyBranch() 
         {
             return new Branch { Node = AstNode.Empty };
         }
 
-        [Parse]
+        [Produce]
         public Branch Branch(Piece[] pieces) 
         {
             return new Branch { Node = AstNode.Cat(pieces.Select(p => p.Node)) };
         }
 
-        [Parse(null, "?")]
+        [Produce(null, "?")]
         public Piece Optional(Piece atom) 
         {
             return new Piece { Node = RepeatNode.Optional(atom.Node) }; 
         }
 
-        [Parse(null, "*")]
+        [Produce(null, "*")]
         public Piece ZeroOrMore(Piece atom)
         {
             return new Piece { Node = RepeatNode.ZeroOrMore(atom.Node) }; 
         }
 
-        [Parse(null, "+")]
+        [Produce(null, "+")]
         public Piece OneOrMore(Piece atom)
         {
             return new Piece { Node = RepeatNode.OneOrMore(atom.Node) }; 
         }
 
-        [Parse(null, "{", null, "}")]
+        [Produce(null, "{", null, "}")]
         public Piece RepeatTimes(Piece atom, Integer timesInteger)
         {
             int times = timesInteger.Value;
             return new Piece { Node = new RepeatNode(atom.Node, times, times) }; 
         }
 
-        [Parse(null, "{", null, ",", null, "}")]
+        [Produce(null, "{", null, ",", null, "}")]
         public Piece RepeatRangeTimes(Piece atom, Integer minTimes, Integer maxTimes)
         {
             int min = minTimes.Value;
@@ -96,26 +96,26 @@ namespace IronText.Lib.ScannerExpressions
             return new Piece { Node = new RepeatNode(atom.Node, min, max) }; 
         }
 
-        [Parse(null, "{", null, ",", "}")]
+        [Produce(null, "{", null, ",", "}")]
         public Piece RepeatMinTimes(Piece atom, Integer minTimes)
         {
             int min = minTimes.Value;
             return new Piece { Node = new RepeatNode(atom.Node, min, int.MaxValue) }; 
         }
 
-        [Parse("(", null, ")")]
+        [Produce("(", null, ")")]
         public Piece Piece(Regexp regexp) 
         {
             return new Piece { Node = regexp.Node };
         }
 
-        [Parse("action", "(", null, ")")]
+        [Produce("action", "(", null, ")")]
         public Piece Action(Integer action)
         {
             return new Piece { Node = ActionNode.Create(action.Value) };
         }
 
-        [Parse]
+        [Produce]
         public Piece Literal(QStr str) 
         { 
             var nodes = str.Text.Select(ch => CharSetNode.Create(IntSet.Of(ch)));
@@ -125,7 +125,7 @@ namespace IronText.Lib.ScannerExpressions
             };
         }
 
-        [Parse]
+        [Produce]
         public Piece Piece(IntSet charClass) 
         {
             if (charClass.IsEmpty)
@@ -136,69 +136,69 @@ namespace IronText.Lib.ScannerExpressions
             return new Piece { Node = CharSetNode.Create(charClass) };
         }
 
-        [Parse("~")]
+        [Produce("~")]
         public IntSet Complement(IntSet charClass) 
         { 
             return charClass.Complement();
         }
 
-        [Parse("~", "(", null, ")")]
+        [Produce("~", "(", null, ")")]
         public IntSet ComplementComposite(CompositeIntSet composite) 
         { 
             return composite.Inner.Complement();
         }
 
-        [Parse]
+        [Produce]
         public CompositeIntSet CompositeIntSet(IntSet inner)
         {
             return new CompositeIntSet { Inner = inner };
         }
 
-        [Parse(null, "|", null)]
+        [Produce(null, "|", null)]
         public CompositeIntSet CompositeIntSet(CompositeIntSet composite, IntSet inner)
         {
             return new CompositeIntSet { Inner = composite.Inner.Union(inner) };
         }
 
-        [Parse(null, "..", null)]
+        [Produce(null, "..", null)]
         public IntSet Range(Chr from, Chr to)
         {
             return IntSet.Range(from.Char, to.Char);
         }
 
-        [Parse]
+        [Produce]
         public IntSet SingleChar(Chr ch)
         {
             return IntSet.Of(ch.Char);
         }
 
-        [Parse]
+        [Produce]
         public IntSet CharClass(CharEnumeration item)
         {
             return IntSet.Of(item.Characters);
         }
 
-        [Parse("alnum")]  public IntSet Alphanumeric() { return IntSet.AsciiAlnum; }
+        [Produce("alnum")]  public IntSet Alphanumeric() { return IntSet.AsciiAlnum; }
 
-        [Parse("alpha")]  public IntSet Alphabetic() { return IntSet.AsciiAlpha; }
+        [Produce("alpha")]  public IntSet Alphabetic() { return IntSet.AsciiAlpha; }
 
-        [Parse("blank")]  public IntSet Blank() { return IntSet.AsciiBlank; }
+        [Produce("blank")]  public IntSet Blank() { return IntSet.AsciiBlank; }
 
-        [Parse("digit")]  public IntSet Numeric() { return IntSet.AsciiDigit; }
+        [Produce("digit")]  public IntSet Numeric() { return IntSet.AsciiDigit; }
 
-        [Parse("esc")]    public IntSet BackSlash() { return IntSet.Of('\\'); }
+        [Produce("esc")]    public IntSet BackSlash() { return IntSet.Of('\\'); }
 
-        [Parse("hex")]    public IntSet HexDigit() { return IntSet.AsciiXDigit; }
+        [Produce("hex")]    public IntSet HexDigit() { return IntSet.AsciiXDigit; }
 
-        [Parse("print")]  public IntSet Print() { return IntSet.AsciiPrint; }
+        [Produce("print")]  public IntSet Print() { return IntSet.AsciiPrint; }
 
-        [Parse("quot")]   public IntSet Quot() { return IntSet.Of('"'); }
+        [Produce("quot")]   public IntSet Quot() { return IntSet.Of('"'); }
 
-        [Parse("zero")]   public IntSet Zero() { return IntSet.Of('\0'); }
+        [Produce("zero")]   public IntSet Zero() { return IntSet.Of('\0'); }
 
-        [Parse(".")]      public IntSet Any() { return IntSet.All; }
+        [Produce(".")]      public IntSet Any() { return IntSet.All; }
 
-        [Parse]           
+        [Produce]           
         public IntSet UnicodeName(string name)
         { 
             var result = IntSet.GetUnicodeCategory(name);
@@ -219,7 +219,7 @@ namespace IronText.Lib.ScannerExpressions
             return result;
         }
 
-        [Scan(@"['] (~['\\] | [\\] .) [']",
+        [Match(@"['] (~['\\] | [\\] .) [']",
               @"['] (?: [^'\\] | [\\] .) [']",
               Disambiguation.Exclusive)]
         public Chr Char(char[] buffer, int start, int length)
@@ -227,21 +227,21 @@ namespace IronText.Lib.ScannerExpressions
             return Chr.Parse(buffer, start, length);
         }
 
-        [Scan(@"['] ~['\\]* ( [\\] .  ~['\\]* )* [']",
+        [Match(@"['] ~['\\]* ( [\\] .  ~['\\]* )* [']",
               @"['] (?: [^'\\]* (?: \\ . [^'\\]*)*) [']")]
         public QStr SingleQuotedString(char[] buffer, int start, int length)
         {
             return QStr.Parse(buffer, start, length); 
         }
 
-        [Scan(@"'[' ~[\]\\]* ( [\\] . ~[\]\\]* )* ']'",
+        [Match(@"'[' ~[\]\\]* ( [\\] . ~[\]\\]* )* ']'",
               @"\[ (?: [^\]\\]* (?: \\ . [^\]\\]*)*) \]")]
         public CharEnumeration CharEnum(char[] buffer, int start, int length) 
         {
             return CharEnumeration.Parse(buffer, start, length);
         }
 
-        [Scan(
+        [Match(
             @"'u' hex {4}",
             @"u [0-9a-fA-F] {4}",
             Disambiguation.Exclusive)]
@@ -255,7 +255,7 @@ namespace IronText.Lib.ScannerExpressions
             return new Chr((char)ch);
         }
 
-        [Scan(
+        [Match(
             @"'U' hex {8}",
             @"U [0-9a-fA-F]{8}",
             Disambiguation.Exclusive)]
@@ -273,22 +273,22 @@ namespace IronText.Lib.ScannerExpressions
             return new QStr(char.ConvertFromUtf32(value));
         }
 
-        [Scan(
+        [Match(
             @"alpha alnum*",
             @"[A-Za-z] [A-Za-z0-9]*")]
         public static string Identifier(string name) { return name; }
 
-        [Scan(
+        [Match(
             "digit+",
             @"[0-9]+")]
         public static Integer Integer(string text) { return new Integer(int.Parse(text)); }
 
-        [Scan(
+        [Match(
             @"'\r'? '\n' | u0085 | u2028 | u2029",
             @"\r? \n | \u0085 | \u2028 | \u2029")]
         public static void NewLine() { }
 
-        [Scan(
+        [Match(
             @"blank+",
             @"[ \t]+")]
         public static void WhiteSpace() { }

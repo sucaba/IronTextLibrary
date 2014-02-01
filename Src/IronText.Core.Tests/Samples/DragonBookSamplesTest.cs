@@ -29,27 +29,27 @@ namespace IronText.Tests.Samples
         [Language]
         public class Lr1DragonBookSample
         {
-            public S Result { get; [Parse] set; }
+            public S Result { get; [Produce] set; }
 
-            [Parse(null, "=", null)]
+            [Produce(null, "=", null)]
             public S Equility(L l, R r) { return null; }
 
-            [Parse]
+            [Produce]
             public S Ref(R r) { return null; }
 
-            [Parse("*")]
+            [Produce("*")]
             public L StarR(R r) { return null; }
 
-            [Parse]
+            [Produce]
             public L Reference(string idn) { return null; }
 
-            [Parse]
+            [Produce]
             public R Left(L l) { return null; }
 
-            [Scan("blank+")]
+            [Match("blank+")]
             public void Space() { }
 
-            [Scan("alpha alnum*")]
+            [Match("alpha alnum*")]
             public string Identifier() { return null; }
         }
     }

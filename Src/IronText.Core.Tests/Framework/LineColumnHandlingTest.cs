@@ -38,10 +38,10 @@ namespace IronText.Tests.Framework
             [LanguageService]
             public IScanning Scanning { get; set; }
 
-            [Parse]
+            [Produce]
             public void All(List<HLoc> lines) { }
 
-            [Scan(@"
+            [Match(@"
                 'begin-' digit 
                 ('\r'? '\n')*
                 'end-' digit")]
@@ -66,7 +66,7 @@ namespace IronText.Tests.Framework
                 return result;
             }
 
-            [Scan("'at-' digit")]
+            [Match("'at-' digit")]
             public HLoc SingleLineTerm(char[] buffer, int start, int length)
             {
                 int expectedLine = (buffer[start + length - 1] - '0');
@@ -81,7 +81,7 @@ namespace IronText.Tests.Framework
                 return result;
             }
 
-            [Scan("'atNL-' digit '\n'")]
+            [Match("'atNL-' digit '\n'")]
             public HLoc SingleLineNLTerm(char[] buffer, int start, int length)
             {
                 int expectedLine = (buffer[start + length - 2] - '0');
@@ -96,7 +96,7 @@ namespace IronText.Tests.Framework
                 return result;
             }
 
-            [Scan("'\r'? '\n'")]
+            [Match("'\r'? '\n'")]
             public void Newline()
             {
             }

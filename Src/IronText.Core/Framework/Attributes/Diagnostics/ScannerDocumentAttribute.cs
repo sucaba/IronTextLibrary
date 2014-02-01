@@ -26,11 +26,11 @@ namespace IronText.Framework
 
             using (var file = new StreamWriter(path, false, Encoding.UTF8))
             {
-                foreach (var scanCondition in data.Grammar.ScanConditions)
+                foreach (var scanCondition in data.Grammar.Conditions)
                 {
                     file.WriteLine("-------------------------------------");
                     file.WriteLine("ScanMode {0}:", scanCondition.Name);
-                    foreach (var scanProduciton in scanCondition.ScanProductions)
+                    foreach (var scanProduciton in scanCondition.Matchers)
                     {
                         file.WriteLine(" " + scanProduciton.ToString());
                     }

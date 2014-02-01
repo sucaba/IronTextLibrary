@@ -138,37 +138,37 @@ namespace IronText.Lib.IL
     [StaticContext(typeof(Builtins))]
     public static class CilPrimitives
     {
-        [Scan("'(' blank* (hex blank* hex blank*)+ ')'")]
+        [Match("'(' blank* (hex blank* hex blank*)+ ')'")]
         public static Bytes ByteSeq(char[] buf, int start, int length)
         {
             return Bytes.FromText(buf, start + 1, length - 2);
         }
 
-        [Parse]
+        [Produce]
         public static Pipe<T1, T2> Pipe<T1, T2>(T2 value) { return _ => value; }
 
-        [Parse]
+        [Produce]
         public static Name1 Name1(string part0) { return new Name1(part0); }
 
-        [Parse(null, ".", null)]
+        [Produce(null, ".", null)]
         public static Name1 Name1(string part0, string part1) { return new Name1(part0, part1); }
 
-        [Parse(null, ".", null, ".", null)]
+        [Produce(null, ".", null, ".", null)]
         public static Name1 Name1(string part0, string part1, string part2) { return new Name1(part0, part1, part2); }
 
-        [Parse]
+        [Produce]
         public static SlashedName SlashedName(Name1 name1) { return new SlashedName(name1); }
 
-        [Parse(null, "/", null)]
+        [Produce(null, "/", null)]
         public static SlashedName SlashedName(Name1 x, Name1 y) { return new SlashedName(x, y); } 
 
-        [Parse(null, "/", null, "/", null)]
+        [Produce(null, "/", null, "/", null)]
         public static SlashedName SlashedName(Name1 x, Name1 y, Name1 z) { return new SlashedName(x, y, z); } 
 
-        [Parse(null, "/", null, "/", null, "/", null)]
+        [Produce(null, "/", null, "/", null, "/", null)]
         public static SlashedName SlashedName(Name1 x, Name1 y, Name1 z, Name1 t) { return new SlashedName(x, y, z, t); } 
 
-        [Parse]
+        [Produce]
         public static ClassName ClassName(SlashedName slashedName)
         {
             return new ClassName(slashedName);

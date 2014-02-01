@@ -5,25 +5,25 @@ namespace IronText.Lib.Ctem
     [Vocabulary]
     public class CtemScanner
     {
-        [Scan(@"'//' ~('\r' | '\n' | u0085 | u2028 | u2029)*")]
+        [Match(@"'//' ~('\r' | '\n' | u0085 | u2028 | u2029)*")]
         public void LineComment() { }
 
-        [Scan("'/*' (~'*'* | '*' ~'/')* '*/'")]
+        [Match("'/*' (~'*'* | '*' ~'/')* '*/'")]
         public void MultiLineComment() { }
 
-        [Scan(@"'\r'? '\n' | u0085 | u2028 | u2029")]
+        [Match(@"'\r'? '\n' | u0085 | u2028 | u2029")]
         public void NewLine() { }
 
-        [Scan("(Zs | '\t' | u000B | u000C)+")]
+        [Match("(Zs | '\t' | u000B | u000C)+")]
         public void WhiteSpace() { }
 
-        [Scan("digit+ ('.' digit+)?  | '.' digit+")]
+        [Match("digit+ ('.' digit+)?  | '.' digit+")]
         public Num Number(string token) { return new Num(token); }
 
-        [Scan("(alpha | '_') (alnum | '_')*")]
+        [Match("(alpha | '_') (alnum | '_')*")]
         public string Identifier(string token) { return token; }
 
-        [Scan(
+        [Match(
             @"
             quot 
                 ~(quot | esc)*

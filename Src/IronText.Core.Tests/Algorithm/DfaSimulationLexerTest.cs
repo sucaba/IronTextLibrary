@@ -34,27 +34,27 @@ namespace IronText.Tests.Algorithm
                     qStr
                 },
 
-                ScanConditions =
+                Conditions =
                 {
-                    new ScanCondition("main")
+                    new Condition("main")
                     {
-                        ScanProductions = 
+                        Matchers = 
                         {
-                            new ScanProduction(
+                            new Matcher(
                                     @"blank+"),
-                            new ScanProduction(
+                            new Matcher(
                                     @"digit+ ('.' digit+)?  | '.' digit+", 
                                     num),
-                            new ScanProduction(
+                            new Matcher(
                                     @"(alpha | [:.!@#$%^&|?*/+*=\\_-]) (alnum | [:.!@#$%^&|?*/+*=\\_-])*",
                                     ident),
-                            new ScanProduction(
+                            new Matcher(
                                     "'\"' ('\\\\\"' | ~'\"')* '\"'",
                                     qStr),
-                            new ScanProduction(
+                            new Matcher(
                                     ScanPattern.CreateLiteral("("),
                                     lParen),
-                            new ScanProduction(
+                            new Matcher(
                                     ScanPattern.CreateLiteral(")"),
                                     rParen),
                         }
@@ -66,7 +66,7 @@ namespace IronText.Tests.Algorithm
                 " (1 (\"bar\" +))",
                 ScannerDescriptor.FromScanRules(
                     GetType().Name + "_Lexer",
-                    grammar.ScanConditions[0].ScanProductions,
+                    grammar.Conditions[0].Matchers,
                     ExceptionLogging.Instance));
 
             var collector = new Collector<Msg>();

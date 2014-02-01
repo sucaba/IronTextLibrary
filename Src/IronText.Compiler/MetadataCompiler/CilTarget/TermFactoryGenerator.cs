@@ -13,9 +13,9 @@ namespace IronText.MetadataCompiler
     class TermFactoryGenerator
     {
         private readonly Ref<Types>        declaringType;
-        private readonly ScanCondition[]   scanConditions;
+        private readonly Condition[]   scanConditions;
 
-        public TermFactoryGenerator(ScanConditionCollection conditions, Ref<Types> declaringType)
+        public TermFactoryGenerator(ConditionCollection conditions, Ref<Types> declaringType)
         {
             this.scanConditions   = conditions.ToArray();
             this.declaringType    = declaringType;
@@ -45,7 +45,7 @@ namespace IronText.MetadataCompiler
                 .Stloc(tokenId.GetRef())
                 ;
 
-            int ruleCount = scanConditions.Sum(cond => cond.ScanProductions.Count);
+            int ruleCount = scanConditions.Sum(cond => cond.Matchers.Count);
 
             var action = new Ref<Labels>[ruleCount];
             for (int i = 0; i != ruleCount; ++i)
@@ -64,11 +64,11 @@ namespace IronText.MetadataCompiler
 
             foreach (var condition in scanConditions)
             {
-                var conditionBinding = condition.Joint.The<CilScanCondition>();
+                var conditionBinding = condition.Joint.The<CilCondition>();
 
                 // Each mode has its own root context type:
                 contextResolver.RootContextType = conditionBinding.ConditionType;
-                foreach (var scanProduction in condition.ScanProductions)
+                foreach (var scanProduction in condition.Matchers)
                 {
                     emit
                         .Label(action[scanProduction.Index].Def)
@@ -76,7 +76,7 @@ namespace IronText.MetadataCompiler
                         .Stloc(tokenId.GetRef())
                         ;
 
-                    var productionBinding = scanProduction.Joint.The<CilScanProduction>();
+                    var productionBinding = scanProduction.Joint.The<CilMatcher>();
                     productionBinding.ActionBuilder(actionContext);
                 }
             }

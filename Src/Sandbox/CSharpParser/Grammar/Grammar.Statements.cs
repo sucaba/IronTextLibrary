@@ -8,327 +8,327 @@ namespace CSharpParser
 {
     public partial interface ICsGrammar
     {
-        [Parse]
+        [Produce]
         CsStatement Statement(CsLabelledStatement statement);
 
-        [Parse]
+        [Produce]
         CsStatement Statement(CsDeclarationStatement statement);
 
-        [Parse]
+        [Produce]
         CsStatement Statement(CsEmbeddedStatement statement);
 
-        [Parse]
+        [Produce]
         CsEmbeddedStatement EmbeddedStatement(CsBlock block);
 
-        [Parse]
+        [Produce]
         CsEmbeddedStatement EmbeddedStatement(CsEmptyStatement statement);
 
-        [Parse]
+        [Produce]
         CsEmbeddedStatement EmbeddedStatement(CsExpressionStatement statement);
 
-        [Parse]
+        [Produce]
         CsEmbeddedStatement EmbeddedStatement(CsSelectionStatement statement);
 
-        [Parse]
+        [Produce]
         CsEmbeddedStatement EmbeddedStatement(CsIterationStatement statement);
 
-        [Parse]
+        [Produce]
         CsEmbeddedStatement EmbeddedStatement(CsJumpStatement statement);
 
-        [Parse]
+        [Produce]
         CsEmbeddedStatement EmbeddedStatement(CsTryStatement statement);
 
-        [Parse]
+        [Produce]
         CsEmbeddedStatement EmbeddedStatement(CsCheckedStatement statement);
 
-        [Parse]
+        [Produce]
         CsEmbeddedStatement EmbeddedStatement(CsUncheckedStatement statement);
 
-        [Parse]
+        [Produce]
         CsEmbeddedStatement EmbeddedStatement(CsLockStatement statement);
 
-        [Parse]
+        [Produce]
         CsEmbeddedStatement EmbeddedStatement(CsUsingStatement statement);
 
-        [Parse]
+        [Produce]
         CsEmbeddedStatement EmbeddedStatement(CsYieldStatement statement);
 
-        [Parse("{", null, "}")]
+        [Produce("{", null, "}")]
         CsBlock Block(Opt<CsList<CsStatement>> statements);
 
-        [Parse(";")]
+        [Produce(";")]
         CsEmptyStatement EmptyStatement();
 
-        [Parse(null, ":", null)]
+        [Produce(null, ":", null)]
         CsLabelledStatement LabelledStatement(
                 CsIdentifier label,
                 CsStatement  statement);
 
-        [Parse(null, ";")]
+        [Produce(null, ";")]
         CsDeclarationStatement DeclarationStatement(CsLocalVariableDeclaration decl);
 
-        [Parse(null, ";")]
+        [Produce(null, ";")]
         CsDeclarationStatement DeclarationStatement(CsLocalConstantDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsLocalVariableDeclaration LocalVariableDeclaration(
                 CsLocalVariableType                    type,
                 CsCommaList<CsLocalVariableDeclarator> declarators);
 
-        [Parse("var")]
+        [Produce("var")]
         CsLocalVariableType LocalVariableType();
 
-        [Parse]
+        [Produce]
         CsLocalVariableType LocalVariableType(CsType type);
 
-        [Parse]
+        [Produce]
         CsLocalVariableDeclarator LocalVariableDeclarator(
                 CsIdentifier identifier);
 
-        [Parse(null, "=", null)]
+        [Produce(null, "=", null)]
         CsLocalVariableDeclarator LocalVariableDeclarator(
                 CsIdentifier               identifier,
                 CsLocalVariableInitializer initializer);
 
-        [Parse]
+        [Produce]
         CsLocalVariableInitializer LocalVariableInitializer(
                 CsExpression expression); 
 
-        [Parse]
+        [Produce]
         CsLocalVariableInitializer LocalVariableInitializer(
                 CsArrayInitializer initializer); 
 
-        [Parse("const", null, null)]
+        [Produce("const", null, null)]
         CsLocalConstantDeclaration LocalConstantDeclaration(
                 CsType                            type,
                 CsCommaList<CsConstantDeclarator> declarators);
 
-        [Parse(null, "=", null)]
+        [Produce(null, "=", null)]
         CsConstantDeclarator ConstantDeclarator(
                 CsIdentifier         id,
                 CsConstantExpression expression);
 
-        [Parse(null, ";")]
+        [Produce(null, ";")]
         CsExpressionStatement ExpressionStatement(CsStatementExpression expression);
 
-        [Parse]
+        [Produce]
         CsStatementExpression StatementExpression(CsInvocationExpression expression);
 
-        [Parse]
+        [Produce]
         CsStatementExpression StatementExpression(CsObjectCreationExpression expression);
 
-        [Parse]
+        [Produce]
         CsStatementExpression StatementExpression(CsAssignment assignment);
 
-        [Parse]
+        [Produce]
         CsStatementExpression StatementExpression(CsPostIncrementExpression expression);
 
-        [Parse]
+        [Produce]
         CsStatementExpression StatementExpression(CsPostDecrementExpression expression);
 
-        [Parse]
+        [Produce]
         CsStatementExpression StatementExpression(CsPreIncrementExpression expression);
 
-        [Parse]
+        [Produce]
         CsStatementExpression StatementExpression(CsPreDecrementExpression expression);
 
-        [Parse]
+        [Produce]
         CsSelectionStatement SelectionStatement(CsIfStatement statement);
 
-        [Parse]
+        [Produce]
         CsSelectionStatement SelectionStatement(CsSwitchStatement statement);
 
-        [Parse("if", "(", null, ")", null)]
+        [Produce("if", "(", null, ")", null)]
         CsIfStatement IfStatement(
                 CsBooleanExpression condition,
                 CsExpression        expression);
 
-        [Parse("if", "(", null, ")", null, "else", null)]
+        [Produce("if", "(", null, ")", null, "else", null)]
         CsIfStatement IfStatement(
                 CsBooleanExpression condition,
                 CsExpression        expression1,
                 CsExpression        expression2);
 
-        [Parse("switch", "(", null, ")", null)]
+        [Produce("switch", "(", null, ")", null)]
         CsSwitchStatement SwitchStatement(
                 CsExpression expression,
                 CsSwitchBlock block);
 
-        [Parse("{", null, "}")]
+        [Produce("{", null, "}")]
         CsSwitchBlock SwitchBlock(Opt<CsList<CsSwitchSection>> sections);
 
-        [Parse]
+        [Produce]
         CsSwitchSection SwitchSection(
                 CsList<CsSwitchLabel> labels,
                 CsList<CsStatement> statements);
 
-        [Parse("case", null, ":")]
+        [Produce("case", null, ":")]
         CsSwitchLabel SwitchLabel(CsConstantExpression expression);
 
-        [Parse("default", ":")]
+        [Produce("default", ":")]
         CsSwitchLabel SwitchLabel();
 
-        [Parse]
+        [Produce]
         CsIterationStatement IterationStatement(CsWhileStatement statement);
 
-        [Parse]
+        [Produce]
         CsIterationStatement IterationStatement(CsDoStatement statement);
 
-        [Parse]
+        [Produce]
         CsIterationStatement IterationStatement(CsForStatement statement);
 
-        [Parse]
+        [Produce]
         CsIterationStatement IterationStatement(CsForeachStatement statement);
 
-        [Parse("while", "(", null, ")", null)]
+        [Produce("while", "(", null, ")", null)]
         CsWhileStatement WhileStatement(
                 CsBooleanExpression condition,
                 CsEmbeddedStatement statement);
 
-        [Parse("do", null, "while", "(", null, ")", ";")]
+        [Produce("do", null, "while", "(", null, ")", ";")]
         CsDoStatement DoStatement(
                 CsEmbeddedStatement statement,
                 CsBooleanExpression condition);
 
-        [Parse("for", "(", null, ";", null, ";", null, ")", null)]
+        [Produce("for", "(", null, ";", null, ";", null, ")", null)]
         CsForStatement ForStatement(
                 Opt<CsForInitializer> initializer,
                 Opt<CsForCondition>   condition,
                 Opt<CsForIterator>    iterator,
                 CsEmbeddedStatement   statement);
 
-        [Parse]
+        [Produce]
         CsForInitializer ForInitializer(CsLocalVariableDeclaration declaration);
 
-        [Parse]
+        [Produce]
         CsForInitializer ForInitializer(CsCommaList<CsStatementExpression> expressions);
 
 
-        [Parse]
+        [Produce]
         CsForCondition ForCondition(CsBooleanExpression expression);
 
-        [Parse]
+        [Produce]
         CsForIterator ForIterator(CsCommaList<CsStatementExpression> expressions);
 
-        [Parse("foreach", "(", null, null, "in", null, ")", null)]
+        [Produce("foreach", "(", null, null, "in", null, ")", null)]
         CsForeachStatement ForeachStatement(
                 CsLocalVariableType type,
                 CsIdentifier        identifier,
                 CsExpression        expression,
                 CsEmbeddedStatement statement);
         
-        [Parse]
+        [Produce]
         CsJumpStatement JumpStatement(CsBreakStatement statement);
 
-        [Parse]
+        [Produce]
         CsJumpStatement JumpStatement(CsContinueStatement statement);
 
-        [Parse]
+        [Produce]
         CsJumpStatement JumpStatement(CsGotoStatement statement);
 
-        [Parse]
+        [Produce]
         CsJumpStatement JumpStatement(CsReturnStatement statement);
 
-        [Parse]
+        [Produce]
         CsJumpStatement JumpStatement(CsThrowStatement statement);
 
-        [Parse("break", ";")]
+        [Produce("break", ";")]
         CsBreakStatement BreakStatement();
 
-        [Parse("continue", ";")]
+        [Produce("continue", ";")]
         CsContinueStatement ContinueStatement();
 
-        [Parse("goto", null, ";")]
+        [Produce("goto", null, ";")]
         CsGotoStatement GotoStatement(CsIdentifier label);
         
-        [Parse("goto", "case", null, ";")]
+        [Produce("goto", "case", null, ";")]
         CsGotoStatement GotoStatement(CsConstantExpression expression);
 
-        [Parse("goto", "default", ";")]
+        [Produce("goto", "default", ";")]
         CsGotoStatement GotoStatement();
 
-        [Parse("return", null, ";")]
+        [Produce("return", null, ";")]
         CsReturnStatement ReturnStatement(Opt<CsExpression> expression);
 
-        [Parse("throw", null, ";")]
+        [Produce("throw", null, ";")]
         CsThrowStatement ThrowStatement(Opt<CsExpression> expression);
 
-        [Parse("try", null, null)]
+        [Produce("try", null, null)]
         CsTryStatement TryStatement(
                 CsBlock        block,
                 CsCatchClauses catchClauses);
 
-        [Parse("try", null, null)]
+        [Produce("try", null, null)]
         CsTryStatement TryStatement(
                 CsBlock         block,
                 CsFinallyClause finallyClause);
 
-        [Parse("try", null, null, null)]
+        [Produce("try", null, null, null)]
         CsTryStatement TryStatement(
                 CsBlock         block,
                 CsCatchClauses  catchClauses,
                 CsFinallyClause finallyClause);
 
-        [Parse]
+        [Produce]
         CsCatchClauses CatchClauses(
                 CsList<CsSpecificCatchClause>     specific,
                 Opt<CsList<CsGeneralCatchClause>> general);
 
-        [Parse]
+        [Produce]
         CsCatchClauses CatchClauses(
                 Opt<CsList<CsSpecificCatchClause>> specific,
                 CsList<CsGeneralCatchClause>       general);
 
-        [Parse("catch", "(", null, null, ")", null)]
+        [Produce("catch", "(", null, null, ")", null)]
         CsSpecificCatchClause SpecificCatchClause(
                 CsClassType       type,
                 Opt<CsIdentifier> identifier,
                 CsBlock           block);
 
-        [Parse("catch", null)]
+        [Produce("catch", null)]
         CsGeneralCatchClause GeneralCatchClause(
                 CsBlock            block);
 
-        [Parse("finally", null)]
+        [Produce("finally", null)]
         CsFinallyClause FinallyClause(
                 CsBlock            block);
 
-        [Parse("checked", null)]
+        [Produce("checked", null)]
         CsCheckedStatement CheckedStatement(
                 CsBlock            block);
 
-        [Parse("unchecked", null)]
+        [Produce("unchecked", null)]
         CsUncheckedStatement UncheckedStatement(
                 CsBlock            block);
 
-        [Parse("lock", "(", null, ")", null)]
+        [Produce("lock", "(", null, ")", null)]
         CsLockStatement LockStatement(
                 CsExpression        expression,
                 CsEmbeddedStatement statement);
 
-        [Parse("using", "(", null, ")", null)]
+        [Produce("using", "(", null, ")", null)]
         CsUsingStatement UsingStatement(
                 CsResourceAcquisition acquisition,
                 CsEmbeddedStatement   statement);
 
-        [Parse]
+        [Produce]
         CsResourceAcquisition ResourceAcquisition(
                 CsLocalVariableDeclaration decl);
 
-        [Parse]
+        [Produce]
         CsResourceAcquisition ResourceAcquisition(
                 CsExpression               expression);
 
-        [Parse("yield", "return", null, ";")]
+        [Produce("yield", "return", null, ";")]
         CsYieldStatement YieldStatement(CsExpression expression);
 
-        [Parse("yield", "break", ";")]
+        [Produce("yield", "break", ";")]
         CsYieldStatement YieldStatement();
 
-        [Parse]
+        [Produce]
         CsCommas Commas();
 
-        [Parse(null, ",")]
+        [Produce(null, ",")]
         CsCommas Commas(CsCommas commas);
     }
 }

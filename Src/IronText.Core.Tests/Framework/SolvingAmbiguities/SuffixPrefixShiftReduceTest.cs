@@ -28,25 +28,25 @@ namespace IronText.Tests.Framework.SolvingAmbiguities
             [Parse]
             public void SatisfyWantB(WantB wantb, B b) { }
 #else
-            [Parse]
+            [Produce]
             public void Result(A a, B b) {}
 #endif
 
-            [Parse("aaa")]
+            [Produce("aaa")]
             public A A() { return null; }
 
 #if false
             [Parse("aaa", "[", "asuffix", "]")]
             public A AWithSuffix() { return null; }
 #else
-            [Parse(null, "[", "asuffix", "]")]
+            [Produce(null, "[", "asuffix", "]")]
             public A A(A a) { return null; }
 #endif
 
-            [Parse("[", "bprefix", "]", "bbb")]
+            [Produce("[", "bprefix", "]", "bbb")]
             public B BWithPrefix() { return null; }
 
-            [Scan("blank+")]
+            [Match("blank+")]
             public void Blank() {}
         }
 

@@ -16,7 +16,7 @@ namespace IronText.Tests.Samples
         [Language]
         public class KeywordLang
         {
-            [Parse("print")]
+            [Produce("print")]
             public void All() { }
         }
     }

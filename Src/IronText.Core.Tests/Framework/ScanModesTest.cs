@@ -26,7 +26,7 @@ namespace IronText.Tests.Framework
         [ScannerGraph("ScanModes_Scanner.gv")]
         public class ScanModesLanguage
         {
-            [ParseResult] 
+            [Outcome] 
             public string Result { get; set; }
 
             [LanguageService]
@@ -61,7 +61,7 @@ namespace IronText.Tests.Framework
                 comment.Append("/*");
             }
 
-            [Scan("(~[*/] | '*' ~'/' | '/' ~'*') +")]
+            [Match("(~[*/] | '*' ~'/' | '/' ~'*') +")]
             public void Text(string text)
             {
                 comment.Append(text);

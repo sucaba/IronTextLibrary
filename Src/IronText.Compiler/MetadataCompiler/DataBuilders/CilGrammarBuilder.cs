@@ -144,13 +144,13 @@ namespace IronText.MetadataCompiler
             }
 
             // Create conditions to allow referencing them from scan productions
-            foreach (CilScanCondition cilCondition in definition.ScanConditions)
+            foreach (CilCondition cilCondition in definition.ScanConditions)
             {
                 CreateCondtion(result, cilCondition);
             }
 
             // Create scan productions
-            foreach (CilScanCondition cilCondition in definition.ScanConditions)
+            foreach (CilCondition cilCondition in definition.ScanConditions)
             {
                 var condition = ConditionFromType(result, cilCondition.ConditionType);
 
@@ -158,14 +158,14 @@ namespace IronText.MetadataCompiler
                 {
                     SymbolBase outcome = GetScanProductionOutcomeSymbol(result, symbolResolver, scanProd.MainOutcome, scanProd.AllOutcomes);
 
-                    var scanProduction = new ScanProduction(
+                    var scanProduction = new Matcher(
                         scanProd.Pattern,
                         outcome,
                         nextCondition: ConditionFromType(result, scanProd.NextModeType),
                         disambiguation: scanProd.Disambiguation);
                     scanProduction.Joint.Add(scanProd);
 
-                    condition.ScanProductions.Add(scanProduction);
+                    condition.Matchers.Add(scanProduction);
                 }
             }
 
@@ -179,16 +179,16 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        private static ScanCondition ConditionFromType(EbnfGrammar grammar, Type type)
+        private static Condition ConditionFromType(EbnfGrammar grammar, Type type)
         {
             if (type == null)
             {
                 return null;
             }
 
-            foreach (var cond in grammar.ScanConditions)
+            foreach (var cond in grammar.Conditions)
             {
-                var binding = cond.Joint.The<CilScanCondition>();
+                var binding = cond.Joint.The<CilCondition>();
                 if (binding.ConditionType == type)
                 {
                     return cond;
@@ -198,14 +198,14 @@ namespace IronText.MetadataCompiler
             throw new InvalidOperationException("Undefined condition: " + type.FullName);
         }
 
-        private static ScanCondition CreateCondtion(EbnfGrammar grammar, CilScanCondition cilCondition)
+        private static Condition CreateCondtion(EbnfGrammar grammar, CilCondition cilCondition)
         {
-            var result = new ScanCondition(cilCondition.ConditionType.FullName)
+            var result = new Condition(cilCondition.ConditionType.FullName)
             {
                 Joint = { cilCondition }
             };
 
-            grammar.ScanConditions.Add(result);
+            grammar.Conditions.Add(result);
 
             return result;
         }

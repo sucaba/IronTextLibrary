@@ -105,9 +105,9 @@ namespace IronText.Framework
             return Enumerable.Empty<CilMerger>();
         }
 
-        IEnumerable<CilScanProduction> ICilMetadata.GetScanProductions()
+        IEnumerable<CilMatcher> ICilMetadata.GetScanProductions()
         {
-            return Enumerable.Empty<CilScanProduction>();
+            return Enumerable.Empty<CilMatcher>();
         }
 
         public virtual IEnumerable<ReportBuilder> GetReportBuilders()

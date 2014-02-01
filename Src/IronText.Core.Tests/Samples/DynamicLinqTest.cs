@@ -81,10 +81,10 @@ namespace IronText.Tests.Samples
                 }
             }
 
-            [ParseResult]
+            [Outcome]
             public Expression Result { get; set; } 
 
-            [Parse("from", null, "in", null)]
+            [Produce("from", null, "in", null)]
             public QueryablePipeline From(string variable, Expression source)
             {
                 var elementType = GetElementType(source.Type);
@@ -116,7 +116,7 @@ namespace IronText.Tests.Samples
                 return result;
             }
 
-            [Parse(null, "where", null)]
+            [Produce(null, "where", null)]
             public QueryablePipeline Where(QueryablePipeline pipeline, Expression condExpr)
             {
                 var predicateType = typeof(Func<,>).MakeGenericType(pipeline.ElementType, typeof(bool));
@@ -141,7 +141,7 @@ namespace IronText.Tests.Samples
                 };
             }
 
-            [Parse(null, "select", null)]
+            [Produce(null, "select", null)]
             public Expression FromSelect(QueryablePipeline pipeline, Expression expression)
             {
                 var inElementType = pipeline.ElementType;
@@ -166,38 +166,38 @@ namespace IronText.Tests.Samples
                         selectorExpr);
             }
 
-            [Parse(null, ".", null)]
+            [Produce(null, ".", null)]
             public Expression FieldExpression(Expression instance, string fieldName)
             {
                 return Expression.Field(instance, fieldName);
             }
 
-            [Parse(null, ">", null)]
+            [Produce(null, ">", null)]
             public Expression GreaterThan(Expression x, Expression y)
             {
                 return Expression.GreaterThan(x, y);
             }
 
-            [Parse]
+            [Produce]
             public Expression Constant(int value)
             {
                 return Expression.Constant(value, typeof(int));
             }
 
-            [Parse]
+            [Produce]
             public Expression IdentifierExpression(string name) { return scope[name]; }
 
-            [Scan("alpha alnum*")]
-            [Scan("'$' digit+")]
+            [Match("alpha alnum*")]
+            [Match("'$' digit+")]
             public string Identifier(string text) { return text; }
 
-            [Scan("digit+")]
+            [Match("digit+")]
             public int Integer(string text)
             {
                 return int.Parse(text);
             }
 
-            [Scan("blank+")]
+            [Match("blank+")]
             public void Blank() { }
 
             private static Type GetElementType(Type seqType)

@@ -19,40 +19,40 @@ namespace IronText.Lib.IL
         // TODO: Create related language for assembly modifications
         AssemblyInfoSyntax AssemblyRewrite(string fromFilePath);
 
-        [Parse(".assembly", null, "{")]
+        [Produce(".assembly", null, "{")]
         AssemblyInfoSyntax Assembly(string assemblyName);
 
-        [Parse(".assembly", "extern", null, "{")]
+        [Produce(".assembly", "extern", null, "{")]
         AssemblyRefSyntax AssemblyExtern(Def<ResolutionScopes> assemblyScope);
 
-        [Parse(".module")]
+        [Produce(".module")]
         CilDocumentSyntax Module(QStr fileName);
 
-        [Parse(".class")]
+        [Produce(".class")]
         ClassAttrSyntax Class_();
 
-        [Parse]
+        [Produce]
         void EndDocument();
     }
 
     [Demand]
     public interface ClassIdSyntax
     {
-        [Parse(null, "{")]
+        [Produce(null, "{")]
         ClassExtendsSyntax Named(string className);
     }
 
     [Demand]
     public interface ClassExtendsSyntax : ClassImplementsSyntax
     {
-        [Parse("extends")]
+        [Produce("extends")]
         ClassImplementsSyntax Extends(Ref<Types> baseClass);
     }
 
     [Demand]
     public interface ClassImplementsSyntax : ClassSyntax
     {
-        [Parse("implements")]
+        [Produce("implements")]
         ClassImplementsSyntax Implements(Ref<Types> @interface);
     }
 }

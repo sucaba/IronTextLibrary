@@ -78,16 +78,16 @@ namespace IronText.Tests.Framework.Tokens
         // [DescribeParserStateMachine("FastSeqLang.info")]
         public class FastSeqLang
         {
-            [ParseResult]
+            [Outcome]
             public Coll<string> Result { get; set; }
 
-            [Parse("list")]
+            [Produce("list")]
             public static Coll<string> List2Array(List<string> items)
             { 
                 return new Coll<string> { Items = items };  
             }
 
-            [Parse("array")]
+            [Produce("array")]
             public static Coll<string> Array2Array(string[] items)
             { 
                 return new Coll<string> { Items = items };  

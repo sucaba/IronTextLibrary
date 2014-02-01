@@ -10,14 +10,14 @@ namespace IronText.Lib.Shared
 
         public IEnumerable<Ref<TNs>> RefsBefore(Def<TNs> def) { return def.RefsBefore; }
 
-        [Parse]
+        [Produce]
         public Ref<TNs> Reference(string var)
         {
             var def = Get(var) ?? Frame.Define(var);
             return def.GetRef();
         }
 
-        [Parse]
+        [Produce]
         public Def<TNs> Definition(string var)
         {
             // find also implicit definitions in this frame

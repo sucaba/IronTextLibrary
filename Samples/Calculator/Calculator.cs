@@ -21,61 +21,61 @@ namespace Calculator
 
         public readonly Dictionary<string,double> Variables = new Dictionary<string,double>();
 
-        [ParseResult]
+        [Outcome]
         public double Result { get; set; }
 
         public bool Done { get; set; }
 
-        [Parse]
+        [Produce]
         public double Number(Const<double> c) { return c == null ? 0 : c.Value; }
 
-        [Parse]
+        [Produce]
         public double VarRef(string name) { return Variables[name]; }
 
-        [Parse(_, "+", _)]
+        [Produce(_, "+", _)]
         public double Plus(double x, double y) { return  x + y; }
         
-        [Parse(_, "-", _)]
+        [Produce(_, "-", _)]
         public double Minus(double x, double y) { return  x - y; }
 
-        [Parse(_, "*", _)]
+        [Produce(_, "*", _)]
         public double Prod(double x, double y) { return  x * y; }
 
-        [Parse(_, "/", _)]
+        [Produce(_, "/", _)]
         public double Div(double x, double y) { return  x / y; }
 
-        [Parse(_, "%", _)]
+        [Produce(_, "%", _)]
         public double Mod(double x, double y) { return  x % y; }
 
-        [Parse(_, "^", _)]
+        [Produce(_, "^", _)]
         public double Pow(double x, double y) { return  Math.Pow(x, y); }
 
-        [Parse("sqrt", "(", _, ")")]
+        [Produce("sqrt", "(", _, ")")]
         public double Sqrt(double x) { return Math.Sqrt(x); }
 
-        [Parse("sin", "(", _, ")")]
+        [Produce("sin", "(", _, ")")]
         public double Sin(double x) { return Math.Sin(x); }
 
-        [Parse("cos", "(", _, ")")]
+        [Produce("cos", "(", _, ")")]
         public double Cos(double x) { return Math.Cos(x); }
 
-        [Parse(_, "=", _)]
+        [Produce(_, "=", _)]
         public double Let(string var, double rexpr) { Variables[var] = rexpr; return 0; }
 
-        [Parse("print", "(", _, ")")]
+        [Produce("print", "(", _, ")")]
         public double Print(double expr) { Console.WriteLine(expr); return 0; }
 
-        [Parse("exit")]
-        [Parse("quit")]
+        [Produce("exit")]
+        [Produce("quit")]
         public void Exit() { Done = true; }
 
-        [Scan("blank+")]
+        [Match("blank+")]
         public void Space() { }
 
-        [Scan("alpha alnum*")]
+        [Match("alpha alnum*")]
         public string Identifier(string name) { return name; }
 
-        [Scan("digit+ ('.' digit*)?")]
+        [Match("digit+ ('.' digit*)?")]
         public Const<double> Number(string text)
         { 
             return new Const<double>(double.Parse(text));

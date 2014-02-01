@@ -39,21 +39,21 @@ namespace IronText.Tests.Samples
         [ScannerGraph("Re2cSample.gv")]
         public class Re2cSample
         {
-            public object Result { get; [Parse] set; }
+            public object Result { get; [Produce] set; }
 
             [Literal("print")]
             public object Keyword(string text) { return "$" + text + "$"; }
 
-            [Scan("alpha+")]
+            [Match("alpha+")]
             public string Identifier(string text) { return text; }
 
-            [Scan("digit+")]
+            [Match("digit+")]
             public Decimal Decimal(string text) { return new Decimal(text); }
 
-            [Scan("'0x' hex+")]
+            [Match("'0x' hex+")]
             public HexDecimal HexDecimal(string text) { return new HexDecimal(text); }
 
-            [Scan("blank+")]
+            [Match("blank+")]
             public void Space() {}
         }
 

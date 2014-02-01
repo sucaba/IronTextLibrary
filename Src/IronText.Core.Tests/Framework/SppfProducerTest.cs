@@ -128,13 +128,13 @@ namespace IronText.Tests.Framework
         {
             public readonly List<double> Results = new List<double>();
 
-            [Parse]
+            [Produce]
             public void AddResult(double e) { Results.Add(e); }
 
-            [Parse(null, "^", null)]
+            [Produce(null, "^", null)]
             public double Pow(double e1, double e2) { return Math.Pow(e1, e2); }
 
-            [Parse("3")]
+            [Produce("3")]
             public double Number() { return 3; }
         }
 
@@ -142,22 +142,22 @@ namespace IronText.Tests.Framework
         [ParserGraph("RightNullableWithTree.gv")]
         public interface RightNullableWithTree
         {
-            [Parse(null, null, "a", "b")]
+            [Produce(null, null, "a", "b")]
             void S(B b, D d);
 
-            [Parse("a", null, "a", "d")]
+            [Produce("a", null, "a", "d")]
             void S(D d);
 
-            [Parse("a")]
+            [Produce("a")]
             D D(A a, B b);
 
-            [Parse("a")]
+            [Produce("a")]
             A A(B b1, B b2);
 
-            [Parse]
+            [Produce]
             A A();
 
-            [Parse]
+            [Produce]
             B B();
         }
 
@@ -165,16 +165,16 @@ namespace IronText.Tests.Framework
         [ParserGraph("RecursiveTree.gv")]
         public interface RecursiveTree
         {
-            [Parse]
+            [Produce]
             void Start(S s);
 
-            [Parse]
+            [Produce]
             S Sdouble(S s1, S s2);
 
-            [Parse("a")]
+            [Produce("a")]
             S Sa();
 
-            [Parse]
+            [Produce]
             S Sempty();
         }
 
@@ -183,19 +183,19 @@ namespace IronText.Tests.Framework
         [DescribeParserStateMachine("ShareBranchNodesWithTree.info")]
         public interface ShareBranchNodesWithTree
         {
-            [Parse]
+            [Produce]
             void Start(S s);
 
-            [Parse("b")]
+            [Produce("b")]
             S Sdouble(B b, S s1, S s2);
 
-            [Parse("a")]
+            [Produce("a")]
             S Sa();
 
-            [Parse]
+            [Produce]
             S Sempty();
 
-            [Parse]
+            [Produce]
             B Bempty();
         }
 

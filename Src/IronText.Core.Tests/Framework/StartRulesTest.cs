@@ -37,47 +37,47 @@ namespace IronText.Tests.Framework
             public int StartChoice;
 
             // Property setter
-            [ParseResult]
+            [Outcome]
             public Choice0 Start0 
             { 
                 set { StartChoice = (int)value; } 
             }
 
             // Regular method
-            [Parse]
+            [Produce]
             public void Start1(Choice1 choice) { StartChoice = (int)choice; }
 
             // With keyword mask
-            [Parse(Prefix, null, Suffix)]
+            [Produce(Prefix, null, Suffix)]
             public void Start2(Choice2 choice) { StartChoice = (int)choice; }
 
             // Property setter
             public Choice3 Start3 
             { 
-                [Parse] 
+                [Produce] 
                 set { StartChoice = (int)value; } 
             }
 
             // Property setter with keyword mask
             public Choice4 Start4
             { 
-                [Parse(Prefix, null, Suffix)]
+                [Produce(Prefix, null, Suffix)]
                 set { StartChoice = (int)value; } 
             }
 
-            [Scan("'0'")]
+            [Match("'0'")]
             public Choice0 Term0() { return Choice0.Value; }
 
-            [Scan("'1'")]
+            [Match("'1'")]
             public Choice1 Term1() { return Choice1.Value; }
 
-            [Scan("'2'")]
+            [Match("'2'")]
             public Choice2 Term2() { return Choice2.Value; }
 
-            [Scan("'3'")]
+            [Match("'3'")]
             public Choice3 Term3() { return Choice3.Value; }
 
-            [Scan("'4'")]
+            [Match("'4'")]
             public Choice4 Term4() { return Choice4.Value; }
         }
 

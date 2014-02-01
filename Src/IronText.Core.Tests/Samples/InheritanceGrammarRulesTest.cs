@@ -89,21 +89,21 @@ namespace IronText.Tests.Samples
                 this.Scanner = new CtemScanner();
             }
 
-            public StxNode Result { get; [Parse] set; }
+            public StxNode Result { get; [Produce] set; }
 
             [SubContext]
             public CtemScanner Scanner { get; private set; }
 
-            [Parse("(", null, ")")]
+            [Produce("(", null, ")")]
             public StxNode Branch(StxNode[] children) { return new StxComposite(children); }
 
-            [Parse("(", ")")]
+            [Produce("(", ")")]
             public StxNode EmptyBranch() { return new StxComposite(new StxNode[0]); }
 
-            [Parse]
+            [Produce]
             public StxNode Leaf(QStr str) { return new StxLeaf<QStr>(str); }
 
-            [Parse]
+            [Produce]
             public StxNode Leaf(string idn) { return new StxLeaf<string>(idn); }
         }
     }

@@ -34,47 +34,47 @@ namespace IronText.Tests.Bootstrap
                     qStr
                 },
 
-                ScanConditions =
+                Conditions =
                 {
-                    new ScanCondition("main")
+                    new Condition("main")
                     {
-                        ScanProductions = 
+                        Matchers = 
                         {
-                            new ScanProduction(
+                            new Matcher(
                                     ScanPattern.CreateRegular(
                                         null,
                                         @"[ \t]+"))
                             {
-                                Joint = { new CilScanProduction(typeof(void)) }
+                                Joint = { new CilMatcher(typeof(void)) }
                             },
-                            new ScanProduction(
+                            new Matcher(
                                     ScanPattern.CreateRegular(
                                         null,
                                         @"[0-9]+(?:[.][0-9]+)? | [.][0-9]+"), 
                                     num)
                             {
-                                Joint = {  new CilScanProduction(typeof(Num)) }
+                                Joint = {  new CilMatcher(typeof(Num)) }
                             },
-                            new ScanProduction(
+                            new Matcher(
                                     ScanPattern.CreateRegular(
                                         null,
                                         @"[a-zA-Z:.!@#$%^&|?*/+*=\\_-][a-zA-Z:\d.!@#$%^&|?*/+*=\\_-]*"),
                                     ident)
                             {
-                                Joint = { new CilScanProduction(typeof(string)) }
+                                Joint = { new CilMatcher(typeof(string)) }
                             },
-                            new ScanProduction(
+                            new Matcher(
                                     ScanPattern.CreateRegular(
                                         null,
                                         @"[""](?: \\[""] | [^""])* [""]"),
                                     qStr)
                             {
-                                Joint = { new CilScanProduction(typeof(QStr)) }
+                                Joint = { new CilMatcher(typeof(QStr)) }
                             },
-                            new ScanProduction(
+                            new Matcher(
                                     ScanPattern.CreateLiteral("("),
                                     lParen),
-                            new ScanProduction(
+                            new Matcher(
                                     ScanPattern.CreateLiteral(")"),
                                     rParen),
                         }
@@ -86,7 +86,7 @@ namespace IronText.Tests.Bootstrap
                 " (1 (\"bar\" +))",
                 ScannerDescriptor.FromScanRules(
                     GetType().Name + "_Lexer",
-                    grammar.ScanConditions[0].ScanProductions,
+                    grammar.Conditions[0].Matchers,
                     ExceptionLogging.Instance),
                 null,
                 ExceptionLogging.Instance);

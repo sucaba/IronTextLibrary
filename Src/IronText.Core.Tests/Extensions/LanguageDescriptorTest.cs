@@ -56,9 +56,9 @@ namespace IronText.Tests.Extensibility
                 }
             }
 
-            public IEnumerable<CilScanProduction> GetScanProductions()
+            public IEnumerable<CilMatcher> GetScanProductions()
             {
-                return Enumerable.Empty<CilScanProduction>();
+                return Enumerable.Empty<CilMatcher>();
             }
 
             public IEnumerable<CilSymbolRef> GetSymbolsInCategory(SymbolCategory category)

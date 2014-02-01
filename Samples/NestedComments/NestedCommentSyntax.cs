@@ -7,7 +7,7 @@ namespace Samples
     [Language]
     public class NestedCommentSyntax
     {
-        [ParseResult] 
+        [Outcome] 
         public string Result { get; set; }
 
         [LanguageService]
@@ -45,7 +45,7 @@ namespace Samples
             comment.Append("/*");
         }
 
-        [Scan("(~[*/] | '*' ~'/' | '/' ~'*') +")]
+        [Match("(~[*/] | '*' ~'/' | '/' ~'*') +")]
         public void Text(string text)
         {
             comment.Append(text);
