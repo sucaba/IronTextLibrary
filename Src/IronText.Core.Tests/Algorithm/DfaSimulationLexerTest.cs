@@ -40,23 +40,14 @@ namespace IronText.Tests.Algorithm
                     {
                         Matchers = 
                         {
-                            new Matcher(
-                                    @"blank+"),
-                            new Matcher(
-                                    @"digit+ ('.' digit+)?  | '.' digit+", 
-                                    num),
+                            new Matcher(@"blank+"),
+                            new Matcher(@"digit+ ('.' digit+)?  | '.' digit+", num),
                             new Matcher(
                                     @"(alpha | [:.!@#$%^&|?*/+*=\\_-]) (alnum | [:.!@#$%^&|?*/+*=\\_-])*",
                                     ident),
-                            new Matcher(
-                                    "'\"' ('\\\\\"' | ~'\"')* '\"'",
-                                    qStr),
-                            new Matcher(
-                                    ScanPattern.CreateLiteral("("),
-                                    lParen),
-                            new Matcher(
-                                    ScanPattern.CreateLiteral(")"),
-                                    rParen),
+                            new Matcher("'\"' ('\\\\\"' | ~'\"')* '\"'", qStr),
+                            new Matcher(ScanPattern.CreateLiteral("("), lParen),
+                            new Matcher(ScanPattern.CreateLiteral(")"), rParen),
                         }
                     }
                 }

@@ -7,6 +7,7 @@ using NUnit.Framework;
 using IronText.Framework;
 using System.IO;
 using System.Diagnostics;
+using IronText.Runtime;
 
 namespace IronText.Tests.Performance
 {
@@ -222,19 +223,19 @@ namespace IronText.Tests.Performance
         [Language]
         public class Lalr1PerfLang
         {
-            [Parse]
+            [Produce]
             public void Start(E e) { }
 
-            [Parse(null, "+", null)]
+            [Produce(null, "+", null)]
             public E Sum(E e, F f) { return null; }
 
-            [Parse]
+            [Produce]
             public E F(F f) { return null; }
 
-            [Parse("a")]
+            [Produce("a")]
             public F Fa() { return null; }
 
-            [Parse("(", null, ")")]
+            [Produce("(", null, ")")]
             public F FE(E e) { return null; }
         }
 
@@ -246,13 +247,13 @@ namespace IronText.Tests.Performance
         [Language(LanguageFlags.AllowNonDeterministic)]
         public class GlrPerfLang
         {
-            [Parse]
+            [Produce]
             public void Start(E e) { }
 
-            [Parse(null, "+", null)]
+            [Produce(null, "+", null)]
             public E Sum(E e1, E e2) { return null; }
 
-            [Parse("b")]
+            [Produce("b")]
             public E Eb() { return null; }
         }
 
