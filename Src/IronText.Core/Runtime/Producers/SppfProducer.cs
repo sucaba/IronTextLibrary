@@ -19,21 +19,21 @@ namespace IronText.Runtime
 
         public SppfNode CreateLeaf(Msg envelope, MsgData data)
         { 
-            return new SppfNode(data.TokenId, data.Value, envelope.Location, envelope.HLocation);
+            return new SppfNode(data.Token, data.Value, envelope.Location, envelope.HLocation);
         }
 
         public SppfNode CreateBranch(
-                            Production      rule,
+                            Production           prod,
                             ArraySlice<SppfNode> parts,
                             IStackLookback<SppfNode> stackLookback)
         {
             // Produce more dense tree
             if (parts.Count == 0)
             {
-                return GetDefault(rule.OutcomeToken, stackLookback);
+                return GetDefault(prod.OutcomeToken, stackLookback);
             }
 
-            SppfNode[] children = new SppfNode[rule.PatternTokens.Length];
+            SppfNode[] children = new SppfNode[prod.Pattern.Length];
             parts.CopyTo(children, 0);
 
             Loc location = Loc.Unknown;
@@ -43,12 +43,12 @@ namespace IronText.Runtime
                 location += children[i].Location;
             }
 
-            if (rule.PatternTokens.Length > parts.Count)
+            if (prod.PatternTokens.Length > parts.Count)
             {
-                FillEpsilonSuffix(rule.Index, parts.Count, children, parts.Count, stackLookback);
+                FillEpsilonSuffix(prod.Index, parts.Count, children, parts.Count, stackLookback);
             }
 
-            return new SppfNode(rule.Index, location, children);
+            return new SppfNode(prod.Index, location, children);
         }
 
         public SppfNode Merge(SppfNode alt1, SppfNode alt2, IStackLookback<SppfNode> stackLookback)

@@ -5,7 +5,7 @@ namespace IronText.Runtime
 {
     public class MsgData
     {
-        public readonly int    TokenId;
+        public readonly int    Token;
         public readonly object Value;
 
         /// <summary>
@@ -13,9 +13,9 @@ namespace IronText.Runtime
         /// </summary>
         public MsgData  Next;
 
-        public MsgData(int tokenId, object value)
+        public MsgData(int token, object value)
         {
-            TokenId = tokenId;
+            Token = token;
             Value = value;
         }
     }
@@ -23,7 +23,7 @@ namespace IronText.Runtime
     public sealed class Msg : MsgData, IEquatable<Msg>
     {
         /// <summary>
-        /// Envelope Id
+        /// Envelope Id. It can be either token ID or ambiguous token ID.
         /// </summary>
         public readonly int    Id;
 
@@ -37,13 +37,13 @@ namespace IronText.Runtime
         /// </summary>
         public readonly HLoc   HLocation;
 
-        public Msg(int tokenId, object value, Loc location, HLoc hLocation = default(HLoc))
-            : this(tokenId, tokenId, value, location, hLocation)
+        public Msg(int token, object value, Loc location, HLoc hLocation = default(HLoc))
+            : this(token, token, value, location, hLocation)
         {
         }
 
-        public Msg(int id, int tokenId, object value, Loc location, HLoc hLocation = default(HLoc))
-            : base(tokenId, value)
+        public Msg(int id, int token, object value, Loc location, HLoc hLocation = default(HLoc))
+            : base(token, value)
         {
             this.Id = id;
             this.Location  = location;

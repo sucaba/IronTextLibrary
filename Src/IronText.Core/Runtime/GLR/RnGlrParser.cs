@@ -107,7 +107,7 @@ namespace IronText.Runtime
             MsgData data = envelope.FirstData;
             do
             {
-                int lookahead = data.TokenId;
+                int lookahead = data.Token;
 
                 Actor(lookahead);
                 Reducer(lookahead);

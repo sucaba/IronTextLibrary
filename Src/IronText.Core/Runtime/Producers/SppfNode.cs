@@ -28,7 +28,7 @@ namespace IronText.Runtime
         // Leaf
         public SppfNode(MsgData msg, Loc location, HLoc hLocation)
         {
-            this.Id = msg.TokenId;
+            this.Id = msg.Token;
             this.Value = msg.Value;
             this.Location = location;
 

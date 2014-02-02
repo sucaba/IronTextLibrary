@@ -111,7 +111,7 @@ namespace IronText.Runtime
                     id = action.RolvedToken;
                     while (true)
                     {
-                        if (data.TokenId == id)
+                        if (data.Token == id)
                         {
                             // Successfully resolved to a particular token 
                             goto START;
