@@ -98,14 +98,14 @@ namespace IronText.Tests.Performance
 
         private static void TestGlr(string title, int count, int trialCount, BenchFlags flags = BenchFlags.All)
         {
-            const string path = "EEb.test";
+            const string path = "EEa.test";
             using (var testFile = new StreamWriter(path))
             {
-                testFile.Write("b");
+                testFile.Write("a");
 
                 while (count-- != 0)
                 {
-                    testFile.Write("+b");
+                    testFile.Write("+a");
                 }
             }
 
@@ -137,7 +137,10 @@ namespace IronText.Tests.Performance
 
             timer.Start();
             var lang = Language.Get(langDef);
-            lang.Heatup();
+            using (var interp = new Interpreter(lang))
+            {
+                interp.Parse("a+a");
+            }
             timer.Stop();
 
             Log("--------------- " + title + " ---------------");
@@ -253,8 +256,8 @@ namespace IronText.Tests.Performance
             [Produce(null, "+", null)]
             public E Sum(E e1, E e2) { return null; }
 
-            [Produce("b")]
-            public E Eb() { return null; }
+            [Produce("a")]
+            public E Ea() { return null; }
         }
 
         public interface E {}

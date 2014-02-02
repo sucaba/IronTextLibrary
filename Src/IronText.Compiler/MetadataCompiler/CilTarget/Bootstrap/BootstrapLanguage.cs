@@ -37,8 +37,6 @@ namespace IronText.MetadataCompiler
 
         public Grammar Grammar { get { return data.Grammar; } }
 
-        public void Heatup() { }
-
         public object CreateDefaultContext()
         {
             return Activator.CreateInstance(source.DefinitionType);

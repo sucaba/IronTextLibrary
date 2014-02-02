@@ -76,17 +76,6 @@ namespace IronText.Runtime
 
         public Grammar Grammar { get { return grammar; } }
 
-        public void Heatup()
-        {
-            getParserAction(0, 0);
-            var cursor = new ScanCursor { Buffer = new char[] { '\0' } };
-            scan1(cursor);
-            object ignore;
-            scanAction(cursor, out ignore);
-            grammarAction(grammar.AugmentedProduction.Index, new Msg[0], 0, null, null);
-            merge(PredefinedTokens.AugmentedStart, null, null, null, null);
-        }
-
         public object CreateDefaultContext()
         {
             return createDefaultContext();

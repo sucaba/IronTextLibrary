@@ -28,16 +28,14 @@ namespace IronText.Runtime
 
         int            Identify(string literal);
 
-        int            Identify(Type tokenType);
-
-        void           Heatup();
+        int            Identify(Type symbolType);
     }
 
     public static class LanguageExtensions
     {
-        public static Msg Literal(this ILanguageRuntime @this, string keyword)
+        public static Msg Literal(this ILanguageRuntime @this, string literal)
         {
-            var id = @this.Identify(keyword);
+            var id = @this.Identify(literal);
             return new Msg(id, null, Loc.Unknown);
         }
 
