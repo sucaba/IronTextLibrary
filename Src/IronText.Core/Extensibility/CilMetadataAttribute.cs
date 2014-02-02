@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using IronText.Collections;
-using IronText.Framework;
 using IronText.Logging;
 using IronText.Misc;
 using IronText.Reflection;

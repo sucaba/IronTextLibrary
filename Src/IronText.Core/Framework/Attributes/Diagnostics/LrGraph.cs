@@ -1,9 +1,7 @@
 ﻿using System.Linq;
 using System.Text;
 using System.Web;
-using IronText.Algorithm;
 using IronText.Diagnostics;
-using IronText.Extensibility;
 using IronText.Reflection;
 using IronText.Reporting;
 using IronText.Runtime;

@@ -1,5 +1,4 @@
-﻿using IronText.Reflection;
-
+﻿
 namespace IronText.Runtime
 {
     public delegate int TransitionDelegate(int state, int token);

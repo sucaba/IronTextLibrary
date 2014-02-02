@@ -1,5 +1,4 @@
 ﻿using IronText.Logging;
-using IronText.Reflection;
 
 namespace IronText.Runtime
 {

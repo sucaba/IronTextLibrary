@@ -2,7 +2,6 @@
 using System.IO;
 using IronText.Logging;
 using IronText.Reflection;
-using IronText.Runtime;
 
 namespace IronText.Runtime
 {
@@ -39,25 +38,25 @@ namespace IronText.Runtime
             return new Msg(id, null, Loc.Unknown);
         }
 
-        public static Msg Token<T>(this ILanguageRuntime @this) where T : new()
+        public static Msg Symbol<T>(this ILanguageRuntime @this) where T : new()
         {
-            return @this.Token(new T());
+            return @this.Symbol(new T());
         }
 
-        public static Msg Token<T>(this ILanguageRuntime @this, T value)
+        public static Msg Symbol<T>(this ILanguageRuntime @this, T value)
         {
-            var id = @this.IdentifyTokenValue(value);
+            var id = @this.IdentifySymbolValue(value);
             return new Msg(id, value, Loc.Unknown);
         }
 
-        public static int IdentifyTokenValue(this ILanguageRuntime @this, object token)
+        public static int IdentifySymbolValue(this ILanguageRuntime @this, object value)
         {
-            if (token == null)
+            if (value == null)
             {
                 return PredefinedTokens.Eoi;
             }
 
-            return @this.Identify(token.GetType());
+            return @this.Identify(value.GetType());
         }
     }
 }

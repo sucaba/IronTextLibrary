@@ -1,5 +1,5 @@
-﻿using IronText.Diagnostics;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using IronText.Diagnostics;
 
 namespace IronText.Reporting
 {

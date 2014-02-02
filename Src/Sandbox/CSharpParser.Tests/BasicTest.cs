@@ -45,7 +45,6 @@ namespace CSharpParser.Tests
             //ShowSimilarStates(data);
             //ShowSimilarTokens(data);
 
-
             Console.WriteLine("Build time = {0}sec", timer.Elapsed.TotalSeconds);
         }
 

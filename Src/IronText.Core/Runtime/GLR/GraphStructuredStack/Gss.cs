@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using IronText.Algorithm;
 using IronText.Diagnostics;
 
 namespace IronText.Runtime
 {
-    using IronText.Reflection;
     using State = System.Int32;
 
     sealed class Gss<T>

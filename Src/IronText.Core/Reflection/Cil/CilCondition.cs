@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using IronText.Algorithm;
 using System.Collections.ObjectModel;
-using IronText.Framework;
-using IronText.Reflection;
 
 namespace IronText.Reflection.Managed
 {

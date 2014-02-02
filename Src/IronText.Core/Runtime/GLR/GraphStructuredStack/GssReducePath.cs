@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using IronText.Algorithm;
 using IronText.Reflection;
 
 namespace IronText.Runtime

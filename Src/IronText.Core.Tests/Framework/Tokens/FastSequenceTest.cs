@@ -34,7 +34,7 @@ namespace IronText.Tests.Framework.Tokens
             var context = new FastSeqLang();
             var lang = Language.Get(typeof(FastSeqLang));
 
-            var ITEM = lang.Token<string>("foo");
+            var ITEM = lang.Symbol<string>("foo");
 
             Debug.WriteLine(testInfo.Name + " performance results:");
 

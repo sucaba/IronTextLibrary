@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using IronText.Framework;
-using IronText.Reflection;
 
 namespace IronText.Reflection.Managed
 {

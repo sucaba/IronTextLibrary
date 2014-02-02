@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using IronText.Framework;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
 using IronText.Logging;
 using IronText.Runtime;
 

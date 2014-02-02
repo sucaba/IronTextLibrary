@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using IronText.Algorithm;
+﻿using IronText.Algorithm;
 using IronText.Framework;
 using IronText.Logging;
 using IronText.Reflection;

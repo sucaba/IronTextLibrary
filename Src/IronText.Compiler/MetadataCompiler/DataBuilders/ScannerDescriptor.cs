@@ -17,8 +17,6 @@ namespace IronText.MetadataCompiler
 {
     public class ScannerDescriptor
     {
-        private readonly ILogging logging;
-
         public static ScannerDescriptor FromScanRules(IEnumerable<Matcher> scanProductions, ILogging logging)
         {
             CheckAllRulesHaveIndex(scanProductions);
@@ -32,6 +30,7 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
+        private readonly ILogging logging;
         private readonly List<Matcher> productions = new List<Matcher>();
 
         private ScannerDescriptor(ILogging logging) 
@@ -43,10 +42,7 @@ namespace IronText.MetadataCompiler
 
         public void AddRule(Matcher production) { productions.Add(production); }
 
-        public AstNode MakeAst()
-        {
-            return MakeAst(null);
-        }
+        public AstNode MakeAst() { return MakeAst(null); }
 
         public AstNode MakeAst(Dictionary<string,int> literalToAction)
         {

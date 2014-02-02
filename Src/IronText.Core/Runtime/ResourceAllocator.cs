@@ -1,5 +1,4 @@
-﻿using IronText.Reflection;
-
+﻿
 namespace IronText.Runtime
 {
     sealed class ResourceAllocator : IResourceAllocator

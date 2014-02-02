@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-
+﻿
 namespace IronText.Logging
 {
     public class LogEntry

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using IronText.Extensibility;
-using IronText.Reflection;
 using IronText.Lib.IL;
 using IronText.Lib.Shared;
+using IronText.Reflection;
 using IronText.Reflection.Managed;
 
 namespace IronText.Framework

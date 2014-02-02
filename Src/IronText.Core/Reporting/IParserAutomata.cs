@@ -1,6 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using IronText.Framework;
-using System.Collections.Generic;
 
 namespace IronText.Reporting
 {

@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using IronText.Diagnostics;
 using IronText.Extensibility;
-using IronText.Reflection.Managed;
 using IronText.Reporting;
 
 namespace IronText.Framework

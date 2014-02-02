@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using IronText.Framework;
+﻿using System.Collections.Generic;
 using IronText.Reflection;
 
 namespace IronText.Reporting

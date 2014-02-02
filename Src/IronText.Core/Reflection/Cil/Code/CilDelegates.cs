@@ -1,6 +1,4 @@
-﻿using IronText.Framework;
-using IronText.Lib.IL;
-
+﻿
 namespace IronText.Reflection.Managed
 {
     /// <summary>
