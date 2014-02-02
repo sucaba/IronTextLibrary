@@ -50,8 +50,6 @@ namespace IronText.MetadataCompiler
             _reportBuilders.AddRange(definition.ReportBuilders);
 
             var grammar = BuildGrammar(definition);
-//            var inliner = new ProductionInliner(grammar);
-//            grammar = inliner.Inline();
             return grammar;
         }
 

@@ -24,18 +24,14 @@ namespace IronText.Framework
 
         private void WriteGvGraph(IReportData data)
         {
-            int conditionCount = data.Grammar.Conditions.Count;
-            for (int i = 0; i != conditionCount; ++i)
+            foreach (var condition in data.Grammar.Conditions)
             {
+                int i = condition.Index;
                 string scanModeFileName = Path.GetFileName(fileName) + "_" + i + Path.GetExtension(fileName);
                 string path = Path.Combine(data.DestinationDirectory, scanModeFileName);
-
-                var condition = data.Grammar.Conditions[i];
-                var binding = condition.Joint.The<CilCondition>();
-
-                var dfa = data.GetScanModeDfa(binding.ConditionType);
                 using (var graph = new GvGraphView(path))
                 {
+                    var dfa = condition.Joint.The<IScannerAutomata>();
                     dfa.DescribeGraph(graph);
                 }
             }

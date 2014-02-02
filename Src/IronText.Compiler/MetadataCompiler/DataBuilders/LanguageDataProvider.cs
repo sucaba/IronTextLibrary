@@ -43,18 +43,18 @@ namespace IronText.MetadataCompiler
             ICilGrammarBuilder grammarBuilder = new CilGrammarBuilder();
             Grammar grammar = grammarBuilder.Build(languageName, logging);
 
+//            var inliner = new ProductionInliner(grammar);
+//            grammar = inliner.Inline();
+
             var reportBuilders = new List<ReportBuilder>(grammarBuilder.ReportBuilders);
 
             if (!bootstrap)
             {
-                var conditionTypeToDfa = CompileScannerTdfas(grammar);
-                if (conditionTypeToDfa == null)
+                if (!CompileScannerTdfas(grammar))
                 {
                     result = null;
                     return false;
                 }
-                
-                result.ScanModeTypeToDfa = conditionTypeToDfa;
             }
 
             // Build parsing tables
@@ -93,7 +93,7 @@ namespace IronText.MetadataCompiler
             // Prepare language data for the language assembly generation
             result.Name                = languageName;
             result.IsDeterministic     = !lrTable.RequiresGlr;
-            result.DefinitionType     = languageName.DefinitionType;
+            result.DefinitionType      = languageName.DefinitionType;
             result.Grammar             = grammar;
             result.GrammarAnalysis     = grammarAnalysis;
             result.ParserStates        = parserDfa.States;
@@ -115,10 +115,8 @@ namespace IronText.MetadataCompiler
             return true;
         }
 
-        private Dictionary<Type, ITdfaData> CompileScannerTdfas(Grammar grammar)
+        private bool CompileScannerTdfas(Grammar grammar)
         {
-            var result = new Dictionary<Type,ITdfaData>();
-
             var tokenSet = new BitSetType(grammar.Symbols.Count);
 
             IScanAmbiguityResolver scanAmbiguityResolver
@@ -143,10 +141,10 @@ namespace IronText.MetadataCompiler
                                         languageName.DefinitionType)
                         });
 
-                    return null;
+                    return false;
                 }
 
-                result[conditionBinding.ConditionType] = tdfaData;
+                condition.Joint.Add(tdfaData);
 
                 // For each action store information about produced tokens
                 foreach (var scanProduction in condition.Matchers)
@@ -164,7 +162,7 @@ namespace IronText.MetadataCompiler
 
             scanAmbiguityResolver.DefineAmbiguities(grammar);
 
-            return result;
+            return true;
         }
 
         private static bool CompileTdfa(ILogging logging, Condition condition, out ITdfaData tdfaData)

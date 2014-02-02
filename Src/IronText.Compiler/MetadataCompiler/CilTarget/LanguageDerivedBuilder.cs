@@ -130,16 +130,13 @@ namespace IronText.MetadataCompiler
                     Message = string.Format("Started compiling Scan1 modes for {0} language", languageName.Name)
                 });
 
-            int modeIndex = 0;
             foreach (var condition in data.Grammar.Conditions)
             {
-                var methodName = ScanModeMethods.GetMethodName(modeIndex++);
-                var conditionBinding = condition.Joint.The<CilCondition>();
-
-                var dfa = data.ScanModeTypeToDfa[conditionBinding.ConditionType];
+                ITdfaData dfa = condition.Joint.The<ITdfaData>();
                 var dfaSerialization = new DfaSerialization(dfa);
                 var generator = new ScannerGenerator(dfaSerialization);
 
+                var methodName = ScanModeMethods.GetMethodName(condition.Index);
                 var args = context
                             .Method()
                                 .Static

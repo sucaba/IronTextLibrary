@@ -31,7 +31,6 @@ namespace IronText.MetadataCompiler
         public DotState[]                   ParserStates;
 
         public ProductionContextLink[]      LocalParseContexts;
-        public Dictionary<Type,ITdfaData>   ScanModeTypeToDfa;
         public IIntMap<int>                 AmbTokenToMainToken;
         public ITable<int>                  ParserActionTable;
         public int[]                        ParserConflictActionTable;
@@ -41,11 +40,6 @@ namespace IronText.MetadataCompiler
         string IReportData.DestinationDirectory 
         { 
             get { return Name.SourceAssemblyDirectory; } 
-        }
-
-        IScannerAutomata IReportData.GetScanModeDfa(Type scanModeType)
-        {
-            return ScanModeTypeToDfa[scanModeType];
         }
 
         IParserAutomata IReportData.ParserAutomata

@@ -12,13 +12,11 @@ namespace IronText.Reporting
     /// </summary>
     public interface IReportData
     {
-        string DestinationDirectory { get; }
+        string          DestinationDirectory { get; }
 
-        LanguageName Name { get; }
+        LanguageName    Name { get; }
 
-        Grammar Grammar { get; }
-
-        IScannerAutomata GetScanModeDfa(Type scanModeType);
+        Grammar         Grammar { get; }
 
         IParserAutomata ParserAutomata { get; }
     }
