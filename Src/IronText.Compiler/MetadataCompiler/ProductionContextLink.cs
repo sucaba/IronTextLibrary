@@ -1,25 +1,22 @@
 ﻿using System;
-using IronText.Collections;
+using IronText.Reflection;
 
 namespace IronText.Extensibility
 {
     internal class ProductionContextLink
     {
-        public ProductionContextLink()
-        {
-            this.Joint = new Joint();
-        }
-
         /// <summary>
         /// ID of the parent state
         /// </summary>
-        public int  ParentState;
+        public int               ParentState { get; set; }
 
         /// <summary>
         /// Tail relative position of the context token in stack
         /// </summary>
-        public int  ContextTokenLookback;
+        public int               ContextTokenLookback { get; set; }
 
-        public Joint Joint { get; private set; }
+        public Symbol            Provider { get; set; }
+
+        public ProductionContext Consumer { get; set; }
     }
 }

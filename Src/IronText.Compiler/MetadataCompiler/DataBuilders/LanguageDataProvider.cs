@@ -17,7 +17,6 @@ using IronText.Analysis;
 using IronText.Logging;
 using IronText.Reporting;
 using IronText.Runtime;
-using IronText.Reflection.Managed;
 
 namespace IronText.MetadataCompiler
 {
@@ -212,13 +211,10 @@ namespace IronText.MetadataCompiler
                             result.Add(
                                 new ProductionContextLink
                                 {
-                                    ParentState = parentState,
+                                    ParentState          = parentState,
                                     ContextTokenLookback = item.Position,
-                                    Joint = 
-                                    {
-                                        provider.Joint.The<CilContextProvider>(),
-                                        action.Context.Joint.Get<CilContextConsumer>(),
-                                    }
+                                    Provider             = provider,
+                                    Consumer             = action.Context
                                 });
                         }
                     }
