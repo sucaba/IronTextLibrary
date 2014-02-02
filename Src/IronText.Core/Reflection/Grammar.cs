@@ -28,6 +28,7 @@ namespace IronText.Reflection
             Matchers           = new MatcherCollection(this);
             Mergers            = new MergerCollection(this);
             ProductionContexts = new ProductionContextCollection(this);
+            Joint              = new Joint();
 
             for (int i = PredefinedTokens.Count; i != 0; --i)
             {
@@ -47,6 +48,14 @@ namespace IronText.Reflection
             AugmentedProduction = Productions.Define((Symbol)Symbols[PredefinedTokens.AugmentedStart], new Symbol[] { null });
         }
 
+        public Joint Joint { get; private set; }
+
+        public Symbol Start
+        {
+            get { return AugmentedProduction.Pattern[0]; }
+            set { AugmentedProduction.SetAt(0, value); }
+        }
+
         public Production           AugmentedProduction { get; private set; }
 
         public SymbolCollection     Symbols             { get; private set; }
@@ -60,12 +69,6 @@ namespace IronText.Reflection
         public MergerCollection     Mergers             { get; private set; }
 
         public ProductionContextCollection ProductionContexts  { get; private set; }
-
-        public Symbol Start
-        {
-            get { return AugmentedProduction.Pattern[0]; }
-            set { AugmentedProduction.SetAt(0, value); }
-        }
 
         public override string ToString()
         {

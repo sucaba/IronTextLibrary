@@ -91,7 +91,6 @@ namespace IronText.MetadataCompiler
             var localParseContexts = CollectLocalContexts(grammar, parserDfa);
 
             // Prepare language data for the language assembly generation
-            result.Name                = languageName;
             result.IsDeterministic     = !lrTable.RequiresGlr;
             result.DefinitionType      = languageName.DefinitionType;
             result.Grammar             = grammar;
@@ -100,15 +99,15 @@ namespace IronText.MetadataCompiler
             result.StateToSymbolTable  = parserDfa.GetStateToSymbolTable();
             result.ParserActionTable   = lrTable.GetParserActionTable();
             result.ParserConflictActionTable = lrTable.GetConflictActionTable();
-            result.ParserConflicts     = lrTable.Conflicts;
 
             result.LocalParseContexts  = localParseContexts.ToArray();
 
             if (!bootstrap)
             {
+                IReportData reportData = new ReportData(languageName, result, lrTable.Conflicts);
                 foreach (var reportBuilder in reportBuilders)
                 {
-                    reportBuilder(result);
+                    reportBuilder(reportData);
                 }
             }
 
@@ -126,10 +125,8 @@ namespace IronText.MetadataCompiler
 
             foreach (var condition in grammar.Conditions)
             {
-                var conditionBinding = condition.Joint.The<CilCondition>();
-
-                ITdfaData tdfaData;
-                if (!CompileTdfa(logging, condition, out tdfaData))
+                ITdfaData tdfa;
+                if (!CompileTdfa(logging, condition, out tdfa))
                 {
                     logging.Write(
                         new LogEntry
@@ -144,8 +141,6 @@ namespace IronText.MetadataCompiler
                     return false;
                 }
 
-                condition.Joint.Add(tdfaData);
-
                 // For each action store information about produced tokens
                 foreach (var scanProduction in condition.Matchers)
                 {
@@ -154,7 +149,7 @@ namespace IronText.MetadataCompiler
 
                 // For each 'ambiguous scanner state' deduce all tokens
                 // which can be produced in this state.
-                foreach (var state in tdfaData.EnumerateStates())
+                foreach (var state in tdfa.EnumerateStates())
                 {
                     scanAmbiguityResolver.RegisterState(state);
                 }
@@ -165,7 +160,7 @@ namespace IronText.MetadataCompiler
             return true;
         }
 
-        private static bool CompileTdfa(ILogging logging, Condition condition, out ITdfaData tdfaData)
+        private static bool CompileTdfa(ILogging logging, Condition condition, out ITdfaData outcome)
         {
             var descr = ScannerDescriptor.FromScanRules(
                                         condition.Name,
@@ -176,12 +171,13 @@ namespace IronText.MetadataCompiler
             var ast = descr.MakeAst(literalToAction);
             if (ast == null)
             {
-                tdfaData = null;
+                outcome = null;
                 return false;
             }
 
             var regTree = new RegularTree(ast);
-            tdfaData = new RegularToTdfaAlgorithm(regTree, literalToAction).Data;
+            outcome = new RegularToTdfaAlgorithm(regTree, literalToAction).Data;
+            condition.Joint.Add(outcome);
 
             return true;
         }

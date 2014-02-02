@@ -18,33 +18,19 @@ namespace IronText.MetadataCompiler
     /// <summary>
     /// Precompiled language data
     /// </summary>
-    internal class LanguageData : IReportData
+    internal class LanguageData
     {
-        public LanguageName           Name { get; set; }
+        public Grammar                  Grammar { get; set; }
 
-        public Grammar            Grammar { get; set; }
+        public GrammarAnalysis          GrammarAnalysis { get; set; }
 
-        public GrammarAnalysis    GrammarAnalysis { get; set; }
+        public bool                     IsDeterministic;
+        public Type                     DefinitionType;
+        public DotState[]               ParserStates;
 
-        public bool                         IsDeterministic;
-        public Type                         DefinitionType;
-        public DotState[]                   ParserStates;
-
-        public ProductionContextLink[]      LocalParseContexts;
-        public IIntMap<int>                 AmbTokenToMainToken;
-        public ITable<int>                  ParserActionTable;
-        public int[]                        ParserConflictActionTable;
-        public int[]                        StateToSymbolTable;
-        public ParserConflictInfo[]         ParserConflicts;
-
-        string IReportData.DestinationDirectory 
-        { 
-            get { return Name.SourceAssemblyDirectory; } 
-        }
-
-        IParserAutomata IReportData.ParserAutomata
-        {
-            get { return new ParserAutomata(this); }
-        }
+        public ProductionContextLink[]  LocalParseContexts;
+        public ITable<int>              ParserActionTable;
+        public int[]                    ParserConflictActionTable;
+        public int[]                    StateToSymbolTable;
     }
 }

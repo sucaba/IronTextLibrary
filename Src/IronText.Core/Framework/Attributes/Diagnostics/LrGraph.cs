@@ -13,12 +13,12 @@ namespace IronText.Framework
     sealed class LrGraph
     {
         private readonly Grammar grammar;
-        private readonly IReportData data;
+        private IParserAutomata automata;
 
         public LrGraph(IReportData data)
         {
-            this.data       = data;
-            this.grammar    = data.Grammar;
+            this.grammar  = data.Grammar;
+            this.automata = data.ParserAutomata;
         }
 
         public void WriteGv(string path)
@@ -34,15 +34,14 @@ namespace IronText.Framework
             graph.BeginDigraph("LRFSM");
             //graph.SetGraphProperties(RankDir.LeftToRight);
 
-            int stateCount = data.ParserAutomata.States.Count;
-            int tokenCount = data.Grammar.Symbols.Count;
+            int stateCount = automata.States.Count;
 
-            foreach (var state in data.ParserAutomata.States)
+            foreach (var state in automata.States)
             {
                 graph.AddNode(state.Index, shape: Shape.Mrecord, label: StateToHtml(state.Index));
             }
 
-            foreach (var state in data.ParserAutomata.States)
+            foreach (var state in automata.States)
             {
                 foreach (var transition in state.Transitions)
                 {
@@ -62,7 +61,7 @@ namespace IronText.Framework
         private string StateToHtml(int i)
         {
             var output = new StringBuilder();
-            var state = data.ParserAutomata.States[i];
+            var state = automata.States[i];
             output.AppendFormat(
                 @"
 <table border=""0"" cellborder=""0"" cellpadding=""3"" bgcolor=""white"">

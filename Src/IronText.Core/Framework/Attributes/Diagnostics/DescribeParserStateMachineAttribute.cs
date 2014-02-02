@@ -26,11 +26,9 @@ namespace IronText.Framework
 
         private void WriteDocFiles(IReportData data)
         {
-            var automata = data.ParserAutomata;
-
             string path = Path.Combine(data.DestinationDirectory, fileName);
 
-            var conflicts = automata.Conflicts;
+            var conflicts = data.ParserAutomata.Conflicts;
 
             using (var writer = new StreamWriter(path, false, Encoding.UTF8))
             {
@@ -57,8 +55,6 @@ namespace IronText.Framework
             output.WriteLine("Grammar:");
             output.Write(data.Grammar);
             output.WriteLine();
-
-            int stateCount = data.ParserAutomata.States.Count;
 
             foreach (var state in data.ParserAutomata.States)
             {
@@ -200,7 +196,8 @@ namespace IronText.Framework
             StreamWriter output,
             string indent)
         {
-            return DescribeState(data, data.ParserAutomata.States[state], output, indent);
+            var automata = data.ParserAutomata;
+            return DescribeState(data, automata.States[state], output, indent);
         }
 
         private static StreamWriter DescribeState(

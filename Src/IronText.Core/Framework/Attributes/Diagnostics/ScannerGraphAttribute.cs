@@ -31,7 +31,7 @@ namespace IronText.Framework
                 string path = Path.Combine(data.DestinationDirectory, scanModeFileName);
                 using (var graph = new GvGraphView(path))
                 {
-                    var dfa = condition.Joint.The<IScannerAutomata>();
+                    var dfa = data.GetScannerAutomata(condition);
                     dfa.DescribeGraph(graph);
                 }
             }

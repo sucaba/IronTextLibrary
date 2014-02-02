@@ -12,10 +12,12 @@ namespace IronText.Reporting
     {
         private readonly LanguageData data;
         private ReadOnlyCollection<IParserState> states;
+        private readonly ParserConflictInfo[] parserConflicts;
 
-        public ParserAutomata(LanguageData data)
+        public ParserAutomata(ReportData reportData)
         {
-            this.data = data;
+            this.data = reportData.data;
+            this.parserConflicts = reportData.parserConflicts;
         }
 
         public ReadOnlyCollection<IParserState> States
@@ -40,7 +42,7 @@ namespace IronText.Reporting
 
         public ReadOnlyCollection<ParserConflictInfo> Conflicts
         {
-            get { return new ReadOnlyCollection<ParserConflictInfo>(data.ParserConflicts); }
+            get { return new ReadOnlyCollection<ParserConflictInfo>(parserConflicts); }
         }
     }
 }
