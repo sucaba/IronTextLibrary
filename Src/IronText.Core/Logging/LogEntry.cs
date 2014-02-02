@@ -9,6 +9,6 @@ namespace IronText.Logging
         public HLoc     HLocation;
         public string   Code;
         public string   Message;
-        public MemberInfo Member;
+        public string   Origin;
     }
 }

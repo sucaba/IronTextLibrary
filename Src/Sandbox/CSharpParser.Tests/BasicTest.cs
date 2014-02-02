@@ -15,6 +15,7 @@ using IronText.MetadataCompiler;
 using NUnit.Framework;
 using IronText.Logging;
 using IronText.Runtime;
+using IronText.Reflection.Managed;
 
 namespace CSharpParser.Tests
 {
@@ -34,7 +35,7 @@ namespace CSharpParser.Tests
             var timer = new Stopwatch();
             timer.Start();
 
-            var name = new LanguageName(typeof(ICsGrammar));
+            var name = new CilGrammarSource(typeof(ICsGrammar));
             var provider = new IronText.MetadataCompiler.LanguageDataProvider(name, false);
             IronText.Build.ResourceContext.Instance.LoadOrBuild(provider);
             var data = provider.Resource;

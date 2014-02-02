@@ -9,17 +9,17 @@ namespace IronText.Runtime
 {
     public class Interpreter : IDisposable
     {
-        private ILanguage   language;
+        private ILanguageRuntime   language;
         private object      context;
         private ILogging    logging;
         private LoggingKind logKind;
 
-        public Interpreter(ILanguage language)
+        public Interpreter(ILanguageRuntime language)
             : this(language.CreateDefaultContext(), language)
         {
         }
 
-        public Interpreter(object context, ILanguage language)
+        public Interpreter(object context, ILanguageRuntime language)
         {
             this.language = language;
             this.context = context;
@@ -201,7 +201,7 @@ namespace IronText.Runtime
             Clear();
 
             var scanner    = language.CreateScanner(context, input, document, GetCurrentLogging());
-            var producer = new SppfProducer(((ILanguageRuntime)language).RuntimeGrammar);
+            var producer = new SppfProducer(((ILanguageInternalRuntime)language).RuntimeGrammar);
             var parser   = language.CreateParser(producer, logging);
             scanner.Accept(parser);
 

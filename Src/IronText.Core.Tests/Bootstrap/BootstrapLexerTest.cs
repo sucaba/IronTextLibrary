@@ -84,10 +84,7 @@ namespace IronText.Tests.Bootstrap
 
             var target = new BootstrapScanner(
                 " (1 (\"bar\" +))",
-                ScannerDescriptor.FromScanRules(
-                    GetType().Name + "_Lexer",
-                    grammar.Conditions[0].Matchers,
-                    ExceptionLogging.Instance),
+                ScannerDescriptor.FromScanRules(grammar.Conditions[0].Matchers, ExceptionLogging.Instance),
                 null,
                 ExceptionLogging.Instance);
 

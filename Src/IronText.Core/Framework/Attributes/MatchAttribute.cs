@@ -1,4 +1,5 @@
 ﻿using IronText.Logging;
+using IronText.Misc;
 using IronText.Reflection;
 
 namespace IronText.Framework
@@ -30,7 +31,7 @@ namespace IronText.Framework
                     {
                         Severity = Severity.Error,
                         Message = "Scan pattern cannot be null or empty string.",
-                        Member = this.Member
+                        Origin = ReflectionUtils.ToString(this.Member)
                     });
 
                 return false;

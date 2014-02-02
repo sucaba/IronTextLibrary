@@ -18,8 +18,10 @@ namespace IronText.Reflection.Managed
         private readonly CilMerger[]                        mergers;
         private readonly List<CilSymbolFeature<Precedence>> precedence;
 
-        public CilGrammar(Type definitionType, ILogging logging)
+        public CilGrammar(CilGrammarSource languageName, ILogging logging)
         {
+            Type definitionType = languageName.DefinitionType;
+
             this.IsValid = true;
 
             var startMeta = MetadataParser.EnumerateAndBind(definitionType);
@@ -108,7 +110,7 @@ namespace IronText.Reflection.Managed
                 .Where(symbol => !IsSpecialSymbol(symbol))
                 .Except(termsProducedByScanner);
 
-            CheckAllScanRulesDefined(undefinedTerminals, definitionType, logging);
+            CheckAllScanRulesDefined(undefinedTerminals, languageName.Origin, logging);
 
             precedence = metadata.SelectMany(m => m.GetSymbolPrecedence()).ToList();
 
@@ -119,7 +121,7 @@ namespace IronText.Reflection.Managed
 
         private void CheckAllScanRulesDefined(
             IEnumerable<CilSymbol> undefinedTerminals,
-            Type                   member,
+            string                 origin,
             ILogging               logging)
         {
             if (undefinedTerminals.Count() == 0)
@@ -148,7 +150,7 @@ namespace IronText.Reflection.Managed
                 {
                     Severity = Severity.Warning,
                     Message  = message.ToString(),
-                    Member   = member,
+                    Origin   = origin,
                 });
         }
 

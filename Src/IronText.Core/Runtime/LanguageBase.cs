@@ -8,10 +8,11 @@ using IronText.Misc;
 using IronText.Runtime;
 using IronText.Logging;
 using IronText.Framework;
+using IronText.Reflection.Managed;
 
 namespace IronText.Runtime
 {
-    public abstract class LanguageBase : ILanguage, IInternalInitializable, ILanguageRuntime
+    public abstract class LanguageBase : ILanguageRuntime, IInternalInitializable, ILanguageInternalRuntime
     {
         public static class Fields
         {
@@ -43,14 +44,14 @@ namespace IronText.Runtime
         }
 
         protected internal bool          isDeterministic;
-        protected Grammar            grammar;
+        protected Grammar                grammar;
         protected TransitionDelegate     getParserAction;
         protected Dictionary<object,int> tokenKeyToId;
         protected Scan1Delegate          scan1;
         protected ScanActionDelegate     scanAction;
         protected ProductionActionDelegate  grammarAction;
         protected MergeDelegate          merge;
-        protected LanguageName           name;
+        protected CilGrammarSource           name;
         protected int[]                  stateToSymbol;
         protected int[]                  parserConflictActions;
         protected int[]                  tokenComplexity;
@@ -59,7 +60,7 @@ namespace IronText.Runtime
         private const int maxActionCount = 16;
         private RuntimeGrammar runtimeGrammar;
 
-        public LanguageBase(LanguageName name) 
+        public LanguageBase(CilGrammarSource name) 
         { 
             this.name = name;
             this.merge = DefaultMerge;
@@ -72,8 +73,6 @@ namespace IronText.Runtime
             this.runtimeGrammar = new RuntimeGrammar(grammar);
             this.allocator = new ResourceAllocator(runtimeGrammar);
         }
-
-        public LanguageName Name { get { return name; } }
 
         public Grammar Grammar { get { return grammar; } }
 
@@ -105,7 +104,7 @@ namespace IronText.Runtime
                 ServicesInitializer.SetServiceProperties(
                     context.GetType(),
                     context,
-                    typeof(ILanguage),
+                    typeof(ILanguageRuntime),
                     this);
 
                 ServicesInitializer.SetServiceProperties(
@@ -204,7 +203,7 @@ namespace IronText.Runtime
             return result;
         }
 
-        RuntimeGrammar ILanguageRuntime.RuntimeGrammar
+        RuntimeGrammar ILanguageInternalRuntime.RuntimeGrammar
         {
             get { return runtimeGrammar; }
         }

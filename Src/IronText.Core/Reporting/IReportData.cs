@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using IronText.Reflection;
 using IronText.Runtime;
+using IronText.Reflection.Managed;
 
 namespace IronText.Reporting
 {
@@ -14,7 +15,7 @@ namespace IronText.Reporting
     {
         string          DestinationDirectory { get; }
 
-        LanguageName    Name           { get; }
+        CilGrammarSource    Name           { get; }
 
         Grammar         Grammar        { get; }
 

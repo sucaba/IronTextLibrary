@@ -19,7 +19,7 @@ namespace IronText.Stem.Tests.Lib.IL
         {
             var filePath = DataSamples.CompileSample1FilePath;
             var source = new StreamReader(filePath);
-            ILanguage lang;
+            ILanguageRuntime lang;
             
             // Get language
             {

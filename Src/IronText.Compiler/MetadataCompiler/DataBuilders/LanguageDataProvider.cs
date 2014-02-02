@@ -17,16 +17,18 @@ using IronText.Analysis;
 using IronText.Logging;
 using IronText.Reporting;
 using IronText.Runtime;
+using IronText.Reflection.Managed;
+using IronText.MetadataCompiler.CilSyntax;
 
 namespace IronText.MetadataCompiler
 {
     internal class LanguageDataProvider : ResourceGetter<LanguageData>
     {
-        private readonly LanguageName languageName;
+        private readonly CilGrammarSource languageName;
         private readonly bool         bootstrap;
         private ILogging              logging;
 
-        public LanguageDataProvider(LanguageName name, bool bootstrap)
+        public LanguageDataProvider(CilGrammarSource name, bool bootstrap)
         {
             this.languageName = name;
             this.bootstrap = bootstrap;
@@ -39,8 +41,12 @@ namespace IronText.MetadataCompiler
 
             result = new LanguageData();
 
-            ICilGrammarBuilder grammarBuilder = new CilGrammarBuilder();
+            IGrammarBuilder grammarBuilder = new CilGrammarBuilder();
             Grammar grammar = grammarBuilder.Build(languageName, logging);
+            if (grammar == null)
+            {
+                return false;
+            }
 
 //            var inliner = new ProductionInliner(grammar);
 //            grammar = inliner.Inline();
@@ -61,8 +67,8 @@ namespace IronText.MetadataCompiler
 
             var grammarAnalysis = new GrammarAnalysis(grammar);
             logging.WithTimeLogging(
-                languageName.Name,
-                languageName.DefinitionType,
+                languageName.LanguageName,
+                languageName.Origin,
                 () =>
                 {
                     parserDfa = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.Default);
@@ -131,8 +137,8 @@ namespace IronText.MetadataCompiler
                         new LogEntry
                         {
                             Severity = Severity.Error,
-                            Member = languageName.DefinitionType,
-                            Message = string.Format(
+                            Origin   = languageName.Origin,
+                            Message  = string.Format(
                                         "Unable to create scanner for '{0}' language.",
                                         languageName.DefinitionType)
                         });
@@ -161,10 +167,7 @@ namespace IronText.MetadataCompiler
 
         private static bool CompileTdfa(ILogging logging, Condition condition, out ITdfaData outcome)
         {
-            var descr = ScannerDescriptor.FromScanRules(
-                                        condition.Name,
-                                        condition.Matchers,
-                                        logging);
+            var descr = ScannerDescriptor.FromScanRules(condition.Matchers, logging);
 
             var literalToAction = new Dictionary<string, int>();
             var ast = descr.MakeAst(literalToAction);

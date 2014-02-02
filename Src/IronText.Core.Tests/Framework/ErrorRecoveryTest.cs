@@ -150,7 +150,7 @@ namespace IronText.Tests.Framework
             AssertErrors(1, 2);
         }
 
-        private void Parse(ILanguage lang, string input)
+        private void Parse(ILanguageRuntime lang, string input)
         {
             using (var interp = new Interpreter(context, lang))
             {

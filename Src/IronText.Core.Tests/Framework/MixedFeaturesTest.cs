@@ -82,7 +82,7 @@ namespace IronText.Tests.Framework
             return result;
         }
 
-        private static readonly ILanguage lang = Language.Get(typeof(MiniInterperter));
+        private static readonly ILanguageRuntime lang = Language.Get(typeof(MiniInterperter));
 
         private static readonly Msg OPN   = lang.Literal("(");
         private static readonly Msg CLS   = lang.Literal(")");

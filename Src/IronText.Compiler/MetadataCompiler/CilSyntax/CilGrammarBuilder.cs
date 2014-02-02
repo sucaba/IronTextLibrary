@@ -8,16 +8,9 @@ using IronText.Reflection.Managed;
 using IronText.Reporting;
 using IronText.Runtime;
 
-namespace IronText.MetadataCompiler
+namespace IronText.MetadataCompiler.CilSyntax
 {
-    public interface ICilGrammarBuilder
-    {
-        IEnumerable<ReportBuilder> ReportBuilders { get; }
-
-        Grammar Build(LanguageName languageName, ILogging logging);
-    }
-
-    class CilGrammarBuilder : ICilGrammarBuilder
+    class CilGrammarBuilder : IGrammarBuilder
     {
         private ILogging logging;
         private readonly List<ReportBuilder> _reportBuilders = new List<ReportBuilder>();
@@ -27,18 +20,24 @@ namespace IronText.MetadataCompiler
             get { return _reportBuilders; }
         }
 
-        public Grammar Build(LanguageName languageName, ILogging logging)
+        public Grammar Build(IGrammarSource languageName, ILogging logging)
         {
+            var cilLanguageName = languageName as CilGrammarSource;
+            if (cilLanguageName == null)
+            {
+                return null;
+            }
+
             this.logging = logging;
 
             CilGrammar definition = null;
 
             logging.WithTimeLogging(
-                languageName.Name,
-                languageName.DefinitionType,
+                cilLanguageName.LanguageName,
+                cilLanguageName.Origin,
                 () =>
                 {
-                    definition = new CilGrammar(languageName.DefinitionType, logging);
+                    definition = new CilGrammar(cilLanguageName, logging);
                 },
                 "parsing language definition");
                 

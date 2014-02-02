@@ -58,7 +58,7 @@ namespace IronText.Tests.Framework.Attributes
             public IParsing Parsing { get; set; }
 
             [LanguageService]
-            public ILanguage Language { get; set; }
+            public ILanguageRuntime Language { get; set; }
 
             [Produce("foo")]
             public string Start() 
@@ -102,7 +102,7 @@ namespace IronText.Tests.Framework.Attributes
             public IParsing Parsing { get; set; }
 
             [LanguageService]
-            public ILanguage Language { get; set; }
+            public ILanguageRuntime Language { get; set; }
 
             [LanguageService]
             public ILogging Logging { get; set; }

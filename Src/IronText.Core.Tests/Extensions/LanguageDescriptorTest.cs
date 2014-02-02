@@ -19,7 +19,7 @@ namespace IronText.Tests.Extensibility
         public void LanguageDescriptorCollectDataFromTypeMetadata()
         {
             ILogging logging = new MemoryLogging();
-            var target = new CilGrammar(typeof(IMetadtaTest0), logging);
+            var target = new CilGrammar(new CilGrammarSource(typeof(IMetadtaTest0)), logging);
             Assert.AreEqual(CilSymbolRef.Create(typeof(void)), target.Start);
             Assert.AreEqual(2, target.SymbolResolver.Definitions.Count());
             Assert.AreEqual(

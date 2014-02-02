@@ -48,7 +48,7 @@ namespace IronText.Framework
 
         private void PrintTransitions(IReportData data, StreamWriter output)
         {
-            string title = "Language: " + data.Name.FullName;
+            string title = "Language: " + data.Name.FullLanguageName;
 
             output.WriteLine(title);
             output.WriteLine();

@@ -262,8 +262,8 @@ namespace IronText.Framework
                     new LogEntry 
                     {
                         Severity = Severity.Error,
-                        Message = "One or more generic arguments cannot be deduced from the method result type.",
-                        Member = Method
+                        Message  = "One or more generic arguments cannot be deduced from the method result type.",
+                        Origin   = ReflectionUtils.ToString(Method)
                     });
                 return false;
             }

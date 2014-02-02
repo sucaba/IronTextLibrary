@@ -6,23 +6,25 @@ using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Logging;
 using IronText.Misc;
+using IronText.Reflection;
+using IronText.Reflection.Managed;
 using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    public class NamedLanguageProvider : IExternalResourceProvider<ILanguage>
+    public class NamedLanguageProvider : IExternalResourceProvider<ILanguageRuntime>
     {
-        private static readonly Dictionary<LanguageName, ILanguage> bootstrapLanguages = new Dictionary<LanguageName, ILanguage>();
+        private static readonly Dictionary<IGrammarSource, ILanguageRuntime> bootstrapLanguages = new Dictionary<IGrammarSource, ILanguageRuntime>();
 
-        private readonly LanguageName languageName;
-        private IExternalResourceProvider<ILanguage> provider;
+        private readonly IGrammarSource languageName;
+        private IExternalResourceProvider<ILanguageRuntime> provider;
 
-        public NamedLanguageProvider(LanguageName languageName)
+        public NamedLanguageProvider(IGrammarSource languageName)
         {
             this.languageName = languageName;
         }
         
-        ILanguage IExternalResourceProvider<ILanguage>.Resource
+        ILanguageRuntime IExternalResourceProvider<ILanguageRuntime>.Resource
         {
             get { return GetProvider().Resource; }
         }
@@ -54,46 +56,48 @@ namespace IronText.MetadataCompiler
             return provider.Load(logging);
         }
 
-        private IExternalResourceProvider<ILanguage> GetProvider()
+        private IExternalResourceProvider<ILanguageRuntime> GetProvider()
         {
             if (provider != null)
             {
                 return provider;
             }
 
-            if (Attributes.Exists<DerivedAssemblyMarker>(languageName.SourceAssembly))
+            var cilLanguageName = (CilGrammarSource)this.languageName;
+
+            if (Attributes.Exists<DerivedAssemblyMarker>(cilLanguageName.SourceAssembly))
             {
                 provider = new CompiledLanguageProvider(
-                    languageName,
-                    new RequiredAssemblyProvider(languageName.SourceAssembly.GetName()));
+                    cilLanguageName,
+                    new RequiredAssemblyProvider(cilLanguageName.SourceAssembly.GetName()));
 
                 return provider;
             }
 
             provider = new CompiledLanguageProvider(
-                languageName,
-                new DerivedAssemblyProvider(languageName.SourceAssembly, null, null));
+                cilLanguageName,
+                new DerivedAssemblyProvider(cilLanguageName.SourceAssembly, null, null));
 
             if (!ResourceContext.Instance.CanLoadOrBuild(provider))
             {
-                provider = new ResourceGetter<ILanguage>(
-                    (ILogging logging, out ILanguage output) =>
+                provider = new ResourceGetter<ILanguageRuntime>(
+                    (ILogging logging, out ILanguageRuntime output) =>
                     {
-                        ILanguage l;
-                        if (!bootstrapLanguages.TryGetValue(languageName, out l))
+                        ILanguageRuntime l;
+                        if (!bootstrapLanguages.TryGetValue(cilLanguageName, out l))
                         {
                             LanguageData data;
 
                             if (!ResourceContext.Instance.LoadOrBuild(
-                                    new LanguageDataProvider(languageName, true),
+                                    new LanguageDataProvider(cilLanguageName, true),
                                     out data))
                             {
                                 output = null;
                                 return false;
                             }
 
-                            l = new BootstrapLanguage(languageName, data);
-                            bootstrapLanguages[languageName] = l;
+                            l = new BootstrapLanguage(cilLanguageName, data);
+                            bootstrapLanguages[cilLanguageName] = l;
                         }
 
                         output = l;
@@ -106,7 +110,7 @@ namespace IronText.MetadataCompiler
 
         public override string ToString()
         {
-            return languageName.Name;
+            return languageName.LanguageName;
         }
     }
 }

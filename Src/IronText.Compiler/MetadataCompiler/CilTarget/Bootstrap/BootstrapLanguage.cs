@@ -6,21 +6,22 @@ using IronText.Reflection;
 using IronText.Lib.IL;
 using IronText.Runtime;
 using IronText.Logging;
+using IronText.Reflection.Managed;
 
 namespace IronText.MetadataCompiler
 {
-    class BootstrapLanguage : ILanguage, IInternalInitializable, IBootstrapLanguage, ILanguageRuntime
+    class BootstrapLanguage : ILanguageRuntime, IInternalInitializable, IBootstrapLanguage, ILanguageInternalRuntime
     {
         private readonly LanguageData data;
-        private readonly LanguageName name;
+        private readonly CilGrammarSource source;
         private readonly ProductionActionDelegate grammarAction;
         private readonly MergeDelegate merge;
         private ResourceAllocator allocator;
         private RuntimeGrammar runtimeGrammar;
 
-        public BootstrapLanguage(LanguageName name, LanguageData data)
+        public BootstrapLanguage(CilGrammarSource source, LanguageData data)
         {
-            this.name = name;
+            this.source = source;
             this.data = data;
             this.grammarAction = BuildExecuteRuleAction();
             this.merge = (int token, object x, object y, object context, IStackLookback<Msg> stackLookback) => y;
@@ -34,15 +35,13 @@ namespace IronText.MetadataCompiler
 
         public bool IsDeterministic { get { return data.IsDeterministic; } }
 
-        public LanguageName Name { get { return name; } }
-
         public Grammar Grammar { get { return data.Grammar; } }
 
         public void Heatup() { }
 
         public object CreateDefaultContext()
         {
-            return Activator.CreateInstance(name.DefinitionType);
+            return Activator.CreateInstance(source.DefinitionType);
         }
 
         public IScanner CreateScanner(object context, TextReader input, string document, ILogging logging)
@@ -50,10 +49,7 @@ namespace IronText.MetadataCompiler
             return new BootstrapScanner(
                 input,
                 document,
-                ScannerDescriptor.FromScanRules(
-                    name.LanguageTypeName + "_Lexer",
-                    data.Grammar.Conditions[0].Matchers,
-                    ExceptionLogging.Instance),
+                ScannerDescriptor.FromScanRules(data.Grammar.Conditions[0].Matchers, ExceptionLogging.Instance),
                 context,
                 logging);
         }
@@ -93,7 +89,7 @@ namespace IronText.MetadataCompiler
         {
             var generator = new GrammarActionGenerator();
             var result = new CachedMethod<ProductionActionDelegate>(
-                "Bootstrap." + name.FullName + ".GrammarActions",
+                "Bootstrap." + source.FullLanguageName + ".GrammarActions",
                 (emit, args) => 
                 { 
                     generator.BuildBody(emit, data, args);
@@ -102,7 +98,7 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        RuntimeGrammar ILanguageRuntime.RuntimeGrammar
+        RuntimeGrammar ILanguageInternalRuntime.RuntimeGrammar
         {
             get { return runtimeGrammar; }
         }

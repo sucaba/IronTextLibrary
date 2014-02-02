@@ -77,10 +77,7 @@ namespace IronText.Tests.Algorithm
             
             var target = new TdfaSimulationLexer(
                 "b:=10Q \"foo\"",
-                ScannerDescriptor.FromScanRules(
-                    GetType().Name + "_Lexer",
-                    grammar.Conditions[0].Matchers,
-                    ExceptionLogging.Instance));
+                ScannerDescriptor.FromScanRules(grammar.Conditions[0].Matchers, ExceptionLogging.Instance));
 
             var collector = new Collector<Msg>();
             target.Accept(collector);

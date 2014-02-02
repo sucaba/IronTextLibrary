@@ -1,19 +1,20 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using IronText.Misc;
 
-namespace IronText.Runtime
+namespace IronText.Reflection.Managed
 {
     /// <summary>
     /// Language identity and naming policy for language assembly
     /// </summary>
-    public class LanguageName
+    public class CilGrammarSource : IGrammarSource
     {
         private readonly Type definitionType;
 
-        public LanguageName(Type moduleType)
+        public CilGrammarSource(Type definitionType)
         {
-            this.definitionType = moduleType;
+            this.definitionType = definitionType;
         }
 
         public Assembly SourceAssembly
@@ -21,14 +22,19 @@ namespace IronText.Runtime
             get { return definitionType.Assembly; }
         }
 
-        public string FullName 
+        public string FullLanguageName 
         { 
             get { return definitionType.FullName; }
         }
 
-        public string Name 
+        public string LanguageName 
         { 
             get { return definitionType.Name; }
+        }
+
+        public string Origin
+        {
+            get { return ReflectionUtils.ToString(definitionType); }
         }
 
         public string SourceAssemblyPath
@@ -61,15 +67,15 @@ namespace IronText.Runtime
             get { return definitionType.Namespace + ".Derived." + definitionType.Name + "_Language"; }
         }
 
-        public override string ToString() { return FullName; }
+        public override string ToString() { return FullLanguageName; }
 
         public override bool Equals(object obj)
         {
-            var casted = obj as LanguageName;
-            return casted != null && casted.FullName == FullName;
+            var casted = obj as CilGrammarSource;
+            return casted != null && casted.FullLanguageName == FullLanguageName;
         }
 
-        public override int GetHashCode() { return FullName.GetHashCode(); }
+        public override int GetHashCode() { return FullLanguageName.GetHashCode(); }
 
         internal Type DefinitionType { get { return definitionType; } }
     }

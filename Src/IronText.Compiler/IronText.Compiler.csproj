@@ -141,7 +141,8 @@
     <Compile Include="Build\Engine\ResourceGetter.cs" />
     <Compile Include="Build\MetadataSyntax\CompositeDerivedBuilder.cs" />
     <Compile Include="Build\MetadataSyntax\TypesMetadataSyntax.cs" />
-    <Compile Include="MetadataCompiler\DataBuilders\CilGrammarBuilder.cs" />
+    <Compile Include="MetadataCompiler\CilSyntax\CilGrammarBuilder.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\IGrammarBuilder.cs" />
     <Compile Include="Reporting\ReportData.cs" />
     <Compile Include="Reflection\Managed\CilSymbolRefResolver.cs" />
     <Compile Include="Reflection\Managed\ICilSymbolResolver.cs" />

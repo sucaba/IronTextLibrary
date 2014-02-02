@@ -1,34 +1,40 @@
 ﻿# if false
 using NUnit.Framework;
 using IronText.Framework;
+using IronText.Runtime;
 namespace IronText.Tests.Framework
 {
     [TestFixture]
     public class BuildErrorTest
     {
         [Test]
-        public void TestParse()
+        public void TestDeterminisic()
         {
             Language.Get(typeof(BuildErrorsLang));
+        }
+
+        [Test]
+        public void TestNonDeterminisic()
+        {
             Language.Get(typeof(NonDeterministicBuildErrorsLang));
         }
 
         [Language]
         public interface BuildErrorsLang
         {
-            [Parse]
+            [Produce]
             void All(string s);
 
-            [Parse]
+            [Produce]
             void All(int x);
 
-            [Parse]
+            [Produce]
             int BadTemplate<T>(T token);
 
             [Literal("foo")]
             string Foo();
 
-            [Scan("'x' *")]
+            [Match("'x' *")]
             string NullableScanPattern();
 
             [Literal("")]
@@ -38,8 +44,8 @@ namespace IronText.Tests.Framework
         [Language]
         public interface NonDeterministicBuildErrorsLang
         {
-            [Parse("foo")]
-            [Parse("foo")]
+            [Produce("foo")]
+            [Produce("foo")]
             void All();
         }
     }

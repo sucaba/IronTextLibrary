@@ -4,18 +4,19 @@ using System.Linq;
 using System.Text;
 using IronText.MetadataCompiler;
 using IronText.Reflection;
+using IronText.Reflection.Managed;
 using IronText.Runtime;
 
 namespace IronText.Reporting
 {
     class ReportData : IReportData
     {
-        private readonly LanguageName name;
+        private readonly CilGrammarSource name;
         private IParserAutomata parserAutomata;
         internal readonly LanguageData data;
         internal readonly ParserConflictInfo[] parserConflicts;
 
-        internal ReportData(LanguageName name, LanguageData data, ParserConflictInfo[] parserConflicts)
+        internal ReportData(CilGrammarSource name, LanguageData data, ParserConflictInfo[] parserConflicts)
         {
             this.name = name;
             this.data = data;
@@ -27,7 +28,7 @@ namespace IronText.Reporting
             get { return name.SourceAssemblyDirectory; } 
         }
 
-        public LanguageName Name { get { return name; } }
+        public CilGrammarSource Name { get { return name; } }
 
         public Grammar Grammar { get { return data.Grammar; } }
 

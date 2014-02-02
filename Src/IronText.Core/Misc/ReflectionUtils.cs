@@ -65,5 +65,22 @@ namespace IronText.Misc
             argTypes = method.GetParameters().Select(param => param.ParameterType).ToArray();
             resultType = method.ReturnType;
         }
+
+        public static string ToString(MemberInfo memberInfo)
+        {
+            var output = new StringBuilder();
+            var asType = memberInfo as Type;
+            if (asType != null)
+            {
+                output.Append(asType.FullName);
+            }
+            else
+            {
+                var type = memberInfo.DeclaringType;
+                output.Append(type.FullName).Append("::").Append(memberInfo.Name);
+            }
+
+            return output.ToString();
+        }
     }
 }

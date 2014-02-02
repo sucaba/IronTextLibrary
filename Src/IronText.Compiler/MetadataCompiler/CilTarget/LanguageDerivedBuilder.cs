@@ -30,14 +30,14 @@ namespace IronText.MetadataCompiler
         private const string CreateDefaultContextMethodName     = "InternalCreateDefaultContext";
 
         private readonly LanguageData data;
-        private readonly LanguageName languageName;
+        private readonly CilGrammarSource languageName;
         private Ref<Types> declaringTypeRef;
         private readonly ImplementationGenerator implementationGenerator;
         private ILogging logging;
 
-        public LanguageDerivedBuilder(Type moduleType)
+        public LanguageDerivedBuilder(Type definitionType)
         {
-            this.languageName = new LanguageName(moduleType);
+            this.languageName = new CilGrammarSource(definitionType);
 
             var dataProvider = new LanguageDataProvider(languageName, false);
             ResourceContext.Instance.LoadOrBuild(dataProvider, out this.data);
@@ -58,8 +58,8 @@ namespace IronText.MetadataCompiler
                         Severity = Severity.Error,
                         Message = string.Format(
                             "Failed to compile '{0}' language definition.",
-                            languageName.DefinitionType.FullName),
-                        Member = languageName.DefinitionType
+                            languageName.FullLanguageName),
+                        Origin = languageName.Origin
                     });
 
                 return null;
@@ -74,7 +74,7 @@ namespace IronText.MetadataCompiler
                 new LogEntry
                 {
                     Severity = Severity.Verbose,
-                    Message = string.Format("Started Compiling Derived assembly for {0}", languageName.FullName)
+                    Message = string.Format("Started Compiling Derived assembly for {0}", languageName.FullLanguageName)
                 });
 
             var result = context
@@ -101,7 +101,7 @@ namespace IronText.MetadataCompiler
                 new LogEntry
                 {
                     Severity = Severity.Verbose,
-                    Message = string.Format("Done Compiling Derived assembly for {0}", languageName.FullName)
+                    Message = string.Format("Done Compiling Derived assembly for {0}", languageName.FullLanguageName)
                 });
 
             implementationGenerator.Generate(context);
@@ -127,7 +127,7 @@ namespace IronText.MetadataCompiler
                 new LogEntry
                 {
                     Severity = Severity.Verbose,
-                    Message = string.Format("Started compiling Scan1 modes for {0} language", languageName.Name)
+                    Message = string.Format("Started compiling Scan1 modes for {0} language", languageName.LanguageName)
                 });
 
             foreach (var condition in data.Grammar.Conditions)
@@ -162,7 +162,7 @@ namespace IronText.MetadataCompiler
                 new LogEntry
                 {
                     Severity = Severity.Verbose,
-                    Message = string.Format("Done compiling Scan1 modes for {0} language", languageName.Name)
+                    Message = string.Format("Done compiling Scan1 modes for {0} language", languageName.LanguageName)
                 });
             return context;
         }
@@ -417,7 +417,7 @@ namespace IronText.MetadataCompiler
                                 .BeginArgs()
                                 .Do(args =>
                                     {
-                                        var type = context.Types.Import(typeof(LanguageName));
+                                        var type = context.Types.Import(typeof(CilGrammarSource));
                                         var arg = args.Args.Generate();
                                         args.Argument(type, arg);
                                         return args;
@@ -431,7 +431,7 @@ namespace IronText.MetadataCompiler
             emit = emit
                 .Ldarg(0) // this
                 .Ldarg(1) // LanguageName
-                .Call(emit.Methods.Import(typeof(LanguageBase).GetConstructor(new[] { typeof(LanguageName) })))
+                .Call(emit.Methods.Import(typeof(LanguageBase).GetConstructor(new[] { typeof(CilGrammarSource) })))
                 ;
 
             emit

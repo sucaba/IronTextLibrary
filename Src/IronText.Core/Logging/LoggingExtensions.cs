@@ -11,7 +11,7 @@ namespace IronText.Logging
     {
         public static void Verbose(
             this ILogging   logging,
-            MemberInfo      member,
+            string          origin,
             string          fmt,
             params object[] args)
         {
@@ -19,7 +19,7 @@ namespace IronText.Logging
                 new LogEntry
                 {
                     Severity = Severity.Verbose,
-                    Member   = member,
+                    Origin   = origin,
                     Message  = string.Format(fmt, args)
                 });
         }
@@ -27,11 +27,11 @@ namespace IronText.Logging
         public static void WithTimeLogging(
             this ILogging logging,
             string        contextName,
-            MemberInfo    member,
+            string        origin,
             Action        action,
             string        activityName)
         {
-            logging.Verbose(member, "Started {0} for {1}", activityName, contextName);
+            logging.Verbose(origin, "Started {0} for {1}", activityName, contextName);
 
             try
             {
@@ -43,13 +43,13 @@ namespace IronText.Logging
                     new LogEntry
                     {
                         Severity = Severity.Error,
-                        Member   = member,
+                        Origin   = origin,
                         Message  = e.Message
                     });
             }
             finally
             {
-                logging.Verbose(member, "Done {0} for {1}", activityName, contextName);
+                logging.Verbose(origin, "Done {0} for {1}", activityName, contextName);
             }
         }
     }

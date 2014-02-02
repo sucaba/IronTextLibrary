@@ -2,39 +2,43 @@
 using System.Collections.Generic;
 using System.IO;
 using IronText.Logging;
-using IronText.Runtime;
+using IronText.Reflection;
+using IronText.Reflection.Managed;
 
 namespace IronText.Runtime
 {
+    /// <summary>
+    /// Provides access to language runtime functionality
+    /// </summary>
     public static class Language
     {
         private const string DefaultLanguageLoaderTypeName = "IronText.Runtime.LanguageLoader, IronText.Compiler";
 
-        private static readonly Dictionary<LanguageName, ILanguage> languages 
-            = new Dictionary<LanguageName, ILanguage>();
+        private static readonly Dictionary<IGrammarSource, ILanguageRuntime> languages 
+            = new Dictionary<IGrammarSource, ILanguageRuntime>();
 
-        public static ILanguage Get(Type moduleType)
+        public static ILanguageRuntime Get(Type definitionType)
         {
-            return Get(new LanguageName(moduleType));
+            return Get(new CilGrammarSource(definitionType));
         }
 
-        public static ILanguage Get(LanguageName languageName)
+        public static ILanguageRuntime Get(IGrammarSource languageName)
         {
-            ILanguage result;
+            ILanguageRuntime result;
             if (languages.TryGetValue(languageName, out result))
             {
                 return result;
             }
             else
             {
-                var loader = GetLoader() ?? new ExistingLanguageLoader();
+                var loader = GetLoader() ?? new CilExistingLanguageLoader();
                 result = loader.Load(languageName);
                 if (result == null)
                 {
                     throw new InvalidOperationException(
                         string.Format(
                             "Unable to load language '{0}'.",
-                            languageName.Name));
+                            languageName.LanguageName));
                 }
 
                 if (!IsBootstrap(result))
@@ -60,7 +64,7 @@ namespace IronText.Runtime
             return loader;
         }
 
-        private static bool IsBootstrap(ILanguage result)
+        private static bool IsBootstrap(ILanguageRuntime result)
         {
             return result is IBootstrapLanguage;
         }

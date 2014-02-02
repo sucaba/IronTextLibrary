@@ -22,10 +22,9 @@ namespace IronText.Build
 #endif
             }
 
-
-            if (entry.Member != null)
+            if (!string.IsNullOrEmpty(entry.Origin))
             {
-                Console.WriteLine(Date + GetSeverityName(entry.Severity) + ": " + FormatMember(entry.Member) + ": " + entry.Message);
+                Console.WriteLine(Date + GetSeverityName(entry.Severity) + ": " + entry.Origin + ": " + entry.Message);
             }
             else
             {

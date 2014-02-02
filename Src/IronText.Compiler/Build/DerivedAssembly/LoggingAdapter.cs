@@ -61,12 +61,12 @@ namespace IronText.Build
 
         private static string MemberContext(LogEntry entry)
         {
-            if (entry.Member == null)
+            if (string.IsNullOrEmpty(entry.Origin))
             {
                 return "";
             }
 
-            return FormatMember(entry.Member) + ": ";
+            return entry.Origin + ": ";
         }
 
         private static string FormatMember(System.Reflection.MemberInfo memberInfo)

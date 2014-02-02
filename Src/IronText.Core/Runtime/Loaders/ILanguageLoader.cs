@@ -1,8 +1,9 @@
-﻿
+﻿using IronText.Reflection;
+
 namespace IronText.Runtime
 {
     public interface ILanguageLoader
     {
-        ILanguage Load(LanguageName languageName);
+        ILanguageRuntime Load(IGrammarSource languageName);
     }
 }

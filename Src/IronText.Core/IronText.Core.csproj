@@ -116,6 +116,7 @@
     <Compile Include="Algorithm\Build\IDerivedBuilderMetadata.cs" />
     <Compile Include="Reflection\Cil\CilContextConsumer.cs" />
     <Compile Include="Reflection\Cil\CilContextProvider.cs" />
+    <Compile Include="Reflection\IGrammarSource.cs" />
     <Compile Include="Reflection\PredefinedTokens.cs" />
     <Compile Include="Reflection\Serialization\IGrammarTextWriter.cs" />
     <Compile Include="Reporting\CharRange.cs" />
@@ -132,7 +133,7 @@
     <Compile Include="Reflection\Cil\CilMerger.cs" />
     <Compile Include="Reflection\Cil\CilSymbolFeature.cs" />
     <Compile Include="Framework\Attributes\LanguageFlags.cs" />
-    <Compile Include="Runtime\ILanguageRuntime.cs" />
+    <Compile Include="Runtime\ILanguageInternalRuntime.cs" />
     <Compile Include="Runtime\ParserAction.cs" />
     <Compile Include="Runtime\ParserActionKind.cs" />
     <Compile Include="Reporting\ParserConflictInfo.cs" />
@@ -159,7 +160,7 @@
     <Compile Include="Framework\Attributes\MatchAttribute.cs" />
     <Compile Include="Framework\Attributes\LiteralAttribute.cs" />
     <Compile Include="Framework\Attributes\LanguageServiceAttribute.cs" />
-    <Compile Include="Runtime\Loaders\ExistingLanguageLoader.cs" />
+    <Compile Include="Runtime\Loaders\CilExistingLanguageLoader.cs" />
     <Compile Include="Runtime\IBootstrapLanguage.cs" />
     <Compile Include="Runtime\IInternalInitializable.cs" />
     <Compile Include="Runtime\Loaders\ILanguageLoader.cs" />
@@ -253,7 +254,7 @@
     <Compile Include="Extensibility\MetadataParser.cs" />
     <Compile Include="Framework\Attributes\StaticContextAttribute.cs" />
     <Compile Include="Framework\Attributes\LanguageAttribute.cs" />
-    <Compile Include="Runtime\LanguageName.cs" />
+    <Compile Include="Reflection\Cil\CilGrammarSource.cs" />
     <Compile Include="Misc\Attributes.cs" />
     <Compile Include="Misc\ExpressionUtils.cs" />
     <Compile Include="Misc\PropertyComparer.cs" />
@@ -285,7 +286,7 @@
     <Compile Include="Runtime\IStackLookback.cs" />
     <Compile Include="Runtime\GLR\ModifiedReduction.cs" />
     <Compile Include="Runtime\Msg.cs" />
-    <Compile Include="Runtime\ILanguage.cs" />
+    <Compile Include="Runtime\ILanguageRuntime.cs" />
     <Compile Include="Runtime\LanguageBase.cs" />
     <Compile Include="Runtime\GLR\ElkhoundGlrParser.cs" />
     <Compile Include="Runtime\Delegates.cs" />

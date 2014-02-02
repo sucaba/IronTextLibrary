@@ -11,6 +11,7 @@ using IronText.Lib.ScannerExpressions;
 using IronText.Logging;
 using IronText.Runtime;
 using IronText.Reflection.Managed;
+using IronText.Misc;
 
 namespace IronText.MetadataCompiler
 {
@@ -18,14 +19,11 @@ namespace IronText.MetadataCompiler
     {
         private readonly ILogging logging;
 
-        public static ScannerDescriptor FromScanRules(
-            string name,
-            IEnumerable<Matcher> scanProductions,
-            ILogging logging)
+        public static ScannerDescriptor FromScanRules(IEnumerable<Matcher> scanProductions, ILogging logging)
         {
             CheckAllRulesHaveIndex(scanProductions);
 
-            var result = new ScannerDescriptor(name, logging);
+            var result = new ScannerDescriptor(logging);
             foreach (var scanProduction in scanProductions)
             {
                 result.AddRule(scanProduction);
@@ -36,13 +34,10 @@ namespace IronText.MetadataCompiler
 
         private readonly List<Matcher> productions = new List<Matcher>();
 
-        public ScannerDescriptor(string name, ILogging logging) 
+        private ScannerDescriptor(ILogging logging) 
         { 
-            this.Name = name;
             this.logging = logging;
         }
-
-        public string Name { get; set; }
 
         public ReadOnlyCollection<Matcher> Productions { get { return productions.AsReadOnly(); } }
 
@@ -126,7 +121,7 @@ namespace IronText.MetadataCompiler
                                 Message = string.Format(
                                             "Literal cannot be empty string.",
                                             scanProduction),
-                                Member = binding.DefiningMethod
+                                Origin = ReflectionUtils.ToString(binding.DefiningMethod)
                             });
                     }
                 }
@@ -142,7 +137,7 @@ namespace IronText.MetadataCompiler
                                 Message = string.Format(
                                             "Scan pattern cannot match empty string.",
                                             scanProduction),
-                                Member = binding.DefiningMethod
+                                Origin = ReflectionUtils.ToString(binding.DefiningMethod)
                             });
                     }
                 }

@@ -4,22 +4,23 @@ using System.Reflection;
 using IronText.Build;
 using IronText.Framework;
 using IronText.Logging;
+using IronText.Reflection.Managed;
 using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    public class CompiledLanguageProvider : IExternalResourceProvider<ILanguage>
+    public class CompiledLanguageProvider : IExternalResourceProvider<ILanguageRuntime>
     {
-        private readonly LanguageName languageName;
+        private readonly CilGrammarSource languageName;
         private readonly IExternalResourceProvider<Assembly> assemblyProvider;
 
-        public CompiledLanguageProvider(LanguageName languageName, IExternalResourceProvider<Assembly> assemblyProvider)
+        public CompiledLanguageProvider(CilGrammarSource languageName, IExternalResourceProvider<Assembly> assemblyProvider)
         {
             this.languageName = languageName;
             this.assemblyProvider = assemblyProvider;
         }
 
-        public ILanguage Resource { get; private set; }
+        public ILanguageRuntime Resource { get; private set; }
 
         public bool Exists
         {
@@ -63,7 +64,7 @@ namespace IronText.MetadataCompiler
                 return false;
             }
 
-            Resource = (ILanguage)Activator.CreateInstance(type, languageName);
+            Resource = (ILanguageRuntime)Activator.CreateInstance(type, languageName);
             return true;
         }
 
@@ -81,7 +82,7 @@ namespace IronText.MetadataCompiler
 
         public override string ToString()
         {
-            return languageName.Name;
+            return languageName.LanguageName;
         }
     }
 }
