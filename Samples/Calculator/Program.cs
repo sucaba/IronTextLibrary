@@ -13,7 +13,7 @@ namespace Calculator
 
             using (var interp = new Interpreter<Calculator>(context))
             {
-                interp.LogKind = LoggingKind.ConsoleOut;
+                interp.LogingKind = LoggingKind.ConsoleOut;
 
                 while (true)
                 {

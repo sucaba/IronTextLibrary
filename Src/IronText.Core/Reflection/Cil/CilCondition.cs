@@ -27,9 +27,9 @@ namespace IronText.Reflection.Managed
             return result;
         }
 
-        internal void AddMatcher(CilMatcher rule)
+        internal void AddMatcher(CilMatcher matcher)
         {
-            matchers.Add(rule);
+            matchers.Add(matcher);
         }
 
         private static CilMatcher CreateImplicitLiteralMatcher(string literal)

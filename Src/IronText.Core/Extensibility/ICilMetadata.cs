@@ -24,14 +24,14 @@ namespace IronText.Extensibility
 
         IEnumerable<CilSymbolFeature<CilContextProvider>> GetSymbolContextProviders();
 
-        IEnumerable<CilSymbolRef> GetSymbolsInCategory(SymbolCategory category);
+        IEnumerable<CilSymbolRef>   GetSymbolsInCategory(SymbolCategory category);
 
-        IEnumerable<CilProduction> GetProductions(IEnumerable<CilSymbolRef> outcomes);
+        IEnumerable<CilProduction>  GetProductions(IEnumerable<CilSymbolRef> outcomes);
 
-        IEnumerable<CilMerger> GetMergers(IEnumerable<CilSymbolRef> symbols);
+        IEnumerable<CilMerger>      GetMergers(IEnumerable<CilSymbolRef> symbols);
 
-        IEnumerable<CilMatcher> GetMatchers();
+        IEnumerable<CilMatcher>     GetMatchers();
 
-        IEnumerable<ReportBuilder> GetReportBuilders();
+        IEnumerable<ReportBuilder>  GetReportBuilders();
     }
 }

@@ -12,7 +12,7 @@ namespace Samples
             var context = new NestedCommentSyntax();
             using (var interp = new Interpreter<NestedCommentSyntax>(context))
             {
-                interp.LogKind = LoggingKind.ConsoleOut;
+                interp.LogingKind = LoggingKind.ConsoleOut;
 
                 const string text = "/*/* /* foo *//* middle */ * / * */ bar */";
                 bool success = interp.Parse(text);

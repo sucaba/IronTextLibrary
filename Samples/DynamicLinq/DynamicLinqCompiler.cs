@@ -21,7 +21,7 @@ namespace Samples
             var c = new DynamicLinqCompiler(args);
             using (var interp = new Interpreter<DynamicLinqCompiler>(c))
             {
-                interp.LogKind = LoggingKind.ThrowOnError;
+                interp.LogingKind = LoggingKind.ThrowOnError;
                 interp.Parse(expr);
                 return Expression.Lambda<DelegateT>(c.Result, null).Compile();
             }
