@@ -49,18 +49,18 @@ namespace IronText.MetadataCompiler
             this.rootContext = rootContext;
             this.logging = logging;
 
-            var pattern = @"\G(?:" + string.Join("|", descriptor.Productions.Select(scanProd => "(" + GetPattern(scanProd) + ")")) + ")";
+            var pattern = @"\G(?:" + string.Join("|", descriptor.Matchers.Select(scanProd => "(" + GetPattern(scanProd) + ")")) + ")";
             this.regex = new Regex(pattern, RegexOptions.IgnorePatternWhitespace);
             this.text = textSource.ReadToEnd();
 
-            int count = descriptor.Productions.Count;
+            int count = descriptor.Matchers.Count;
             this.tokenFactories = new TokenFactoryDelegate[count];
 
             for (int i = 0; i != count; ++i)
             {
-                if (descriptor.Productions[i].Outcome != null)
+                if (descriptor.Matchers[i].Outcome != null)
                 {
-                    tokenFactories[i] = BuildTokenFactory(descriptor.Productions[i]);
+                    tokenFactories[i] = BuildTokenFactory(descriptor.Matchers[i]);
                 }
             }
         }
@@ -89,7 +89,7 @@ namespace IronText.MetadataCompiler
                     int termIndex = Enumerable
                                     .Range(1, match.Groups.Count)
                                     .First(i => match.Groups[i].Success) - 1;
-                    var production = descriptor.Productions[termIndex];
+                    var production = descriptor.Matchers[termIndex];
                     if (production.Outcome == null)
                     {
                         continue;

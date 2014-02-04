@@ -6,34 +6,33 @@ namespace IronText.Reflection.Managed
 {
     internal class CilCondition
     {
-        private readonly List<CilMatcher> productions = new List<CilMatcher>();
-        private int implicitRulesCount = 0;
+        private readonly List<CilMatcher> matchers = new List<CilMatcher>();
+        private int implicitLiteralCount = 0;
 
         public CilCondition(Type conditionType)
         {
             this.ConditionType = conditionType;
-            this.Productions   = new ReadOnlyCollection<CilMatcher>(this.productions);
+            this.Matchers   = new ReadOnlyCollection<CilMatcher>(this.matchers);
         }
 
         public Type ConditionType { get; private set; }
 
         // Ordered scan rules
-        public ReadOnlyCollection<CilMatcher> Productions { get; private set; }
+        public ReadOnlyCollection<CilMatcher> Matchers { get; private set; }
 
-        internal CilMatcher AddImplicitLiteralRule(string literal)
+        internal CilMatcher AddImplicitLiteralMatcher(string literal)
         {
-            var result = CreateImplicitLiteralRule(literal);
-            productions.Insert(implicitRulesCount++, result);
-
+            var result = CreateImplicitLiteralMatcher(literal);
+            matchers.Insert(implicitLiteralCount++, result);
             return result;
         }
 
-        internal void AddRule(CilMatcher rule)
+        internal void AddMatcher(CilMatcher rule)
         {
-            productions.Add(rule);
+            matchers.Add(rule);
         }
 
-        private static CilMatcher CreateImplicitLiteralRule(string literal)
+        private static CilMatcher CreateImplicitLiteralMatcher(string literal)
         {
             var outcome = CilSymbolRef.Create(literal);
 

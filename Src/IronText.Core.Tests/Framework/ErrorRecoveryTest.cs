@@ -154,7 +154,7 @@ namespace IronText.Tests.Framework
         {
             using (var interp = new Interpreter(context, lang))
             {
-                interp.LogKind = LoggingKind.Collection;
+                interp.LoggingKind = LoggingKind.Collect;
                 interp.Parse(input);
                 errorCount = interp.ErrorCount;
             }

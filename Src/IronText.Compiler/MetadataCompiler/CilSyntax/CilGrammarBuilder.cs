@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using IronText.Framework;
 using IronText.Logging;
+using IronText.Misc;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
 using IronText.Reporting;
@@ -20,10 +22,10 @@ namespace IronText.MetadataCompiler.CilSyntax
             get { return _reportBuilders; }
         }
 
-        public Grammar Build(IGrammarSource languageName, ILogging logging)
+        public Grammar Build(IGrammarSource source, ILogging logging)
         {
-            var cilLanguageName = languageName as CilGrammarSource;
-            if (cilLanguageName == null)
+            var cilSource = source as CilGrammarSource;
+            if (cilSource == null)
             {
                 return null;
             }
@@ -33,11 +35,11 @@ namespace IronText.MetadataCompiler.CilSyntax
             CilGrammar definition = null;
 
             logging.WithTimeLogging(
-                cilLanguageName.LanguageName,
-                cilLanguageName.Origin,
+                cilSource.LanguageName,
+                cilSource.Origin,
                 () =>
                 {
-                    definition = new CilGrammar(cilLanguageName, logging);
+                    definition = new CilGrammar(cilSource, logging);
                 },
                 "parsing language definition");
                 
@@ -49,6 +51,7 @@ namespace IronText.MetadataCompiler.CilSyntax
             _reportBuilders.AddRange(definition.ReportBuilders);
 
             var grammar = BuildGrammar(definition);
+            grammar.Options = (IronText.Reflection.RuntimeOptions)Attributes.First<LanguageAttribute>(cilSource.DefinitionType).Flags;
             return grammar;
         }
 
@@ -151,14 +154,14 @@ namespace IronText.MetadataCompiler.CilSyntax
             {
                 var condition = ConditionFromType(result, cilCondition.ConditionType);
 
-                foreach (var scanProd in cilCondition.Productions)
+                foreach (var scanProd in cilCondition.Matchers)
                 {
                     SymbolBase outcome = GetScanProductionOutcomeSymbol(result, symbolResolver, scanProd.MainOutcome, scanProd.AllOutcomes);
 
                     var scanProduction = new Matcher(
                         scanProd.Pattern,
                         outcome,
-                        nextCondition: ConditionFromType(result, scanProd.NextModeType),
+                        nextCondition: ConditionFromType(result, scanProd.NextConditionType),
                         disambiguation: scanProd.Disambiguation);
                     scanProduction.Joint.Add(scanProd);
 

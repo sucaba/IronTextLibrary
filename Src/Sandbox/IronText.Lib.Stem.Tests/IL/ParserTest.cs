@@ -35,7 +35,7 @@ namespace IronText.Stem.Tests.Lib.IL
                 var timer0 = new Stopwatch();
                 using (var interp = new Interpreter(lang))
                 {
-                    interp.LogKind = LoggingKind.None;
+                    interp.LoggingKind = LoggingKind.None;
                     timer0.Start();
                     interp.Parse("");
                     timer0.Stop();
@@ -49,7 +49,7 @@ namespace IronText.Stem.Tests.Lib.IL
                 var timer0 = new Stopwatch();
                 using (var interp = new Interpreter(lang))
                 {
-                    interp.LogKind = LoggingKind.None;
+                    interp.LoggingKind = LoggingKind.None;
                     timer0.Start();
                     interp.Parse("");
                     timer0.Stop();

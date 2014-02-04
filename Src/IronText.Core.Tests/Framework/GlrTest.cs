@@ -101,7 +101,7 @@ namespace IronText.Tests.Framework
             var lang = Language.Get(typeof(T));
             Assert.IsFalse(lang.IsDeterministic);
 
-            using (var interpreter = new Interpreter<T>(context) { LogKind = LoggingKind.Collection })
+            using (var interpreter = new Interpreter<T>(context) { LoggingKind = LoggingKind.Collect })
             using (var reader = new StringReader(input))
             {
                 return interpreter.Parse(reader, Loc.MemoryString);

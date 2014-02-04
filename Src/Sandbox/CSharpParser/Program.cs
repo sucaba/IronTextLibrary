@@ -40,7 +40,7 @@ namespace CSharpParser
 
         private static void TestLoad(Stopwatch timer, string path, Interpreter<ICsGrammar> interp)
         {
-            interp.LogKind = LoggingKind.ConsoleOut;
+            interp.LoggingKind = LoggingKind.Console;
             interp.Parse("/*a*/[a]");
             timer.Stop();
             if (timer.ElapsedMilliseconds > 1000)

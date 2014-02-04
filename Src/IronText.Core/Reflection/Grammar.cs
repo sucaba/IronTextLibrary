@@ -16,6 +16,8 @@ namespace IronText.Reflection
 
         public Grammar()
         {
+            Options      = RuntimeOptions.Default;
+
             Productions        = new ProductionCollection(this);
             Symbols            = new SymbolCollection(this);
             Conditions         = new ConditionCollection(this);
@@ -41,6 +43,8 @@ namespace IronText.Reflection
 
             AugmentedProduction = Productions.Define((Symbol)Symbols[PredefinedTokens.AugmentedStart], new Symbol[] { null });
         }
+
+        public RuntimeOptions Options { get; set; }
 
         public Joint Joint { get; private set; }
 

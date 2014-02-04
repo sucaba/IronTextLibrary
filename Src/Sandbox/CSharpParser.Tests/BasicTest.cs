@@ -324,7 +324,7 @@ namespace CSharpParser.Tests
 
             using (var interp = new Interpreter<ICsGrammar>())
             {
-                interp.LogKind = LoggingKind.ConsoleOut;
+                interp.LoggingKind = LoggingKind.Console;
                 TestLoad(timer, path, interp);
 
                 using (var input = new StreamReader(path))

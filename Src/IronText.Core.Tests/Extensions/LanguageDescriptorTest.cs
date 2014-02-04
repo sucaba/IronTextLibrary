@@ -56,7 +56,7 @@ namespace IronText.Tests.Extensibility
                 }
             }
 
-            public IEnumerable<CilMatcher> GetScanProductions()
+            public IEnumerable<CilMatcher> GetMatchers()
             {
                 return Enumerable.Empty<CilMatcher>();
             }

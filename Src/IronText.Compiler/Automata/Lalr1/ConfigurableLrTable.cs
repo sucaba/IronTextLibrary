@@ -6,7 +6,6 @@ using IronText.Algorithm;
 using IronText.Compiler;
 using IronText.Compiler.Analysis;
 using IronText.Extensibility;
-using IronText.Framework;
 using IronText.Reflection;
 using IronText.Reporting;
 using IronText.Runtime;
@@ -19,7 +18,7 @@ namespace IronText.Automata.Lalr1
         private readonly GrammarAnalysis   grammar;
         private readonly ILrParserTable       underlyingTable;
 
-        public ConfigurableLrTable(ILrDfa dfa, LanguageFlags flags)
+        public ConfigurableLrTable(ILrDfa dfa, RuntimeOptions flags)
         {
             this.grammar = dfa.GrammarAnalysis;
 
@@ -41,14 +40,14 @@ namespace IronText.Automata.Lalr1
 
         public ParserConflictInfo[] Conflicts { get { return underlyingTable.Conflicts; } }
 
-        private bool Configure(ILrDfa dfa, LanguageFlags flags, out ILrParserTable outputTable)
+        private bool Configure(ILrDfa dfa, RuntimeOptions flags, out ILrParserTable outputTable)
         {
             bool result;
 
             ComplyWithConfiguration = true;
-            switch (flags & LanguageFlags.ParserAlgorithmMask)
+            switch (flags & RuntimeOptions.ParserAlgorithmMask)
             {
-                case LanguageFlags.ForceDeterministic:
+                case RuntimeOptions.ForceDeterministic:
                     outputTable = BuildCanonicalLRTable(dfa);
                     RequiresGlr = false;
                     result = outputTable != null && !outputTable.RequiresGlr;
@@ -61,18 +60,18 @@ namespace IronText.Automata.Lalr1
                     }
 
                     break;
-                case LanguageFlags.ForceNonDeterministic:
+                case RuntimeOptions.ForceNonDeterministic:
                     RequiresGlr   = true;
                     outputTable = BuildReductionModifiedLRTable(dfa);
                     result = outputTable != null;
                     break;
-                case LanguageFlags.AllowNonDeterministic:
+                case RuntimeOptions.AllowNonDeterministic:
                     outputTable = BuildCanonicalLRTable(dfa);
                     result = outputTable != null && !outputTable.RequiresGlr;
                     if (!result)
                     {
                         data.Clear();
-                        goto case LanguageFlags.ForceNonDeterministic;
+                        goto case RuntimeOptions.ForceNonDeterministic;
                     }
 
                     RequiresGlr   = false;

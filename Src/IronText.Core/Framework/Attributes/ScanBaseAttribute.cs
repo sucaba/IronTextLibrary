@@ -32,7 +32,7 @@ namespace IronText.Framework
 
         internal string RegexPattern { get; set; }
 
-        public override IEnumerable<CilMatcher> GetScanProductions()
+        public override IEnumerable<CilMatcher> GetMatchers()
         {
             var method       = (MethodInfo)Member;
             var tokenType    = method.ReturnType;
@@ -58,7 +58,7 @@ namespace IronText.Framework
                 scanRule.Pattern = ScanPattern.CreateLiteral(LiteralText);
             }
 
-            scanRule.NextModeType = nextModeType;
+            scanRule.NextConditionType = nextModeType;
             scanRule.ActionBuilder =
                 context =>
                 {

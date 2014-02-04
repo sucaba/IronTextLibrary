@@ -43,14 +43,14 @@ namespace IronText.Tests.Algorithm
             DescribeTdfa(algorithm.Data);
             this.tdfa = new TdfaSimulation(algorithm.Data);
 
-            int count = descriptor.Productions.Count;
+            int count = descriptor.Matchers.Count;
             this.tokenFactories = new TokenFactoryDelegate[count];
 
             for (int i = 0; i != count; ++i)
             {
-                if (descriptor.Productions[i].Outcome != null)
+                if (descriptor.Matchers[i].Outcome != null)
                 {
-                    tokenFactories[i] = BuildTokenFactory(descriptor.Productions[i]);
+                    tokenFactories[i] = BuildTokenFactory(descriptor.Matchers[i]);
                 }
             }
         }
@@ -112,7 +112,7 @@ namespace IronText.Tests.Algorithm
                 TokenFactoryDelegate tokenFactory = tokenFactories[ruleIndex];
                 if (tokenFactory != null)
                 {
-                    var prod = descriptor.Productions[ruleIndex];
+                    var prod = descriptor.Matchers[ruleIndex];
 
                     // Emit next token
                     visitor = visitor.Next(

@@ -28,7 +28,7 @@ namespace IronText.Reflection.Managed
 
         public CilScanActionBuilder ActionBuilder          { get; set; }
 
-        public Type                 NextModeType           { get; set; }
+        public Type                 NextConditionType      { get; set; }
 
         public CilSymbolRef         MainOutcome            { get; set; }
 

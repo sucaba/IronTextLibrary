@@ -8,14 +8,14 @@ namespace IronText.Reporting
     /// </summary>
     public interface IReportData
     {
-        string          DestinationDirectory { get; }
+        string              DestinationDirectory { get; }
 
         CilGrammarSource    Name           { get; }
 
-        Grammar         Grammar        { get; }
+        Grammar             Grammar        { get; }
 
-        IParserAutomata ParserAutomata { get; }
+        IParserAutomata     ParserAutomata { get; }
 
-        IScannerAutomata GetScannerAutomata(Condition condition);
+        IScannerAutomata    GetScannerAutomata(Condition condition);
     }
 }

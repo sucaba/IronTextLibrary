@@ -105,7 +105,7 @@ namespace IronText.Framework
             return Enumerable.Empty<CilMerger>();
         }
 
-        IEnumerable<CilMatcher> ICilMetadata.GetScanProductions()
+        IEnumerable<CilMatcher> ICilMetadata.GetMatchers()
         {
             return Enumerable.Empty<CilMatcher>();
         }

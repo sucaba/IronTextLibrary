@@ -39,14 +39,14 @@ namespace IronText.Tests.Algorithm
             var algorithm = new RegularToDfaAlgorithm(regTree);
             this.dfa = new DfaSimulation(algorithm.Data);
 
-            int count = descriptor.Productions.Count;
+            int count = descriptor.Matchers.Count;
             this.tokenFactories = new TokenFactoryDelegate[count];
 
             for (int i = 0; i != count; ++i)
             {
-                if (descriptor.Productions[i].Outcome != null)
+                if (descriptor.Matchers[i].Outcome != null)
                 {
-                    tokenFactories[i] = BuildTokenFactory(descriptor.Productions[i]);
+                    tokenFactories[i] = BuildTokenFactory(descriptor.Matchers[i]);
                 }
             }
         }
@@ -87,7 +87,7 @@ namespace IronText.Tests.Algorithm
                 int action = dfa.GetAction(acceptingState.Value) ?? -1;
                 int tokenLength = pos - start;
 
-                var production = descriptor.Productions[action];
+                var production = descriptor.Matchers[action];
                 if (production.Outcome != null)
                 {
                     TokenFactoryDelegate tokenFactory = tokenFactories[action];

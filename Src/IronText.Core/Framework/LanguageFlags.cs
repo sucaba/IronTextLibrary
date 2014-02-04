@@ -1,5 +1,4 @@
-﻿
-namespace IronText.Framework
+﻿namespace IronText.Framework
 {
     public enum LanguageFlags
     {
@@ -23,25 +22,5 @@ namespace IronText.Framework
         /// deterministic counterpart.
         /// </remarks>
         ForceNonDeterministic = 0x02,
-
-        ParserAlgorithmMask   = 0x03,
-
-        /// <summary>
-        /// Resolve lexical ambiguities by using rule which is defined first
-        /// </summary>
-        FirstScanRuleWins     = 0x4,
-
-        /// <summary>
-        /// Resolve lexical ambiguities by using all scan rules 
-        /// and packing produced tokens into a Shrodinger's token.
-        /// </summary>
-        /// <remarks>
-        /// Sometimes such ambiguous tokens can cause shift-shift
-        /// conflicts in parser, hence such grammar will require
-        /// GLR algorithm.
-        /// </remarks>
-        UseShrodingerToken    = 0x8,
-
-        ScanAmbiguitiesResolutionMask = 0xc
     }
 }

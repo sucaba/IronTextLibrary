@@ -25,10 +25,10 @@ namespace IronText.Runtime
             this.logging = new MemoryLogging();
 
             // Default behavior
-            this.LogKind = LoggingKind.ThrowOnError;
+            this.LoggingKind = LoggingKind.ThrowOnError;
         }
 
-        public LoggingKind LogKind
+        public LoggingKind LoggingKind
         {
             get { return this.logKind; }
     
@@ -38,10 +38,10 @@ namespace IronText.Runtime
                 {
                     switch (value)
                     {
-                        case LoggingKind.Collection:
+                        case LoggingKind.Collect:
                             this.logging = new MemoryLogging();
                             break;
-                        case LoggingKind.ConsoleOut:
+                        case LoggingKind.Console:
                             this.logging = new TextLogging(Console.Out);
                             break;
                         case LoggingKind.ThrowOnError:
@@ -61,12 +61,12 @@ namespace IronText.Runtime
             }
         }
 
-        public ILogging CustomLog
+        public ILogging CustomLogging
         {
             get { return logKind == LoggingKind.Custom ? this.logging : null; }
             set
             {
-                this.LogKind = LoggingKind.Custom;
+                this.LoggingKind = LoggingKind.Custom;
                 this.logging = value;
             }
         }

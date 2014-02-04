@@ -135,6 +135,7 @@
     <Compile Include="Build\Engine\BuildLogging.cs" />
     <Compile Include="Build\Engine\ConsoleLogger.cs" />
     <Compile Include="Build\Engine\DelegateProvider.cs" />
+    <Compile Include="Build\Engine\IBuildContext.cs" />
     <Compile Include="Build\Engine\IExternalResource.cs" />
     <Compile Include="Build\Engine\RequiredAssemblyProvider.cs" />
     <Compile Include="Build\Engine\ResourceContext.cs" />

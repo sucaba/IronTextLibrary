@@ -114,6 +114,7 @@
     <Compile Include="Diagnostics\GvGraphView.cs" />
     <Compile Include="Diagnostics\IGraphView.cs" />
     <Compile Include="Algorithm\Build\IDerivedBuilderMetadata.cs" />
+    <Compile Include="Framework\LanguageFlags.cs" />
     <Compile Include="Reflection\Cil\CilContextConsumer.cs" />
     <Compile Include="Reflection\Cil\CilContextProvider.cs" />
     <Compile Include="Reflection\IGrammarSource.cs" />
@@ -132,7 +133,7 @@
     <Compile Include="Reflection\Cil\Code\IMergeActionCode.cs" />
     <Compile Include="Reflection\Cil\CilMerger.cs" />
     <Compile Include="Reflection\Cil\CilSymbolFeature.cs" />
-    <Compile Include="Framework\Attributes\LanguageFlags.cs" />
+    <Compile Include="Reflection\RuntimeOptions.cs" />
     <Compile Include="Runtime\ILanguageInternalRuntime.cs" />
     <Compile Include="Runtime\ParserAction.cs" />
     <Compile Include="Runtime\ParserActionKind.cs" />

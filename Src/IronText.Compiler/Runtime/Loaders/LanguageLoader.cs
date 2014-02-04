@@ -6,9 +6,9 @@ namespace IronText.Runtime
 {
     public class LanguageLoader : ILanguageLoader
     {
-        public ILanguageRuntime Load(IGrammarSource languageName)
+        public ILanguageRuntime Load(IGrammarSource source)
         {
-            var provider = new NamedLanguageProvider(languageName);
+            var provider = new NamedLanguageProvider(source);
             ILanguageRuntime result;
             ResourceContext.Instance.LoadOrBuild(provider, out result);
             return result;

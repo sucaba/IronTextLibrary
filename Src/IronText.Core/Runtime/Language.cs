@@ -22,28 +22,28 @@ namespace IronText.Runtime
             return Get(new CilGrammarSource(definitionType));
         }
 
-        public static ILanguageRuntime Get(IGrammarSource languageName)
+        public static ILanguageRuntime Get(IGrammarSource source)
         {
             ILanguageRuntime result;
-            if (languages.TryGetValue(languageName, out result))
+            if (languages.TryGetValue(source, out result))
             {
                 return result;
             }
             else
             {
                 var loader = GetLoader() ?? new CilExistingLanguageLoader();
-                result = loader.Load(languageName);
+                result = loader.Load(source);
                 if (result == null)
                 {
                     throw new InvalidOperationException(
                         string.Format(
                             "Unable to load language '{0}'.",
-                            languageName.LanguageName));
+                            source.LanguageName));
                 }
 
                 if (!IsBootstrap(result))
                 {
-                    languages[languageName] = result;
+                    languages[source] = result;
                 }
 
                 ((IInternalInitializable)result).Init();
@@ -74,7 +74,7 @@ namespace IronText.Runtime
         {
             using (var interp = new Interpreter<TC>(context))
             {
-                interp.LogKind = LoggingKind.ThrowOnError;
+                interp.LoggingKind = LoggingKind.ThrowOnError;
                 interp.Parse(input, document);
                 return context;
             }
@@ -85,7 +85,7 @@ namespace IronText.Runtime
         {
             using (var interp = new Interpreter<TC>(context))
             {
-                interp.LogKind = LoggingKind.ThrowOnError;
+                interp.LoggingKind = LoggingKind.ThrowOnError;
                 interp.Parse(input);
                 return context;
             }
@@ -96,7 +96,7 @@ namespace IronText.Runtime
         {
             using (var interp = new Interpreter<TC>(context))
             {
-                interp.LogKind = LoggingKind.ThrowOnError;
+                interp.LoggingKind = LoggingKind.ThrowOnError;
                 interp.Parse(input);
                 return context;
             }

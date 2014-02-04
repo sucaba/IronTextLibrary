@@ -90,7 +90,7 @@ namespace IronText.Reflection.Managed
                 this.IsValid = false;
             }
 
-            conditions = scanDataCollector.ScanConditions;
+            conditions = scanDataCollector.Conditions;
             LinkRelatedTokens(conditions);
 
             var allTerms = (from t in scanDataCollector.Terminals
@@ -99,8 +99,8 @@ namespace IronText.Reflection.Managed
                            select def)
                            .Distinct();
             var termsProducedByScanner =
-                            (from cond in scanDataCollector.ScanConditions
-                             from prod in cond.Productions
+                            (from cond in scanDataCollector.Conditions
+                             from prod in cond.Matchers
                              from outcome in prod.AllOutcomes
                              let def = SymbolResolver.Resolve(outcome)
                              where def != null
@@ -160,7 +160,7 @@ namespace IronText.Reflection.Managed
         {
             foreach (var condition in conditions)
             {
-                foreach (var scanProd in condition.Productions)
+                foreach (var scanProd in condition.Matchers)
                 {
                     foreach (CilSymbolRef symbol in scanProd.AllOutcomes)
                     {

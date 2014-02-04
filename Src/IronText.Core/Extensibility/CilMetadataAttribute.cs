@@ -54,7 +54,7 @@ namespace IronText.Extensibility
             return Enumerable.Empty<CilMerger>();
         }
 
-        public virtual IEnumerable<CilMatcher> GetScanProductions()
+        public virtual IEnumerable<CilMatcher> GetMatchers()
         {
             return Enumerable.Empty<CilMatcher>();
         }

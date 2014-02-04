@@ -24,15 +24,15 @@ namespace IronText.MetadataCompiler
 {
     internal class LanguageDataProvider : ResourceGetter<LanguageData>
     {
-        private readonly CilGrammarSource languageName;
+        private readonly CilGrammarSource source;
         private readonly bool         bootstrap;
         private ILogging              logging;
 
-        public LanguageDataProvider(CilGrammarSource name, bool bootstrap)
+        public LanguageDataProvider(CilGrammarSource source, bool bootstrap)
         {
-            this.languageName = name;
+            this.source    = source;
             this.bootstrap = bootstrap;
-            Getter = Build;
+            Getter         = Build;
         }
 
         private bool Build(ILogging logging, out LanguageData result)
@@ -42,7 +42,7 @@ namespace IronText.MetadataCompiler
             result = new LanguageData();
 
             IGrammarBuilder grammarBuilder = new CilGrammarBuilder();
-            Grammar grammar = grammarBuilder.Build(languageName, logging);
+            Grammar grammar = grammarBuilder.Build(source, logging);
             if (grammar == null)
             {
                 return false;
@@ -67,8 +67,8 @@ namespace IronText.MetadataCompiler
 
             var grammarAnalysis = new GrammarAnalysis(grammar);
             logging.WithTimeLogging(
-                languageName.LanguageName,
-                languageName.Origin,
+                source.LanguageName,
+                source.Origin,
                 () =>
                 {
                     parserDfa = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.Default);
@@ -81,8 +81,7 @@ namespace IronText.MetadataCompiler
                 return false;
             }
 
-            var flags = Attributes.First<LanguageAttribute>(languageName.DefinitionType).Flags;
-            var lrTable = new ConfigurableLrTable(parserDfa, flags);
+            var lrTable = new ConfigurableLrTable(parserDfa, grammar.Options);
             if (!lrTable.ComplyWithConfiguration)
             {
                 reportBuilders.Add(
@@ -97,7 +96,7 @@ namespace IronText.MetadataCompiler
 
             // Prepare language data for the language assembly generation
             result.IsDeterministic     = !lrTable.RequiresGlr;
-            result.DefinitionType      = languageName.DefinitionType;
+            result.DefinitionType      = source.DefinitionType;
             result.Grammar             = grammar;
             result.GrammarAnalysis     = grammarAnalysis;
             result.ParserStates        = parserDfa.States;
@@ -109,7 +108,7 @@ namespace IronText.MetadataCompiler
 
             if (!bootstrap)
             {
-                IReportData reportData = new ReportData(languageName, result, lrTable.Conflicts);
+                IReportData reportData = new ReportData(source, result, lrTable.Conflicts);
                 foreach (var reportBuilder in reportBuilders)
                 {
                     reportBuilder(reportData);
@@ -137,10 +136,10 @@ namespace IronText.MetadataCompiler
                         new LogEntry
                         {
                             Severity = Severity.Error,
-                            Origin   = languageName.Origin,
+                            Origin   = source.Origin,
                             Message  = string.Format(
                                         "Unable to create scanner for '{0}' language.",
-                                        languageName.DefinitionType)
+                                        source.DefinitionType)
                         });
 
                     return false;
@@ -231,17 +230,17 @@ namespace IronText.MetadataCompiler
         {
             var casted = obj as LanguageDataProvider;
             return casted != null
-                && object.Equals(casted.languageName, languageName);
+                && object.Equals(casted.source, source);
         }
 
         public override int GetHashCode()
         {
-            return languageName.GetHashCode();
+            return source.GetHashCode();
         }
 
         public override string ToString()
         {
-            return "LanguageData for " + languageName.DefinitionType.FullName;
+            return "LanguageData for " + source.DefinitionType.FullName;
         }
     }
 }

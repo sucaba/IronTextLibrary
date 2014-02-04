@@ -17,30 +17,30 @@ namespace IronText.MetadataCompiler
 {
     public class ScannerDescriptor
     {
-        public static ScannerDescriptor FromScanRules(IEnumerable<Matcher> scanProductions, ILogging logging)
+        public static ScannerDescriptor FromScanRules(IEnumerable<Matcher> matchers, ILogging logging)
         {
-            CheckAllRulesHaveIndex(scanProductions);
+            CheckAllRulesHaveIndex(matchers);
 
             var result = new ScannerDescriptor(logging);
-            foreach (var scanProduction in scanProductions)
+            foreach (var matcher in matchers)
             {
-                result.AddRule(scanProduction);
+                result.AddRule(matcher);
             }
 
             return result;
         }
 
         private readonly ILogging logging;
-        private readonly List<Matcher> productions = new List<Matcher>();
+        private readonly List<Matcher> matchers = new List<Matcher>();
 
         private ScannerDescriptor(ILogging logging) 
         { 
             this.logging = logging;
         }
 
-        public ReadOnlyCollection<Matcher> Productions { get { return productions.AsReadOnly(); } }
+        public ReadOnlyCollection<Matcher> Matchers { get { return matchers.AsReadOnly(); } }
 
-        public void AddRule(Matcher production) { productions.Add(production); }
+        public void AddRule(Matcher matcher) { matchers.Add(matcher); }
 
         public AstNode MakeAst() { return MakeAst(null); }
 
@@ -48,12 +48,12 @@ namespace IronText.MetadataCompiler
         {
             var descriptor = this;
 
-            var alternatives = new AstNode[descriptor.Productions.Count];
+            var alternatives = new AstNode[descriptor.Matchers.Count];
             var pattern = new StringBuilder(128);
 
             pattern.Append("(");
             bool first = true;
-            foreach (var scanRule in descriptor.Productions)
+            foreach (var scanRule in descriptor.Matchers)
             {
                 if (literalToAction != null && scanRule.Pattern.IsLiteral)
                 {
@@ -102,13 +102,13 @@ namespace IronText.MetadataCompiler
                 return true;
             }
 
-            foreach (var scanProduction in Productions)
+            foreach (var matcher in Matchers)
             {
-                var binding = scanProduction.Joint.The<CilMatcher>();
+                var binding = matcher.Joint.The<CilMatcher>();
 
-                if (scanProduction.Pattern.Literal != null)
+                if (matcher.Pattern.Literal != null)
                 {
-                    if (scanProduction.Pattern.Literal == "")
+                    if (matcher.Pattern.Literal == "")
                     {
                         logging.Write(
                             new LogEntry
@@ -116,14 +116,14 @@ namespace IronText.MetadataCompiler
                                 Severity = Severity.Error,
                                 Message = string.Format(
                                             "Literal cannot be empty string.",
-                                            scanProduction),
+                                            matcher),
                                 Origin = ReflectionUtils.ToString(binding.DefiningMethod)
                             });
                     }
                 }
                 else
                 {
-                    var ast = GetAst(scanProduction.Pattern.Pattern);
+                    var ast = GetAst(matcher.Pattern.Pattern);
                     if (IsNullable(ast))
                     {
                         logging.Write(
@@ -132,7 +132,7 @@ namespace IronText.MetadataCompiler
                                 Severity = Severity.Error,
                                 Message = string.Format(
                                             "Scan pattern cannot match empty string.",
-                                            scanProduction),
+                                            matcher),
                                 Origin = ReflectionUtils.ToString(binding.DefiningMethod)
                             });
                     }
@@ -147,7 +147,7 @@ namespace IronText.MetadataCompiler
             var context = new ScannerSyntax();
             using (var interp = new Interpreter<ScannerSyntax>(context))
             {
-                interp.CustomLog = this.logging;
+                interp.CustomLogging = this.logging;
                 if (!interp.Parse(pattern))
                 {
                     return AstNode.Stub;
