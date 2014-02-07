@@ -10,8 +10,8 @@ using IronText.Lib.Ctem;
 using IronText.Lib.IL;
 using IronText.Lib.IL.Generators;
 using IronText.Lib.Shared;
-using IronText.Runtime;
 using IronText.Reflection.Managed;
+using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
@@ -26,13 +26,13 @@ namespace IronText.MetadataCompiler
             EmitSyntax          emit,
             Pipe<EmitSyntax>    ldRootContext,
             Pipe<EmitSyntax>    ldLookback,
-            Type                rootContextType,
+            LanguageData        data,
             ProductionContextLink[] localContexts = null)
         {
             this.emit = emit;
             this.ldRootContext   = ldRootContext;
             this.ldLookback      = ldLookback;
-            this.RootContextType = rootContextType;
+            this.RootContextType = data.Grammar.Joint.The<CilGrammarSource>().DefinitionType;
             this.localContexts   = localContexts;
         }
 

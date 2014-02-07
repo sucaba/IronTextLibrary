@@ -10,31 +10,31 @@ namespace IronText.Reflection.Managed
     /// </summary>
     public class CilGrammarSource : IGrammarSource
     {
-        private readonly Type definitionType;
-
         public CilGrammarSource(Type definitionType)
         {
-            this.definitionType = definitionType;
+            this.DefinitionType = definitionType;
         }
+
+        public Type DefinitionType { get; private set; }
 
         public Assembly SourceAssembly
         {
-            get { return definitionType.Assembly; }
+            get { return DefinitionType.Assembly; }
         }
 
         public string FullLanguageName 
         { 
-            get { return definitionType.FullName; }
+            get { return DefinitionType.FullName; }
         }
 
         public string LanguageName 
         { 
-            get { return definitionType.Name; }
+            get { return DefinitionType.Name; }
         }
 
         public string Origin
         {
-            get { return ReflectionUtils.ToString(definitionType); }
+            get { return ReflectionUtils.ToString(DefinitionType); }
         }
 
         public string SourceAssemblyPath
@@ -64,7 +64,7 @@ namespace IronText.Reflection.Managed
 
         public string LanguageTypeName
         {
-            get { return definitionType.Namespace + ".Derived." + definitionType.Name + "_Language"; }
+            get { return DefinitionType.Namespace + ".Derived." + DefinitionType.Name + "_Language"; }
         }
 
         public override string ToString() { return FullLanguageName; }
@@ -77,6 +77,9 @@ namespace IronText.Reflection.Managed
 
         public override int GetHashCode() { return FullLanguageName.GetHashCode(); }
 
-        internal Type DefinitionType { get { return definitionType; } }
+        public string BuilderTypeName
+        {
+            get { return "IronText.MetadataCompiler.CilSyntax.CilGrammarBuilder, IronText.Compiler"; }
+        }
     }
 }

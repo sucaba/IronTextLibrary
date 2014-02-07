@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using IronText.Algorithm;
-using IronText.Compiler;
 using IronText.Compiler.Analysis;
-using IronText.Extensibility;
 using IronText.Reflection;
 using IronText.Reporting;
 using IronText.Runtime;

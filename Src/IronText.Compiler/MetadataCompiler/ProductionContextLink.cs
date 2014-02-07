@@ -1,5 +1,4 @@
-﻿using System;
-using IronText.Reflection;
+﻿using IronText.Reflection;
 
 namespace IronText.Extensibility
 {

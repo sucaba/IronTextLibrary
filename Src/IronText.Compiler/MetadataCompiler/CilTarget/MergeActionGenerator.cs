@@ -1,7 +1,5 @@
 ﻿using System.Linq;
 using IronText.Algorithm;
-using IronText.Extensibility;
-using IronText.Framework;
 using IronText.Lib.IL;
 using IronText.Lib.IL.Generators;
 using IronText.Lib.Shared;
@@ -88,7 +86,7 @@ namespace IronText.MetadataCompiler
                                             emit,
                                             il => il.Ldarg(ctx),
                                             il => il.Ldarg(lookbackStart),
-                                            data.DefinitionType,
+                                            data,
                                             data.LocalParseContexts);
 
             var code = new MergeActionCode(emit, contextResolverCode)

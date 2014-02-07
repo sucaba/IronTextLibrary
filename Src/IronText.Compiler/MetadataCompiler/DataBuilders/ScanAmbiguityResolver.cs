@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using IronText.Algorithm;
-using IronText.Automata.Lalr1;
 using IronText.Automata.Regular;
-using IronText.Compiler;
-using IronText.Compiler.Analysis;
-using IronText.Framework;
 using IronText.Reflection;
 
 namespace IronText.MetadataCompiler

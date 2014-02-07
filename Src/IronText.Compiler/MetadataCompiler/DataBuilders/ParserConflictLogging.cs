@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.CodeDom.Compiler;
+using System.IO;
 using System.Linq;
 using System.Text;
-using IronText.Automata.Lalr1;
 using IronText.Framework;
-using IronText.Extensibility;
-using System.IO;
-using System.CodeDom.Compiler;
-using IronText.Reporting;
 using IronText.Logging;
+using IronText.Reporting;
 using IronText.Runtime;
 
 namespace IronText.MetadataCompiler

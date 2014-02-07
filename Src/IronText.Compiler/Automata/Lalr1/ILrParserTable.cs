@@ -1,6 +1,4 @@
 ﻿using IronText.Algorithm;
-using System.Collections.ObjectModel;
-using IronText.Extensibility;
 using IronText.Reporting;
 
 namespace IronText.Automata.Lalr1

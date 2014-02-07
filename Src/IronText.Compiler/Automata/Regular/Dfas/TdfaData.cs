@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Text;
 using IronText.Algorithm;
 using IronText.Diagnostics;
-using IronText.Extensibility;
-using System.Collections.ObjectModel;
-using System.Text;
 using IronText.Reporting;
 
 namespace IronText.Automata.Regular

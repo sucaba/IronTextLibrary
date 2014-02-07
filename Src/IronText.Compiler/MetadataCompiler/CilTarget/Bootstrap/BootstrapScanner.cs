@@ -5,8 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
-using IronText.Extensibility;
-using IronText.Framework;
 using IronText.Logging;
 using IronText.Reflection;
 using IronText.Reflection.Managed;

@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Reflection;
 using IronText.Build;
-using IronText.Framework;
 using IronText.Logging;
 using IronText.Reflection.Managed;
 using IronText.Runtime;

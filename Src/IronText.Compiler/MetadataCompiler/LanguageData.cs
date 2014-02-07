@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using IronText.Algorithm;
-using IronText.Framework;
-using System.Collections.ObjectModel;
-using IronText.Extensibility;
-using System.Linq;
-using IronText.Automata.Regular;
+﻿using IronText.Algorithm;
 using IronText.Automata.Lalr1;
-using IronText.Reflection;
-using IronText.Compiler;
 using IronText.Compiler.Analysis;
-using IronText.Reporting;
-using IronText.Runtime;
+using IronText.Extensibility;
+using IronText.Reflection;
 
 namespace IronText.MetadataCompiler
 {
@@ -25,7 +16,6 @@ namespace IronText.MetadataCompiler
         public GrammarAnalysis          GrammarAnalysis { get; set; }
 
         public bool                     IsDeterministic;
-        public Type                     DefinitionType;
         public DotState[]               ParserStates;
 
         public ProductionContextLink[]  LocalParseContexts;

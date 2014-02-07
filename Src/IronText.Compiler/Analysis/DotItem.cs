@@ -1,7 +1,5 @@
-﻿using IronText.Algorithm;
-using IronText.Framework;
-using System.Collections.Generic;
-using IronText.Extensibility;
+﻿using System.Collections.Generic;
+using IronText.Algorithm;
 using IronText.Reflection;
 using IronText.Reporting;
 

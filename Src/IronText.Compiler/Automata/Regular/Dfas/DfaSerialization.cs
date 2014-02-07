@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Text;
 using IronText.Algorithm;
-using IronText.Extensibility;
 
 namespace IronText.Automata.Regular
 {

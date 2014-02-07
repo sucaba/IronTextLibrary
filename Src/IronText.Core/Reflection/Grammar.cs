@@ -54,7 +54,7 @@ namespace IronText.Reflection
             set { AugmentedProduction.SetAt(0, value); }
         }
 
-        public Production           AugmentedProduction { get; private set; }
+        internal Production         AugmentedProduction { get; private set; }
 
         public SymbolCollection     Symbols             { get; private set; }
 

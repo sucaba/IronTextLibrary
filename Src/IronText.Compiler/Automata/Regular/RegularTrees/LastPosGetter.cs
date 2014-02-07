@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using IronText.Algorithm;
 using IronText.Lib.RegularAst;
-using System;
 
 namespace IronText.Automata.Regular
 {

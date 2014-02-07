@@ -1,12 +1,10 @@
 ﻿using System;
 using System.IO;
-using IronText.Extensibility;
-using IronText.Framework;
-using IronText.Reflection;
 using IronText.Lib.IL;
-using IronText.Runtime;
 using IronText.Logging;
+using IronText.Reflection;
 using IronText.Reflection.Managed;
+using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {

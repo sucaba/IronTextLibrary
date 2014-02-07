@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using IronText.Extensibility;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using IronText.MetadataCompiler;
 
 namespace IronText.Reporting

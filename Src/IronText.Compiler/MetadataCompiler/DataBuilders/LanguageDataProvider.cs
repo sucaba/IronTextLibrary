@@ -1,38 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using IronText.Algorithm;
 using IronText.Automata.Lalr1;
 using IronText.Automata.Regular;
 using IronText.Build;
-using IronText.Extensibility;
-using IronText.Framework;
-using IronText.Misc;
-using System.Text;
-using IronText.Algorithm;
-using IronText.Reflection;
-using IronText.Compiler;
 using IronText.Compiler.Analysis;
-using IronText.Analysis;
+using IronText.Extensibility;
 using IronText.Logging;
+using IronText.Reflection;
 using IronText.Reporting;
-using IronText.Runtime;
-using IronText.Reflection.Managed;
-using IronText.MetadataCompiler.CilSyntax;
 
 namespace IronText.MetadataCompiler
 {
     internal class LanguageDataProvider : ResourceGetter<LanguageData>
     {
-        private readonly CilGrammarSource source;
-        private readonly bool         bootstrap;
-        private ILogging              logging;
+        private readonly IGrammarSource source;
+        private readonly bool           bootstrap;
+        private ILogging                logging;
 
-        public LanguageDataProvider(CilGrammarSource source, bool bootstrap)
+        public LanguageDataProvider(IGrammarSource source, bool bootstrap)
         {
             this.source    = source;
             this.bootstrap = bootstrap;
-            Getter         = Build;
+            this.Getter    = Build;
         }
 
         private bool Build(ILogging logging, out LanguageData result)
@@ -41,25 +32,41 @@ namespace IronText.MetadataCompiler
 
             result = new LanguageData();
 
-            IGrammarBuilder grammarBuilder = new CilGrammarBuilder();
+            var builderType = Type.GetType(source.BuilderTypeName);
+            if (builderType == null)
+            {
+                logging.Write(
+                    new LogEntry
+                    {
+                        Severity = Severity.Error,
+                        Message = string.Format(
+                                    "Unable to load grammar builder '{0}' for language '{1}'",
+                                    source.BuilderTypeName,
+                                    source.LanguageName),
+                        Origin = source.Origin
+                    });
+                return false;
+            }
+
+            var grammarBuilder = (IGrammarBuilder)Activator.CreateInstance(builderType);
+
             Grammar grammar = grammarBuilder.Build(source, logging);
             if (grammar == null)
             {
                 return false;
             }
 
+            grammar.Joint.Add(source);
+
 //            var inliner = new ProductionInliner(grammar);
 //            grammar = inliner.Inline();
 
             var reportBuilders = new List<ReportBuilder>(grammarBuilder.ReportBuilders);
 
-            if (!bootstrap)
+            if (!bootstrap && !CompileScannerTdfas(grammar))
             {
-                if (!CompileScannerTdfas(grammar))
-                {
-                    result = null;
-                    return false;
-                }
+                result = null;
+                return false;
             }
 
             // Build parsing tables
@@ -96,7 +103,6 @@ namespace IronText.MetadataCompiler
 
             // Prepare language data for the language assembly generation
             result.IsDeterministic     = !lrTable.RequiresGlr;
-            result.DefinitionType      = source.DefinitionType;
             result.Grammar             = grammar;
             result.GrammarAnalysis     = grammarAnalysis;
             result.ParserStates        = parserDfa.States;
@@ -139,7 +145,7 @@ namespace IronText.MetadataCompiler
                             Origin   = source.Origin,
                             Message  = string.Format(
                                         "Unable to create scanner for '{0}' language.",
-                                        source.DefinitionType)
+                                        source.Origin)
                         });
 
                     return false;
@@ -240,7 +246,7 @@ namespace IronText.MetadataCompiler
 
         public override string ToString()
         {
-            return "LanguageData for " + source.DefinitionType.FullName;
+            return "LanguageData for " + source.FullLanguageName;
         }
     }
 }

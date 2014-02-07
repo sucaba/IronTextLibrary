@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using IronText.Algorithm;
 using System.Collections.ObjectModel;
 using System.Linq;
-using IronText.Extensibility;
+using IronText.Algorithm;
 using IronText.Reporting;
 
 namespace IronText.Automata.Regular

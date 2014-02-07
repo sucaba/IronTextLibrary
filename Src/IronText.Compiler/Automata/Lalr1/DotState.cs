@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using IronText.Algorithm;
-using IronText.Framework;
-using System.Collections.ObjectModel;
-using IronText.Reflection;
 using IronText.Compiler.Analysis;
 
 namespace IronText.Automata.Lalr1

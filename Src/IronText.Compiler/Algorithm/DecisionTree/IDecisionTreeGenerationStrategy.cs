@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace IronText.Algorithm
 {
     public interface IDecisionTreeGenerationStrategy

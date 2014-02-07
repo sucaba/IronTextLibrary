@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using IronText.Automata.Regular;
 using IronText.Build;
-using IronText.Extensibility;
 using IronText.Framework;
-using IronText.Reflection;
 using IronText.Lib.IL;
 using IronText.Lib.IL.Generators;
 using IronText.Lib.Shared;
-using IronText.Misc;
 using IronText.Logging;
-using IronText.Runtime;
+using IronText.Misc;
+using IronText.Reflection;
 using IronText.Reflection.Managed;
+using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
@@ -196,7 +194,7 @@ namespace IronText.MetadataCompiler
                                                 .Ldfld((ScanCursor c) => c.RootContext);
                                         },
                                         null,
-                                        data.DefinitionType);
+                                        data);
 
             generator.Build(
                 emit,

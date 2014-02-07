@@ -4,7 +4,6 @@ using System.Text;
 namespace IronText.Automata.Regular
 {
     using IronText.Algorithm;
-    using IronText.Extensibility;
     using State = System.Int32;
 
     public interface IDfaSerialization

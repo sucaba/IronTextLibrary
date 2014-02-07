@@ -1,12 +1,9 @@
 ﻿using System.Diagnostics;
-using System.Linq;
-using IronText.Extensibility;
-using IronText.Framework;
-using IronText.Reflection;
 using IronText.Lib.IL;
 using IronText.Lib.Shared;
-using IronText.Runtime;
+using IronText.Reflection;
 using IronText.Reflection.Managed;
+using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
@@ -83,7 +80,7 @@ namespace IronText.MetadataCompiler
                                             emit,
                                             il => il.Ldarg(ctx),
                                             il => il.Ldarg(lookbackStart),
-                                            data.DefinitionType,
+                                            data,
                                             data.LocalParseContexts);
 
             var code = new GrammarActionCode(emit, contextResolverCode)

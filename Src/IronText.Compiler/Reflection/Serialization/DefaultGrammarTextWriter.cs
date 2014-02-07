@@ -1,10 +1,6 @@
-﻿using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
+﻿using System.CodeDom.Compiler;
 using System.IO;
 using System.Linq;
-using System.Text;
-using Microsoft.CSharp;
 
 namespace IronText.Reflection
 {

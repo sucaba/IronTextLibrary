@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using IronText.Framework;
 using IronText.Logging;
 using IronText.Misc;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
 using IronText.Reporting;
-using IronText.Runtime;
 
 namespace IronText.MetadataCompiler.CilSyntax
 {

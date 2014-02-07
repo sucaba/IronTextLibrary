@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using IronText.Algorithm;
+﻿using IronText.Algorithm;
 using IronText.Framework;
 using IronText.Lib.Shared;
 

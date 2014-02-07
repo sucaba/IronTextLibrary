@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using IronText.Extensibility;
 
 namespace IronText.Automata.Regular
 {

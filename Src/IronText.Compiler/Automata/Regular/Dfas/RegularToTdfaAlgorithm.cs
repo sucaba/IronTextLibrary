@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using IronText.Algorithm;
-using IronText.Extensibility;
 
 namespace IronText.Automata.Regular
 {
     using Action = System.Int32;
     using State = System.Int32;
-    using System;
 
     public class RegularToTdfaAlgorithm
     {
