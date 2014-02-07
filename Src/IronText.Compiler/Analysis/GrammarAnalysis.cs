@@ -45,13 +45,7 @@ namespace IronText.Compiler.Analysis
 
         private IEnumerable<int> GetDependantTokens(int token)
         {
-            foreach (var rule in grammar.Symbols[token].Productions)
-            {
-                foreach (int part in rule.PatternTokens)
-                {
-                    yield return part;
-                }
-            }
+            return grammar.Symbols[token].Productions.SelectMany(rule => rule.PatternTokens);
         }
 
         public string SymbolName(int token)

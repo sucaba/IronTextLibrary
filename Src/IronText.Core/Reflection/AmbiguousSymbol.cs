@@ -77,7 +77,7 @@ namespace IronText.Reflection
                     builder.Append("|");
                 }
 
-                builder.Append(Context.Symbols[token]);
+                builder.Append(Scope.Symbols[token]);
             }
 
             builder.Append("}");

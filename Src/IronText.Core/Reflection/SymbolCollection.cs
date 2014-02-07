@@ -26,7 +26,7 @@ namespace IronText.Reflection
 
         public AmbiguousSymbol FindAmbiguous(int mainToken, IEnumerable<int> tokens)
         {
-            foreach (var symb in Context.Symbols)
+            foreach (var symb in Scope.Symbols)
             {
                 var amb = symb as AmbiguousSymbol;
                 if (amb != null && amb.MainToken == mainToken && amb.Tokens.SequenceEqual(tokens))

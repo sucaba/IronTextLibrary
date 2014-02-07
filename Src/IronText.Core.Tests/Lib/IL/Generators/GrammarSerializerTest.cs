@@ -5,6 +5,7 @@ using IronText.Reflection;
 using IronText.Lib.IL;
 using IronText.MetadataCompiler;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace IronText.Tests.Lib.IL.Generators
 {
@@ -37,7 +38,7 @@ namespace IronText.Tests.Lib.IL.Generators
             return x == y
                 || (x != null
                 && y != null
-                && Enumerable.SequenceEqual(y.Productions, x.Productions)
+                && Enumerable.SequenceEqual(y.Productions, x.Productions, EqualityComparer<Production>.Default)
                 && Enumerable.SequenceEqual(y.Symbols, x.Symbols));
         }
     }

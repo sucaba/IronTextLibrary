@@ -2,7 +2,7 @@
 
 namespace IronText.Collections
 {
-    public abstract class IndexableObject<TContext> : IIndexable<TContext>
+    public abstract class IndexableObject<TScope> : IIndexable<TScope>
     {
         public const int NoId = -1;
 
@@ -15,13 +15,13 @@ namespace IronText.Collections
 
         public bool IsDetached { get { return NoId == Index; } }
 
-        protected TContext Context { get; private set; }
+        protected TScope Scope { get; private set; }
 
         protected virtual void DoAttached() { }
 
         protected virtual void DoDetaching() { }
 
-        void IIndexable<TContext>.Attach(int id, TContext context)
+        void IIndexable<TScope>.Attach(int id, TScope context)
         {
             if (!IsDetached)
             {
@@ -29,12 +29,12 @@ namespace IronText.Collections
             }
 
             Index = id;
-            Context = context;
+            Scope = context;
 
             DoAttached();
         }
 
-        void IIndexable<TContext>.Detach(TContext context)
+        void IIndexable<TScope>.Detach(TScope context)
         {
             DoDetaching();
 

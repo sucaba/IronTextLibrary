@@ -23,7 +23,7 @@ namespace IronText.Compiler.Analysis
             this.LA = null;
         }
 
-        public int Outcome { get { return production.OutcomeToken; } }
+        public int Outcome { get { return production.Outcome.Index; } }
 
         public int this[int index] { get { return production.PatternTokens[index]; } }
 
@@ -52,9 +52,9 @@ namespace IronText.Compiler.Analysis
         {
             get
             { 
-                return Position == production.PatternTokens.Length 
+                return Position == production.Pattern.Length 
                      ? -1
-                     : production.PatternTokens[Position];
+                     : production.Pattern[Position].Index;
             }
         }
 

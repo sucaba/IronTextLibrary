@@ -19,7 +19,7 @@ namespace IronText.Reflection
 
         public bool IsAugmentedStart { get { return PredefinedTokens.AugmentedStart == Index; } }
 
-        public bool IsStart { get { return Context.Start == this; } }
+        public bool IsStart { get { return Scope.Start == this; } }
 
         /// <summary>
         /// Categories token belongs to
@@ -49,32 +49,10 @@ namespace IronText.Reflection
         public override bool Equals(object obj)
         {
             var casted = obj as Symbol;
-            return casted != null
-                && casted.Name == Name
-                && casted.Categories == Categories
-                && object.Equals(casted.Precedence, Precedence)
-                ;
+            return casted != null && casted.Index == Index;
         }
 
-        public override int GetHashCode()
-        {
-            int result = 0;
-            unchecked
-            {
-                if (Name != null)
-                {
-                    result += Name.GetHashCode();
-                }
-
-                result += Categories.GetHashCode();
-                if (Precedence != null)
-                {
-                    result += Precedence.GetHashCode();
-                }
-            }
-
-            return result;
-        }
+        public override int GetHashCode() { return Index; }
 
         protected override SymbolBase DoClone()
         {

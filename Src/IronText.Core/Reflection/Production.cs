@@ -41,13 +41,13 @@ namespace IronText.Reflection
 
         public Symbol[]          Pattern        { get; private set; }
 
-        public ProductionContext ProductionContext { get; private set; }
+        public ProductionContext Context        { get; private set; }
 
         public Precedence        ExplicitPrecedence { get; set; }
 
         public int  Size        { get { return PatternTokens.Length; } }
 
-        public bool IsStart     { get { return Context.Start == Outcome; } }
+        public bool IsStart     { get { return Scope.Start == Outcome; } }
 
         public bool IsAugmented { get { return PredefinedTokens.AugmentedStart == OutcomeToken; } }
 
@@ -60,8 +60,8 @@ namespace IronText.Reflection
                     return ExplicitPrecedence;
                 }
 
-                int index = Array.FindLastIndex(PatternTokens, t => Context.Symbols[t].IsTerminal);
-                return index < 0 ? null : Context.Symbols[PatternTokens[index]].Precedence;
+                int index = Array.FindLastIndex(Pattern, s => s.IsTerminal);
+                return index < 0 ? null : Pattern[index].Precedence;
             }
         }
 
@@ -83,8 +83,8 @@ namespace IronText.Reflection
         {
             return other != null
                 && other.Index == Index
-                && other.OutcomeToken == OutcomeToken
-                && Enumerable.SequenceEqual(other.PatternTokens, PatternTokens)
+                && other.Outcome.Index == Outcome.Index
+                && Enumerable.SequenceEqual(other.Pattern, Pattern)
                 ;
         }
 
@@ -95,7 +95,7 @@ namespace IronText.Reflection
 
         public override int GetHashCode()
         {
-            return unchecked(OutcomeToken + PatternTokens.Sum());
+            return unchecked(Index + Outcome.Index + Pattern.Sum(s => s.Index));
         }
 
         public string Describe(Grammar grammar, int pos)
@@ -186,7 +186,7 @@ namespace IronText.Reflection
                 if (IsDetached)
                 {                
                     output
-                        .Append(OutcomeToken)
+                        .Append(Outcome.Index)
                         .Append(" ->")
                         .Append(string.Join(" ", PatternTokens));
                 }

@@ -174,15 +174,15 @@ namespace IronText.MetadataCompiler
 
         private void DescribeRule(IndentedTextWriter output, int ruleId)
         {
-            var rule = data.Grammar.Productions[ruleId];
+            var prod = data.Grammar.Productions[ruleId];
 
-            output.Write(data.Grammar.Symbols[rule.OutcomeToken].Name);
+            output.Write(prod.Outcome.Name);
             output.Write(" ->");
 
-            for (int i = 0; i != rule.PatternTokens.Length; ++i)
+            for (int i = 0; i != prod.Pattern.Length; ++i)
             {
                 output.Write(" ");
-                output.Write(data.Grammar.Symbols[rule.PatternTokens[i]].Name);
+                output.Write(prod.Pattern[i].Name);
             }
         }
     }

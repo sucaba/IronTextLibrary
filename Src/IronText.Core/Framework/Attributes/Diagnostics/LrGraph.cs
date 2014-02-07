@@ -75,24 +75,23 @@ namespace IronText.Framework
                     break;
                 }
 
-                var rule = item.Production;
+                var prod = item.Production;
                 output.AppendFormat(
                     @"<tr> <td align=""left"" port=""r0"">&#40;{0}&#41; {1} -&gt; ",
                     item.Production.Index,
-                    TokenToHtml(rule.OutcomeToken)
-                    );
+                    SymbolToHtml(prod.Outcome));
 
-                for (int k = 0; k != rule.PatternTokens.Length; ++k)
+                for (int k = 0; k != prod.Pattern.Length; ++k)
                 {
                     if (item.Position == k)
                     {
                         output.Append("&bull;");
                     }
 
-                    output.Append(" ").Append(TokenToHtml(rule.PatternTokens[k]));
+                    output.Append(" ").Append(SymbolToHtml(prod.Pattern[k]));
                 }
 
-                if (item.Position == rule.PatternTokens.Length)
+                if (item.Position == prod.Pattern.Length)
                 {
                     output.Append("&bull;");
                 }
@@ -107,7 +106,12 @@ namespace IronText.Framework
 
         private string TokenToHtml(int token)
         {
-            var result = HttpUtility.HtmlEncode(grammar.Symbols[token].Name);
+            return SymbolToHtml(grammar.Symbols[token]);
+        }
+
+        private string SymbolToHtml(SymbolBase symbol)
+        {
+            var result = HttpUtility.HtmlEncode(symbol.Name);
             result = result.Replace("{", "&#123;");
             result = result.Replace("}", "&#125;");
             return result;

@@ -132,7 +132,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var production in grammar.Productions)
             {
-                if (production.OutcomeToken == PredefinedTokens.AugmentedStart)
+                if (production.Outcome.IsAugmentedStart)
                 {
                     // Start rule is defined automatically when first token is defined
                     continue;
@@ -159,7 +159,7 @@ namespace IronText.MetadataCompiler
                 emit
                     .Ldloc(resultVar.GetRef())
                     .Ldprop((Grammar g) => g.Productions)
-                    .Ldc_I4(production.OutcomeToken)
+                    .Ldc_I4(production.Outcome.Index)
                     .Ldloc(partsVar.GetRef())
                     .Call((ProductionCollection prods, int l, IEnumerable<int> p) => prods.Define(l, p))
                     .Pop()

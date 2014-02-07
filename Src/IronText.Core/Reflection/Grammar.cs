@@ -16,15 +16,15 @@ namespace IronText.Reflection
 
         public Grammar()
         {
-            Options      = RuntimeOptions.Default;
+            Options     = RuntimeOptions.Default;
 
-            Productions        = new ProductionCollection(this);
-            Symbols            = new SymbolCollection(this);
-            Conditions         = new ConditionCollection(this);
-            Matchers           = new MatcherCollection(this);
-            Mergers            = new MergerCollection(this);
-            ProductionContexts = new ProductionContextCollection(this);
-            Joint              = new Joint();
+            Productions = new ProductionCollection(this);
+            Symbols     = new SymbolCollection(this);
+            Conditions  = new ConditionCollection(this);
+            Matchers    = new MatcherCollection(this);
+            Mergers     = new MergerCollection(this);
+            Contexts    = new ProductionContextCollection(this);
+            Joint       = new Joint();
 
             for (int i = PredefinedTokens.Count; i != 0; --i)
             {
@@ -66,7 +66,7 @@ namespace IronText.Reflection
 
         public MergerCollection     Mergers             { get; private set; }
 
-        public ProductionContextCollection ProductionContexts  { get; private set; }
+        public ProductionContextCollection Contexts     { get; private set; }
 
         public override string ToString()
         {

@@ -20,7 +20,7 @@ namespace IronText.Reflection
         protected override void DoAttached()
         {
             base.DoAttached();
-            Matchers.Owner = Context.Matchers;
+            Matchers.Owner = Scope.Matchers;
         }
 
         protected override void DoDetaching()

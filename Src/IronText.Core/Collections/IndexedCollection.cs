@@ -4,20 +4,20 @@ using System.Collections.Generic;
 
 namespace IronText.Collections
 {
-    public class IndexedCollection<T, TContext> : IOwner<T>, IEnumerable<T>
-        where T : class, IIndexable<TContext>
+    public class IndexedCollection<T, TScope> : IOwner<T>, IEnumerable<T>
+        where T : class, IIndexable<TScope>
     {
         private const int InitialCapacity = 8;
 
         private T[] indexToItem;
 
-        public IndexedCollection(TContext context = default(TContext))
+        public IndexedCollection(TScope context = default(TScope))
         {
             indexToItem = new T[InitialCapacity];
-            this.Context = context;
+            this.Scope = context;
         }
 
-        public TContext Context { get; private set; }
+        public TScope Scope { get; private set; }
 
         public int Count { get; private set; }
 
@@ -37,14 +37,14 @@ namespace IronText.Collections
                 }
                 else if (indexToItem[index] != null)
                 {
-                    indexToItem[index].Detach(Context);
+                    indexToItem[index].Detach(Scope);
                 }
 
                 indexToItem[index] = value;
 
                 if (value != null)
                 {
-                    indexToItem[index].Attach(index, Context);
+                    indexToItem[index].Attach(index, Scope);
                 }
             }
         }
@@ -57,7 +57,7 @@ namespace IronText.Collections
                 Array.Resize(ref indexToItem, index * 2);
             }
 
-            item.Attach(index, Context);
+            item.Attach(index, Scope);
             indexToItem[index] = item;
 
             this.Count = index + 1;
@@ -74,7 +74,7 @@ namespace IronText.Collections
                 var item = indexToItem[i];
                 if (item != null)
                 {
-                    item.Detach(Context);
+                    item.Detach(Scope);
                     indexToItem[i] = null;
                 }
             }
@@ -139,7 +139,7 @@ namespace IronText.Collections
             {
                 if (indexToItem[i] == (object)item)
                 {
-                    item.Detach(Context);
+                    item.Detach(Scope);
                     indexToItem[i] = null;
                     return true;
                 }
@@ -153,7 +153,7 @@ namespace IronText.Collections
             var item = indexToItem[index];
             if (item != null)
             {
-                item.Detach(Context);
+                item.Detach(Scope);
                 indexToItem[index] = null;
                 return true;
             }

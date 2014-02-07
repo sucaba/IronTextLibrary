@@ -12,6 +12,6 @@ namespace IronText.MetadataCompiler
     {
         IEnumerable<ReportBuilder> ReportBuilders { get; }
 
-        Grammar Build(IGrammarSource languageName, ILogging logging);
+        Grammar Build(IGrammarSource source, ILogging logging);
     }
 }

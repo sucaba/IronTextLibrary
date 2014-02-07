@@ -118,6 +118,7 @@
     <Compile Include="Reflection\Cil\CilContextConsumer.cs" />
     <Compile Include="Reflection\Cil\CilContextProvider.cs" />
     <Compile Include="Reflection\IGrammarSource.cs" />
+    <Compile Include="Reflection\IReportDestinationHint.cs" />
     <Compile Include="Reflection\PredefinedTokens.cs" />
     <Compile Include="Reflection\Serialization\IGrammarTextWriter.cs" />
     <Compile Include="Reporting\CharRange.cs" />

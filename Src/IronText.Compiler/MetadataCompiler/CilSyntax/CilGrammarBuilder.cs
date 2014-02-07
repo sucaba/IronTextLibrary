@@ -98,7 +98,7 @@ namespace IronText.MetadataCompiler.CilSyntax
                     foreach (var contextType in feature.Value.GetAllContextTypes())
                     {
                         ProductionContext context;
-                        if (result.ProductionContexts.FindOrAdd(contextType.AssemblyQualifiedName, out context))
+                        if (result.Contexts.FindOrAdd(contextType.AssemblyQualifiedName, out context))
                         {
                             context.Joint.Add(new CilContextConsumer(contextType));
                         }
@@ -129,7 +129,7 @@ namespace IronText.MetadataCompiler.CilSyntax
                     {
                         context = ProductionContext.Global;
                     }
-                    else if (result.ProductionContexts.FindOrAdd(contextType.AssemblyQualifiedName, out context))
+                    else if (result.Contexts.FindOrAdd(contextType.AssemblyQualifiedName, out context))
                     {
                         context.Joint.Add(new CilContextConsumer(contextType));
                     }

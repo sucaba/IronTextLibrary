@@ -22,8 +22,8 @@ namespace IronText.Reflection
         public Production Define(int outcome, IEnumerable<int> pattern)
         {
             return Define(
-                (Symbol)Context.Symbols[outcome],
-                pattern.Select(t => (Symbol)Context.Symbols[t]));
+                (Symbol)Scope.Symbols[outcome],
+                pattern.Select(t => (Symbol)Scope.Symbols[t]));
         }
 
         /// <summary>
