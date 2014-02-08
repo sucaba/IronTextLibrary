@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using IronText.Automata.Lalr1;
 using IronText.MetadataCompiler;
 
 namespace IronText.Reporting
@@ -8,11 +9,13 @@ namespace IronText.Reporting
         private readonly LanguageData data;
         private ReadOnlyCollection<IParserState> states;
         private readonly ParserConflictInfo[] parserConflicts;
+        private readonly DotState[] parserStates;
 
         public ParserAutomata(ReportData reportData)
         {
-            this.data = reportData.data;
+            this.data            = reportData.data;
             this.parserConflicts = reportData.parserConflicts;
+            this.parserStates    = reportData.parserStates;
         }
 
         public ReadOnlyCollection<IParserState> States
@@ -21,11 +24,11 @@ namespace IronText.Reporting
             {
                 if (states == null)
                 {
-                    int count = data.ParserStates.Length;
+                    int count = parserStates.Length;
                     var array = new ParserState[count];
                     for (int i = 0; i != count; ++i)
                     {
-                        array[i] = new ParserState(data.ParserStates[i], data);
+                        array[i] = new ParserState(parserStates[i], data);
                     }
 
                     states = new ReadOnlyCollection<IParserState>(array);

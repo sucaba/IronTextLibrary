@@ -214,7 +214,7 @@
     <Compile Include="Reflection\Managed\MetadataException.cs" />
     <Compile Include="Reflection\Managed\ScanDataCollector.cs" />
     <Compile Include="MetadataCompiler\NamedLanguageProvider.cs" />
-    <Compile Include="MetadataCompiler\ProductionContextLink.cs" />
+    <Compile Include="MetadataCompiler\ProductionContextBinding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

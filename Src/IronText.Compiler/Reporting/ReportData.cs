@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using IronText.Automata.Lalr1;
 using IronText.MetadataCompiler;
 using IronText.Reflection;
 
@@ -10,12 +11,18 @@ namespace IronText.Reporting
         private IParserAutomata parserAutomata;
         internal readonly LanguageData data;
         internal readonly ParserConflictInfo[] parserConflicts;
+        internal readonly DotState[] parserStates;
 
-        internal ReportData(IGrammarSource source, LanguageData data, ParserConflictInfo[] parserConflicts)
+        internal ReportData(
+            IGrammarSource       source,
+            LanguageData         data,
+            ParserConflictInfo[] parserConflicts,
+            DotState[]           parserStates)
         {
             this.source = source;
             this.data = data;
             this.parserConflicts = parserConflicts;
+            this.parserStates = parserStates;
         }
 
         public string DestinationDirectory

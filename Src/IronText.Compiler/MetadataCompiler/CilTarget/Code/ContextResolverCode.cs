@@ -19,7 +19,7 @@ namespace IronText.MetadataCompiler
     {
         private readonly EmitSyntax         emit;
         private readonly Pipe<EmitSyntax>   ldRootContext;
-        private ProductionContextLink[]     localContexts;
+        private ProductionContextBinding[]     localContexts;
         private Pipe<EmitSyntax>            ldLookback;
 
         public ContextResolverCode(
@@ -27,7 +27,7 @@ namespace IronText.MetadataCompiler
             Pipe<EmitSyntax>    ldRootContext,
             Pipe<EmitSyntax>    ldLookback,
             LanguageData        data,
-            ProductionContextLink[] localContexts = null)
+            ProductionContextBinding[] localContexts = null)
         {
             this.emit = emit;
             this.ldRootContext   = ldRootContext;
@@ -61,7 +61,7 @@ namespace IronText.MetadataCompiler
                     var map =
                         (from i in Enumerable.Range(0, locals.Length)
                          let lc = locals[i]
-                         select new IntArrow<int>(lc.ParentState, i))
+                         select new IntArrow<int>(lc.StackState, i))
                         .ToArray();
 
                     var switchGenerator = SwitchGenerator.Sparse(
@@ -99,7 +99,7 @@ namespace IronText.MetadataCompiler
                                 if (LdCallPath(path, il2 => il2
                                     // Lookback for getting parent instance
                                                 .Do(ldLookback)
-                                                .Ldc_I4(lc.ContextTokenLookback)
+                                                .Ldc_I4(lc.ProviderStackLookback)
                                                 .Call((IStackLookback<Msg> lb, int backOffset)
                                                         => lb.GetValueAt(backOffset))
                                                 .Ldfld((Msg msg) => msg.Value)))

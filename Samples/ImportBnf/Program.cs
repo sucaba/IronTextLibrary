@@ -32,7 +32,7 @@ namespace Samples
             using (var interpreter = new Interpreter<BnfLanguage>(Bnf2CSharpConverter.Create(destBaseName)))
             using (var input = new StreamReader(path))
             {
-                interpreter.LogingKind = LoggingKind.ConsoleOut;
+                interpreter.LoggingKind = LoggingKind.Console;
                 if (interpreter.Parse(input, path))
                 {
                     Console.WriteLine("Conversion succeeded!");

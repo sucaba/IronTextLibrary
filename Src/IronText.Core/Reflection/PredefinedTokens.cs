@@ -8,7 +8,7 @@
 
         internal const int Propagated   = 1;
 
-        public const int AugmentedStart = 2;
+        internal const int AugmentedStart = 2;
 
         public const int Eoi            = 3;
 

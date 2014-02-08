@@ -104,9 +104,8 @@ namespace IronText.MetadataCompiler
             // Prepare language data for the language assembly generation
             result.IsDeterministic     = !lrTable.RequiresGlr;
             result.Grammar             = grammar;
-            result.GrammarAnalysis     = grammarAnalysis;
-            result.ParserStates        = parserDfa.States;
-            result.StateToSymbolTable  = parserDfa.GetStateToSymbolTable();
+            result.TokenComplexity     = grammarAnalysis.GetTokenComplexity();
+            result.StateToToken  = parserDfa.GetStateToSymbolTable();
             result.ParserActionTable   = lrTable.GetParserActionTable();
             result.ParserConflictActionTable = lrTable.GetConflictActionTable();
 
@@ -114,7 +113,7 @@ namespace IronText.MetadataCompiler
 
             if (!bootstrap)
             {
-                IReportData reportData = new ReportData(source, result, lrTable.Conflicts);
+                IReportData reportData = new ReportData(source, result, lrTable.Conflicts, parserDfa.States);
                 foreach (var reportBuilder in reportBuilders)
                 {
                     reportBuilder(reportData);
@@ -145,7 +144,7 @@ namespace IronText.MetadataCompiler
                             Origin   = source.Origin,
                             Message  = string.Format(
                                         "Unable to create scanner for '{0}' language.",
-                                        source.Origin)
+                                        source.LanguageName)
                         });
 
                     return false;
@@ -189,9 +188,9 @@ namespace IronText.MetadataCompiler
             return true;
         }
 
-        private static List<ProductionContextLink> CollectLocalContexts(Grammar grammar, ILrDfa lrDfa)
+        private static List<ProductionContextBinding> CollectLocalContexts(Grammar grammar, ILrDfa lrDfa)
         {
-            var result = new List<ProductionContextLink>();
+            var result = new List<ProductionContextBinding>();
 
             var states     = lrDfa.States;
             int stateCount = states.Length;
@@ -217,10 +216,10 @@ namespace IronText.MetadataCompiler
                         if (provider.ProvidedContexts.Contains(action.Context))
                         {
                             result.Add(
-                                new ProductionContextLink
+                                new ProductionContextBinding
                                 {
-                                    ParentState          = parentState,
-                                    ContextTokenLookback = item.Position,
+                                    StackState          = parentState,
+                                    ProviderStackLookback = item.Position,
                                     Provider             = provider,
                                     Consumer             = action.Context
                                 });

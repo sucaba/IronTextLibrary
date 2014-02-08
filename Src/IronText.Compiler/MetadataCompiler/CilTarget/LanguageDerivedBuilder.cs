@@ -346,8 +346,8 @@ namespace IronText.MetadataCompiler
                         .BeginBody();
             
             var resultLoc = emit.Locals.Generate().GetRef();
-            var itemLoc = emit.Locals.Generate().GetRef();
-            var table = data.GrammarAnalysis.GetTokenComplexity();
+            var itemLoc   = emit.Locals.Generate().GetRef();
+            var table     = data.TokenComplexity;
 
             emit = emit
                 .Local(resultLoc.Def, emit.Types.Import(typeof(int[])))
@@ -382,7 +382,7 @@ namespace IronText.MetadataCompiler
                                 .EndArgs()
                         .BeginBody();
             var resultLoc = emit.Locals.Generate().GetRef();
-            var stateToSymbol = data.StateToSymbolTable;
+            var stateToSymbol = data.StateToToken;
 
             emit = emit
                 .Local(resultLoc.Def, context.Types.Import(typeof(int[])))

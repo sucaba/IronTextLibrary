@@ -41,20 +41,14 @@ namespace CSharpParser.Tests
             var data = provider.Resource;
             timer.Stop();
 
-            ShowReduceStates(data);
+            // ShowReduceStates(data);
             //ShowSimilarStates(data);
             //ShowSimilarTokens(data);
 
             Console.WriteLine("Build time = {0}sec", timer.Elapsed.TotalSeconds);
         }
 
-        private void ShowReduceStates(LanguageData data)
-        {
-            foreach (var state in data.ParserStates)
-            {
-            }
-        }
-
+#if false
         private static void ShowSimilarStates(LanguageData data)
         {
             int stateCount = data.ParserStates.Length;
@@ -90,6 +84,7 @@ namespace CSharpParser.Tests
                 Console.WriteLine("{ " + string.Join(", ", category) + "}");
             }
         }
+#endif
 
         private static bool AreCompatibleStates(LanguageData data, int[] terms, ITable<int> table, int p, int q)
         {
@@ -178,6 +173,7 @@ namespace CSharpParser.Tests
             return ParserAction.FailAction;
         }
 
+#if false
         // Merging similar tokens (token equivalence classes) makes sense only 
         // after state compression
         private static void ShowSimilarTokens(LanguageData data)
@@ -230,6 +226,7 @@ namespace CSharpParser.Tests
                 Console.WriteLine("T{ " + string.Join(", ", category) + "}");
             }
         }
+#endif
 
 #if false
                     var pRules = new List<int>();
