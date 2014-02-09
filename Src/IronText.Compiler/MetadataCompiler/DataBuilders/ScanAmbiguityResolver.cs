@@ -16,7 +16,7 @@ namespace IronText.MetadataCompiler
         /// <param name="disambiguation"></param>
         /// <param name="mainToken"></param>
         /// <param name="tokens"></param>
-        void RegisterAction(Matcher scanProduction);
+        void RegisterAction(Matcher matcher);
 
         /// <summary>
         /// Register actions invoked in state
@@ -26,7 +26,7 @@ namespace IronText.MetadataCompiler
         void RegisterState(TdfaState state);
 
         /// <summary>
-        /// Define ambiguous tokens
+        /// Define ambiguous symbols
         /// </summary>
         /// <param name="grammar"></param>
         void DefineAmbiguities(Grammar grammar);
@@ -45,43 +45,43 @@ namespace IronText.MetadataCompiler
             this.tokenSetType = tokenSetType;
         }
 
-        public void RegisterAction(Matcher scanProduction)
+        public void RegisterAction(Matcher matcher)
         {
-            SymbolBase      outcome = scanProduction.Outcome;
+            SymbolBase      outcome = matcher.Outcome;
             AmbiguousSymbol ambiguous;
             Symbol          deterministic;
 
             if (outcome == null)
             {
-                actionToTokenProducer[scanProduction.Index] =
+                actionToTokenProducer[matcher.Index] =
                     new TokenProducerInfo
                     {
                         MainTokenId     = -1,
-                        Disambiguation  = scanProduction.Disambiguation,
-                        RealActions     = SparseIntSetType.Instance.Of(scanProduction.Index),
+                        Disambiguation  = matcher.Disambiguation,
+                        RealActions     = SparseIntSetType.Instance.Of(matcher.Index),
                         PossibleTokens  = tokenSetType.Empty
                     };
             
             }
             else if ((ambiguous = outcome as AmbiguousSymbol) != null)
             {
-                actionToTokenProducer[scanProduction.Index] =
+                actionToTokenProducer[matcher.Index] =
                     new TokenProducerInfo
                     {
                         MainTokenId     = ambiguous.MainToken,
-                        Disambiguation  = scanProduction.Disambiguation,
-                        RealActions     = SparseIntSetType.Instance.Of(scanProduction.Index),
+                        Disambiguation  = matcher.Disambiguation,
+                        RealActions     = SparseIntSetType.Instance.Of(matcher.Index),
                         PossibleTokens  = tokenSetType.Of(ambiguous.Tokens)
                     };
             }
             else if ((deterministic = outcome as Symbol) != null)
             {
-                actionToTokenProducer[scanProduction.Index] =
+                actionToTokenProducer[matcher.Index] =
                     new TokenProducerInfo
                     {
                         MainTokenId     = deterministic.Index,
-                        Disambiguation  = scanProduction.Disambiguation,
-                        RealActions     = SparseIntSetType.Instance.Of(scanProduction.Index),
+                        Disambiguation  = matcher.Disambiguation,
+                        RealActions     = SparseIntSetType.Instance.Of(matcher.Index),
                         PossibleTokens  = tokenSetType.Of(deterministic.Index)
                     };
             }

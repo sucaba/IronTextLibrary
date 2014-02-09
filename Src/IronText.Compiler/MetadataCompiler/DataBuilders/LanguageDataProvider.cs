@@ -105,7 +105,7 @@ namespace IronText.MetadataCompiler
             result.IsDeterministic     = !lrTable.RequiresGlr;
             result.Grammar             = grammar;
             result.TokenComplexity     = grammarAnalysis.GetTokenComplexity();
-            result.StateToToken  = parserDfa.GetStateToSymbolTable();
+            result.StateToToken        = parserDfa.GetStateToSymbolTable();
             result.ParserActionTable   = lrTable.GetParserActionTable();
             result.ParserConflictActionTable = lrTable.GetConflictActionTable();
 
