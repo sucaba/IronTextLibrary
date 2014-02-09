@@ -108,7 +108,7 @@ namespace IronText.MetadataCompiler
                 IReportData reportData = new ReportData(source, result, lrTable.Conflicts, parserDfa.States);
                 foreach (var report in grammar.Reports)
                 {
-                    report.Builder(reportData);
+                    report.Build(reportData);
                 }
             }
 

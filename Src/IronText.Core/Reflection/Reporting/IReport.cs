@@ -2,6 +2,6 @@
 {
     public interface IReport
     {
-        ReportBuilder Builder { get; }
+        void Build(IReportData data);
     }
 }

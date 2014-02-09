@@ -24,7 +24,7 @@ namespace IronText.Framework
             return new IReport[] { this };
         }
 
-        private void WriteDocFiles(IReportData data)
+        public void Build(IReportData data)
         {
             string path = Path.Combine(data.DestinationDirectory, fileName);
 
@@ -268,11 +268,6 @@ namespace IronText.Framework
             }
 
             return output;
-        }
-
-        ReportBuilder IReport.Builder
-        {
-            get { return WriteDocFiles; }
         }
     }
 }

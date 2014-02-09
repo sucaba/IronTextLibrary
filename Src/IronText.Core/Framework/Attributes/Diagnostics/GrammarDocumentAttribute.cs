@@ -20,7 +20,7 @@ namespace IronText.Framework
             return new [] { this };
         }
 
-        private void WriteGrammarFile(IReportData data)
+        public void Build(IReportData data)
         {
             string path = Path.Combine(data.DestinationDirectory, fileName);
 
@@ -28,11 +28,6 @@ namespace IronText.Framework
             {
                 grammarFile.Write(data.Grammar);
             }
-        }
-
-        ReportBuilder IReport.Builder
-        {
-            get { return WriteGrammarFile; }
         }
     }
 }

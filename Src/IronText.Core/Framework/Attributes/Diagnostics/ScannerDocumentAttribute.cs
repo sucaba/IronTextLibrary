@@ -20,7 +20,7 @@ namespace IronText.Framework
             yield return this;
         }
 
-        private void WriteScannerFile(IReportData data)
+        public void Build(IReportData data)
         {
             string path = Path.Combine(data.DestinationDirectory, fileName);
 
@@ -36,11 +36,6 @@ namespace IronText.Framework
                     }
                 }
             }
-        }
-
-        ReportBuilder IReport.Builder
-        {
-            get { return WriteScannerFile; }
         }
     }
 }

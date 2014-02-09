@@ -19,17 +19,12 @@ namespace IronText.Framework
             return new[] { this };
         }
 
-        private void WriteGvGraph(IReportData data)
+        public void Build(IReportData data)
         {
             string path = Path.Combine(data.DestinationDirectory, fileName);
 
             var graph = new LrGraph(data);
             graph.WriteGv(path);
-        }
-
-        ReportBuilder IReport.Builder
-        {
-            get { return WriteGvGraph; }
         }
     }
 }

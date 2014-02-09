@@ -125,7 +125,6 @@
     <Compile Include="Reflection\Reporting\ReportCollection.cs" />
     <Compile Include="Reflection\Serialization\IGrammarTextWriter.cs" />
     <Compile Include="Reflection\Reporting\CharRange.cs" />
-    <Compile Include="Reflection\Reporting\Delegates.cs" />
     <Compile Include="Reflection\Reporting\IParserAutomata.cs" />
     <Compile Include="Reflection\Reporting\IParserDotItem.cs" />
     <Compile Include="Reflection\Reporting\IParserState.cs" />

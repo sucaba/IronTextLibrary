@@ -189,10 +189,5 @@ namespace IronText.MetadataCompiler
                 output.Write(prod.Pattern[i].Name);
             }
         }
-
-        ReportBuilder IReport.Builder
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 }

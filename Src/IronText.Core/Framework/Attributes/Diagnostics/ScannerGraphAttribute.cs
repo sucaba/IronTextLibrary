@@ -20,7 +20,7 @@ namespace IronText.Framework
             return new [] { this };
         }
 
-        private void WriteGvGraph(IReportData data)
+        public void Build(IReportData data)
         {
             foreach (var condition in data.Grammar.Conditions)
             {
@@ -33,11 +33,6 @@ namespace IronText.Framework
                     dfa.DescribeGraph(graph);
                 }
             }
-        }
-
-        ReportBuilder IReport.Builder
-        {
-            get { return WriteGvGraph; }
         }
     }
 }
