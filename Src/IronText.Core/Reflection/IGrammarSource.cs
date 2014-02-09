@@ -19,8 +19,8 @@ namespace IronText.Reflection
         string Origin            { get; }
 
         /// <summary>
-        /// Assembly qualified type name of a grammar builder
+        /// Assembly qualified type name of a grammar reader
         /// </summary>
-        string BuilderTypeName   { get; }
+        string ReaderTypeName   { get; }
     }
 }

@@ -67,7 +67,7 @@ namespace IronText.Reflection.Managed
 
         public override int GetHashCode() { return FullLanguageName.GetHashCode(); }
 
-        public string BuilderTypeName
+        public string ReaderTypeName
         {
             get { return "IronText.Reflection.Managed.CilGrammarReader, IronText.Compiler"; }
         }

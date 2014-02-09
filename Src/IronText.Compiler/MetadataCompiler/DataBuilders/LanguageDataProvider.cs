@@ -32,8 +32,8 @@ namespace IronText.MetadataCompiler
 
             result = new LanguageData();
 
-            var builderType = Type.GetType(source.BuilderTypeName);
-            if (builderType == null)
+            var readerType = Type.GetType(source.ReaderTypeName);
+            if (readerType == null)
             {
                 logging.Write(
                     new LogEntry
@@ -41,16 +41,15 @@ namespace IronText.MetadataCompiler
                         Severity = Severity.Error,
                         Message = string.Format(
                                     "Unable to load grammar builder '{0}' for language '{1}'",
-                                    source.BuilderTypeName,
+                                    source.ReaderTypeName,
                                     source.LanguageName),
                         Origin = source.Origin
                     });
                 return false;
             }
 
-            var grammarBuilder = (IGrammarReader)Activator.CreateInstance(builderType);
-
-            Grammar grammar = grammarBuilder.Read(source, logging);
+            var reader = (IGrammarReader)Activator.CreateInstance(readerType);
+            var grammar = reader.Read(source, logging);
             if (grammar == null)
             {
                 return false;
