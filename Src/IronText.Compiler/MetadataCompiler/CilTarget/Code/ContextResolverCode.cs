@@ -133,7 +133,7 @@ namespace IronText.MetadataCompiler
 
         private bool LdRelativeContext(Type fromType, Type toType, Pipe<EmitSyntax> ldFromContext)
         {
-            var path = new ContextBrowser(fromType).GetGetterPath(toType);
+            var path = new CilContextBrowser(fromType).GetGetterPath(toType);
             return LdCallPath(path, ldFromContext);
         }
 

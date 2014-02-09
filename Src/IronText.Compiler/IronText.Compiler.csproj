@@ -142,7 +142,7 @@
     <Compile Include="Build\Engine\ResourceGetter.cs" />
     <Compile Include="Build\MetadataSyntax\CompositeDerivedBuilder.cs" />
     <Compile Include="Build\MetadataSyntax\TypesMetadataSyntax.cs" />
-    <Compile Include="MetadataCompiler\CilSyntax\CilGrammarBuilder.cs" />
+    <Compile Include="Reflection\Serialization\Managed\CilGrammarReader.cs" />
     <Compile Include="Reflection\Reporting\ReportData.cs" />
     <Compile Include="Reflection\Managed\CilSymbolRefResolver.cs" />
     <Compile Include="Reflection\Managed\ICilSymbolResolver.cs" />
@@ -184,7 +184,7 @@
     <Compile Include="MetadataCompiler\CilTarget\Bootstrap\BootstrapScanner.cs" />
     <Compile Include="MetadataCompiler\CompiledLanguageProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserConflictLogging.cs" />
-    <Compile Include="MetadataCompiler\DataBuilders\ContextBrowser.cs" />
+    <Compile Include="Reflection\Managed\CilContextBrowser.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\LanguageDataProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ScanAmbiguityResolver.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\TokenProducerInfo.cs" />

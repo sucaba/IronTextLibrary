@@ -117,7 +117,7 @@
     <Compile Include="Framework\LanguageFlags.cs" />
     <Compile Include="Reflection\Cil\CilContextConsumer.cs" />
     <Compile Include="Reflection\Cil\CilContextProvider.cs" />
-    <Compile Include="Reflection\IGrammarBuilder.cs" />
+    <Compile Include="Reflection\Serialization\IGrammarReader.cs" />
     <Compile Include="Reflection\IGrammarSource.cs" />
     <Compile Include="Reflection\IReportDestinationHint.cs" />
     <Compile Include="Reflection\PredefinedTokens.cs" />

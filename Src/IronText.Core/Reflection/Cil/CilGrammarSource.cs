@@ -69,7 +69,7 @@ namespace IronText.Reflection.Managed
 
         public string BuilderTypeName
         {
-            get { return "IronText.MetadataCompiler.CilSyntax.CilGrammarBuilder, IronText.Compiler"; }
+            get { return "IronText.Reflection.Managed.CilGrammarReader, IronText.Compiler"; }
         }
 
         string IReportDestinationHint.OutputDirectory

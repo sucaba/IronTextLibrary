@@ -8,13 +8,13 @@ using IronText.Reflection;
 using IronText.Reflection.Managed;
 using IronText.Reflection.Reporting;
 
-namespace IronText.MetadataCompiler.CilSyntax
+namespace IronText.Reflection.Managed
 {
-    class CilGrammarBuilder : IGrammarBuilder
+    class CilGrammarReader : IGrammarReader
     {
         private ILogging logging;
 
-        public Grammar Build(IGrammarSource source, ILogging logging)
+        public Grammar Read(IGrammarSource source, ILogging logging)
         {
             var cilSource = source as CilGrammarSource;
             if (cilSource == null)

@@ -48,9 +48,9 @@ namespace IronText.MetadataCompiler
                 return false;
             }
 
-            var grammarBuilder = (IGrammarBuilder)Activator.CreateInstance(builderType);
+            var grammarBuilder = (IGrammarReader)Activator.CreateInstance(builderType);
 
-            Grammar grammar = grammarBuilder.Build(source, logging);
+            Grammar grammar = grammarBuilder.Read(source, logging);
             if (grammar == null)
             {
                 return false;

@@ -4,8 +4,8 @@ using IronText.Reflection.Reporting;
 
 namespace IronText.Reflection
 {
-    public interface IGrammarBuilder
+    public interface IGrammarReader
     {
-        Grammar Build(IGrammarSource source, ILogging logging);
+        Grammar Read(IGrammarSource source, ILogging logging);
     }
 }

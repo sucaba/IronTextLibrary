@@ -5,28 +5,27 @@ using System.Reflection;
 using IronText.Algorithm;
 using IronText.Framework;
 using IronText.Misc;
-using IronText.Reflection.Managed;
 
-namespace IronText.MetadataCompiler
+namespace IronText.Reflection.Managed
 {
     public static class CilProviderExtensions
     {
         public static IEnumerable<MethodInfo> GetGetterPath(this CilContextProvider provider, Type type)
         {
-            return new ContextBrowser(provider.ProviderType).GetGetterPath(type);
+            return new CilContextBrowser(provider.ProviderType).GetGetterPath(type);
         }
 
         public static IEnumerable<Type> GetAllContextTypes(this CilContextProvider provider)
         {
-            return new ContextBrowser(provider.ProviderType).GetAllContextTypes();
+            return new CilContextBrowser(provider.ProviderType).GetAllContextTypes();
         }
     }
 
-    class ContextBrowser
+    class CilContextBrowser
     {
         private readonly Type fromType;
 
-        public ContextBrowser(Type fromType)
+        public CilContextBrowser(Type fromType)
         {
             this.fromType = fromType;
         }
