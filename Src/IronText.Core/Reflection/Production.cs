@@ -41,8 +41,6 @@ namespace IronText.Reflection
 
         public Symbol[]          Pattern        { get; private set; }
 
-        public ProductionContext Context        { get; private set; }
-
         public Precedence        ExplicitPrecedence { get; set; }
 
         public int  Size        { get { return PatternTokens.Length; } }
