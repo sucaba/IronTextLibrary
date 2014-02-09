@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using IronText.Extensibility;
 using IronText.Reflection;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 using IronText.Runtime;
 
 namespace IronText.Framework
 {
-    public class DescribeParserStateMachineAttribute : LanguageMetadataAttribute
+    public class DescribeParserStateMachineAttribute : LanguageMetadataAttribute, IReport
     {
         const string Indent = "  ";
         private readonly string fileName;
@@ -19,9 +19,9 @@ namespace IronText.Framework
             this.fileName = fileName;
         }
 
-        public override IEnumerable<ReportBuilder> GetReportBuilders()
+        public override IEnumerable<IReport> GetReports()
         {
-            return new ReportBuilder[] { WriteDocFiles };
+            return new IReport[] { this };
         }
 
         private void WriteDocFiles(IReportData data)
@@ -268,6 +268,11 @@ namespace IronText.Framework
             }
 
             return output;
+        }
+
+        ReportBuilder IReport.Builder
+        {
+            get { return WriteDocFiles; }
         }
     }
 }

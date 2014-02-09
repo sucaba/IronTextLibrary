@@ -3,7 +3,7 @@ using IronText.Automata.Lalr1;
 using IronText.MetadataCompiler;
 using IronText.Reflection;
 
-namespace IronText.Reporting
+namespace IronText.Reflection.Reporting
 {
     class ReportData : IReportData
     {

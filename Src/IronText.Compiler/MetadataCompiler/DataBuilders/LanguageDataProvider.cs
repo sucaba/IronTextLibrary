@@ -9,7 +9,7 @@ using IronText.Compiler.Analysis;
 using IronText.Extensibility;
 using IronText.Logging;
 using IronText.Reflection;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 
 namespace IronText.MetadataCompiler
 {
@@ -61,8 +61,6 @@ namespace IronText.MetadataCompiler
 //            var inliner = new ProductionInliner(grammar);
 //            grammar = inliner.Inline();
 
-            var reportBuilders = new List<ReportBuilder>(grammarBuilder.ReportBuilders);
-
             if (!bootstrap && !CompileScannerTdfas(grammar))
             {
                 result = null;
@@ -91,12 +89,7 @@ namespace IronText.MetadataCompiler
             var lrTable = new ConfigurableLrTable(parserDfa, grammar.Options);
             if (!lrTable.ComplyWithConfiguration)
             {
-                reportBuilders.Add(
-                    reportData =>
-                    {
-                        var messageBuilder = new ConflictMessageBuilder(reportData);
-                        messageBuilder.Write(logging);
-                    });
+                grammar.Reports.Add(new ConflictMessageBuilder(logging));
             }
 
             var localParseContexts = CollectLocalContexts(grammar, parserDfa);
@@ -114,9 +107,9 @@ namespace IronText.MetadataCompiler
             if (!bootstrap)
             {
                 IReportData reportData = new ReportData(source, result, lrTable.Conflicts, parserDfa.States);
-                foreach (var reportBuilder in reportBuilders)
+                foreach (var report in grammar.Reports)
                 {
-                    reportBuilder(reportData);
+                    report.Builder(reportData);
                 }
             }
 

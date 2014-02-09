@@ -117,20 +117,23 @@
     <Compile Include="Framework\LanguageFlags.cs" />
     <Compile Include="Reflection\Cil\CilContextConsumer.cs" />
     <Compile Include="Reflection\Cil\CilContextProvider.cs" />
+    <Compile Include="Reflection\IGrammarBuilder.cs" />
     <Compile Include="Reflection\IGrammarSource.cs" />
     <Compile Include="Reflection\IReportDestinationHint.cs" />
     <Compile Include="Reflection\PredefinedTokens.cs" />
+    <Compile Include="Reflection\Reporting\IReport.cs" />
+    <Compile Include="Reflection\Reporting\ReportCollection.cs" />
     <Compile Include="Reflection\Serialization\IGrammarTextWriter.cs" />
-    <Compile Include="Reporting\CharRange.cs" />
-    <Compile Include="Reporting\Delegates.cs" />
-    <Compile Include="Reporting\IParserAutomata.cs" />
-    <Compile Include="Reporting\IParserDotItem.cs" />
-    <Compile Include="Reporting\IParserState.cs" />
-    <Compile Include="Reporting\IParserTransition.cs" />
-    <Compile Include="Reporting\IScannerAutomata.cs" />
-    <Compile Include="Reporting\IScannerTransition.cs" />
-    <Compile Include="Reporting\IScannerState.cs" />
-    <Compile Include="Reporting\IReportData.cs" />
+    <Compile Include="Reflection\Reporting\CharRange.cs" />
+    <Compile Include="Reflection\Reporting\Delegates.cs" />
+    <Compile Include="Reflection\Reporting\IParserAutomata.cs" />
+    <Compile Include="Reflection\Reporting\IParserDotItem.cs" />
+    <Compile Include="Reflection\Reporting\IParserState.cs" />
+    <Compile Include="Reflection\Reporting\IParserTransition.cs" />
+    <Compile Include="Reflection\Reporting\IScannerAutomata.cs" />
+    <Compile Include="Reflection\Reporting\IScannerTransition.cs" />
+    <Compile Include="Reflection\Reporting\IScannerState.cs" />
+    <Compile Include="Reflection\Reporting\IReportData.cs" />
     <Compile Include="Reflection\Cil\Code\IMergeActionCode.cs" />
     <Compile Include="Reflection\Cil\CilMerger.cs" />
     <Compile Include="Reflection\Cil\CilSymbolFeature.cs" />
@@ -138,7 +141,7 @@
     <Compile Include="Runtime\ILanguageInternalRuntime.cs" />
     <Compile Include="Runtime\ParserAction.cs" />
     <Compile Include="Runtime\ParserActionKind.cs" />
-    <Compile Include="Reporting\ParserConflictInfo.cs" />
+    <Compile Include="Reflection\Reporting\ParserConflictInfo.cs" />
     <Compile Include="Reflection\Cil\Code\CilDelegates.cs" />
     <Compile Include="Reflection\Cil\Code\IContextResolverCode.cs" />
     <Compile Include="Reflection\Cil\Code\IScanActionCode.cs" />
@@ -371,7 +374,9 @@
     <Reference Include="System" />
     <Reference Include="System.Web" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Reporting\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="doc\ScannerDefinitions.md" />
   </ItemGroup>

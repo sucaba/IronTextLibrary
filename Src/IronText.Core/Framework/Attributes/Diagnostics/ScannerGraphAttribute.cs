@@ -2,11 +2,11 @@
 using System.IO;
 using IronText.Diagnostics;
 using IronText.Extensibility;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 
 namespace IronText.Framework
 {
-    public class ScannerGraphAttribute : LanguageMetadataAttribute
+    public class ScannerGraphAttribute : LanguageMetadataAttribute, IReport
     {
         private readonly string fileName;
 
@@ -15,9 +15,9 @@ namespace IronText.Framework
             this.fileName = fileName;
         }
 
-        public override IEnumerable<ReportBuilder> GetReportBuilders()
+        public override IEnumerable<IReport> GetReports()
         {
-            yield return WriteGvGraph;
+            return new [] { this };
         }
 
         private void WriteGvGraph(IReportData data)
@@ -33,6 +33,11 @@ namespace IronText.Framework
                     dfa.DescribeGraph(graph);
                 }
             }
+        }
+
+        ReportBuilder IReport.Builder
+        {
+            get { return WriteGvGraph; }
         }
     }
 }

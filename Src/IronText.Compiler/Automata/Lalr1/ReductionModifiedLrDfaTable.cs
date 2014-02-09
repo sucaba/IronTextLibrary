@@ -3,7 +3,7 @@ using System.Linq;
 using IronText.Algorithm;
 using IronText.Compiler.Analysis;
 using IronText.Reflection;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 using IronText.Runtime;
 
 namespace IronText.Automata.Lalr1

@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using IronText.Diagnostics;
 
-namespace IronText.Reporting
+namespace IronText.Reflection.Reporting
 {
     public interface IScannerAutomata
     {

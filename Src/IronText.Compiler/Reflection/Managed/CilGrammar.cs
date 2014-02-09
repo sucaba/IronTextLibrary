@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using IronText.Extensibility;
 using IronText.Logging;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 
 namespace IronText.Reflection.Managed
 {
@@ -114,7 +114,7 @@ namespace IronText.Reflection.Managed
 
             ContextProviders = metadata.SelectMany((m, index) => m.GetSymbolContextProviders());
 
-            this.ReportBuilders = metadata.SelectMany(m => m.GetReportBuilders()).ToArray();
+            this.Reports = metadata.SelectMany(m => m.GetReports()).ToArray();
         }
 
         private void CheckAllScanRulesDefined(
@@ -173,7 +173,7 @@ namespace IronText.Reflection.Managed
 
         public CilSymbolRef            Start          { get; private set; }
 
-        public ReportBuilder[]         ReportBuilders { get; private set; }
+        public IReport[]               Reports        { get; private set; }
 
         public ICilSymbolResolver      SymbolResolver { get; private set; }
 

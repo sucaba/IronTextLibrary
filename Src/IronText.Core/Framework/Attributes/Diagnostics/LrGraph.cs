@@ -3,7 +3,7 @@ using System.Text;
 using System.Web;
 using IronText.Diagnostics;
 using IronText.Reflection;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 using IronText.Runtime;
 
 namespace IronText.Framework

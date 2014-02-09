@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using IronText.Runtime;
 
-namespace IronText.Reporting
+namespace IronText.Reflection.Reporting
 {
     public class ParserConflictInfo
     {

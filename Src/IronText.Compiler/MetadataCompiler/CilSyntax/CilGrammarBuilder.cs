@@ -6,19 +6,13 @@ using IronText.Logging;
 using IronText.Misc;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 
 namespace IronText.MetadataCompiler.CilSyntax
 {
     class CilGrammarBuilder : IGrammarBuilder
     {
         private ILogging logging;
-        private readonly List<ReportBuilder> _reportBuilders = new List<ReportBuilder>();
-
-        public IEnumerable<ReportBuilder> ReportBuilders
-        {
-            get { return _reportBuilders; }
-        }
 
         public Grammar Build(IGrammarSource source, ILogging logging)
         {
@@ -46,9 +40,8 @@ namespace IronText.MetadataCompiler.CilSyntax
                 return null;
             }
 
-            _reportBuilders.AddRange(definition.ReportBuilders);
-
             var grammar = BuildGrammar(definition);
+
             grammar.Options = (IronText.Reflection.RuntimeOptions)Attributes.First<LanguageAttribute>(cilSource.DefinitionType).Flags;
             return grammar;
         }
@@ -172,6 +165,11 @@ namespace IronText.MetadataCompiler.CilSyntax
                 var symbol  = symbolResolver.GetSymbol(cilMerger.Symbol);
                 var merger = new Merger(symbol) { Joint = { cilMerger } };
                 result.Mergers.Add(merger);
+            }
+
+            foreach (var report in definition.Reports)
+            {
+                result.Reports.Add(report);
             }
 
             return result;

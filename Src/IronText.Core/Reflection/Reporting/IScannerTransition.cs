@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace IronText.Reporting
+namespace IronText.Reflection.Reporting
 {
     public interface IScannerTransition
     {

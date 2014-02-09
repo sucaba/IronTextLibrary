@@ -1,5 +1,4 @@
-﻿
-namespace IronText.Reporting
+﻿namespace IronText.Reflection.Reporting
 {
     /// <summary>
     /// Custom reporting action

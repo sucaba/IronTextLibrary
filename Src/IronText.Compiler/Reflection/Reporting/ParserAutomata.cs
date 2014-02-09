@@ -2,7 +2,7 @@
 using IronText.Automata.Lalr1;
 using IronText.MetadataCompiler;
 
-namespace IronText.Reporting
+namespace IronText.Reflection.Reporting
 {
     class ParserAutomata : IParserAutomata
     {

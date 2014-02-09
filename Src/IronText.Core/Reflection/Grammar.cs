@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using IronText.Collections;
+using IronText.Reflection.Reporting;
 
 namespace IronText.Reflection
 {
@@ -24,6 +25,7 @@ namespace IronText.Reflection
             Matchers    = new MatcherCollection(this);
             Mergers     = new MergerCollection(this);
             Contexts    = new ProductionContextCollection(this);
+            Reports     = new ReportCollection();
             Joint       = new Joint();
 
             for (int i = PredefinedTokens.Count; i != 0; --i)
@@ -67,6 +69,8 @@ namespace IronText.Reflection
         public MergerCollection     Mergers             { get; private set; }
 
         public ProductionContextCollection Contexts     { get; private set; }
+
+        public ReportCollection     Reports             { get; private set; }
 
         public override string ToString()
         {

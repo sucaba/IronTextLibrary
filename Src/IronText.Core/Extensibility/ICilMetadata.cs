@@ -3,7 +3,7 @@ using System.Reflection;
 using IronText.Logging;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 
 namespace IronText.Extensibility
 {
@@ -32,6 +32,6 @@ namespace IronText.Extensibility
 
         IEnumerable<CilMatcher>     GetMatchers();
 
-        IEnumerable<ReportBuilder>  GetReportBuilders();
+        IEnumerable<IReport>        GetReports();
     }
 }

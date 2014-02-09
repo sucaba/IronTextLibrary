@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using IronText.Algorithm;
 using IronText.Reflection;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 
 namespace IronText.Compiler.Analysis
 {

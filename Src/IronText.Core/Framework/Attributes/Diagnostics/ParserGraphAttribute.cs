@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using IronText.Extensibility;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 
 namespace IronText.Framework
 {
-    public class ParserGraphAttribute : LanguageMetadataAttribute
+    public class ParserGraphAttribute : LanguageMetadataAttribute, IReport
     {
         private readonly string fileName;
 
@@ -14,9 +14,9 @@ namespace IronText.Framework
             this.fileName = fileName;
         }
 
-        public override IEnumerable<ReportBuilder> GetReportBuilders()
+        public override IEnumerable<IReport> GetReports()
         {
-            yield return WriteGvGraph;
+            return new[] { this };
         }
 
         private void WriteGvGraph(IReportData data)
@@ -25,6 +25,11 @@ namespace IronText.Framework
 
             var graph = new LrGraph(data);
             graph.WriteGv(path);
+        }
+
+        ReportBuilder IReport.Builder
+        {
+            get { return WriteGvGraph; }
         }
     }
 }

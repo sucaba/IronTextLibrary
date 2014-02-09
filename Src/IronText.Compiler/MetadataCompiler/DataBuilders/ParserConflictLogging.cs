@@ -5,21 +5,28 @@ using System.Linq;
 using System.Text;
 using IronText.Framework;
 using IronText.Logging;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    class ConflictMessageBuilder
+    class ConflictMessageBuilder : IReport
     {
-        private readonly IReportData data;
+        private IReportData data;
+        private readonly ILogging logging;
 
-        public ConflictMessageBuilder(IReportData reportData)
+        public ConflictMessageBuilder(ILogging logging)
         {
-            this.data = reportData;
+            this.logging = logging;
         }
 
-        public void Write(ILogging logging)
+        public void Build(IReportData reportData)
+        {
+            data = reportData;
+            Write();
+        }
+
+        private void Write()
         {
             var conflicts = data.ParserAutomata.Conflicts;
             logging.Write(
@@ -181,6 +188,11 @@ namespace IronText.MetadataCompiler
                 output.Write(" ");
                 output.Write(prod.Pattern[i].Name);
             }
+        }
+
+        ReportBuilder IReport.Builder
+        {
+            get { throw new NotImplementedException(); }
         }
     }
 }

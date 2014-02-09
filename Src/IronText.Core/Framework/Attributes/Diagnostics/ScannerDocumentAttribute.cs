@@ -2,11 +2,11 @@
 using System.IO;
 using System.Text;
 using IronText.Extensibility;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 
 namespace IronText.Framework
 {
-    public class ScannerDocumentAttribute : LanguageMetadataAttribute
+    public class ScannerDocumentAttribute : LanguageMetadataAttribute, IReport
     {
         private readonly string fileName;
 
@@ -15,9 +15,9 @@ namespace IronText.Framework
             this.fileName = fileName;
         }
 
-        public override IEnumerable<ReportBuilder> GetReportBuilders()
+        public override IEnumerable<IReport> GetReports()
         {
-            yield return WriteScannerFile;
+            yield return this;
         }
 
         private void WriteScannerFile(IReportData data)
@@ -36,6 +36,11 @@ namespace IronText.Framework
                     }
                 }
             }
+        }
+
+        ReportBuilder IReport.Builder
+        {
+            get { return WriteScannerFile; }
         }
     }
 }

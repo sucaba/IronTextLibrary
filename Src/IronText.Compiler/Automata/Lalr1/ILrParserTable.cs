@@ -1,5 +1,5 @@
 ﻿using IronText.Algorithm;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 
 namespace IronText.Automata.Lalr1
 {

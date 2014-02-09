@@ -2,11 +2,11 @@
 using System.IO;
 using System.Text;
 using IronText.Extensibility;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 
 namespace IronText.Framework
 {
-    public class GrammarDocumentAttribute : LanguageMetadataAttribute
+    public class GrammarDocumentAttribute : LanguageMetadataAttribute, IReport
     {
         private readonly string fileName;
 
@@ -15,9 +15,9 @@ namespace IronText.Framework
             this.fileName = fileName;
         }
 
-        public override IEnumerable<ReportBuilder> GetReportBuilders()
+        public override IEnumerable<IReport> GetReports()
         {
-            yield return WriteGrammarFile;
+            return new [] { this };
         }
 
         private void WriteGrammarFile(IReportData data)
@@ -28,6 +28,11 @@ namespace IronText.Framework
             {
                 grammarFile.Write(data.Grammar);
             }
+        }
+
+        ReportBuilder IReport.Builder
+        {
+            get { return WriteGrammarFile; }
         }
     }
 }

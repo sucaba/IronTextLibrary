@@ -7,7 +7,7 @@ using IronText.Extensibility;
 using IronText.Logging;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 
 namespace IronText.Framework
 {
@@ -110,9 +110,9 @@ namespace IronText.Framework
             return Enumerable.Empty<CilMatcher>();
         }
 
-        public virtual IEnumerable<ReportBuilder> GetReportBuilders()
+        public virtual IEnumerable<IReport> GetReports()
         {
-            return Enumerable.Empty<ReportBuilder>();
+            return Enumerable.Empty<IReport>();
         }
     }
 }

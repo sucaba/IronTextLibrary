@@ -6,7 +6,7 @@ using IronText.Logging;
 using IronText.Misc;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 
 namespace IronText.Extensibility
 {
@@ -59,9 +59,9 @@ namespace IronText.Extensibility
             return Enumerable.Empty<CilMatcher>();
         }
 
-        public virtual IEnumerable<ReportBuilder> GetReportBuilders()
+        public virtual IEnumerable<IReport> GetReports()
         {
-            return Enumerable.Empty<ReportBuilder>();
+            return Enumerable.Empty<IReport>();
         }
 
         public override bool Equals(object obj)

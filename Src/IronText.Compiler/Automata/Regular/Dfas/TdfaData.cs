@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using IronText.Algorithm;
 using IronText.Diagnostics;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 
 namespace IronText.Automata.Regular
 {

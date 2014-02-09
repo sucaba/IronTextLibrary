@@ -7,7 +7,7 @@ using IronText.Logging;
 using IronText.MetadataCompiler;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
-using IronText.Reporting;
+using IronText.Reflection.Reporting;
 using NUnit.Framework;
 
 namespace IronText.Tests.Extensibility
@@ -76,9 +76,9 @@ namespace IronText.Tests.Extensibility
                 return Enumerable.Empty<CilSymbolFeature<CilContextProvider>>();
             }
 
-            IEnumerable<ReportBuilder> ICilMetadata.GetReportBuilders()
+            IEnumerable<IReport> ICilMetadata.GetReports()
             {
-                return Enumerable.Empty<ReportBuilder>();
+                return Enumerable.Empty<IReport>();
             }
 
             public IEnumerable<CilMerger> GetMergers(IEnumerable<CilSymbolRef> leftSides)
