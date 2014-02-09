@@ -8,7 +8,7 @@ namespace IronText.Reflection.Managed
     /// <summary>
     /// Language identity and naming policy for language assembly
     /// </summary>
-    public class CilGrammarSource : IGrammarSource
+    public class CilGrammarSource : IGrammarSource, IReportDestinationHint
     {
         public CilGrammarSource(Type definitionType)
         {
@@ -35,16 +35,6 @@ namespace IronText.Reflection.Managed
         public string Origin
         {
             get { return ReflectionUtils.ToString(DefinitionType); }
-        }
-
-        public string SourceAssemblyPath
-        {
-            get { return new Uri(SourceAssembly.CodeBase).LocalPath; }
-        }
-
-        public string SourceAssemblyDirectory
-        {
-            get { return Path.GetDirectoryName(SourceAssemblyPath); }
         }
 
         public string GrammarFileName
@@ -80,6 +70,21 @@ namespace IronText.Reflection.Managed
         public string BuilderTypeName
         {
             get { return "IronText.MetadataCompiler.CilSyntax.CilGrammarBuilder, IronText.Compiler"; }
+        }
+
+        string IReportDestinationHint.OutputDirectory
+        {
+            get { return SourceAssemblyDirectory; }
+        }
+
+        private string SourceAssemblyPath
+        {
+            get { return new Uri(SourceAssembly.CodeBase).LocalPath; }
+        }
+
+        private string SourceAssemblyDirectory
+        {
+            get { return Path.GetDirectoryName(SourceAssemblyPath); }
         }
     }
 }
