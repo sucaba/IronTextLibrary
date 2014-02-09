@@ -39,7 +39,7 @@ namespace IronText.Reporting
             } 
         }
 
-        public IGrammarSource Name { get { return source; } }
+        public IGrammarSource Source { get { return source; } }
 
         public Grammar Grammar { get { return data.Grammar; } }
 

@@ -26,7 +26,7 @@ namespace IronText.MetadataCompiler
                 new LogEntry
                 {
                     Severity = Severity.Error,
-                    Origin   = data.Name.Origin,
+                    Origin   = data.Source.Origin,
                     Message  = string.Format(
                                     "Found {0} parser conflict{1}.",
                                     conflicts.Count,
@@ -45,7 +45,7 @@ namespace IronText.MetadataCompiler
                 new LogEntry
                 {
                     Severity = Severity.Warning,
-                    Origin   = data.Name.Origin,
+                    Origin   = data.Source.Origin,
                     Message  = string.Format(
                         "Consider using [{0}({1}.{2})] or changing token and/or rule precedences to fix errors.",
                         typeof(LanguageAttribute).Name,
@@ -81,7 +81,7 @@ namespace IronText.MetadataCompiler
                     new LogEntry
                     {
                         Severity = Severity.Error,
-                        Origin   = data.Name.Origin,
+                        Origin   = data.Source.Origin,
                         Message  = writer.ToString()
                     });
             }

@@ -21,6 +21,6 @@ namespace IronText.Reflection
         /// <summary>
         /// Assembly qualified type name of a grammar builder
         /// </summary>
-        string BuilderTypeName { get; }
+        string BuilderTypeName   { get; }
     }
 }

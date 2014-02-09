@@ -10,7 +10,7 @@ namespace IronText.Reporting
     {
         string              DestinationDirectory { get; }
 
-        IGrammarSource      Name           { get; }
+        IGrammarSource      Source         { get; }
 
         Grammar             Grammar        { get; }
 
