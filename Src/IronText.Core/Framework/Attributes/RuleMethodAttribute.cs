@@ -157,7 +157,7 @@ namespace IronText.Framework
                             // Previous rule should be from this-token.
                             // Currently loads relative to root, need also relative to the current this-token
                             // Current this-token can be taken from the stack[stack.length - rule.length - prevRule.length].
-                            code.ContextResolver.LdContextType(method.DeclaringType);
+                            code.ContextResolver.LdContextOfType(method.DeclaringType);
                         }
 
                         // Pass rule-arguments to the rule-method

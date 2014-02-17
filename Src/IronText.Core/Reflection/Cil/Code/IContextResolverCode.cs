@@ -4,6 +4,6 @@ namespace IronText.Reflection.Managed
 {
     public interface IContextResolverCode
     {
-        void LdContextType(Type type);
+        void LdContextOfType(Type type);
     }
 }

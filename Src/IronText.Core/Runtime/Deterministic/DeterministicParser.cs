@@ -26,11 +26,11 @@ namespace IronText.Runtime
         private bool isVerifier;
 
         public DeterministicParser(
-            IProducer<TNode>      producer,
+            IProducer<TNode>   producer,
             RuntimeGrammar     grammar,
-            TransitionDelegate    actionTable,
-            ResourceAllocator     allocator,
-            ILogging              logging
+            TransitionDelegate actionTable,
+            ResourceAllocator  allocator,
+            ILogging           logging
             )
             : this(
                 producer,

@@ -27,7 +27,7 @@ namespace IronText.Framework
                         {
                             if (!Method.IsStatic)
                             {
-                                code.ContextResolver.LdContextType(method.DeclaringType);
+                                code.ContextResolver.LdContextOfType(method.DeclaringType);
                             }
 
                             code = code.LdOldValue();

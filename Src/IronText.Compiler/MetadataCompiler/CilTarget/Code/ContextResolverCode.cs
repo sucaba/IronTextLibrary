@@ -38,7 +38,7 @@ namespace IronText.MetadataCompiler
 
         public Type RootContextType { get; set; }
 
-        public void LdContextType(Type contextType)
+        public void LdContextOfType(Type contextType)
         {
             if (localContexts != null && localContexts.Length != 0)
             {

@@ -64,7 +64,7 @@ namespace IronText.Framework
                 {
                     if (!method.IsStatic)
                     {
-                        context.ContextResolver.LdContextType(method.DeclaringType);
+                        context.ContextResolver.LdContextOfType(method.DeclaringType);
                     }
 
                     var parameters = method.GetParameters().ToList();
