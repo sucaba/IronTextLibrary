@@ -108,12 +108,10 @@ namespace IronText.MetadataCompiler
                 Debug.Assert(prod != null);
 
                 emit.Label(jumpTable[prod.Index].Def);
-                // TODO: Support for CompositeProductionAction
-                var action = (SimpleProductionAction)prod.Action;
-                if (action != null && action.Joint.Has<CilProduction>())
+                if (prod.Actions.Count != 0 && prod.Actions[0].Joint.Has<CilProduction>())
                 {
                     bool first = true;
-                    foreach (var binding in action.Joint.All<CilProduction>())
+                    foreach (var binding in prod.Actions[0].Joint.All<CilProduction>())
                     {
                         if (binding != null)
                         {

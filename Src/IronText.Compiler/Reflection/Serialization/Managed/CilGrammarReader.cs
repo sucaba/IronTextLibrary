@@ -125,10 +125,10 @@ namespace IronText.Reflection.Managed
                         context.Joint.Add(new CilContextConsumer(contextType));
                     }
 
-                    production.Action = new SimpleProductionAction(pattern.Length, context);
+                    production.Actions.Add(new ProductionAction(pattern.Length, context));
                 }
 
-                var action = (SimpleProductionAction)production.Action;
+                var action = production.Actions[0];
                 action.Joint.Add(cilProduction);
 
                 production.ExplicitPrecedence = cilProduction.Precedence;

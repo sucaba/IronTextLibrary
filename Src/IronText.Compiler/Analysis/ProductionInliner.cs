@@ -118,16 +118,20 @@ namespace IronText.Analysis
                 }
 
                 var newProduction = new Production(parentProduction.Outcome, newPattern);
+                throw new NotImplementedException("TODO");
+#if false
                 newProduction.Action = 
                     InlineAction(
                         parentProduction.Action,
                         inlinedProd.Action,
                         inlinePosition);
+#endif
 
                 yield return newProduction;
             }
         }
 
+#if false
         private CompositeProductionAction InlineAction(
             ProductionAction parentAction,
             ProductionAction inlinedAction,
@@ -168,5 +172,6 @@ namespace IronText.Analysis
 
             return result;
         }
+#endif
     }
 }

@@ -177,14 +177,12 @@
     <Compile Include="Collections\ReferenceCollection.cs" />
     <Compile Include="Collections\IIndexable.cs" />
     <Compile Include="Collections\IOwner.cs" />
-    <Compile Include="Reflection\CompositeProductionAction.cs" />
     <Compile Include="Reflection\ISharedGrammarEntities.cs" />
     <Compile Include="Reflection\Merger.cs" />
     <Compile Include="Reflection\MergerCollection.cs" />
     <Compile Include="Runtime\Tables\NullableFirstTables.cs" />
     <Compile Include="Reflection\ProductionActionCollection.cs" />
     <Compile Include="Reflection\InlineProduction.cs" />
-    <Compile Include="Reflection\ProductionAction.cs" />
     <Compile Include="Reflection\ProductionCollection.cs" />
     <Compile Include="Reflection\ProductionContext.cs" />
     <Compile Include="Reflection\ProductionContextCollection.cs" />
@@ -193,7 +191,7 @@
     <Compile Include="Reflection\ScanPattern.cs" />
     <Compile Include="Reflection\Matcher.cs" />
     <Compile Include="Reflection\MatcherCollection.cs" />
-    <Compile Include="Reflection\SimpleProductionAction.cs" />
+    <Compile Include="Reflection\ProductionAction.cs" />
     <Compile Include="Reflection\Symbol.cs" />
     <Compile Include="Reflection\SymbolBase.cs" />
     <Compile Include="Reflection\SymbolCollection.cs" />

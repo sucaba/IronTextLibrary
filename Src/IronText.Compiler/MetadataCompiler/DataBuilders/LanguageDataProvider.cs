@@ -203,7 +203,7 @@ namespace IronText.MetadataCompiler
 
                     foreach (var consumingProd in childSymbol.Productions)
                     {
-                        var action = (SimpleProductionAction)consumingProd.Action;
+                        var action = consumingProd.Actions[0];
 
                         if (provider.ProvidedContexts.Contains(action.Context))
                         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace IronText.Reflection
     [DebuggerDisplay("{DebugProductionText}")]
     public sealed class Production : IndexableObject<ISharedGrammarEntities>
     {
-        private ProductionAction _action;
+        private Collection<ProductionAction> _actions;
         
         public Production(Symbol outcome, IEnumerable<Symbol> pattern)
         {
@@ -30,7 +31,7 @@ namespace IronText.Reflection
             Pattern       = pattern.ToArray();
             PatternTokens = Array.ConvertAll(Pattern, s => s == null ? -1 : s.Index);
 
-            _action = new SimpleProductionAction(Size);
+            _actions = new Collection<ProductionAction>();
         }
 
         public int               OutcomeToken   { get; private set; }
@@ -71,10 +72,9 @@ namespace IronText.Reflection
         /// when production is inlined there are multiple actions
         /// happing when this production being applied.
         /// </remarks>
-        public ProductionAction Action
+        public Collection<ProductionAction> Actions
         {
-            get { return _action; }
-            set { _action = value ?? new SimpleProductionAction(Size); }
+            get { return _actions; }
         }
 
         public bool Equals(Production other)
