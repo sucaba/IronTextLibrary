@@ -40,7 +40,7 @@ namespace IronText.MetadataCompiler
                     {
                         Severity = Severity.Error,
                         Message = string.Format(
-                                    "Unable to load grammar builder '{0}' for language '{1}'",
+                                    "Unable to find grammar reader '{0}' for language '{1}'",
                                     source.ReaderTypeName,
                                     source.LanguageName),
                         Origin = source.Origin

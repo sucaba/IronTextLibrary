@@ -6,17 +6,19 @@ namespace IronText.Reflection.Managed
     public sealed class CilProduction : IEquatable<CilProduction>
     {
         public CilProduction(
-            CilSymbolRef         outcome,
-            CilSymbolRef[]       pattern,
+            CilSymbolRef               outcome,
+            CilSymbolRef[]             pattern,
+            CilActionContextLoader     actionContextLoader,
             CilProductionActionBuilder actionBuilder,
-            Type                 contextType,
-            Precedence           precedence = null)
+            Type                       contextType,
+            Precedence                 precedence = null)
         {
-            this.Outcome        = outcome;
-            this.Pattern        = pattern;
-            this.ActionBuilder  = actionBuilder;
-            this.ContextType    = contextType;
-            this.Precedence     = precedence;
+            this.Outcome             = outcome;
+            this.Pattern             = pattern;
+            this.ActionContextLoader = actionContextLoader;
+            this.ActionBuilder       = actionBuilder;
+            this.ContextType         = contextType;
+            this.Precedence          = precedence;
         }
 
         public CilSymbolRef   Outcome       { get; private set; }
@@ -29,7 +31,9 @@ namespace IronText.Reflection.Managed
 
         internal object       Owner         { get; set; }
 
-        public CilProductionActionBuilder ActionBuilder { get; private set; }
+        public CilActionContextLoader     ActionContextLoader   { get; private set; }
+
+        public CilProductionActionBuilder ActionBuilder         { get; private set; }
 
         public override bool Equals(object obj)
         {

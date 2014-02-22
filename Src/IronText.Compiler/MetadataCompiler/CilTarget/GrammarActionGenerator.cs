@@ -125,6 +125,7 @@ namespace IronText.MetadataCompiler
                                 code.Emit(il => il.Pop());
                             }
 
+                            binding.ActionContextLoader(code);
                             binding.ActionBuilder(code);
                         }
                     }

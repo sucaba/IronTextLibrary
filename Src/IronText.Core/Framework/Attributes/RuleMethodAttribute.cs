@@ -140,26 +140,10 @@ namespace IronText.Framework
                 pattern       : pattern.ToArray(),
                 contextType   : method.IsStatic ? null : method.DeclaringType,
                 precedence    : GetPrecedence(),
+                actionContextLoader: GetContextLoader(method, hasThis: thisSymbol != null),
                 actionBuilder :
                     code =>
                     {
-                        // Load main module object (this)
-                        if (method.IsStatic)
-                        {
-                        }
-                        else if (thisSymbol != null)
-                        {
-                            code.LdRuleArg(0, method.DeclaringType);
-                        }
-                        else
-                        {
-                            // Find out what is previous rule from the stack state in stack[stack.length - rule.length - 1]
-                            // Previous rule should be from this-token.
-                            // Currently loads relative to root, need also relative to the current this-token
-                            // Current this-token can be taken from the stack[stack.length - rule.length - prevRule.length].
-                            code.ContextResolver.LdContextOfType(method.DeclaringType);
-                        }
-
                         // Pass rule-arguments to the rule-method
                         for (int i = 0; i != method.GetParameters().Length; ++i)
                         {
@@ -193,6 +177,24 @@ namespace IronText.Framework
             );
 
             return new[] { rule };
+        }
+
+        private static CilActionContextLoader GetContextLoader(MethodInfo method, bool hasThis)
+        {
+            if (method.IsStatic)
+            {
+                // No context is needed
+                return code => { };
+            }
+
+            if (hasThis)
+            {
+                // This-token case. Type is needed for void and boxing.
+                return code => code.LdRuleArg(0, method.DeclaringType);
+            }
+
+            // Local or global context identified by type
+            return code => code.ContextResolver.LdContextOfType(method.DeclaringType);
         }
 
         private static int NthEmptySlotIndex(CilSymbolRef[] ruleMask, int n)

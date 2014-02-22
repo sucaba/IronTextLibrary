@@ -50,7 +50,8 @@ namespace IronText.Tests.Extensibility
                     (
                         outcome : CilSymbolRef.Create(typeof(void)),
                         pattern : new[] { CilSymbolRef.Create(typeof(int)) },
-                        actionBuilder: code => { code.Emit(il => il.Ldnull().Ret()); },
+                        actionContextLoader: code => { },
+                        actionBuilder:       code => { code.Emit(il => il.Ldnull().Ret()); },
                         contextType : typeof(IMetadtaTest0)
                     );
                 }
