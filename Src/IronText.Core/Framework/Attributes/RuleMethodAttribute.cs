@@ -134,14 +134,13 @@ namespace IronText.Framework
 
             SubstituteRuleMask(method, pattern, ruleMask);
 
-            var rule = new CilProduction
-            (
-                outcome       : outcome,
-                pattern       : pattern.ToArray(),
-                contextType   : method.IsStatic ? null : method.DeclaringType,
-                precedence    : GetPrecedence(),
-                actionContextLoader: GetContextLoader(method, hasThis: thisSymbol != null),
-                actionBuilder :
+            var rule = new CilProduction(
+                outcome:     outcome,
+                pattern:     pattern.ToArray(),
+                contextType: method.IsStatic ? null : method.DeclaringType,
+                precedence:  GetPrecedence(),
+                context:     GetContext(method, hasThis: thisSymbol != null),
+                actionBuilder:
                     code =>
                     {
                         // Pass rule-arguments to the rule-method
@@ -173,28 +172,26 @@ namespace IronText.Framework
 
                                 return il;
                             });
-                    }
-            );
+                    });
 
             return new[] { rule };
         }
 
-        private static CilActionContextLoader GetContextLoader(MethodInfo method, bool hasThis)
+        private CilContext GetContext(MethodInfo method, bool hasThis)
         {
             if (method.IsStatic)
             {
-                // No context is needed
-                return code => { };
+                return CilContext.None;
             }
 
             if (hasThis)
             {
                 // This-token case. Type is needed for void and boxing.
-                return code => code.LdRuleArg(0, method.DeclaringType);
+                return CilContext.ThisToken(method.DeclaringType);
             }
 
             // Local or global context identified by type
-            return code => code.ContextResolver.LdContextOfType(method.DeclaringType);
+            return CilContext.ByType(method.DeclaringType);
         }
 
         private static int NthEmptySlotIndex(CilSymbolRef[] ruleMask, int n)
