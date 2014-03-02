@@ -22,7 +22,7 @@ namespace IronText.Extensibility
 
         IEnumerable<CilSymbolFeature<Precedence>> GetSymbolPrecedence();
 
-        IEnumerable<CilSymbolFeature<CilContextProvider>> GetSymbolContextProviders();
+        IEnumerable<CilSymbolFeature<CilContextProvider>> GetLocalContextProviders();
 
         IEnumerable<CilSymbolRef>   GetSymbolsInCategory(SymbolCategory category);
 

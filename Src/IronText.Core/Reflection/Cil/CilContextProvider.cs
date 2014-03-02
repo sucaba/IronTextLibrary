@@ -6,9 +6,9 @@ namespace IronText.Reflection.Managed
     {
         public CilContextProvider(Type providerType)
         {
-            this.ProviderType = providerType;
+            this.ProviderType     = providerType;
         }
 
-        public Type ProviderType { get; private set; }
+        public Type ProviderType     { get; private set; }
     }
 }

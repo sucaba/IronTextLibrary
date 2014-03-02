@@ -46,8 +46,11 @@ namespace IronText.Tests.Extensibility
             {
                 foreach (var leftSide in leftSides.ToArray())
                 {
-                    yield return new CilProduction
-                    (outcome: CilSymbolRef.Create(typeof(void)), pattern: new[] { CilSymbolRef.Create(typeof(int)) }, context: CilContext.None, actionBuilder: code => { code.Emit(il => il.Ldnull().Ret()); }, contextType: typeof(IMetadtaTest0));
+                    yield return new CilProduction(
+                        outcome: CilSymbolRef.Create(typeof(void)),
+                        pattern: new[] { CilSymbolRef.Create(typeof(int)) },
+                        context: CilContext.None,
+                        actionBuilder: code => { code.Emit(il => il.Ldnull().Ret()); });
                 }
             }
 
@@ -66,7 +69,7 @@ namespace IronText.Tests.Extensibility
                 return Enumerable.Empty<CilSymbolFeature<Precedence>>();
             }
 
-            IEnumerable<CilSymbolFeature<CilContextProvider>> ICilMetadata.GetSymbolContextProviders()
+            IEnumerable<CilSymbolFeature<CilContextProvider>> ICilMetadata.GetLocalContextProviders()
             {
                 return Enumerable.Empty<CilSymbolFeature<CilContextProvider>>();
             }

@@ -15,7 +15,7 @@ namespace IronText.Reflection
 
         public ProductionAction(int offset, int argumentCount, ProductionContext context = null)
         {
-            this.Context       = context ?? ProductionContext.Global;
+            this.Context       = context ?? ProductionContext.None;
             this.Offset        = offset;
             this.ArgumentCount = argumentCount;
             this.Joint         = new Joint();

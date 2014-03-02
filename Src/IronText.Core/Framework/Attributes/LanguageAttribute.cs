@@ -80,7 +80,7 @@ namespace IronText.Framework
             return Enumerable.Empty<CilSymbolFeature<Precedence>>();
         }
 
-        public IEnumerable<CilSymbolFeature<CilContextProvider>> GetSymbolContextProviders()
+        public IEnumerable<CilSymbolFeature<CilContextProvider>> GetLocalContextProviders()
         {
             return Enumerable.Empty<CilSymbolFeature<CilContextProvider>>();
         }

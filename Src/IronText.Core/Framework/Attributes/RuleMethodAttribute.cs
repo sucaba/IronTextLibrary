@@ -135,11 +135,10 @@ namespace IronText.Framework
             SubstituteRuleMask(method, pattern, ruleMask);
 
             var rule = new CilProduction(
-                outcome:     outcome,
-                pattern:     pattern.ToArray(),
-                contextType: method.IsStatic ? null : method.DeclaringType,
-                precedence:  GetPrecedence(),
-                context:     GetContext(method, hasThis: thisSymbol != null),
+                outcome:    outcome,
+                pattern:    pattern.ToArray(),
+                precedence: GetPrecedence(),
+                context:    GetContext(method, hasThis: thisSymbol != null),
                 actionBuilder:
                     code =>
                     {

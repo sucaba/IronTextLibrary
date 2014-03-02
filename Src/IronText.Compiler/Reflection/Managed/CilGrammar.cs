@@ -8,7 +8,7 @@ using IronText.Reflection.Reporting;
 
 namespace IronText.Reflection.Managed
 {
-    internal class CilGrammar
+    class CilGrammar
     {
         private readonly List<ICilMetadata>                 metadata;
         private readonly List<CilProduction>                productions;
@@ -16,9 +16,9 @@ namespace IronText.Reflection.Managed
         private readonly CilMerger[]                        mergers;
         private readonly List<CilSymbolFeature<Precedence>> precedence;
 
-        public CilGrammar(CilGrammarSource languageName, ILogging logging)
+        public CilGrammar(CilGrammarSource source, ILogging logging)
         {
-            Type definitionType = languageName.DefinitionType;
+            Type definitionType = source.DefinitionType;
 
             this.IsValid = true;
 
@@ -108,13 +108,55 @@ namespace IronText.Reflection.Managed
                 .Where(symbol => !IsSpecialSymbol(symbol))
                 .Except(termsProducedByScanner);
 
-            CheckAllScanRulesDefined(undefinedTerminals, languageName.Origin, logging);
+            CheckAllScanRulesDefined(undefinedTerminals, source.Origin, logging);
 
             precedence = metadata.SelectMany(m => m.GetSymbolPrecedence()).ToList();
 
-            ContextProviders = metadata.SelectMany((m, index) => m.GetSymbolContextProviders());
+            LocalContextProviders = metadata.SelectMany((m, index) => m.GetLocalContextProviders());
 
             this.Reports = metadata.SelectMany(m => m.GetReports()).ToArray();
+        }
+
+        public bool IsValid { get; private set; }
+
+        public CilContextProvider      GlobalContextProvider { get; set; }
+
+        public CilSymbolRef            Start          { get; private set; }
+
+        public IReport[]               Reports        { get; private set; }
+
+        public ICilSymbolResolver      SymbolResolver { get; private set; }
+
+        public IList<CilProduction>    Productions    { get { return productions; } }
+
+        public IList<CilMerger>        Mergers        { get { return mergers; } }
+
+        public IList<CilCondition>     Conditions     { get { return conditions; } }
+
+        public IEnumerable<CilSymbolFeature<Precedence>> Precedence { get { return precedence; } }
+
+        public IEnumerable<CilSymbolFeature<CilContextProvider>> LocalContextProviders { get; private set; }
+
+        private static bool IsSpecialSymbol(CilSymbol symbol)
+        {
+            return symbol.Type == typeof(Exception);
+        }
+
+        private void LinkRelatedTokens(List<CilCondition> conditions)
+        {
+            foreach (var condition in conditions)
+            {
+                foreach (var matcher in condition.Matchers)
+                {
+                    foreach (CilSymbolRef symbol in matcher.AllOutcomes)
+                    {
+                        if (SymbolResolver.Contains(symbol))
+                        {
+                            SymbolResolver.Link(symbol);
+                        }
+                    }
+                }
+            }
         }
 
         private void CheckAllScanRulesDefined(
@@ -150,46 +192,6 @@ namespace IronText.Reflection.Managed
                     Message  = message.ToString(),
                     Origin   = origin,
                 });
-        }
-
-        public bool IsValid { get; private set; }
-
-        private void LinkRelatedTokens(List<CilCondition> conditions)
-        {
-            foreach (var condition in conditions)
-            {
-                foreach (var scanProd in condition.Matchers)
-                {
-                    foreach (CilSymbolRef symbol in scanProd.AllOutcomes)
-                    {
-                        if (SymbolResolver.Contains(symbol))
-                        {
-                            SymbolResolver.Link(symbol);
-                        }
-                    }
-                }
-            }
-        }
-
-        public CilSymbolRef            Start          { get; private set; }
-
-        public IReport[]               Reports        { get; private set; }
-
-        public ICilSymbolResolver      SymbolResolver { get; private set; }
-
-        public IList<CilProduction>    Productions    { get { return productions; } }
-
-        public IList<CilMerger>        Mergers        { get { return mergers; } }
-
-        public IList<CilCondition> ScanConditions { get { return conditions; } }
-
-        public IEnumerable<CilSymbolFeature<Precedence>> Precedence { get { return precedence; } }
-
-        public IEnumerable<CilSymbolFeature<CilContextProvider>> ContextProviders { get; private set; }
-
-        private static bool IsSpecialSymbol(CilSymbol symbol)
-        {
-            return symbol.Type == typeof(Exception);
         }
     }
 }

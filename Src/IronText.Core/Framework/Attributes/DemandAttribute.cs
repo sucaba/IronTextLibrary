@@ -24,7 +24,7 @@ namespace IronText.Framework
             return result.Where(child => !(child is ScanBaseAttribute));
         }
 
-        public override IEnumerable<CilSymbolFeature<CilContextProvider>> GetSymbolContextProviders()
+        public override IEnumerable<CilSymbolFeature<CilContextProvider>> GetLocalContextProviders()
         {
             if (Parent == null)
             {

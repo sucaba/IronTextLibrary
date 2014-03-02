@@ -205,7 +205,7 @@ namespace IronText.MetadataCompiler
                     {
                         var action = consumingProd.Actions[0];
 
-                        if (provider.ProvidedContexts.Contains(action.Context))
+                        if (provider.LocalContexts.Contains(action.Context))
                         {
                             result.Add(
                                 new ProductionContextBinding

@@ -44,6 +44,8 @@ namespace IronText.Reflection
             Symbols[PredefinedTokens.Error]           = new Symbol("$error");
 
             AugmentedProduction = Productions.Define((Symbol)Symbols[PredefinedTokens.AugmentedStart], new Symbol[] { null });
+
+            GlobalContexts = new ReferenceCollection<ProductionContext> { Owner = this.Contexts };
         }
 
         public RuntimeOptions Options { get; set; }
@@ -57,6 +59,8 @@ namespace IronText.Reflection
         }
 
         internal Production         AugmentedProduction { get; private set; }
+
+        public ReferenceCollection<ProductionContext> GlobalContexts { get; private set; }
 
         public SymbolCollection     Symbols             { get; private set; }
 

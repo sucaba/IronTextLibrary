@@ -11,10 +11,10 @@ namespace IronText.Reflection
 
         public Symbol(string name)
         {
-            this.Name             = name ?? Grammar.UnnamedTokenName;
-            this._productions     = new ReferenceCollection<Production>();
-            this.ProvidedContexts = new ReferenceCollection<ProductionContext>();
-            this.Joint            = new Joint();
+            this.Name          = name ?? Grammar.UnnamedTokenName;
+            this._productions  = new ReferenceCollection<Production>();
+            this.LocalContexts = new ReferenceCollection<ProductionContext>();
+            this.Joint         = new Joint();
         }
 
         public bool IsAugmentedStart { get { return PredefinedTokens.AugmentedStart == Index; } }
@@ -35,7 +35,15 @@ namespace IronText.Reflection
 
         public Joint Joint { get; private set; }
 
-        public ReferenceCollection<ProductionContext> ProvidedContexts { get; private set; }
+        /// <summary>
+        /// Provided local context
+        /// </summary>
+        public ReferenceCollection<ProductionContext> LocalContexts { get; private set; }
+
+        /// <summary>
+        /// Provided this context
+        /// </summary>
+        public ProductionContext ThisContext { get; set; }
 
         /// <summary>
         /// Determines token-level precedence

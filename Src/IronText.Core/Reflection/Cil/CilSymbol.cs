@@ -13,6 +13,8 @@ namespace IronText.Reflection.Managed
 
         public Symbol          Symbol     { get; set; }
 
+        public Type            ThisContext { get; set; }
+
         public Type            Type       { get; set; }
 
         public HashSet<string> Literals   { get; private set; }

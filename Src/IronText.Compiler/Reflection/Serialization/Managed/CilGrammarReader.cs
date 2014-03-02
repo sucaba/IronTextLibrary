@@ -69,7 +69,11 @@ namespace IronText.Reflection.Managed
                 }
                 else
                 {
-                    symbol = new Symbol(cilSymbol.Name) { Categories = cilSymbol.Categories, Joint = { cilSymbol } };
+                    symbol = new Symbol(cilSymbol.Name) 
+                    {
+                        Categories = cilSymbol.Categories,
+                        Joint = { cilSymbol } 
+                    };
                     result.Symbols.Add(symbol);
                     cilSymbol.Symbol = symbol;
                 }
@@ -81,7 +85,7 @@ namespace IronText.Reflection.Managed
                 symbol.Precedence = feature.Value;
             }
 
-            foreach (CilSymbolFeature<CilContextProvider> feature in definition.ContextProviders)
+            foreach (CilSymbolFeature<CilContextProvider> feature in definition.LocalContextProviders)
             {
                 var symbol = symbolResolver.GetSymbol(feature.SymbolRef);
                 if (symbol != null)
@@ -94,7 +98,7 @@ namespace IronText.Reflection.Managed
                             context.Joint.Add(new CilContextConsumer(contextType));
                         }
 
-                        symbol.ProvidedContexts.Add(context);
+                        symbol.LocalContexts.Add(context);
                     }
 
                     symbol.Joint.Add(feature.Value);
@@ -115,14 +119,14 @@ namespace IronText.Reflection.Managed
                 {
                     ProductionContext context;
 
-                    var contextType = cilProduction.ContextType;
-                    if (contextType == null)
+                    var cilContext = cilProduction.Context;
+                    if (cilContext == CilContext.None)
                     {
-                        context = ProductionContext.Global;
+                        context = ProductionContext.None;
                     }
-                    else if (result.Contexts.FindOrAdd(contextType.AssemblyQualifiedName, out context))
+                    else if (result.Contexts.FindOrAdd(cilContext.UniqueName, out context))
                     {
-                        context.Joint.Add(new CilContextConsumer(contextType));
+                        context.Joint.Add(cilContext.GetConsumer());
                     }
 
                     production.Actions.Add(new ProductionAction(pattern.Length, context));
@@ -135,28 +139,28 @@ namespace IronText.Reflection.Managed
             }
 
             // Create conditions to allow referencing them from scan productions
-            foreach (CilCondition cilCondition in definition.ScanConditions)
+            foreach (CilCondition cilCondition in definition.Conditions)
             {
                 CreateCondtion(result, cilCondition);
             }
 
             // Create scan productions
-            foreach (CilCondition cilCondition in definition.ScanConditions)
+            foreach (CilCondition cilCondition in definition.Conditions)
             {
                 var condition = ConditionFromType(result, cilCondition.ConditionType);
 
-                foreach (var scanProd in cilCondition.Matchers)
+                foreach (var cilMatcher in cilCondition.Matchers)
                 {
-                    SymbolBase outcome = GetScanProductionOutcomeSymbol(result, symbolResolver, scanProd.MainOutcome, scanProd.AllOutcomes);
+                    SymbolBase outcome = GetScanProductionOutcomeSymbol(result, symbolResolver, cilMatcher.MainOutcome, cilMatcher.AllOutcomes);
 
-                    var scanProduction = new Matcher(
-                        scanProd.Pattern,
+                    var matcher = new Matcher(
+                        cilMatcher.Pattern,
                         outcome,
-                        nextCondition: ConditionFromType(result, scanProd.NextConditionType),
-                        disambiguation: scanProd.Disambiguation);
-                    scanProduction.Joint.Add(scanProd);
+                        nextCondition: ConditionFromType(result, cilMatcher.NextConditionType),
+                        disambiguation: cilMatcher.Disambiguation);
+                    matcher.Joint.Add(cilMatcher);
 
-                    condition.Matchers.Add(scanProduction);
+                    condition.Matchers.Add(matcher);
                 }
             }
 

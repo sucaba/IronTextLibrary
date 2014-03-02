@@ -12,7 +12,7 @@ namespace IronText.Reflection
     [DebuggerDisplay("{DebugProductionText}")]
     public sealed class Production : IndexableObject<ISharedGrammarEntities>
     {
-        private Collection<ProductionAction> _actions;
+        private readonly Collection<ProductionAction> _actions;
         
         public Production(Symbol outcome, IEnumerable<Symbol> pattern)
         {

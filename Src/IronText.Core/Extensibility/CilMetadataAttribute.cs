@@ -34,7 +34,7 @@ namespace IronText.Extensibility
             return Enumerable.Empty<CilSymbolFeature<Precedence>>();
         }
 
-        public virtual IEnumerable<CilSymbolFeature<CilContextProvider>> GetSymbolContextProviders()
+        public virtual IEnumerable<CilSymbolFeature<CilContextProvider>> GetLocalContextProviders()
         {
             return Enumerable.Empty<CilSymbolFeature<CilContextProvider>>();
         }

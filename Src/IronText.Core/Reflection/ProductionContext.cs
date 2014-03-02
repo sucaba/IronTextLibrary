@@ -5,7 +5,7 @@ namespace IronText.Reflection
 {
     public class ProductionContext : IndexableObject<ISharedGrammarEntities>
     {
-        public static readonly ProductionContext Global = new ProductionContext("$global");
+        public static readonly ProductionContext None = new ProductionContext("$none");
 
         public ProductionContext(string name)
         {
