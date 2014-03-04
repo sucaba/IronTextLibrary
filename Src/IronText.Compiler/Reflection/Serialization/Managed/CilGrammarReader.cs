@@ -176,7 +176,6 @@ namespace IronText.Reflection.Managed
             else
             {
                 result = new ActionContextRef(cilContext.UniqueName);
-                result.Joint.Add(cilContext.GetConsumer());
             }
 
             return result;
@@ -241,7 +240,7 @@ namespace IronText.Reflection.Managed
             foreach (var contextType in cilProvider.GetAllContextTypes())
             {
                 ActionContext context;
-                if (grammar.Contexts.FindOrAdd(contextType.AssemblyQualifiedName, out context))
+                if (grammar.Contexts.FindOrAdd(CilContextRef.GetName(contextType), out context))
                 {
                     context.Joint.Add(new CilContext(contextType));
                 }

@@ -22,18 +22,11 @@ namespace IronText.Reflection.Managed
 
         public abstract void Load(IProductionActionCode code);
 
-        public abstract CilContext GetConsumer();
-
         sealed class NoneContextRef : CilContextRef
         {
             public override string UniqueName { get { return "$none"; } }
 
             public override void Load(IProductionActionCode code) { }
-
-            public override CilContext GetConsumer()
-            {
-                throw new InvalidOperationException("internal error: None context has has no consumer.");
-            }
 
             public override bool Equals(object obj)
             {
@@ -54,11 +47,6 @@ namespace IronText.Reflection.Managed
             public override void Load(IProductionActionCode code)
             {
                 code.LdRuleArg(0, type);
-            }
-
-            public override CilContext GetConsumer()
-            {
-                return new CilContext(type);
             }
 
             public override bool Equals(object obj)
@@ -84,11 +72,6 @@ namespace IronText.Reflection.Managed
             public override void Load(IProductionActionCode code)
             {
                 code.ContextResolver.LdContextOfType(type);
-            }
-
-            public override CilContext GetConsumer()
-            {
-                return new CilContext(type);
             }
 
             public override bool Equals(object obj)
