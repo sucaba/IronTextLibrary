@@ -11,12 +11,15 @@ namespace IronText.Reflection.Managed
 
         public CilCondition(Type conditionType)
         {
-            this.ConditionType = conditionType;
-            this.Matchers   = new ReadOnlyCollection<CilMatcher>(this.matchers);
+            this.ConditionType   = conditionType;
+            this.Matchers        = new ReadOnlyCollection<CilMatcher>(this.matchers);
+            this.ContextProvider = new CilContextProvider(conditionType);
         }
 
         public Type ConditionType { get; private set; }
 
+        public CilContextProvider ContextProvider { get; private set; }
+        
         // Ordered scan rules
         public ReadOnlyCollection<CilMatcher> Matchers { get; private set; }
 

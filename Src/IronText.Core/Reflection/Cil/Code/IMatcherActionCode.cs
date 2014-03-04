@@ -4,7 +4,7 @@ using IronText.Lib.IL;
 
 namespace IronText.Reflection.Managed
 {
-    public interface IScanActionCode
+    public interface IMatcherActionCode
     {
         IContextResolverCode ContextResolver { get; }
 
@@ -12,37 +12,37 @@ namespace IronText.Reflection.Managed
         /// Emit code
         /// </summary>
         /// <param name="emitPipe"></param>
-        IScanActionCode Emit(Pipe<EmitSyntax> emitPipe);
+        IMatcherActionCode Emit(Pipe<EmitSyntax> emitPipe);
 
         /// <summary>
         /// Load token string to stack
         /// </summary>
-        IScanActionCode LdTokenString();
+        IMatcherActionCode LdTokenString();
 
         /// <summary>
         /// Load buffer
         /// </summary>
-        IScanActionCode LdBuffer();
+        IMatcherActionCode LdBuffer();
 
         /// <summary>
         /// Load index of the token start in buffer
         /// </summary>
-        IScanActionCode LdStartIndex();
+        IMatcherActionCode LdStartIndex();
 
         /// <summary>
         /// Load length of token
         /// </summary>
-        IScanActionCode LdLength();
+        IMatcherActionCode LdLength();
 
         /// <summary>
         /// Return top value in stack as a token value
         /// </summary>
-        IScanActionCode ReturnFromAction();
+        IMatcherActionCode ReturnFromAction();
 
         /// <summary>
         /// Skip token and continue scanning
         /// </summary>
-        IScanActionCode SkipAction();
+        IMatcherActionCode SkipAction();
 
         /// <summary>
         /// Set current mode and run-time context.
@@ -54,6 +54,6 @@ namespace IronText.Reflection.Managed
         /// scanner context type. 
         /// </remarks>
         /// <param name="modeType">Type of scanner context which determines scanner DFA to use</param>
-        IScanActionCode ChangeMode(Type modeType);
+        IMatcherActionCode ChangeMode(Type modeType);
     }
 }

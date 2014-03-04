@@ -10,6 +10,7 @@ using IronText.Lib.Ctem;
 using IronText.Lib.IL;
 using IronText.Lib.IL.Generators;
 using IronText.Lib.Shared;
+using IronText.Reflection;
 using IronText.Reflection.Managed;
 using IronText.Runtime;
 
@@ -19,24 +20,27 @@ namespace IronText.MetadataCompiler
     {
         private readonly EmitSyntax         emit;
         private readonly Pipe<EmitSyntax>   ldRootContext;
-        private ProductionContextBinding[]     localContexts;
+        private ProductionContextBinding[]  localContexts;
         private Pipe<EmitSyntax>            ldLookback;
+        private ContextProvider             contextProvider;
 
         public ContextResolverCode(
             EmitSyntax          emit,
             Pipe<EmitSyntax>    ldRootContext,
             Pipe<EmitSyntax>    ldLookback,
             LanguageData        data,
+            ContextProvider     contextProvider,
             ProductionContextBinding[] localContexts = null)
         {
             this.emit = emit;
             this.ldRootContext   = ldRootContext;
             this.ldLookback      = ldLookback;
-            this.RootContextType = data.Grammar.Joint.The<CilGrammarSource>().DefinitionType;
+            this.contextProvider = contextProvider;
+            this.RootContextType = contextProvider.Joint.The<CilContextProvider>().ProviderType;
             this.localContexts   = localContexts;
         }
 
-        public Type RootContextType { get; set; }
+        public Type RootContextType { get; private set; }
 
         public void LdContextOfType(Type contextType)
         {

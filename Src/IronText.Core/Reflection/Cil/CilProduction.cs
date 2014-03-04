@@ -14,13 +14,13 @@ namespace IronText.Reflection.Managed
             this.Precedence          = precedence;
         }
 
+        public CilContext     Context       { get; private set; }
+
         public CilSymbolRef   Outcome       { get; private set; }
 
         public CilSymbolRef[] Pattern       { get; private set; }
 
         public Precedence     Precedence    { get; private set; }
-
-        public CilContext     Context       { get; private set; }
 
         internal object       Owner         { get; set; }
 

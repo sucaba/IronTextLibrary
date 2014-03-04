@@ -51,6 +51,11 @@ namespace IronText.Collections
 
         public T Add(T item)
         {
+            if (Contains(item))
+            {
+                throw new InvalidOperationException("IndexedCollection can contain only unique items.");
+            }
+
             int index = Count;
             if (indexToItem.Length == index)
             {
@@ -187,7 +192,10 @@ namespace IronText.Collections
 
         void IOwner<T>.Acquire(T item)
         {
-            Add(item);
+            if (!Contains(item))
+            {
+                Add(item);
+            }
         }
 
         void IOwner<T>.Release(T item)

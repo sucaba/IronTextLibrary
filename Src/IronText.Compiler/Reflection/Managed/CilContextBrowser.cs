@@ -8,7 +8,7 @@ using IronText.Misc;
 
 namespace IronText.Reflection.Managed
 {
-    public static class CilProviderExtensions
+    public static class CilContextProviderExtensions
     {
         public static IEnumerable<MethodInfo> GetGetterPath(this CilContextProvider provider, Type type)
         {

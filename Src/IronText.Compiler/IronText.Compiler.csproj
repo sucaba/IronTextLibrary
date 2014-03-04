@@ -199,7 +199,7 @@
     <Compile Include="MetadataCompiler\CilTarget\LanguageDerivedBuilder.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\MergeActionCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\MergeActionGenerator.cs" />
-    <Compile Include="MetadataCompiler\CilTarget\Code\ScanActionCode.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\Code\MatcherActionCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\ScanModeMethods.cs" />
     <Compile Include="MetadataCompiler\CilTarget\ScannerGenerator.cs" />
     <Compile Include="MetadataCompiler\CilTarget\TermFactoryGenerator.cs" />

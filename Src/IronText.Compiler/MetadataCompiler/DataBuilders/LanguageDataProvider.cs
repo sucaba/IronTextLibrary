@@ -197,22 +197,22 @@ namespace IronText.MetadataCompiler
                         continue;
                     }
 
-                    var providingProd = grammar.Productions[item.ProductionId];
-                    var provider      = providingProd.Pattern[0];
-                    var childSymbol   = providingProd.Pattern[item.Position];
+                    var providingProd   = grammar.Productions[item.ProductionId];
+                    var providingSymbol = providingProd.Pattern[0];
+                    var childSymbol     = providingProd.Pattern[item.Position];
 
                     foreach (var consumingProd in childSymbol.Productions)
                     {
                         var action = consumingProd.Actions[0];
 
-                        if (provider.LocalContexts.Contains(action.Context))
+                        if (providingSymbol.LocalContextProvider.Contains(action.Context))
                         {
                             result.Add(
                                 new ProductionContextBinding
                                 {
                                     StackState          = parentState,
                                     ProviderStackLookback = item.Position,
-                                    Provider             = provider,
+                                    Provider             = providingSymbol.LocalContextProvider,
                                     Consumer             = action.Context
                                 });
                         }

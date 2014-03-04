@@ -20,6 +20,8 @@ namespace IronText.Reflection.Managed
         {
             Type definitionType = source.DefinitionType;
 
+            GlobalContextProvider = new CilContextProvider(definitionType);
+
             this.IsValid = true;
 
             var startMeta = MetadataParser.EnumerateAndBind(definitionType);
@@ -119,7 +121,7 @@ namespace IronText.Reflection.Managed
 
         public bool IsValid { get; private set; }
 
-        public CilContextProvider      GlobalContextProvider { get; set; }
+        public CilContextProvider      GlobalContextProvider { get; private set; }
 
         public CilSymbolRef            Start          { get; private set; }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using IronText.Collections;
 using IronText.Framework;
 using IronText.Logging;
 using IronText.Misc;
@@ -50,6 +51,11 @@ namespace IronText.Reflection.Managed
         {
             var result = new Grammar();
 
+            InitContextProvider(
+                result,
+                definition.GlobalContextProvider,
+                result.GlobalContextProvider);
+
             var symbolResolver = definition.SymbolResolver;
 
             // Define grammar tokens
@@ -90,18 +96,7 @@ namespace IronText.Reflection.Managed
                 var symbol = symbolResolver.GetSymbol(feature.SymbolRef);
                 if (symbol != null)
                 {
-                    foreach (var contextType in feature.Value.GetAllContextTypes())
-                    {
-                        ProductionContext context;
-                        if (result.Contexts.FindOrAdd(contextType.AssemblyQualifiedName, out context))
-                        {
-                            context.Joint.Add(new CilContextConsumer(contextType));
-                        }
-
-                        symbol.LocalContexts.Add(context);
-                    }
-
-                    symbol.Joint.Add(feature.Value);
+                    InitContextProvider(result, feature.Value, symbol.LocalContextProvider);
                 }
             }
 
@@ -141,7 +136,8 @@ namespace IronText.Reflection.Managed
             // Create conditions to allow referencing them from scan productions
             foreach (CilCondition cilCondition in definition.Conditions)
             {
-                CreateCondtion(result, cilCondition);
+                var cond = CreateCondtion(result, cilCondition);
+                result.Conditions.Add(cond);
             }
 
             // Create scan productions
@@ -205,8 +201,7 @@ namespace IronText.Reflection.Managed
                 Joint = { cilCondition }
             };
 
-            grammar.Conditions.Add(result);
-
+            InitContextProvider(grammar, cilCondition.ContextProvider, result.ContextProvider);
             return result;
         }
 
@@ -226,6 +221,25 @@ namespace IronText.Reflection.Managed
                 case 0:  return null;
                 case 1:  return main;
                 default: return new AmbiguousSymbol(main, all);
+            }
+        }
+
+        private static void InitContextProvider(
+            Grammar            grammar,
+            CilContextProvider cilProvider,
+            ContextProvider    provider)
+        {
+            provider.Joint.Add(cilProvider);
+
+            foreach (var contextType in cilProvider.GetAllContextTypes())
+            {
+                ProductionContext context;
+                if (grammar.Contexts.FindOrAdd(contextType.AssemblyQualifiedName, out context))
+                {
+                    context.Joint.Add(new CilContextConsumer(contextType));
+                }
+
+                provider.Add(context);
             }
         }
     }

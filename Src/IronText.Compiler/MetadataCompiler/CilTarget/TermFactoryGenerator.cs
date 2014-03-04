@@ -10,18 +10,17 @@ namespace IronText.MetadataCompiler
 {
     class TermFactoryGenerator
     {
-        private readonly Ref<Types>        declaringType;
-        private readonly Condition[]   scanConditions;
+        private readonly Ref<Types> declaringType;
+        private LanguageData        data;
 
-        public TermFactoryGenerator(ConditionCollection conditions, Ref<Types> declaringType)
+        public TermFactoryGenerator(LanguageData data, Ref<Types> declaringType)
         {
-            this.scanConditions   = conditions.ToArray();
-            this.declaringType    = declaringType;
+            this.data = data;
+            this.declaringType = declaringType;
         }
 
         public void Build(
             EmitSyntax          emit,
-            ContextResolverCode contextResolver,
             Pipe<EmitSyntax>    ldCursor,
             Pipe<EmitSyntax>    ldTokenPtr)
         {
@@ -43,7 +42,7 @@ namespace IronText.MetadataCompiler
                 .Stloc(tokenId.GetRef())
                 ;
 
-            int ruleCount = scanConditions.Sum(cond => cond.Matchers.Count);
+            int ruleCount = data.Grammar.Conditions.Sum(cond => cond.Matchers.Count);
 
             var action = new Ref<Labels>[ruleCount];
             for (int i = 0; i != ruleCount; ++i)
@@ -57,16 +56,32 @@ namespace IronText.MetadataCompiler
                 .Switch(action)
                 ;
 
-            var actionContext = new ScanActionCode(emit, contextResolver, ldCursor, declaringType, scanConditions);
-            actionContext.Init(emit, RETURN.GetRef());
-
-            foreach (var condition in scanConditions)
+            foreach (var cond in data.Grammar.Conditions)
             {
-                var conditionBinding = condition.Joint.The<CilCondition>();
+                var contextResolver = new ContextResolverCode(
+                                        emit,
+                                        il => il
+                                            .Do(ldCursor)
+                                            .Ldfld((ScanCursor c) => c.RootContext),
+                                        null,
+                                        data,
+                                        cond.ContextProvider);
+                var code = new MatcherActionCode(
+                                emit,
+                                contextResolver,
+                                ldCursor,
+                                declaringType,
+                                data.Grammar.Conditions,
+                                RETURN.GetRef());
+
+#if false
+                var binding = cond.Joint.The<CilCondition>();
 
                 // Each mode has its own root context type:
-                contextResolver.RootContextType = conditionBinding.ConditionType;
-                foreach (var scanProduction in condition.Matchers)
+                contextResolver.RootContextType = binding.ConditionType;
+#endif
+
+                foreach (var scanProduction in cond.Matchers)
                 {
                     emit
                         .Label(action[scanProduction.Index].Def)
@@ -75,7 +90,7 @@ namespace IronText.MetadataCompiler
                         ;
 
                     var productionBinding = scanProduction.Joint.The<CilMatcher>();
-                    productionBinding.ActionBuilder(actionContext);
+                    productionBinding.ActionBuilder(code);
                 }
             }
 

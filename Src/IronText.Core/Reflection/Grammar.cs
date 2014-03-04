@@ -26,6 +26,7 @@ namespace IronText.Reflection
             Mergers     = new MergerCollection(this);
             Contexts    = new ProductionContextCollection(this);
             Reports     = new ReportCollection();
+            GlobalContextProvider = new ContextProvider { Owner = this.Contexts };
             Joint       = new Joint();
 
             for (int i = PredefinedTokens.Count; i != 0; --i)
@@ -44,8 +45,6 @@ namespace IronText.Reflection
             Symbols[PredefinedTokens.Error]           = new Symbol("$error");
 
             AugmentedProduction = Productions.Define((Symbol)Symbols[PredefinedTokens.AugmentedStart], new Symbol[] { null });
-
-            GlobalContexts = new ReferenceCollection<ProductionContext> { Owner = this.Contexts };
         }
 
         public RuntimeOptions Options { get; set; }
@@ -60,7 +59,7 @@ namespace IronText.Reflection
 
         internal Production         AugmentedProduction { get; private set; }
 
-        public ReferenceCollection<ProductionContext> GlobalContexts { get; private set; }
+        public ContextProvider      GlobalContextProvider { get; private set; }
 
         public SymbolCollection     Symbols             { get; private set; }
 

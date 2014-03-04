@@ -8,43 +8,40 @@ using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    class ScanActionCode : IScanActionCode
+    class MatcherActionCode : IMatcherActionCode
     {
         private Ref<Labels> RETURN;
 
         private EmitSyntax emit;
         private readonly Pipe<EmitSyntax> ldCursor;
         private readonly Ref<Types> declaringType;
-        private readonly Condition[] scanConditions;
+        private readonly ConditionCollection conditions;
 
-        public ScanActionCode(
+        public MatcherActionCode(
             EmitSyntax              emit, 
             IContextResolverCode    contextResolver,
             Pipe<EmitSyntax>        ldCursor,
             Ref<Types>              declaringType,
-            Condition[]         scanConditions)
+            ConditionCollection     conditions,
+            Ref<Labels>             RETURN)
         {
             this.emit            = emit;
             this.ldCursor        = ldCursor;
             this.ContextResolver = contextResolver;
             this.declaringType   = declaringType;
-            this.scanConditions  = scanConditions;
+            this.conditions      = conditions;
+            this.RETURN          = RETURN;
         }
 
         public IContextResolverCode ContextResolver { get; private set; }
 
-        public void Init(EmitSyntax emit, Ref<Labels> RETURN)
-        {
-            this.RETURN = RETURN;
-        }
-
-        public IScanActionCode ReturnFromAction()
+        public IMatcherActionCode ReturnFromAction()
         {
             emit.Br(RETURN);
             return this;
         }
 
-        public IScanActionCode SkipAction()
+        public IMatcherActionCode SkipAction()
         {
             emit
                 .Ldnull()
@@ -52,13 +49,13 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IScanActionCode Emit(Pipe<EmitSyntax> emitPipe)
+        public IMatcherActionCode Emit(Pipe<EmitSyntax> emitPipe)
         {
             emit = emitPipe(emit);
             return this;
         }
 
-        public IScanActionCode LdBuffer()
+        public IMatcherActionCode LdBuffer()
         {
             emit
                 .Do(ldCursor)
@@ -66,7 +63,7 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IScanActionCode LdStartIndex()
+        public IMatcherActionCode LdStartIndex()
         {
             emit
                 .Do(ldCursor)
@@ -74,7 +71,7 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IScanActionCode LdLength()
+        public IMatcherActionCode LdLength()
         {
             emit
                 .Do(ldCursor)
@@ -87,7 +84,7 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IScanActionCode LdTokenString()
+        public IMatcherActionCode LdTokenString()
         {
             return this
                 .LdBuffer()
@@ -98,7 +95,7 @@ namespace IronText.MetadataCompiler
                 ;
         }
 
-        public IScanActionCode ChangeMode(Type modeType)
+        public IMatcherActionCode ChangeMode(Type conditionType)
         {
             var contextTemp = emit.Locals.Generate().GetRef();
             var DONOT_CHANGE_MODE = emit.Labels.Generate().GetRef();
@@ -112,25 +109,15 @@ namespace IronText.MetadataCompiler
                 .Stfld((ScanCursor c) => c.RootContext)
                 ;
 
-            Condition foundCondition = null;
-            foreach (var condition in scanConditions)
+            var condition = FindConditionByType(conditionType);
+            if (condition == null)
             {
-                var binding = condition.Joint.The<CilCondition>();
-                if (modeType.Equals(binding.ConditionType))
-                {
-                    foundCondition = condition;
-                    break;
-                }
-            }
-
-            if (foundCondition == null)
-            {
-                throw new InvalidOperationException("Internal Error: Mode not found.");
+                throw new InvalidOperationException("Internal Error: Condition not found.");
             }
 
             emit
                 .Do(ldCursor)
-                .LdMethodDelegate(declaringType, ScanModeMethods.GetMethodName(foundCondition.Index), typeof(Scan1Delegate))
+                .LdMethodDelegate(declaringType, ScanModeMethods.GetMethodName(condition.Index), typeof(Scan1Delegate))
                 .Stfld((ScanCursor c) => c.CurrentMode)
 
                 .Label(DONOT_CHANGE_MODE.Def)
@@ -138,6 +125,22 @@ namespace IronText.MetadataCompiler
                 ;
 
             return this;
+        }
+
+        private Condition FindConditionByType(Type modeType)
+        {
+            Condition result = null;
+            foreach (var condition in this.conditions)
+            {
+                var binding = condition.Joint.The<CilCondition>();
+                if (modeType.Equals(binding.ConditionType))
+                {
+                    result = condition;
+                    break;
+                }
+            }
+
+            return result;
         }
     }
 }

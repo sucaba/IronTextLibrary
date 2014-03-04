@@ -21,7 +21,7 @@ namespace IronText.Reflection.Managed
     /// Scanner action builder contract
     /// </summary>
     /// <param name="context"></param>
-    public delegate void CilScanActionBuilder(IScanActionCode context);
+    public delegate void CilScanActionBuilder(IMatcherActionCode context);
 
     /// <summary>
     /// Merge action builder contract

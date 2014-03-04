@@ -14,7 +14,7 @@ namespace IronText.Extensibility
         /// </summary>
         public int               ProviderStackLookback { get; set; }
 
-        public Symbol            Provider   	   	   { get; set; }
+        public ContextProvider   Provider   	   	   { get; set; }
 
         public ProductionContext Consumer              { get; set; }
     }

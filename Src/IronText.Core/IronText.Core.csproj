@@ -118,6 +118,9 @@
     <Compile Include="Reflection\Cil\CilContext.cs" />
     <Compile Include="Reflection\Cil\CilContextConsumer.cs" />
     <Compile Include="Reflection\Cil\CilContextProvider.cs" />
+    <Compile Include="Reflection\ContextProvider.cs" />
+    <Compile Include="Reflection\IContextProvider.cs" />
+    <Compile Include="Reflection\RefeneceCollection.cs" />
     <Compile Include="Reflection\Serialization\IGrammarReader.cs" />
     <Compile Include="Reflection\IGrammarSource.cs" />
     <Compile Include="Reflection\IReportDestinationHint.cs" />
@@ -144,7 +147,7 @@
     <Compile Include="Reflection\Reporting\ParserConflictInfo.cs" />
     <Compile Include="Reflection\Cil\Code\CilDelegates.cs" />
     <Compile Include="Reflection\Cil\Code\IContextResolverCode.cs" />
-    <Compile Include="Reflection\Cil\Code\IScanActionCode.cs" />
+    <Compile Include="Reflection\Cil\Code\IMatcherActionCode.cs" />
     <Compile Include="Extensibility\CilMetadataAttribute.cs" />
     <Compile Include="Reflection\Cil\CilCondition.cs" />
     <Compile Include="Extensibility\ScannerUtils.cs" />

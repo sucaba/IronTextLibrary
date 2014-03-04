@@ -167,8 +167,6 @@ namespace IronText.MetadataCompiler
 
         private ClassSyntax BuildMethod_TermFactory(ClassSyntax context)
         {
-            var generator = new TermFactoryGenerator(data.Grammar.Conditions, declaringTypeRef);
-
             var args = context
                         .Method()
                             .Static
@@ -185,26 +183,13 @@ namespace IronText.MetadataCompiler
                 .EndArgs()
                 .BeginBody();
 
-            var contextResolver = new ContextResolverCode(
-                                        emit,
-                                        il =>
-                                        {
-                                            return il
-                                                .Ldarg(cursorArg.GetRef())
-                                                .Ldfld((ScanCursor c) => c.RootContext);
-                                        },
-                                        null,
-                                        data);
-
+            var generator = new TermFactoryGenerator(data, declaringTypeRef);
             generator.Build(
                 emit,
-                contextResolver,
                 il => il.Ldarg(cursorArg.GetRef()),
                 il => il.Ldarg(tokenArg.GetRef()));
 
-            context = emit.EndBody();
-
-            return context;
+            return emit.EndBody();
         }
 
         private ClassSyntax BuildMethod_CreateTokenIdentities(ClassSyntax context)
