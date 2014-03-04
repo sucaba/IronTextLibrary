@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace IronText.Algorithm
 {
-    static class Graph
+    internal static class Graph
     {
 #if false
         public static List<List<T>> Scc<T>(IEnumerable<T> startItems, Func<T, IEnumerable<T>> following)

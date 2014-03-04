@@ -62,7 +62,6 @@
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalBranchDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalOperator.cs" />
     <Compile Include="Algorithm\Functions.cs" />
-    <Compile Include="Algorithm\Graphs\Graph.cs" />
     <None Include="Algorithm\Graphs\TarjanSccAlgorithm.cs" />
     <Compile Include="Algorithm\InheritanceSortHelper.cs" />
     <Compile Include="Algorithm\IntArrow.cs" />
@@ -184,7 +183,6 @@
     <Compile Include="MetadataCompiler\CilTarget\Bootstrap\BootstrapScanner.cs" />
     <Compile Include="MetadataCompiler\CompiledLanguageProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserConflictLogging.cs" />
-    <Compile Include="Reflection\Managed\CilContextBrowser.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\LanguageDataProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ScanAmbiguityResolver.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\TokenProducerInfo.cs" />
