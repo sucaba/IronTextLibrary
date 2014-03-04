@@ -2,25 +2,25 @@
 
 namespace IronText.Reflection
 {
-    public class ProductionContextCollection : IndexedCollection<ProductionContext,ISharedGrammarEntities>
+    public class ProductionContextCollection : IndexedCollection<ActionContext,ISharedGrammarEntities>
     {
         public ProductionContextCollection(ISharedGrammarEntities ebnfGrammar)
             : base(ebnfGrammar)
         {
         }
 
-        public bool FindOrAdd(string name, out ProductionContext output)
+        public bool FindOrAdd(string name, out ActionContext output)
         {
             foreach (var item in this)
             {
-                if (item.Name == name)
+                if (item.UniqueName == name)
                 {
                     output = item;
                     return false;
                 }
             }
 
-            output = Add(new ProductionContext(name));
+            output = Add(new ActionContext(name));
             return true;
         }
     }

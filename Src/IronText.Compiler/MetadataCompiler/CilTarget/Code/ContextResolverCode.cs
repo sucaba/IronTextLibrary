@@ -18,41 +18,34 @@ namespace IronText.MetadataCompiler
 {
     class ContextResolverCode : IContextResolverCode
     {
-        private readonly EmitSyntax         emit;
-        private readonly Pipe<EmitSyntax>   ldRootContext;
-        private ProductionContextBinding[]  localContexts;
-        private Pipe<EmitSyntax>            ldLookback;
-        private ContextProvider             contextProvider;
+        private readonly EmitSyntax       emit;
+        private readonly Pipe<EmitSyntax> ldGlobalContextProvider;
+        private readonly Pipe<EmitSyntax> ldLookback;
+        private readonly ContextProvider  contextProvider;
+        private readonly LocalContextBinding[] localContexts;
 
         public ContextResolverCode(
-            EmitSyntax          emit,
-            Pipe<EmitSyntax>    ldRootContext,
-            Pipe<EmitSyntax>    ldLookback,
-            LanguageData        data,
-            ContextProvider     contextProvider,
-            ProductionContextBinding[] localContexts = null)
+            EmitSyntax       emit,
+            Pipe<EmitSyntax> ldGlobalContextProvider,
+            Pipe<EmitSyntax> ldLookback,
+            LanguageData     data,
+            ContextProvider  contextProvider,
+            LocalContextBinding[] localContexts = null)
         {
             this.emit = emit;
-            this.ldRootContext   = ldRootContext;
+            this.ldGlobalContextProvider   = ldGlobalContextProvider;
             this.ldLookback      = ldLookback;
             this.contextProvider = contextProvider;
-            this.RootContextType = contextProvider.Joint.The<CilContextProvider>().ProviderType;
             this.localContexts   = localContexts;
         }
 
-        public Type RootContextType { get; private set; }
-
-        public void LdContextOfType(Type contextType)
+        public void LdContextOfType(Type type)
         {
+            var contextRef = new ActionContextRef(CilContextRef.GetName(type));
+
             if (localContexts != null && localContexts.Length != 0)
             {
-                var locals =
-                    (from lc in localContexts
-                     let binding = lc.Consumer.Joint.Get<CilContextConsumer>()
-                     where binding != null && contextType == binding.ContextType
-                     select lc)
-                    .ToArray();
-
+                var locals = localContexts.Where(lc => lc.Consumer.Equals(contextRef)).ToArray();
                 if (locals.Length != 0)
                 {
                     var END = emit.Labels.Generate().GetRef();
@@ -82,14 +75,14 @@ namespace IronText.MetadataCompiler
 
                             if (value == locals.Length)
                             {
-                                if (LdGlobalContext(contextType))
+                                if (LdGlobalContext(type))
                                 {
                                     il.Br(END);
                                 }
                                 else
                                 {
                                     il
-                                        .Ldstr(new QStr("Internal error: missing global context : " + contextType.FullName))
+                                        .Ldstr(new QStr("Internal error: missing global context : " + type.FullName))
                                         .Newobj((string msg) => new Exception(msg))
                                         .Throw()
                                         ;
@@ -99,11 +92,11 @@ namespace IronText.MetadataCompiler
                             {
                                 var lc = locals[value];
                                 var provider = lc.Provider.Joint.The<CilContextProvider>();
-                                var path = provider.GetGetterPath(contextType);
+                                var path = provider.GetGetterPath(type);
                                 if (LdCallPath(path, il2 => il2
                                     // Lookback for getting parent instance
                                                 .Do(ldLookback)
-                                                .Ldc_I4(lc.ProviderStackLookback)
+                                                .Ldc_I4(lc.StackLookback)
                                                 .Call((IStackLookback<Msg> lb, int backOffset)
                                                         => lb.GetValueAt(backOffset))
                                                 .Ldfld((Msg msg) => msg.Value)))
@@ -123,22 +116,18 @@ namespace IronText.MetadataCompiler
                 }
             }
             
-            if (!LdGlobalContext(contextType))
+            if (!LdGlobalContext(type))
             {
                 throw new InvalidOperationException(
-                    "Context type '" + contextType.FullName + "' is not accessible.");
+                    "Context type '" + type.FullName + "' is not accessible.");
             }
         }
 
-        private bool LdGlobalContext(Type type)
+        private bool LdGlobalContext(Type toType)
         {
-            return LdRelativeContext(RootContextType, type, ldRootContext); 
-        }
-
-        private bool LdRelativeContext(Type fromType, Type toType, Pipe<EmitSyntax> ldFromContext)
-        {
-            var path = new CilContextBrowser(fromType).GetGetterPath(toType);
-            return LdCallPath(path, ldFromContext);
+            var cilProvider = this.contextProvider.Joint.The<CilContextProvider>();
+            var path = cilProvider.GetGetterPath(toType);
+            return LdCallPath(path, ldGlobalContextProvider);
         }
 
         private bool LdCallPath(IEnumerable<MethodInfo> path, Pipe<EmitSyntax> ldFrom)

@@ -176,21 +176,21 @@ namespace IronText.Framework
             return new[] { rule };
         }
 
-        private CilContext GetContext(MethodInfo method, bool hasThis)
+        private CilContextRef GetContext(MethodInfo method, bool hasThis)
         {
             if (method.IsStatic)
             {
-                return CilContext.None;
+                return CilContextRef.None;
             }
 
             if (hasThis)
             {
                 // This-token case. Type is needed for void and boxing.
-                return CilContext.ThisToken(method.DeclaringType);
+                return CilContextRef.ThisToken(method.DeclaringType);
             }
 
             // Local or global context identified by type
-            return CilContext.ByType(method.DeclaringType);
+            return CilContextRef.ByType(method.DeclaringType);
         }
 
         private static int NthEmptySlotIndex(CilSymbolRef[] ruleMask, int n)

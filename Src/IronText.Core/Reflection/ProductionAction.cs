@@ -8,14 +8,14 @@ namespace IronText.Reflection
     /// </summary>
     public sealed class ProductionAction : ICloneable
     {
-        public ProductionAction(int argumentCount, ProductionContext context = null)
+        public ProductionAction(int argumentCount, ActionContextRef context = null)
             : this(0, argumentCount, context)
         {
         }
 
-        public ProductionAction(int offset, int argumentCount, ProductionContext context = null)
+        public ProductionAction(int offset, int argumentCount, ActionContextRef context = null)
         {
-            this.Context       = context ?? ProductionContext.None;
+            this.ContextRef    = context ?? ActionContextRef.None;
             this.Offset        = offset;
             this.ArgumentCount = argumentCount;
             this.Joint         = new Joint();
@@ -27,7 +27,7 @@ namespace IronText.Reflection
 
         public int ArgumentCount { get; private set; }
 
-        public ProductionContext Context { get; private set; }
+        public ActionContextRef ContextRef { get; private set; }
 
         public ProductionAction Clone()
         {

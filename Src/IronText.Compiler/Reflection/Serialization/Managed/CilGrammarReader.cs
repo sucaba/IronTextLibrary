@@ -112,19 +112,8 @@ namespace IronText.Reflection.Managed
                 Production production;
                 if (result.Productions.FindOrAdd(outcome, pattern, out production))
                 {
-                    ProductionContext context;
-
-                    var cilContext = cilProduction.Context;
-                    if (cilContext == CilContext.None)
-                    {
-                        context = ProductionContext.None;
-                    }
-                    else if (result.Contexts.FindOrAdd(cilContext.UniqueName, out context))
-                    {
-                        context.Joint.Add(cilContext.GetConsumer());
-                    }
-
-                    production.Actions.Add(new ProductionAction(pattern.Length, context));
+                    ActionContextRef contextRef = CreateActionContextRef(cilProduction);
+                    production.Actions.Add(new ProductionAction(pattern.Length, contextRef));
                 }
 
                 var action = production.Actions[0];
@@ -133,21 +122,21 @@ namespace IronText.Reflection.Managed
                 production.ExplicitPrecedence = cilProduction.Precedence;
             }
 
-            // Create conditions to allow referencing them from scan productions
+            // Create conditions to allow referencing them from matchers
             foreach (CilCondition cilCondition in definition.Conditions)
             {
                 var cond = CreateCondtion(result, cilCondition);
                 result.Conditions.Add(cond);
             }
 
-            // Create scan productions
+            // Create matchers
             foreach (CilCondition cilCondition in definition.Conditions)
             {
                 var condition = ConditionFromType(result, cilCondition.ConditionType);
 
                 foreach (var cilMatcher in cilCondition.Matchers)
                 {
-                    SymbolBase outcome = GetScanProductionOutcomeSymbol(result, symbolResolver, cilMatcher.MainOutcome, cilMatcher.AllOutcomes);
+                    SymbolBase outcome = GetMatcherOutcomeSymbol(result, symbolResolver, cilMatcher.MainOutcome, cilMatcher.AllOutcomes);
 
                     var matcher = new Matcher(
                         cilMatcher.Pattern,
@@ -170,6 +159,24 @@ namespace IronText.Reflection.Managed
             foreach (var report in definition.Reports)
             {
                 result.Reports.Add(report);
+            }
+
+            return result;
+        }
+
+        private static ActionContextRef CreateActionContextRef(CilProduction cilProduction)
+        {
+            ActionContextRef result;
+
+            var cilContext = cilProduction.Context;
+            if (cilContext == CilContextRef.None)
+            {
+                result = ActionContextRef.None;
+            }
+            else
+            {
+                result = new ActionContextRef(cilContext.UniqueName);
+                result.Joint.Add(cilContext.GetConsumer());
             }
 
             return result;
@@ -205,11 +212,11 @@ namespace IronText.Reflection.Managed
             return result;
         }
 
-        private static SymbolBase GetScanProductionOutcomeSymbol(
-            Grammar                 grammar,
-            ICilSymbolResolver          symbolResolver,
-            CilSymbolRef                mainOutcome,
-            IEnumerable<CilSymbolRef>   allOutcomes)
+        private static SymbolBase GetMatcherOutcomeSymbol(
+            Grammar                   grammar,
+            ICilSymbolResolver        symbolResolver,
+            CilSymbolRef              mainOutcome,
+            IEnumerable<CilSymbolRef> allOutcomes)
         {
             Symbol main = symbolResolver.GetSymbol(mainOutcome);
             Symbol[] all = (from outcome in allOutcomes
@@ -233,10 +240,10 @@ namespace IronText.Reflection.Managed
 
             foreach (var contextType in cilProvider.GetAllContextTypes())
             {
-                ProductionContext context;
+                ActionContext context;
                 if (grammar.Contexts.FindOrAdd(contextType.AssemblyQualifiedName, out context))
                 {
-                    context.Joint.Add(new CilContextConsumer(contextType));
+                    context.Joint.Add(new CilContext(contextType));
                 }
 
                 provider.Add(context);

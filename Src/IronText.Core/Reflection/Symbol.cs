@@ -43,7 +43,7 @@ namespace IronText.Reflection
         /// <summary>
         /// Provided this context
         /// </summary>
-        public ProductionContext ThisContext { get; set; }
+        public ActionContext ThisContext { get; set; }
 
         /// <summary>
         /// Determines token-level precedence

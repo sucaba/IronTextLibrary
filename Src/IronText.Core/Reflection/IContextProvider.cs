@@ -4,6 +4,6 @@ namespace IronText.Reflection
 {
     public interface IContextProvider
     {
-        IEnumerable<ProductionContext> ProvidedContexts { get; }
+        IEnumerable<ActionContext> ProvidedContexts { get; }
     }
 }

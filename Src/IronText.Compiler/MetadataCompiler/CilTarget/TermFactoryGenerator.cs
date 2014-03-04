@@ -74,22 +74,15 @@ namespace IronText.MetadataCompiler
                                 data.Grammar.Conditions,
                                 RETURN.GetRef());
 
-#if false
-                var binding = cond.Joint.The<CilCondition>();
-
-                // Each mode has its own root context type:
-                contextResolver.RootContextType = binding.ConditionType;
-#endif
-
-                foreach (var scanProduction in cond.Matchers)
+                foreach (var matcher in cond.Matchers)
                 {
                     emit
-                        .Label(action[scanProduction.Index].Def)
-                        .Ldc_I4(scanProduction.Outcome == null ? -1 : scanProduction.Outcome.Index)
+                        .Label(action[matcher.Index].Def)
+                        .Ldc_I4(matcher.Outcome == null ? -1 : matcher.Outcome.Index)
                         .Stloc(tokenId.GetRef())
                         ;
 
-                    var productionBinding = scanProduction.Joint.The<CilMatcher>();
+                    var productionBinding = matcher.Joint.The<CilMatcher>();
                     productionBinding.ActionBuilder(code);
                 }
             }

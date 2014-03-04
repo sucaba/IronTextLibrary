@@ -115,10 +115,11 @@
     <Compile Include="Diagnostics\IGraphView.cs" />
     <Compile Include="Algorithm\Build\IDerivedBuilderMetadata.cs" />
     <Compile Include="Framework\LanguageFlags.cs" />
+    <Compile Include="Reflection\Cil\CilContextRef.cs" />
     <Compile Include="Reflection\Cil\CilContext.cs" />
-    <Compile Include="Reflection\Cil\CilContextConsumer.cs" />
     <Compile Include="Reflection\Cil\CilContextProvider.cs" />
     <Compile Include="Reflection\ContextProvider.cs" />
+    <Compile Include="Reflection\ActionContextRef.cs" />
     <Compile Include="Reflection\IContextProvider.cs" />
     <Compile Include="Reflection\RefeneceCollection.cs" />
     <Compile Include="Reflection\Serialization\IGrammarReader.cs" />
@@ -188,7 +189,7 @@
     <Compile Include="Reflection\ProductionActionCollection.cs" />
     <Compile Include="Reflection\InlineProduction.cs" />
     <Compile Include="Reflection\ProductionCollection.cs" />
-    <Compile Include="Reflection\ProductionContext.cs" />
+    <Compile Include="Reflection\ActionContext.cs" />
     <Compile Include="Reflection\ProductionContextCollection.cs" />
     <Compile Include="Reflection\Condition.cs" />
     <Compile Include="Reflection\ConditionCollection.cs" />

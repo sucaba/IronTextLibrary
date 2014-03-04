@@ -49,7 +49,7 @@ namespace IronText.Tests.Extensibility
                     yield return new CilProduction(
                         outcome: CilSymbolRef.Create(typeof(void)),
                         pattern: new[] { CilSymbolRef.Create(typeof(int)) },
-                        context: CilContext.None,
+                        context: CilContextRef.None,
                         actionBuilder: code => { code.Emit(il => il.Ldnull().Ret()); });
                 }
             }

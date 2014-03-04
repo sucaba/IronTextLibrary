@@ -180,9 +180,9 @@ namespace IronText.MetadataCompiler
             return true;
         }
 
-        private static List<ProductionContextBinding> CollectLocalContexts(Grammar grammar, ILrDfa lrDfa)
+        private static List<LocalContextBinding> CollectLocalContexts(Grammar grammar, ILrDfa lrDfa)
         {
-            var result = new List<ProductionContextBinding>();
+            var result = new List<LocalContextBinding>();
 
             var states     = lrDfa.States;
             int stateCount = states.Length;
@@ -205,15 +205,15 @@ namespace IronText.MetadataCompiler
                     {
                         var action = consumingProd.Actions[0];
 
-                        if (providingSymbol.LocalContextProvider.Contains(action.Context))
+                        if (providingSymbol.LocalContextProvider.Provides(action.ContextRef))
                         {
                             result.Add(
-                                new ProductionContextBinding
+                                new LocalContextBinding
                                 {
-                                    StackState          = parentState,
-                                    ProviderStackLookback = item.Position,
-                                    Provider             = providingSymbol.LocalContextProvider,
-                                    Consumer             = action.Context
+                                    StackState    = parentState,
+                                    StackLookback = item.Position,
+                                    Provider      = providingSymbol.LocalContextProvider,
+                                    Consumer      = action.ContextRef
                                 });
                         }
                     }
