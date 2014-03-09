@@ -41,7 +41,13 @@ namespace IronText.MetadataCompiler
 
         public void LdContextOfType(Type type)
         {
-            var contextRef = new ActionContextRef(CilContextRef.GetName(type));
+            string contextName = CilContextRef.GetName(type);
+            LdContextOfType(contextName);
+        }
+
+        public void LdContextOfType(string contextName)
+        {
+            var contextRef = new ActionContextRef(contextName);
 
             if (localContexts != null && localContexts.Length != 0)
             {
@@ -75,7 +81,7 @@ namespace IronText.MetadataCompiler
 
                             if (value == locals.Length)
                             {
-                                if (LdGlobalContext(type))
+                                if (LdGlobalContext(contextName))
                                 {
                                     il.Br(END);
                                 }
@@ -92,15 +98,9 @@ namespace IronText.MetadataCompiler
                             {
                                 var lc = locals[value];
                                 var provider = lc.Provider.Joint.The<CilContextProvider>();
-                                var path = provider.GetGetterPath(type);
-                                if (path == null)
-                                {
-                                    throw new InvalidOperationException(
-                                        "Internal error: incorrect local context data.");
-                                }
-
-                                LdCallPath(
-                                    path,
+                                var context = provider.GetContext(contextName);
+                                context.Ld(
+                                    il,
                                     il2 => il2
                                         // Lookback for getting parent instance
                                         .Do(ldLookback)
@@ -117,16 +117,16 @@ namespace IronText.MetadataCompiler
                 }
             }
             
-            if (!LdGlobalContext(type))
+            if (!LdGlobalContext(contextName))
             {
                 throw new InvalidOperationException(
-                    "Context type '" + type.FullName + "' is not accessible.");
+                    "Context '" + contextName + "' is not accessible.");
             }
         }
 
-        private bool LdGlobalContext(Type contextType)
+        private bool LdGlobalContext(string contextName)
         {
-            var contextRef = new ActionContextRef(CilContextRef.GetName(contextType));
+            var contextRef = new ActionContextRef(contextName);
             var context = this.contextProvider.Resolve(contextRef);
             if (context == null)
             {
@@ -136,22 +136,6 @@ namespace IronText.MetadataCompiler
             var binding = context.Joint.The<CilContext>();
             binding.Ld(emit, ldGlobalContextProvider);
             return true;
-        }
-
-        private void LdCallPath(IEnumerable<MethodInfo> path, Pipe<EmitSyntax> ldFrom)
-        {
-            if (path == null)
-            {
-                throw new ArgumentNullException("path");
-            }
-
-            // Load start value
-            emit.Do(ldFrom);
-
-            foreach (var getter in path)
-            {
-                emit.Call(getter);
-            }
         }
     }
 }

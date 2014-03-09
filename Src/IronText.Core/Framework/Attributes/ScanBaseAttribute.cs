@@ -36,32 +36,33 @@ namespace IronText.Framework
         {
             var method       = (MethodInfo)Member;
             var tokenType    = method.ReturnType;
-            var nextModeType = GetNextModeType();
+            var nextConditionType = GetNextConditionType();
 
-            var scanRule = new CilMatcher();
+            var matcher = new CilMatcher();
+
+            var contextType = GetContextType();
+            //var context = CilContextRef.ByType(contextType);
 
             if (tokenType != typeof(void))
             {
                 var outcome = CilSymbolRef.Create(tokenType, LiteralText);
-                scanRule.MainOutcome = outcome;
-                scanRule.AllOutcomes.Add(outcome);
+                matcher.MainOutcome = outcome;
+                matcher.AllOutcomes.Add(outcome);
             }
 
-            scanRule.DefiningMethod = method;
-            scanRule.Disambiguation = Disambiguation;
+            matcher.DefiningMethod = method;
+            matcher.Disambiguation = Disambiguation;
             if (LiteralText == null)
             {
-                scanRule.Pattern = ScanPattern.CreateRegular(Pattern, RegexPattern);
+                matcher.Pattern = ScanPattern.CreateRegular(Pattern, RegexPattern);
             }
             else
             {
-                scanRule.Pattern = ScanPattern.CreateLiteral(LiteralText);
+                matcher.Pattern = ScanPattern.CreateLiteral(LiteralText);
             }
 
-            var contextType = GetContextType();
-
-            scanRule.NextConditionType = nextModeType;
-            scanRule.ActionBuilder =
+            matcher.NextConditionType = nextConditionType;
+            matcher.ActionBuilder =
                 code =>
                 {
                     if (!method.IsStatic)
@@ -125,7 +126,7 @@ namespace IronText.Framework
                     {
                         code
                             .Emit(il => il.Ldloc(nextModeVar))
-                            .ChangeMode(nextModeType);
+                            .ChangeMode(nextConditionType);
                     }
 
                     if (method.ReturnType == typeof(void))
@@ -146,14 +147,12 @@ namespace IronText.Framework
                 };
 
 
-            return new[] { scanRule };
+            return new[] { matcher };
         }
 
-        private Type GetNextModeType()
+        private Type GetNextConditionType()
         {
             var method = (MethodInfo)Member;
-            var tokenType = method.ReturnType;
-
             return method
                     .GetParameters()
                     .Where(p => p.IsOut)

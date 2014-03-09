@@ -136,7 +136,7 @@ namespace IronText.Framework
 
             var rule = new CilProduction(
                 outcome:    outcome,
-                pattern:    pattern.ToArray(),
+                pattern:    pattern,
                 precedence: GetPrecedence(),
                 context:    GetContext(method, hasThis: thisSymbol != null),
                 actionBuilder:

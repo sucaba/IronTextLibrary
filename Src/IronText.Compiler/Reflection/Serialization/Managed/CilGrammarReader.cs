@@ -112,7 +112,7 @@ namespace IronText.Reflection.Managed
                 Production production;
                 if (result.Productions.FindOrAdd(outcome, pattern, out production))
                 {
-                    ActionContextRef contextRef = CreateActionContextRef(cilProduction);
+                    ActionContextRef contextRef = CreateActionContextRef(cilProduction.Context);
                     production.Actions.Add(new ProductionAction(pattern.Length, contextRef));
                 }
 
@@ -141,6 +141,9 @@ namespace IronText.Reflection.Managed
                     var matcher = new Matcher(
                         cilMatcher.Pattern,
                         outcome,
+#if false
+                        context: CreateActionContextRef(cilMatcher.Context),
+#endif
                         nextCondition: ConditionFromType(result, cilMatcher.NextConditionType),
                         disambiguation: cilMatcher.Disambiguation);
                     matcher.Joint.Add(cilMatcher);
@@ -164,11 +167,10 @@ namespace IronText.Reflection.Managed
             return result;
         }
 
-        private static ActionContextRef CreateActionContextRef(CilProduction cilProduction)
+        private static ActionContextRef CreateActionContextRef(CilContextRef cilContext)
         {
             ActionContextRef result;
 
-            var cilContext = cilProduction.Context;
             if (cilContext == CilContextRef.None)
             {
                 result = ActionContextRef.None;

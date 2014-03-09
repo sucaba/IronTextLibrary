@@ -24,7 +24,7 @@ namespace IronText.Reflection
             Conditions  = new ConditionCollection(this);
             Matchers    = new MatcherCollection(this);
             Mergers     = new MergerCollection(this);
-            Contexts    = new ProductionContextCollection(this);
+            Contexts    = new ActionContextCollection(this);
             Reports     = new ReportCollection();
             GlobalContextProvider = new ContextProvider { Owner = this.Contexts };
             Joint       = new Joint();
@@ -71,7 +71,7 @@ namespace IronText.Reflection
 
         public MergerCollection     Mergers             { get; private set; }
 
-        public ProductionContextCollection Contexts     { get; private set; }
+        public ActionContextCollection Contexts     { get; private set; }
 
         public ReportCollection     Reports             { get; private set; }
 

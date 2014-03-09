@@ -2,7 +2,6 @@
 
 namespace IronText.Reflection.Managed
 {
-    [Serializable]
     public class CilSymbolRef : IEquatable<CilSymbolRef>
     {
         public static CilSymbolRef Create(Type type, string literal)

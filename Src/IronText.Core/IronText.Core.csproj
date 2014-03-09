@@ -191,7 +191,7 @@
     <Compile Include="Reflection\InlineProduction.cs" />
     <Compile Include="Reflection\ProductionCollection.cs" />
     <Compile Include="Reflection\ActionContext.cs" />
-    <Compile Include="Reflection\ProductionContextCollection.cs" />
+    <Compile Include="Reflection\ActionContextCollection.cs" />
     <Compile Include="Reflection\Condition.cs" />
     <Compile Include="Reflection\ConditionCollection.cs" />
     <Compile Include="Reflection\ScanPattern.cs" />

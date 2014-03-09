@@ -19,6 +19,8 @@ namespace IronText.Reflection.Managed
             MainOutcome = outcome;
             AllOutcomes.Add(outcome);
         }
+
+        public CilContextRef        Context                { get; set; }
         
         public MethodInfo           DefiningMethod         { get; set; }
 

@@ -9,6 +9,7 @@ namespace IronText.Lib.IL
     public class DynamicMethod2<TDelegate> where TDelegate : class
     {
         private Type[] argTypes;
+        private string[] argNames;
         private Type resultType;
 
         public DynamicMethod2(
@@ -24,7 +25,7 @@ namespace IronText.Lib.IL
             var inputArgs = new Ref<Args>[argTypes.Length];
             for (int i = 0; i != inputArgs.Length; ++i)
             {
-                var def = emit.Args.Generate();
+                var def = emit.Args.Generate(argNames[i]);
                 def.Value = i;
                 inputArgs[i] = def.GetRef();
             }
@@ -38,7 +39,7 @@ namespace IronText.Lib.IL
 
         private void ExtractArgumentAndResultTypes(Type delegateType)
         {
-            ReflectionUtils.GetDelegateSignature(delegateType, out resultType, out argTypes);
+            ReflectionUtils.GetDelegateSignature(delegateType, out resultType, out argTypes, out argNames);
         }
     }
 

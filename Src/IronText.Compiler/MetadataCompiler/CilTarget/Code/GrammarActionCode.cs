@@ -35,9 +35,15 @@ namespace IronText.MetadataCompiler
         {
             emit = emit
                 .Do(LdRuleArgs)
-                .Do(LdArgsStart)
-                .Ldc_I4(index)
-                .Add();
+                .Do(LdArgsStart);
+
+            // Optmization for "+ 0".
+            if (index != 0)
+            {
+                emit
+                    .Ldc_I4(index)
+                    .Add();
+            }
 
             if (typeof(Msg).IsValueType)
             {

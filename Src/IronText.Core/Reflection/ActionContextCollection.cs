@@ -2,9 +2,9 @@
 
 namespace IronText.Reflection
 {
-    public class ProductionContextCollection : IndexedCollection<ActionContext,ISharedGrammarEntities>
+    public class ActionContextCollection : IndexedCollection<ActionContext,ISharedGrammarEntities>
     {
-        public ProductionContextCollection(ISharedGrammarEntities ebnfGrammar)
+        public ActionContextCollection(ISharedGrammarEntities ebnfGrammar)
             : base(ebnfGrammar)
         {
         }

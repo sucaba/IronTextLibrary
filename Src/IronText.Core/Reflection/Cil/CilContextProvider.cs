@@ -17,19 +17,9 @@ namespace IronText.Reflection.Managed
 
         public Type ProviderType     { get; private set; }
 
-        public IEnumerable<MethodInfo> GetGetterPath(Type type)
+        public CilContext GetContext(string name)
         {
-            if (type.IsAssignableFrom(ProviderType))
-            {
-                return Enumerable.Empty<MethodInfo>();
-            }
-
-            var path = Graph.Search(
-                        EnumerateContextGetters(ProviderType),
-                        m => EnumerateContextGetters(m.ReturnType),
-                        m => type.IsAssignableFrom(m.ReturnType));
-
-            return path;
+            return Contexts.Single(c => c.UniqueName == name);
         }
 
         public IEnumerable<CilContext> Contexts
@@ -50,6 +40,21 @@ namespace IronText.Reflection.Managed
 
                 return result;
             }
+        }
+
+        private IEnumerable<MethodInfo> GetGetterPath(Type type)
+        {
+            if (type.IsAssignableFrom(ProviderType))
+            {
+                return Enumerable.Empty<MethodInfo>();
+            }
+
+            var path = Graph.Search(
+                        EnumerateContextGetters(ProviderType),
+                        m => EnumerateContextGetters(m.ReturnType),
+                        m => type.IsAssignableFrom(m.ReturnType));
+
+            return path;
         }
 
         private static IEnumerable<MethodInfo> EnumerateContextGetters(Type type)

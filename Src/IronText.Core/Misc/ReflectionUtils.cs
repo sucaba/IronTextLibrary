@@ -59,10 +59,11 @@ namespace IronText.Misc
             return result;
         }
 
-        public static void GetDelegateSignature(Type delegateType, out Type resultType, out Type[] argTypes)
+        public static void GetDelegateSignature(Type delegateType, out Type resultType, out Type[] argTypes, out string[] names)
         {
             var method = delegateType.GetMethod("Invoke");
-            argTypes = method.GetParameters().Select(param => param.ParameterType).ToArray();
+            argTypes   = method.GetParameters().Select(param => param.ParameterType).ToArray();
+            names      = method.GetParameters().Select(param => param.Name).ToArray();
             resultType = method.ReturnType;
         }
 

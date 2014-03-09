@@ -8,6 +8,7 @@ namespace IronText.Lib.IL
     {
         private Type delegateType;
         private Type[] argTypes;
+        private string[] argNames;
         private Type resultType;
         private readonly string typeName;
         private readonly string methodName;
@@ -32,7 +33,11 @@ namespace IronText.Lib.IL
 
         private void ExtractArgumentAndResultTypes(Type delegateType)
         {
-            ReflectionUtils.GetDelegateSignature(delegateType, out resultType, out argTypes);
+            ReflectionUtils.GetDelegateSignature(
+                delegateType,
+                out resultType,
+                out argTypes,
+                out argNames);
         }
 
         private WantArgsBase DefineArgs(WantArgsBase wantArgs)
@@ -41,7 +46,7 @@ namespace IronText.Lib.IL
 
             for (int i = 0; i != inputArgs.Length; ++i)
             {
-                var arg = wantArgs.Args.Generate().GetRef();
+                var arg = wantArgs.Args.Generate(argNames[i]).GetRef();
                 wantArgs = wantArgs.Argument(wantArgs.Types.Import(argTypes[i]), arg.Def);
                 inputArgs[i] = arg;
             }
