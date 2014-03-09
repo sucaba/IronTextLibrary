@@ -32,10 +32,11 @@ namespace IronText.Framework
 
         internal string RegexPattern { get; set; }
 
+        private MethodInfo Method { get { return (MethodInfo)Member; } }
+
         public override IEnumerable<CilMatcher> GetMatchers()
         {
-            var method       = (MethodInfo)Member;
-            var tokenType    = method.ReturnType;
+            var tokenType    = Method.ReturnType;
             var nextConditionType = GetNextConditionType();
 
             var matcher = new CilMatcher();
@@ -50,7 +51,7 @@ namespace IronText.Framework
                 matcher.AllOutcomes.Add(outcome);
             }
 
-            matcher.DefiningMethod = method;
+            matcher.DefiningMethod = Method;
             matcher.Disambiguation = Disambiguation;
             if (LiteralText == null)
             {
@@ -61,16 +62,13 @@ namespace IronText.Framework
                 matcher.Pattern = ScanPattern.CreateLiteral(LiteralText);
             }
 
+            var parameters = Method.GetParameters().ToList();
+
+            matcher.Context = GetContext();
             matcher.NextConditionType = nextConditionType;
             matcher.ActionBuilder =
                 code =>
                 {
-                    if (!method.IsStatic)
-                    {
-                        code.ContextResolver.LdContextOfType(contextType);
-                    }
-
-                    var parameters = method.GetParameters().ToList();
                     ParameterInfo nextModeParameter;
                     if (parameters.Count != 0 && parameters.Last().IsOut)
                     {
@@ -103,7 +101,7 @@ namespace IronText.Framework
                     else
                     {
                         throw new InvalidOperationException(
-                            "Unsupported scan-method signature: "
+                            "Unsupported match-method signature: "
                             + string.Join(", ", parameters.Select(p => p.ParameterType.Name)));
                     }
 
@@ -120,7 +118,7 @@ namespace IronText.Framework
                             });
                     }
 
-                    code.Emit(il => il.Call(method));
+                    code.Emit(il => il.Call(Method));
 
                     if (nextModeParameter != null)
                     {
@@ -129,15 +127,15 @@ namespace IronText.Framework
                             .ChangeMode(nextConditionType);
                     }
 
-                    if (method.ReturnType == typeof(void))
+                    if (Method.ReturnType == typeof(void))
                     {
                         code.SkipAction();
                     }
                     else
                     {
-                        if (method.ReturnType.IsValueType)
+                        if (Method.ReturnType.IsValueType)
                         {
-                            code.Emit(il => il.Box(il.Types.Import(method.ReturnType)));
+                            code.Emit(il => il.Box(il.Types.Import(Method.ReturnType)));
                         }
 
                         code
@@ -150,10 +148,14 @@ namespace IronText.Framework
             return new[] { matcher };
         }
 
+        private CilContextRef GetContext()
+        {
+            return Method.IsStatic ? CilContextRef.None : CilContextRef.ByType(GetContextType());
+        }
+
         private Type GetNextConditionType()
         {
-            var method = (MethodInfo)Member;
-            return method
+            return Method
                     .GetParameters()
                     .Where(p => p.IsOut)
                     .Select(p => p.ParameterType.GetElementType())
@@ -164,8 +166,7 @@ namespace IronText.Framework
         { 
             get 
             {
-                var method = (MethodInfo)Member;
-                var result = method.ReturnType;
+                var result = Method.ReturnType;
                 if (result == typeof(object))
                 {
                     return null;

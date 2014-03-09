@@ -83,6 +83,7 @@ namespace IronText.MetadataCompiler
                         ;
 
                     var productionBinding = matcher.Joint.The<CilMatcher>();
+                    productionBinding.Context.LoadForMatcher(code);
                     productionBinding.ActionBuilder(code);
                 }
             }

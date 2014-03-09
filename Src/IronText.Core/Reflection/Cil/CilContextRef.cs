@@ -24,6 +24,8 @@ namespace IronText.Reflection.Managed
 
         public abstract void LoadForMerger(IMergeActionCode code);
 
+        public abstract void LoadForMatcher(IMatcherActionCode code);
+
         sealed class NoneContextRef : CilContextRef
         {
             public override string UniqueName { get { return "$none"; } }
@@ -31,6 +33,8 @@ namespace IronText.Reflection.Managed
             public override void LoadForProduction(IProductionActionCode code) { }
 
             public override void LoadForMerger(IMergeActionCode code) { }
+
+            public override void LoadForMatcher(IMatcherActionCode code) { }
 
             public override bool Equals(object obj)
             {
@@ -54,6 +58,11 @@ namespace IronText.Reflection.Managed
             }
 
             public override void LoadForMerger(IMergeActionCode code)
+            {
+                throw new InvalidOperationException("Internal error: this-context is not supported in merge actions.");
+            }
+
+            public override void LoadForMatcher(IMatcherActionCode code)
             {
                 throw new InvalidOperationException("Internal error: this-context is not supported in merge actions.");
             }
@@ -84,6 +93,11 @@ namespace IronText.Reflection.Managed
             }
 
             public override void LoadForMerger(IMergeActionCode code)
+            {
+                code.ContextResolver.LdContextOfType(type);
+            }
+
+            public override void LoadForMatcher(IMatcherActionCode code)
             {
                 code.ContextResolver.LdContextOfType(type);
             }
