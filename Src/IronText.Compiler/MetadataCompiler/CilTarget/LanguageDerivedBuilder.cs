@@ -108,7 +108,7 @@ namespace IronText.MetadataCompiler
 
         private ClassSyntax BuildMethod_GrammarAction(ClassSyntax context)
         {
-            var generator = new GrammarActionGenerator();
+            var generator = new ProductionActionGenerator();
             return generator.BuildMethod(context, RuleActionMethodName, data);
         }
 
@@ -134,7 +134,7 @@ namespace IronText.MetadataCompiler
                 var dfaSerialization = new DfaSerialization(dfa);
                 var generator = new ScannerGenerator(dfaSerialization);
 
-                var methodName = ScanModeMethods.GetMethodName(condition.Index);
+                var methodName = ConditionMethods.GetMethodName(condition.Index);
                 var args = context
                             .Method()
                                 .Static
@@ -510,7 +510,7 @@ namespace IronText.MetadataCompiler
                 .Ldarg(0)
                 .LdMethodDelegate(
                     declaringTypeRef,
-                    ScanModeMethods.GetMethodName(0),
+                    ConditionMethods.GetMethodName(0),
                     typeof(Scan1Delegate))
                 .Stfld(LanguageBase.Fields.scan1)
 

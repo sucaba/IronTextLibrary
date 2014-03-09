@@ -7,9 +7,9 @@ using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    internal class GrammarActionGenerator
+    internal class ProductionActionGenerator
     {
-        public GrammarActionGenerator()
+        public ProductionActionGenerator()
         {
         }
 
@@ -84,7 +84,7 @@ namespace IronText.MetadataCompiler
                                             data.Grammar.GlobalContextProvider,
                                             data.LocalParseContexts);
 
-            var code = new GrammarActionCode(emit, contextResolverCode)
+            var code = new ProductionActionCode(emit, contextResolverCode)
             {
                 LdRule       = il => il.Ldarg(ruleId),
                 LdRuleArgs   = il => il.Ldarg(ruleArgs),

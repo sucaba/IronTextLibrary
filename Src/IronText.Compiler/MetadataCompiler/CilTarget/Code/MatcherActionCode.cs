@@ -117,7 +117,7 @@ namespace IronText.MetadataCompiler
 
             emit
                 .Do(ldCursor)
-                .LdMethodDelegate(declaringType, ScanModeMethods.GetMethodName(condition.Index), typeof(Scan1Delegate))
+                .LdMethodDelegate(declaringType, ConditionMethods.GetMethodName(condition.Index), typeof(Scan1Delegate))
                 .Stfld((ScanCursor c) => c.CurrentMode)
 
                 .Label(DONOT_CHANGE_MODE.Def)

@@ -1,9 +1,9 @@
 ﻿
 namespace IronText.MetadataCompiler
 {
-    static class ScanModeMethods
+    static class ConditionMethods
     {
-        private static string Scan1MethodNameFormat = "ScanMode_{0}";
+        private static string Scan1MethodNameFormat = "Condition_{0}";
 
         public static string GetMethodName(int modeIndex)
         {

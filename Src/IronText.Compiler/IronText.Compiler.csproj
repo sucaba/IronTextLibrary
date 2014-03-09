@@ -191,14 +191,14 @@
     <Compile Include="Reflection\Reporting\ParserState.cs" />
     <Compile Include="Reflection\Reporting\ParserTransition.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\ContextResolverCode.cs" />
-    <Compile Include="MetadataCompiler\CilTarget\Code\GrammarActionCode.cs" />
-    <Compile Include="MetadataCompiler\CilTarget\GrammarActionGenerator.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\Code\ProductionActionCode.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\ProductionActionGenerator.cs" />
     <Compile Include="MetadataCompiler\CilTarget\GrammarSerializer.cs" />
     <Compile Include="MetadataCompiler\CilTarget\LanguageDerivedBuilder.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\MergeActionCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\MergeActionGenerator.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\MatcherActionCode.cs" />
-    <Compile Include="MetadataCompiler\CilTarget\ScanModeMethods.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\ConditionMethods.cs" />
     <Compile Include="MetadataCompiler\CilTarget\ScannerGenerator.cs" />
     <Compile Include="MetadataCompiler\CilTarget\TermFactoryGenerator.cs" />
     <Compile Include="MetadataCompiler\CilTarget\TokenIdentitiesSerializer.cs" />

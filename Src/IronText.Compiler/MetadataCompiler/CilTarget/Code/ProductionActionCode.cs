@@ -7,9 +7,9 @@ using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    public class GrammarActionCode : IProductionActionCode
+    public class ProductionActionCode : IProductionActionCode
     {
-        public GrammarActionCode(EmitSyntax emit, IContextResolverCode contextResolver)
+        public ProductionActionCode(EmitSyntax emit, IContextResolverCode contextResolver)
         {
             this.emit = emit;
             ReturnLabel = emit.Labels.Generate();

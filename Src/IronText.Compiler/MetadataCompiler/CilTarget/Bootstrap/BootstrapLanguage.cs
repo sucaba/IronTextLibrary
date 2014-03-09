@@ -83,7 +83,7 @@ namespace IronText.MetadataCompiler
 
         private ProductionActionDelegate BuildExecuteRuleAction()
         {
-            var generator = new GrammarActionGenerator();
+            var generator = new ProductionActionGenerator();
             var result = new CachedMethod<ProductionActionDelegate>(
                 "Bootstrap." + source.FullLanguageName + ".GrammarActions",
                 (emit, args) => 
