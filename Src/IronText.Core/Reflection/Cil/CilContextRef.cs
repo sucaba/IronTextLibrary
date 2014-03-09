@@ -20,21 +20,21 @@ namespace IronText.Reflection.Managed
 
         public abstract string UniqueName { get; }
 
-        public abstract void LoadForProduction(IProductionActionCode code);
+        public abstract void LoadForProduction(IProductionCode code);
 
-        public abstract void LoadForMerger(IMergeActionCode code);
+        public abstract void LoadForMerger(IMergerCode code);
 
-        public abstract void LoadForMatcher(IMatcherActionCode code);
+        public abstract void LoadForMatcher(IMatcherCode code);
 
         sealed class NoneContextRef : CilContextRef
         {
             public override string UniqueName { get { return "$none"; } }
 
-            public override void LoadForProduction(IProductionActionCode code) { }
+            public override void LoadForProduction(IProductionCode code) { }
 
-            public override void LoadForMerger(IMergeActionCode code) { }
+            public override void LoadForMerger(IMergerCode code) { }
 
-            public override void LoadForMatcher(IMatcherActionCode code) { }
+            public override void LoadForMatcher(IMatcherCode code) { }
 
             public override bool Equals(object obj)
             {
@@ -52,17 +52,17 @@ namespace IronText.Reflection.Managed
 
             public override string UniqueName { get { return GetName(type); } }
 
-            public override void LoadForProduction(IProductionActionCode code)
+            public override void LoadForProduction(IProductionCode code)
             {
                 code.LdRuleArg(0, type);
             }
 
-            public override void LoadForMerger(IMergeActionCode code)
+            public override void LoadForMerger(IMergerCode code)
             {
                 throw new InvalidOperationException("Internal error: this-context is not supported in merge actions.");
             }
 
-            public override void LoadForMatcher(IMatcherActionCode code)
+            public override void LoadForMatcher(IMatcherCode code)
             {
                 throw new InvalidOperationException("Internal error: this-context is not supported in merge actions.");
             }
@@ -87,19 +87,19 @@ namespace IronText.Reflection.Managed
 
             public override string UniqueName { get { return GetName(type); } }
 
-            public override void LoadForProduction(IProductionActionCode code)
+            public override void LoadForProduction(IProductionCode code)
             {
                 code.ContextResolver.LdContext(UniqueName);
             }
 
-            public override void LoadForMerger(IMergeActionCode code)
+            public override void LoadForMerger(IMergerCode code)
             {
                 code.ContextResolver.LdContext(UniqueName);
             }
 
-            public override void LoadForMatcher(IMatcherActionCode code)
+            public override void LoadForMatcher(IMatcherCode code)
             {
-                code.ContextResolver.LdContext(UniqueName);
+                code.ContextCode.LdContext(UniqueName);
             }
 
             public override bool Equals(object obj)

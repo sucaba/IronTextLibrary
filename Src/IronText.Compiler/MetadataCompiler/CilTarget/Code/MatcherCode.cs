@@ -8,7 +8,7 @@ using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    class MatcherActionCode : IMatcherActionCode
+    class MatcherCode : IMatcherCode
     {
         private Ref<Labels> RETURN;
 
@@ -17,31 +17,31 @@ namespace IronText.MetadataCompiler
         private readonly Ref<Types> declaringType;
         private readonly ConditionCollection conditions;
 
-        public MatcherActionCode(
-            EmitSyntax              emit, 
-            IContextResolverCode    contextResolver,
-            Pipe<EmitSyntax>        ldCursor,
-            Ref<Types>              declaringType,
-            ConditionCollection     conditions,
-            Ref<Labels>             RETURN)
+        public MatcherCode(
+            EmitSyntax           emit, 
+            IContextCode         contextCode,
+            Pipe<EmitSyntax>     ldCursor,
+            Ref<Types>           declaringType,
+            ConditionCollection  conditions,
+            Ref<Labels>          RETURN)
         {
             this.emit            = emit;
             this.ldCursor        = ldCursor;
-            this.ContextResolver = contextResolver;
+            this.ContextCode     = contextCode;
             this.declaringType   = declaringType;
             this.conditions      = conditions;
             this.RETURN          = RETURN;
         }
 
-        public IContextResolverCode ContextResolver { get; private set; }
+        public IContextCode ContextCode { get; private set; }
 
-        public IMatcherActionCode ReturnFromAction()
+        public IMatcherCode ReturnFromAction()
         {
             emit.Br(RETURN);
             return this;
         }
 
-        public IMatcherActionCode SkipAction()
+        public IMatcherCode SkipAction()
         {
             emit
                 .Ldnull()
@@ -49,13 +49,13 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IMatcherActionCode Emit(Pipe<EmitSyntax> emitPipe)
+        public IMatcherCode Emit(Pipe<EmitSyntax> emitPipe)
         {
             emit = emitPipe(emit);
             return this;
         }
 
-        public IMatcherActionCode LdBuffer()
+        public IMatcherCode LdBuffer()
         {
             emit
                 .Do(ldCursor)
@@ -63,7 +63,7 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IMatcherActionCode LdStartIndex()
+        public IMatcherCode LdStartIndex()
         {
             emit
                 .Do(ldCursor)
@@ -71,7 +71,7 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IMatcherActionCode LdLength()
+        public IMatcherCode LdLength()
         {
             emit
                 .Do(ldCursor)
@@ -84,7 +84,7 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IMatcherActionCode LdTokenString()
+        public IMatcherCode LdTokenString()
         {
             return this
                 .LdBuffer()
@@ -95,7 +95,7 @@ namespace IronText.MetadataCompiler
                 ;
         }
 
-        public IMatcherActionCode ChangeMode(Type conditionType)
+        public IMatcherCode ChangeCondition(Type conditionType)
         {
             var contextTemp = emit.Locals.Generate().GetRef();
             var DONOT_CHANGE_MODE = emit.Labels.Generate().GetRef();
@@ -127,13 +127,13 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        private Condition FindConditionByType(Type modeType)
+        private Condition FindConditionByType(Type conditionType)
         {
             Condition result = null;
             foreach (var condition in this.conditions)
             {
                 var binding = condition.Joint.The<CilCondition>();
-                if (modeType.Equals(binding.ConditionType))
+                if (conditionType.Equals(binding.ConditionType))
                 {
                     result = condition;
                     break;

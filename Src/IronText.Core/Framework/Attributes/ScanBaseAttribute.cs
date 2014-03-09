@@ -124,7 +124,7 @@ namespace IronText.Framework
                     {
                         code
                             .Emit(il => il.Ldloc(nextModeVar))
-                            .ChangeMode(nextConditionType);
+                            .ChangeCondition(nextConditionType);
                     }
 
                     if (Method.ReturnType == typeof(void))

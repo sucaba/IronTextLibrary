@@ -4,45 +4,45 @@ using IronText.Lib.IL;
 
 namespace IronText.Reflection.Managed
 {
-    public interface IMatcherActionCode
+    public interface IMatcherCode
     {
-        IContextResolverCode ContextResolver { get; }
+        IContextCode ContextCode { get; }
 
         /// <summary>
         /// Emit code
         /// </summary>
         /// <param name="emitPipe"></param>
-        IMatcherActionCode Emit(Pipe<EmitSyntax> emitPipe);
+        IMatcherCode Emit(Pipe<EmitSyntax> emitPipe);
 
         /// <summary>
         /// Load token string to stack
         /// </summary>
-        IMatcherActionCode LdTokenString();
+        IMatcherCode LdTokenString();
 
         /// <summary>
         /// Load buffer
         /// </summary>
-        IMatcherActionCode LdBuffer();
+        IMatcherCode LdBuffer();
 
         /// <summary>
         /// Load index of the token start in buffer
         /// </summary>
-        IMatcherActionCode LdStartIndex();
+        IMatcherCode LdStartIndex();
 
         /// <summary>
         /// Load length of token
         /// </summary>
-        IMatcherActionCode LdLength();
+        IMatcherCode LdLength();
 
         /// <summary>
         /// Return top value in stack as a token value
         /// </summary>
-        IMatcherActionCode ReturnFromAction();
+        IMatcherCode ReturnFromAction();
 
         /// <summary>
         /// Skip token and continue scanning
         /// </summary>
-        IMatcherActionCode SkipAction();
+        IMatcherCode SkipAction();
 
         /// <summary>
         /// Set current mode and run-time context.
@@ -53,7 +53,7 @@ namespace IronText.Reflection.Managed
         /// and sets current mode (scanner DFA) determined by
         /// scanner context type. 
         /// </remarks>
-        /// <param name="modeType">Type of scanner context which determines scanner DFA to use</param>
-        IMatcherActionCode ChangeMode(Type modeType);
+        /// <param name="conditionType">Type of scanner context which determines scanner DFA to use</param>
+        IMatcherCode ChangeCondition(Type conditionType);
     }
 }

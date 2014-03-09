@@ -76,7 +76,7 @@ namespace IronText.MetadataCompiler
             Ref<Args> ctx,
             Ref<Args> lookbackStart)
         {
-            var contextResolverCode = new ContextResolverCode(
+            var contextResolverCode = new ContextCode(
                                             emit,
                                             il => il.Ldarg(ctx),
                                             il => il.Ldarg(lookbackStart),
@@ -84,7 +84,7 @@ namespace IronText.MetadataCompiler
                                             data.Grammar.GlobalContextProvider,
                                             data.LocalParseContexts);
 
-            var code = new ProductionActionCode(emit, contextResolverCode)
+            var code = new ProductionCode(emit, contextResolverCode)
             {
                 LdRule       = il => il.Ldarg(ruleId),
                 LdRuleArgs   = il => il.Ldarg(ruleArgs),

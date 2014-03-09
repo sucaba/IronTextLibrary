@@ -58,7 +58,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var cond in data.Grammar.Conditions)
             {
-                var contextResolver = new ContextResolverCode(
+                var contextResolver = new ContextCode(
                                         emit,
                                         il => il
                                             .Do(ldCursor)
@@ -66,7 +66,7 @@ namespace IronText.MetadataCompiler
                                         null,
                                         data,
                                         cond.ContextProvider);
-                var code = new MatcherActionCode(
+                var code = new MatcherCode(
                                 emit,
                                 contextResolver,
                                 ldCursor,

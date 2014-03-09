@@ -7,7 +7,7 @@ namespace IronText.Reflection.Managed
     /// <remarks>
     /// Generated code should leave <see cref="Object"/> return value in the CLR stack.
     /// </remarks>
-    public delegate void CilActionContextLoader(IProductionActionCode code);
+    public delegate void CilActionContextLoader(IProductionCode code);
 
     /// <summary>
     /// Parser action builder contract
@@ -15,13 +15,13 @@ namespace IronText.Reflection.Managed
     /// <remarks>
     /// Generated code should leave <see cref="Object"/> return value in the CLR stack.
     /// </remarks>
-    public delegate void CilProductionActionBuilder(IProductionActionCode code);
+    public delegate void CilProductionActionBuilder(IProductionCode code);
 
     /// <summary>
     /// Scanner action builder contract
     /// </summary>
     /// <param name="context"></param>
-    public delegate void CilScanActionBuilder(IMatcherActionCode context);
+    public delegate void CilScanActionBuilder(IMatcherCode context);
 
     /// <summary>
     /// Merge action builder contract
@@ -29,5 +29,5 @@ namespace IronText.Reflection.Managed
     /// <remarks>
     /// Generated code should leave <see cref="Object"/> return value in the CLR stack.
     /// </remarks>
-    public delegate void CilMergerActionBuilder(IMergeActionCode code);
+    public delegate void CilMergerActionBuilder(IMergerCode code);
 }

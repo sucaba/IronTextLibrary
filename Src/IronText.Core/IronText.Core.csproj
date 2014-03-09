@@ -139,7 +139,7 @@
     <Compile Include="Reflection\Reporting\IScannerTransition.cs" />
     <Compile Include="Reflection\Reporting\IScannerState.cs" />
     <Compile Include="Reflection\Reporting\IReportData.cs" />
-    <Compile Include="Reflection\Cil\Code\IMergeActionCode.cs" />
+    <Compile Include="Reflection\Cil\Code\IMergerCode.cs" />
     <Compile Include="Reflection\Cil\CilMerger.cs" />
     <Compile Include="Reflection\Cil\CilSymbolFeature.cs" />
     <Compile Include="Reflection\RuntimeOptions.cs" />
@@ -148,8 +148,8 @@
     <Compile Include="Runtime\ParserActionKind.cs" />
     <Compile Include="Reflection\Reporting\ParserConflictInfo.cs" />
     <Compile Include="Reflection\Cil\Code\CilDelegates.cs" />
-    <Compile Include="Reflection\Cil\Code\IContextResolverCode.cs" />
-    <Compile Include="Reflection\Cil\Code\IMatcherActionCode.cs" />
+    <Compile Include="Reflection\Cil\Code\IContextCode.cs" />
+    <Compile Include="Reflection\Cil\Code\IMatcherCode.cs" />
     <Compile Include="Extensibility\CilMetadataAttribute.cs" />
     <Compile Include="Reflection\Cil\CilCondition.cs" />
     <Compile Include="Extensibility\ScannerUtils.cs" />
@@ -257,7 +257,7 @@
     <Compile Include="Lib\Builtins.cs" />
     <Compile Include="Lib\Numbers.cs" />
     <Compile Include="Lib\Shared\Labels.cs" />
-    <Compile Include="Reflection\Cil\Code\IProductionActionCode.cs" />
+    <Compile Include="Reflection\Cil\Code\IProductionCode.cs" />
     <Compile Include="Extensibility\ICilMetadata.cs" />
     <Compile Include="Extensibility\MetadataParser.cs" />
     <Compile Include="Framework\Attributes\StaticContextAttribute.cs" />

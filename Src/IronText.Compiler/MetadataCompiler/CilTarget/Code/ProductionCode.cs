@@ -7,9 +7,9 @@ using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    public class ProductionActionCode : IProductionActionCode
+    class ProductionCode : IProductionCode
     {
-        public ProductionActionCode(EmitSyntax emit, IContextResolverCode contextResolver)
+        public ProductionCode(EmitSyntax emit, IContextCode contextResolver)
         {
             this.emit = emit;
             ReturnLabel = emit.Labels.Generate();
@@ -23,15 +23,15 @@ namespace IronText.MetadataCompiler
         public Def<Labels>  ReturnLabel;
         private EmitSyntax emit;
 
-        public IProductionActionCode Emit(Pipe<EmitSyntax> pipe)
+        public IProductionCode Emit(Pipe<EmitSyntax> pipe)
         {
             emit = pipe(emit);
             return this;
         }
 
-        public IContextResolverCode ContextResolver { get; private set; }
+        public IContextCode ContextResolver { get; private set; }
 
-        public IProductionActionCode LdRuleArg(int index)
+        public IProductionCode LdRuleArg(int index)
         {
             emit = emit
                 .Do(LdRuleArgs)
@@ -63,7 +63,7 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IProductionActionCode LdRuleArg(int index, Type argType)
+        public IProductionCode LdRuleArg(int index, Type argType)
         {
             LdRuleArg(index);
             if (argType.IsValueType)

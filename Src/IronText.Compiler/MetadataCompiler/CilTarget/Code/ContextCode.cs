@@ -16,7 +16,7 @@ using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    class ContextResolverCode : IContextResolverCode
+    class ContextCode : IContextCode
     {
         private readonly EmitSyntax       emit;
         private readonly Pipe<EmitSyntax> ldGlobalContextProvider;
@@ -24,7 +24,7 @@ namespace IronText.MetadataCompiler
         private readonly ContextProvider  contextProvider;
         private readonly LocalContextBinding[] localContexts;
 
-        public ContextResolverCode(
+        public ContextCode(
             EmitSyntax       emit,
             Pipe<EmitSyntax> ldGlobalContextProvider,
             Pipe<EmitSyntax> ldLookback,

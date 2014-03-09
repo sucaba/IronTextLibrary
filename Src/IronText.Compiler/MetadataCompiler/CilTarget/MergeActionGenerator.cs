@@ -82,7 +82,7 @@ namespace IronText.MetadataCompiler
                 return;
             }
 
-            var contextResolverCode = new ContextResolverCode(
+            var contextResolverCode = new ContextCode(
                                             emit,
                                             il => il.Ldarg(ctx),
                                             il => il.Ldarg(lookbackStart),
@@ -90,7 +90,7 @@ namespace IronText.MetadataCompiler
                                             data.Grammar.GlobalContextProvider,
                                             data.LocalParseContexts);
 
-            var code = new MergeActionCode(emit, contextResolverCode)
+            var code = new MergeCode(emit, contextResolverCode)
             {
                 LoadOldValue   = il => il.Ldarg(oldValue),
                 LoadNewValue   = il => il.Ldarg(newValue),

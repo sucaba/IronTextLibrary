@@ -2,7 +2,7 @@
 
 namespace IronText.Reflection.Managed
 {
-    public interface IContextResolverCode
+    public interface IContextCode
     {
         void LdContext(string contextName);
     }

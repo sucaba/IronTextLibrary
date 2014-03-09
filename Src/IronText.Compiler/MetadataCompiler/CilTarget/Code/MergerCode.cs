@@ -4,32 +4,32 @@ using IronText.Reflection.Managed;
 
 namespace IronText.MetadataCompiler
 {
-    public class MergeActionCode : IMergeActionCode
+    class MergeCode : IMergerCode
     {
         public Pipe<EmitSyntax> LoadOldValue;
         public Pipe<EmitSyntax> LoadNewValue;
         private EmitSyntax emit;
 
-        public MergeActionCode(EmitSyntax emit, IContextResolverCode contextResolver)
+        public MergeCode(EmitSyntax emit, IContextCode contextResolver)
         {
             this.emit = emit;
             ContextResolver = contextResolver;
         }
 
-        public IContextResolverCode ContextResolver { get; private set; }
+        public IContextCode ContextResolver { get; private set; }
 
-        public IMergeActionCode Emit(Pipe<EmitSyntax> pipe)
+        public IMergerCode Emit(Pipe<EmitSyntax> pipe)
         {
             emit = emit.Do(pipe);
             return this;
         }
 
-        public IMergeActionCode LdOldValue()
+        public IMergerCode LdOldValue()
         {
             return Emit(LoadOldValue);
         }
 
-        public IMergeActionCode LdNewValue()
+        public IMergerCode LdNewValue()
         {
             return Emit(LoadNewValue);
         }
