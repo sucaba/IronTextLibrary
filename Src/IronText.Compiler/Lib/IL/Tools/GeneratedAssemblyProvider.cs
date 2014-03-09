@@ -83,7 +83,7 @@ namespace IronText.Lib.IL
                     throw new InvalidOperationException("Backend does not support assembly writing");
                 }
 
-#if true
+#if false
                 var path = Path.Combine(Environment.CurrentDirectory, assemblyName + ".dll");
                 writer.Write(path);
                 assembly = Assembly.LoadFrom(path);

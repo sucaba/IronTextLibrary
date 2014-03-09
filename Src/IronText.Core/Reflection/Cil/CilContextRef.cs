@@ -89,17 +89,17 @@ namespace IronText.Reflection.Managed
 
             public override void LoadForProduction(IProductionActionCode code)
             {
-                code.ContextResolver.LdContextOfType(type);
+                code.ContextResolver.LdContext(UniqueName);
             }
 
             public override void LoadForMerger(IMergeActionCode code)
             {
-                code.ContextResolver.LdContextOfType(type);
+                code.ContextResolver.LdContext(UniqueName);
             }
 
             public override void LoadForMatcher(IMatcherActionCode code)
             {
-                code.ContextResolver.LdContextOfType(type);
+                code.ContextResolver.LdContext(UniqueName);
             }
 
             public override bool Equals(object obj)

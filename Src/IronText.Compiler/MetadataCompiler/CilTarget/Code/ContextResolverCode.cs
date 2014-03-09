@@ -39,13 +39,7 @@ namespace IronText.MetadataCompiler
             this.localContexts   = localContexts;
         }
 
-        public void LdContextOfType(Type type)
-        {
-            string contextName = CilContextRef.GetName(type);
-            LdContextOfType(contextName);
-        }
-
-        public void LdContextOfType(string contextName)
+        public void LdContext(string contextName)
         {
             var contextRef = new ActionContextRef(contextName);
 
