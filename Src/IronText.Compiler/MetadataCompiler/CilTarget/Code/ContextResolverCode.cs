@@ -82,7 +82,7 @@ namespace IronText.MetadataCompiler
                                 else
                                 {
                                     il
-                                        .Ldstr(new QStr("Internal error: missing global context : " + type.FullName))
+                                        .Ldstr(new QStr("Internal error: missing global context : " + contextRef.UniqueName))
                                         .Newobj((string msg) => new Exception(msg))
                                         .Throw()
                                         ;
@@ -93,21 +93,22 @@ namespace IronText.MetadataCompiler
                                 var lc = locals[value];
                                 var provider = lc.Provider.Joint.The<CilContextProvider>();
                                 var path = provider.GetGetterPath(type);
-                                if (LdCallPath(path, il2 => il2
-                                    // Lookback for getting parent instance
-                                                .Do(ldLookback)
-                                                .Ldc_I4(lc.StackLookback)
-                                                .Call((IStackLookback<Msg> lb, int backOffset)
-                                                        => lb.GetValueAt(backOffset))
-                                                .Ldfld((Msg msg) => msg.Value)))
-                                {
-                                    il.Br(END);
-                                }
-                                else
+                                if (path == null)
                                 {
                                     throw new InvalidOperationException(
-                                        "Internal error: incorect local context data");
+                                        "Internal error: incorrect local context data.");
                                 }
+
+                                LdCallPath(
+                                    path,
+                                    il2 => il2
+                                        // Lookback for getting parent instance
+                                        .Do(ldLookback)
+                                        .Ldc_I4(lc.StackLookback)
+                                        .Call((IStackLookback<Msg> lb, int backOffset)
+                                                => lb.GetValueAt(backOffset))
+                                        .Ldfld((Msg msg) => msg.Value));
+                                il.Br(END);
                             }
                         });
 
@@ -123,18 +124,25 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        private bool LdGlobalContext(Type toType)
+        private bool LdGlobalContext(Type contextType)
         {
-            var cilProvider = this.contextProvider.Joint.The<CilContextProvider>();
-            var path = cilProvider.GetGetterPath(toType);
-            return LdCallPath(path, ldGlobalContextProvider);
+            var contextRef = new ActionContextRef(CilContextRef.GetName(contextType));
+            var context = this.contextProvider.Resolve(contextRef);
+            if (context == null)
+            {
+                return false;
+            }
+
+            var binding = context.Joint.The<CilContext>();
+            binding.Ld(emit, ldGlobalContextProvider);
+            return true;
         }
 
-        private bool LdCallPath(IEnumerable<MethodInfo> path, Pipe<EmitSyntax> ldFrom)
+        private void LdCallPath(IEnumerable<MethodInfo> path, Pipe<EmitSyntax> ldFrom)
         {
             if (path == null)
             {
-                return false;
+                throw new ArgumentNullException("path");
             }
 
             // Load start value
@@ -144,8 +152,6 @@ namespace IronText.MetadataCompiler
             {
                 emit.Call(getter);
             }
-
-            return true;
         }
     }
 }

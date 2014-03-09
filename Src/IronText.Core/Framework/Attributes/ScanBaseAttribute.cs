@@ -58,13 +58,15 @@ namespace IronText.Framework
                 scanRule.Pattern = ScanPattern.CreateLiteral(LiteralText);
             }
 
+            var contextType = GetContextType();
+
             scanRule.NextConditionType = nextModeType;
             scanRule.ActionBuilder =
-                context =>
+                code =>
                 {
                     if (!method.IsStatic)
                     {
-                        context.ContextResolver.LdContextOfType(method.DeclaringType);
+                        code.ContextResolver.LdContextOfType(contextType);
                     }
 
                     var parameters = method.GetParameters().ToList();
@@ -85,14 +87,14 @@ namespace IronText.Framework
                     else if (parameters.Count == 1
                             && parameters[0].ParameterType == typeof(string))
                     {
-                        context.LdTokenString();
+                        code.LdTokenString();
                     }
                     else if (parameters.Count == 3
                             && parameters[0].ParameterType == typeof(char[])
                             && parameters[1].ParameterType == typeof(int)
                             && parameters[2].ParameterType == typeof(int))
                     {
-                        context
+                        code
                             .LdBuffer()
                             .LdStartIndex()
                             .LdLength();
@@ -107,7 +109,7 @@ namespace IronText.Framework
                     Ref<Locals> nextModeVar = null;
                     if (nextModeParameter != null)
                     {
-                        context
+                        code
                             .Emit(il =>
                             {
                                 nextModeVar = il.Locals.Generate().GetRef();
@@ -117,27 +119,27 @@ namespace IronText.Framework
                             });
                     }
 
-                    context.Emit(il => il.Call(method));
+                    code.Emit(il => il.Call(method));
 
                     if (nextModeParameter != null)
                     {
-                        context
+                        code
                             .Emit(il => il.Ldloc(nextModeVar))
                             .ChangeMode(nextModeType);
                     }
 
                     if (method.ReturnType == typeof(void))
                     {
-                        context.SkipAction();
+                        code.SkipAction();
                     }
                     else
                     {
                         if (method.ReturnType.IsValueType)
                         {
-                            context.Emit(il => il.Box(il.Types.Import(method.ReturnType)));
+                            code.Emit(il => il.Box(il.Types.Import(method.ReturnType)));
                         }
 
-                        context
+                        code
                             .ReturnFromAction()
                             ;
                     }

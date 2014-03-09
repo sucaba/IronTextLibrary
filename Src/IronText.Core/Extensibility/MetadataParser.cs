@@ -26,7 +26,7 @@ namespace IronText.Extensibility
 
         public static IEnumerable<ICilMetadata> GetTypeMetaChildren(ICilMetadata parent, Type type)
         {
-            const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
+            const BindingFlags flags = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Static | BindingFlags.Instance;
 
             var result = new List<ICilMetadata>();
             foreach (var member in type.GetMembers(flags))

@@ -14,6 +14,8 @@ namespace IronText.Framework
 
         public override IEnumerable<CilMerger> GetMergers(IEnumerable<CilSymbolRef> leftSides)
         {
+            var contextType = GetContextType();
+
             var returnToken = CilSymbolRef.Create(Method.ReturnType);
             if (leftSides.Contains(returnToken))
             {
@@ -27,7 +29,7 @@ namespace IronText.Framework
                         {
                             if (!Method.IsStatic)
                             {
-                                code.ContextResolver.LdContextOfType(method.DeclaringType);
+                                code.ContextResolver.LdContextOfType(contextType);
                             }
 
                             code = code.LdOldValue();

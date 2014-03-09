@@ -64,7 +64,7 @@ namespace IronText.Framework
         IEnumerable<ICilMetadata> ICilMetadata.GetChildren()
         {
             var result = EnumerateDirectChildren()
-                        .Concat(MetadataParser.GetTypeMetaChildren(parent, type))
+                        .Concat(MetadataParser.GetTypeMetaChildren(parent ?? this, type))
                         .ToArray();
 
             return result;

@@ -6,7 +6,7 @@ namespace IronText.Lib.Shared
     public interface Pop<TNs> { }
 
     [Vocabulary]
-    public class NsBase<TNs>
+    public abstract class NsBase<TNs>
     {
         internal SNode<IFrame<TNs>> FrameNode;
 

@@ -237,12 +237,12 @@ namespace IronText.Reflection.Managed
         {
             provider.Joint.Add(cilProvider);
 
-            foreach (var contextType in cilProvider.GetAllContextTypes())
+            foreach (var cilContext in cilProvider.Contexts)
             {
                 ActionContext context;
-                if (grammar.Contexts.FindOrAdd(CilContextRef.GetName(contextType), out context))
+                if (grammar.Contexts.FindOrAdd(cilContext.UniqueName, out context))
                 {
-                    context.Joint.Add(new CilContext(contextType));
+                    context.Joint.Add(cilContext);
                 }
 
                 provider.Add(context);

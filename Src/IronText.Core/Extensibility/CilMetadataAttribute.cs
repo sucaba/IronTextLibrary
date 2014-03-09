@@ -83,5 +83,27 @@ namespace IronText.Extensibility
         {
             return string.Format("{{{0} {1}}}", GetType().Name, Member.Name);
         }
+
+        protected Type GetContextType()
+        {
+            var method = Member as MethodInfo;
+            if (!(Member is MethodInfo) && !(Member is PropertyInfo))
+            {
+                throw new InvalidOperationException("Unable to get context from metadata not bound to method or property.");
+            }
+
+            if (Parent == null)
+            {
+                return Member.DeclaringType;
+            }
+
+            var parentType = Parent.Member as Type;
+            if (parentType == null)
+            {
+                return Member.DeclaringType;
+            }
+
+            return parentType;
+        }
     }
 }

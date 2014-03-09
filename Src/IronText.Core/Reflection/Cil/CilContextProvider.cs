@@ -32,15 +32,24 @@ namespace IronText.Reflection.Managed
             return path;
         }
 
-        public IEnumerable<Type> GetAllContextTypes()
+        public IEnumerable<CilContext> Contexts
         {
-            var result = Graph.AllVertexes(
-                        EnumerateContextGetters(ProviderType),
-                        m => EnumerateContextGetters(m.ReturnType))
-                        .Select(m => m.ReturnType)
-                        .ToList();
+            get
+            {
+                var result = new List<CilContext>
+                { 
+                    new CilContext(ProviderType, new MethodInfo[0]) 
+                };
 
-            return result;
+                result.AddRange(
+                    Graph.AllVertexes(
+                            EnumerateContextGetters(ProviderType),
+                            m => EnumerateContextGetters(m.ReturnType))
+                            .Distinct()
+                            .Select(m => new CilContext(m.ReturnType, GetGetterPath(m.ReturnType))));
+
+                return result;
+            }
         }
 
         private static IEnumerable<MethodInfo> EnumerateContextGetters(Type type)
@@ -54,7 +63,7 @@ namespace IronText.Reflection.Managed
         private static IEnumerable<PropertyInfo> EnumeratePublicInstanceProperties(Type type)
         {
             var result = new List<PropertyInfo>();
-            result.AddRange(type.GetProperties(BindingFlags.Public | BindingFlags.Instance));
+            result.AddRange(type.GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance));
             if (type.IsInterface)
             {
                 result.AddRange(type.GetInterfaces().SelectMany(EnumeratePublicInstanceProperties));

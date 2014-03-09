@@ -183,14 +183,16 @@ namespace IronText.Framework
                 return CilContextRef.None;
             }
 
+            var contextType = GetContextType();
+
             if (hasThis)
             {
                 // This-token case. Type is needed for void and boxing.
-                return CilContextRef.ThisToken(method.DeclaringType);
+                return CilContextRef.ThisToken(contextType);
             }
 
             // Local or global context identified by type
-            return CilContextRef.ByType(method.DeclaringType);
+            return CilContextRef.ByType(contextType);
         }
 
         private static int NthEmptySlotIndex(CilSymbolRef[] ruleMask, int n)

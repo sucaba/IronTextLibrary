@@ -39,7 +39,7 @@ namespace IronText.Runtime
         private static IEnumerable<PropertyInfo> EnumeratePublicInstanceProperties(Type type)
         {
             var result = new List<PropertyInfo>();
-            result.AddRange(type.GetProperties(BindingFlags.Public | BindingFlags.Instance));
+            result.AddRange(type.GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance));
             if (type.IsInterface)
             {
                 result.AddRange(type.GetInterfaces().SelectMany(EnumeratePublicInstanceProperties));
