@@ -119,7 +119,9 @@ namespace IronText.MetadataCompiler
                     else
                     {
                         var merger = mergers[value];
-                        merger.Joint.The<CilMerger>().ActionBuilder(code);
+                        var binding = merger.Joint.The<CilMerger>();
+                        binding.Context.LoadForMerger(code);
+                        binding.ActionBuilder(code);
                         emit.Ret();
                     }
                 });

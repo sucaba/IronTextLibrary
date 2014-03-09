@@ -14,24 +14,23 @@ namespace IronText.Framework
 
         public override IEnumerable<CilMerger> GetMergers(IEnumerable<CilSymbolRef> leftSides)
         {
-            var contextType = GetContextType();
-
             var returnToken = CilSymbolRef.Create(Method.ReturnType);
-            if (leftSides.Contains(returnToken))
+            if (!leftSides.Contains(returnToken))
             {
-                var type = Method.ReturnType;
-                var method = Method;
+                return new CilMerger[0];
+            }
 
-                yield return new CilMerger
+            var type = Method.ReturnType;
+            var method = Method;
+
+            return new []
+            { 
+                new CilMerger
                 {
-                    Symbol = returnToken,
+                    Symbol  = returnToken,
+                    Context = GetContext(),
                     ActionBuilder = code =>
                         {
-                            if (!Method.IsStatic)
-                            {
-                                code.ContextResolver.LdContextOfType(contextType);
-                            }
-
                             code = code.LdOldValue();
                             if (type.IsValueType)
                             {
@@ -52,8 +51,15 @@ namespace IronText.Framework
                                 code = code.Emit(il => il.Box(il.Types.Import(type)));
                             }
                         }
-                };
-            }
+                }
+            };
+        }
+
+        private CilContextRef GetContext()
+        {
+            var contextType = GetContextType();
+            var contextRef = Method.IsStatic ? CilContextRef.None : CilContextRef.ByType(contextType);
+            return contextRef;
         }
     }
 }
