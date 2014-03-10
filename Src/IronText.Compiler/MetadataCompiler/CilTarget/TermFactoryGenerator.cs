@@ -66,7 +66,7 @@ namespace IronText.MetadataCompiler
                                         null,
                                         data,
                                         cond.ContextProvider);
-                var code = new MatcherCode(
+                IActionCode code = new MatcherCode(
                                 emit,
                                 contextResolver,
                                 ldCursor,
@@ -83,8 +83,9 @@ namespace IronText.MetadataCompiler
                         ;
 
                     var productionBinding = matcher.Joint.The<CilMatcher>();
-                    productionBinding.Context.LoadForMatcher(code);
-                    productionBinding.ActionBuilder(code);
+                    code = code
+                        .Do(productionBinding.Context.Load)
+                        .Do(productionBinding.ActionBuilder);
                 }
             }
 

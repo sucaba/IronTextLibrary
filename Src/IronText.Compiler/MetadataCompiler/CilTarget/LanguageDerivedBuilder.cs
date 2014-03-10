@@ -151,7 +151,7 @@ namespace IronText.MetadataCompiler
                         .NoOptimization
                     .BeginBody();
 
-                generator.Build(emit, null);
+                generator.Build(emit);
 
                 context = emit.EndBody();
             }

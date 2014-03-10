@@ -152,7 +152,7 @@ namespace IronText.Framework
                                 ++ruleArgIndex;
                             }
 
-                            code.LdRuleArg(ruleArgIndex, param.ParameterType);
+                            code.LdActionArgument(ruleArgIndex, param.ParameterType);
                         }
 
                         code.Emit(
@@ -171,6 +171,8 @@ namespace IronText.Framework
 
                                 return il;
                             });
+
+                        return code;
                     });
 
             return new[] { rule };
@@ -226,7 +228,7 @@ namespace IronText.Framework
                     // Mask has keywords after parameters
                     if (ruleMask[i] == null)
                     {
-                        throw new InvalidOperationException("Insufficient parameters to substittute rule-mask slot #" + i);
+                        throw new InvalidOperationException("Insufficient parameters to substitute literal-mask slot #" + i);
                     }
 
                     parts.Add(ruleMask[i]);

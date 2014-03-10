@@ -14,7 +14,7 @@ namespace IronText.Extensibility
         /// </summary>
         public int               StackLookback { get; set; }
 
-        public ContextProvider   Provider      { get; set; }
+        public ActionContextProvider   Provider      { get; set; }
 
         public ActionContextRef  Consumer      { get; set; }
     }

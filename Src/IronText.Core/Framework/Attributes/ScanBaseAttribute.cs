@@ -86,7 +86,7 @@ namespace IronText.Framework
                     else if (parameters.Count == 1
                             && parameters[0].ParameterType == typeof(string))
                     {
-                        code.LdTokenString();
+                        code.LdMatcherTokenString();
                     }
                     else if (parameters.Count == 3
                             && parameters[0].ParameterType == typeof(char[])
@@ -94,9 +94,9 @@ namespace IronText.Framework
                             && parameters[2].ParameterType == typeof(int))
                     {
                         code
-                            .LdBuffer()
-                            .LdStartIndex()
-                            .LdLength();
+                            .LdMatcherBuffer()
+                            .LdMatcherStartIndex()
+                            .LdMatcherLength();
                     }
                     else
                     {
@@ -142,6 +142,8 @@ namespace IronText.Framework
                             .ReturnFromAction()
                             ;
                     }
+
+                    return code;
                 };
 
 

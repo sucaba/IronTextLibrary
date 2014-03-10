@@ -6,9 +6,9 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class ContextProvider : ReferenceCollection<ActionContext>
+    public class ActionContextProvider : ReferenceCollection<ActionContext>
     {
-        public ContextProvider()
+        public ActionContextProvider()
         {
             this.Joint = new Joint();
         }

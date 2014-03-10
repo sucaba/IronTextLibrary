@@ -235,7 +235,7 @@ namespace IronText.Reflection.Managed
         private static void InitContextProvider(
             Grammar            grammar,
             CilContextProvider cilProvider,
-            ContextProvider    provider)
+            ActionContextProvider    provider)
         {
             provider.Joint.Add(cilProvider);
 

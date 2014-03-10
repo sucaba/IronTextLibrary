@@ -45,7 +45,7 @@ namespace IronText.Runtime
 
         private DeterministicParser(
             IProducer<TNode>      producer,
-            RuntimeGrammar    grammar,
+            RuntimeGrammar        grammar,
             TransitionDelegate    actionTable,
             ResourceAllocator     allocator,
             ILogging              logging,

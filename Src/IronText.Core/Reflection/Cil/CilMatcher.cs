@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using IronText.Framework;
 
 namespace IronText.Reflection.Managed
 {
@@ -28,7 +29,7 @@ namespace IronText.Reflection.Managed
 
         public ScanPattern          Pattern                { get; set; }
 
-        public CilScanActionBuilder ActionBuilder          { get; set; }
+        public Pipe<IActionCode>    ActionBuilder          { get; set; }
 
         public Type                 NextConditionType      { get; set; }
 

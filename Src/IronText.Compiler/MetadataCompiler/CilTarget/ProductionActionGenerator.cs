@@ -76,20 +76,22 @@ namespace IronText.MetadataCompiler
             Ref<Args> ctx,
             Ref<Args> lookbackStart)
         {
-            var contextResolverCode = new ContextCode(
-                                            emit,
-                                            il => il.Ldarg(ctx),
-                                            il => il.Ldarg(lookbackStart),
-                                            data,
-                                            data.Grammar.GlobalContextProvider,
-                                            data.LocalParseContexts);
+            Def<Labels> returnLabel = emit.Labels.Generate();
 
-            var code = new ProductionCode(emit, contextResolverCode)
-            {
-                LdRule       = il => il.Ldarg(ruleId),
-                LdRuleArgs   = il => il.Ldarg(ruleArgs),
-                LdArgsStart  = il => il.Ldarg(argsStart)
-            };
+            var contextCode = new ContextCode(
+                emit,
+                il => il.Ldarg(ctx),
+                il => il.Ldarg(lookbackStart),
+                data,
+                data.Grammar.GlobalContextProvider,
+                data.LocalParseContexts);
+
+            IActionCode code = new ProductionCode(
+                emit, 
+                contextCode,
+                ldRuleArgs:  il => il.Ldarg(ruleArgs),
+                ldArgsStart: il => il.Ldarg(argsStart),
+                returnLabel: returnLabel);
 
             var defaultLabel = emit.Labels.Generate();
             var endWithSingleResultLabel = emit.Labels.Generate();
@@ -100,7 +102,7 @@ namespace IronText.MetadataCompiler
             }
 
             emit
-                .Do(code.LdRule)
+                .Do(il => il.Ldarg(ruleId))
                 .Switch(jumpTable)
                 .Br(defaultLabel.GetRef());
 
@@ -126,8 +128,10 @@ namespace IronText.MetadataCompiler
                                 code.Emit(il => il.Pop());
                             }
 
-                            binding.Context.LoadForProduction(code);
-                            binding.ActionBuilder(code);
+                            code = code
+                                .Do(binding.Context.Load)
+                                .Do(binding.ActionBuilder)
+                                ;
                         }
                     }
                 }
@@ -145,10 +149,8 @@ namespace IronText.MetadataCompiler
             emit
                 .Label(defaultLabel)
                 .Ldnull()
-                .Label(endWithSingleResultLabel);
-            code.PushRuleResult();
-            emit
-                .Label(code.ReturnLabel)
+                .Label(endWithSingleResultLabel)
+                .Label(returnLabel)
                 .Ret();
         }
     }

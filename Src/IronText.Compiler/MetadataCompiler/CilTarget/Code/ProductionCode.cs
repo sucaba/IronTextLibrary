@@ -7,31 +7,42 @@ using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    class ProductionCode : IProductionCode
+    class ProductionCode : IActionCode
     {
-        public ProductionCode(EmitSyntax emit, IContextCode contextResolver)
+        private EmitSyntax      emit;
+        public Def<Labels>      ReturnLabel;
+        private readonly Pipe<EmitSyntax> LdRuleArgs;
+        private readonly Pipe<EmitSyntax> LdArgsStart;
+
+        private IContextCode contextCode;
+
+        public ProductionCode(
+            EmitSyntax       emit,
+            IContextCode     contextCode,
+            Pipe<EmitSyntax> ldRuleArgs,
+            Pipe<EmitSyntax> ldArgsStart,
+            Def<Labels>      returnLabel)
         {
-            this.emit = emit;
-            ReturnLabel = emit.Labels.Generate();
-            ContextResolver = contextResolver;
+            this.emit        = emit;
+            this.contextCode = contextCode;
+            this.LdRuleArgs  = ldRuleArgs;
+            this.LdArgsStart = ldArgsStart;
+            this.ReturnLabel = returnLabel;
         }
 
-        public Pipe<EmitSyntax> LdRule;
-        public Pipe<EmitSyntax> LdRuleArgs;
-        public Pipe<EmitSyntax> LdArgsStart;
+        public IActionCode LdContext(string contextName)
+        {
+            contextCode.LdContext(contextName);
+            return this;
+        }
 
-        public Def<Labels>  ReturnLabel;
-        private EmitSyntax emit;
-
-        public IProductionCode Emit(Pipe<EmitSyntax> pipe)
+        public IActionCode Emit(Pipe<EmitSyntax> pipe)
         {
             emit = pipe(emit);
             return this;
         }
 
-        public IContextCode ContextResolver { get; private set; }
-
-        public IProductionCode LdRuleArg(int index)
+        public IActionCode LdActionArgument(int index)
         {
             emit = emit
                 .Do(LdRuleArgs)
@@ -63,9 +74,9 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IProductionCode LdRuleArg(int index, Type argType)
+        public IActionCode LdActionArgument(int index, Type argType)
         {
-            LdRuleArg(index);
+            LdActionArgument(index);
             if (argType.IsValueType)
             {
                 emit.Unbox_Any(emit.Types.Import(argType)); 
@@ -74,16 +85,54 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        /// <summary>
-        /// Takes single value from the .net stack and pushes it to the parser input stack
-        /// </summary>
-        public void PushRuleResult()
-        {
-        }
-
         public void EmitReturn()
         {
             emit.Br(ReturnLabel.GetRef());
+        }
+
+        public IActionCode LdMergerOldValue()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode LdMergerNewValue()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode LdMatcherTokenString()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode LdMatcherBuffer()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode LdMatcherStartIndex()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode LdMatcherLength()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode ReturnFromAction()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode SkipAction()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode ChangeCondition(Type conditionType)
+        {
+            throw new NotSupportedException();
         }
     }
 }

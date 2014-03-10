@@ -1,37 +1,88 @@
-﻿using IronText.Framework;
+﻿using System;
+using IronText.Framework;
 using IronText.Lib.IL;
 using IronText.Reflection.Managed;
 
 namespace IronText.MetadataCompiler
 {
-    class MergeCode : IMergerCode
+    class MergeCode : IActionCode
     {
         public Pipe<EmitSyntax> LoadOldValue;
         public Pipe<EmitSyntax> LoadNewValue;
         private EmitSyntax emit;
+        private readonly IContextCode contextCode;
 
-        public MergeCode(EmitSyntax emit, IContextCode contextResolver)
+        public MergeCode(EmitSyntax emit, IContextCode contextCode)
         {
-            this.emit = emit;
-            ContextResolver = contextResolver;
+            this.emit        = emit;
+            this.contextCode = contextCode;
         }
 
-        public IContextCode ContextResolver { get; private set; }
+        public IActionCode LdContext(string contextName)
+        {
+            contextCode.LdContext(contextName);
+            return this;
+        }
 
-        public IMergerCode Emit(Pipe<EmitSyntax> pipe)
+        public IActionCode Emit(Pipe<EmitSyntax> pipe)
         {
             emit = emit.Do(pipe);
             return this;
         }
 
-        public IMergerCode LdOldValue()
+        public IActionCode LdMergerOldValue()
         {
             return Emit(LoadOldValue);
         }
 
-        public IMergerCode LdNewValue()
+        public IActionCode LdMergerNewValue()
         {
             return Emit(LoadNewValue);
+        }
+
+        public IActionCode LdActionArgument(int index)
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode LdActionArgument(int index, Type argType)
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode LdMatcherTokenString()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode LdMatcherBuffer()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode LdMatcherStartIndex()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode LdMatcherLength()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode ReturnFromAction()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode SkipAction()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode ChangeCondition(Type conditionType)
+        {
+            throw new NotSupportedException();
         }
     }
 }

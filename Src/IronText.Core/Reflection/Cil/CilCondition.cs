@@ -47,12 +47,9 @@ namespace IronText.Reflection.Managed
                 AllOutcomes     = { outcome },
                 Disambiguation  = Disambiguation.Exclusive,
                 Pattern         = ScanPattern.CreateLiteral(literal),
-                ActionBuilder   = code =>
-                {
-                    code
-                        .Emit(il => il.Ldnull())
-                        .ReturnFromAction();
-                }
+                ActionBuilder   = code => code
+                                    .Emit(il => il.Ldnull())
+                                    .ReturnFromAction()
             };
 
             return result;

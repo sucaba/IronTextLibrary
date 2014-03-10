@@ -8,11 +8,12 @@ using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    class MatcherCode : IMatcherCode
+    class MatcherCode : IActionCode
     {
         private Ref<Labels> RETURN;
 
         private EmitSyntax emit;
+        private readonly IContextCode contextCode;
         private readonly Pipe<EmitSyntax> ldCursor;
         private readonly Ref<Types> declaringType;
         private readonly ConditionCollection conditions;
@@ -27,21 +28,25 @@ namespace IronText.MetadataCompiler
         {
             this.emit            = emit;
             this.ldCursor        = ldCursor;
-            this.ContextCode     = contextCode;
+            this.contextCode     = contextCode;
             this.declaringType   = declaringType;
             this.conditions      = conditions;
             this.RETURN          = RETURN;
         }
 
-        public IContextCode ContextCode { get; private set; }
+        public IActionCode LdContext(string contextName)
+        {
+            contextCode.LdContext(contextName);
+            return this;
+        }
 
-        public IMatcherCode ReturnFromAction()
+        public IActionCode ReturnFromAction()
         {
             emit.Br(RETURN);
             return this;
         }
 
-        public IMatcherCode SkipAction()
+        public IActionCode SkipAction()
         {
             emit
                 .Ldnull()
@@ -49,13 +54,13 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IMatcherCode Emit(Pipe<EmitSyntax> emitPipe)
+        public IActionCode Emit(Pipe<EmitSyntax> emitPipe)
         {
             emit = emitPipe(emit);
             return this;
         }
 
-        public IMatcherCode LdBuffer()
+        public IActionCode LdMatcherBuffer()
         {
             emit
                 .Do(ldCursor)
@@ -63,7 +68,7 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IMatcherCode LdStartIndex()
+        public IActionCode LdMatcherStartIndex()
         {
             emit
                 .Do(ldCursor)
@@ -71,7 +76,7 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IMatcherCode LdLength()
+        public IActionCode LdMatcherLength()
         {
             emit
                 .Do(ldCursor)
@@ -84,18 +89,18 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IMatcherCode LdTokenString()
+        public IActionCode LdMatcherTokenString()
         {
             return this
-                .LdBuffer()
-                .LdStartIndex()
-                .LdLength()
+                .LdMatcherBuffer()
+                .LdMatcherStartIndex()
+                .LdMatcherLength()
                 .Emit(il => 
                     il.Newobj(() => new string(default(char[]), default(int), default(int))))
                 ;
         }
 
-        public IMatcherCode ChangeCondition(Type conditionType)
+        public IActionCode ChangeCondition(Type conditionType)
         {
             var contextTemp = emit.Locals.Generate().GetRef();
             var DONOT_CHANGE_MODE = emit.Labels.Generate().GetRef();
@@ -141,6 +146,26 @@ namespace IronText.MetadataCompiler
             }
 
             return result;
+        }
+
+        public IActionCode LdActionArgument(int index)
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode LdActionArgument(int index, Type argType)
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode LdMergerOldValue()
+        {
+            throw new NotSupportedException();
+        }
+
+        public IActionCode LdMergerNewValue()
+        {
+            throw new NotSupportedException();
         }
     }
 }

@@ -4,45 +4,49 @@ using IronText.Lib.IL;
 
 namespace IronText.Reflection.Managed
 {
-    public interface IMatcherCode
+    public interface IActionCode
     {
-        IContextCode ContextCode { get; }
+        IActionCode Emit(Pipe<EmitSyntax> emit);
 
-        /// <summary>
-        /// Emit code
-        /// </summary>
-        /// <param name="emitPipe"></param>
-        IMatcherCode Emit(Pipe<EmitSyntax> emitPipe);
+        IActionCode LdContext(string contextName);
+
+        IActionCode LdActionArgument(int index);
+
+        IActionCode LdActionArgument(int index, Type argType);
+
+        IActionCode LdMergerOldValue();
+
+        IActionCode LdMergerNewValue();
 
         /// <summary>
         /// Load token string to stack
         /// </summary>
-        IMatcherCode LdTokenString();
+        IActionCode LdMatcherTokenString();
 
         /// <summary>
         /// Load buffer
         /// </summary>
-        IMatcherCode LdBuffer();
+        IActionCode LdMatcherBuffer();
 
         /// <summary>
         /// Load index of the token start in buffer
         /// </summary>
-        IMatcherCode LdStartIndex();
+        IActionCode LdMatcherStartIndex();
 
         /// <summary>
         /// Load length of token
         /// </summary>
-        IMatcherCode LdLength();
+        IActionCode LdMatcherLength();
 
         /// <summary>
         /// Return top value in stack as a token value
         /// </summary>
-        IMatcherCode ReturnFromAction();
+        IActionCode ReturnFromAction();
 
         /// <summary>
         /// Skip token and continue scanning
         /// </summary>
-        IMatcherCode SkipAction();
+        IActionCode SkipAction();
 
         /// <summary>
         /// Set current mode and run-time context.
@@ -54,6 +58,14 @@ namespace IronText.Reflection.Managed
         /// scanner context type. 
         /// </remarks>
         /// <param name="conditionType">Type of scanner context which determines scanner DFA to use</param>
-        IMatcherCode ChangeCondition(Type conditionType);
+        IActionCode ChangeCondition(Type conditionType);
+    }
+
+    public static class ActionCodeExtensions
+    {
+        public static IActionCode Do(this IActionCode self, Pipe<IActionCode> builder)
+        {
+            return builder(self);
+        }
     }
 }

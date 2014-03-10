@@ -20,7 +20,7 @@ namespace IronText.MetadataCompiler
             this.dfa = dfa;
         }
 
-        public void Build(EmitSyntax emit, IContextCode contextResolverCode)
+        public void Build(EmitSyntax emit)
         {
             // Debug.WriteLine("DFA for " + descriptor.Name + ":");
             // Debug.WriteLine(dfa);

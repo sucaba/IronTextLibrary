@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using IronText.Framework;
 
 namespace IronText.Reflection.Managed
 {
     public sealed class CilProduction : IEquatable<CilProduction>
     {
-        public CilProduction(CilSymbolRef outcome, IEnumerable<CilSymbolRef> pattern, CilContextRef context, CilProductionActionBuilder actionBuilder, Precedence precedence = null)
+        public CilProduction(CilSymbolRef outcome, IEnumerable<CilSymbolRef> pattern, CilContextRef context, Pipe<IActionCode> actionBuilder, Precedence precedence = null)
         {
             this.Outcome             = outcome;
             this.Pattern             = pattern.ToArray();
@@ -25,7 +26,7 @@ namespace IronText.Reflection.Managed
 
         internal object       Owner         { get; set; }
 
-        public CilProductionActionBuilder ActionBuilder         { get; private set; }
+        public Pipe<IActionCode> ActionBuilder         { get; private set; }
 
         public override bool Equals(object obj)
         {

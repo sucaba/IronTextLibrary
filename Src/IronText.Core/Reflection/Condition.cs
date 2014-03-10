@@ -7,7 +7,7 @@ namespace IronText.Reflection
         public Condition(string name)
         {
             this.Name     = name;
-            this.ContextProvider = new ContextProvider();
+            this.ContextProvider = new ActionContextProvider();
             this.Matchers = new ReferenceCollection<Matcher>();
             this.Joint    = new Joint();
         }
@@ -17,7 +17,7 @@ namespace IronText.Reflection
         /// <summary>
         /// Context provider for matchers in this condition.
         /// </summary>
-        public ContextProvider ContextProvider { get; private set; }
+        public ActionContextProvider ContextProvider { get; private set; }
 
         public ReferenceCollection<Matcher> Matchers { get; private set; }
 

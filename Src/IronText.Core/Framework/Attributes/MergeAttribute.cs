@@ -31,13 +31,13 @@ namespace IronText.Framework
                     Context = GetContext(),
                     ActionBuilder = code =>
                         {
-                            code = code.LdOldValue();
+                            code = code.LdMergerOldValue();
                             if (type.IsValueType)
                             {
                                 code = code.Emit(il => il.Unbox_Any(il.Types.Import(type)));
                             }
                                 
-                            code = code.LdNewValue();
+                            code = code.LdMergerNewValue();
                             if (type.IsValueType)
                             {
                                 code = code.Emit(il => il.Unbox_Any(il.Types.Import(type)));
@@ -50,6 +50,8 @@ namespace IronText.Framework
                             {
                                 code = code.Emit(il => il.Box(il.Types.Import(type)));
                             }
+
+                            return code;
                         }
                 }
             };

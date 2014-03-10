@@ -90,10 +90,10 @@ namespace IronText.MetadataCompiler
                                             data.Grammar.GlobalContextProvider,
                                             data.LocalParseContexts);
 
-            var code = new MergeCode(emit, contextResolverCode)
+            IActionCode code = new MergeCode(emit, contextResolverCode)
             {
-                LoadOldValue   = il => il.Ldarg(oldValue),
-                LoadNewValue   = il => il.Ldarg(newValue),
+                LoadOldValue = il => il.Ldarg(oldValue),
+                LoadNewValue = il => il.Ldarg(newValue),
             };
 
             var tokenToRuleIndex = new MutableIntMap<int>(
@@ -120,9 +120,11 @@ namespace IronText.MetadataCompiler
                     {
                         var merger = mergers[value];
                         var binding = merger.Joint.The<CilMerger>();
-                        binding.Context.LoadForMerger(code);
-                        binding.ActionBuilder(code);
-                        emit.Ret();
+                        code = code
+                            .Do(binding.Context.Load)
+                            .Do(binding.ActionBuilder)
+                            .Emit(il2 => il2.Ret())
+                            ;
                     }
                 });
 
