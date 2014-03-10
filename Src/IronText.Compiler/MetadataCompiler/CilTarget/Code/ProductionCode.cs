@@ -42,7 +42,7 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IActionCode LdActionArgument(int index)
+        private IActionCode LdActionArgument(int index)
         {
             emit = emit
                 .Do(LdRuleArgs)

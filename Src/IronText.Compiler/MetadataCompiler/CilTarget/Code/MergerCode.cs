@@ -40,11 +40,6 @@ namespace IronText.MetadataCompiler
             return Emit(LoadNewValue);
         }
 
-        public IActionCode LdActionArgument(int index)
-        {
-            throw new NotSupportedException();
-        }
-
         public IActionCode LdActionArgument(int index, Type argType)
         {
             throw new NotSupportedException();

@@ -10,8 +10,6 @@ namespace IronText.Reflection.Managed
 
         IActionCode LdContext(string contextName);
 
-        IActionCode LdActionArgument(int index);
-
         IActionCode LdActionArgument(int index, Type argType);
 
         IActionCode LdMergerOldValue();
