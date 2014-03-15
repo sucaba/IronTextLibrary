@@ -2,14 +2,14 @@
 
 namespace IronText.Reflection
 {
-    public class ActionContextCollection : IndexedCollection<ActionContext,ISharedGrammarEntities>
+    public class ForeignContextCollection : IndexedCollection<ForeignContext,ISharedGrammarEntities>
     {
-        public ActionContextCollection(ISharedGrammarEntities ebnfGrammar)
+        public ForeignContextCollection(ISharedGrammarEntities ebnfGrammar)
             : base(ebnfGrammar)
         {
         }
 
-        public bool FindOrAdd(string name, out ActionContext output)
+        public bool FindOrAdd(string name, out ForeignContext output)
         {
             foreach (var item in this)
             {
@@ -20,7 +20,7 @@ namespace IronText.Reflection
                 }
             }
 
-            output = Add(new ActionContext(name));
+            output = Add(new ForeignContext(name));
             return true;
         }
     }

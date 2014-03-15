@@ -6,16 +6,16 @@ namespace IronText.Reflection
     /// <summary>
     /// Simple unary action.
     /// </summary>
-    public sealed class ProductionAction : ICloneable
+    public sealed class ForeignAction : ICloneable
     {
-        public ProductionAction(int argumentCount, ActionContextRef context = null)
+        public ForeignAction(int argumentCount, ForeignContextRef context = null)
             : this(0, argumentCount, context)
         {
         }
 
-        public ProductionAction(int offset, int argumentCount, ActionContextRef context = null)
+        public ForeignAction(int offset, int argumentCount, ForeignContextRef context = null)
         {
-            this.ContextRef    = context ?? ActionContextRef.None;
+            this.ContextRef    = context ?? ForeignContextRef.None;
             this.Offset        = offset;
             this.ArgumentCount = argumentCount;
             this.Joint         = new Joint();
@@ -27,11 +27,11 @@ namespace IronText.Reflection
 
         public int ArgumentCount { get; private set; }
 
-        public ActionContextRef ContextRef { get; private set; }
+        public ForeignContextRef ContextRef { get; private set; }
 
-        public ProductionAction Clone()
+        public ForeignAction Clone()
         {
-            var result = new ProductionAction(Offset, ArgumentCount);
+            var result = new ForeignAction(Offset, ArgumentCount);
             result.Joint.AddAll(this.Joint);
             return result;
         }

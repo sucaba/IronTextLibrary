@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using IronText.Lib.IL;
 using IronText.Lib.Shared;
 using IronText.Reflection;
@@ -111,36 +112,20 @@ namespace IronText.MetadataCompiler
                 Debug.Assert(prod != null);
 
                 emit.Label(jumpTable[prod.Index].Def);
-                if (prod.Actions.Count != 0 && prod.Actions[0].Joint.Has<CilProduction>())
-                {
-                    bool first = true;
-                    foreach (var binding in prod.Actions[0].Joint.All<CilProduction>())
-                    {
-                        if (binding != null)
-                        {
-                            if (first)
-                            {
-                                first = false;
-                            }
-                            else
-                            {
-                                // Result of this rule supersedes result of the prvious one
-                                code.Emit(il => il.Pop());
-                            }
 
-                            code = code
-                                .Do(binding.Context.Load)
-                                .Do(binding.ActionBuilder)
-                                ;
-                        }
-                    }
-                }
-                else
+                if (0 == prod.Actions.Count)
                 {
                     // Augumented start rule has null action and should never be invoked.
                     // Also it is possible that for some platforms production may have default
                     // action.
                     emit.Ldnull();
+                }
+                else
+                {
+                    foreach (var action in prod.Actions)
+                    {
+                        code = GenerateActionCode(code, action);
+                    }
                 }
 
                 emit.Br(endWithSingleResultLabel.GetRef());
@@ -152,6 +137,32 @@ namespace IronText.MetadataCompiler
                 .Label(endWithSingleResultLabel)
                 .Label(returnLabel)
                 .Ret();
+        }
+
+        private static IActionCode GenerateActionCode(IActionCode code, ForeignAction action)
+        {
+            bool first = true;
+            foreach (var binding in action.Joint.All<CilProduction>())
+            {
+                if (binding != null)
+                {
+                    if (first)
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        // Result of this rule supersedes result of the prvious one
+                        code.Emit(il => il.Pop());
+                    }
+
+                    code = code
+                        .Do(binding.Context.Load)
+                        .Do(binding.ActionBuilder)
+                        ;
+                }
+            }
+            return code;
         }
     }
 }

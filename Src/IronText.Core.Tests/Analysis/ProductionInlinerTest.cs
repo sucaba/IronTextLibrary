@@ -46,7 +46,7 @@ namespace IronText.Tests.Analysis
             originalGrammar.Start = start;
 
             var prod = originalGrammar.Productions.Define(start,  new[] { prefix, inlinedNonTerm, suffix });
-            prod.Actions.Add(new ProductionAction(0, 3));
+            prod.Actions.Add(new ForeignAction(0, 3));
         }
 
         [TearDown]
@@ -68,8 +68,8 @@ namespace IronText.Tests.Analysis
             AssertFlattenedProductionsPatternsAre(new[] { prefix, suffix });
 
             AssertInlinedActionContainsSimpleActions(
-                new ProductionAction(1, 0),
-                new ProductionAction(0, 3));
+                new ForeignAction(1, 0),
+                new ForeignAction(0, 3));
         }
 
         [Test]
@@ -82,8 +82,8 @@ namespace IronText.Tests.Analysis
             AssertFlattenedProductionsPatternsAre(new[] { prefix, term1, suffix });
 
             AssertInlinedActionContainsSimpleActions(
-                new ProductionAction(1, 1),
-                new ProductionAction(0, 3));
+                new ForeignAction(1, 1),
+                new ForeignAction(0, 3));
         }
 
         [Test]
@@ -96,8 +96,8 @@ namespace IronText.Tests.Analysis
             AssertFlattenedProductionsPatternsAre(new[] { prefix, term1, term2, term3, suffix });
 
             AssertInlinedActionContainsSimpleActions(
-                new ProductionAction(1, 3),
-                new ProductionAction(0, 3));
+                new ForeignAction(1, 3),
+                new ForeignAction(0, 3));
         }
 
         [Test]
@@ -111,9 +111,9 @@ namespace IronText.Tests.Analysis
             AssertFlattenedProductionsPatternsAre(new[] { prefix, suffix });
 
             AssertInlinedActionContainsSimpleActions(
-                new ProductionAction(1, 0),
-                new ProductionAction(1, 1),
-                new ProductionAction(0, 3));
+                new ForeignAction(1, 0),
+                new ForeignAction(1, 1),
+                new ForeignAction(0, 3));
         }
 
         [Test]
@@ -127,9 +127,9 @@ namespace IronText.Tests.Analysis
             AssertFlattenedProductionsPatternsAre(new[] { prefix, term4, suffix });
 
             AssertInlinedActionContainsSimpleActions(
-                new ProductionAction(1, 1),
-                new ProductionAction(1, 1),
-                new ProductionAction(0, 3));
+                new ForeignAction(1, 1),
+                new ForeignAction(1, 1),
+                new ForeignAction(0, 3));
         }
 
         [Test]
@@ -143,9 +143,9 @@ namespace IronText.Tests.Analysis
             AssertFlattenedProductionsPatternsAre(new[] { prefix, term4, term5, suffix });
 
             AssertInlinedActionContainsSimpleActions(
-                new ProductionAction(1, 2),
-                new ProductionAction(1, 1),
-                new ProductionAction(0, 3));
+                new ForeignAction(1, 2),
+                new ForeignAction(1, 1),
+                new ForeignAction(0, 3));
         }
 
         private void WhenGrammarIsInlined()
@@ -159,7 +159,7 @@ namespace IronText.Tests.Analysis
             foreach (var pattern in nestedInlinePatterns)
             {
                 var prod = originalGrammar.Productions.Define(nestedNonTerm, pattern);
-                prod.Actions.Add(new ProductionAction(pattern.Length));
+                prod.Actions.Add(new ForeignAction(pattern.Length));
             }
         }
 
@@ -168,7 +168,7 @@ namespace IronText.Tests.Analysis
             foreach (var pattern in inlinePatterns)
             {
                 var prod = originalGrammar.Productions.Define(inlinedNonTerm, pattern);
-                prod.Actions.Add(new ProductionAction(pattern.Length));
+                prod.Actions.Add(new ForeignAction(pattern.Length));
             }
         }
 
@@ -189,7 +189,7 @@ namespace IronText.Tests.Analysis
         }
 
         private void AssertInlinedActionContainsSimpleActions(
-            params ProductionAction[] productionActions)
+            params ForeignAction[] productionActions)
         {
             var prod = resultGrammar.Symbols[start.Index].Productions.Single();
             throw new NotImplementedException();

@@ -3,11 +3,11 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class ActionContext : IndexableObject<ISharedGrammarEntities>
+    public class ForeignContext : IndexableObject<ISharedGrammarEntities>
     {
-        public static readonly ActionContext None = new ActionContext("$none");
+        public static readonly ForeignContext None = new ForeignContext("$none");
 
-        public ActionContext(string name)
+        public ForeignContext(string name)
         {
             if (name == null)
             {
@@ -22,7 +22,7 @@ namespace IronText.Reflection
 
         public Joint  Joint { get; private set; }
 
-        public bool Match(ActionContextRef reference)
+        public bool Match(ForeignContextRef reference)
         {
             if (reference == null)
             {
@@ -34,11 +34,11 @@ namespace IronText.Reflection
 
         public override bool Equals(object obj)
         {
-            var casted = obj as ActionContext;
+            var casted = obj as ForeignContext;
             return Equals(casted);
         }
 
-        public bool Equals(ActionContext other)
+        public bool Equals(ForeignContext other)
         {
             return other != null && UniqueName == other.UniqueName;
         }

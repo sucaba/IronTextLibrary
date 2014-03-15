@@ -13,7 +13,7 @@ namespace IronText.Reflection
         {
             this.Name          = name ?? Grammar.UnnamedTokenName;
             this._productions  = new ReferenceCollection<Production>();
-            this.LocalContextProvider = new ActionContextProvider();
+            this.LocalContextProvider = new ForeignContextProvider();
             this.Joint         = new Joint();
         }
 
@@ -38,12 +38,12 @@ namespace IronText.Reflection
         /// <summary>
         /// Provided local context
         /// </summary>
-        public ActionContextProvider LocalContextProvider { get; private set; }
+        public ForeignContextProvider LocalContextProvider { get; private set; }
 
         /// <summary>
         /// Provided this context
         /// </summary>
-        public ActionContext ThisContext { get; set; }
+        public ForeignContext ThisContext { get; set; }
 
         /// <summary>
         /// Determines symbol-level precedence

@@ -6,19 +6,19 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class ActionContextProvider : ReferenceCollection<ActionContext>
+    public class ForeignContextProvider : ReferenceCollection<ForeignContext>
     {
-        public ActionContextProvider()
+        public ForeignContextProvider()
         {
             this.Joint = new Joint();
         }
 
-        public bool Provides(ActionContextRef reference)
+        public bool Provides(ForeignContextRef reference)
         {
             return this.Any(c => c.Match(reference));
         }
 
-        public ActionContext Resolve(ActionContextRef reference)
+        public ForeignContext Resolve(ForeignContextRef reference)
         {
             var matching = this.Where(c => c.Match(reference));
             int count = matching.Count();

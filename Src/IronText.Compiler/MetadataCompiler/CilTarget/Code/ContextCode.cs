@@ -24,7 +24,7 @@ namespace IronText.MetadataCompiler
         private readonly EmitSyntax       emit;
         private readonly Pipe<EmitSyntax> ldGlobalContextProvider;
         private readonly Pipe<EmitSyntax> ldLookback;
-        private readonly ActionContextProvider  contextProvider;
+        private readonly ForeignContextProvider  contextProvider;
         private readonly LocalContextBinding[] localContexts;
 
         public ContextCode(
@@ -32,7 +32,7 @@ namespace IronText.MetadataCompiler
             Pipe<EmitSyntax> ldGlobalContextProvider,
             Pipe<EmitSyntax> ldLookback,
             LanguageData     data,
-            ActionContextProvider  contextProvider,
+            ForeignContextProvider  contextProvider,
             LocalContextBinding[] localContexts = null)
         {
             this.emit = emit;
@@ -44,7 +44,7 @@ namespace IronText.MetadataCompiler
 
         public void LdContext(string contextName)
         {
-            var contextRef = new ActionContextRef(contextName);
+            var contextRef = new ForeignContextRef(contextName);
 
             if (localContexts != null && localContexts.Length != 0)
             {
@@ -123,7 +123,7 @@ namespace IronText.MetadataCompiler
 
         private bool LdGlobalContext(string contextName)
         {
-            var contextRef = new ActionContextRef(contextName);
+            var contextRef = new ForeignContextRef(contextName);
             var context = this.contextProvider.Resolve(contextRef);
             if (context == null)
             {

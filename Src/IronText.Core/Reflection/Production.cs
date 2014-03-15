@@ -12,7 +12,7 @@ namespace IronText.Reflection
     [DebuggerDisplay("{DebugProductionText}")]
     public sealed class Production : IndexableObject<ISharedGrammarEntities>
     {
-        private readonly Collection<ProductionAction> _actions;
+        private readonly ForeignActionSequence _actions;
         
         public Production(Symbol outcome, IEnumerable<Symbol> pattern)
         {
@@ -31,7 +31,7 @@ namespace IronText.Reflection
             Pattern       = pattern.ToArray();
             PatternTokens = Array.ConvertAll(Pattern, s => s == null ? -1 : s.Index);
 
-            _actions = new Collection<ProductionAction>();
+            _actions = new ForeignActionSequence();
         }
 
         public int               OutcomeToken   { get; private set; }
@@ -72,7 +72,7 @@ namespace IronText.Reflection
         /// when production is inlined there are multiple actions
         /// happing when this production being applied.
         /// </remarks>
-        public Collection<ProductionAction> Actions
+        public ForeignActionSequence Actions
         {
             get { return _actions; }
         }

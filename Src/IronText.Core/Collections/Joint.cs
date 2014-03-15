@@ -37,6 +37,11 @@ namespace IronText.Collections
         {
             return all.OfType<T>();
         }
+        
+        public int CountOf<T>()
+        {
+            return all.OfType<T>().Count();
+        }
 
         public void Add(object value)
         {

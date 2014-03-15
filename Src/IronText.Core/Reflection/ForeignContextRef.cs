@@ -3,13 +3,13 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class ActionContextRef 
+    public class ForeignContextRef 
         : IndexableObject<ISharedGrammarEntities>
-        , IEquatable<ActionContextRef>
+        , IEquatable<ForeignContextRef>
     {
-        public static readonly ActionContextRef None = new ActionContextRef("$none");
+        public static readonly ForeignContextRef None = new ForeignContextRef("$none");
 
-        public ActionContextRef(string name)
+        public ForeignContextRef(string name)
         {
             if (name == null)
             {
@@ -26,11 +26,11 @@ namespace IronText.Reflection
 
         public override bool Equals(object obj)
         {
-            var casted = obj as ActionContextRef;
+            var casted = obj as ForeignContextRef;
             return Equals(casted);
         }
 
-        public bool Equals(ActionContextRef other)
+        public bool Equals(ForeignContextRef other)
         {
             return other != null && UniqueName == other.UniqueName;
         }

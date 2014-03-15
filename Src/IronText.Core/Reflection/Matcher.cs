@@ -7,7 +7,7 @@ namespace IronText.Reflection
         public Matcher(
             string           pattern,
             SymbolBase       outcome        = null,
-            ActionContextRef context        = null,
+            ForeignContextRef context        = null,
             Condition        nextCondition  = null,
             Disambiguation   disambiguation = Disambiguation.Undefined)
             : this(
@@ -22,7 +22,7 @@ namespace IronText.Reflection
         public Matcher(
             ScanPattern      pattern,
             SymbolBase       outcome        = null,
-            ActionContextRef context        = null,
+            ForeignContextRef context        = null,
             Condition        nextCondition  = null,
             Disambiguation   disambiguation = Disambiguation.Undefined)
         {
@@ -43,7 +43,7 @@ namespace IronText.Reflection
             this.Joint = new Joint();
         }
 
-        public ActionContextRef Context         { get; private set; }
+        public ForeignContextRef Context         { get; private set; }
 
         public ScanPattern      Pattern         { get; private set; }
 
