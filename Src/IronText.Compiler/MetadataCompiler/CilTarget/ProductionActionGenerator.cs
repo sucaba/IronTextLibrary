@@ -109,8 +109,6 @@ namespace IronText.MetadataCompiler
 
             foreach (var prod in data.Grammar.Productions)
             {
-                Debug.Assert(prod != null);
-
                 emit.Label(jumpTable[prod.Index].Def);
 
                 if (0 == prod.Actions.Count)
@@ -144,24 +142,22 @@ namespace IronText.MetadataCompiler
             bool first = true;
             foreach (var binding in action.Joint.All<CilProduction>())
             {
-                if (binding != null)
+                if (first)
                 {
-                    if (first)
-                    {
-                        first = false;
-                    }
-                    else
-                    {
-                        // Result of this rule supersedes result of the prvious one
-                        code.Emit(il => il.Pop());
-                    }
-
-                    code = code
-                        .Do(binding.Context.Load)
-                        .Do(binding.ActionBuilder)
-                        ;
+                    first = false;
                 }
+                else
+                {
+                    // Result of this rule supersedes result of the prvious one
+                    code = code.Emit(il => il.Pop());
+                }
+
+                code = code
+                    .Do(binding.Context.Load)
+                    .Do(binding.ActionBuilder)
+                    ;
             }
+
             return code;
         }
     }

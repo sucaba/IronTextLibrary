@@ -10,13 +10,15 @@ namespace IronText.Runtime
 {
     public sealed class SppfNode
     {
-        public int        Id;
-        public object     Value;
-        public Loc        Location;
+        /// <summary>
+        /// Positive value for token and negative value for production index
+        /// </summary>
+        public int        Id       { get; private set; }
+        public object     Value    { get; private set; }
+        public Loc        Location { get; private set; }
+        public SppfNode[] Children { get; private set; }
 
-        public SppfNode[] Children;
-
-        public SppfNode   NextAlternative;
+        public SppfNode   NextAlternative { get; set; }
 
 #if DEBUG
         private static int timestampGen = 0;
@@ -26,21 +28,9 @@ namespace IronText.Runtime
 #endif
 
         // Leaf
-        public SppfNode(MsgData msg, Loc location, HLoc hLocation)
+        public SppfNode(int token, object value, Loc location, HLoc hLocation)
         {
-            this.Id = msg.Token;
-            this.Value = msg.Value;
-            this.Location = location;
-
-#if DEBUG
-            timestamp = timestampGen++;
-#endif
-        }
-
-        // Leaf
-        public SppfNode(int tokenId, object value, Loc location, HLoc hLocation)
-        {
-            this.Id       = tokenId;
+            this.Id       = token;
             this.Value    = value;
             this.Location = location;
 
@@ -50,9 +40,9 @@ namespace IronText.Runtime
         }
 
         // Branch
-        public SppfNode(int ruleId, Loc location, SppfNode[] children)
+        public SppfNode(int productionIndex, Loc location, SppfNode[] children)
         {
-            this.Id       = -ruleId;
+            this.Id       = -productionIndex;
             this.Location = location;
             this.Children = children;
 
@@ -65,6 +55,8 @@ namespace IronText.Runtime
             }
 #endif
         }
+
+        public bool IsTerminal { get { return Id >= 0; } }
 
         public int GetTokenId(Grammar grammar)
         {

@@ -115,6 +115,7 @@
     <Compile Include="Framework\TokenCollectionTest.cs" />
     <Compile Include="Framework\Tokens\FastSequenceTest.cs" />
     <Compile Include="Framework\UnsupportedGrammarTest.cs" />
+    <Compile Include="Freezing\CilFreezerTest.cs" />
     <Compile Include="Lib\IL\CachedMethodTest.cs" />
     <Compile Include="Lib\IL\Generators\ImplementationGeneratorTest.cs" />
     <Compile Include="Lib\IL\Generators\GrammarSerializerTest.cs" />

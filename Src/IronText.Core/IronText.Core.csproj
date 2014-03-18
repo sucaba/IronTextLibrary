@@ -372,9 +372,7 @@
     <Reference Include="System" />
     <Reference Include="System.Web" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Reporting\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="doc\ScannerDefinitions.md" />
   </ItemGroup>
