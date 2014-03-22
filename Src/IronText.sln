@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronText.Core", "IronText.Core\IronText.Core.csproj", "{97CFB776-52DE-40B1-854C-912C93A32AFA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronText.Core.Tests", "IronText.Core.Tests\IronText.Core.Tests.csproj", "{01785AF7-2D0C-42A2-B0F5-842C991E3BA1}"
@@ -33,10 +35,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpParser", "Sandbox\CSh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpParser.Tests", "Sandbox\CSharpParser.Tests\CSharpParser.Tests.csproj", "{E335D50C-2D7A-4778-9F51-1E700658AEE9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E910A8E3-C06C-462D-8B24-BA8ECE7C5784}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = IronTextScheme2008.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -267,6 +271,9 @@ Global
 		{E4BD2838-17F4-426A-BCAF-C04C0B530ED9} = {97513C57-FFB9-438B-AE05-55A459B7DF2A}
 		{675EB6D2-9220-464F-87EA-B99B0936FD3F} = {97513C57-FFB9-438B-AE05-55A459B7DF2A}
 		{E335D50C-2D7A-4778-9F51-1E700658AEE9} = {97513C57-FFB9-438B-AE05-55A459B7DF2A}
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = IronTextScheme2008.vsmdi
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		version = 0.1
