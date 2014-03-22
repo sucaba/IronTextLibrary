@@ -6,9 +6,9 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class SematnicContextProvider : ReferenceCollection<SemanticContext>
+    public class SemanticContextProvider : ReferenceCollection<SemanticContext>
     {
-        public SematnicContextProvider()
+        public SemanticContextProvider()
         {
             this.Joint = new Joint();
         }

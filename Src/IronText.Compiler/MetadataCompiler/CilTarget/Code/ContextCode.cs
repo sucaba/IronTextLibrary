@@ -24,7 +24,7 @@ namespace IronText.MetadataCompiler
         private readonly EmitSyntax       emit;
         private readonly Pipe<EmitSyntax> ldGlobalContextProvider;
         private readonly Pipe<EmitSyntax> ldLookback;
-        private readonly SematnicContextProvider  contextProvider;
+        private readonly SemanticContextProvider  contextProvider;
         private readonly LocalContextBinding[] localContexts;
 
         public ContextCode(
@@ -32,7 +32,7 @@ namespace IronText.MetadataCompiler
             Pipe<EmitSyntax> ldGlobalContextProvider,
             Pipe<EmitSyntax> ldLookback,
             LanguageData     data,
-            SematnicContextProvider  contextProvider,
+            SemanticContextProvider  contextProvider,
             LocalContextBinding[] localContexts = null)
         {
             this.emit = emit;

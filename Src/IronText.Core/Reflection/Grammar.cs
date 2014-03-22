@@ -26,7 +26,7 @@ namespace IronText.Reflection
             Mergers     = new MergerCollection(this);
             Contexts    = new SemanticContextCollection(this);
             Reports     = new ReportCollection();
-            GlobalContextProvider = new SematnicContextProvider { Owner = this.Contexts };
+            GlobalContextProvider = new SemanticContextProvider { Owner = this.Contexts };
             Joint       = new Joint();
 
             for (int i = PredefinedTokens.Count; i != 0; --i)
@@ -59,7 +59,7 @@ namespace IronText.Reflection
 
         internal Production         AugmentedProduction { get; private set; }
 
-        public SematnicContextProvider      GlobalContextProvider { get; private set; }
+        public SemanticContextProvider      GlobalContextProvider { get; private set; }
 
         public SymbolCollection     Symbols             { get; private set; }
 
@@ -71,7 +71,7 @@ namespace IronText.Reflection
 
         public MergerCollection     Mergers             { get; private set; }
 
-        public SemanticContextCollection Contexts     { get; private set; }
+        public SemanticContextCollection Contexts       { get; private set; }
 
         public ReportCollection     Reports             { get; private set; }
 

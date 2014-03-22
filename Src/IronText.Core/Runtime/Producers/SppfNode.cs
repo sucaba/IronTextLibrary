@@ -5,6 +5,7 @@ using System.Linq;
 using IronText.Diagnostics;
 using IronText.Logging;
 using IronText.Reflection;
+using System;
 
 namespace IronText.Runtime
 {
@@ -57,6 +58,19 @@ namespace IronText.Runtime
         }
 
         public bool IsTerminal { get { return Id >= 0; } }
+
+        public int ProductionIndex
+        {
+            get
+            {
+                if (IsTerminal)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                return -Id;
+            }
+        }
 
         public int GetTokenId(Grammar grammar)
         {

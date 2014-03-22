@@ -7,7 +7,7 @@ namespace IronText.Reflection
         public Condition(string name)
         {
             this.Name     = name;
-            this.ContextProvider = new SematnicContextProvider();
+            this.ContextProvider = new SemanticContextProvider();
             this.Matchers = new ReferenceCollection<Matcher>();
             this.Joint    = new Joint();
         }
@@ -17,7 +17,7 @@ namespace IronText.Reflection
         /// <summary>
         /// Context provider for matchers in this condition.
         /// </summary>
-        public SematnicContextProvider ContextProvider { get; private set; }
+        public SemanticContextProvider ContextProvider { get; private set; }
 
         public ReferenceCollection<Matcher> Matchers { get; private set; }
 

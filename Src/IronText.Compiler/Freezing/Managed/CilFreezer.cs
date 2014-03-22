@@ -6,6 +6,7 @@ using IronText.Framework;
 using IronText.Lib.IL;
 using IronText.Lib.Shared;
 using IronText.Runtime;
+using IronText.Reflection;
 
 namespace IronText.Freezing.Managed
 {
@@ -14,32 +15,9 @@ namespace IronText.Freezing.Managed
     {
         public Pipe<TContext> Compile(string input)
         {
-            SppfNode root = BuildTree(input);
-
-            var cachedMethod = new CachedMethod<Pipe<TContext>>("temp", (emit, args)=> Build(emit, args, root));
-            return cachedMethod.Delegate;
-        }
-
-        private EmitSyntax Build(EmitSyntax emit, Ref<Args>[] args, SppfNode root)
-        {
-            int index = 0;
-            return BuildNodeInvocation(ref index, emit, args, root) .Ret();
-        }
-
-        private EmitSyntax BuildNodeInvocation(ref int startArgIndex, EmitSyntax emit, Ref<Args>[] args, SppfNode node)
-        {
-            if (node.IsTerminal)
-            {
-                return emit.Ldarg(args[startArgIndex++]);
-            }
-
-            int count = node.Children.Length;
-            for (int i = 0; i != count; ++i)
-            {
-                emit = BuildNodeInvocation(ref startArgIndex, emit, args, node.Children[i]);
-            }
-
-            return emit;
+            var process = new FreezerProcess<TContext>(input);
+            process.Run();
+            return process.Outcome;
         }
 
         ~CilFreezer()
@@ -53,16 +31,75 @@ namespace IronText.Freezing.Managed
             GC.SuppressFinalize(this);
         }
 
-        private SppfNode BuildTree(string input)
-        {
-            using (var interp = new Interpreter<TContext>())
-            {
-                return interp.BuildTree(input);
-            }
-        }
-
         private void Dispose(bool disposing)
         {
+        }
+
+        class FreezerProcess<TContext> where TContext : class
+        {
+            private string   input;
+            private Grammar  grammar;
+            private SppfNode root;
+
+            public FreezerProcess(string input)
+            {
+                this.input = input;
+            }
+
+            public Pipe<TContext> Outcome { get; set; }
+
+            public void Run()
+            {
+                this.root    = BuildTree(input);
+                this.grammar = GetGrammar();
+
+                CompileDelegate();
+            }
+
+            private void CompileDelegate()
+            {
+                var cachedMethod = new CachedMethod<Pipe<TContext>>("temp", (emit, args) => Build(emit, args, root));
+                this.Outcome = cachedMethod.Delegate;
+            }
+
+            private Grammar GetGrammar()
+            {
+                return Language.Get(typeof(TContext)).Grammar;
+            }
+
+            private SppfNode BuildTree(string input)
+            {
+                using (var interp = new Interpreter<TContext>())
+                {
+                    return interp.BuildTree(input);
+                }
+            }
+
+            private EmitSyntax Build(EmitSyntax emit, Ref<Args>[] args, SppfNode root)
+            {
+                int index = 0;
+                return BuildNodeInvocation(ref index, emit, args, root)
+                    .Ret();
+            }
+
+            private EmitSyntax BuildNodeInvocation(ref int startArgIndex, EmitSyntax emit, Ref<Args>[] args, SppfNode node)
+            {
+                if (node.IsTerminal)
+                {
+                    return emit.Ldarg(args[startArgIndex++]);
+                }
+
+                int count = node.Children.Length;
+                for (int i = 0; i != count; ++i)
+                {
+                    emit = BuildNodeInvocation(ref startArgIndex, emit, args, node.Children[i]);
+                }
+
+                var production = grammar.Productions[node.ProductionIndex];
+
+
+                return emit;
+            }
         }
     }
 }

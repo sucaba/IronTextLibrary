@@ -120,7 +120,7 @@
     <Compile Include="Reflection\Cil\CilContext.cs" />
     <Compile Include="Reflection\Cil\CilContextProvider.cs" />
     <Compile Include="Reflection\SemanticActionSequence.cs" />
-    <Compile Include="Reflection\SematnicContextProvider.cs" />
+    <Compile Include="Reflection\SemanticContextProvider.cs" />
     <Compile Include="Reflection\SemanticContextRef.cs" />
     <Compile Include="Reflection\RefeneceCollection.cs" />
     <Compile Include="Reflection\Serialization\IGrammarReader.cs" />

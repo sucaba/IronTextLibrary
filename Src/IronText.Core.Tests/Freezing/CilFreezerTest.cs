@@ -1,5 +1,4 @@
-﻿#if false
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,6 +31,7 @@ namespace IronText.Tests.Freezing
         }
 
         [Language]
+        [GrammarDocument("FreezerTest.g")]
         [Precedence("-", 1)]
         [Precedence("+", 1)]
         [Precedence("*", 2)]
@@ -59,8 +59,5 @@ namespace IronText.Tests.Freezing
             [Match("blank+")]
             public void Blank() { }
         }
-
-        public class Expr { }
     }
 }
-#endif
