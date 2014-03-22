@@ -14,8 +14,6 @@ namespace IronText.Reflection.Managed
         
         public static readonly CilContextRef None = new NoneContextRef();
 
-        public static CilContextRef ThisToken(Type type) { return new ThisContextRef(type); }
-
         public static CilContextRef ByType(Type type)    { return new ByTypeContextRef(type); }
 
         public abstract string UniqueName { get; }
@@ -34,31 +32,6 @@ namespace IronText.Reflection.Managed
             }
 
             public override int GetHashCode() { return 0; }
-        }
-
-        sealed class ThisContextRef : CilContextRef
-        {
-            private readonly Type type;
-
-            public ThisContextRef(Type type) { this.type = type; }
-
-            public override string UniqueName { get { return GetName(type); } }
-
-            public override IActionCode Load(IActionCode code)
-            {
-                return code.LdActionArgument(0, type);
-            }
-
-            public override bool Equals(object obj)
-            {
-                var casted = obj as ThisContextRef;
-                return casted != null && type == casted.type;
-            }
-
-            public override int GetHashCode()
-            {
-                return UniqueName.GetHashCode();
-            }
         }
 
         sealed class ByTypeContextRef : CilContextRef

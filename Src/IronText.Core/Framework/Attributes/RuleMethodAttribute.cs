@@ -138,10 +138,15 @@ namespace IronText.Framework
                 outcome:    outcome,
                 pattern:    pattern,
                 precedence: GetPrecedence(),
-                context:    GetContext(method, hasThis: thisSymbol != null),
+                context:    GetContext(method, thisSymbol != null),
                 actionBuilder:
                     code =>
                     {
+                        if (thisSymbol != null)
+                        {
+                            code.LdActionArgument(0, method.DeclaringType);
+                        }
+
                         // Pass rule-arguments to the rule-method
                         for (int i = 0; i != method.GetParameters().Length; ++i)
                         {
@@ -180,18 +185,12 @@ namespace IronText.Framework
 
         private CilContextRef GetContext(MethodInfo method, bool hasThis)
         {
-            if (method.IsStatic)
+            if (method.IsStatic || hasThis)
             {
                 return CilContextRef.None;
             }
 
             var contextType = GetContextType();
-
-            if (hasThis)
-            {
-                // This-token case. Type is needed for void and boxing.
-                return CilContextRef.ThisToken(contextType);
-            }
 
             // Local or global context identified by type
             return CilContextRef.ByType(contextType);
