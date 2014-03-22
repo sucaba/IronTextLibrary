@@ -112,8 +112,8 @@ namespace IronText.Reflection.Managed
                 Production production;
                 if (result.Productions.FindOrAdd(outcome, pattern, out production))
                 {
-                    ForeignContextRef contextRef = CreateActionContextRef(cilProduction.Context);
-                    production.Actions.Add(new ForeignAction(pattern.Length, contextRef));
+                    SemanticContextRef contextRef = CreateActionContextRef(cilProduction.Context);
+                    production.Actions.Add(new SemanticAction(pattern.Length, contextRef));
                 }
 
                 var action = production.Actions[0];
@@ -167,17 +167,17 @@ namespace IronText.Reflection.Managed
             return result;
         }
 
-        private static ForeignContextRef CreateActionContextRef(CilContextRef cilContext)
+        private static SemanticContextRef CreateActionContextRef(CilContextRef cilContext)
         {
-            ForeignContextRef result;
+            SemanticContextRef result;
 
             if (cilContext == CilContextRef.None)
             {
-                result = ForeignContextRef.None;
+                result = SemanticContextRef.None;
             }
             else
             {
-                result = new ForeignContextRef(cilContext.UniqueName);
+                result = new SemanticContextRef(cilContext.UniqueName);
             }
 
             return result;
@@ -235,13 +235,13 @@ namespace IronText.Reflection.Managed
         private static void InitContextProvider(
             Grammar            grammar,
             CilContextProvider cilProvider,
-            ForeignContextProvider    provider)
+            SematnicContextProvider    provider)
         {
             provider.Joint.Add(cilProvider);
 
             foreach (var cilContext in cilProvider.Contexts)
             {
-                ForeignContext context;
+                SemanticContext context;
                 if (grammar.Contexts.FindOrAdd(cilContext.UniqueName, out context))
                 {
                     context.Joint.Add(cilContext);

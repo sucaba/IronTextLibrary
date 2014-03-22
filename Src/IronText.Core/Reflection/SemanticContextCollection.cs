@@ -2,14 +2,14 @@
 
 namespace IronText.Reflection
 {
-    public class ForeignContextCollection : IndexedCollection<ForeignContext,ISharedGrammarEntities>
+    public class SemanticContextCollection : IndexedCollection<SemanticContext,ISharedGrammarEntities>
     {
-        public ForeignContextCollection(ISharedGrammarEntities ebnfGrammar)
+        public SemanticContextCollection(ISharedGrammarEntities ebnfGrammar)
             : base(ebnfGrammar)
         {
         }
 
-        public bool FindOrAdd(string name, out ForeignContext output)
+        public bool FindOrAdd(string name, out SemanticContext output)
         {
             foreach (var item in this)
             {
@@ -20,7 +20,7 @@ namespace IronText.Reflection
                 }
             }
 
-            output = Add(new ForeignContext(name));
+            output = Add(new SemanticContext(name));
             return true;
         }
     }

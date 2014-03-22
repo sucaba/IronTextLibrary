@@ -137,7 +137,7 @@ namespace IronText.MetadataCompiler
                 .Ret();
         }
 
-        private static IActionCode GenerateActionCode(IActionCode code, ForeignAction action)
+        private static IActionCode GenerateActionCode(IActionCode code, SemanticAction action)
         {
             bool first = true;
             foreach (var binding in action.Joint.All<CilProduction>())

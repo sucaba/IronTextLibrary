@@ -2,7 +2,7 @@
 
 namespace IronText.Reflection
 {
-    public class ForeignActionSequence : Collection<ForeignAction>
+    public class SemanticActionSequence : Collection<SemanticAction>
     {
     }
 }
