@@ -15,7 +15,7 @@ namespace IronText.Freezing.Managed
     {
         public Pipe<TContext> Compile(string input)
         {
-            var process = new FreezerProcess<TContext>(input);
+            var process = new FreezerProcess(input);
             process.Run();
             return process.Outcome;
         }
@@ -35,7 +35,7 @@ namespace IronText.Freezing.Managed
         {
         }
 
-        class FreezerProcess<TContext> where TContext : class
+        class FreezerProcess
         {
             private string   input;
             private Grammar  grammar;
