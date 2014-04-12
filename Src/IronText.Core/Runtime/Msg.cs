@@ -7,16 +7,20 @@ namespace IronText.Runtime
     {
         public readonly int    Token;
         public readonly object Value;
+        public readonly int    Action;
+        public readonly string Text;
 
         /// <summary>
         /// Alternative message information for Shrodinger's token
         /// </summary>
         public MsgData  Next;
 
-        public MsgData(int token, object value)
+        public MsgData(int token, object value, int action, string text)
         {
-            Token = token;
-            Value = value;
+            Token  = token;
+            Value  = value;
+            Action = action;
+            Text   = text;
         }
     }
 
@@ -38,12 +42,17 @@ namespace IronText.Runtime
         public readonly HLoc   HLocation;
 
         public Msg(int token, object value, Loc location, HLoc hLocation = default(HLoc))
-            : this(token, token, value, location, hLocation)
+            : this(token, value, -1, null, location, hLocation)
         {
         }
 
-        public Msg(int id, int token, object value, Loc location, HLoc hLocation = default(HLoc))
-            : base(token, value)
+        public Msg(int token, object value, int action, string text, Loc location, HLoc hLocation = default(HLoc))
+            : this(token, token, value, action, text, location, hLocation)
+        {
+        }
+
+        public Msg(int id, int token, object value, int action, string text, Loc location, HLoc hLocation = default(HLoc))
+            : base(token, value, action, text)
         {
             this.Id = id;
             this.Location  = location;

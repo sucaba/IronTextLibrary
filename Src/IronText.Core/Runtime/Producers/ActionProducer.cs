@@ -40,7 +40,7 @@ namespace IronText.Runtime
         {
             return data == (object)envelope 
                 ? envelope 
-                : new Msg(envelope.Id, data.Token, data.Value, envelope.Location, envelope.HLocation);
+                : new Msg(envelope.Id, data.Token, data.Value, data.Action, data.Text, envelope.Location, envelope.HLocation);
         }
 
         public Msg CreateBranch(Production rule, ArraySlice<Msg> prefix, IStackLookback<Msg> stackLookback)

@@ -206,8 +206,12 @@ namespace IronText.Runtime
             //     actions cannot produce same token
             //  3) each action can produce multiple tokens (optional by now, but in future can be useful)
 
-            cursor.CurrentActionId = cursor.Actions[0];
+            int action = cursor.Actions[0];
+            string text = cursor.GetText();
+
+            cursor.CurrentActionId = action;
             int tokenFromAction = GetTokenFromAction(cursor.CurrentActionId);
+
             token = termFactory(cursor, out tokenValue);
             if (token != tokenFromAction)
             {
@@ -218,7 +222,7 @@ namespace IronText.Runtime
             {
                 int id = cursor.EnvelopeId;
                 // TODO: Amb & Main tokens for envelope.Id
-                Current = new Msg(id, token, tokenValue, location, hLocation);
+                Current = new Msg(id, token, tokenValue, action, text, location, hLocation);
 
                 // Shrodinger's token
                 if (cursor.ActionCount > 1)
@@ -226,7 +230,10 @@ namespace IronText.Runtime
                     MsgData data = Current;
                     for (int i = 1; i != cursor.ActionCount; ++i)
                     {
-                        cursor.CurrentActionId = cursor.Actions[i];
+                        action = cursor.Actions[i];
+                        text = cursor.GetText();
+
+                        cursor.CurrentActionId = action;
 
                         this.skipCurrentToken = false;
                         tokenFromAction = GetTokenFromAction(cursor.CurrentActionId);
@@ -238,7 +245,7 @@ namespace IronText.Runtime
 
                         if (!skipCurrentToken)
                         {
-                            data.Next = new MsgData(token, tokenValue);
+                            data.Next = new MsgData(token, tokenValue, action, text);
                             data = data.Next;
                         }
                     }

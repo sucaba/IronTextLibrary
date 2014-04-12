@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿#if false
+using System.Diagnostics;
 
 namespace IronText.Runtime
 {
@@ -26,3 +27,4 @@ namespace IronText.Runtime
         }
     }
 }
+#endif

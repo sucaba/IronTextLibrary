@@ -31,5 +31,10 @@
         {
             get { return Marker - MarkerLineStart + 1; }
         }
+
+        public string GetText()
+        {
+            return new string(Buffer, Start, Marker - Start);
+        }
     }
 }
