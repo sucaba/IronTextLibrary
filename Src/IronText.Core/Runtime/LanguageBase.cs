@@ -102,7 +102,22 @@ namespace IronText.Runtime
                     logging);
             }
 
-            return new Scanner(scan1, input, document, context, scanAction, maxActionCount, logging);
+            // TODO: Generate this table in build-time instead
+            var actionToToken = new int[grammar.Matchers.Count];
+            for (int i = 0; i != actionToToken.Length; ++i)
+            {
+                var outcome = grammar.Matchers[i].Outcome;
+                if (outcome == null)
+                {
+                    actionToToken[i] = -1;
+                }
+                else
+                {
+                    actionToToken[i] = outcome.Index;
+                }
+            }
+
+            return new Scanner(scan1, input, document, context, scanAction, maxActionCount, actionToToken, logging);
         }
 
         public IPushParser CreateParser<TNode>(IProducer<TNode> producer, ILogging logging)

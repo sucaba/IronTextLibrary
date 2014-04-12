@@ -16,7 +16,9 @@ namespace IronText.Runtime
         internal readonly TextReader         textSource;
         internal readonly Scan1Delegate      startMode;
         internal readonly ScanActionDelegate scanAction;
-        private readonly ILogging logging;
+        internal readonly int[]              actionToToken;
+
+        private  readonly ILogging           logging;
 
         public Scanner(
             Scan1Delegate      startMode,
@@ -25,6 +27,7 @@ namespace IronText.Runtime
             object             rootContext,
             ScanActionDelegate scanAction,
             int                maxActionCount,
+            int[]              actionToToken,
             ILogging           logging)
         {
             this.startMode  = startMode;
@@ -33,6 +36,7 @@ namespace IronText.Runtime
             this.document   = document;
             this.scanAction = scanAction;
             this.MaxActionCount = maxActionCount;
+            this.actionToToken = actionToToken;
             this.logging    = logging;
         }
 

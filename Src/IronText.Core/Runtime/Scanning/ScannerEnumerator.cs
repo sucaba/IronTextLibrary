@@ -26,12 +26,15 @@ namespace IronText.Runtime
         private Loc location;
         private bool skipCurrentToken;
 
+        private readonly int[] actionToToken;
+
         internal ScannerEnumerator(Scanner scanner, ILogging logging)
         {
             this.scanner     = scanner;
             this.document    = scanner.document;
             this.textSource  = scanner.textSource;
             this.termFactory = scanner.scanAction;
+            this.actionToToken = scanner.actionToToken;
             this.logging     = logging;
 
             this.cursor = new ScanCursor
@@ -204,7 +207,12 @@ namespace IronText.Runtime
             //  3) each action can produce multiple tokens (optional by now, but in future can be useful)
 
             cursor.CurrentActionId = cursor.Actions[0];
+            int tokenFromAction = GetTokenFromAction(cursor.CurrentActionId);
             token = termFactory(cursor, out tokenValue);
+            if (token != tokenFromAction)
+            {
+                throw new InvalidOperationException("Runtimer token does not match.");
+            }
 
             if (token >= 0 && !skipCurrentToken)
             {
@@ -221,7 +229,12 @@ namespace IronText.Runtime
                         cursor.CurrentActionId = cursor.Actions[i];
 
                         this.skipCurrentToken = false;
+                        tokenFromAction = GetTokenFromAction(cursor.CurrentActionId);
                         token = termFactory(cursor, out tokenValue);
+                        if (token != tokenFromAction)
+                        {
+                            throw new InvalidOperationException("Runtimer token does not match.");
+                        }
 
                         if (!skipCurrentToken)
                         {
@@ -237,6 +250,11 @@ namespace IronText.Runtime
             }
 
             return token;
+        }
+
+        private int GetTokenFromAction(int action)
+        {
+            return actionToToken[action];
         }
 
         private HLoc MakeHLoc()
