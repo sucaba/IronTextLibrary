@@ -13,7 +13,6 @@ namespace IronText.Extensibility
 
         MemberInfo   Member { get; }
 
-
         bool Validate(ILogging logging);
 
         IEnumerable<ICilMetadata> GetChildren();

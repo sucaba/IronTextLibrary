@@ -7,9 +7,9 @@ namespace IronText.Lib.Stem
         private const char Quote = '"';
         private const string EscapedQuote = "\\\"";
 
-        public static QStr Parse(char[] buffer, int start, int length)
+        public static QStr Parse(string text)
         {
-            var escaped = IronText.Lib.Ctem.QStr.Unescape(buffer, start + 1, length - 2);
+            var escaped = IronText.Lib.Ctem.QStr.Parse(text).Text;
             return new QStr(escaped);
         }
 

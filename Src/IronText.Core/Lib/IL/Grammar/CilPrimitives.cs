@@ -99,19 +99,21 @@ namespace IronText.Lib.IL
 
         public Bytes(byte[] data) { Data = data; }
 
-        public static Bytes FromText(char[] buf, int start, int length)
+        public static Bytes Parse(string text)
         {
             List<byte> data = new List<byte>(8);
-            int end = start + length;
-            for (int pos = start; pos != end; ++pos)
+
+            int length = text.Length;
+            int end = length;
+            for (int pos = 0; pos != end; ++pos)
             {
-                if (char.IsWhiteSpace(buf[pos]))
+                if (char.IsWhiteSpace(text[pos]))
                 {
                     continue;
                 }
 
-                char highHex = buf[pos];
-                char lowHex = buf[++pos];
+                char highHex = text[pos];
+                char lowHex = text[++pos];
                 data.Add(ByteFromChars(highHex, lowHex));
             }
 
@@ -139,9 +141,9 @@ namespace IronText.Lib.IL
     public static class CilPrimitives
     {
         [Match("'(' blank* (hex blank* hex blank*)+ ')'")]
-        public static Bytes ByteSeq(char[] buf, int start, int length)
+        public static Bytes ByteSeq(string text)
         {
-            return Bytes.FromText(buf, start + 1, length - 2);
+            return Bytes.Parse(text.Substring(1, text.Length - 2));
         }
 
         [Produce]

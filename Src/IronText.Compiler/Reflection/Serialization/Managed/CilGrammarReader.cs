@@ -47,7 +47,7 @@ namespace IronText.Reflection.Managed
             return grammar;
         }
 
-        private static Grammar BuildGrammar(CilGrammar definition)
+        private Grammar BuildGrammar(CilGrammar definition)
         {
             var result = new Grammar();
 

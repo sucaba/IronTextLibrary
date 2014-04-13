@@ -222,23 +222,23 @@ namespace IronText.Lib.ScannerExpressions
         [Match(@"['] (~['\\] | [\\] .) [']",
               @"['] (?: [^'\\] | [\\] .) [']",
               Disambiguation.Exclusive)]
-        public Chr Char(char[] buffer, int start, int length)
+        public Chr Char(string text)
         {
-            return Chr.Parse(buffer, start, length);
+            return Chr.Parse(text);
         }
 
         [Match(@"['] ~['\\]* ( [\\] .  ~['\\]* )* [']",
               @"['] (?: [^'\\]* (?: \\ . [^'\\]*)*) [']")]
-        public QStr SingleQuotedString(char[] buffer, int start, int length)
+        public QStr SingleQuotedString(string text)
         {
-            return QStr.Parse(buffer, start, length); 
+            return QStr.Parse(text); 
         }
 
         [Match(@"'[' ~[\]\\]* ( [\\] . ~[\]\\]* )* ']'",
               @"\[ (?: [^\]\\]* (?: \\ . [^\]\\]*)*) \]")]
-        public CharEnumeration CharEnum(char[] buffer, int start, int length) 
+        public CharEnumeration CharEnum(string text) 
         {
-            return CharEnumeration.Parse(buffer, start, length);
+            return CharEnumeration.Parse(text);
         }
 
         [Match(
@@ -316,11 +316,6 @@ namespace IronText.Lib.ScannerExpressions
         {
             char[] chars = text.ToCharArray();
             return new CharEnumeration(QStr.Unescape(chars, 1, chars.Length - 2));
-        }
-
-        public static CharEnumeration Parse(char[] buffer, int start, int length)
-        {
-            return new CharEnumeration(QStr.Unescape(buffer, start + 1, length - 2));
         }
 
         public CharEnumeration(string characters)

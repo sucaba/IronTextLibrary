@@ -45,15 +45,17 @@ namespace IronText.Tests.Framework
                 'begin-' digit 
                 ('\r'? '\n')*
                 'end-' digit")]
-            public HLoc MultiLineTerm(char[] buffer, int start, int length)
+            public HLoc MultiLineTerm(string text)
             {
+                int length = text.Length;
+
                 int prefix = "begin-".Length;
                 int suffix = "end-".Length;
                 int innerLineCount = (length - prefix - suffix - 2) / 2;
 
-                int expectedFirstLine = (buffer[start + prefix] - '0');
+                int expectedFirstLine = (text[prefix] - '0');
                 int expectedFirstColumn = 1;
-                int expectedLastLine = (buffer[start + length - 1] - '0');
+                int expectedLastLine = (text[length - 1] - '0');
                 int expectedLastColumn = suffix + 1;
 
                 var result = new HLoc(
@@ -67,9 +69,11 @@ namespace IronText.Tests.Framework
             }
 
             [Match("'at-' digit")]
-            public HLoc SingleLineTerm(char[] buffer, int start, int length)
+            public HLoc SingleLineTerm(string text)
             {
-                int expectedLine = (buffer[start + length - 1] - '0');
+                int length = text.Length;
+
+                int expectedLine = (text[length - 1] - '0');
                 int expectedLastColumn = length;
                 var result = new HLoc(
                         expectedLine,
@@ -82,9 +86,11 @@ namespace IronText.Tests.Framework
             }
 
             [Match("'atNL-' digit '\n'")]
-            public HLoc SingleLineNLTerm(char[] buffer, int start, int length)
+            public HLoc SingleLineNLTerm(string text)
             {
-                int expectedLine = (buffer[start + length - 2] - '0');
+                int length = text.Length;
+
+                int expectedLine = (text[length - 2] - '0');
                 int expectedLastColumn = length;
                 var result = new HLoc(
                         expectedLine,

@@ -287,9 +287,9 @@ namespace IronText.Lib.Sre
         public Chr NL() { return new Chr('\n'); }
 
         [Match("'#' esc print")]
-        public Chr Char(char[] buffer, int start, int length) 
+        public Chr Char(string text) 
         { 
-            return new Chr(buffer[start + 2]); 
+            return new Chr(text[2]); 
         }
     }
 }

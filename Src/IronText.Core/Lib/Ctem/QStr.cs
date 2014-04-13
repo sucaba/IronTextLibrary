@@ -4,19 +4,9 @@ namespace IronText.Lib.Ctem
 {
     public class QStr
     {
-        public static QStr Parse(char[] buffer, int start, int length)
-        {
-            return new QStr(Unescape(buffer, start + 1, length - 2));
-        }
-
         public static QStr Parse(string text)
         {
             return new QStr(Unescape(text.ToCharArray(), 1, text.Length - 2));
-        }
-
-        public static QStr ParseUnquoted(char[] buffer, int start, int length)
-        {
-            return new QStr(Unescape(buffer, start, length));
         }
 
         public QStr(string text) { Text = text; }

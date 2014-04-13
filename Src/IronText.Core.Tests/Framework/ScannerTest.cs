@@ -186,9 +186,9 @@ namespace IronText.Tests.Syntax.Re2IL
                 ~(quot | esc)*
                 (esc . ~(quot | esc)* )*
                 quot")]
-            public QStr Str(char[] buffer, int start, int length)
+            public QStr Str(string text)
             {
-                return QStr.Parse(buffer, start, length);
+                return QStr.Parse(text);
             }
 
             // Two ways to represent A with a grave accent on top

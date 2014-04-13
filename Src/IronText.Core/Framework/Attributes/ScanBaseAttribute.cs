@@ -7,6 +7,8 @@ using IronText.Lib.IL;
 using IronText.Lib.Shared;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
+using IronText.Logging;
+using IronText.Misc;
 
 namespace IronText.Framework
 {
@@ -33,6 +35,31 @@ namespace IronText.Framework
         internal string RegexPattern { get; set; }
 
         private MethodInfo Method { get { return (MethodInfo)Member; } }
+
+        public override bool Validate(ILogging logging)
+        {
+            var parameters = Method.GetParameters().ToList();
+            var signature = GetSignatureKind(parameters);
+            if (signature == SignatureKind.Invalid)
+            {
+                string message =
+                    string.Format(
+                        "Unsupported match-method signature in {0}::{1}",
+                        Member.DeclaringType.Name,
+                        Member,
+                        string.Join(", ", parameters.Select(p => p.ParameterType.Name)));
+
+                logging.Write(
+                    new LogEntry
+                    {
+                        Severity = Severity.Error,
+                        Message = message,
+                        Origin = ReflectionUtils.ToString(Member)
+                    });
+            }
+
+            return base.Validate(logging);
+        }
 
         public override IEnumerable<CilMatcher> GetMatchers()
         {
@@ -62,58 +89,23 @@ namespace IronText.Framework
             }
 
             var parameters = Method.GetParameters().ToList();
+            var signature = GetSignatureKind(parameters);
+            if (signature == SignatureKind.Invalid)
+            {
+                return base.GetMatchers();
+            }
 
             matcher.Context = GetContext();
             matcher.ActionBuilder =
                 code =>
                 {
-                    ParameterInfo nextModeParameter;
-                    if (parameters.Count != 0 && parameters.Last().IsOut)
+                    switch (signature)
                     {
-                        nextModeParameter = parameters.Last();
-                        parameters.RemoveAt(parameters.Count - 1);
-                    }
-                    else
-                    {
-                        nextModeParameter = null;
-                    }
-
-                    if (parameters.Count == 0)
-                    {
-                    }
-                    else if (parameters.Count == 1
-                            && parameters[0].ParameterType == typeof(string))
-                    {
-                        code.LdMatcherTokenString();
-                    }
-                    else if (parameters.Count == 3
-                            && parameters[0].ParameterType == typeof(char[])
-                            && parameters[1].ParameterType == typeof(int)
-                            && parameters[2].ParameterType == typeof(int))
-                    {
-                        code
-                            .LdMatcherBuffer()
-                            .LdMatcherStartIndex()
-                            .LdMatcherLength();
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException(
-                            "Unsupported match-method signature: "
-                            + string.Join(", ", parameters.Select(p => p.ParameterType.Name)));
-                    }
-
-                    Ref<Locals> nextModeVar = null;
-                    if (nextModeParameter != null)
-                    {
-                        code
-                            .Emit(il =>
-                            {
-                                nextModeVar = il.Locals.Generate().GetRef();
-                                return il
-                                    .Local(nextModeVar.Def, il.Types.Object)
-                                    .Ldloca(nextModeVar);
-                            });
+                        case SignatureKind.NoArgs:
+                            break;
+                        case SignatureKind.StringArg: 
+                            code.LdMatcherTokenString();
+                            break;
                     }
 
                     code.Emit(il => il.Call(Method));
@@ -129,9 +121,7 @@ namespace IronText.Framework
                             code.Emit(il => il.Box(il.Types.Import(Method.ReturnType)));
                         }
 
-                        code
-                            .ReturnFromAction()
-                            ;
+                        code.ReturnFromAction() ;
                     }
 
                     return code;
@@ -174,6 +164,33 @@ namespace IronText.Framework
             }
 
             return resultList.ToArray();
+        }
+
+        private static SignatureKind GetSignatureKind(IList<ParameterInfo> parameters)
+        {
+            SignatureKind result;
+            if (parameters.Count == 0)
+            {
+                result = SignatureKind.NoArgs;
+            }
+            else if (parameters.Count == 1
+                    && parameters[0].ParameterType == typeof(string))
+            {
+                result = SignatureKind.StringArg;
+            }
+            else
+            {
+                result = SignatureKind.Invalid;
+            }
+
+            return result;
+        }
+
+        enum SignatureKind
+        {
+            Invalid,
+            NoArgs,
+            StringArg
         }
     }
 }

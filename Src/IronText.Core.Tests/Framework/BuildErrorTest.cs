@@ -39,6 +39,12 @@ namespace IronText.Tests.Framework
 
             [Literal("")]
             string NullableLiteral();
+
+            [Match("'y' *")]
+            string InvalidMatchSignature(char[] buf, int start, int length);
+
+            [Literal("yy")]
+            string InvalidLiteralSignature(char[] buf, int start, int length);
         }
 
         [Language]
