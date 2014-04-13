@@ -22,21 +22,6 @@ namespace IronText.Reflection.Managed
         IActionCode LdMatcherTokenString();
 
         /// <summary>
-        /// Load buffer
-        /// </summary>
-        IActionCode LdMatcherBuffer();
-
-        /// <summary>
-        /// Load index of the token start in buffer
-        /// </summary>
-        IActionCode LdMatcherStartIndex();
-
-        /// <summary>
-        /// Load length of token
-        /// </summary>
-        IActionCode LdMatcherLength();
-
-        /// <summary>
         /// Return top value in stack as a token value
         /// </summary>
         IActionCode ReturnFromAction();

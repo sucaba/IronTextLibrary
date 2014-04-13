@@ -17,13 +17,13 @@ namespace IronText.Runtime
         private int priorLine;
         private int priorColumn;
 
-        private string document;
-        private ScanCursor cursor;
-        private readonly TextReader textSource;
-        private readonly ScanActionDelegate termFactory;
-        private readonly ILogging logging;
-        private HLoc hLocation;
-        private Loc location;
+        private string                       document;
+        private ScanCursor                   cursor;
+        private readonly TextReader          textSource;
+        private readonly TermFactoryDelegate termFactory;
+        private readonly ILogging            logging;
+        private HLoc                         hLocation;
+        private Loc                          location;
 
         private readonly int[] actionToToken;
 
@@ -32,7 +32,7 @@ namespace IronText.Runtime
             this.scanner     = scanner;
             this.document    = scanner.document;
             this.textSource  = scanner.textSource;
-            this.termFactory = scanner.scanAction;
+            this.termFactory = scanner.termFactory;
             this.actionToToken = scanner.actionToToken;
             this.logging     = logging;
 
@@ -188,7 +188,6 @@ namespace IronText.Runtime
 
         private int PrepareCurrent()
         {
-            int token;
             this.currentPosition += (cursor.Marker - cursor.Start);
 
             this.hLocation = MakeHLoc();
@@ -202,18 +201,12 @@ namespace IronText.Runtime
             //     actions cannot produce same token
             //  3) each action can produce multiple tokens (optional by now, but in future can be useful)
 
-            int action = cursor.Actions[0];
-            string text = cursor.GetText();
+            int    action = cursor.Actions[0];
+            string text   = cursor.GetText();
 
-            cursor.CurrentActionId = action;
-            int tokenFromAction = GetTokenFromAction(cursor.CurrentActionId);
+            tokenValue = termFactory(cursor.RootContext, action, text);
 
-            token = termFactory(cursor, out tokenValue);
-            if (token != tokenFromAction)
-            {
-                throw new InvalidOperationException("Runtimer token does not match.");
-            }
-
+            int token  = GetTokenFromAction(action);
             if (token >= 0)
             {
                 int id = cursor.EnvelopeId;
@@ -226,17 +219,9 @@ namespace IronText.Runtime
                     MsgData data = Current;
                     for (int i = 1; i != cursor.ActionCount; ++i)
                     {
-                        action = cursor.Actions[i];
-                        text = cursor.GetText();
-
-                        cursor.CurrentActionId = action;
-
-                        tokenFromAction = GetTokenFromAction(cursor.CurrentActionId);
-                        token = termFactory(cursor, out tokenValue);
-                        if (token != tokenFromAction)
-                        {
-                            throw new InvalidOperationException("Runtimer token does not match.");
-                        }
+                        action     = cursor.Actions[i];
+                        token      = GetTokenFromAction(action);
+                        tokenValue = termFactory(cursor.RootContext, action, text);
 
                         data.Next = new MsgData(token, tokenValue, action, text);
                         data = data.Next;

@@ -21,68 +21,52 @@ namespace IronText.MetadataCompiler
 
         public void Build(
             EmitSyntax          emit,
-            Pipe<EmitSyntax>    ldCursor,
-            Pipe<EmitSyntax>    ldTokenPtr)
+            Pipe<EmitSyntax>    ldRootContext,
+            Pipe<EmitSyntax>    ldAction,
+            Pipe<EmitSyntax>    ldText
+//            Pipe<EmitSyntax>    ldCursor,
+//            Pipe<EmitSyntax>    ldTokenPtr,
+            )
         {
             var labels = emit.Labels;
             var locals = emit.Locals;
 
             var RETURN = labels.Generate();
 
-            var valueTmp = locals.Generate();
-            var tokenId  = locals.Generate();
-
-            emit
-                .Local(valueTmp, emit.Types.Object)
-                .Ldnull()
-                .Stloc(valueTmp.GetRef())
-
-                .Local(tokenId, emit.Types.Int32)
-                .Ldc_I4(-1)
-                .Stloc(tokenId.GetRef())
-                ;
-
             int ruleCount = data.Grammar.Matchers.Count;
 
-            var action = new Ref<Labels>[ruleCount];
+            var actionLabels = new Ref<Labels>[ruleCount];
             for (int i = 0; i != ruleCount; ++i)
             {
-                action[i] = labels.Generate().GetRef();
+                actionLabels[i] = labels.Generate().GetRef();
             }
 
             emit
-                .Do(ldCursor)
-                .Ldfld((ScanCursor c) => c.CurrentActionId)
-                .Switch(action)
+                .Do(ldAction)
+                .Switch(actionLabels)
                 ;
 
             var contextResolver = new ContextCode(
                                     emit,
-                                    il => il
-                                        .Do(ldCursor)
-                                        .Ldfld((ScanCursor c) => c.RootContext),
+                                    il => il.Do(ldRootContext),
                                     null,
                                     data,
                                     data.Grammar.GlobalContextProvider);
             IActionCode code = new MatcherCode(
                             emit,
                             contextResolver,
-                            ldCursor,
+                            ldText,
                             declaringType,
                             RETURN.GetRef());
 
             foreach (var matcher in data.Grammar.Matchers)
             {
-                emit
-                    .Label(action[matcher.Index].Def)
-                    .Ldc_I4(matcher.Outcome == null ? -1 : matcher.Outcome.Index)
-                    .Stloc(tokenId.GetRef())
-                    ;
+                emit.Label(actionLabels[matcher.Index].Def);
 
-                var productionBinding = matcher.Joint.The<CilMatcher>();
+                var binding = matcher.Joint.The<CilMatcher>();
                 code = code
-                    .Do(productionBinding.Context.Load)
-                    .Do(productionBinding.ActionBuilder);
+                    .Do(binding.Context.Load)
+                    .Do(binding.ActionBuilder);
             }
 
             // Load null value for incorrectly implemented actions
@@ -90,13 +74,6 @@ namespace IronText.MetadataCompiler
 
             emit
                 .Label(RETURN)
-
-                .Stloc(valueTmp.GetRef())
-                .Do(ldTokenPtr)
-                .Ldloc(valueTmp.GetRef())
-                .Stind_Ref()
-
-                .Ldloc(tokenId.GetRef())
                 .Ret()
                 ;
         }

@@ -25,7 +25,7 @@ namespace IronText.Runtime
 
             public static readonly FieldInfo scan1           = ExpressionUtils.GetField((LanguageBase lang) => lang.scan1);
 
-            public static readonly FieldInfo termFactory     = ExpressionUtils.GetField((LanguageBase lang) => lang.scanAction);
+            public static readonly FieldInfo termFactory     = ExpressionUtils.GetField((LanguageBase lang) => lang.termFactory);
 
             public static readonly FieldInfo grammarAction   = ExpressionUtils.GetField((LanguageBase lang) => lang.grammarAction);
 
@@ -47,7 +47,7 @@ namespace IronText.Runtime
         protected TransitionDelegate     getParserAction;
         protected Dictionary<object,int> tokenKeyToId;
         protected Scan1Delegate          scan1;
-        protected ScanActionDelegate     scanAction;
+        protected TermFactoryDelegate    termFactory;
         protected ProductionActionDelegate  grammarAction;
         protected MergeDelegate          merge;
         protected CilGrammarSource           name;
@@ -117,7 +117,7 @@ namespace IronText.Runtime
                 }
             }
 
-            return new Scanner(scan1, input, document, context, scanAction, maxActionCount, actionToToken, logging);
+            return new Scanner(scan1, input, document, context, termFactory, maxActionCount, actionToToken, logging);
         }
 
         public IPushParser CreateParser<TNode>(IProducer<TNode> producer, ILogging logging)

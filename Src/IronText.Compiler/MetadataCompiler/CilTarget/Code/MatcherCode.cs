@@ -14,18 +14,18 @@ namespace IronText.MetadataCompiler
 
         private EmitSyntax emit;
         private readonly IContextCode contextCode;
-        private readonly Pipe<EmitSyntax> ldCursor;
+        private readonly Pipe<EmitSyntax> ldText;
         private readonly Ref<Types> declaringType;
 
         public MatcherCode(
             EmitSyntax           emit, 
             IContextCode         contextCode,
-            Pipe<EmitSyntax>     ldCursor,
+            Pipe<EmitSyntax>     ldText,
             Ref<Types>           declaringType,
             Ref<Labels>          RETURN)
         {
             this.emit            = emit;
-            this.ldCursor        = ldCursor;
+            this.ldText        = ldText;
             this.contextCode     = contextCode;
             this.declaringType   = declaringType;
             this.RETURN          = RETURN;
@@ -57,44 +57,9 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        public IActionCode LdMatcherBuffer()
-        {
-            emit
-                .Do(ldCursor)
-                .Ldfld((ScanCursor c) => c.Buffer);
-            return this;
-        }
-
-        public IActionCode LdMatcherStartIndex()
-        {
-            emit
-                .Do(ldCursor)
-                .Ldfld((ScanCursor c) => c.Start);
-            return this;
-        }
-
-        public IActionCode LdMatcherLength()
-        {
-            emit
-                .Do(ldCursor)
-                .Ldfld((ScanCursor c) => c.Marker)
-                .Do(ldCursor)
-                .Ldfld((ScanCursor c) => c.Start)
-                .Sub()
-                ;
-
-            return this;
-        }
-
         public IActionCode LdMatcherTokenString()
         {
-            return this
-                .LdMatcherBuffer()
-                .LdMatcherStartIndex()
-                .LdMatcherLength()
-                .Emit(il => 
-                    il.Newobj(() => new string(default(char[]), default(int), default(int))))
-                ;
+            return this.Emit(ldText);
         }
 
         public IActionCode LdActionArgument(int index, Type argType)

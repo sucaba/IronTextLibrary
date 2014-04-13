@@ -167,24 +167,27 @@ namespace IronText.MetadataCompiler
             var args = context
                         .Method()
                             .Static
-                            .Returning(context.Types.Int32)
+                            .Returning(context.Types.Object)
                             .Named(TermFactoryMethodName)
                             .BeginArgs();
 
-            var cursorArg = args.Args.Generate("cursor");
-            var tokenArg  = args.Args.Generate("token");
+            var rootContextArg = args.Args.Generate("rootContext");
+            var actionArg      = args.Args.Generate("action");
+            var textArg        = args.Args.Generate("textArg");
 
             var emit = args
-                    .Argument(context.Types.Import(typeof(ScanCursor)), cursorArg)       // ruleId
-                    .Out.Argument(context.Types.Import(typeof(object).MakeByRefType()), tokenArg)
+                    .Argument(context.Types.Object, rootContextArg)
+                    .Argument(context.Types.Int32,  actionArg)       
+                    .Argument(context.Types.String, textArg)       
                 .EndArgs()
                 .BeginBody();
 
             var generator = new TermFactoryGenerator(data, declaringTypeRef);
             generator.Build(
                 emit,
-                il => il.Ldarg(cursorArg.GetRef()),
-                il => il.Ldarg(tokenArg.GetRef()));
+                il => il.Ldarg(rootContextArg.GetRef()),
+                il => il.Ldarg(actionArg.GetRef()),
+                il => il.Ldarg(textArg.GetRef()));
 
             return emit.EndBody();
         }
@@ -516,7 +519,7 @@ namespace IronText.MetadataCompiler
                 .LdMethodDelegate(
                     declaringTypeRef,
                     TermFactoryMethodName,
-                    typeof(ScanActionDelegate))
+                    typeof(TermFactoryDelegate))
                 .Stfld(LanguageBase.Fields.termFactory)
 
                 // Init getParserAction field

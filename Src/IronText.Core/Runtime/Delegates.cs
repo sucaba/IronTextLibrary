@@ -5,7 +5,7 @@ namespace IronText.Runtime
 
     public delegate int Scan1Delegate(ScanCursor cursor);
 
-    public delegate int ScanActionDelegate(ScanCursor cursor, out object value);
+    public delegate object TermFactoryDelegate(object rootContext, int action, string text);
 
     public delegate object ProductionActionDelegate(
         int     ruleId,      // rule being reduced

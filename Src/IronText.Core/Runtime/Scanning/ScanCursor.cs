@@ -10,7 +10,6 @@
         public bool IsEoi;     // EOI flag
         public int Start;      // token start
         public int InnerState; // Inner state of the scanner FSM
-        public int CurrentActionId;   // accept action ID
 
         public int   EnvelopeId;
         public int   ActionCount;
