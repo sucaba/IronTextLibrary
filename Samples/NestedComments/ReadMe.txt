@@ -1,1 +1,0 @@
-﻿Demo for scanning nested comments using scan-modes feature.

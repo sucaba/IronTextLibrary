@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyArchiver", "MyArchiver\My
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLinq", "DynamicLinq\DynamicLinq.csproj", "{598A1219-F16D-40CA-86A3-8471F7949AC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NestedComments", "NestedComments\NestedComments.csproj", "{C5B92424-1894-4000-BF50-AF5EE3659AA7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImportBnf", "ImportBnf\ImportBnf.csproj", "{6CF83C58-8953-43D6-9677-527458B6FACE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyConfigParser", "MyConfigParser\MyConfigParser.csproj", "{3762D739-E2D8-41C6-8CFD-65CC78428080}"
