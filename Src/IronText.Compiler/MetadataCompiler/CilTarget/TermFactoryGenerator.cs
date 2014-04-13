@@ -20,13 +20,10 @@ namespace IronText.MetadataCompiler
         }
 
         public void Build(
-            EmitSyntax          emit,
-            Pipe<EmitSyntax>    ldRootContext,
-            Pipe<EmitSyntax>    ldAction,
-            Pipe<EmitSyntax>    ldText
-//            Pipe<EmitSyntax>    ldCursor,
-//            Pipe<EmitSyntax>    ldTokenPtr,
-            )
+            EmitSyntax       emit,
+            Pipe<EmitSyntax> ldRootContext,
+            Pipe<EmitSyntax> ldAction,
+            Pipe<EmitSyntax> ldText)
         {
             var labels = emit.Labels;
             var locals = emit.Locals;

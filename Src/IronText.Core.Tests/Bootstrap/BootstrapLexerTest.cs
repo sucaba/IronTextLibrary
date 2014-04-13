@@ -85,8 +85,8 @@ namespace IronText.Tests.Bootstrap
             var collector = new Collector<Msg>();
             target.Accept(collector);
             Assert.AreEqual(
-                new object[] { null, new Num("1"), null, new QStr("bar"), "+", null, null },
-                collector.Select(msg => msg.Value).ToArray());
+                new[] { "(", "1", "(", "\"bar\"", "+", ")", ")" },
+                collector.Select(msg => msg.Text).ToArray());
         }
     }
 }

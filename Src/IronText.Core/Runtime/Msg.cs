@@ -6,7 +6,7 @@ namespace IronText.Runtime
     public class MsgData
     {
         public readonly int    Token;
-        public readonly object Value;
+        public object Value;
         public readonly int    Action;
         public readonly string Text;
 

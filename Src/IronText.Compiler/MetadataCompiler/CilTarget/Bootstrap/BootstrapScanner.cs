@@ -15,16 +15,11 @@ namespace IronText.MetadataCompiler
     /// <summary>
     /// Bootstrapping lexer based on the Regex class.
     /// </summary>
-    class BootstrapScanner
-        : IScanner
-        , IEnumerable<Msg>
+    class BootstrapScanner : IScanner, IEnumerable<Msg>
     {
-        private delegate object TokenFactoryDelegate(string text, object rootContext);
-
         private readonly Regex regex;
         private readonly string text;
         private ScannerDescriptor descriptor;
-        private TokenFactoryDelegate[] tokenFactories;
         private readonly object rootContext;
         private readonly ILogging logging;
 
@@ -50,17 +45,6 @@ namespace IronText.MetadataCompiler
             var pattern = @"\G(?:" + string.Join("|", descriptor.Matchers.Select(scanProd => "(" + GetPattern(scanProd) + ")")) + ")";
             this.regex = new Regex(pattern, RegexOptions.IgnorePatternWhitespace);
             this.text = textSource.ReadToEnd();
-
-            int count = descriptor.Matchers.Count;
-            this.tokenFactories = new TokenFactoryDelegate[count];
-
-            for (int i = 0; i != count; ++i)
-            {
-                if (descriptor.Matchers[i].Outcome != null)
-                {
-                    tokenFactories[i] = BuildTokenFactory(descriptor.Matchers[i]);
-                }
-            }
         }
 
         private static string GetPattern(Matcher production)
@@ -84,22 +68,23 @@ namespace IronText.MetadataCompiler
                 {
                     currentPos = match.Index + match.Length;
 
-                    int termIndex = Enumerable
+                    int action = Enumerable
                                     .Range(1, match.Groups.Count)
                                     .First(i => match.Groups[i].Success) - 1;
-                    var production = descriptor.Matchers[termIndex];
+                    var production = descriptor.Matchers[action];
                     if (production.Outcome == null)
                     {
                         continue;
                     }
 
-                    object termValue = tokenFactories[termIndex](match.Value, this.rootContext);
-                    int    tokenId = production.Outcome.Index;
+                    int token = production.Outcome.Index;
 
                     yield return
                         new Msg(
-                            tokenId,
-                            termValue,
+                            token,
+                            null,
+                            action,
+                            match.Value,
                             new Loc(Loc.MemoryString, match.Index, match.Length));
 
                     if (currentPos == text.Length)
@@ -120,88 +105,6 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        private static TokenFactoryDelegate BuildTokenFactory(Matcher scanProduction)
-        {
-            var method = new DynamicMethod(
-                                "Create",
-                                typeof(object), 
-                                new[] { typeof(string), typeof(object) },
-                                typeof(BootstrapScanner).Module);
-
-            var il = method.GetILGenerator(256);
-
-            if (scanProduction.Pattern.IsLiteral)
-            {
-                il.Emit(OpCodes.Ldnull);
-            }
-            else
-            {
-                var binding = scanProduction.Joint.The<CilMatcher>();
-                if (binding == null)
-                {
-                    throw new InvalidOperationException("ScanProduction is missing CIL platform binding.");
-                }
-
-                Type type = binding.BootstrapResultType;
-
-                MethodInfo parseMethod = GetStaticParseMethod(type);
-                if (parseMethod != null)
-                {
-                    il.Emit(OpCodes.Ldarg_0);
-                    il.Emit(OpCodes.Call, parseMethod);
-                }
-                else if (type == typeof(string))
-                {
-                    il.Emit(OpCodes.Ldarg_0);
-                }
-                else
-                {
-                    ConstructorInfo constructor = null;
-                    Type[] paramTypes = SelectConstructor(type, ref constructor);
-                    if (paramTypes.Length > 0)
-                    {
-                        il.Emit(OpCodes.Ldarg_0);
-                        if (paramTypes.Length > 1)
-                        {
-                            il.Emit(OpCodes.Ldnull);
-                        }
-                    }
-
-                    il.Emit(OpCodes.Newobj, constructor);
-                }
-            }
-
-            il.Emit(OpCodes.Ret);
-            return (TokenFactoryDelegate)method.CreateDelegate(typeof(TokenFactoryDelegate));
-        }
-
-        private static Type[] SelectConstructor(Type type, ref ConstructorInfo constructor)
-        {
-            Type[][] signatures = {
-                    new Type[] { typeof(string) },
-                    Type.EmptyTypes
-                };
-
-
-            Type[] paramTypes = null;
-            foreach (var signature in signatures)
-            {
-                constructor = type.GetConstructor(signature);
-                if (constructor != null)
-                {
-                    paramTypes = signature;
-                    break;
-                }
-            }
-
-            if (constructor == null)
-            {
-                throw new InvalidOperationException(
-                    "Type " + type.FullName + " has no public constructor suitable for a lexer.");
-            }
-            return paramTypes;
-        }
-
         public IEnumerator<Msg> GetEnumerator()
         {
             throw new NotImplementedException();
@@ -210,28 +113,6 @@ namespace IronText.MetadataCompiler
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
-        }
-
-        private static MethodInfo GetStaticParseMethod(Type type)
-        {
-            if (type == null)
-            {
-                return null;
-            }
-
-            var m = type.GetMethod(
-                        "BootstrapParse",
-                        BindingFlags.Static | BindingFlags.Public,
-                        null, new[] { typeof(string) },
-                        null)
-                     ??
-                     type.GetMethod(
-                        "Parse",
-                        BindingFlags.Static | BindingFlags.Public,
-                        null, new[] { typeof(string) },
-                        null)
-                     ;
-            return m;
         }
     }
 }

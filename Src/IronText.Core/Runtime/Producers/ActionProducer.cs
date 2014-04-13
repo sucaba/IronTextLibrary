@@ -12,6 +12,7 @@ namespace IronText.Runtime
     {
         private readonly RuntimeGrammar grammar;
         private readonly ProductionActionDelegate grammarAction;
+        private readonly TermFactoryDelegate termFactory;
         private readonly MergeDelegate merge;
         private readonly object context;
         private Loc _resultLocation;
@@ -19,15 +20,17 @@ namespace IronText.Runtime
         private readonly object[] ruleArgBuffer;
 
         public ActionProducer(
-            RuntimeGrammar grammar,
-            object context,
+            RuntimeGrammar           grammar,
+            object                   context,
             ProductionActionDelegate grammarAction,
-            MergeDelegate merge)
+            TermFactoryDelegate      termFactory,
+            MergeDelegate            merge)
             : base(grammar, context, grammarAction)
         {
             this.grammar        = grammar;
             this.context        = context;
             this.grammarAction  = grammarAction;
+            this.termFactory    = termFactory;
             this.merge          = merge;
             this.ruleArgBuffer  = new object[grammar.MaxRuleSize];
         }
@@ -38,9 +41,12 @@ namespace IronText.Runtime
 
         public Msg CreateLeaf(Msg envelope, MsgData data)
         {
-            return data == (object)envelope 
+            var result = data == (object)envelope 
                 ? envelope 
                 : new Msg(envelope.Id, data.Token, data.Value, data.Action, data.Text, envelope.Location, envelope.HLocation);
+
+            result.Value = result.Value ?? termFactory(context, data.Action, data.Text);
+            return result;
         }
 
         public Msg CreateBranch(Production rule, ArraySlice<Msg> prefix, IStackLookback<Msg> stackLookback)

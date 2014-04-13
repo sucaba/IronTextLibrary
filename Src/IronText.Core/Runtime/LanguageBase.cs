@@ -148,7 +148,7 @@ namespace IronText.Runtime
 
         public IProducer<Msg> CreateActionProducer(object context)
         {
-            var result = new ActionProducer(runtimeGrammar, context, grammarAction, this.merge);
+            var result = new ActionProducer(runtimeGrammar, context, grammarAction, termFactory, this.merge);
 
             if (context != null)
             {
