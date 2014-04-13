@@ -34,28 +34,22 @@ namespace IronText.Tests.Algorithm
                     qStr
                 },
 
-                Conditions =
+                Matchers = 
                 {
-                    new Condition("main")
-                    {
-                        Matchers = 
-                        {
-                            new Matcher(@"blank+"),
-                            new Matcher(@"digit+ ('.' digit+)?  | '.' digit+", num),
-                            new Matcher(
-                                    @"(alpha | [:.!@#$%^&|?*/+*=\\_-]) (alnum | [:.!@#$%^&|?*/+*=\\_-])*",
-                                    ident),
-                            new Matcher("'\"' ('\\\\\"' | ~'\"')* '\"'", qStr),
-                            new Matcher(ScanPattern.CreateLiteral("("), lParen),
-                            new Matcher(ScanPattern.CreateLiteral(")"), rParen),
-                        }
-                    }
+                    new Matcher(@"blank+"),
+                    new Matcher(@"digit+ ('.' digit+)?  | '.' digit+", num),
+                    new Matcher(
+                            @"(alpha | [:.!@#$%^&|?*/+*=\\_-]) (alnum | [:.!@#$%^&|?*/+*=\\_-])*",
+                            ident),
+                    new Matcher("'\"' ('\\\\\"' | ~'\"')* '\"'", qStr),
+                    new Matcher(ScanPattern.CreateLiteral("("), lParen),
+                    new Matcher(ScanPattern.CreateLiteral(")"), rParen),
                 }
             };
            
             var target = new DfaSimulationLexer(
                 " (1 (\"bar\" +))",
-                ScannerDescriptor.FromScanRules(grammar.Conditions[0].Matchers, ExceptionLogging.Instance));
+                ScannerDescriptor.FromScanRules(grammar.Matchers, ExceptionLogging.Instance));
 
             var collector = new Collector<Msg>();
             target.Accept(collector);

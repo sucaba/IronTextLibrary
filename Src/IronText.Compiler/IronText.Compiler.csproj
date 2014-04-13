@@ -198,7 +198,7 @@
     <Compile Include="MetadataCompiler\CilTarget\Code\MergerCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\MergeActionGenerator.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\MatcherCode.cs" />
-    <Compile Include="MetadataCompiler\CilTarget\ConditionMethods.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\ScannerMethods.cs" />
     <Compile Include="MetadataCompiler\CilTarget\ScannerGenerator.cs" />
     <Compile Include="MetadataCompiler\CilTarget\TermFactoryGenerator.cs" />
     <Compile Include="MetadataCompiler\CilTarget\TokenIdentitiesSerializer.cs" />

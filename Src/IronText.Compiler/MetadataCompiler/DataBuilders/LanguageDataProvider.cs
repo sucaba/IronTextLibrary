@@ -124,36 +124,33 @@ namespace IronText.MetadataCompiler
                                         tokenSet,
                                         grammar.Matchers.Count);
 
-            foreach (var condition in grammar.Conditions)
+            ITdfaData tdfa;
+            if (!CompileTdfa(logging, grammar, out tdfa))
             {
-                ITdfaData tdfa;
-                if (!CompileTdfa(logging, condition, out tdfa))
-                {
-                    logging.Write(
-                        new LogEntry
-                        {
-                            Severity = Severity.Error,
-                            Origin   = source.Origin,
-                            Message  = string.Format(
-                                        "Unable to create scanner for '{0}' language.",
-                                        source.LanguageName)
-                        });
+                logging.Write(
+                    new LogEntry
+                    {
+                        Severity = Severity.Error,
+                        Origin   = source.Origin,
+                        Message  = string.Format(
+                                    "Unable to create scanner for '{0}' language.",
+                                    source.LanguageName)
+                    });
 
-                    return false;
-                }
+                return false;
+            }
 
-                // For each action store information about produced tokens
-                foreach (var scanProduction in condition.Matchers)
-                {
-                    scanAmbiguityResolver.RegisterAction(scanProduction);
-                }
+            // For each action store information about produced tokens
+            foreach (var scanProduction in grammar.Matchers)
+            {
+                scanAmbiguityResolver.RegisterAction(scanProduction);
+            }
 
-                // For each 'ambiguous scanner state' deduce all tokens
-                // which can be produced in this state.
-                foreach (var state in tdfa.EnumerateStates())
-                {
-                    scanAmbiguityResolver.RegisterState(state);
-                }
+            // For each 'ambiguous scanner state' deduce all tokens
+            // which can be produced in this state.
+            foreach (var state in tdfa.EnumerateStates())
+            {
+                scanAmbiguityResolver.RegisterState(state);
             }
 
             scanAmbiguityResolver.DefineAmbiguities(grammar);
@@ -161,9 +158,9 @@ namespace IronText.MetadataCompiler
             return true;
         }
 
-        private static bool CompileTdfa(ILogging logging, Condition condition, out ITdfaData outcome)
+        private static bool CompileTdfa(ILogging logging, Grammar grammar, out ITdfaData outcome)
         {
-            var descr = ScannerDescriptor.FromScanRules(condition.Matchers, logging);
+            var descr = ScannerDescriptor.FromScanRules(grammar.Matchers, logging);
 
             var literalToAction = new Dictionary<string, int>();
             var ast = descr.MakeAst(literalToAction);
@@ -175,7 +172,7 @@ namespace IronText.MetadataCompiler
 
             var regTree = new RegularTree(ast);
             outcome = new RegularToTdfaAlgorithm(regTree, literalToAction).Data;
-            condition.Joint.Add(outcome);
+            grammar.Joint.Add(outcome);
 
             return true;
         }

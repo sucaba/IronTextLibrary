@@ -31,8 +31,6 @@ namespace IronText.Reflection.Managed
 
         public Pipe<IActionCode>    ActionBuilder          { get; set; }
 
-        public Type                 NextConditionType      { get; set; }
-
         public CilSymbolRef         MainOutcome            { get; set; }
 
         public List<CilSymbolRef>   AllOutcomes            { get; private set; }

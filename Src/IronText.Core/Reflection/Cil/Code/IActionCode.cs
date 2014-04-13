@@ -45,18 +45,6 @@ namespace IronText.Reflection.Managed
         /// Skip token and continue scanning
         /// </summary>
         IActionCode SkipAction();
-
-        /// <summary>
-        /// Set current mode and run-time context.
-        /// </summary>
-        /// <remarks>
-        /// Generates code which sets current context
-        /// from the tompost object in stack
-        /// and sets current mode (scanner DFA) determined by
-        /// scanner context type. 
-        /// </remarks>
-        /// <param name="conditionType">Type of scanner context which determines scanner DFA to use</param>
-        IActionCode ChangeCondition(Type conditionType);
     }
 
     public static class ActionCodeExtensions

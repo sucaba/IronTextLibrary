@@ -122,34 +122,18 @@ namespace IronText.Reflection.Managed
                 production.ExplicitPrecedence = cilProduction.Precedence;
             }
 
-            // Create conditions to allow referencing them from matchers
-            foreach (CilCondition cilCondition in definition.Conditions)
-            {
-                var cond = CreateCondtion(result, cilCondition);
-                result.Conditions.Add(cond);
-            }
-
             // Create matchers
-            foreach (CilCondition cilCondition in definition.Conditions)
+            foreach (var cilMatcher in definition.Matchers)
             {
-                var condition = ConditionFromType(result, cilCondition.ConditionType);
+                SymbolBase outcome = GetMatcherOutcomeSymbol(result, symbolResolver, cilMatcher.MainOutcome, cilMatcher.AllOutcomes);
 
-                foreach (var cilMatcher in cilCondition.Matchers)
-                {
-                    SymbolBase outcome = GetMatcherOutcomeSymbol(result, symbolResolver, cilMatcher.MainOutcome, cilMatcher.AllOutcomes);
+                var matcher = new Matcher(
+                    cilMatcher.Pattern,
+                    outcome,
+                    disambiguation: cilMatcher.Disambiguation);
+                matcher.Joint.Add(cilMatcher);
 
-                    var matcher = new Matcher(
-                        cilMatcher.Pattern,
-                        outcome,
-#if false
-                        context: CreateActionContextRef(cilMatcher.Context),
-#endif
-                        nextCondition: ConditionFromType(result, cilMatcher.NextConditionType),
-                        disambiguation: cilMatcher.Disambiguation);
-                    matcher.Joint.Add(cilMatcher);
-
-                    condition.Matchers.Add(matcher);
-                }
+                result.Matchers.Add(matcher);
             }
 
             foreach (var cilMerger in definition.Mergers)
@@ -180,36 +164,6 @@ namespace IronText.Reflection.Managed
                 result = new SemanticContextRef(cilContext.UniqueName);
             }
 
-            return result;
-        }
-
-        private static Condition ConditionFromType(Grammar grammar, Type type)
-        {
-            if (type == null)
-            {
-                return null;
-            }
-
-            foreach (var cond in grammar.Conditions)
-            {
-                var binding = cond.Joint.The<CilCondition>();
-                if (binding.ConditionType == type)
-                {
-                    return cond;
-                }
-            }
-
-            throw new InvalidOperationException("Undefined condition: " + type.FullName);
-        }
-
-        private static Condition CreateCondtion(Grammar grammar, CilCondition cilCondition)
-        {
-            var result = new Condition(cilCondition.ConditionType.FullName)
-            {
-                Joint = { cilCondition }
-            };
-
-            InitContextProvider(grammar, cilCondition.ContextProvider, result.ContextProvider);
             return result;
         }
 

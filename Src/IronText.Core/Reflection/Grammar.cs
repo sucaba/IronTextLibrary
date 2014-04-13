@@ -21,7 +21,6 @@ namespace IronText.Reflection
 
             Productions = new ProductionCollection(this);
             Symbols     = new SymbolCollection(this);
-            Conditions  = new ConditionCollection(this);
             Matchers    = new MatcherCollection(this);
             Mergers     = new MergerCollection(this);
             Contexts    = new SemanticContextCollection(this);
@@ -66,8 +65,6 @@ namespace IronText.Reflection
         public ProductionCollection Productions         { get; private set; }
 
         public MatcherCollection    Matchers            { get; private set; }
-
-        public ConditionCollection  Conditions          { get; private set; }
 
         public MergerCollection     Mergers             { get; private set; }
 

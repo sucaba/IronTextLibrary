@@ -22,16 +22,12 @@ namespace IronText.Framework
 
         public void Build(IReportData data)
         {
-            foreach (var condition in data.Grammar.Conditions)
+            string scanModeFileName = Path.GetFileName(fileName) + Path.GetExtension(fileName);
+            string path = Path.Combine(data.DestinationDirectory, scanModeFileName);
+            using (var graph = new GvGraphView(path))
             {
-                int i = condition.Index;
-                string scanModeFileName = Path.GetFileName(fileName) + "_" + i + Path.GetExtension(fileName);
-                string path = Path.Combine(data.DestinationDirectory, scanModeFileName);
-                using (var graph = new GvGraphView(path))
-                {
-                    var dfa = data.GetScannerAutomata(condition);
-                    dfa.DescribeGraph(graph);
-                }
+                var dfa = data.GetScannerAutomata();
+                dfa.DescribeGraph(graph);
             }
         }
     }

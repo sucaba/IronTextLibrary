@@ -48,9 +48,9 @@ namespace IronText.Reflection.Reporting
             get { return parserAutomata ?? (parserAutomata = new ParserAutomata(this)); }
         }
 
-        public IScannerAutomata GetScannerAutomata(Condition condition)
+        public IScannerAutomata GetScannerAutomata()
         {
-            return condition.Joint.The<IScannerAutomata>();
+            return data.Grammar.Joint.The<IScannerAutomata>();
         }
     }
 }

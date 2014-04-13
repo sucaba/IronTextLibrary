@@ -42,7 +42,7 @@ namespace IronText.MetadataCompiler
                 .Stloc(tokenId.GetRef())
                 ;
 
-            int ruleCount = data.Grammar.Conditions.Sum(cond => cond.Matchers.Count);
+            int ruleCount = data.Grammar.Matchers.Count;
 
             var action = new Ref<Labels>[ruleCount];
             for (int i = 0; i != ruleCount; ++i)
@@ -56,37 +56,33 @@ namespace IronText.MetadataCompiler
                 .Switch(action)
                 ;
 
-            foreach (var cond in data.Grammar.Conditions)
+            var contextResolver = new ContextCode(
+                                    emit,
+                                    il => il
+                                        .Do(ldCursor)
+                                        .Ldfld((ScanCursor c) => c.RootContext),
+                                    null,
+                                    data,
+                                    data.Grammar.GlobalContextProvider);
+            IActionCode code = new MatcherCode(
+                            emit,
+                            contextResolver,
+                            ldCursor,
+                            declaringType,
+                            RETURN.GetRef());
+
+            foreach (var matcher in data.Grammar.Matchers)
             {
-                var contextResolver = new ContextCode(
-                                        emit,
-                                        il => il
-                                            .Do(ldCursor)
-                                            .Ldfld((ScanCursor c) => c.RootContext),
-                                        null,
-                                        data,
-                                        cond.ContextProvider);
-                IActionCode code = new MatcherCode(
-                                emit,
-                                contextResolver,
-                                ldCursor,
-                                declaringType,
-                                data.Grammar.Conditions,
-                                RETURN.GetRef());
+                emit
+                    .Label(action[matcher.Index].Def)
+                    .Ldc_I4(matcher.Outcome == null ? -1 : matcher.Outcome.Index)
+                    .Stloc(tokenId.GetRef())
+                    ;
 
-                foreach (var matcher in cond.Matchers)
-                {
-                    emit
-                        .Label(action[matcher.Index].Def)
-                        .Ldc_I4(matcher.Outcome == null ? -1 : matcher.Outcome.Index)
-                        .Stloc(tokenId.GetRef())
-                        ;
-
-                    var productionBinding = matcher.Joint.The<CilMatcher>();
-                    code = code
-                        .Do(productionBinding.Context.Load)
-                        .Do(productionBinding.ActionBuilder);
-                }
+                var productionBinding = matcher.Joint.The<CilMatcher>();
+                code = code
+                    .Do(productionBinding.Context.Load)
+                    .Do(productionBinding.ActionBuilder);
             }
 
             // Load null value for incorrectly implemented actions

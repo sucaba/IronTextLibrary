@@ -164,60 +164,25 @@ namespace IronText.MetadataCompiler
                     ;
             }
 
-            foreach (var condition in grammar.Conditions)
+            foreach (var matcher in grammar.Matchers)
             {
-                emit = NewObjCondition(emit, resultVar, condition);
-            }
+                emit = emit.Ldloc(resultVar.GetRef());
+                emit = emit.Ldprop((Grammar g) => g.Matchers);
 
-            foreach (var condition in grammar.Conditions)
-            {
-                foreach (var matcher in condition.Matchers)
-                {
-                    emit = LdCondition(emit, resultVar, condition);
-                    emit = emit.Ldprop((Condition c) => c.Matchers);
-
-                    emit = NewObjScanPattern(emit, matcher.Pattern);
-                    emit = LdSymbol(emit, resultVar, matcher.Outcome);
-                    emit = LdCondition(emit, resultVar, matcher.NextCondition);
-                    emit = emit
-                        .Ldc_I4((int)matcher.Disambiguation)
-                        .Newobj(() =>
-                            new Matcher(
-                                default(ScanPattern),
-                                default(SymbolBase),
-                                default(Condition),
-                                default(Disambiguation)))
-                        .Call((ReferenceCollection<Matcher> c) => c.Add(default(Matcher)));
-                }
+                emit = NewObjScanPattern(emit, matcher.Pattern);
+                emit = LdSymbol(emit, resultVar, matcher.Outcome);
+                emit = emit
+                    .Ldc_I4((int)matcher.Disambiguation)
+                    .Newobj(() =>
+                        new Matcher(
+                            default(ScanPattern),
+                            default(SymbolBase),
+                            default(Disambiguation)))
+                    .Call((MatcherCollection c) => c.Add(default(Matcher)))
+                    .Pop();
             }
 
             return emit.Ldloc(resultVar.GetRef());
-        }
-
-        private EmitSyntax NewObjCondition(EmitSyntax emit, Def<Locals> resultVar, Condition condition)
-        {
-            return emit
-                .Ldloc(resultVar.GetRef())
-                .Ldprop((Grammar g) => g.Conditions)
-                .Ldstr(new QStr(condition.Name))
-                .Newobj(() => new Condition(default(string)))
-                .Call((ConditionCollection c) => c.Add(default(Condition)))
-                .Pop();
-        }
-
-        private EmitSyntax LdCondition(EmitSyntax emit, Def<Locals> resultVar, Condition condition)
-        {
-            if (condition == null)
-            {
-                return emit.Ldnull();
-            }
-
-            int index = condition.Index;
-            return emit
-                .Ldloc(resultVar.GetRef())
-                .Ldprop((Grammar g) => g.Conditions)
-                .Ldc_I4(index)
-                .Call((ConditionCollection c) => c[index]);
         }
 
         private EmitSyntax LdSymbol(EmitSyntax emit, Def<Locals> resultVar, SymbolBase symbol)

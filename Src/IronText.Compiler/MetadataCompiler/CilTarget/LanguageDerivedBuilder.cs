@@ -128,33 +128,30 @@ namespace IronText.MetadataCompiler
                     Message = string.Format("Started compiling Scan1 modes for {0} language", languageName.LanguageName)
                 });
 
-            foreach (var condition in data.Grammar.Conditions)
-            {
-                ITdfaData dfa = condition.Joint.The<ITdfaData>();
-                var dfaSerialization = new DfaSerialization(dfa);
-                var generator = new ScannerGenerator(dfaSerialization);
+            ITdfaData dfa = data.Grammar.Joint.The<ITdfaData>();
+            var dfaSerialization = new DfaSerialization(dfa);
+            var generator = new ScannerGenerator(dfaSerialization);
 
-                var methodName = ConditionMethods.GetMethodName(condition.Index);
-                var args = context
-                            .Method()
-                                .Static
-                                .Returning(context.Types.Int32)
-                                .Named(methodName)
-                                    .BeginArgs();
+            var methodName = ScannerMethods.GetMethodName();
+            var args = context
+                        .Method()
+                            .Static
+                            .Returning(context.Types.Int32)
+                            .Named(methodName)
+                                .BeginArgs();
 
-                var emit = args
-                        .Argument(
-                            context.Types.Import(typeof(ScanCursor)),
-                            args.Args.Generate("cursor"))      // input
-                    .EndArgs()
-                        .NoInlining
-                        .NoOptimization
-                    .BeginBody();
+            var emit = args
+                    .Argument(
+                        context.Types.Import(typeof(ScanCursor)),
+                        args.Args.Generate("cursor"))      // input
+                .EndArgs()
+                    .NoInlining
+                    .NoOptimization
+                .BeginBody();
 
-                generator.Build(emit);
+            generator.Build(emit);
 
-                context = emit.EndBody();
-            }
+            context = emit.EndBody();
 
             logging.Write(
                 new LogEntry
@@ -510,7 +507,7 @@ namespace IronText.MetadataCompiler
                 .Ldarg(0)
                 .LdMethodDelegate(
                     declaringTypeRef,
-                    ConditionMethods.GetMethodName(0),
+                    ScannerMethods.GetMethodName(),
                     typeof(Scan1Delegate))
                 .Stfld(LanguageBase.Fields.scan1)
 

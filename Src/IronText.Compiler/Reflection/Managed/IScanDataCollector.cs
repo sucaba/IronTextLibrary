@@ -8,7 +8,5 @@ namespace IronText.Reflection.Managed
         void AddMeta(ICilMetadata meta);
 
         void AddMatcher(CilMatcher production);
-
-        void AddCondition(Type conditionType);
     }
 }

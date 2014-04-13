@@ -7,12 +7,10 @@ namespace IronText.Reflection
         public Matcher(
             string           pattern,
             SymbolBase       outcome        = null,
-            Condition        nextCondition  = null,
             Disambiguation   disambiguation = Disambiguation.Undefined)
             : this(
                 ScanPattern.CreateRegular(pattern),
                 outcome,
-                nextCondition,
                 disambiguation)
         {
         }
@@ -20,12 +18,10 @@ namespace IronText.Reflection
         public Matcher(
             ScanPattern      pattern,
             SymbolBase       outcome        = null,
-            Condition        nextCondition  = null,
             Disambiguation   disambiguation = Disambiguation.Undefined)
         {
             this.Pattern       = pattern;
             this.Outcome       = outcome;
-            this.NextCondition = nextCondition;
 
             if (disambiguation == Disambiguation.Undefined)
             {
@@ -44,8 +40,6 @@ namespace IronText.Reflection
         public Disambiguation   Disambiguation  { get; private set; }
 
         public SymbolBase       Outcome         { get; private set; }
-
-        public Condition        NextCondition   { get; private set; }
 
         public Joint            Joint           { get; private set; }
 

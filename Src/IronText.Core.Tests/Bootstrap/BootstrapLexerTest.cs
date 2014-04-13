@@ -34,57 +34,51 @@ namespace IronText.Tests.Bootstrap
                     qStr
                 },
 
-                Conditions =
+                Matchers = 
                 {
-                    new Condition("main")
+                    new Matcher(
+                            ScanPattern.CreateRegular(
+                                null,
+                                @"[ \t]+"))
                     {
-                        Matchers = 
-                        {
-                            new Matcher(
-                                    ScanPattern.CreateRegular(
-                                        null,
-                                        @"[ \t]+"))
-                            {
-                                Joint = { new CilMatcher(typeof(void)) }
-                            },
-                            new Matcher(
-                                    ScanPattern.CreateRegular(
-                                        null,
-                                        @"[0-9]+(?:[.][0-9]+)? | [.][0-9]+"), 
-                                    num)
-                            {
-                                Joint = {  new CilMatcher(typeof(Num)) }
-                            },
-                            new Matcher(
-                                    ScanPattern.CreateRegular(
-                                        null,
-                                        @"[a-zA-Z:.!@#$%^&|?*/+*=\\_-][a-zA-Z:\d.!@#$%^&|?*/+*=\\_-]*"),
-                                    ident)
-                            {
-                                Joint = { new CilMatcher(typeof(string)) }
-                            },
-                            new Matcher(
-                                    ScanPattern.CreateRegular(
-                                        null,
-                                        @"[""](?: \\[""] | [^""])* [""]"),
-                                    qStr)
-                            {
-                                Joint = { new CilMatcher(typeof(QStr)) }
-                            },
-                            new Matcher(
-                                    ScanPattern.CreateLiteral("("),
-                                    lParen),
-                            new Matcher(
-                                    ScanPattern.CreateLiteral(")"),
-                                    rParen),
-                        }
-                    }
+                        Joint = { new CilMatcher(typeof(void)) }
+                    },
+                    new Matcher(
+                            ScanPattern.CreateRegular(
+                                null,
+                                @"[0-9]+(?:[.][0-9]+)? | [.][0-9]+"), 
+                            num)
+                    {
+                        Joint = {  new CilMatcher(typeof(Num)) }
+                    },
+                    new Matcher(
+                            ScanPattern.CreateRegular(
+                                null,
+                                @"[a-zA-Z:.!@#$%^&|?*/+*=\\_-][a-zA-Z:\d.!@#$%^&|?*/+*=\\_-]*"),
+                            ident)
+                    {
+                        Joint = { new CilMatcher(typeof(string)) }
+                    },
+                    new Matcher(
+                            ScanPattern.CreateRegular(
+                                null,
+                                @"[""](?: \\[""] | [^""])* [""]"),
+                            qStr)
+                    {
+                        Joint = { new CilMatcher(typeof(QStr)) }
+                    },
+                    new Matcher(
+                            ScanPattern.CreateLiteral("("),
+                            lParen),
+                    new Matcher(
+                            ScanPattern.CreateLiteral(")"),
+                            rParen),
                 }
             };
 
             var target = new BootstrapScanner(
                 " (1 (\"bar\" +))",
-                ScannerDescriptor.FromScanRules(grammar.Conditions[0].Matchers, ExceptionLogging.Instance),
+                ScannerDescriptor.FromScanRules(grammar.Matchers, ExceptionLogging.Instance),
                 null,
                 ExceptionLogging.Instance);
 

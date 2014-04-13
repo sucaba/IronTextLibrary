@@ -5,6 +5,7 @@ using System.Text;
 using IronText.Extensibility;
 using IronText.Logging;
 using IronText.Reflection.Reporting;
+using System.Collections.ObjectModel;
 
 namespace IronText.Reflection.Managed
 {
@@ -12,7 +13,6 @@ namespace IronText.Reflection.Managed
     {
         private readonly List<ICilMetadata>                 metadata;
         private readonly List<CilProduction>                productions;
-        private readonly List<CilCondition>                 conditions;
         private readonly CilMerger[]                        mergers;
         private readonly List<CilSymbolFeature<Precedence>> precedence;
 
@@ -84,14 +84,14 @@ namespace IronText.Reflection.Managed
             var terminals = collector.Symbols.Except(productions.Select(r => r.Outcome).Distinct()).ToArray();
 
             var scanDataCollector = new ScanDataCollector(terminals, logging);
-            scanDataCollector.AddCondition(definitionType);
+            scanDataCollector.CollectFrom(definitionType);
             if (scanDataCollector.HasInvalidData)
             {
                 this.IsValid = false;
             }
 
-            conditions = scanDataCollector.Conditions;
-            LinkRelatedTokens(conditions);
+            this.Matchers = scanDataCollector.Matchers.AsReadOnly();
+            LinkRelatedTokens(this.Matchers);
 
             var allTerms = (from t in scanDataCollector.Terminals
                            let def = SymbolResolver.Resolve(t)
@@ -99,8 +99,7 @@ namespace IronText.Reflection.Managed
                            select def)
                            .Distinct();
             var termsProducedByScanner =
-                            (from cond in scanDataCollector.Conditions
-                             from prod in cond.Matchers
+                            (from prod in scanDataCollector.Matchers
                              from outcome in prod.AllOutcomes
                              let def = SymbolResolver.Resolve(outcome)
                              where def != null
@@ -133,7 +132,7 @@ namespace IronText.Reflection.Managed
 
         public IList<CilMerger>        Mergers        { get { return mergers; } }
 
-        public IList<CilCondition>     Conditions     { get { return conditions; } }
+        public ReadOnlyCollection<CilMatcher> Matchers { get; private set; }
 
         public IEnumerable<CilSymbolFeature<Precedence>> Precedence { get { return precedence; } }
 
@@ -144,18 +143,15 @@ namespace IronText.Reflection.Managed
             return symbol.Type == typeof(Exception);
         }
 
-        private void LinkRelatedTokens(List<CilCondition> conditions)
+        private void LinkRelatedTokens(IEnumerable<CilMatcher> matchers)
         {
-            foreach (var condition in conditions)
+            foreach (var matcher in matchers)
             {
-                foreach (var matcher in condition.Matchers)
+                foreach (CilSymbolRef symbol in matcher.AllOutcomes)
                 {
-                    foreach (CilSymbolRef symbol in matcher.AllOutcomes)
+                    if (SymbolResolver.Contains(symbol))
                     {
-                        if (SymbolResolver.Contains(symbol))
-                        {
-                            SymbolResolver.Link(symbol);
-                        }
+                        SymbolResolver.Link(symbol);
                     }
                 }
             }

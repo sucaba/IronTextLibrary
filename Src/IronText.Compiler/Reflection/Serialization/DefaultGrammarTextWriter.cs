@@ -64,31 +64,21 @@ namespace IronText.Reflection
 
         private void WriteMatchers(Grammar grammar, IndentedTextWriter output)
         {
-            output.WriteLine("// Scanner Conditions: ");
-            output.WriteLine();
+            output.WriteLine("scanner");
+            output.WriteLine("{");
+            ++output.Indent;
 
-            foreach (var condition in grammar.Conditions)
+            foreach (var matcher in grammar.Matchers)
             {
-                output.WriteLine("condition {0}", condition.Name);
-                output.WriteLine("{");
-                ++output.Indent;
-
-                foreach (var matcher in condition.Matchers)
-                {
-                    var transition = matcher.NextCondition == null 
-                                   ? "" 
-                                   : string.Format("{{goto {0}}}", matcher.NextCondition.Name);
-                    output.WriteLine(
-                        "{0} {1}: /{2}/;",
-                        Name(matcher.Outcome),
-                        transition,
-                        matcher.Pattern);
-                }
-
-                --output.Indent;
-                output.WriteLine("}");
-                output.WriteLine();
+                output.WriteLine(
+                    "{0}: /{1}/;",
+                    Name(matcher.Outcome),
+                    matcher.Pattern);
             }
+
+            --output.Indent;
+            output.WriteLine("}");
+            output.WriteLine();
         }
 
         private static string Name(SymbolBase symbol)

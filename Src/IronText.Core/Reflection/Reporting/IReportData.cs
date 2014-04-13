@@ -13,6 +13,6 @@
 
         IParserAutomata     ParserAutomata { get; }
 
-        IScannerAutomata    GetScannerAutomata(Condition condition);
+        IScannerAutomata    GetScannerAutomata();
     }
 }

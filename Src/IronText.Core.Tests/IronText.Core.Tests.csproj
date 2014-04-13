@@ -105,7 +105,6 @@
     <Compile Include="Framework\MergeTest.cs" />
     <Compile Include="Framework\ParseRuleMultiMethodsTest.cs" />
     <Compile Include="Framework\Performance\Lalr1DfaPerformanceTest.cs" />
-    <Compile Include="Framework\ScanModesTest.cs" />
     <Compile Include="Framework\ScanSentinelTest.cs" />
     <Compile Include="Framework\SolvingAmbiguities\SuffixPrefixShiftReduceTest.cs" />
     <Compile Include="Framework\SppfProducerTest.cs" />

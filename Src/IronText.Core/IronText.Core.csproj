@@ -147,7 +147,6 @@
     <Compile Include="Runtime\ParserActionKind.cs" />
     <Compile Include="Reflection\Reporting\ParserConflictInfo.cs" />
     <Compile Include="Extensibility\CilMetadataAttribute.cs" />
-    <Compile Include="Reflection\Cil\CilCondition.cs" />
     <Compile Include="Extensibility\ScannerUtils.cs" />
     <Compile Include="Reflection\Cil\CilMatcher.cs" />
     <Compile Include="Reflection\Cil\CilSymbolNaming.cs" />
@@ -187,8 +186,6 @@
     <Compile Include="Reflection\ProductionCollection.cs" />
     <Compile Include="Reflection\SemanticContext.cs" />
     <Compile Include="Reflection\SemanticContextCollection.cs" />
-    <Compile Include="Reflection\Condition.cs" />
-    <Compile Include="Reflection\ConditionCollection.cs" />
     <Compile Include="Reflection\ScanPattern.cs" />
     <Compile Include="Reflection\Matcher.cs" />
     <Compile Include="Reflection\MatcherCollection.cs" />

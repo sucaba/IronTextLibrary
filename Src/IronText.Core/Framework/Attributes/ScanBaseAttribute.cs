@@ -37,7 +37,6 @@ namespace IronText.Framework
         public override IEnumerable<CilMatcher> GetMatchers()
         {
             var tokenType    = Method.ReturnType;
-            var nextConditionType = GetNextConditionType();
 
             var matcher = new CilMatcher();
 
@@ -65,7 +64,6 @@ namespace IronText.Framework
             var parameters = Method.GetParameters().ToList();
 
             matcher.Context = GetContext();
-            matcher.NextConditionType = nextConditionType;
             matcher.ActionBuilder =
                 code =>
                 {
@@ -120,13 +118,6 @@ namespace IronText.Framework
 
                     code.Emit(il => il.Call(Method));
 
-                    if (nextModeParameter != null)
-                    {
-                        code
-                            .Emit(il => il.Ldloc(nextModeVar))
-                            .ChangeCondition(nextConditionType);
-                    }
-
                     if (Method.ReturnType == typeof(void))
                     {
                         code.SkipAction();
@@ -153,15 +144,6 @@ namespace IronText.Framework
         private CilContextRef GetContext()
         {
             return Method.IsStatic ? CilContextRef.None : CilContextRef.ByType(GetContextType());
-        }
-
-        private Type GetNextConditionType()
-        {
-            return Method
-                    .GetParameters()
-                    .Where(p => p.IsOut)
-                    .Select(p => p.ParameterType.GetElementType())
-                    .SingleOrDefault();
         }
 
         private Type TokenType 

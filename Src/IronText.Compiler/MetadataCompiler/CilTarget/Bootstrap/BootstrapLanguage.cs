@@ -45,7 +45,7 @@ namespace IronText.MetadataCompiler
             return new BootstrapScanner(
                 input,
                 document,
-                ScannerDescriptor.FromScanRules(data.Grammar.Conditions[0].Matchers, ExceptionLogging.Instance),
+                ScannerDescriptor.FromScanRules(data.Grammar.Matchers, ExceptionLogging.Instance),
                 context,
                 logging);
         }

@@ -36,48 +36,42 @@ namespace IronText.Tests.Algorithm
                     assign
                 },
 
-                Conditions =
+                Matchers = 
                 {
-                    new Condition("main")
-                    {
-                        Matchers = 
-                        {
-                            new Matcher(
-                                    @"digit+ ('.' digit+)?  | '.' digit+", 
-                                    num),
-                            new Matcher(
-                                    @"[01234567]+ 'Q'",
-                                    num),
-                            new Matcher(
-                                    @"alpha alnum*",
-                                    ident),
-                            new Matcher(
-                                    @"
-                                    quot 
-                                        ~(quot | esc)*
-                                        (esc . ~(quot | esc)* )*
-                                    quot
-                                    ",
-                                    qStr),
-                            new Matcher(
-                                    ScanPattern.CreateLiteral("begin"),
-                                    begin),
-                            new Matcher(
-                                    ScanPattern.CreateLiteral("end"),
-                                    end),
-                            new Matcher(
-                                    ScanPattern.CreateLiteral(":="),
-                                    assign),
-                            new Matcher(
-                                    @"blank+"),
-                        }
-                    }
+                    new Matcher(
+                            @"digit+ ('.' digit+)?  | '.' digit+", 
+                            num),
+                    new Matcher(
+                            @"[01234567]+ 'Q'",
+                            num),
+                    new Matcher(
+                            @"alpha alnum*",
+                            ident),
+                    new Matcher(
+                            @"
+                            quot 
+                                ~(quot | esc)*
+                                (esc . ~(quot | esc)* )*
+                            quot
+                            ",
+                            qStr),
+                    new Matcher(
+                            ScanPattern.CreateLiteral("begin"),
+                            begin),
+                    new Matcher(
+                            ScanPattern.CreateLiteral("end"),
+                            end),
+                    new Matcher(
+                            ScanPattern.CreateLiteral(":="),
+                            assign),
+                    new Matcher(
+                            @"blank+"),
                 }
             };
             
             var target = new TdfaSimulationLexer(
                 "b:=10Q \"foo\"",
-                ScannerDescriptor.FromScanRules(grammar.Conditions[0].Matchers, ExceptionLogging.Instance));
+                ScannerDescriptor.FromScanRules(grammar.Matchers, ExceptionLogging.Instance));
 
             var collector = new Collector<Msg>();
             target.Accept(collector);

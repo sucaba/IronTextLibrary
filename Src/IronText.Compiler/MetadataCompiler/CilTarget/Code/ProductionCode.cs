@@ -129,10 +129,5 @@ namespace IronText.MetadataCompiler
         {
             throw new NotSupportedException();
         }
-
-        public IActionCode ChangeCondition(Type conditionType)
-        {
-            throw new NotSupportedException();
-        }
     }
 }

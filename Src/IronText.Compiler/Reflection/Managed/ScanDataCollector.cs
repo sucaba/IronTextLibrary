@@ -11,10 +11,10 @@ namespace IronText.Reflection.Managed
     {
         private readonly List<ICilMetadata> validMetadata;
         private readonly List<ICilMetadata> invalidMetadata;
-        private readonly List<CilCondition> conditions;
+        private readonly List<CilMatcher>   matchers;
         private readonly List<CilSymbolRef> terminals;
+        private int implicitLiteralCount = 0;
 
-        private readonly Stack<CilCondition> processedConditions;
         private readonly ILogging logging;
 
         public ScanDataCollector(IEnumerable<CilSymbolRef> terminals, ILogging logging)
@@ -22,17 +22,15 @@ namespace IronText.Reflection.Managed
             this.logging = logging;
             this.validMetadata   = new List<ICilMetadata>();
             this.invalidMetadata = new List<ICilMetadata>();
-            this.conditions      = new List<CilCondition>();
+            this.matchers        = new List<CilMatcher>();
             this.terminals       = new List<CilSymbolRef>(terminals);
-
-            processedConditions = new Stack<CilCondition>();
         }
 
         public List<CilSymbolRef> Terminals { get { return terminals; } }
 
         public bool HasInvalidData { get { return invalidMetadata.Count != 0; } }
 
-        public List<CilCondition> Conditions { get { return conditions; } }
+        public List<CilMatcher> Matchers { get { return matchers; } }
 
         public void AddMeta(ICilMetadata meta)
         {
@@ -64,53 +62,57 @@ namespace IronText.Reflection.Managed
 
         public void AddMatcher(CilMatcher matcher)
         {
-            var currentCondition = processedConditions.Peek();
-            currentCondition.AddMatcher(matcher);
-
-            if (matcher.NextConditionType != null)
-            {
-                AddCondition(matcher.NextConditionType);
-            }
+            matchers.Add(matcher);
         }
 
-        public void AddCondition(Type conditionType)
+        public void CollectFrom(Type definitionType)
         {
-            if (conditions.Any(mode => object.Equals(mode.ConditionType, conditionType)))
-            {
-                return;
-            }
-
-            var condition = new CilCondition(conditionType);
-
-            conditions.Add(condition);
-
-            processedConditions.Push(condition);
-
-            foreach (var meta in MetadataParser.EnumerateAndBind(conditionType))
+            foreach (var meta in MetadataParser.EnumerateAndBind(definitionType))
             {
                 AddMeta(meta);
             }
 
-            if (processedConditions.Count == 1)
+            var implicitLiterals = 
+                (from t in terminals
+                 where t.HasLiteral
+                 select t.Literal)
+                .Except(
+                    from matcher in Matchers
+                    where matcher.Pattern.IsLiteral
+                    select matcher.Pattern.Literal)
+                    .ToArray();
+
+            foreach (var literal in implicitLiterals)
             {
-                var implicitLiterals = 
-                    (from t in terminals
-                     where t.HasLiteral
-                     select t.Literal)
-                    .Except(
-                        from cond in conditions
-                        from matcher in cond.Matchers
-                        where matcher.Pattern.IsLiteral
-                        select matcher.Pattern.Literal)
-                        .ToArray();
-
-                foreach (var literal in implicitLiterals)
-                {
-                    condition.AddImplicitLiteralMatcher(literal);
-                }
+                AddImplicitLiteralMatcher(literal);
             }
+        }
 
-            processedConditions.Pop();
+        internal CilMatcher AddImplicitLiteralMatcher(string literal)
+        {
+            var result = CreateImplicitLiteralMatcher(literal);
+            matchers.Insert(implicitLiteralCount++, result);
+            return result;
+        }
+
+        private static CilMatcher CreateImplicitLiteralMatcher(string literal)
+        {
+            var outcome = CilSymbolRef.Create(literal);
+
+            // Generate implicit scan rule for the keyword
+            var result  = new CilMatcher
+            {
+                Context         = CilContextRef.None,
+                MainOutcome     = outcome,
+                AllOutcomes     = { outcome },
+                Disambiguation  = Disambiguation.Exclusive,
+                Pattern         = ScanPattern.CreateLiteral(literal),
+                ActionBuilder   = code => code
+                                    .Emit(il => il.Ldnull())
+                                    .ReturnFromAction()
+            };
+
+            return result;
         }
     }
 }
