@@ -10,16 +10,23 @@ namespace IronText.MetadataCompiler
 {
     class TermFactoryGenerator
     {
-        private readonly Ref<Types> declaringType;
-        private LanguageData        data;
+        private readonly LanguageData data;
 
-        public TermFactoryGenerator(LanguageData data, Ref<Types> declaringType)
+        public TermFactoryGenerator(LanguageData data)
         {
             this.data = data;
-            this.declaringType = declaringType;
         }
 
-        public void Build(
+        public EmitSyntax Build(EmitSyntax emit, Ref<Args>[] args)
+        {
+            return Build(
+                emit, 
+                il => il.Ldarg(args[0]),
+                il => il.Ldarg(args[1]),
+                il => il.Ldarg(args[2]));
+        }
+
+        public EmitSyntax Build(
             EmitSyntax       emit,
             Pipe<EmitSyntax> ldRootContext,
             Pipe<EmitSyntax> ldAction,
@@ -49,12 +56,7 @@ namespace IronText.MetadataCompiler
                                     null,
                                     data,
                                     data.Grammar.GlobalContextProvider);
-            IActionCode code = new MatcherCode(
-                            emit,
-                            contextResolver,
-                            ldText,
-                            declaringType,
-                            RETURN.GetRef());
+            IActionCode code = new MatcherCode(emit, contextResolver, ldText, RETURN.GetRef());
 
             foreach (var matcher in data.Grammar.Matchers)
             {
@@ -69,7 +71,7 @@ namespace IronText.MetadataCompiler
             // Load null value for incorrectly implemented actions
             emit.Ldnull();
 
-            emit
+            return emit
                 .Label(RETURN)
                 .Ret()
                 ;

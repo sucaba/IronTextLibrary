@@ -15,19 +15,12 @@ namespace IronText.MetadataCompiler
         private EmitSyntax emit;
         private readonly IContextCode contextCode;
         private readonly Pipe<EmitSyntax> ldText;
-        private readonly Ref<Types> declaringType;
 
-        public MatcherCode(
-            EmitSyntax           emit, 
-            IContextCode         contextCode,
-            Pipe<EmitSyntax>     ldText,
-            Ref<Types>           declaringType,
-            Ref<Labels>          RETURN)
+        public MatcherCode(EmitSyntax emit, IContextCode contextCode, Pipe<EmitSyntax> ldText, Ref<Labels> RETURN)
         {
             this.emit            = emit;
             this.ldText        = ldText;
             this.contextCode     = contextCode;
-            this.declaringType   = declaringType;
             this.RETURN          = RETURN;
         }
 

@@ -164,6 +164,8 @@ namespace IronText.MetadataCompiler
 
         private ClassSyntax BuildMethod_TermFactory(ClassSyntax context)
         {
+            var generator = new TermFactoryGenerator(data);
+
             var args = context
                         .Method()
                             .Static
@@ -182,7 +184,6 @@ namespace IronText.MetadataCompiler
                 .EndArgs()
                 .BeginBody();
 
-            var generator = new TermFactoryGenerator(data, declaringTypeRef);
             generator.Build(
                 emit,
                 il => il.Ldarg(rootContextArg.GetRef()),
