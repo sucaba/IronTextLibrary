@@ -15,7 +15,7 @@ namespace IronText.Runtime
         /// Positive value for token and negative value for production index
         /// </summary>
         public int        Id       { get; private set; }
-        public object     Value    { get; private set; }
+        public string     Text     { get; private set; }
         public Loc        Location { get; private set; }
         public SppfNode[] Children { get; private set; }
 
@@ -29,10 +29,10 @@ namespace IronText.Runtime
 #endif
 
         // Leaf
-        public SppfNode(int token, object value, Loc location, HLoc hLocation)
+        public SppfNode(int token, string text, Loc location, HLoc hLocation)
         {
             this.Id       = token;
-            this.Value    = value;
+            this.Text    = text;
             this.Location = location;
 
 #if DEBUG
@@ -109,7 +109,7 @@ namespace IronText.Runtime
             }
             else if (Id > 0)
             {
-                visitor.VisitLeaf(Id, Value, Location);
+                visitor.VisitLeaf(Id, Text, Location);
             }
             else
             {
@@ -126,7 +126,7 @@ namespace IronText.Runtime
 
             if (Id > 0)
             {
-                return visitor.VisitLeaf(Id, Value, Location);
+                return visitor.VisitLeaf(Id, Text, Location);
             }
 
             return visitor.VisitBranch(-Id, Children, Location);
