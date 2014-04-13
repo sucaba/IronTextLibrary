@@ -24,7 +24,6 @@ namespace IronText.Runtime
         private readonly ILogging logging;
         private HLoc hLocation;
         private Loc location;
-        private bool skipCurrentToken;
 
         private readonly int[] actionToToken;
 
@@ -63,8 +62,6 @@ namespace IronText.Runtime
         Loc IScanning.Location { get { return location; } }
 
         HLoc IScanning.HLocation { get { return hLocation; } }
-
-        void IScanning.Skip() { this.skipCurrentToken = true; }
 
         public Msg Current { get; private set; }
 
@@ -198,7 +195,6 @@ namespace IronText.Runtime
             this.location = new Loc(document, priorPosition, currentPosition);
 
             object tokenValue;
-            this.skipCurrentToken = false;
 
             // TODO: 
             //  1) cursor.Action -> list of real actions. for each real action create MsgData
@@ -218,7 +214,7 @@ namespace IronText.Runtime
                 throw new InvalidOperationException("Runtimer token does not match.");
             }
 
-            if (token >= 0 && !skipCurrentToken)
+            if (token >= 0)
             {
                 int id = cursor.EnvelopeId;
                 // TODO: Amb & Main tokens for envelope.Id
@@ -235,7 +231,6 @@ namespace IronText.Runtime
 
                         cursor.CurrentActionId = action;
 
-                        this.skipCurrentToken = false;
                         tokenFromAction = GetTokenFromAction(cursor.CurrentActionId);
                         token = termFactory(cursor, out tokenValue);
                         if (token != tokenFromAction)
@@ -243,11 +238,8 @@ namespace IronText.Runtime
                             throw new InvalidOperationException("Runtimer token does not match.");
                         }
 
-                        if (!skipCurrentToken)
-                        {
-                            data.Next = new MsgData(token, tokenValue, action, text);
-                            data = data.Next;
-                        }
+                        data.Next = new MsgData(token, tokenValue, action, text);
+                        data = data.Next;
                     }
                 }
             }

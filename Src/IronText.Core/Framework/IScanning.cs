@@ -7,10 +7,5 @@ namespace IronText.Framework
         Loc Location { get; }
 
         HLoc HLocation { get; }
-
-        /// <summary>
-        /// Do not produce <see cref="Msg"/> from the currently scanned token.
-        /// </summary>
-        void Skip();
     }
 }
