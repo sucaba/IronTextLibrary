@@ -1,5 +1,4 @@
-﻿#if false
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,21 +17,21 @@ namespace IronText.Tests.Freezing
         {
             using (var interp = new Interpreter<MyCalc>())
             {
-                Assert.IsTrue(interp.Parse("1 + 2 * 3"));
-                Assert.AreEqual(7, interp.Context.Outcome);
+                Assert.IsTrue(interp.Parse("1"));
+                Assert.IsNull(interp.Context.Outcome);
             }
 
             using (var freezer = new CilFreezer<MyCalc>())
             {
-                Pipe<MyCalc> code = freezer.Compile("1 + 2 * 3");
+                Pipe<MyCalc> code = freezer.Compile("1");
 
                 var context = new MyCalc();
-                Assert.AreEqual(7, code(context).Outcome);
+                Assert.IsNull(code(context));
             }
         }
 
         [Language]
-        [GrammarDocument("FreezerTest.g")]
+        [GrammarDocument("FreezerTest.gram")]
         [Precedence("-", 1)]
         [Precedence("+", 1)]
         [Precedence("*", 2)]
@@ -40,26 +39,10 @@ namespace IronText.Tests.Freezing
         public class MyCalc
         {
             [Outcome]
-            public double Outcome { get; set; }
+            public object Outcome { get; set; }
 
-            [Produce(null, "*", null)]
-            public double Multiply(double x, double y)  { return x * y; }
-
-            [Produce(null, "/", null)]
-            public double Divide(double x, double y)    { return x / y; }
-
-            [Produce(null, "+", null)]
-            public double Add(double x, double y)       { return x + y; }
-
-            [Produce(null, "-", null)]
-            public double Substract(double x, double y) { return x - y; }
-
-            [Match("digit+ ('.' digit*)?")]
-            public double Number(string text) { return double.Parse(text); }
-
-            [Match("blank+")]
-            public void Blank() { }
+            [Literal("1")]
+            public object One() { return null; }
         }
     }
 }
-#endif

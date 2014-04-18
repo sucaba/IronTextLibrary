@@ -29,10 +29,10 @@ namespace IronText.Runtime
 #endif
 
         // Leaf
-        public SppfNode(int token, string text, Loc location, HLoc hLocation)
+        public SppfNode(int matcherIndex, string text, Loc location, HLoc hLocation)
         {
-            this.Id       = token;
-            this.Text    = text;
+            this.Id       = matcherIndex;
+            this.Text     = text;
             this.Location = location;
 
 #if DEBUG
@@ -69,6 +69,19 @@ namespace IronText.Runtime
                 }
 
                 return -Id;
+            }
+        }
+
+        public int MatcherIndex
+        {
+            get
+            {
+                if (!IsTerminal)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                return Id;
             }
         }
 

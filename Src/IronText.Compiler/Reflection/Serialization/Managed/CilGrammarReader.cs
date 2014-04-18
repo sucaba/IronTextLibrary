@@ -88,6 +88,12 @@ namespace IronText.Reflection.Managed
             foreach (CilSymbolFeature<Precedence> feature in definition.Precedence)
             {
                 var symbol = symbolResolver.GetSymbol(feature.SymbolRef);
+                if (symbol == null)
+                {
+                    // Precedence specified for a not used symbol
+                    continue;
+                }
+
                 symbol.Precedence = feature.Value;
             }
 

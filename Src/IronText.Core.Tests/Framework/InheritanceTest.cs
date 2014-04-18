@@ -14,6 +14,7 @@ namespace IronText.Tests.Framework
     public class InheritanceTest
     {
         [Test]
+        [Explicit]
         public void Dbg()
         {
             Console.WriteLine(Language.Get(typeof(MainLang)).Grammar);
