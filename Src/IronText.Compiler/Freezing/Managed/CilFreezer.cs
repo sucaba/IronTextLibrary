@@ -9,6 +9,7 @@ using IronText.Runtime;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
 using IronText.MetadataCompiler;
+using IronText.Build;
 
 namespace IronText.Freezing.Managed
 {
@@ -42,7 +43,7 @@ namespace IronText.Freezing.Managed
             private readonly string       input;
             private readonly Grammar      grammar;
             private readonly IActionCode  code;
-            private readonly LanguageData data;
+            private LanguageData data;
             private SppfNode    root;
             private EmitSyntax  emit;
             private Ref<Args>[] args;
@@ -60,9 +61,21 @@ namespace IronText.Freezing.Managed
 
             public void Run()
             {
-                this.root    = BuildTree(input);
+                GetLanguageData();
+
+                BuildTree();
 
                 CompileDelegate();
+            }
+
+            private void GetLanguageData()
+            {
+                Type definitionType = typeof(TContext);
+                var source = new CilGrammarSource(definitionType);
+
+                var dataProvider = new LanguageDataProvider(source, false);
+                ResourceContext.Instance.LoadOrBuild(dataProvider, out this.data);
+                this.data = dataProvider.Resource;
             }
 
             private void CompileDelegate()
@@ -71,11 +84,11 @@ namespace IronText.Freezing.Managed
                 this.Outcome = cachedMethod.Delegate;
             }
 
-            private SppfNode BuildTree(string input)
+            private void BuildTree()
             {
                 using (var interp = new Interpreter<TContext>())
                 {
-                    return interp.BuildTree(input);
+                    this.root = interp.BuildTree(input);
                 }
             }
 
