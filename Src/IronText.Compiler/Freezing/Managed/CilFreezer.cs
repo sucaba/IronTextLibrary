@@ -10,6 +10,7 @@ using IronText.Reflection;
 using IronText.Reflection.Managed;
 using IronText.MetadataCompiler;
 using IronText.Build;
+using IronText.Logging;
 
 namespace IronText.Freezing.Managed
 {
@@ -38,8 +39,10 @@ namespace IronText.Freezing.Managed
         {
         }
 
-        class FreezerProcess : IActionCode
+        class FreezerProcess : IActionCode, ISppfNodeVisitor
         {
+            private const string SlotLocalPrefix = "slot";
+
             private readonly string       input;
             private Grammar      grammar;
             private IActionCode  code;
@@ -114,45 +117,13 @@ namespace IronText.Freezing.Managed
 
             private void CompileNode(SppfNode node)
             {
-                if (node.IsTerminal)
-                {
-                    CompileTerminalNode(node);
-                }
-                else
-                {
-                    CompileProductionNode(node);
-                }
+                node.Accept(this, false);
             }
 
-            private void CompileProductionNode(SppfNode node)
+            void ISppfNodeVisitor.VisitLeaf(int matcherIndex, string text, Loc location)
             {
-                int count = node.Children.Length;
-                for (int i = 0; i != count; ++i)
-                {
-                    CompileNode(node.Children[i]);
-                }
-
-                var production = grammar.Productions[node.ProductionIndex];
-                code = ProductionActionGenerator.CompileProduction(code, production);
-
-                PopSlots(count);
-                PushSlot();
-            }
-
-            private void PopSlots(int count)
-            {
-                for (int i = 0; i != count; ++i)
-                {
-                    freeSlotLocals.Push(slotLocals[i]);
-                }
-
-                slotLocals.RemoveRange(0, count);
-            }
-
-            private void CompileTerminalNode(SppfNode node)
-            {
-                this.currentTerminalText = node.Text;
-                var matcher = grammar.Matchers[node.MatcherIndex];
+                this.currentTerminalText = text;
+                var matcher = grammar.Matchers[matcherIndex];
 
                 try
                 {
@@ -166,6 +137,36 @@ namespace IronText.Freezing.Managed
                 PushSlot();
             }
 
+            void ISppfNodeVisitor.VisitBranch(int productionIndex, SppfNode[] children, Loc location)
+            {
+                int count = children.Length;
+                for (int i = 0; i != count; ++i)
+                {
+                    CompileNode(children[i]);
+                }
+
+                var production = grammar.Productions[productionIndex];
+                code = ProductionActionGenerator.CompileProduction(code, production);
+
+                PopSlots(count);
+                PushSlot();
+            }
+
+            void ISppfNodeVisitor.VisitAlternatives(SppfNode alternatives)
+            {
+                throw new NotImplementedException();
+            }
+
+            private void PopSlots(int count)
+            {
+                for (int i = 0; i != count; ++i)
+                {
+                    freeSlotLocals.Push(slotLocals[i]);
+                }
+
+                slotLocals.RemoveRange(0, count);
+            }
+
             private void PushSlot()
             {
                 if (freeSlotLocals.Count == 0)
@@ -174,7 +175,7 @@ namespace IronText.Freezing.Managed
                     code = code.Emit(
                         il =>
                         {
-                            var l = il.Locals.Generate("slot" + currentSlotCount);
+                            var l = il.Locals.Generate(SlotLocalPrefix + currentSlotCount);
                             freeSlotLocals.Push(l.GetRef());
                             return il.Local(l, il.Types.Object);
                         });

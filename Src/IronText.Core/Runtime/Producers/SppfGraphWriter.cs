@@ -60,7 +60,7 @@ namespace IronText.Runtime
             node.Accept(this, false);
         }
 
-        void ISppfNodeVisitor.VisitLeaf(int matcherIndex, object value, Loc location)
+        void ISppfNodeVisitor.VisitLeaf(int matcherIndex, string text, Loc location)
         {
             var matcher = grammar.Matchers[matcherIndex];
             string label = matcher.Outcome.Name + " pos: " + location.Position 
