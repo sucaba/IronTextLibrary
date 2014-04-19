@@ -83,7 +83,7 @@ namespace IronText.Runtime
 
             this.terms = grammar
                             .EnumerateTokens()
-                            .Where(t => grammar.IsTerminal(t) && t >= PredefinedTokens.Count)
+                            .Where(grammar.IsTerminal)
                             .ToArray();
         }
 

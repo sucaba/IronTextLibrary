@@ -11,10 +11,11 @@ namespace IronText.Runtime
 {
     public sealed class SppfNode
     {
+        private int id;
+
         /// <summary>
         /// Positive value for token and negative value for production index
         /// </summary>
-        public int        Id       { get; private set; }
         public string     Text     { get; private set; }
         public Loc        Location { get; private set; }
         public SppfNode[] Children { get; private set; }
@@ -31,7 +32,7 @@ namespace IronText.Runtime
         // Leaf
         public SppfNode(int matcherIndex, string text, Loc location, HLoc hLocation)
         {
-            this.Id       = matcherIndex;
+            this.id       = matcherIndex;
             this.Text     = text;
             this.Location = location;
 
@@ -43,7 +44,7 @@ namespace IronText.Runtime
         // Branch
         public SppfNode(int productionIndex, Loc location, SppfNode[] children)
         {
-            this.Id       = -productionIndex;
+            this.id       = -productionIndex;
             this.Location = location;
             this.Children = children;
 
@@ -57,7 +58,7 @@ namespace IronText.Runtime
 #endif
         }
 
-        public bool IsTerminal { get { return Id >= 0; } }
+        public bool IsTerminal { get { return id >= 0; } }
 
         public int ProductionIndex
         {
@@ -68,7 +69,7 @@ namespace IronText.Runtime
                     throw new InvalidOperationException();
                 }
 
-                return -Id;
+                return -id;
             }
         }
 
@@ -81,18 +82,18 @@ namespace IronText.Runtime
                     throw new InvalidOperationException();
                 }
 
-                return Id;
+                return id;
             }
         }
 
         public int GetTokenId(Grammar grammar)
         {
-            if (Id < 0)
+            if (IsTerminal)
             {
-                return grammar.Productions[-Id].OutcomeToken;
+                return grammar.Matchers[MatcherIndex].Outcome.Index;
             }
 
-            return Id;
+            return grammar.Productions[-id].Outcome.Index;
         }
 
         internal SppfNode AddAlternative(SppfNode other)
@@ -120,13 +121,13 @@ namespace IronText.Runtime
             {
                 visitor.VisitAlternatives(this);
             }
-            else if (Id > 0)
+            else if (IsTerminal)
             {
-                visitor.VisitLeaf(Id, Text, Location);
+                visitor.VisitLeaf(MatcherIndex, Text, Location);
             }
             else
             {
-                visitor.VisitBranch(-Id, Children, Location);
+                visitor.VisitBranch(ProductionIndex, Children, Location);
             }
         }
 
@@ -137,12 +138,12 @@ namespace IronText.Runtime
                 return visitor.VisitAlternatives(this);
             }
 
-            if (Id > 0)
+            if (IsTerminal)
             {
-                return visitor.VisitLeaf(Id, Text, Location);
+                return visitor.VisitLeaf(MatcherIndex, Text, Location);
             }
 
-            return visitor.VisitBranch(-Id, Children, Location);
+            return visitor.VisitBranch(ProductionIndex, Children, Location);
         }
 
         public override string ToString()
@@ -188,16 +189,18 @@ namespace IronText.Runtime
             const int IndentStep = 2;
 
             string indent = new string(' ', indentLevel);
-            output.WriteLine("{0}{1} = {2}", indent, "ID", Id);
             if (grammar != null)
             {
-                if (Id > 0)
+                if (IsTerminal)
                 {
-                    output.WriteLine("{0}{1} = {2}", indent, "Token", grammar.Symbols[Id].Name);
+                    output.WriteLine("{0}{1} = {2}", indent, "ID", MatcherIndex);
+                    var matcher = grammar.Matchers[MatcherIndex];
+                    output.WriteLine("{0}{1} = {2}", indent, "Token", matcher.Outcome.Name);
                 }
                 else
                 {
-                    var prod = grammar.Productions[-Id];
+                    output.WriteLine("{0}{1} = {2}", indent, "ID", ProductionIndex);
+                    var prod = grammar.Productions[ProductionIndex];
                     output.Write("{0}Rule: {1} -> ", indent, prod.Outcome.Name);
                     output.WriteLine(string.Join(" ", from s in prod.Pattern select s.Name));
                 }
@@ -225,7 +228,7 @@ namespace IronText.Runtime
 
         public bool EquivalentTo(SppfNode alt)
         {
-            if (this.Id != alt.Id)
+            if (this.id != alt.id)
             {
                 return false;
             }

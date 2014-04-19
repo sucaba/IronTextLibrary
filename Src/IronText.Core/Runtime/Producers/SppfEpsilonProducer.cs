@@ -1,4 +1,6 @@
 ﻿using IronText.Logging;
+using System.Diagnostics;
+using System.Linq;
 
 namespace IronText.Runtime
 {
@@ -21,11 +23,11 @@ namespace IronText.Runtime
             int tokenCount = grammar.SymbolCount;
             tokenCache = new SppfNode[tokenCount];
 
-            for (int token = 0; token != tokenCount; ++token)
+            foreach (int token in grammar.EnumerateTokens())
             {
                 if (grammar.IsNullable(token))
                 {
-                    tokenCache[token] = new SppfNode(token, null, Loc.Unknown, HLoc.Unknown);
+                    tokenCache[token] = InternalGetNullable(token);
                 }
             }
 
@@ -68,6 +70,26 @@ namespace IronText.Runtime
                     ruleCache[--endOffset] = tokenCache[token];
                 }
             }
+        }
+
+        private SppfNode InternalGetNullable(int nonTerm)
+        {
+            Debug.Assert(grammar.IsNullable(nonTerm));
+
+            var production = 
+              (from r in grammar.GetProductions(nonTerm)
+               where r.PatternTokens.All(grammar.IsNullable)
+               orderby r.PatternTokens.Length ascending
+               select r)
+               .First();
+
+            var args = new SppfNode[production.PatternTokens.Length];
+            for (int i = 0; i != args.Length; ++i)
+            {
+                args[i] = InternalGetNullable(production.PatternTokens[i]);
+            }
+
+            return new SppfNode(production.Index, Loc.Unknown, args);
         }
 
         public void FillEpsilonSuffix(int ruleId, int prefixSize, SppfNode[] dest, int destIndex, IStackLookback<SppfNode> stackLookback)

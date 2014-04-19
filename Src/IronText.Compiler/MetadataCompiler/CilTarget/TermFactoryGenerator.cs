@@ -62,10 +62,7 @@ namespace IronText.MetadataCompiler
             {
                 emit.Label(actionLabels[matcher.Index].Def);
 
-                var binding = matcher.Joint.The<CilMatcher>();
-                code = code
-                    .Do(binding.Context.Load)
-                    .Do(binding.ActionBuilder);
+                code = CompileTermFactory(code, matcher);
             }
 
             // Load null value for incorrectly implemented actions
@@ -75,6 +72,15 @@ namespace IronText.MetadataCompiler
                 .Label(RETURN)
                 .Ret()
                 ;
+        }
+
+        public static IActionCode CompileTermFactory(IActionCode code, Matcher matcher)
+        {
+            var binding = matcher.Joint.The<CilMatcher>();
+            code = code
+                .Do(binding.Context.Load)
+                .Do(binding.ActionBuilder);
+            return code;
         }
     }
 }

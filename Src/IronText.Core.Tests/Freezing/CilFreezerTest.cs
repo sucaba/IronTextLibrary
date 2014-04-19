@@ -26,7 +26,7 @@ namespace IronText.Tests.Freezing
                 Pipe<MyCalc> code = freezer.Compile("1");
 
                 var context = new MyCalc();
-                Assert.IsNull(code(context));
+                Assert.AreSame(context, code(context));
             }
         }
 

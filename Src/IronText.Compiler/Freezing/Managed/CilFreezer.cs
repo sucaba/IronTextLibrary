@@ -41,20 +41,21 @@ namespace IronText.Freezing.Managed
         class FreezerProcess : IActionCode
         {
             private readonly string       input;
-            private readonly Grammar      grammar;
-            private readonly IActionCode  code;
+            private Grammar      grammar;
+            private IActionCode  code;
             private LanguageData data;
             private SppfNode    root;
             private EmitSyntax  emit;
             private Ref<Args>[] args;
             private IContextCode contextCode;
+            private readonly List<Ref<Locals>> slotLocals = new List<Ref<Locals>>();
+            private readonly Stack<Ref<Locals>> freeSlotLocals = new Stack<Ref<Locals>>();
+            private int currentSlotCount = 0;
 
-            public FreezerProcess(/*LanguageData data,*/ string input)
+            public FreezerProcess(string input)
             {
                 this.input = input;
                 this.code = this; 
-//                this.data = data;
-//                this.grammar = data.Grammar;
             }
 
             public Pipe<TContext> Outcome { get; set; }
@@ -62,6 +63,8 @@ namespace IronText.Freezing.Managed
             public void Run()
             {
                 GetLanguageData();
+
+                this.grammar = data.Grammar;
 
                 BuildTree();
 
@@ -80,7 +83,7 @@ namespace IronText.Freezing.Managed
 
             private void CompileDelegate()
             {
-                var cachedMethod = new CachedMethod<Pipe<TContext>>("temp", (emit, args) => emit.Ldnull().Ret());
+                var cachedMethod = new CachedMethod<Pipe<TContext>>("temp", Compile);
                 this.Outcome = cachedMethod.Delegate;
             }
 
@@ -92,7 +95,7 @@ namespace IronText.Freezing.Managed
                 }
             }
 
-            private void Compile(EmitSyntax emit0, Ref<Args>[] args0, SppfNode root)
+            private EmitSyntax Compile(EmitSyntax emit0, Ref<Args>[] args0)
             {
                 this.emit = emit0;
                 this.args = args0;
@@ -105,7 +108,7 @@ namespace IronText.Freezing.Managed
                                     data.Grammar.GlobalContextProvider);
 
                 CompileNode(root);
-                emit = emit.Ret();
+                return emit.Ldarg(0).Ret();
             }
 
             private void CompileNode(SppfNode node)
@@ -129,16 +132,49 @@ namespace IronText.Freezing.Managed
                 }
 
                 var production = grammar.Productions[node.ProductionIndex];
+                code = ProductionActionGenerator.CompileProduction(code, production);
+
+                PopSlots(count);
+                PushSlot();
+            }
+
+            private void PopSlots(int count)
+            {
+                for (int i = 0; i != count; ++i)
+                {
+                    freeSlotLocals.Push(slotLocals[i]);
+                }
+
+                slotLocals.RemoveRange(0, count);
             }
 
             private void CompileTerminalNode(SppfNode node)
             {
                 var matcher = grammar.Matchers[node.MatcherIndex];
-                var binding = matcher.Joint.The<CilMatcher>();
+                TermFactoryGenerator.CompileTermFactory(code, matcher);
 
-                 code
-                    .Do(binding.Context.Load)
-                    .Do(binding.ActionBuilder);
+                PushSlot();
+            }
+
+            private void PushSlot()
+            {
+                if (freeSlotLocals.Count == 0)
+                {
+                    // Add one more local variable for storing argument.
+                    code = code.Emit(
+                        il =>
+                        {
+                            var l = il.Locals.Generate("slot" + currentSlotCount);
+                            freeSlotLocals.Push(l.GetRef());
+                            return il.Local(l, il.Types.Object);
+                        });
+
+                    ++currentSlotCount;
+                }
+
+                var slot = freeSlotLocals.Pop();
+                code = code.Emit(il => il.Stloc(slot));
+                slotLocals.Add(slot);
             }
 
             IActionCode IActionCode.Emit(Pipe<EmitSyntax> pipe)
@@ -155,7 +191,7 @@ namespace IronText.Freezing.Managed
 
             IActionCode IActionCode.LdActionArgument(int index, Type argType)
             {
-                throw new NotImplementedException();
+                return code.Emit(il => il.Ldloc(slotLocals[index]));
             }
 
             IActionCode IActionCode.LdMergerOldValue()
@@ -175,7 +211,7 @@ namespace IronText.Freezing.Managed
 
             IActionCode IActionCode.ReturnFromAction()
             {
-                throw new NotImplementedException();
+                return code;
             }
 
             IActionCode IActionCode.SkipAction()

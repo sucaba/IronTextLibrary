@@ -57,6 +57,7 @@ namespace IronText.Tests.Framework
         public void TestAmbiguousTree()
         {
             var lang = Language.Get(typeof(NondeterministicCalcForTree));
+            var gram = lang.Grammar;
 
             using (var interp = new Interpreter<NondeterministicCalcForTree>())
             {
@@ -70,11 +71,11 @@ namespace IronText.Tests.Framework
                 var allNodes = sppf.Flatten().ToArray();
 
                 var NUM = lang.Identify("3");
-                var numNodes = allNodes.Where(n => n.Id == NUM).Distinct(IdentityComparer.Default).ToArray();
+                var numNodes = allNodes.Where(n => n.GetTokenId(gram) == NUM).Distinct(IdentityComparer.Default).ToArray();
                 Assert.AreEqual(3, numNodes.Length, "Leaf SPPF nodes should be shared");
 
                 var POW = lang.Identify("^");
-                var powNodes = allNodes.Where(n => n.Id == POW).Distinct(IdentityComparer.Default).ToArray();
+                var powNodes = allNodes.Where(n => n.GetTokenId(gram) == POW).Distinct(IdentityComparer.Default).ToArray();
                 Assert.AreEqual(2, powNodes.Length, "Leaf SPPF nodes should be shared");
             }
         }

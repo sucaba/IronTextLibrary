@@ -60,9 +60,10 @@ namespace IronText.Runtime
             node.Accept(this, false);
         }
 
-        void ISppfNodeVisitor.VisitLeaf(int token, object value, Loc location)
+        void ISppfNodeVisitor.VisitLeaf(int matcherIndex, object value, Loc location)
         {
-            string label = grammar.Symbols[token].Name + " pos: " + location.Position 
+            var matcher = grammar.Matchers[matcherIndex];
+            string label = matcher.Outcome.Name + " pos: " + location.Position 
 #if DEBUG
                 + " t: " + currentNode.timestamp
 #endif
@@ -70,9 +71,9 @@ namespace IronText.Runtime
             graph.AddNode(currentNodeIdentity, label: label, shape: Shape.Circle);
         }
 
-        void ISppfNodeVisitor.VisitBranch(int ruleIndex, SppfNode[] children, Loc location)
+        void ISppfNodeVisitor.VisitBranch(int prodIndex, SppfNode[] children, Loc location)
         {
-            var rule = grammar.Productions[ruleIndex];
+            var rule = grammar.Productions[prodIndex];
 
             var tokenName = grammar.Symbols[rule.OutcomeToken].Name;
 
@@ -148,17 +149,17 @@ namespace IronText.Runtime
 
         private string GetLabel(SppfNode node)
         {
-            if (node.Id > 0)
+            if (node.IsTerminal)
             {
-                return grammar.Symbols[node.Id].Name + " pos: " + node.Location.Position;
+                return grammar.Matchers[node.MatcherIndex].Outcome.Name + " pos: " + node.Location.Position;
             }
 
             if (node.NextAlternative != null)
             {
-                return grammar.Symbols[node.GetTokenId(grammar)].Name;
+                return grammar.Productions[node.ProductionIndex].Outcome.Name;
             }
 
-            var production = grammar.Productions[-node.Id];
+            var production = grammar.Productions[node.ProductionIndex];
             if (showRules)
             {
                 return string.Format(

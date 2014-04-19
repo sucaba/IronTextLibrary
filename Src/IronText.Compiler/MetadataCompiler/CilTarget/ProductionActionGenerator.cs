@@ -111,20 +111,7 @@ namespace IronText.MetadataCompiler
             {
                 emit.Label(jumpTable[prod.Index].Def);
 
-                if (0 == prod.Actions.Count)
-                {
-                    // Augumented start rule has null action and should never be invoked.
-                    // Also it is possible that for some platforms production may have default
-                    // action.
-                    emit.Ldnull();
-                }
-                else
-                {
-                    foreach (var action in prod.Actions)
-                    {
-                        code = GenerateActionCode(code, action);
-                    }
-                }
+                code = CompileProduction(code, prod);
 
                 emit.Br(endWithSingleResultLabel.GetRef());
             }
@@ -135,6 +122,26 @@ namespace IronText.MetadataCompiler
                 .Label(endWithSingleResultLabel)
                 .Label(returnLabel)
                 .Ret();
+        }
+
+        public static IActionCode CompileProduction(IActionCode code, Production prod)
+        {
+            if (0 == prod.Actions.Count)
+            {
+                // Augumented start rule has null action and should never be invoked.
+                // Also it is possible that for some platforms production may have default
+                // action.
+                code = code.Emit(il => il.Ldnull());
+            }
+            else
+            {
+                foreach (var action in prod.Actions)
+                {
+                    code = GenerateActionCode(code, action);
+                }
+            }
+
+            return code;
         }
 
         private static IActionCode GenerateActionCode(IActionCode code, SemanticAction action)

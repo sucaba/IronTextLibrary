@@ -30,9 +30,14 @@ namespace IronText.Runtime
             return grammar.Symbols[outcome].Productions;
         }
 
+        /// <summary>
+        /// Enumerates all tokens except predefined
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<int> EnumerateTokens()
         {
             return from s in grammar.Symbols
+                   where !s.IsPredefined
                    select s.Index;
         }
 
