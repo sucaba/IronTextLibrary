@@ -51,6 +51,7 @@ namespace IronText.Freezing.Managed
             private readonly List<Ref<Locals>> slotLocals = new List<Ref<Locals>>();
             private readonly Stack<Ref<Locals>> freeSlotLocals = new Stack<Ref<Locals>>();
             private int currentSlotCount = 0;
+            private string currentTerminalText;
 
             public FreezerProcess(string input)
             {
@@ -150,8 +151,17 @@ namespace IronText.Freezing.Managed
 
             private void CompileTerminalNode(SppfNode node)
             {
+                this.currentTerminalText = node.Text;
                 var matcher = grammar.Matchers[node.MatcherIndex];
-                TermFactoryGenerator.CompileTermFactory(code, matcher);
+
+                try
+                {
+                    TermFactoryGenerator.CompileTermFactory(code, matcher);
+                }
+                finally
+                {
+                    this.currentTerminalText = null;
+                }
 
                 PushSlot();
             }
@@ -206,7 +216,7 @@ namespace IronText.Freezing.Managed
 
             IActionCode IActionCode.LdMatcherTokenString()
             {
-                throw new NotImplementedException();
+                return code.Emit(il => il.Ldstr(new Lib.Ctem.QStr(currentTerminalText)));
             }
 
             IActionCode IActionCode.ReturnFromAction()
