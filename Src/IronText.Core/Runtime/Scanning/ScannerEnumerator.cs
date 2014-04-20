@@ -9,7 +9,6 @@ namespace IronText.Runtime
 {
     sealed class ScannerEnumerator
         : IEnumerator<Msg>
-        , IScanning
     {
         private Scanner scanner;
         private int priorPosition;
@@ -22,8 +21,6 @@ namespace IronText.Runtime
         private readonly TextReader          textSource;
         private readonly TermFactoryDelegate termFactory;
         private readonly ILogging            logging;
-        private HLoc                         hLocation;
-        private Loc                          location;
 
         private readonly int[] actionToToken;
 
@@ -55,13 +52,7 @@ namespace IronText.Runtime
 
             this.priorLine = 1;
             this.priorColumn = 1;
-
-            InitContext();
         }
-
-        Loc IScanning.Location { get { return location; } }
-
-        HLoc IScanning.HLocation { get { return hLocation; } }
 
         public Msg Current { get; private set; }
 
@@ -190,15 +181,6 @@ namespace IronText.Runtime
         {
             this.currentPosition += (cursor.Marker - cursor.Start);
 
-            this.hLocation = MakeHLoc();
-            this.location = new Loc(document, priorPosition, currentPosition);
-
-            // TODO: 
-            //  1) cursor.Action -> list of real actions. for each real action create MsgData
-            //  2) in build time ensure that within one state
-            //     actions cannot produce same token
-            //  3) each action can produce multiple tokens (optional by now, but in future can be useful)
-
             int    action = cursor.Actions[0];
             string text   = cursor.GetText();
 
@@ -207,7 +189,7 @@ namespace IronText.Runtime
             {
                 int id = cursor.EnvelopeId;
                 // TODO: Amb & Main tokens for envelope.Id
-                Current = new Msg(id, token, action, text, location, hLocation);
+                Current = new Msg(id, token, action, text, new Loc(document, priorPosition, currentPosition), MakeHLoc());
 
                 // Shrodinger's token
                 if (cursor.ActionCount > 1)
@@ -277,19 +259,6 @@ namespace IronText.Runtime
             cursor.Buffer[len] = Scanner.Sentinel;
 
             cursor.Limit = len;
-        }
-
-        private void InitContext()
-        {
-            var rootContext = cursor.RootContext;
-            if (rootContext != null)
-            {
-                ServicesInitializer.SetServiceProperties(
-                    rootContext.GetType(),
-                    rootContext,
-                    typeof(IScanning),
-                    this);
-            }
         }
     }
 }

@@ -9,14 +9,17 @@ namespace IronText.Runtime
         : ActionEpsilonProducer
         , IProducer<ActionNode>
         , IParsing
+        , IScanning
     {
         private readonly RuntimeGrammar grammar;
         private readonly ProductionActionDelegate grammarAction;
         private readonly TermFactoryDelegate termFactory;
         private readonly MergeDelegate merge;
         private readonly object context;
-        private Loc _resultLocation;
-        private HLoc _resultHLocation;
+        private Loc  _parsingLocation;
+        private HLoc _parsingHLocation;
+        private Loc  _scanningLocation;
+        private HLoc _scanningHLocation;
         private readonly object[] ruleArgBuffer;
 
         public ActionProducer(
@@ -33,6 +36,21 @@ namespace IronText.Runtime
             this.termFactory    = termFactory;
             this.merge          = merge;
             this.ruleArgBuffer  = new object[grammar.MaxRuleSize];
+
+            if (context != null)
+            {
+                ServicesInitializer.SetServiceProperties(
+                    context.GetType(),
+                    context,
+                    typeof(IParsing),
+                    this);
+
+                ServicesInitializer.SetServiceProperties(
+                    context.GetType(),
+                    context,
+                    typeof(IScanning),
+                    this);
+            }
         }
 
         public ReductionOrder ReductionOrder { get { return ReductionOrder.ByRuleDependency; } }
@@ -41,9 +59,22 @@ namespace IronText.Runtime
 
         public ActionNode CreateLeaf(Msg envelope, MsgData data)
         {
+            object value;
+            if (data.Action < 0)
+            {
+                value = data.ExternalValue;
+            }
+            else
+            {
+                _scanningLocation  = envelope.Location;
+                _scanningHLocation = envelope.HLocation;
+
+                value = termFactory(context, data.Action, data.Text);
+            }
+
             return new ActionNode(
                 data.Token,
-                data.Action < 0 ? data.ExternalValue : termFactory(context, data.Action, data.Text),
+                value,
                 envelope.Location,
                 envelope.HLocation);
         }
@@ -78,8 +109,8 @@ namespace IronText.Runtime
             }
 
             // Location for IParsing service
-            this._resultLocation = location;
-            this._resultHLocation = hLocation;
+            this._parsingLocation = location;
+            this._parsingHLocation = hLocation;
 
             if (rule.PatternTokens.Length > prefix.Count)
             {
@@ -101,15 +132,13 @@ namespace IronText.Runtime
             return result;
         }
 
-        Loc IParsing.Location
-        {
-            get { return this._resultLocation; }
-        }
+        Loc IParsing.Location { get { return this._parsingLocation; } }
 
-        HLoc IParsing.HLocation
-        {
-            get { return this._resultHLocation; }
-        }
+        HLoc IParsing.HLocation { get { return this._parsingHLocation; } }
+
+        Loc IScanning.Location { get { return this._scanningLocation; } }
+
+        HLoc IScanning.HLocation { get { return this._scanningHLocation; } }
 
         public IProducer<ActionNode> GetErrorRecoveryProducer()
         {

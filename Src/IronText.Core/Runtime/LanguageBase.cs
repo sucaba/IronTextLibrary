@@ -150,15 +150,6 @@ namespace IronText.Runtime
         {
             var result = new ActionProducer(runtimeGrammar, context, grammarAction, termFactory, this.merge);
 
-            if (context != null)
-            {
-                ServicesInitializer.SetServiceProperties(
-                    context.GetType(),
-                    context,
-                    typeof(IParsing),
-                    result);
-            }
-
             return result;
         }
 

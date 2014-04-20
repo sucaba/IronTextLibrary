@@ -14,7 +14,7 @@ namespace IronText.Tests.Framework.Attributes
             var context = new MyServiceConsumer();
             Language.Parse(context, "foo");
             Assert.IsTrue(context.HasScanning, "Missing scanning service");
-            Assert.IsTrue(context.HasParsing, "Missing parsing service");
+            Assert.IsTrue(context.HasParsing,  "Missing parsing service");
             Assert.IsTrue(context.HasLanguage, "Missing language service");
 
             Assert.AreEqual(new Loc(0, 3), context.LastNonTermLocation);
