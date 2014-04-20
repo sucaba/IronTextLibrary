@@ -98,7 +98,7 @@ namespace IronText.Runtime
 
         public override string ToString()
         {
-            return string.Format("<Msg Id={0}, Val={1}, Loc={2}>", AmbToken, ExternalValue, Location);
+            return string.Format("<Msg Id={0}, Text={1}, Loc={2}>", AmbToken, Text, Location);
         }
     }
 }
