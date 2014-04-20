@@ -8,11 +8,11 @@ namespace IronText.Runtime
     public delegate object TermFactoryDelegate(object context, int action, string text);
 
     public delegate object ProductionActionDelegate(
-        int     ruleId,      // rule being reduced
-        Msg[]   parts,       // array containing path being reduced
-        int     firstIndex,  // starting index of the path being reduced
-        object  context,     // user provided context
-        IStackLookback<Msg> lookback    // access to the prior stack states and values
+        int         ruleId,      // rule being reduced
+        StackNode[] parts,       // array containing path being reduced
+        int         firstIndex,  // starting index of the path being reduced
+        object      context,     // user provided context
+        IStackLookback<StackNode> lookback    // access to the prior stack states and values
         );
 
     public delegate object MergeDelegate(
@@ -20,6 +20,6 @@ namespace IronText.Runtime
         object  oldValue,
         object  newValue,
         object  context,        // user provided context
-        IStackLookback<Msg> lookback   // access to the prior stack states and values
+        IStackLookback<StackNode> lookback   // access to the prior stack states and values
         );
 }

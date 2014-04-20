@@ -40,7 +40,7 @@ namespace IronText.Runtime
                 ReportError();
                 return exit.ForceNext(error, item);
             }
-            else if (grammar.IsBeacon(item.Id)
+            else if (grammar.IsBeacon(item.AmbToken)
                     && null != exit.CloneVerifier().ForceNext(item))
             {
                 ReportError();

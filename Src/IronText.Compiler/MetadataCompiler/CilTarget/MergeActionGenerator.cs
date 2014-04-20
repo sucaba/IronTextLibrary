@@ -33,7 +33,7 @@ namespace IronText.MetadataCompiler
                     .Argument(context.Types.Object, oldValue)
                     .Argument(context.Types.Object, newValue)
                     .Argument(context.Types.Object, ctx)
-                    .Argument(context.Types.Import(typeof(IStackLookback<Msg>)), stackLookback)
+                    .Argument(context.Types.Import(typeof(IStackLookback<StackNode>)), stackLookback)
                     .EndArgs()
 
                 .BeginBody();

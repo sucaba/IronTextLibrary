@@ -91,7 +91,7 @@ namespace IronText.Runtime
         {
             failedInput.Add(item);
 
-            if (failedInput.Count == FailurePatternSize || item.Id == PredefinedTokens.Eoi)
+            if (failedInput.Count == FailurePatternSize || item.AmbToken == PredefinedTokens.Eoi)
             {
                 return Recover(false);
             }
@@ -119,7 +119,7 @@ namespace IronText.Runtime
                     return false;
                 }
 
-                if (pos >= minLength && (PredefinedTokens.Eoi == msg.Id || grammar.IsBeacon(msg.Id)))
+                if (pos >= minLength && (PredefinedTokens.Eoi == msg.AmbToken || grammar.IsBeacon(msg.AmbToken)))
                 {
                     return true;
                 }
@@ -176,7 +176,7 @@ namespace IronText.Runtime
                     continue;
                 }
 
-                var deletedTokens = model.GetDeletedIndexes().Select(i => failedInput[i].Id);
+                var deletedTokens = model.GetDeletedIndexes().Select(i => failedInput[i].AmbToken);
                 bool violatesDontDelete = deletedTokens.Any(grammar.IsDontDelete);
                 if (!useViolatingRules && violatesDontDelete)
                 {

@@ -7,7 +7,7 @@ namespace IronText.Runtime
 {
     sealed class ActionProducer 
         : ActionEpsilonProducer
-        , IProducer<Msg>
+        , IProducer<StackNode>
         , IParsing
     {
         private readonly RuntimeGrammar grammar;
@@ -37,19 +37,18 @@ namespace IronText.Runtime
 
         public ReductionOrder ReductionOrder { get { return ReductionOrder.ByRuleDependency; } }
 
-        public Msg Result { get; set; }
+        public StackNode Result { get; set; }
 
-        public Msg CreateLeaf(Msg envelope, MsgData data)
+        public StackNode CreateLeaf(Msg envelope, MsgData data)
         {
-            var result = data == (object)envelope 
-                ? envelope 
-                : new Msg(envelope.Id, data.Token, data.Value, data.Action, data.Text, envelope.Location, envelope.HLocation);
-
-            result.Value = result.Value ?? termFactory(context, data.Action, data.Text);
-            return result;
+            return new StackNode(
+                data.Token,
+                data.Value ?? termFactory(context, data.Action, data.Text),
+                envelope.Location,
+                envelope.HLocation);
         }
 
-        public Msg CreateBranch(Production rule, ArraySlice<Msg> prefix, IStackLookback<Msg> stackLookback)
+        public StackNode CreateBranch(Production rule, ArraySlice<StackNode> prefix, IStackLookback<StackNode> stackLookback)
         {
             if (prefix.Count == 0)
             {
@@ -89,15 +88,16 @@ namespace IronText.Runtime
 
             object value = grammarAction(rule.Index, prefix.Array, prefix.Offset, context, stackLookback);
 
-            return new Msg(rule.OutcomeToken, value, location, hLocation);
+            return new StackNode(rule.OutcomeToken, value, location, hLocation);
         }
 
-        public Msg Merge(Msg alt1, Msg alt2, IStackLookback<Msg> stackLookback)
+        public StackNode Merge(StackNode alt1, StackNode alt2, IStackLookback<StackNode> stackLookback)
         {
-            var result = new Msg(
-                    alt1.Id,
-                    this.merge(alt1.Id, alt1.Value, alt2.Value, context, stackLookback),
-                    alt1.Location);
+            var result = new StackNode(
+                    alt1.Token,
+                    this.merge(alt1.Token, alt1.Value, alt2.Value, context, stackLookback),
+                    alt1.Location,
+                    alt1.HLocation);
             return result;
         }
 
@@ -111,9 +111,9 @@ namespace IronText.Runtime
             get { return this._resultHLocation; }
         }
 
-        public IProducer<Msg> GetErrorRecoveryProducer()
+        public IProducer<StackNode> GetErrorRecoveryProducer()
         {
-            return NullProducer<Msg>.Instance;
+            return NullProducer<StackNode>.Instance;
         }
     }
 }

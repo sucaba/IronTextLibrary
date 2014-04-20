@@ -3,10 +3,26 @@ using IronText.Logging;
 
 namespace IronText.Runtime
 {
+    public class StackNode
+    {
+        public readonly int    Token;
+        public readonly object Value;
+        public readonly Loc    Location;
+        public readonly HLoc   HLocation;
+
+        public StackNode(int token, object value, Loc loc, HLoc hLoc)
+        {
+            this.Token      = token;
+            this.Value      = value;
+            this.Location   = loc;
+            this.HLocation  = hLoc;
+        }
+    }
+
     public class MsgData
     {
         public readonly int    Token;
-        public object Value;
+        public object          Value;
         public readonly int    Action;
         public readonly string Text;
 
@@ -29,7 +45,7 @@ namespace IronText.Runtime
         /// <summary>
         /// Envelope Id. It can be either token ID or ambiguous token ID.
         /// </summary>
-        public readonly int    Id;
+        public readonly int    AmbToken;
 
         /// <summary>
         /// Location for an automatic processing
@@ -51,10 +67,10 @@ namespace IronText.Runtime
         {
         }
 
-        public Msg(int id, int token, object value, int action, string text, Loc location, HLoc hLocation = default(HLoc))
+        public Msg(int ambToken, int token, object value, int action, string text, Loc location, HLoc hLocation = default(HLoc))
             : base(token, value, action, text)
         {
-            this.Id = id;
+            this.AmbToken  = ambToken;
             this.Location  = location;
             this.HLocation = hLocation;
         }
@@ -69,7 +85,7 @@ namespace IronText.Runtime
 
         public bool Equals(Msg other)
         {
-            return Id == other.Id
+            return AmbToken == other.AmbToken
                 && Location == other.Location
                 && object.Equals(Value, other.Value)
                 ;
@@ -79,13 +95,13 @@ namespace IronText.Runtime
         {
             unchecked
             {
-                return Id + Location.Position;
+                return AmbToken + Location.Position;
             }
         }
 
         public override string ToString()
         {
-            return string.Format("<Msg Id={0}, Val={1}, Loc={2}>", Id, Value, Location);
+            return string.Format("<Msg Id={0}, Val={1}, Loc={2}>", AmbToken, Value, Location);
         }
     }
 }

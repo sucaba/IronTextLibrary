@@ -33,7 +33,7 @@ namespace IronText.Runtime
         public int              Value1;
 
         [FieldOffset(sizeof(ParserActionKind))]
-        public int              RolvedToken;
+        public int              ResolvedToken;
 
         [FieldOffset(sizeof(ParserActionKind))]
         public int              State;

@@ -146,7 +146,7 @@ namespace IronText.Runtime
             }
         }
 
-        public IProducer<Msg> CreateActionProducer(object context)
+        public IProducer<StackNode> CreateActionProducer(object context)
         {
             var result = new ActionProducer(runtimeGrammar, context, grammarAction, termFactory, this.merge);
 
@@ -189,7 +189,7 @@ namespace IronText.Runtime
             object              alt1,
             object              alt2,
             object              context,
-            IStackLookback<Msg> stackLookback)
+            IStackLookback<StackNode> stackLookback)
         {
             var result = alt2;
 #if true

@@ -56,10 +56,10 @@ namespace IronText.MetadataCompiler
                     .Add();
             }
 
-            if (typeof(Msg).IsValueType)
+            if (typeof(StackNode).IsValueType)
             {
                 emit = emit
-                    .Ldelema(emit.Types.Import(typeof(Msg)));
+                    .Ldelema(emit.Types.Import(typeof(StackNode)));
             }
             else
             {
@@ -68,7 +68,7 @@ namespace IronText.MetadataCompiler
             }
 
             emit = emit
-                .Ldfld((Msg msg) => msg.Value)
+                .Ldfld((StackNode msg) => msg.Value)
                 ;
 
             return this;

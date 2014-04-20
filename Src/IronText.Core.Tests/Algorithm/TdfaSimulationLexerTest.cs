@@ -78,7 +78,7 @@ namespace IronText.Tests.Algorithm
 
             Assert.AreEqual(
                 new int[] { ident.Index, assign.Index, num.Index, qStr.Index },
-                collector.Select(msg => msg.Id).ToArray());
+                collector.Select(msg => msg.AmbToken).ToArray());
             Assert.AreEqual(
                 new object[] { "b", ":=", "10Q", "\"foo\"" },
                 collector.Select(msg => msg.Value).ToArray());

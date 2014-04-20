@@ -119,12 +119,12 @@ namespace IronText.Runtime
 
         private string FormatToken(RuntimeGrammar grammar, Msg msg)
         {
-            if (msg.Id == PredefinedTokens.Eoi)
+            if (msg.AmbToken == PredefinedTokens.Eoi)
             {
                 return "end of file";
             }
 
-            string result = grammar.SymbolName(msg.Id);
+            string result = grammar.SymbolName(msg.AmbToken);
             if (!result.StartsWith("'") && msg.Value != null)
             {
                 result = msg.Value.ToString();

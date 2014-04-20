@@ -55,7 +55,7 @@ namespace IronText.Tests.Algorithm
             target.Accept(collector);
             Assert.AreEqual(
                 new int[] { lParen.Index, num.Index, lParen.Index, qStr.Index, ident.Index, rParen.Index, rParen.Index },
-                collector.Select(msg => msg.Id).ToArray());
+                collector.Select(msg => msg.AmbToken).ToArray());
             Assert.AreEqual(
                 new object[] { "(", "1", "(", "\"bar\"", "+", ")", ")" },
                 collector.Select(msg => msg.Value).ToArray());

@@ -189,7 +189,7 @@ namespace IronText.Runtime
                     var message = new StringBuilder();
                     message
                         .Append("Unexpected token ")
-                        .Append(grammar.SymbolName(envelope.Id))
+                        .Append(grammar.SymbolName(envelope.AmbToken))
                         .Append(" in state stacks: {");
                     bool firstStack = true;
                     for (int i = 0; i != gss.Count; ++i)
@@ -607,7 +607,7 @@ namespace IronText.Runtime
 
         private IReceiver<Msg> RecoverFromError(Msg currentInput)
         {
-            if (currentInput.Id == PredefinedTokens.Eoi)
+            if (currentInput.AmbToken == PredefinedTokens.Eoi)
             {
                 if (!isVerifier)
                 {

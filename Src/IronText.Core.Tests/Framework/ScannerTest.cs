@@ -124,7 +124,7 @@ namespace IronText.Tests.Syntax.Re2IL
 
             Assert.AreEqual(
                 expectedTokens,
-                tokens.Select(msg => msg.Id).ToArray());
+                tokens.Select(msg => msg.AmbToken).ToArray());
         }
 
         private static List<Msg> Scan(string input)

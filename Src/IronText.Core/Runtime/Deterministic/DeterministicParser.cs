@@ -90,7 +90,7 @@ namespace IronText.Runtime
         {
             stateStack.BeginEdit();
 
-            int id = envelope.Id;
+            int id = envelope.AmbToken;
             MsgData data = envelope.FirstData;
 
         START:
@@ -106,7 +106,7 @@ namespace IronText.Runtime
                     // ReportUnexpectedToken(msg, stateStack.PeekTag());
                     return RecoverFromError(envelope);
                 case ParserActionKind.Resolve:
-                    id = action.RolvedToken;
+                    id = action.ResolvedToken;
                     while (true)
                     {
                         if (data.Token == id)
@@ -130,7 +130,7 @@ namespace IronText.Runtime
                             Severity = Severity.Error,
                             Location = envelope.Location,
                             HLocation = envelope.HLocation,
-                            Message = "Hit parser conflict on token " + grammar.SymbolName(envelope.Id)
+                            Message = "Hit parser conflict on token " + grammar.SymbolName(envelope.AmbToken)
                         });
                     return null;
 
@@ -180,7 +180,7 @@ namespace IronText.Runtime
 
         private IReceiver<Msg> RecoverFromError(Msg currentInput)
         {
-            if (currentInput.Id == PredefinedTokens.Eoi)
+            if (currentInput.AmbToken == PredefinedTokens.Eoi)
             {
                 if (!isVerifier)
                 {
@@ -219,7 +219,7 @@ namespace IronText.Runtime
 
             var message = new StringBuilder();
 
-            message.Append("Got ").Append(msg.Value ?? grammar.SymbolName(msg.Id));
+            message.Append("Got ").Append(msg.Value ?? grammar.SymbolName(msg.AmbToken));
             message.Append("  but expected ");
 
             int[] expectedTokens = GetExpectedTokens(state);
