@@ -17,13 +17,13 @@ namespace IronText.Runtime
             this.productionAction = productionAction;
         }
 
-        public StackNode GetDefault(int nonTerm, IStackLookback<StackNode> stackLookback)
+        public ActionNode GetDefault(int nonTerm, IStackLookback<ActionNode> stackLookback)
         {
             var result = InternalGetNullable(nonTerm, stackLookback);
             return result;
         }
 
-        private StackNode InternalGetNullable(int nonTerm, IStackLookback<StackNode> stackLookback)
+        private ActionNode InternalGetNullable(int nonTerm, IStackLookback<ActionNode> stackLookback)
         {
             Debug.Assert(grammar.IsNullable(nonTerm));
 
@@ -34,17 +34,17 @@ namespace IronText.Runtime
                        select r)
                        .First();
 
-            var args = new StackNode[production.PatternTokens.Length];
+            var args = new ActionNode[production.PatternTokens.Length];
             for (int i = 0; i != args.Length; ++i)
             {
                 args[i] = InternalGetNullable(production.PatternTokens[i], stackLookback);
             }
 
             var value = productionAction(production.Index, args, 0, context, stackLookback);
-            return new StackNode(nonTerm, value, Loc.Unknown, HLoc.Unknown);
+            return new ActionNode(nonTerm, value, Loc.Unknown, HLoc.Unknown);
         }
 
-        public void FillEpsilonSuffix(int prodId, int prefixSize, StackNode[] buffer, int destIndex, IStackLookback<StackNode> stackLookback)
+        public void FillEpsilonSuffix(int prodId, int prefixSize, ActionNode[] buffer, int destIndex, IStackLookback<ActionNode> stackLookback)
         {
             var production = grammar.Productions[prodId];
             int i   = prefixSize;

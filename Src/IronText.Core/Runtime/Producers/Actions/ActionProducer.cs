@@ -7,7 +7,7 @@ namespace IronText.Runtime
 {
     sealed class ActionProducer 
         : ActionEpsilonProducer
-        , IProducer<StackNode>
+        , IProducer<ActionNode>
         , IParsing
     {
         private readonly RuntimeGrammar grammar;
@@ -37,18 +37,18 @@ namespace IronText.Runtime
 
         public ReductionOrder ReductionOrder { get { return ReductionOrder.ByRuleDependency; } }
 
-        public StackNode Result { get; set; }
+        public ActionNode Result { get; set; }
 
-        public StackNode CreateLeaf(Msg envelope, MsgData data)
+        public ActionNode CreateLeaf(Msg envelope, MsgData data)
         {
-            return new StackNode(
+            return new ActionNode(
                 data.Token,
                 data.Value ?? termFactory(context, data.Action, data.Text),
                 envelope.Location,
                 envelope.HLocation);
         }
 
-        public StackNode CreateBranch(Production rule, ArraySlice<StackNode> prefix, IStackLookback<StackNode> stackLookback)
+        public ActionNode CreateBranch(Production rule, ArraySlice<ActionNode> prefix, IStackLookback<ActionNode> stackLookback)
         {
             if (prefix.Count == 0)
             {
@@ -88,12 +88,12 @@ namespace IronText.Runtime
 
             object value = grammarAction(rule.Index, prefix.Array, prefix.Offset, context, stackLookback);
 
-            return new StackNode(rule.OutcomeToken, value, location, hLocation);
+            return new ActionNode(rule.OutcomeToken, value, location, hLocation);
         }
 
-        public StackNode Merge(StackNode alt1, StackNode alt2, IStackLookback<StackNode> stackLookback)
+        public ActionNode Merge(ActionNode alt1, ActionNode alt2, IStackLookback<ActionNode> stackLookback)
         {
-            var result = new StackNode(
+            var result = new ActionNode(
                     alt1.Token,
                     this.merge(alt1.Token, alt1.Value, alt2.Value, context, stackLookback),
                     alt1.Location,
@@ -111,9 +111,9 @@ namespace IronText.Runtime
             get { return this._resultHLocation; }
         }
 
-        public IProducer<StackNode> GetErrorRecoveryProducer()
+        public IProducer<ActionNode> GetErrorRecoveryProducer()
         {
-            return NullProducer<StackNode>.Instance;
+            return NullProducer<ActionNode>.Instance;
         }
     }
 }

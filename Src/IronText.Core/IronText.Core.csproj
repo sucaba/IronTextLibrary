@@ -181,6 +181,7 @@
     <Compile Include="Reflection\ISharedGrammarEntities.cs" />
     <Compile Include="Reflection\Merger.cs" />
     <Compile Include="Reflection\MergerCollection.cs" />
+    <Compile Include="Runtime\Producers\Actions\ActionNode.cs" />
     <Compile Include="Runtime\Tables\NullableFirstTables.cs" />
     <Compile Include="Reflection\InlineProduction.cs" />
     <Compile Include="Reflection\ProductionCollection.cs" />
@@ -299,11 +300,10 @@
     <Compile Include="Runtime\IPushParser.cs" />
     <Compile Include="Runtime\IScanner.cs" />
     <Compile Include="Framework\Attributes\Diagnostics\LrGraph.cs" />
-    <Compile Include="Runtime\Producers\IGraphWriter.cs" />
-    <Compile Include="Runtime\Producers\ISppfNodeVisitor.cs" />
-    <Compile Include="Runtime\Producers\SppfEpsilonProducer.cs" />
-    <Compile Include="Runtime\Producers\SppfGraphWriter.cs" />
-    <Compile Include="Runtime\Producers\ActionEpsilonProducer.cs" />
+    <Compile Include="Runtime\Producers\Sppf\ISppfNodeVisitor.cs" />
+    <Compile Include="Runtime\Producers\Sppf\SppfEpsilonProducer.cs" />
+    <Compile Include="Runtime\Producers\Sppf\SppfGraphWriter.cs" />
+    <Compile Include="Runtime\Producers\Actions\ActionEpsilonProducer.cs" />
     <Compile Include="Runtime\GLR\ReductionQueueing\ReductionQueue.cs" />
     <Compile Include="Runtime\ResourceAllocator.cs" />
     <Compile Include="Runtime\Producers\IProducer.cs" />
@@ -320,9 +320,9 @@
     <Compile Include="Reflection\Cil\CilSymbolRef.cs" />
     <Compile Include="Runtime\Scanning\ScannerEnumerator.cs" />
     <Compile Include="Runtime\ServicesInitializer.cs" />
-    <Compile Include="Runtime\Producers\SppfProducer.cs" />
-    <Compile Include="Runtime\Producers\SppfNode.cs" />
-    <Compile Include="Runtime\Producers\ActionProducer.cs" />
+    <Compile Include="Runtime\Producers\Sppf\SppfProducer.cs" />
+    <Compile Include="Runtime\Producers\Sppf\SppfNode.cs" />
+    <Compile Include="Runtime\Producers\Actions\ActionProducer.cs" />
     <Compile Include="Runtime\GLR\StackLookback.cs" />
   </ItemGroup>
   <ItemGroup>

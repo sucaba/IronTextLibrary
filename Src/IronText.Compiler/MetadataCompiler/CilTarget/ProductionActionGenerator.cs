@@ -30,10 +30,10 @@ namespace IronText.MetadataCompiler
 
             var emit = args
                     .Argument(context.Types.Int32, ruleId)
-                    .Argument(context.Types.Import(typeof(StackNode[])), ruleArgs)
+                    .Argument(context.Types.Import(typeof(ActionNode[])), ruleArgs)
                     .Argument(context.Types.Int32, argsStart)
                     .Argument(context.Types.Object, ctx)
-                    .Argument(context.Types.Import(typeof(IStackLookback<StackNode>)), stackLookback)
+                    .Argument(context.Types.Import(typeof(IStackLookback<ActionNode>)), stackLookback)
                     .EndArgs()
 
                 .BeginBody();

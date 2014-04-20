@@ -29,7 +29,7 @@ namespace IronText.MetadataCompiler
             this.data = data;
             this.grammarAction = BuildExecuteRuleAction();
             this.termFactory = BuildTermFactory();
-            this.merge = (int token, object x, object y, object context, IStackLookback<StackNode> stackLookback) => y;
+            this.merge = (int token, object x, object y, object context, IStackLookback<ActionNode> stackLookback) => y;
 
             this.scannerDescriptor = ScannerDescriptor.FromScanRules(data.Grammar.Matchers, ExceptionLogging.Instance);
         }
@@ -70,7 +70,7 @@ namespace IronText.MetadataCompiler
                 );
         }
 
-        public IProducer<StackNode> CreateActionProducer(object context)
+        public IProducer<ActionNode> CreateActionProducer(object context)
         {
             return new ActionProducer(runtimeGrammar, context, grammarAction, termFactory,  this.merge);
         }
