@@ -13,7 +13,7 @@ namespace IronText.Runtime
         /// <summary>
         /// Alternative message information for Shrodinger's token
         /// </summary>
-        public MsgData  Next;
+        public MsgData  NextAlternative;
 
         public MsgData(int token, string text, int action)
         {

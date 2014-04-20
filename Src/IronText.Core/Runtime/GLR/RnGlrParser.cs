@@ -150,7 +150,7 @@ namespace IronText.Runtime
                     }
                 }
 
-                data = data.Next;
+                data = data.NextAlternative;
             }
             while (data != null);
 

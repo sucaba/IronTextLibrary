@@ -115,7 +115,7 @@ namespace IronText.Runtime
                             goto START;
                         }
 
-                        data = data.Next;
+                        data = data.NextAlternative;
                         if (data == null)
                         {
                             // Desired token was not present in Msg
