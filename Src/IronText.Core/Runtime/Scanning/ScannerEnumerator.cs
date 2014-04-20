@@ -197,7 +197,7 @@ namespace IronText.Runtime
                         action     = cursor.Actions[i];
                         token      = GetTokenFromAction(action);
 
-                        data.Next = new MsgData(token, action, text);
+                        data.Next = new MsgData(token, text, action);
                         data = data.Next;
                     }
                 }

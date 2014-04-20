@@ -100,11 +100,7 @@ namespace IronText.Tests.Algorithm
                 {
                     // Emit next token
                     visitor = visitor.Next(
-                        new Msg(
-                            prod.Outcome.Index,
-                            null,
-                            text.Substring(start, tokenLength),
-                            new Loc(Loc.MemoryString, start, pos)));
+                        new Msg(prod.Outcome.Index, text.Substring(start, tokenLength), null, new Loc(Loc.MemoryString, start, pos)));
                 }
 
                 start = pos;

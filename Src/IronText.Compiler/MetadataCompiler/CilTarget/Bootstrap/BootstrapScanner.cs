@@ -80,11 +80,7 @@ namespace IronText.MetadataCompiler
                     int token = production.Outcome.Index;
 
                     yield return
-                        new Msg(
-                            token,
-                            action,
-                            match.Value,
-                            new Loc(Loc.MemoryString, match.Index, match.Length));
+                        new Msg(token, match.Value, action, new Loc(Loc.MemoryString, match.Index, match.Length));
 
                     if (currentPos == text.Length)
                     {

@@ -15,14 +15,14 @@ namespace IronText.Runtime
         /// </summary>
         public MsgData  Next;
 
-        public MsgData(int token, int action, string text)
+        public MsgData(int token, string text, int action)
         {
             Token  = token;
             Action = action;
             Text   = text;
         }
 
-        public MsgData(int token, object externalValue, string text)
+        public MsgData(int token, string text, object externalValue)
         {
             Token = token;
             Action = -1;
@@ -48,16 +48,16 @@ namespace IronText.Runtime
         /// </summary>
         public readonly HLoc   HLocation;
 
-        public Msg(int token, object value, string text, Loc location, HLoc hLocation = default(HLoc))
-            : base(token, value, text)
+        public Msg(int token, string text, object value, Loc location, HLoc hLocation = default(HLoc))
+            : base(token, text, value)
         {
             this.AmbToken = token;
             this.Location = location;
             this.HLocation = hLocation;
         }
 
-        public Msg(int token, int action, string text, Loc location, HLoc hLocation = default(HLoc))
-            : base(token, action, text)
+        public Msg(int token, string text, int action, Loc location, HLoc hLocation = default(HLoc))
+            : base(token, text, action)
         {
             this.AmbToken = token;
             this.Location = location;
@@ -65,7 +65,7 @@ namespace IronText.Runtime
         }
 
         internal Msg(int ambToken, int token, int action, string text, Loc location, HLoc hLocation = default(HLoc))
-            : base(token, action, text)
+            : base(token, text, action)
         {
             this.AmbToken = ambToken;
             this.Location = location;
