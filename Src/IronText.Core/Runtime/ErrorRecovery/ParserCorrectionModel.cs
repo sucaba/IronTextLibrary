@@ -124,10 +124,16 @@ namespace IronText.Runtime
                 return "end of file";
             }
 
-            string result = grammar.SymbolName(msg.AmbToken);
-            if (!result.StartsWith("'") && msg.Value != null)
+            string result;
+
+            if (!string.IsNullOrEmpty(msg.Text))
             {
-                result = msg.Value.ToString();
+                result = "'" + msg.Text + "'";
+            }
+            else
+            {
+                // TODO: Get rid of grammar usage. Properly formatted text should be sufficient.
+                result = grammar.SymbolName(msg.AmbToken);
             }
 
             return result;

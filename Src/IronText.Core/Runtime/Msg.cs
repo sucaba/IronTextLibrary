@@ -6,21 +6,28 @@ namespace IronText.Runtime
     public class MsgData
     {
         public readonly int    Token;
-        public object          Value;
         public readonly int    Action;
         public readonly string Text;
+        public object          ExternalValue;
 
         /// <summary>
         /// Alternative message information for Shrodinger's token
         /// </summary>
         public MsgData  Next;
 
-        public MsgData(int token, object value, int action, string text)
+        public MsgData(int token, int action, string text)
         {
             Token  = token;
-            Value  = value;
             Action = action;
             Text   = text;
+        }
+
+        public MsgData(int token, object externalValue, string text)
+        {
+            Token = token;
+            Action = -1;
+            Text = text;
+            ExternalValue = externalValue;
         }
     }
 
@@ -41,21 +48,27 @@ namespace IronText.Runtime
         /// </summary>
         public readonly HLoc   HLocation;
 
-        public Msg(int token, object value, Loc location, HLoc hLocation = default(HLoc))
-            : this(token, value, -1, null, location, hLocation)
+        public Msg(int token, object value, string text, Loc location, HLoc hLocation = default(HLoc))
+            : base(token, value, text)
         {
+            this.AmbToken = token;
+            this.Location = location;
+            this.HLocation = hLocation;
         }
 
-        public Msg(int token, object value, int action, string text, Loc location, HLoc hLocation = default(HLoc))
-            : this(token, token, value, action, text, location, hLocation)
+        public Msg(int token, int action, string text, Loc location, HLoc hLocation = default(HLoc))
+            : base(token, action, text)
         {
+            this.AmbToken = token;
+            this.Location = location;
+            this.HLocation = hLocation;
         }
 
-        public Msg(int ambToken, int token, object value, int action, string text, Loc location, HLoc hLocation = default(HLoc))
-            : base(token, value, action, text)
+        internal Msg(int ambToken, int token, int action, string text, Loc location, HLoc hLocation = default(HLoc))
+            : base(token, action, text)
         {
-            this.AmbToken  = ambToken;
-            this.Location  = location;
+            this.AmbToken = ambToken;
+            this.Location = location;
             this.HLocation = hLocation;
         }
 
@@ -70,8 +83,8 @@ namespace IronText.Runtime
         public bool Equals(Msg other)
         {
             return AmbToken == other.AmbToken
+                && Text == other.Text
                 && Location == other.Location
-                && object.Equals(Value, other.Value)
                 ;
         }
 
@@ -85,7 +98,7 @@ namespace IronText.Runtime
 
         public override string ToString()
         {
-            return string.Format("<Msg Id={0}, Val={1}, Loc={2}>", AmbToken, Value, Location);
+            return string.Format("<Msg Id={0}, Val={1}, Loc={2}>", AmbToken, ExternalValue, Location);
         }
     }
 }

@@ -269,7 +269,7 @@ namespace IronText.Runtime
                 hLocation = new HLoc(1, 1, 1, 1);
             }
 
-            var eoi = new Msg(PredefinedTokens.Eoi, null, location, hLocation);
+            var eoi = new Msg(PredefinedTokens.Eoi, null, null, location, hLocation);
             return Next(eoi);
         }
 

@@ -81,7 +81,7 @@ namespace IronText.Tests.Algorithm
                 collector.Select(msg => msg.AmbToken).ToArray());
             Assert.AreEqual(
                 new object[] { "b", ":=", "10Q", "\"foo\"" },
-                collector.Select(msg => msg.Value).ToArray());
+                collector.Select(msg => msg.Text).ToArray());
         }
     }
 }

@@ -43,7 +43,7 @@ namespace IronText.Runtime
         {
             return new ActionNode(
                 data.Token,
-                data.Value ?? termFactory(context, data.Action, data.Text),
+                data.Action < 0 ? data.ExternalValue : termFactory(context, data.Action, data.Text),
                 envelope.Location,
                 envelope.HLocation);
         }

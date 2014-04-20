@@ -19,13 +19,9 @@ namespace IronText.Tests.Algorithm
     /// </summary>
     public class TdfaSimulationLexer : ISequence<Msg>
     {
-        private delegate object TokenFactoryDelegate(string text);
-
         private ITdfaSimulation tdfa;
         private readonly string text;
         private ScannerDescriptor descriptor;
-        // rule index -> token factory mapping:
-        private TokenFactoryDelegate[] tokenFactories;
 
         public TdfaSimulationLexer(string text, ScannerDescriptor descriptor)
             : this(new StringReader(text), descriptor)
@@ -42,17 +38,6 @@ namespace IronText.Tests.Algorithm
             var algorithm = new RegularToTdfaAlgorithm(regTree, literalToAction);
             DescribeTdfa(algorithm.Data);
             this.tdfa = new TdfaSimulation(algorithm.Data);
-
-            int count = descriptor.Matchers.Count;
-            this.tokenFactories = new TokenFactoryDelegate[count];
-
-            for (int i = 0; i != count; ++i)
-            {
-                if (descriptor.Matchers[i].Outcome != null)
-                {
-                    tokenFactories[i] = BuildTokenFactory(descriptor.Matchers[i]);
-                }
-            }
         }
 
         private void DescribeTdfa(ITdfaData data)
@@ -109,16 +94,16 @@ namespace IronText.Tests.Algorithm
                 int ruleIndex = tdfa.GetAction(acceptingState.Value) ?? -1;
                 int tokenLength = pos - start;
 
-                TokenFactoryDelegate tokenFactory = tokenFactories[ruleIndex];
-                if (tokenFactory != null)
-                {
-                    var prod = descriptor.Matchers[ruleIndex];
+                var prod = descriptor.Matchers[ruleIndex];
 
+                if (prod.Outcome != null)
+                {
                     // Emit next token
                     visitor = visitor.Next(
                         new Msg(
                             prod.Outcome.Index,
-                            tokenFactory(text.Substring(start, tokenLength)),
+                            null,
+                            text.Substring(start, tokenLength),
                             new Loc(Loc.MemoryString, start, pos)));
                 }
 
@@ -126,11 +111,6 @@ namespace IronText.Tests.Algorithm
             }
 
             return visitor.Done();
-        }
-
-        private static TokenFactoryDelegate BuildTokenFactory(Matcher scanProduction)
-        {
-            return text => text;
         }
     }
 }

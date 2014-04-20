@@ -82,7 +82,6 @@ namespace IronText.MetadataCompiler
                     yield return
                         new Msg(
                             token,
-                            null,
                             action,
                             match.Value,
                             new Loc(Loc.MemoryString, match.Index, match.Length));

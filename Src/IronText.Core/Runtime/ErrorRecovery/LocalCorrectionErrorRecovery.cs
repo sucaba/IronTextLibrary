@@ -292,7 +292,7 @@ namespace IronText.Runtime
                         var categories = grammar.GetTokenCategories(term);
                         if ((categories & SymbolCategory.DoNotInsert) == 0)
                         {
-                            yield return new Msg(term, null, Loc.Unknown); // TODO: Location and value
+                            yield return new Msg(term, null, null, Loc.Unknown); // TODO: Location and value
                         }
                     }
                 }
@@ -303,7 +303,7 @@ namespace IronText.Runtime
                         var categories = grammar.GetTokenCategories(term);
                         if ((categories & SymbolCategory.DoNotInsert) != 0)
                         {
-                            yield return new Msg(term, null, Loc.Unknown); // TODO: Location and value
+                            yield return new Msg(term, null, null, Loc.Unknown); // TODO: Location and value
                         }
                     }
                 }

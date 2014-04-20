@@ -82,7 +82,7 @@ namespace IronText.Runtime
                 hLocation = new HLoc(1, 1, 1, 1);
             }
 
-            var eoi = new Msg(PredefinedTokens.Eoi, null, location, hLocation);
+            var eoi = new Msg(PredefinedTokens.Eoi, null, null, location, hLocation);
             return Next(eoi);
         }
 
@@ -215,11 +215,10 @@ namespace IronText.Runtime
 
         private void ReportUnexpectedToken(Msg msg, int state)
         {
-            object token = msg.Value;
-
             var message = new StringBuilder();
 
-            message.Append("Got ").Append(msg.Value ?? grammar.SymbolName(msg.AmbToken));
+            // TODO: Get rid of grammar usage. Properly formatted text should be sufficient.
+            message.Append("Got ").Append(msg.Text ?? grammar.SymbolName(msg.AmbToken));
             message.Append("  but expected ");
 
             int[] expectedTokens = GetExpectedTokens(state);

@@ -14,98 +14,54 @@ namespace IronText.Tests.Framework
         [Test]
         public void Test()
         {
-            var context = new LCLang();
-            using (var interp = new Interpreter<LCLang>(context))
+            using (var interp = new Interpreter<LCLang>())
             {
-                var lang = Language.Get(typeof(LCLang));
                 string text = "at-1\r\natNL-2\nat-3\nat-4\nbegin-5\r\n\n\r\nend-8\r\nat-9";
+                //             0123 4 5678901 23456 78901 23456789 0 1 2 3 456789 0 123456
+                //             0           1           2           3              4
+                // lines:
+                //         00: xxxx
+                //         01:         xxxxxx_x
+                //         02:                 xxxx
+                //         03:                       xxxx
+                //         04:                             xxxxxxx
+                //         05:                                        |   
+                //         06:                                          |   
+                //         07:                                              xxxxx   
+                //         08:                                                       xxxx   
+                
                 var hlocs = interp.Scan(text).Select(msg => msg.HLocation).ToArray();
-                Assert.AreEqual(context.Result[0], hlocs[0]);
-                Assert.AreEqual(context.Result[1], hlocs[1]);
-                Assert.AreEqual(context.Result[2], hlocs[2]);
-                Assert.AreEqual(context.Result[3], hlocs[3]);
-                Assert.AreEqual(context.Result[4], hlocs[4]);
+                Assert.AreEqual(new HLoc(1,1,1,4), hlocs[0]);
+                Assert.AreEqual(new HLoc(2,1,2,7), hlocs[1]);
+                Assert.AreEqual(new HLoc(3,1,3,4), hlocs[2]);
+                Assert.AreEqual(new HLoc(4,1,4,4), hlocs[3]);
+                Assert.AreEqual(new HLoc(5,1,8,5), hlocs[4]);
+                Assert.AreEqual(new HLoc(9,1,9,4), hlocs[5]);
             }
         }
 
         [Language]
 //        [ScannerGraph("LCLang_Scanner.gv")]
         [StaticContext(typeof(Builtins))]
-        public class LCLang
+        public interface LCLang
         {
-            public readonly List<HLoc> Result = new List<HLoc>();
-
-            [LanguageService]
-            public IScanning Scanning { get; set; }
-
             [Produce]
-            public void All(List<HLoc> lines) { }
+            void All(List<object> lines);
 
             [Match(@"
                 'begin-' digit 
                 ('\r'? '\n')*
                 'end-' digit")]
-            public HLoc MultiLineTerm(string text)
-            {
-                int length = text.Length;
-
-                int prefix = "begin-".Length;
-                int suffix = "end-".Length;
-                int innerLineCount = (length - prefix - suffix - 2) / 2;
-
-                int expectedFirstLine = (text[prefix] - '0');
-                int expectedFirstColumn = 1;
-                int expectedLastLine = (text[length - 1] - '0');
-                int expectedLastColumn = suffix + 1;
-
-                var result = new HLoc(
-                        expectedFirstLine,
-                        expectedFirstColumn,
-                        expectedLastLine,
-                        expectedLastColumn);
-                Result.Add(result);
-
-                return result;
-            }
+            object MultiLineTerm(string text);
 
             [Match("'at-' digit")]
-            public HLoc SingleLineTerm(string text)
-            {
-                int length = text.Length;
-
-                int expectedLine = (text[length - 1] - '0');
-                int expectedLastColumn = length;
-                var result = new HLoc(
-                        expectedLine,
-                        1,
-                        expectedLine,
-                        expectedLastColumn);
-                Result.Add(result);
-
-                return result;
-            }
+            object SingleLineTerm(string text);
 
             [Match("'atNL-' digit '\n'")]
-            public HLoc SingleLineNLTerm(string text)
-            {
-                int length = text.Length;
-
-                int expectedLine = (text[length - 2] - '0');
-                int expectedLastColumn = length;
-                var result = new HLoc(
-                        expectedLine,
-                        1,
-                        expectedLine,
-                        expectedLastColumn);
-                Result.Add(result);
-
-                return result;
-            }
+            object SingleLineNLTerm(string text);
 
             [Match("'\r'? '\n'")]
-            public void Newline()
-            {
-            }
+            void Newline();
         }
     }
 }

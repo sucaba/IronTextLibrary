@@ -1,50 +1,50 @@
 --------------- LALR1 ---------------
-heatup time  = 00:00:00.0438901
-read time    = 00:00:00.0062184
-scan time    = 00:00:00.1698762 tokenCount = 2000001
-scan time    = 00:00:00.1562602 tokenCount = 2000001
-scan time    = 00:00:00.1555546 tokenCount = 2000001
-parse (recognize) = 00:00:00.3747096
-parse (recognize) = 00:00:00.3686370
-parse (recognize) = 00:00:00.3683953
-parse (actions) = 00:00:00.6087559
-parse (actions) = 00:00:00.6042520
-parse (actions) = 00:00:00.6027448
-parse (tree) = 00:00:01.9620701
-parse (tree) = 00:00:02.0258275
-parse (tree) = 00:00:01.9213929
+heatup time  = 00:00:00.1016545
+read time    = 00:00:00.0075737
+scan time    = 00:00:00.1732752 tokenCount = 2000001
+scan time    = 00:00:00.1576150 tokenCount = 2000001
+scan time    = 00:00:00.1531366 tokenCount = 2000001
+parse (recognize) = 00:00:00.3806789
+parse (recognize) = 00:00:00.3725807
+parse (recognize) = 00:00:00.3699318
+parse (actions) = 00:00:00.6007260
+parse (actions) = 00:00:00.6166335
+parse (actions) = 00:00:00.6091136
+parse (tree) = 00:00:02.3527510
+parse (tree) = 00:00:02.2225769
+parse (tree) = 00:00:02.5707033
 
 --------------- GLR not ambiguous ---------------
-heatup time  = 00:00:00.0034407
-read time    = 00:00:00.0419591
-scan time    = 00:00:00.2304572 tokenCount = 2000001
-scan time    = 00:00:00.1552139 tokenCount = 2000001
-scan time    = 00:00:00.1503697 tokenCount = 2000001
-parse (recognize) = 00:00:01.7290286
-parse (recognize) = 00:00:01.7158621
-parse (recognize) = 00:00:01.7144627
-parse (actions) = 00:00:01.9874918
-parse (actions) = 00:00:01.9649648
-parse (actions) = 00:00:01.9598666
-parse (tree) = 00:00:03.8618705
-parse (tree) = 00:00:03.9395498
-parse (tree) = 00:00:04.0201110
+heatup time  = 00:00:00.0259152
+read time    = 00:00:00.0124036
+scan time    = 00:00:00.1972625 tokenCount = 2000001
+scan time    = 00:00:00.1648475 tokenCount = 2000001
+scan time    = 00:00:00.1609249 tokenCount = 2000001
+parse (recognize) = 00:00:01.6620505
+parse (recognize) = 00:00:01.6343597
+parse (recognize) = 00:00:01.6429054
+parse (actions) = 00:00:01.9341790
+parse (actions) = 00:00:01.8983520
+parse (actions) = 00:00:01.9157067
+parse (tree) = 00:00:04.4211034
+parse (tree) = 00:00:04.4114380
+parse (tree) = 00:00:04.3830025
 
 --------------- GLR ambiguous ---------------
-heatup time  = 00:00:00.0025750
-read time    = 00:00:00.0000210
-scan time    = 00:00:00.0000682 tokenCount = 401
-scan time    = 00:00:00.0000425 tokenCount = 401
-scan time    = 00:00:00.0000420 tokenCount = 401
-parse (recognize) = 00:00:00.7089437
-parse (recognize) = 00:00:00.7024918
-parse (recognize) = 00:00:00.7003684
-parse (actions) = 00:00:23.8300903
-parse (actions) = 00:00:23.7992087
-parse (actions) = 00:00:23.7393538
-parse (tree) = 00:00:02.3152324
-parse (tree) = 00:00:02.3371795
-parse (tree) = 00:00:02.2691121
+heatup time  = 00:00:00.0042997
+read time    = 00:00:00.0000220
+scan time    = 00:00:00.0000574 tokenCount = 401
+scan time    = 00:00:00.0000549 tokenCount = 401
+scan time    = 00:00:00.0000543 tokenCount = 401
+parse (recognize) = 00:00:00.6879663
+parse (recognize) = 00:00:00.6748894
+parse (recognize) = 00:00:00.6517431
+parse (actions) = 00:00:22.1833117
+parse (actions) = 00:00:22.1656198
+parse (actions) = 00:00:22.1294146
+parse (tree) = 00:00:02.4514390
+parse (tree) = 00:00:02.2878133
+parse (tree) = 00:00:02.3115928
 
-3 passed, 0 failed, 0 skipped, took 114.42 seconds (NUnit 2.5.10).
+3 passed, 0 failed, 0 skipped, took 112.91 seconds (NUnit 2.6.2).
 

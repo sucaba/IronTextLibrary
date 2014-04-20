@@ -193,8 +193,6 @@ namespace IronText.Runtime
             this.hLocation = MakeHLoc();
             this.location = new Loc(document, priorPosition, currentPosition);
 
-            object tokenValue;
-
             // TODO: 
             //  1) cursor.Action -> list of real actions. for each real action create MsgData
             //  2) in build time ensure that within one state
@@ -204,14 +202,12 @@ namespace IronText.Runtime
             int    action = cursor.Actions[0];
             string text   = cursor.GetText();
 
-            tokenValue = termFactory(cursor.RootContext, action, text);
-
             int token  = GetTokenFromAction(action);
             if (token >= 0)
             {
                 int id = cursor.EnvelopeId;
                 // TODO: Amb & Main tokens for envelope.Id
-                Current = new Msg(id, token, tokenValue, action, text, location, hLocation);
+                Current = new Msg(id, token, action, text, location, hLocation);
 
                 // Shrodinger's token
                 if (cursor.ActionCount > 1)
@@ -221,9 +217,8 @@ namespace IronText.Runtime
                     {
                         action     = cursor.Actions[i];
                         token      = GetTokenFromAction(action);
-                        tokenValue = termFactory(cursor.RootContext, action, text);
 
-                        data.Next = new MsgData(token, tokenValue, action, text);
+                        data.Next = new MsgData(token, action, text);
                         data = data.Next;
                     }
                 }

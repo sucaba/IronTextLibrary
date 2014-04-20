@@ -32,30 +32,26 @@ namespace IronText.Runtime
 
     public static class LanguageExtensions
     {
+        private const string UnknownText = "?";
+
         public static Msg Literal(this ILanguageRuntime @this, string literal)
         {
             var id = @this.Identify(literal);
-            return new Msg(id, null, Loc.Unknown);
+            return new Msg(id, null, literal, Loc.Unknown);
         }
 
-        public static Msg Symbol<T>(this ILanguageRuntime @this) where T : new()
+        public static Msg Symbol<T>(this ILanguageRuntime @this, T value, string text = UnknownText)
         {
-            return @this.Symbol(new T());
+            return @this.Symbol(typeof(T), value, text);
         }
 
-        public static Msg Symbol<T>(this ILanguageRuntime @this, T value)
+        public static Msg Symbol(this ILanguageRuntime @this, Type type, object value, string text = UnknownText)
         {
-            var id = @this.IdentifySymbolValue(value);
-            return new Msg(id, value, Loc.Unknown);
+            return new Msg(@this.Identify(type), value, text, Loc.Unknown);
         }
 
-        public static int IdentifySymbolValue(this ILanguageRuntime @this, object value)
+        private static int IdentifySymbolValue(this ILanguageRuntime @this, object value)
         {
-            if (value == null)
-            {
-                return PredefinedTokens.Eoi;
-            }
-
             return @this.Identify(value.GetType());
         }
     }

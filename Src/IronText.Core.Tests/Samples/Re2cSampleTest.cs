@@ -16,8 +16,8 @@ namespace IronText.Tests.Samples
             {
                 var tokens = interp.Scan("print x 123 0x434af").ToArray();
 
-                var expected = new object[] { "$print$", "x", new Decimal("123"), new HexDecimal("0x434af") };
-                var got      = tokens.Select(msg => msg.Value).ToArray();
+                var expected = new string[] { "print", "x", "123", "0x434af" };
+                var got      = tokens.Select(msg => msg.Text).ToArray();
                 Assert.AreEqual(expected, got);
 
                 Assert.AreEqual(

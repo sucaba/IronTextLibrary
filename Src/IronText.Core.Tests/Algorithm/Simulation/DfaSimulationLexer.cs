@@ -17,13 +17,9 @@ namespace IronText.Tests.Algorithm
     /// </summary>
     public class DfaSimulationLexer : ISequence<Msg>
     {
-        private delegate object TokenFactoryDelegate(string text);
-
         private IDfaSimulation dfa;
         private readonly string text;
         private ScannerDescriptor descriptor;
-        // rule index -> token factory mapping:
-        private TokenFactoryDelegate[] tokenFactories;
 
         public DfaSimulationLexer(string text, ScannerDescriptor descriptor)
             : this(new StringReader(text), descriptor)
@@ -38,17 +34,6 @@ namespace IronText.Tests.Algorithm
             var regTree = new RegularTree(root);
             var algorithm = new RegularToDfaAlgorithm(regTree);
             this.dfa = new DfaSimulation(algorithm.Data);
-
-            int count = descriptor.Matchers.Count;
-            this.tokenFactories = new TokenFactoryDelegate[count];
-
-            for (int i = 0; i != count; ++i)
-            {
-                if (descriptor.Matchers[i].Outcome != null)
-                {
-                    tokenFactories[i] = BuildTokenFactory(descriptor.Matchers[i]);
-                }
-            }
         }
 
         public IReceiver<Msg> Accept(IReceiver<Msg> visitor)
@@ -90,13 +75,12 @@ namespace IronText.Tests.Algorithm
                 var production = descriptor.Matchers[action];
                 if (production.Outcome != null)
                 {
-                    TokenFactoryDelegate tokenFactory = tokenFactories[action];
-
                     // Emit next token
                     visitor = visitor.Next(
                         new Msg(
                             production.Outcome.Index,
-                            tokenFactory(text.Substring(start, tokenLength)),
+                            null,
+                            text.Substring(start, tokenLength),
                             new Loc(Loc.MemoryString, start, pos)));
                 }
 
@@ -104,11 +88,6 @@ namespace IronText.Tests.Algorithm
             }
 
             return visitor.Done();
-        }
-
-        private static TokenFactoryDelegate BuildTokenFactory(Matcher scanProduction)
-        {
-            return (string text) => text;
         }
     }
 }
