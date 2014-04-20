@@ -117,7 +117,7 @@ namespace IronText.Runtime
                 }
             }
 
-            return new Scanner(scan1, input, document, context, termFactory, maxActionCount, actionToToken, logging);
+            return new Scanner(scan1, input, document, context, maxActionCount, actionToToken, logging);
         }
 
         public IPushParser CreateParser<TNode>(IProducer<TNode> producer, ILogging logging)

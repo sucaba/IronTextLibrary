@@ -15,26 +15,23 @@ namespace IronText.Runtime
         internal readonly string             document;
         internal readonly TextReader         textSource;
         internal readonly Scan1Delegate      startMode;
-        internal readonly TermFactoryDelegate termFactory;
         internal readonly int[]              actionToToken;
 
         private  readonly ILogging           logging;
 
         public Scanner(
-            Scan1Delegate      startMode,
-            TextReader         textSource,
-            string             document,
-            object             rootContext,
-            TermFactoryDelegate termFactory,
-            int                maxActionCount,
-            int[]              actionToToken,
-            ILogging           logging)
+            Scan1Delegate startMode,
+            TextReader textSource,
+            string document,
+            object rootContext,
+            int maxActionCount,
+            int[] actionToToken,
+            ILogging logging)
         {
             this.startMode  = startMode;
             this.textSource = textSource;
             this.context    = rootContext;
             this.document   = document;
-            this.termFactory = termFactory;
             this.MaxActionCount = maxActionCount;
             this.actionToToken = actionToToken;
             this.logging    = logging;

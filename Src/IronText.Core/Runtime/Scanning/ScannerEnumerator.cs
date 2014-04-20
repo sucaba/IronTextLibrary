@@ -1,9 +1,8 @@
-﻿using System;
+﻿using IronText.Logging;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using IronText.Framework;
-using IronText.Logging;
 
 namespace IronText.Runtime
 {
@@ -19,7 +18,6 @@ namespace IronText.Runtime
         private string                       document;
         private ScanCursor                   cursor;
         private readonly TextReader          textSource;
-        private readonly TermFactoryDelegate termFactory;
         private readonly ILogging            logging;
 
         private readonly int[] actionToToken;
@@ -29,7 +27,6 @@ namespace IronText.Runtime
             this.scanner     = scanner;
             this.document    = scanner.document;
             this.textSource  = scanner.textSource;
-            this.termFactory = scanner.termFactory;
             this.actionToToken = scanner.actionToToken;
             this.logging     = logging;
 
