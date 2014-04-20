@@ -34,7 +34,7 @@ namespace IronText.Tests.Freezing
 
         [Language]
         [GrammarDocument("FreezerTest.gram")]
-        [Precedence("+", 1, assoc: Associativity.Left)]
+        [Precedence("+", 1, Associativity.Left)]
         public class MyCalc
         {
             [Outcome]
