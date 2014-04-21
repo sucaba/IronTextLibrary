@@ -8,18 +8,21 @@ namespace IronText.Reflection
     /// </summary>
     public sealed class SemanticAction : ICloneable
     {
-        public SemanticAction(int argumentCount, SemanticContextRef context = null)
-            : this(0, argumentCount, context)
+        public SemanticAction(int productionIndex, int argumentCount, SemanticContextRef context = null)
+            : this(productionIndex, 0, argumentCount, context)
         {
         }
 
-        public SemanticAction(int offset, int argumentCount, SemanticContextRef context = null)
+        public SemanticAction(int productionIndex, int offset, int argumentCount, SemanticContextRef context = null)
         {
+            this.ProductionIndex = productionIndex;
             this.ContextRef    = context ?? SemanticContextRef.None;
             this.Offset        = offset;
             this.ArgumentCount = argumentCount;
             this.Joint         = new Joint();
         }
+
+        public int ProductionIndex { get; private set; }
 
         public Joint Joint { get; private set; }
 
@@ -31,7 +34,7 @@ namespace IronText.Reflection
 
         public SemanticAction Clone()
         {
-            var result = new SemanticAction(Offset, ArgumentCount);
+            var result = new SemanticAction(ProductionIndex, Offset, ArgumentCount, ContextRef);
             result.Joint.AddAll(this.Joint);
             return result;
         }

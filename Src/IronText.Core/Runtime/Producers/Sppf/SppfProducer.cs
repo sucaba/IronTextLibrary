@@ -36,6 +36,11 @@ namespace IronText.Runtime
             SppfNode[] children = new SppfNode[prod.Pattern.Length];
             parts.CopyTo(children, 0);
 
+            if (prod.PatternTokens.Length > parts.Count)
+            {
+                FillEpsilonSuffix(prod.Index, parts.Count, children, parts.Count, stackLookback);
+            }
+
             Loc location;
             int partsCount = parts.Count;
             switch (partsCount)
@@ -49,11 +54,6 @@ namespace IronText.Runtime
                 default:
                     location = new Loc(children[0].Location.Position, children[partsCount - 1].Location.End);
                     break;
-            }
-
-            if (prod.PatternTokens.Length > parts.Count)
-            {
-                FillEpsilonSuffix(prod.Index, parts.Count, children, parts.Count, stackLookback);
             }
 
             return new SppfNode(prod.Index, location, children);

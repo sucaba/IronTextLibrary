@@ -119,7 +119,7 @@ namespace IronText.Reflection.Managed
                 if (result.Productions.FindOrAdd(outcome, pattern, out production))
                 {
                     SemanticContextRef contextRef = CreateActionContextRef(cilProduction.Context);
-                    production.Actions.Add(new SemanticAction(pattern.Length, contextRef));
+                    production.Actions.Add(new SemanticAction(production.Index, pattern.Length, contextRef));
                 }
 
                 var action = production.Actions[0];
