@@ -36,11 +36,19 @@ namespace IronText.Runtime
             SppfNode[] children = new SppfNode[prod.Pattern.Length];
             parts.CopyTo(children, 0);
 
-            Loc location = Loc.Unknown;
-            int partCount = parts.Count;
-            for (int i = 0; i != partCount; ++i)
+            Loc location;
+            int partsCount = parts.Count;
+            switch (partsCount)
             {
-                location += children[i].Location;
+                case 0:
+                    location = Loc.Unknown;
+                    break;
+                case 1:
+                    location = children[0].Location;
+                    break;
+                default:
+                    location = new Loc(children[0].Location.Position, children[partsCount - 1].Location.End);
+                    break;
             }
 
             if (prod.PatternTokens.Length > parts.Count)
