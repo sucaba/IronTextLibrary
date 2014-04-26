@@ -11,9 +11,9 @@ using IronText.Algorithm;
 namespace IronText.Reflection
 {
     [DebuggerDisplay("{DebugProductionText}")]
-    public sealed class Production : IndexableObject<ISharedGrammarEntities>, IProductionInput
+    public sealed class Production : IndexableObject<ISharedGrammarEntities>, IProductionComponent
     {
-        public Production(Symbol outcome, IEnumerable<IProductionInput> inputs, SemanticContextRef contextRef)
+        public Production(Symbol outcome, IEnumerable<IProductionComponent> inputs, SemanticContextRef contextRef)
         {
             if (outcome == null)
             {
@@ -50,7 +50,7 @@ namespace IronText.Reflection
 
         public int[]              PatternTokens  { get; private set; }
 
-        public IProductionInput[] Inputs         { get; set; }
+        public IProductionComponent[] Inputs         { get; set; }
 
         public Symbol             Outcome        { get; private set; }
 
@@ -215,12 +215,12 @@ namespace IronText.Reflection
             }
         }
 
-        int IProductionInput.Size
+        int IProductionComponent.Size
         {
             get { return Pattern.Length; }
         }
 
-        void IProductionInput.CopyTo(Symbol[] output, int startIndex)
+        void IProductionComponent.CopyTo(Symbol[] output, int startIndex)
         {
             int count = Pattern.Length;
             for (int i = 0; i != count; ++i)

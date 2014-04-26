@@ -5,7 +5,7 @@ namespace IronText.Reflection
     /// <summary>
     /// Deterministic symbol
     /// </summary>
-    public class Symbol : SymbolBase, IProductionInput
+    public class Symbol : SymbolBase, IProductionComponent
     {
         private readonly ReferenceCollection<Production> _productions;
 
@@ -66,12 +66,12 @@ namespace IronText.Reflection
             };
         }
 
-        int IProductionInput.Size
+        int IProductionComponent.Size
         {
             get { return 1; }
         }
 
-        void IProductionInput.CopyTo(Symbol[] output, int startIndex)
+        void IProductionComponent.CopyTo(Symbol[] output, int startIndex)
         {
             output[startIndex] = this;
         }

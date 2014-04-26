@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IronText.Reflection
 {
-    public interface IProductionInput
+    public interface IProductionComponent
     {
         int  Size { get; }
 
