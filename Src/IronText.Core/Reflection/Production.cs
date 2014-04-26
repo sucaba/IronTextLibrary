@@ -6,33 +6,46 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using IronText.Collections;
+using IronText.Algorithm;
 
 namespace IronText.Reflection
 {
     [DebuggerDisplay("{DebugProductionText}")]
-    public sealed class Production : IndexableObject<ISharedGrammarEntities>
+    public sealed class Production : IndexableObject<ISharedGrammarEntities>, IProductionInput
     {
         private readonly SemanticActionSequence _actions;
         
-        public Production(Symbol outcome, IEnumerable<Symbol> pattern)
+        public Production(Symbol outcome, IEnumerable<IProductionInput> inputs)
         {
             if (outcome == null)
             {
                 throw new ArgumentNullException("outcome");
             }
 
-            if (pattern == null)
+            if (inputs == null)
             {
-                throw new ArgumentNullException("pattern");
+                throw new ArgumentNullException("inputs");
             }
 
             Outcome       = outcome;
             OutcomeToken  = outcome.Index;
-            Pattern       = pattern.ToArray();
+
+            int size = inputs.Sum(inp => inp.Size);
+            var pattern = new Symbol[size];
+            int i = 0;
+            foreach (var input in inputs)
+            {
+                input.CopyTo(pattern, i);
+                i += input.Size;
+            }
+
+            Pattern       = pattern;
+
             PatternTokens = Array.ConvertAll(Pattern, s => s == null ? -1 : s.Index);
 
             _actions = new SemanticActionSequence();
         }
+
 
         public int               OutcomeToken   { get; private set; }
 
@@ -207,6 +220,20 @@ namespace IronText.Reflection
                 }
 
                 return output.ToString();
+            }
+        }
+
+        int IProductionInput.Size
+        {
+            get { return Pattern.Length; }
+        }
+
+        void IProductionInput.CopyTo(Symbol[] output, int startIndex)
+        {
+            int count = Pattern.Length;
+            for (int i = 0; i != count; ++i)
+            {
+                output[startIndex++] = Pattern[i];
             }
         }
     }
