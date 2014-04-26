@@ -13,44 +13,36 @@ namespace IronText.Reflection
     [DebuggerDisplay("{DebugProductionText}")]
     public sealed class Production : IndexableObject<ISharedGrammarEntities>, IProductionComponent
     {
-        public Production(Symbol outcome, IEnumerable<IProductionComponent> inputs, SemanticContextRef contextRef)
+        public Production(Symbol outcome, IEnumerable<IProductionComponent> components, SemanticContextRef contextRef)
         {
             if (outcome == null)
             {
                 throw new ArgumentNullException("outcome");
             }
 
-            if (inputs == null)
+            if (components == null)
             {
                 throw new ArgumentNullException("inputs");
             }
 
             Outcome       = outcome;
             OutcomeToken  = outcome.Index;
-            Inputs        = inputs.ToArray();
+            Components    = components.ToArray();
             ContextRef    = contextRef ?? SemanticContextRef.None;
 
-            int size = inputs.Sum(inp => inp.Size);
-            var pattern = new Symbol[size];
-            int i = 0;
-            foreach (var input in inputs)
-            {
-                input.CopyTo(pattern, i);
-                i += input.Size;
-            }
+            Pattern       = CreateInputPattern(components);
 
-            Pattern       = pattern;
-
-            PatternTokens = Array.ConvertAll(Pattern, s => s == null ? -1 : s.Index);
+            PatternTokens = Array.ConvertAll(Pattern, s => s.Index);
 
             this.Joint = new Joint();
         }
+
 
         public int                OutcomeToken   { get; private set; }
 
         public int[]              PatternTokens  { get; private set; }
 
-        public IProductionComponent[] Inputs         { get; set; }
+        public IProductionComponent[] Components { get; set; }
 
         public Symbol             Outcome        { get; private set; }
 
@@ -227,6 +219,20 @@ namespace IronText.Reflection
             {
                 output[startIndex++] = Pattern[i];
             }
+        }
+
+        private static Symbol[] CreateInputPattern(IEnumerable<IProductionComponent> components)
+        {
+            int size = components.Sum(comp => comp.Size);
+            var pattern = new Symbol[size];
+            int i = 0;
+            foreach (var comp in components)
+            {
+                comp.CopyTo(pattern, i);
+                i += comp.Size;
+            }
+
+            return pattern;
         }
     }
 }
