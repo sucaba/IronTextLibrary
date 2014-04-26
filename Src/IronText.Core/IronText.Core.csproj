@@ -120,7 +120,6 @@
     <Compile Include="Reflection\Cil\CilContext.cs" />
     <Compile Include="Reflection\Cil\CilContextProvider.cs" />
     <Compile Include="Reflection\IProductionInput.cs" />
-    <Compile Include="Reflection\SemanticActionSequence.cs" />
     <Compile Include="Reflection\SemanticContextProvider.cs" />
     <Compile Include="Reflection\SemanticContextRef.cs" />
     <Compile Include="Reflection\RefeneceCollection.cs" />
@@ -191,7 +190,6 @@
     <Compile Include="Reflection\ScanPattern.cs" />
     <Compile Include="Reflection\Matcher.cs" />
     <Compile Include="Reflection\MatcherCollection.cs" />
-    <Compile Include="Reflection\SemanticAction.cs" />
     <Compile Include="Reflection\Symbol.cs" />
     <Compile Include="Reflection\SymbolBase.cs" />
     <Compile Include="Reflection\SymbolCollection.cs" />

@@ -159,7 +159,8 @@ namespace IronText.MetadataCompiler
                     .Ldprop((Grammar g) => g.Productions)
                     .Ldc_I4(production.Outcome.Index)
                     .Ldloc(partsVar.GetRef())
-                    .Call((ProductionCollection prods, int l, IEnumerable<int> p) => prods.Define(l, p))
+                    .Ldstr(new QStr(production.ContextRef.UniqueName))
+                    .Call((ProductionCollection prods) => prods.Define(default(int), default(IEnumerable<int>), default(string)))
                     .Pop()
                     ;
             }

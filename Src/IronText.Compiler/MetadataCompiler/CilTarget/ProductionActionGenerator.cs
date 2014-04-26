@@ -126,43 +126,31 @@ namespace IronText.MetadataCompiler
 
         public static IActionCode CompileProduction(IActionCode code, Production prod)
         {
-            if (0 == prod.Actions.Count)
+            var bindings = prod.Joint.All<CilProduction>();
+            if (!bindings.Any())
             {
-                // Augumented start rule has null action and should never be invoked.
-                // Also it is possible that for some platforms production may have default
-                // action.
                 code = code.Emit(il => il.Ldnull());
             }
             else
             {
-                foreach (var action in prod.Actions)
+                bool first = true;
+                foreach (var binding in bindings)
                 {
-                    code = GenerateActionCode(code, action);
-                }
-            }
+                    if (first)
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        // Result of this rule supersedes result of the prvious one
+                        code = code.Emit(il => il.Pop());
+                    }
 
-            return code;
-        }
-
-        private static IActionCode GenerateActionCode(IActionCode code, SemanticAction action)
-        {
-            bool first = true;
-            foreach (var binding in action.Joint.All<CilProduction>())
-            {
-                if (first)
-                {
-                    first = false;
+                    code = code
+                        .Do(binding.Context.Load)
+                        .Do(binding.ActionBuilder)
+                        ;
                 }
-                else
-                {
-                    // Result of this rule supersedes result of the prvious one
-                    code = code.Emit(il => il.Pop());
-                }
-
-                code = code
-                    .Do(binding.Context.Load)
-                    .Do(binding.ActionBuilder)
-                    ;
             }
 
             return code;

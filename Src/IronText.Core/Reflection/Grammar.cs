@@ -44,7 +44,7 @@ namespace IronText.Reflection
             Symbols[PredefinedTokens.Error]           = new Symbol("$error");
 
             var startStub = new Symbol("$start-stub");
-            AugmentedProduction = Productions.Define((Symbol)Symbols[PredefinedTokens.AugmentedStart], new Symbol[] { startStub });
+            AugmentedProduction = Productions.Define((Symbol)Symbols[PredefinedTokens.AugmentedStart], new Symbol[] { startStub }, null);
         }
 
         public RuntimeOptions Options { get; set; }

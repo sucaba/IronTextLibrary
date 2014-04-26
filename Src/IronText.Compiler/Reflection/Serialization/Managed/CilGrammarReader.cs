@@ -115,15 +115,11 @@ namespace IronText.Reflection.Managed
                 var pattern = Array.ConvertAll(cilProduction.Pattern, symbolResolver.GetSymbol);
 
                 // Try to find existing rules whith same token-signature
+                SemanticContextRef contextRef = CreateActionContextRef(cilProduction.Context);
                 Production production;
-                if (result.Productions.FindOrAdd(outcome, pattern, out production))
-                {
-                    SemanticContextRef contextRef = CreateActionContextRef(cilProduction.Context);
-                    production.Actions.Add(new SemanticAction(production.Index, pattern.Length, contextRef));
-                }
+                result.Productions.FindOrAdd(outcome, pattern, contextRef, out production);
 
-                var action = production.Actions[0];
-                action.Joint.Add(cilProduction);
+                production.Joint.Add(cilProduction);
 
                 production.ExplicitPrecedence = cilProduction.Precedence;
             }

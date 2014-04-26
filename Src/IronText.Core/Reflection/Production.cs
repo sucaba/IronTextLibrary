@@ -13,9 +13,7 @@ namespace IronText.Reflection
     [DebuggerDisplay("{DebugProductionText}")]
     public sealed class Production : IndexableObject<ISharedGrammarEntities>, IProductionInput
     {
-        private readonly SemanticActionSequence _actions;
-        
-        public Production(Symbol outcome, IEnumerable<IProductionInput> inputs)
+        public Production(Symbol outcome, IEnumerable<IProductionInput> inputs, SemanticContextRef contextRef)
         {
             if (outcome == null)
             {
@@ -29,6 +27,8 @@ namespace IronText.Reflection
 
             Outcome       = outcome;
             OutcomeToken  = outcome.Index;
+            Inputs        = inputs.ToArray();
+            ContextRef    = contextRef ?? SemanticContextRef.None;
 
             int size = inputs.Sum(inp => inp.Size);
             var pattern = new Symbol[size];
@@ -43,25 +43,30 @@ namespace IronText.Reflection
 
             PatternTokens = Array.ConvertAll(Pattern, s => s == null ? -1 : s.Index);
 
-            _actions = new SemanticActionSequence();
+            this.Joint = new Joint();
         }
 
+        public int                OutcomeToken   { get; private set; }
 
-        public int               OutcomeToken   { get; private set; }
+        public int[]              PatternTokens  { get; private set; }
 
-        public int[]             PatternTokens  { get; private set; }
+        public IProductionInput[] Inputs         { get; set; }
 
-        public Symbol            Outcome        { get; private set; }
+        public Symbol             Outcome        { get; private set; }
 
-        public Symbol[]          Pattern        { get; private set; }
+        public Symbol[]           Pattern        { get; private set; }
 
-        public Precedence        ExplicitPrecedence { get; set; }
+        public Precedence         ExplicitPrecedence { get; set; }
 
-        public int  Size        { get { return PatternTokens.Length; } }
+        public int                Size           { get { return PatternTokens.Length; } }
 
-        public bool IsStart     { get { return Scope.Start == Outcome; } }
+        public bool               IsStart        { get { return Scope.Start == Outcome; } }
 
-        public bool IsAugmented { get { return PredefinedTokens.AugmentedStart == OutcomeToken; } }
+        public bool               IsAugmented    { get { return PredefinedTokens.AugmentedStart == OutcomeToken; } }
+
+        public Joint              Joint          { get; private set; }
+
+        public SemanticContextRef ContextRef     { get; private set; }
 
         public Precedence EffectivePrecedence
         {
@@ -75,19 +80,6 @@ namespace IronText.Reflection
                 int index = Array.FindLastIndex(Pattern, s => s.IsTerminal);
                 return index < 0 ? null : Pattern[index].Precedence;
             }
-        }
-
-        /// <summary>
-        /// Semantic actions for the production.
-        /// </summary>
-        /// <remarks>
-        /// Typically production contains single action, however
-        /// when production is inlined there are multiple actions
-        /// happing when this production being applied.
-        /// </remarks>
-        public SemanticActionSequence Actions
-        {
-            get { return _actions; }
         }
 
         public bool Equals(Production other)

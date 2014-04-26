@@ -117,7 +117,7 @@ namespace IronText.Analysis
                     ++pos;
                 }
 
-                var newProduction = new Production(parentProduction.Outcome, newPattern);
+                var newProduction = new Production(parentProduction.Outcome, newPattern, parentProduction.ContextRef);
                 throw new NotImplementedException("TODO");
 #if false
                 newProduction.Action = 

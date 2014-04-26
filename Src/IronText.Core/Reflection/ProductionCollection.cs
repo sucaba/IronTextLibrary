@@ -12,18 +12,19 @@ namespace IronText.Reflection
         {
         }
 
-        public Production Define(Symbol outcome, IEnumerable<Symbol> pattern)
+        public Production Define(Symbol outcome, IEnumerable<Symbol> pattern, SemanticContextRef contextRef = null)
         {
-            var result = new Production(outcome, pattern);
+            var result = new Production(outcome, pattern, contextRef);
             return Add(result);
         }
 
         [Obsolete("Refactoring grammar indexing")]
-        public Production Define(int outcome, IEnumerable<int> pattern)
+        public Production Define(int outcome, IEnumerable<int> pattern, string contextName = null)
         {
             return Define(
                 (Symbol)Scope.Symbols[outcome],
-                pattern.Select(t => (Symbol)Scope.Symbols[t]));
+                pattern.Select(t => (Symbol)Scope.Symbols[t]),
+                contextName == null ? null : new SemanticContextRef(contextName));
         }
 
         /// <summary>
@@ -56,13 +57,13 @@ namespace IronText.Reflection
         /// <param name="pattern"></param>
         /// <param name="?"></param>
         /// <returns><c>true</c> when production was just defined, <c>false</c> if it existed previously</returns>
-        public bool FindOrAdd(Symbol outcome, Symbol[] pattern, out Production output)
+        public bool FindOrAdd(Symbol outcome, Symbol[] pattern, SemanticContextRef contextRef, out Production output)
         {
             output = Find(outcome, pattern);
 
             if (output == null)
             {
-                output = Define(outcome, pattern);
+                output = Define(outcome, pattern, contextRef);
                 return true;
             }
 

@@ -200,9 +200,7 @@ namespace IronText.MetadataCompiler
 
                     foreach (var consumingProd in childSymbol.Productions)
                     {
-                        var action = consumingProd.Actions[0];
-
-                        if (providingSymbol.LocalContextProvider.Provides(action.ContextRef))
+                        if (providingSymbol.LocalContextProvider.Provides(consumingProd.ContextRef))
                         {
                             result.Add(
                                 new LocalContextBinding
@@ -210,7 +208,7 @@ namespace IronText.MetadataCompiler
                                     StackState    = parentState,
                                     StackLookback = item.Position,
                                     Provider      = providingSymbol.LocalContextProvider,
-                                    Consumer      = action.ContextRef
+                                    Consumer      = consumingProd.ContextRef
                                 });
                         }
                     }

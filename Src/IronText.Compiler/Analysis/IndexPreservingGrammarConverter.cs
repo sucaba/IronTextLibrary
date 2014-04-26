@@ -57,15 +57,10 @@ namespace IronText.Analysis
             var outcome = Convert(source.Outcome);
             var pattern = Array.ConvertAll(source.Pattern, Convert);
 
-            var result = new Production(outcome, pattern)
+            var result = new Production(outcome, pattern, source.ContextRef)
             {
                 ExplicitPrecedence = source.ExplicitPrecedence,
             };
-
-            foreach (var action in source.Actions)
-            {
-                result.Actions.Add(action.Clone());
-            }
 
             return result;
         }
