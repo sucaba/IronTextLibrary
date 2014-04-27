@@ -22,7 +22,7 @@ namespace IronText.Reflection
 
             if (components == null)
             {
-                throw new ArgumentNullException("inputs");
+                throw new ArgumentNullException("components");
             }
 
             Outcome       = outcome;
@@ -59,6 +59,16 @@ namespace IronText.Reflection
         public Joint              Joint          { get; private set; }
 
         public SemanticContextRef ContextRef     { get; private set; }
+
+        public bool               IsDeleted        { get; private set; }
+
+        public bool               IsUsed
+        {
+            get
+            {
+                return IsAugmented || IsStart || Outcome.Productions.Count > 1;
+            }
+        }
 
         public Precedence EffectivePrecedence
         {
@@ -233,6 +243,17 @@ namespace IronText.Reflection
             }
 
             return pattern;
+        }
+
+        T IProductionComponent.Accept<T>(IProductionComponentVisitor<T> visitor)
+        {
+            return visitor.VisitProduction(this);
+        }
+
+        public void MarkDeleted()
+        {
+            this.IsDeleted = true;
+            this.Outcome.Productions.Remove(this);
         }
     }
 }

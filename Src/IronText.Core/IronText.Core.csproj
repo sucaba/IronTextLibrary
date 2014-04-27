@@ -142,6 +142,7 @@
     <Compile Include="Reflection\Cil\CilMerger.cs" />
     <Compile Include="Reflection\Cil\CilSymbolFeature.cs" />
     <Compile Include="Reflection\RuntimeOptions.cs" />
+    <Compile Include="Reflection\Transformations\ProductionInliner.cs" />
     <Compile Include="Runtime\ILanguageInternalRuntime.cs" />
     <Compile Include="Runtime\ParserAction.cs" />
     <Compile Include="Runtime\ParserActionKind.cs" />

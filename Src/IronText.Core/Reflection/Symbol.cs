@@ -75,5 +75,15 @@ namespace IronText.Reflection
         {
             output[startIndex] = this;
         }
+
+        IProductionComponent[] IProductionComponent.Components
+        {
+            get { return new IProductionComponent[0]; }
+        }
+
+        T IProductionComponent.Accept<T>(IProductionComponentVisitor<T> visitor)
+        {
+            return visitor.VisitSymbol(this);
+        }
     }
 }
