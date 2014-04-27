@@ -18,7 +18,7 @@ namespace IronText.MetadataCompiler
     {
         private const string CreateGrammarMethodName            = "CreateGrammar";
         private const string CreateTokenKeyToIdMethodName       = "CreateTokenKeyToId";
-        private const string RuleActionMethodName               = "RuleAction";
+        private const string ProductionActionMethodName         = "ProducitonAction";
         private const string MergeActionMethodName              = "MergeAction";
         private const string TermFactoryMethodName              = "TermFactory";
         private const string GetParserActionMethodName          = "GetParserAction";
@@ -85,7 +85,7 @@ namespace IronText.MetadataCompiler
                     .Do(BuildMethod_CreateTokenIdentities)
                     .Do(BuildMethod_Scan1)
                     .Do(BuildMethod_TermFactory)
-                    .Do(BuildMethod_GrammarAction)
+                    .Do(BuildMethod_ProductionAction)
                     .Do(BuildMethod_MergeAction)
                     .Do(BuildMethod_CreateStateToSymbol)
                     .Do(BuildMethod_CreateParserActionConflicts)
@@ -106,10 +106,10 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        private ClassSyntax BuildMethod_GrammarAction(ClassSyntax context)
+        private ClassSyntax BuildMethod_ProductionAction(ClassSyntax context)
         {
             var generator = new ProductionActionGenerator();
-            return generator.BuildMethod(context, RuleActionMethodName, data);
+            return generator.BuildMethod(context, ProductionActionMethodName, data);
         }
 
         private ClassSyntax BuildMethod_MergeAction(ClassSyntax context)
@@ -480,7 +480,7 @@ namespace IronText.MetadataCompiler
                 .Ldarg(0)
                 .LdMethodDelegate(
                     declaringTypeRef,
-                    RuleActionMethodName,
+                    ProductionActionMethodName,
                     typeof(ProductionActionDelegate))
                 .Stfld(LanguageBase.Fields.grammarAction)
 
