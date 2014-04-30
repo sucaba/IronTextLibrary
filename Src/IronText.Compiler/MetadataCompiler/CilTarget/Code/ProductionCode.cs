@@ -48,7 +48,7 @@ namespace IronText.MetadataCompiler
                 .Do(LdRuleArgs)
                 .Do(LdArgsStart);
 
-            // Optmization for "+ 0".
+            // Optimization for "+ 0".
             if (index != 0)
             {
                 emit

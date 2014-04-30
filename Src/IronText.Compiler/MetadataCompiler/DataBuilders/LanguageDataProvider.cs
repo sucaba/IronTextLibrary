@@ -57,8 +57,7 @@ namespace IronText.MetadataCompiler
 
             grammar.Joint.Add(source);
 
-//            var inliner = new ProductionInliner(grammar);
-//            grammar = inliner.Inline();
+            // grammar.Inline();
 
             if (!bootstrap && !CompileScannerTdfas(grammar))
             {
