@@ -3,11 +3,11 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class SemanticContext : IndexableObject<ISharedGrammarEntities>
+    public class SemanticValue : IndexableObject<ISharedGrammarEntities>
     {
-        public static readonly SemanticContext None = new SemanticContext("$none");
+        public static readonly SemanticValue None = new SemanticValue("$none");
 
-        public SemanticContext(string name)
+        public SemanticValue(string name)
         {
             if (name == null)
             {
@@ -22,7 +22,7 @@ namespace IronText.Reflection
 
         public Joint  Joint { get; private set; }
 
-        public bool Match(SemanticContextRef reference)
+        public bool Match(SemanticRef reference)
         {
             if (reference == null)
             {
@@ -34,11 +34,11 @@ namespace IronText.Reflection
 
         public override bool Equals(object obj)
         {
-            var casted = obj as SemanticContext;
+            var casted = obj as SemanticValue;
             return Equals(casted);
         }
 
-        public bool Equals(SemanticContext other)
+        public bool Equals(SemanticValue other)
         {
             return other != null && UniqueName == other.UniqueName;
         }

@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using IronText.Collections;
+using System.Collections.ObjectModel;
 
 namespace IronText.Reflection
 {
-    public class SemanticContextProvider : ReferenceCollection<SemanticContext>
+    public class SemanticScope : Collection<SemanticValue>
     {
-        public SemanticContextProvider()
+        public SemanticScope()
         {
             this.Joint = new Joint();
         }
 
-        public bool Provides(SemanticContextRef reference)
+        public bool Provides(SemanticRef reference)
         {
             return this.Any(c => c.Match(reference));
         }
 
-        public SemanticContext Resolve(SemanticContextRef reference)
+        public SemanticValue Resolve(SemanticRef reference)
         {
             var matching = this.Where(c => c.Match(reference));
             int count = matching.Count();
@@ -33,5 +34,10 @@ namespace IronText.Reflection
         }
 
         public Joint Joint { get; private set; }
+
+        public bool Lookup(string name)
+        {
+            return this.Any(obj => obj.UniqueName == name);
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace IronText.Reflection
     [DebuggerDisplay("{DebugProductionText}")]
     public sealed class Production : IndexableObject<ISharedGrammarEntities>, IProductionComponent
     {
-        public Production(Symbol outcome, IEnumerable<IProductionComponent> components, SemanticContextRef contextRef)
+        public Production(Symbol outcome, IEnumerable<IProductionComponent> components, SemanticRef contextRef)
         {
             if (outcome == null)
             {
@@ -28,7 +28,7 @@ namespace IronText.Reflection
             Outcome       = outcome;
             OutcomeToken  = outcome.Index;
             Components    = components.ToArray();
-            ContextRef    = contextRef ?? SemanticContextRef.None;
+            ContextRef    = contextRef ?? SemanticRef.None;
 
             Pattern       = CreateInputPattern(components);
 
@@ -58,7 +58,7 @@ namespace IronText.Reflection
 
         public Joint              Joint          { get; private set; }
 
-        public SemanticContextRef ContextRef     { get; private set; }
+        public SemanticRef ContextRef     { get; private set; }
 
         public bool               IsDeleted        { get; private set; }
 

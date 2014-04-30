@@ -115,7 +115,7 @@ namespace IronText.Reflection.Managed
                 var pattern = Array.ConvertAll(cilProduction.Pattern, symbolResolver.GetSymbol);
 
                 // Try to find existing rules whith same token-signature
-                SemanticContextRef contextRef = CreateActionContextRef(cilProduction.Context);
+                SemanticRef contextRef = CreateActionContextRef(cilProduction.Context);
                 Production production;
                 result.Productions.FindOrAdd(outcome, pattern, contextRef, out production);
 
@@ -153,17 +153,17 @@ namespace IronText.Reflection.Managed
             return result;
         }
 
-        private static SemanticContextRef CreateActionContextRef(CilContextRef cilContext)
+        private static SemanticRef CreateActionContextRef(CilContextRef cilContext)
         {
-            SemanticContextRef result;
+            SemanticRef result;
 
             if (cilContext == CilContextRef.None)
             {
-                result = SemanticContextRef.None;
+                result = SemanticRef.None;
             }
             else
             {
-                result = new SemanticContextRef(cilContext.UniqueName);
+                result = new SemanticRef(cilContext.UniqueName);
             }
 
             return result;
@@ -191,19 +191,18 @@ namespace IronText.Reflection.Managed
         private static void InitContextProvider(
             Grammar            grammar,
             CilContextProvider cilProvider,
-            SemanticContextProvider    provider)
+            SemanticScope    provider)
         {
             provider.Joint.Add(cilProvider);
 
             foreach (var cilContext in cilProvider.Contexts)
             {
-                SemanticContext context;
-                if (grammar.Contexts.FindOrAdd(cilContext.UniqueName, out context))
+                if (!provider.Lookup(cilContext.UniqueName))
                 {
+                    SemanticValue context = new SemanticValue(cilContext.UniqueName);
                     context.Joint.Add(cilContext);
+                    provider.Add(context);
                 }
-
-                provider.Add(context);
             }
         }
     }

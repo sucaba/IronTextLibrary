@@ -12,7 +12,7 @@ namespace IronText.Reflection
         {
         }
 
-        public Production Define(Symbol outcome, IEnumerable<Symbol> pattern, SemanticContextRef contextRef = null)
+        public Production Define(Symbol outcome, IEnumerable<Symbol> pattern, SemanticRef contextRef = null)
         {
             var result = new Production(outcome, pattern, contextRef);
             return Add(result);
@@ -24,7 +24,7 @@ namespace IronText.Reflection
             return Define(
                 (Symbol)Scope.Symbols[outcome],
                 pattern.Select(t => (Symbol)Scope.Symbols[t]),
-                contextName == null ? null : new SemanticContextRef(contextName));
+                contextName == null ? null : new SemanticRef(contextName));
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace IronText.Reflection
         /// <param name="pattern"></param>
         /// <param name="?"></param>
         /// <returns><c>true</c> when production was just defined, <c>false</c> if it existed previously</returns>
-        public bool FindOrAdd(Symbol outcome, Symbol[] pattern, SemanticContextRef contextRef, out Production output)
+        public bool FindOrAdd(Symbol outcome, Symbol[] pattern, SemanticRef contextRef, out Production output)
         {
             output = Find(outcome, pattern);
 
