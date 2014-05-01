@@ -109,7 +109,7 @@ namespace IronText.Freezing.Managed
                                     il => il.Ldarg(args[0]),
                                     null,
                                     data,
-                                    data.Grammar.GlobalContextProvider);
+                                    data.Grammar.Globals);
 
                 CompileNode(root);
                 return emit.Ldarg(0).Ret();

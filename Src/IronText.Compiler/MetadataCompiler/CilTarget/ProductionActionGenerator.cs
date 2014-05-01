@@ -84,7 +84,7 @@ namespace IronText.MetadataCompiler
                 il => il.Ldarg(ctx),
                 il => il.Ldarg(lookbackStart),
                 data,
-                data.Grammar.GlobalContextProvider,
+                data.Grammar.Globals,
                 data.LocalParseContexts);
 
             IActionCode code = new ProductionCode(

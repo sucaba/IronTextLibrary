@@ -7,15 +7,15 @@ namespace IronText.Extensibility
         /// <summary>
         /// ID of the parent state
         /// </summary>
-        public int StackState    { get; set; }
+        public int           StackState    { get; set; }
 
         /// <summary>
         /// Tail relative position of the context token in stack
         /// </summary>
-        public int StackLookback { get; set; }
+        public int           StackLookback { get; set; }
 
-        public SemanticScope Provider      { get; set; }
+        public SemanticScope Locals        { get; set; }
 
-        public SemanticRef      Consumer      { get; set; }
+        public SemanticRef   ConsumerRef   { get; set; }
     }
 }

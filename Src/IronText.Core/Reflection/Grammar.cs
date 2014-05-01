@@ -27,7 +27,7 @@ namespace IronText.Reflection
             Matchers    = new MatcherCollection(this);
             Mergers     = new MergerCollection(this);
             Reports     = new ReportCollection();
-            GlobalContextProvider = new SemanticScope();
+            Globals     = new SemanticScope();
             Joint       = new Joint();
 
             for (int i = PredefinedTokens.Count; i != 0; --i)
@@ -61,7 +61,7 @@ namespace IronText.Reflection
 
         internal Production         AugmentedProduction { get; private set; }
 
-        public SemanticScope GlobalContextProvider { get; private set; }
+        public SemanticScope        Globals             { get; private set; }
 
         public SymbolCollection     Symbols             { get; private set; }
 

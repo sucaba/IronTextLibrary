@@ -206,8 +206,8 @@ namespace IronText.MetadataCompiler
                                 {
                                     StackState    = parentState,
                                     StackLookback = item.Position,
-                                    Provider      = providingSymbol.LocalContextProvider,
-                                    Consumer      = consumingProd.ContextRef
+                                    Locals      = providingSymbol.LocalContextProvider,
+                                    ConsumerRef      = consumingProd.ContextRef
                                 });
                         }
                     }

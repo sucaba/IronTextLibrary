@@ -54,7 +54,7 @@ namespace IronText.Reflection.Managed
             InitContextProvider(
                 result,
                 definition.GlobalContextProvider,
-                result.GlobalContextProvider);
+                result.Globals);
 
             var symbolResolver = definition.SymbolResolver;
 

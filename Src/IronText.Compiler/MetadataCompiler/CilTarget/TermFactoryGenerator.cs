@@ -55,7 +55,7 @@ namespace IronText.MetadataCompiler
                                     il => il.Do(ldRootContext),
                                     null,
                                     data,
-                                    data.Grammar.GlobalContextProvider);
+                                    data.Grammar.Globals);
             IActionCode code = new MatcherCode(emit, contextResolver, ldText, RETURN.GetRef());
 
             foreach (var matcher in data.Grammar.Matchers)

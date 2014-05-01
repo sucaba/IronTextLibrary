@@ -48,7 +48,7 @@ namespace IronText.MetadataCompiler
 
             if (localContexts != null && localContexts.Length != 0)
             {
-                var locals = localContexts.Where(lc => lc.Consumer.Equals(contextRef)).ToArray();
+                var locals = localContexts.Where(lc => lc.ConsumerRef.Equals(contextRef)).ToArray();
                 if (locals.Length != 0)
                 {
                     var END = emit.Labels.Generate().GetRef();
@@ -94,7 +94,7 @@ namespace IronText.MetadataCompiler
                             else
                             {
                                 var lc = locals[value];
-                                var provider = lc.Provider.Joint.The<CilContextProvider>();
+                                var provider = lc.Locals.Joint.The<CilContextProvider>();
                                 var context = provider.GetContext(contextName);
                                 context.Ld(
                                     il,
