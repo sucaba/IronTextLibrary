@@ -11,6 +11,7 @@ using IronText.Reflection.Managed;
 using IronText.MetadataCompiler;
 using IronText.Build;
 using IronText.Logging;
+using IronText.Compilation;
 
 namespace IronText.Freezing.Managed
 {
@@ -39,56 +40,7 @@ namespace IronText.Freezing.Managed
         {
         }
 
-        class LocalsStack
-        {
-            private const string SlotLocalPrefix = "slot";
-
-            private readonly Action<Pipe<EmitSyntax>> coder;
-            private readonly List<Ref<Locals>> slotLocals = new List<Ref<Locals>>();
-            private readonly Stack<Ref<Locals>> freeSlotLocals = new Stack<Ref<Locals>>();
-            private int currentSlotCount = 0;
-
-            public LocalsStack(Action<Pipe<EmitSyntax>> coder)
-            {
-                this.coder = coder;
-            }
-
-            public void PopSlots(int count)
-            {
-                for (int i = 0; i != count; ++i)
-                {
-                    freeSlotLocals.Push(slotLocals[i]);
-                }
-
-                slotLocals.RemoveRange(0, count);
-            }
-
-            public void PushSlot()
-            {
-                if (freeSlotLocals.Count == 0)
-                {
-                    // Add one more local variable for storing argument.
-                    coder(
-                        il =>
-                        {
-                            var l = il.Locals.Generate(SlotLocalPrefix + currentSlotCount);
-                            freeSlotLocals.Push(l.GetRef());
-                            return il.Local(l, il.Types.Object);
-                        });
-
-                    ++currentSlotCount;
-                }
-
-                var slot = freeSlotLocals.Pop();
-                coder(il => il.Stloc(slot));
-                slotLocals.Add(slot);
-            }
-
-            public void LdSlot(int index)
-            {
-                coder(il => il.Ldloc(slotLocals[index]));
-            }
-        }
+        
 
         class FreezerProcess : IActionCode, ISppfNodeVisitor
         {
