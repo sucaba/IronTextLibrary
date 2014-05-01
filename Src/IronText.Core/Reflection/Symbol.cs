@@ -81,6 +81,11 @@ namespace IronText.Reflection
             get { return new IProductionComponent[0]; }
         }
 
+        void IProductionComponent.Accept(IProductionComponentVisitor visitor)
+        {
+            visitor.VisitSymbol(this);
+        }
+
         T IProductionComponent.Accept<T>(IProductionComponentVisitor<T> visitor)
         {
             return visitor.VisitSymbol(this);

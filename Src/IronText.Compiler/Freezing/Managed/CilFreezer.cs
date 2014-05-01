@@ -40,8 +40,6 @@ namespace IronText.Freezing.Managed
         {
         }
 
-        
-
         class FreezerProcess : IActionCode, ISppfNodeVisitor
         {
             private readonly string       input;
@@ -134,7 +132,7 @@ namespace IronText.Freezing.Managed
                     this.currentTerminalText = null;
                 }
 
-                localsStack.PushSlot();
+                localsStack.Push();
             }
 
             void ISppfNodeVisitor.VisitBranch(int productionIndex, SppfNode[] children, Loc location)
@@ -148,8 +146,8 @@ namespace IronText.Freezing.Managed
                 var production = grammar.Productions[productionIndex];
                 code = ProductionActionGenerator.CompileProduction(code, production);
 
-                localsStack.PopSlots(count);
-                localsStack.PushSlot();
+                localsStack.Pop(count);
+                localsStack.Push();
             }
 
             void ISppfNodeVisitor.VisitAlternatives(SppfNode alternatives)

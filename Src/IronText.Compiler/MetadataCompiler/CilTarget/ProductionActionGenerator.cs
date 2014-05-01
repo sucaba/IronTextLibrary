@@ -5,6 +5,7 @@ using IronText.Lib.Shared;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
 using IronText.Runtime;
+using IronText.MetadataCompiler.CilTarget;
 
 namespace IronText.MetadataCompiler
 {
@@ -126,33 +127,8 @@ namespace IronText.MetadataCompiler
 
         public static IActionCode CompileProduction(IActionCode code, Production prod)
         {
-            var bindings = prod.Joint.All<CilProduction>();
-            if (!bindings.Any())
-            {
-                code = code.Emit(il => il.Ldnull());
-            }
-            else
-            {
-                bool first = true;
-                foreach (var binding in bindings)
-                {
-                    if (first)
-                    {
-                        first = false;
-                    }
-                    else
-                    {
-                        // Result of this rule supersedes result of the prvious one
-                        code = code.Emit(il => il.Pop());
-                    }
-
-                    code = code
-                        .Do(binding.Context.Load)
-                        .Do(binding.ActionBuilder)
-                        ;
-                }
-            }
-
+            var compiler = new ProductionCompiler(pipe => { code = pipe(code); });
+            compiler.Execute(prod);
             return code;
         }
     }

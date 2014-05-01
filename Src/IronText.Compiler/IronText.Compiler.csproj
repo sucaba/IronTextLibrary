@@ -139,6 +139,7 @@
     <Compile Include="Build\MetadataSyntax\TypesMetadataSyntax.cs" />
     <Compile Include="Compilation\LocalStack.cs" />
     <Compile Include="Freezing\Managed\CilFreezer.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\ProductionCompiler.cs" />
     <Compile Include="Reflection\Serialization\Managed\CilGrammarReader.cs" />
     <Compile Include="Reflection\Reporting\ReportData.cs" />
     <Compile Include="Reflection\Managed\CilSymbolRefResolver.cs" />

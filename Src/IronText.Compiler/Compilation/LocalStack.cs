@@ -25,7 +25,7 @@ namespace IronText.Compilation
             this.coder = coder;
         }
 
-        public void PopSlots(int count)
+        public void Pop(int count)
         {
             for (int i = 0; i != count; ++i)
             {
@@ -35,7 +35,7 @@ namespace IronText.Compilation
             slotLocals.RemoveRange(0, count);
         }
 
-        public void PushSlot()
+        public void Push()
         {
             if (freeSlotLocals.Count == 0)
             {

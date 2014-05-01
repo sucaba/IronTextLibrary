@@ -13,7 +13,15 @@ namespace IronText.Reflection
 
         IProductionComponent[] Components { get; }
 
+        void Accept(IProductionComponentVisitor visitor);
         T Accept<T>(IProductionComponentVisitor<T> visitor);
+    }
+
+    public interface IProductionComponentVisitor
+    {
+        void VisitSymbol(Symbol symbol);
+
+        void VisitProduction(Production production);
     }
 
     public interface IProductionComponentVisitor<T>

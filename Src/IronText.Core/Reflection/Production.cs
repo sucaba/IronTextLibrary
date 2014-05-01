@@ -245,6 +245,11 @@ namespace IronText.Reflection
             return pattern;
         }
 
+        void IProductionComponent.Accept(IProductionComponentVisitor visitor)
+        {
+            visitor.VisitProduction(this);
+        }
+
         T IProductionComponent.Accept<T>(IProductionComponentVisitor<T> visitor)
         {
             return visitor.VisitProduction(this);
