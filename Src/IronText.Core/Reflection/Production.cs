@@ -58,9 +58,9 @@ namespace IronText.Reflection
 
         public Joint              Joint          { get; private set; }
 
-        public SemanticRef ContextRef     { get; private set; }
+        public SemanticRef        ContextRef     { get; private set; }
 
-        public bool               IsDeleted        { get; private set; }
+        public bool               IsDeleted      { get; private set; }
 
         public bool               IsUsed
         {
