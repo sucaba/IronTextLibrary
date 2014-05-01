@@ -197,11 +197,12 @@ namespace IronText.Reflection.Managed
 
             foreach (var cilContext in cilProvider.Contexts)
             {
-                if (!provider.Lookup(cilContext.UniqueName))
+                var reference = new SemanticRef(cilContext.UniqueName);
+                if (!provider.Lookup(reference))
                 {
                     SemanticValue context = new SemanticValue(cilContext.UniqueName);
                     context.Joint.Add(cilContext);
-                    provider.Add(context);
+                    provider.Add(reference, context);
                 }
             }
         }

@@ -199,7 +199,7 @@ namespace IronText.MetadataCompiler
 
                     foreach (var consumingProd in childSymbol.Productions)
                     {
-                        if (providingSymbol.LocalContextProvider.Provides(consumingProd.ContextRef))
+                        if (providingSymbol.LocalContextProvider.Lookup(consumingProd.ContextRef))
                         {
                             result.Add(
                                 new LocalContextBinding

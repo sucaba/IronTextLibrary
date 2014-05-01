@@ -120,8 +120,8 @@
     <Compile Include="Reflection\Cil\CilContext.cs" />
     <Compile Include="Reflection\Cil\CilContextProvider.cs" />
     <Compile Include="Reflection\IProductionComponent.cs" />
-    <Compile Include="Reflection\SemanticScope.cs" />
-    <Compile Include="Reflection\SemanticRef.cs" />
+    <Compile Include="Reflection\Semantics\SemanticScope.cs" />
+    <Compile Include="Reflection\Semantics\SemanticRef.cs" />
     <Compile Include="Reflection\RefeneceCollection.cs" />
     <Compile Include="Reflection\Serialization\IGrammarReader.cs" />
     <Compile Include="Reflection\IGrammarSource.cs" />
