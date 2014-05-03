@@ -8,51 +8,72 @@ using IronText.Framework;
 
 namespace IronText.Reflection.Managed
 {
-    public class CilSemanticScope
+    public class CilSemanticScope : IEnumerable<KeyValuePair<string,CilSemanticValue>>
     {
-        private Dictionary<string, CilSemanticValue> dictionary;
+        private readonly Dictionary<string, CilSemanticValue> dictionary;
+        private readonly Type providerType;
 
         public CilSemanticScope(Type providerType)
         {
-            this.ProviderType     = providerType;
+            this.providerType = providerType;
+            this.dictionary   = BuildDictionary();
         }
-
-        public Type ProviderType     { get; private set; }
 
         public CilSemanticValue Resolve(string name)
         {
-            return Contexts.Single(c => c.Key == name).Value;
+            return dictionary[name];
         }
 
-        public IEnumerable<KeyValuePair<string,CilSemanticValue>> Contexts
+        IEnumerator<KeyValuePair<string, CilSemanticValue>> IEnumerable<KeyValuePair<string, CilSemanticValue>>.GetEnumerator()
         {
-            get
+            return dictionary.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return dictionary.GetEnumerator();
+        }
+
+        private Dictionary<string,CilSemanticValue> BuildDictionary()
+        {
+            var result = new Dictionary<string,CilSemanticValue>();
+
+            result.Add(
+                CilSemanticRef.ByType(providerType).UniqueName,
+                new CilSemanticValue(providerType, new MethodInfo[0]));
+
+            var types =
+                Graph.AllVertexes(
+                        EnumerateContextGetters(providerType),
+                        m => EnumerateContextGetters(m.ReturnType))
+                        .Select(m => m.ReturnType)
+                        .Distinct()
+                        ;
+
+            foreach (var type in types)
             {
-                var result = new List<CilSemanticValue>
-                { 
-                    new CilSemanticValue(ProviderType, new MethodInfo[0]) 
-                };
-
-                result.AddRange(
-                    Graph.AllVertexes(
-                            EnumerateContextGetters(ProviderType),
-                            m => EnumerateContextGetters(m.ReturnType))
-                            .Distinct()
-                            .Select(m => new CilSemanticValue(m.ReturnType, GetGetterPath(m.ReturnType))));
-
-                return result.Select(c => new KeyValuePair<string,CilSemanticValue>(c.UniqueName, c));
+                result.Add(
+                    CilSemanticRef.ByType(type).UniqueName,
+                    new CilSemanticValue(type, GetGetterPath(type)));
             }
+
+            return result;
+        }
+
+        private static KeyValuePair<T,V> Pair<T,V>(T key, V value)
+        {
+            return new KeyValuePair<T, V>(key, value);
         }
 
         private IEnumerable<MethodInfo> GetGetterPath(Type type)
         {
-            if (type.IsAssignableFrom(ProviderType))
+            if (type.IsAssignableFrom(providerType))
             {
                 return Enumerable.Empty<MethodInfo>();
             }
 
             var path = Graph.Search(
-                        EnumerateContextGetters(ProviderType),
+                        EnumerateContextGetters(providerType),
                         m => EnumerateContextGetters(m.ReturnType),
                         m => type.IsAssignableFrom(m.ReturnType));
 

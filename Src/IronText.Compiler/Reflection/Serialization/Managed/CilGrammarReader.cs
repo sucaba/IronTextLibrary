@@ -195,7 +195,7 @@ namespace IronText.Reflection.Managed
         {
             provider.Joint.Add(scope);
 
-            foreach (var nameValuePair in scope.Contexts)
+            foreach (var nameValuePair in scope)
             {
                 var reference = new SemanticRef(nameValuePair.Key);
                 if (!provider.Lookup(reference))
