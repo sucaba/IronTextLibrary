@@ -7,14 +7,9 @@ namespace IronText.Reflection.Managed
 {
     public abstract class CilSemanticRef
     {
-        internal static string GetName(Type type)
-        {
-            return type.AssemblyQualifiedName;
-        }
-        
         public static readonly CilSemanticRef None = new NoneContextRef();
 
-        public static CilSemanticRef ByType(Type type)    { return new ByTypeContextRef(type); }
+        public static CilSemanticRef ByType(Type type) { return new ByTypeContextRef(type); }
 
         public abstract string UniqueName { get; }
 
@@ -36,7 +31,7 @@ namespace IronText.Reflection.Managed
 
             public ByTypeContextRef(Type type) { this.type = type; }
 
-            public override string UniqueName { get { return GetName(type); } }
+            public override string UniqueName { get { return type.AssemblyQualifiedName; } }
 
             public override bool Equals(object obj)
             {

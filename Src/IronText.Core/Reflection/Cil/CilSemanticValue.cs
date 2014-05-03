@@ -17,11 +17,6 @@ namespace IronText.Reflection.Managed
             this.path = path.ToArray();
         }
 
-        public string UniqueName
-        {
-            get { return CilSemanticRef.GetName(ValueType); }
-        }
-
         /// <summary>
         /// Runtime type of the semantic value
         /// </summary>

@@ -195,13 +195,13 @@ namespace IronText.Reflection.Managed
         {
             logicalScope.Joint.Add(platformScope);
 
-            foreach (var nameValuePair in platformScope)
-            {
-                var reference = new SemanticRef(nameValuePair.Key);
+            foreach (var refValuePair in platformScope)
+             {
+                var reference = new SemanticRef(refValuePair.Key.UniqueName);
                 if (!logicalScope.Lookup(reference))
                 {
-                    SemanticValue value = new SemanticValue(title: nameValuePair.Key);
-                    value.Joint.Add(nameValuePair.Value);
+                    SemanticValue value = new SemanticValue(title: refValuePair.Key.UniqueName);
+                    value.Joint.Add(refValuePair.Value);
                     logicalScope.Add(reference, value);
                 }
             }

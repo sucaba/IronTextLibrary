@@ -8,9 +8,9 @@ using IronText.Framework;
 
 namespace IronText.Reflection.Managed
 {
-    public class CilSemanticScope : IEnumerable<KeyValuePair<string,CilSemanticValue>>
+    public class CilSemanticScope : IEnumerable<KeyValuePair<CilSemanticRef,CilSemanticValue>>
     {
-        private readonly Dictionary<string, CilSemanticValue> dictionary;
+        private readonly Dictionary<CilSemanticRef, CilSemanticValue> dictionary;
         private readonly Type providerType;
 
         public CilSemanticScope(Type providerType)
@@ -19,12 +19,12 @@ namespace IronText.Reflection.Managed
             this.dictionary   = BuildDictionary();
         }
 
-        public CilSemanticValue Resolve(string name)
+        public CilSemanticValue Resolve(CilSemanticRef name)
         {
             return dictionary[name];
         }
 
-        IEnumerator<KeyValuePair<string, CilSemanticValue>> IEnumerable<KeyValuePair<string, CilSemanticValue>>.GetEnumerator()
+        IEnumerator<KeyValuePair<CilSemanticRef, CilSemanticValue>> IEnumerable<KeyValuePair<CilSemanticRef, CilSemanticValue>>.GetEnumerator()
         {
             return dictionary.GetEnumerator();
         }
@@ -34,12 +34,12 @@ namespace IronText.Reflection.Managed
             return dictionary.GetEnumerator();
         }
 
-        private Dictionary<string,CilSemanticValue> BuildDictionary()
+        private Dictionary<CilSemanticRef,CilSemanticValue> BuildDictionary()
         {
-            var result = new Dictionary<string,CilSemanticValue>();
+            var result = new Dictionary<CilSemanticRef,CilSemanticValue>();
 
             result.Add(
-                CilSemanticRef.ByType(providerType).UniqueName,
+                CilSemanticRef.ByType(providerType),
                 new CilSemanticValue(providerType, new MethodInfo[0]));
 
             var types =
@@ -53,7 +53,7 @@ namespace IronText.Reflection.Managed
             foreach (var type in types)
             {
                 result.Add(
-                    CilSemanticRef.ByType(type).UniqueName,
+                    CilSemanticRef.ByType(type),
                     new CilSemanticValue(type, GetGetterPath(type)));
             }
 
