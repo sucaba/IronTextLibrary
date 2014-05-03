@@ -73,10 +73,11 @@ namespace IronText.MetadataCompiler
                                             map,
                                             labels.Length - 1,
                                             new IntInterval(0, short.MaxValue));
-                    Expression<Action<IStackLookback<ActionNode>>> lookback = lb => lb.GetParentState();
                     switchGenerator.Build(
                         emit,
-                        new Pipe<EmitSyntax>(il => il.Do(ldLookback).Call<IStackLookback<ActionNode>>(lookback)),
+                        il => il
+                                .Do(ldLookback)
+                                .Call((IStackLookback<ActionNode> lb) => lb.GetParentState()),
                         (il, value) =>
                         {
                             il.Label(labels[value].Def);
