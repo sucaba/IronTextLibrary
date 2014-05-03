@@ -116,9 +116,9 @@
     <Compile Include="Diagnostics\IGraphView.cs" />
     <Compile Include="Algorithm\Build\IDerivedBuilderMetadata.cs" />
     <Compile Include="Framework\LanguageFlags.cs" />
-    <Compile Include="Reflection\Cil\CilContextRef.cs" />
-    <Compile Include="Reflection\Cil\CilContext.cs" />
-    <Compile Include="Reflection\Cil\CilContextProvider.cs" />
+    <Compile Include="Reflection\Cil\CilSemanticRef.cs" />
+    <Compile Include="Reflection\Cil\CilSemanticValue.cs" />
+    <Compile Include="Reflection\Cil\CilSemanticScope.cs" />
     <Compile Include="Reflection\IProductionComponent.cs" />
     <Compile Include="Reflection\Semantics\SemanticScope.cs" />
     <Compile Include="Reflection\Semantics\SemanticRef.cs" />

@@ -80,7 +80,7 @@ namespace IronText.MetadataCompiler
         {
             Def<Labels> returnLabel = emit.Labels.Generate();
 
-            var contextCode = new ContextCode(
+            var contextCode = new SemanticCode(
                 emit,
                 il => il.Ldarg(ctx),
                 il => il.Ldarg(lookbackStart),
@@ -128,6 +128,13 @@ namespace IronText.MetadataCompiler
         public static IActionCode CompileProduction(IActionCode code, Production prod)
         {
             var compiler = new ProductionCompiler(pipe => { code = pipe(code); });
+#if false
+            for (int i = 0; i != prod.Size; ++i)
+            {
+                code = code.LdActionArgument(i);
+            }
+#endif
+
             compiler.Execute(prod);
             return code;
         }

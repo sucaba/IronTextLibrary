@@ -24,20 +24,20 @@ namespace IronText.Framework
             return result.Where(child => !(child is ScanBaseAttribute));
         }
 
-        public override IEnumerable<CilSymbolFeature<CilContextProvider>> GetLocalContextProviders()
+        public override IEnumerable<CilSymbolFeature<CilSemanticScope>> GetLocalContextProviders()
         {
             if (Parent == null)
             {
                 var type = (Type)Member;
                 return new[]
                 { 
-                    new CilSymbolFeature<CilContextProvider>(
+                    new CilSymbolFeature<CilSemanticScope>(
                             CilSymbolRef.Create(type),
-                            new CilContextProvider(type))
+                            new CilSemanticScope(type))
                 };
             }
 
-            return new CilSymbolFeature<CilContextProvider>[0];
+            return new CilSymbolFeature<CilSemanticScope>[0];
         }
 
         private IEnumerable<ICilMetadata> EnumerateDirectChildren()

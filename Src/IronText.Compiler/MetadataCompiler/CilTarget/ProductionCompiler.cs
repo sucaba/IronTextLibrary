@@ -1,4 +1,6 @@
-﻿using IronText.Framework;
+﻿using IronText.Compilation;
+using IronText.Framework;
+using IronText.Lib.IL;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
 using System;
@@ -8,26 +10,59 @@ using System.Text;
 
 namespace IronText.MetadataCompiler.CilTarget
 {
-    class ProductionCompiler : IProductionComponentVisitor
+    class ProductionCompiler : IProductionComponentVisitor, IActionCode
     {
         private readonly Action<Pipe<IActionCode>> coder;
+        private readonly LocalsStack localsStack;
 
         public ProductionCompiler(Action<Pipe<IActionCode>> coder)
         {
             this.coder = coder;
+            this.localsStack = new LocalsStack(ILCoder);
+
+#if false
+            this.contextCode = new ContextCode(
+                                emit,
+                                il => il.Ldarg(args[0]),
+                                null,
+                                data,
+                                data.Grammar.Globals);
+#endif
+        }
+
+        private void ILCoder(Pipe<EmitSyntax> pipe)
+        {
+            coder(c => c.Emit(pipe));
         }
 
         public void Execute(IProductionComponent root)
         {
+#if false
+            int size = root.Size;
+            for (int i = size; i != 0; --i)
+            {
+                localsStack.Push();
+            }
+#endif
+
             root.Accept(this);
         }
 
         void IProductionComponentVisitor.VisitSymbol(Symbol symbol)
         {
+            throw new NotSupportedException(
+                "Internal error: Production compiler can be used only for extended productions.");
         }
 
         void IProductionComponentVisitor.VisitProduction(Production production)
         {
+#if false
+            foreach (var component in production.Components)
+            {
+                component.Accept(this);
+            }
+#endif
+
             var bindings = production.Joint.All<CilProduction>();
             if (!bindings.Any())
             {
@@ -56,6 +91,71 @@ namespace IronText.MetadataCompiler.CilTarget
                         ;
                 }
             }
+
+#if false
+            localsStack.Pop(production.Size);
+            localsStack.Push();
+#endif
+        }
+
+        IActionCode IActionCode.Emit(Pipe<EmitSyntax> pipe)
+        {
+            ILCoder(pipe);
+            return this;
+        }
+
+        IActionCode IActionCode.LdSemantic(string contextName)
+        {
+            throw new NotImplementedException();
+            // contextCode.LdContext(contextName);
+            // return code;
+        }
+
+        public IActionCode LdActionArgument(int index)
+        {
+            localsStack.LdSlot(index);
+            return this;
+        }
+
+        IActionCode IActionCode.LdActionArgument(int index, Type argType)
+        {
+            localsStack.LdSlot(index);
+            if (argType.IsValueType)
+            {
+                ILCoder(emit => emit.Unbox_Any(emit.Types.Import(argType)));
+            }
+
+            return this;
+        }
+
+        IActionCode IActionCode.LdMergerOldValue()
+        {
+            throw new NotImplementedException();
+        }
+
+        IActionCode IActionCode.LdMergerNewValue()
+        {
+            throw new NotImplementedException();
+        }
+
+        IActionCode IActionCode.LdMatcherTokenString()
+        {
+            throw new NotSupportedException();
+        }
+
+        IActionCode IActionCode.ReturnFromAction()
+        {
+            return this;
+        }
+
+        IActionCode IActionCode.SkipAction()
+        {
+            throw new NotSupportedException();
+        }
+
+        private void EmitCode(Pipe<EmitSyntax> fragment)
+        {
+            ILCoder(fragment);
         }
     }
 }

@@ -9,30 +9,30 @@ namespace IronText.MetadataCompiler
 {
     class ProductionCode : IActionCode
     {
-        private EmitSyntax      emit;
-        public Def<Labels>      ReturnLabel;
-        private readonly Pipe<EmitSyntax> LdRuleArgs;
-        private readonly Pipe<EmitSyntax> LdArgsStart;
+        private EmitSyntax                emit;
+        private readonly Def<Labels>      returnLabel;
+        private readonly Pipe<EmitSyntax> ldRuleArgs;
+        private readonly Pipe<EmitSyntax> ldArgsStart;
 
-        private IContextCode contextCode;
+        private ISemanticCode contextCode;
 
         public ProductionCode(
             EmitSyntax       emit,
-            IContextCode     contextCode,
+            ISemanticCode    contextCode,
             Pipe<EmitSyntax> ldRuleArgs,
             Pipe<EmitSyntax> ldArgsStart,
             Def<Labels>      returnLabel)
         {
             this.emit        = emit;
             this.contextCode = contextCode;
-            this.LdRuleArgs  = ldRuleArgs;
-            this.LdArgsStart = ldArgsStart;
-            this.ReturnLabel = returnLabel;
+            this.ldRuleArgs  = ldRuleArgs;
+            this.ldArgsStart = ldArgsStart;
+            this.returnLabel = returnLabel;
         }
 
-        public IActionCode LdContext(string contextName)
+        public IActionCode LdSemantic(string contextName)
         {
-            contextCode.LdContext(contextName);
+            contextCode.LdSemantic(contextName);
             return this;
         }
 
@@ -42,11 +42,11 @@ namespace IronText.MetadataCompiler
             return this;
         }
 
-        private IActionCode LdActionArgument(int index)
+        public IActionCode LdActionArgument(int index)
         {
             emit = emit
-                .Do(LdRuleArgs)
-                .Do(LdArgsStart);
+                .Do(ldRuleArgs)
+                .Do(ldArgsStart);
 
             // Optimization for "+ 0".
             if (index != 0)
@@ -87,7 +87,7 @@ namespace IronText.MetadataCompiler
 
         public void EmitReturn()
         {
-            emit.Br(ReturnLabel.GetRef());
+            emit.Br(returnLabel.GetRef());
         }
 
         public IActionCode LdMergerOldValue()

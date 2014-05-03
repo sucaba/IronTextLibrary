@@ -21,7 +21,7 @@ namespace IronText.Reflection.Managed
             AllOutcomes.Add(outcome);
         }
 
-        public CilContextRef        Context                { get; set; }
+        public CilSemanticRef        Context                { get; set; }
         
         public MethodInfo           DefiningMethod         { get; set; }
 

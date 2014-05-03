@@ -50,7 +50,7 @@ namespace IronText.MetadataCompiler
                 .Switch(actionLabels)
                 ;
 
-            var contextResolver = new ContextCode(
+            var contextResolver = new SemanticCode(
                                     emit,
                                     il => il.Do(ldRootContext),
                                     null,

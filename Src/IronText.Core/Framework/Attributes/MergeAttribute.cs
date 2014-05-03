@@ -57,10 +57,10 @@ namespace IronText.Framework
             };
         }
 
-        private CilContextRef GetContext()
+        private CilSemanticRef GetContext()
         {
             var contextType = GetContextType();
-            var contextRef = Method.IsStatic ? CilContextRef.None : CilContextRef.ByType(contextType);
+            var contextRef = Method.IsStatic ? CilSemanticRef.None : CilSemanticRef.ByType(contextType);
             return contextRef;
         }
     }

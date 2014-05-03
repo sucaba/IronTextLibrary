@@ -102,7 +102,7 @@ namespace IronText.Reflection.Managed
             // Generate implicit scan rule for the keyword
             var result  = new CilMatcher
             {
-                Context         = CilContextRef.None,
+                Context         = CilSemanticRef.None,
                 MainOutcome     = outcome,
                 AllOutcomes     = { outcome },
                 Disambiguation  = Disambiguation.Exclusive,

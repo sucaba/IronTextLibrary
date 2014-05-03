@@ -131,9 +131,9 @@ namespace IronText.Framework
             return new[] { matcher };
         }
 
-        private CilContextRef GetContext()
+        private CilSemanticRef GetContext()
         {
-            return Method.IsStatic ? CilContextRef.None : CilContextRef.ByType(GetContextType());
+            return Method.IsStatic ? CilSemanticRef.None : CilSemanticRef.ByType(GetContextType());
         }
 
         private Type TokenType 

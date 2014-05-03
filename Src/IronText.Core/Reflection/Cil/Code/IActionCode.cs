@@ -8,7 +8,9 @@ namespace IronText.Reflection.Managed
     {
         IActionCode Emit(Pipe<EmitSyntax> emit);
 
-        IActionCode LdContext(string contextName);
+        IActionCode LdSemantic(string name);
+
+        IActionCode LdActionArgument(int index);
 
         IActionCode LdActionArgument(int index, Type argType);
 

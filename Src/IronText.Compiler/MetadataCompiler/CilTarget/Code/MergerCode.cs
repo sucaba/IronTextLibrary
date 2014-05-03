@@ -10,17 +10,17 @@ namespace IronText.MetadataCompiler
         public Pipe<EmitSyntax> LoadOldValue;
         public Pipe<EmitSyntax> LoadNewValue;
         private EmitSyntax emit;
-        private readonly IContextCode contextCode;
+        private readonly ISemanticCode contextCode;
 
-        public MergeCode(EmitSyntax emit, IContextCode contextCode)
+        public MergeCode(EmitSyntax emit, ISemanticCode contextCode)
         {
             this.emit        = emit;
             this.contextCode = contextCode;
         }
 
-        public IActionCode LdContext(string contextName)
+        public IActionCode LdSemantic(string contextName)
         {
-            contextCode.LdContext(contextName);
+            contextCode.LdSemantic(contextName);
             return this;
         }
 
@@ -38,6 +38,11 @@ namespace IronText.MetadataCompiler
         public IActionCode LdMergerNewValue()
         {
             return Emit(LoadNewValue);
+        }
+
+        public IActionCode LdActionArgument(int index)
+        {
+            throw new NotSupportedException();
         }
 
         public IActionCode LdActionArgument(int index, Type argType)

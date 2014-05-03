@@ -23,6 +23,6 @@ namespace IronText.MetadataCompiler
 
         public int[]        TokenComplexity     { get; set; }
 
-        public LocalContextBinding[]  LocalParseContexts  { get; set; }
+        public LocalSemanticBinding[]  LocalParseContexts  { get; set; }
     }
 }

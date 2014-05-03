@@ -13,10 +13,10 @@ namespace IronText.MetadataCompiler
         private Ref<Labels> RETURN;
 
         private EmitSyntax emit;
-        private readonly IContextCode contextCode;
+        private readonly ISemanticCode contextCode;
         private readonly Pipe<EmitSyntax> ldText;
 
-        public MatcherCode(EmitSyntax emit, IContextCode contextCode, Pipe<EmitSyntax> ldText, Ref<Labels> RETURN)
+        public MatcherCode(EmitSyntax emit, ISemanticCode contextCode, Pipe<EmitSyntax> ldText, Ref<Labels> RETURN)
         {
             this.emit            = emit;
             this.ldText        = ldText;
@@ -24,9 +24,9 @@ namespace IronText.MetadataCompiler
             this.RETURN          = RETURN;
         }
 
-        public IActionCode LdContext(string contextName)
+        public IActionCode LdSemantic(string contextName)
         {
-            contextCode.LdContext(contextName);
+            contextCode.LdSemantic(contextName);
             return this;
         }
 
@@ -53,6 +53,11 @@ namespace IronText.MetadataCompiler
         public IActionCode LdMatcherTokenString()
         {
             return this.Emit(ldText);
+        }
+
+        public IActionCode LdActionArgument(int index)
+        {
+            throw new NotSupportedException();
         }
 
         public IActionCode LdActionArgument(int index, Type argType)

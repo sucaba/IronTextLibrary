@@ -21,7 +21,7 @@ namespace IronText.Extensibility
 
         IEnumerable<CilSymbolFeature<Precedence>> GetSymbolPrecedence();
 
-        IEnumerable<CilSymbolFeature<CilContextProvider>> GetLocalContextProviders();
+        IEnumerable<CilSymbolFeature<CilSemanticScope>> GetLocalContextProviders();
 
         IEnumerable<CilSymbolRef>   GetSymbolsInCategory(SymbolCategory category);
 

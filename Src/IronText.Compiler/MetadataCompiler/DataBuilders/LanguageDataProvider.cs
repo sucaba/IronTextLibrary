@@ -176,9 +176,9 @@ namespace IronText.MetadataCompiler
             return true;
         }
 
-        private static List<LocalContextBinding> CollectLocalContexts(Grammar grammar, ILrDfa lrDfa)
+        private static List<LocalSemanticBinding> CollectLocalContexts(Grammar grammar, ILrDfa lrDfa)
         {
-            var result = new List<LocalContextBinding>();
+            var result = new List<LocalSemanticBinding>();
 
             var states     = lrDfa.States;
             int stateCount = states.Length;
@@ -199,15 +199,15 @@ namespace IronText.MetadataCompiler
 
                     foreach (var consumingProd in childSymbol.Productions)
                     {
-                        if (providingSymbol.LocalContextProvider.Lookup(consumingProd.ContextRef))
+                        if (providingSymbol.LocalScope.Lookup(consumingProd.ContextRef))
                         {
                             result.Add(
-                                new LocalContextBinding
+                                new LocalSemanticBinding
                                 {
                                     StackState    = parentState,
                                     StackLookback = item.Position,
-                                    Locals      = providingSymbol.LocalContextProvider,
-                                    ConsumerRef      = consumingProd.ContextRef
+                                    Locals        = providingSymbol.LocalScope,
+                                    ConsumerRef   = consumingProd.ContextRef
                                 });
                         }
                     }

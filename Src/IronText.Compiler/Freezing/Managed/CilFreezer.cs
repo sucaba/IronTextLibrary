@@ -49,7 +49,7 @@ namespace IronText.Freezing.Managed
             private SppfNode    root;
             private EmitSyntax  emit;
             private Ref<Args>[] args;
-            private IContextCode contextCode;
+            private ISemanticCode contextCode;
             private string currentTerminalText;
             private readonly LocalsStack localsStack;
 
@@ -102,7 +102,7 @@ namespace IronText.Freezing.Managed
                 this.emit = emit0;
                 this.args = args0;
 
-                this.contextCode = new ContextCode(
+                this.contextCode = new SemanticCode(
                                     emit,
                                     il => il.Ldarg(args[0]),
                                     null,
@@ -161,15 +161,26 @@ namespace IronText.Freezing.Managed
                 return code;
             }
 
-            IActionCode IActionCode.LdContext(string contextName)
+            IActionCode IActionCode.LdSemantic(string contextName)
             {
-                contextCode.LdContext(contextName);
+                contextCode.LdSemantic(contextName);
+                return code;
+            }
+
+            public IActionCode LdActionArgument(int index)
+            {
+                localsStack.LdSlot(index);
                 return code;
             }
 
             IActionCode IActionCode.LdActionArgument(int index, Type argType)
             {
                 localsStack.LdSlot(index);
+                if (argType.IsValueType)
+                {
+                    this.emit = emit.Unbox_Any(emit.Types.Import(argType));
+                }
+
                 return code;
             }
 

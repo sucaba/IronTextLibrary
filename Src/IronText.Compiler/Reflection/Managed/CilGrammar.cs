@@ -20,7 +20,7 @@ namespace IronText.Reflection.Managed
         {
             Type definitionType = source.DefinitionType;
 
-            GlobalContextProvider = new CilContextProvider(definitionType);
+            Globals = new CilSemanticScope(definitionType);
 
             this.IsValid = true;
 
@@ -120,7 +120,7 @@ namespace IronText.Reflection.Managed
 
         public bool IsValid { get; private set; }
 
-        public CilContextProvider      GlobalContextProvider { get; private set; }
+        public CilSemanticScope        Globals { get; private set; }
 
         public CilSymbolRef            Start          { get; private set; }
 
@@ -136,7 +136,7 @@ namespace IronText.Reflection.Managed
 
         public IEnumerable<CilSymbolFeature<Precedence>> Precedence { get { return precedence; } }
 
-        public IEnumerable<CilSymbolFeature<CilContextProvider>> LocalContextProviders { get; private set; }
+        public IEnumerable<CilSymbolFeature<CilSemanticScope>> LocalContextProviders { get; private set; }
 
         private static bool IsSpecialSymbol(CilSymbol symbol)
         {

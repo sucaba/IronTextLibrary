@@ -183,17 +183,17 @@ namespace IronText.Framework
             return new[] { rule };
         }
 
-        private CilContextRef GetContext(MethodInfo method, bool hasThis)
+        private CilSemanticRef GetContext(MethodInfo method, bool hasThis)
         {
             if (method.IsStatic || hasThis)
             {
-                return CilContextRef.None;
+                return CilSemanticRef.None;
             }
 
             var contextType = GetContextType();
 
             // Local or global context identified by type
-            return CilContextRef.ByType(contextType);
+            return CilSemanticRef.ByType(contextType);
         }
 
         private static int NthEmptySlotIndex(CilSymbolRef[] ruleMask, int n)

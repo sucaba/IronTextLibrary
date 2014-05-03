@@ -7,7 +7,7 @@ namespace IronText.Reflection.Managed
 {
     public sealed class CilProduction : IEquatable<CilProduction>
     {
-        public CilProduction(CilSymbolRef outcome, IEnumerable<CilSymbolRef> pattern, CilContextRef context, Pipe<IActionCode> actionBuilder, Precedence precedence = null)
+        public CilProduction(CilSymbolRef outcome, IEnumerable<CilSymbolRef> pattern, CilSemanticRef context, Pipe<IActionCode> actionBuilder, Precedence precedence = null)
         {
             this.Outcome             = outcome;
             this.Pattern             = pattern.ToArray();
@@ -16,7 +16,7 @@ namespace IronText.Reflection.Managed
             this.Precedence          = precedence;
         }
 
-        public CilContextRef  Context       { get; private set; }
+        public CilSemanticRef  Context       { get; private set; }
 
         public CilSymbolRef   Outcome       { get; private set; }
 

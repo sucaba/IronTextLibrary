@@ -82,7 +82,7 @@ namespace IronText.MetadataCompiler
                 return;
             }
 
-            var contextResolverCode = new ContextCode(
+            var contextResolverCode = new SemanticCode(
                                             emit,
                                             il => il.Ldarg(ctx),
                                             il => il.Ldarg(lookbackStart),

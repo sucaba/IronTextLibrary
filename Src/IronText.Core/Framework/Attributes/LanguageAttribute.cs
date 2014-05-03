@@ -80,9 +80,9 @@ namespace IronText.Framework
             return Enumerable.Empty<CilSymbolFeature<Precedence>>();
         }
 
-        public IEnumerable<CilSymbolFeature<CilContextProvider>> GetLocalContextProviders()
+        public IEnumerable<CilSymbolFeature<CilSemanticScope>> GetLocalContextProviders()
         {
-            return Enumerable.Empty<CilSymbolFeature<CilContextProvider>>();
+            return Enumerable.Empty<CilSymbolFeature<CilSemanticScope>>();
         }
 
         private IEnumerable<ICilMetadata> EnumerateDirectChildren()

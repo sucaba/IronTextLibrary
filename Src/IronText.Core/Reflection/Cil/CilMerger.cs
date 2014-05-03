@@ -9,7 +9,7 @@ namespace IronText.Reflection.Managed
         /// </summary>
         public CilSymbolRef      Symbol        { get; set; }
 
-        public CilContextRef     Context       { get; set; }
+        public CilSemanticRef     Context       { get; set; }
 
         public Pipe<IActionCode> ActionBuilder { get; set; }
     }

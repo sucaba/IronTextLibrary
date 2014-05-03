@@ -53,7 +53,7 @@ namespace IronText.Reflection.Managed
 
             InitContextProvider(
                 result,
-                definition.GlobalContextProvider,
+                definition.Globals,
                 result.Globals);
 
             var symbolResolver = definition.SymbolResolver;
@@ -97,12 +97,12 @@ namespace IronText.Reflection.Managed
                 symbol.Precedence = feature.Value;
             }
 
-            foreach (CilSymbolFeature<CilContextProvider> feature in definition.LocalContextProviders)
+            foreach (CilSymbolFeature<CilSemanticScope> feature in definition.LocalContextProviders)
             {
                 var symbol = symbolResolver.GetSymbol(feature.SymbolRef);
                 if (symbol != null)
                 {
-                    InitContextProvider(result, feature.Value, symbol.LocalContextProvider);
+                    InitContextProvider(result, feature.Value, symbol.LocalScope);
                 }
             }
 
@@ -153,11 +153,11 @@ namespace IronText.Reflection.Managed
             return result;
         }
 
-        private static SemanticRef CreateActionContextRef(CilContextRef cilContext)
+        private static SemanticRef CreateActionContextRef(CilSemanticRef cilContext)
         {
             SemanticRef result;
 
-            if (cilContext == CilContextRef.None)
+            if (cilContext == CilSemanticRef.None)
             {
                 result = SemanticRef.None;
             }
@@ -189,19 +189,19 @@ namespace IronText.Reflection.Managed
         }
 
         private static void InitContextProvider(
-            Grammar            grammar,
-            CilContextProvider cilProvider,
+            Grammar          grammar,
+            CilSemanticScope scope,
             SemanticScope    provider)
         {
-            provider.Joint.Add(cilProvider);
+            provider.Joint.Add(scope);
 
-            foreach (var cilContext in cilProvider.Contexts)
+            foreach (var nameValuePair in scope.Contexts)
             {
-                var reference = new SemanticRef(cilContext.UniqueName);
+                var reference = new SemanticRef(nameValuePair.Key);
                 if (!provider.Lookup(reference))
                 {
-                    SemanticValue context = new SemanticValue(cilContext.UniqueName);
-                    context.Joint.Add(cilContext);
+                    SemanticValue context = new SemanticValue(nameValuePair.Key);
+                    context.Joint.Add(nameValuePair.Value);
                     provider.Add(reference, context);
                 }
             }
