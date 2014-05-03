@@ -120,8 +120,9 @@ namespace IronText.MetadataCompiler
                     {
                         var merger = mergers[value];
                         var binding = merger.Joint.The<CilMerger>();
+
                         code = code
-                            .Do(binding.Context.Load)
+                            .LdSemantic(binding.Context.UniqueName)
                             .Do(binding.ActionBuilder)
                             .Emit(il2 => il2.Ret())
                             ;

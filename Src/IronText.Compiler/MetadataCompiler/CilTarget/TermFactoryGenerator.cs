@@ -78,7 +78,7 @@ namespace IronText.MetadataCompiler
         {
             var binding = matcher.Joint.The<CilMatcher>();
             code = code
-                .Do(binding.Context.Load)
+                .LdSemantic(binding.Context.UniqueName)
                 .Do(binding.ActionBuilder);
             return code;
         }

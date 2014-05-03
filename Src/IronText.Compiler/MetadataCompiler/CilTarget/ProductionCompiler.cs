@@ -86,7 +86,7 @@ namespace IronText.MetadataCompiler.CilTarget
                     }
 
                     coder(c => c
-                        .Do(binding.Context.Load)
+                        .LdSemantic(binding.Context.UniqueName)
                         .Do(binding.ActionBuilder))
                         ;
                 }
