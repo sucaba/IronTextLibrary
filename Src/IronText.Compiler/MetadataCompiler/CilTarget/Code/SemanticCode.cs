@@ -84,7 +84,7 @@ namespace IronText.MetadataCompiler
 
                             if (value == locals.Length)
                             {
-                                if (LdGlobal(name))
+                                if (LdGlobal(reference))
                                 {
                                     il.Br(END);
                                 }
@@ -100,9 +100,9 @@ namespace IronText.MetadataCompiler
                             else
                             {
                                 var lc = locals[value];
-                                var provider = lc.Locals.Joint.The<CilSemanticScope>();
-                                var context = provider.Resolve(name);
-                                context.Ld(
+                                SemanticValue val = lc.Locals.Resolve(reference);
+                                CilSemanticValue valBinding = val.Joint.The<CilSemanticValue>();
+                                valBinding.Ld(
                                     il,
                                     il2 => il2
                                         // Lookback for getting parent instance
@@ -120,16 +120,15 @@ namespace IronText.MetadataCompiler
                 }
             }
             
-            if (!LdGlobal(name))
+            if (!LdGlobal(reference))
             {
                 throw new InvalidOperationException(
-                    "Context '" + name + "' is not accessible.");
+                    "Semantic value '" + name + "' is not accessible.");
             }
         }
 
-        private bool LdGlobal(string contextName)
+        private bool LdGlobal(SemanticRef reference)
         {
-            var reference = new SemanticRef(contextName);
             var value = globals.Resolve(reference);
             if (value == null)
             {

@@ -113,7 +113,7 @@ namespace IronText.Reflection.Managed
 
             precedence = metadata.SelectMany(m => m.GetSymbolPrecedence()).ToList();
 
-            LocalContextProviders = metadata.SelectMany((m, index) => m.GetLocalContextProviders());
+            LocalSemanticScopes = metadata.SelectMany((m, index) => m.GetLocalContextProviders());
 
             this.Reports = metadata.SelectMany(m => m.GetReports()).ToArray();
         }
@@ -136,7 +136,7 @@ namespace IronText.Reflection.Managed
 
         public IEnumerable<CilSymbolFeature<Precedence>> Precedence { get { return precedence; } }
 
-        public IEnumerable<CilSymbolFeature<CilSemanticScope>> LocalContextProviders { get; private set; }
+        public IEnumerable<CilSymbolFeature<CilSemanticScope>> LocalSemanticScopes { get; private set; }
 
         private static bool IsSpecialSymbol(CilSymbol symbol)
         {

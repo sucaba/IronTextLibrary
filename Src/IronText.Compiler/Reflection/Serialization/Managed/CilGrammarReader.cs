@@ -51,7 +51,7 @@ namespace IronText.Reflection.Managed
         {
             var result = new Grammar();
 
-            InitContextProvider(
+            InitSemanticScope(
                 result,
                 definition.Globals,
                 result.Globals);
@@ -97,12 +97,12 @@ namespace IronText.Reflection.Managed
                 symbol.Precedence = feature.Value;
             }
 
-            foreach (CilSymbolFeature<CilSemanticScope> feature in definition.LocalContextProviders)
+            foreach (CilSymbolFeature<CilSemanticScope> feature in definition.LocalSemanticScopes)
             {
                 var symbol = symbolResolver.GetSymbol(feature.SymbolRef);
                 if (symbol != null)
                 {
-                    InitContextProvider(result, feature.Value, symbol.LocalScope);
+                    InitSemanticScope(result, feature.Value, symbol.LocalScope);
                 }
             }
 
@@ -188,21 +188,21 @@ namespace IronText.Reflection.Managed
             }
         }
 
-        private static void InitContextProvider(
+        private static void InitSemanticScope(
             Grammar          grammar,
-            CilSemanticScope scope,
-            SemanticScope    provider)
+            CilSemanticScope platformScope,
+            SemanticScope    logicalScope)
         {
-            provider.Joint.Add(scope);
+            logicalScope.Joint.Add(platformScope);
 
-            foreach (var nameValuePair in scope)
+            foreach (var nameValuePair in platformScope)
             {
                 var reference = new SemanticRef(nameValuePair.Key);
-                if (!provider.Lookup(reference))
+                if (!logicalScope.Lookup(reference))
                 {
-                    SemanticValue context = new SemanticValue(nameValuePair.Key);
-                    context.Joint.Add(nameValuePair.Value);
-                    provider.Add(reference, context);
+                    SemanticValue value = new SemanticValue(title: nameValuePair.Key);
+                    value.Joint.Add(nameValuePair.Value);
+                    logicalScope.Add(reference, value);
                 }
             }
         }
