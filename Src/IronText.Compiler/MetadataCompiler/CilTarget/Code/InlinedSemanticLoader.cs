@@ -9,12 +9,12 @@ namespace IronText.MetadataCompiler
 {
     class InlinedSemanticLoader : ISemanticLoader
     {
-        private readonly ISemanticLoader                fallback;
+        private readonly ISemanticLoader              fallback;
         private readonly Production                   extendedProduction;
         private readonly List<InlinedSemanticBinding> semanticBindings;
 
         public InlinedSemanticLoader(
-            ISemanticLoader     fallback,
+            ISemanticLoader   fallback,
             Production        extendedProduction)
         {
             this.fallback 		    = fallback;
@@ -36,15 +36,11 @@ namespace IronText.MetadataCompiler
             }
 
             int pos = 0;
-            foreach (var comp in EnumerateAllComponents(prod))
+            var allComponents = Graph.BreadthFirst<IProductionComponent>(prod, p => p.Components);
+            foreach (var comp in allComponents)
             {
                 CollectInlinedSemanticBindings(prod, comp, pos++, output);
             }
-        }
-
-        private static IEnumerable<IProductionComponent> EnumerateAllComponents(IProductionComponent comp)
-        {
-            return Graph.BreadthFirst(comp, p => p.Components);
         }
 
         private static void CollectInlinedSemanticBindings(
