@@ -14,11 +14,6 @@ using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    interface ISemanticCode
-    {
-        bool LdSemantic(SemanticRef reference);
-    }
-
     class SemanticCode : ISemanticCode
     {
         private EmitSyntax                      emit;

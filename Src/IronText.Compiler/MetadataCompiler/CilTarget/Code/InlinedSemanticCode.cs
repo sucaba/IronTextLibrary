@@ -1,22 +1,17 @@
-﻿#if false
-using System.Linq;
+﻿using IronText.Algorithm;
 using IronText.Extensibility;
+using IronText.Lib.IL;
 using IronText.Reflection;
 using System.Collections.Generic;
-using IronText.Algorithm;
-using IronText.Framework;
-using IronText.Lib.IL;
+using System.Linq;
 
 namespace IronText.MetadataCompiler
 {
     class InlinedSemanticCode : ISemanticCode
     {
-        private EmitSyntax                            emit;
         private readonly ISemanticCode                fallback;
-        private readonly List<InlinedSemanticBinding> semanticBindings;
         private readonly Production                   extendedProduction;
-        private readonly Pipe<EmitSyntax>             ldGlobalScope;
-        private readonly SemanticScope                globals;
+        private readonly List<InlinedSemanticBinding> semanticBindings;
 
         public InlinedSemanticCode(
             ISemanticCode     fallback,
@@ -28,9 +23,9 @@ namespace IronText.MetadataCompiler
             CollectInlinedSemanticBindings(extendedProduction, semanticBindings);
         }
 
-        public void LdSemantic(string name)
+        public bool LdSemantic(SemanticRef reference)
         {
-            fallback.LdSemantic(name);
+            return fallback.LdSemantic(reference);
         }
 
         private static void CollectInlinedSemanticBindings(Production prod, List<InlinedSemanticBinding> output)
@@ -56,7 +51,7 @@ namespace IronText.MetadataCompiler
             Production            owningProd,
             IProductionComponent  parentComponent,
             int                   componentPos,
-            List<SemanticBinding> output)
+            List<InlinedSemanticBinding> output)
         {
             int size = parentComponent.Size;
             var providers = new List<SemanticScope>();
@@ -92,20 +87,5 @@ namespace IronText.MetadataCompiler
                 }
             }
         }
-
-
-        private bool LdGlobal(SemanticRef reference)
-        {
-            var value = globals.Resolve(reference);
-            if (value == null)
-            {
-                return false;
-            }
-
-            var binding = value.Joint.The<CilSemanticValue>();
-            this.emit = binding.Ld(emit, ldGlobalScope);
-            return true;
-        }
     }
 }
-#endif
