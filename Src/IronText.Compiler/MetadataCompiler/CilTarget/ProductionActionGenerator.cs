@@ -6,6 +6,7 @@ using IronText.Reflection;
 using IronText.Reflection.Managed;
 using IronText.Runtime;
 using IronText.MetadataCompiler.CilTarget;
+using IronText.Framework;
 
 namespace IronText.MetadataCompiler
 {
@@ -80,21 +81,21 @@ namespace IronText.MetadataCompiler
         {
             Def<Labels> returnLabel = emit.Labels.Generate();
 
-            var globalSemanticCode = new GlobalSemanticCode(emit, il => il.Ldarg(ctx), data.Grammar.Globals);
+            var globalSemanticCode = new GlobalSemanticLoader(emit, il => il.Ldarg(ctx), data.Grammar.Globals);
 
-            var localSemanticCode = new SemanticCode(
+            var localSemanticCode = new SemanticLoader(
                 globalSemanticCode,
                 emit,
                 il => il.Ldarg(lookbackStart),
                 data,
                 data.SemanticBindings);
 
-            IActionCode code = new ProductionCode(
+            var code = new Fluent<IActionCode>(new ProductionCode(
                 emit, 
                 localSemanticCode,
                 ldRuleArgs:  il => il.Ldarg(ruleArgs),
                 ldArgsStart: il => il.Ldarg(argsStart),
-                returnLabel: returnLabel);
+                returnLabel: returnLabel));
 
             var defaultLabel = emit.Labels.Generate();
             var endWithSingleResultLabel = emit.Labels.Generate();
@@ -113,7 +114,7 @@ namespace IronText.MetadataCompiler
             {
                 emit.Label(jumpTable[prod.Index].Def);
 
-                code = CompileProduction(code, prod);
+                CompileProduction(code, prod);
 
                 emit.Br(endWithSingleResultLabel.GetRef());
             }
@@ -126,9 +127,9 @@ namespace IronText.MetadataCompiler
                 .Ret();
         }
 
-        public static IActionCode CompileProduction(IActionCode code, Production prod)
+        public static void CompileProduction(Fluent<IActionCode> code, Production prod)
         {
-            var compiler = new ProductionCompiler(pipe => { code = pipe(code); });
+            var compiler = new ProductionCompiler(code);
 #if false
             for (int i = 0; i != prod.Size; ++i)
             {
@@ -137,7 +138,6 @@ namespace IronText.MetadataCompiler
 #endif
 
             compiler.Execute(prod);
-            return code;
         }
     }
 }

@@ -14,15 +14,15 @@ using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    class SemanticCode : ISemanticCode
+    class SemanticLoader : ISemanticLoader
     {
         private EmitSyntax                      emit;
         private readonly Pipe<EmitSyntax>       ldLookback;
         private readonly StackSemanticBinding[] localSemanticBindings;
-        private readonly ISemanticCode          globals;
+        private readonly ISemanticLoader        globals;
 
-        public SemanticCode(
-            ISemanticCode     globals,
+        public SemanticLoader(
+            ISemanticLoader   globals,
             EmitSyntax        emit,
             Pipe<EmitSyntax>  ldLookback,
             LanguageData      data,

@@ -7,14 +7,14 @@ using System.Linq;
 
 namespace IronText.MetadataCompiler
 {
-    class InlinedSemanticCode : ISemanticCode
+    class InlinedSemanticLoader : ISemanticLoader
     {
-        private readonly ISemanticCode                fallback;
+        private readonly ISemanticLoader                fallback;
         private readonly Production                   extendedProduction;
         private readonly List<InlinedSemanticBinding> semanticBindings;
 
-        public InlinedSemanticCode(
-            ISemanticCode     fallback,
+        public InlinedSemanticLoader(
+            ISemanticLoader     fallback,
             Production        extendedProduction)
         {
             this.fallback 		    = fallback;

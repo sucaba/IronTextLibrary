@@ -13,10 +13,10 @@ namespace IronText.MetadataCompiler
         private Ref<Labels> RETURN;
 
         private EmitSyntax emit;
-        private readonly ISemanticCode contextCode;
+        private readonly ISemanticLoader contextCode;
         private readonly Pipe<EmitSyntax> ldText;
 
-        public MatcherCode(EmitSyntax emit, ISemanticCode contextCode, Pipe<EmitSyntax> ldText, Ref<Labels> RETURN)
+        public MatcherCode(EmitSyntax emit, ISemanticLoader contextCode, Pipe<EmitSyntax> ldText, Ref<Labels> RETURN)
         {
             this.emit            = emit;
             this.ldText        = ldText;

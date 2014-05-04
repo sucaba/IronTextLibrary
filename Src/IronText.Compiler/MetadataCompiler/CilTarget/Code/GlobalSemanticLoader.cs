@@ -9,13 +9,13 @@ using System.Text;
 
 namespace IronText.MetadataCompiler
 {
-    class GlobalSemanticCode : ISemanticCode
+    class GlobalSemanticLoader : ISemanticLoader
     {
         private EmitSyntax                 emit;
         private readonly Pipe<EmitSyntax>  ldGlobalScope;
         private readonly SemanticScope     globals;
 
-        public GlobalSemanticCode(
+        public GlobalSemanticLoader(
             EmitSyntax        emit,
             Pipe<EmitSyntax>  ldGlobalScope,
             SemanticScope     globals)

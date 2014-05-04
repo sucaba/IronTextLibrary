@@ -11,9 +11,9 @@ namespace IronText.MetadataCompiler
         public Pipe<EmitSyntax> LoadOldValue;
         public Pipe<EmitSyntax> LoadNewValue;
         private EmitSyntax emit;
-        private readonly ISemanticCode contextCode;
+        private readonly ISemanticLoader contextCode;
 
-        public MergeCode(EmitSyntax emit, ISemanticCode contextCode)
+        public MergeCode(EmitSyntax emit, ISemanticLoader contextCode)
         {
             this.emit        = emit;
             this.contextCode = contextCode;

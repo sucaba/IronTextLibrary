@@ -82,8 +82,8 @@ namespace IronText.MetadataCompiler
                 return;
             }
 
-            var globalSemanticCode = new GlobalSemanticCode(emit, il => il.Ldarg(ctx), data.Grammar.Globals);
-            var contextResolverCode = new SemanticCode(
+            var globalSemanticCode = new GlobalSemanticLoader(emit, il => il.Ldarg(ctx), data.Grammar.Globals);
+            var contextResolverCode = new SemanticLoader(
                                             globalSemanticCode,
                                             emit,
                                             il => il.Ldarg(lookbackStart),

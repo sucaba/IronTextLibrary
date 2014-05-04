@@ -2,7 +2,7 @@
 
 namespace IronText.MetadataCompiler
 {
-    interface ISemanticCode
+    interface ISemanticLoader
     {
         bool LdSemantic(SemanticRef reference);
     }

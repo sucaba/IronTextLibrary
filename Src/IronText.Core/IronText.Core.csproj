@@ -115,6 +115,7 @@
     <Compile Include="Diagnostics\GvGraphView.cs" />
     <Compile Include="Diagnostics\IGraphView.cs" />
     <Compile Include="Algorithm\Build\IDerivedBuilderMetadata.cs" />
+    <Compile Include="Framework\Fluent.cs" />
     <Compile Include="Framework\LanguageFlags.cs" />
     <Compile Include="Reflection\Cil\CilSemanticRef.cs" />
     <Compile Include="Reflection\Cil\CilSemanticValue.cs" />

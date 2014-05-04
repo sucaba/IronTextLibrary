@@ -12,10 +12,10 @@ namespace IronText.MetadataCompiler.CilTarget
 {
     class ProductionCompiler : IProductionComponentVisitor, IActionCode
     {
-        private readonly Action<Pipe<IActionCode>> coder;
+        private readonly Fluent<IActionCode> coder;
         private readonly LocalsStack localsStack;
 
-        public ProductionCompiler(Action<Pipe<IActionCode>> coder)
+        public ProductionCompiler(Fluent<IActionCode> coder)
         {
             this.coder = coder;
             this.localsStack = new LocalsStack(ILCoder);
@@ -32,7 +32,7 @@ namespace IronText.MetadataCompiler.CilTarget
 
         private void ILCoder(Pipe<EmitSyntax> pipe)
         {
-            coder(c => c.Emit(pipe));
+            coder.Do(c => c.Emit(pipe));
         }
 
         public void Execute(IProductionComponent root)
@@ -66,7 +66,7 @@ namespace IronText.MetadataCompiler.CilTarget
             var bindings = production.Joint.All<CilProduction>();
             if (!bindings.Any())
             {
-                coder(c => c
+                coder.Do(c => c
                     .Emit(il => il.Ldnull()));
             }
             else
@@ -81,11 +81,11 @@ namespace IronText.MetadataCompiler.CilTarget
                     else
                     {
                         // Result of this rule supersedes result of the prvious one
-                        coder(c => c
+                        coder.Do(c => c
                             .Emit(il => il.Pop()));
                     }
 
-                    coder(c => c
+                    coder.Do(c => c
                         .LdSemantic(binding.Context.UniqueName)
                         .Do(binding.ActionBuilder))
                         ;

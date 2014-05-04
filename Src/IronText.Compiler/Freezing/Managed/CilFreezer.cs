@@ -49,7 +49,7 @@ namespace IronText.Freezing.Managed
             private SppfNode    root;
             private EmitSyntax  emit;
             private Ref<Args>[] args;
-            private ISemanticCode contextCode;
+            private ISemanticLoader contextCode;
             private string currentTerminalText;
             private readonly LocalsStack localsStack;
 
@@ -102,8 +102,8 @@ namespace IronText.Freezing.Managed
                 this.emit = emit0;
                 this.args = args0;
 
-                var globals = new GlobalSemanticCode(emit, il => il.Ldarg(args[0]), data.Grammar.Globals);
-                this.contextCode = new SemanticCode(globals, emit, null, data);
+                var globals = new GlobalSemanticLoader(emit, il => il.Ldarg(args[0]), data.Grammar.Globals);
+                this.contextCode = new SemanticLoader(globals, emit, null, data);
 
                 CompileNode(root);
                 return emit.Ldarg(0).Ret();
@@ -140,7 +140,7 @@ namespace IronText.Freezing.Managed
                 }
 
                 var production = grammar.Productions[productionIndex];
-                code = ProductionActionGenerator.CompileProduction(code, production);
+                ProductionActionGenerator.CompileProduction(new Fluent<IActionCode>(code), production);
 
                 localsStack.Pop(count);
                 localsStack.Push();

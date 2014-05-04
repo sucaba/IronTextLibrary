@@ -15,11 +15,11 @@ namespace IronText.MetadataCompiler
         private readonly Pipe<EmitSyntax> ldRuleArgs;
         private readonly Pipe<EmitSyntax> ldArgsStart;
 
-        private ISemanticCode contextCode;
+        private ISemanticLoader contextCode;
 
         public ProductionCode(
             EmitSyntax       emit,
-            ISemanticCode    contextCode,
+            ISemanticLoader    contextCode,
             Pipe<EmitSyntax> ldRuleArgs,
             Pipe<EmitSyntax> ldArgsStart,
             Def<Labels>      returnLabel)
