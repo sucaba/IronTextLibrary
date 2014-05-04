@@ -2,6 +2,7 @@
 using IronText.Framework;
 using IronText.Lib.IL;
 using IronText.Reflection.Managed;
+using IronText.Reflection;
 
 namespace IronText.MetadataCompiler
 {
@@ -20,7 +21,7 @@ namespace IronText.MetadataCompiler
 
         public IActionCode LdSemantic(string contextName)
         {
-            contextCode.LdSemantic(contextName);
+            contextCode.LdSemantic(SemanticRef.ByName(contextName));
             return this;
         }
 

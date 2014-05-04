@@ -56,6 +56,8 @@ namespace IronText.Reflection
 
         public bool               IsAugmented    { get { return PredefinedTokens.AugmentedStart == OutcomeToken; } }
 
+        public bool               IsExtended     { get { return Components.Any(c => c is Production); } }
+
         public Joint              Joint          { get; private set; }
 
         public SemanticRef        ContextRef     { get; private set; }

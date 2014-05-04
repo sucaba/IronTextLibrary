@@ -5,15 +5,20 @@ namespace IronText.Reflection
 {
     public class SemanticRef : IEquatable<SemanticRef>
     {
-        public static readonly SemanticRef None = new SemanticRef("");
+        public static readonly SemanticRef None = new SemanticRef(SharedConstants.NullSemanticRefName);
 
-        public SemanticRef(string uniqueName)
+        public static SemanticRef ByName(string name)
         {
-            if (uniqueName == null)
+            if (name == SharedConstants.NullSemanticRefName)
             {
-                throw new ArgumentNullException("uniqueName");
+                return None;
             }
 
+            return new SemanticRef(name);
+        }
+
+        private SemanticRef(string uniqueName)
+        {
             this.UniqueName = uniqueName;
         }
 

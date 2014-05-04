@@ -90,7 +90,8 @@ namespace IronText.MetadataCompiler
                 grammar.Reports.Add(new ConflictMessageBuilder(logging));
             }
 
-            var localParseContexts = CollectLocalContexts(grammar, parserDfa);
+            var semanticBindings = new List<SemanticBinding>();
+            CollectStackSemanticBindings(grammar, parserDfa, semanticBindings);
 
             // Prepare language data for the language assembly generation
             result.IsDeterministic     = !lrTable.RequiresGlr;
@@ -100,7 +101,7 @@ namespace IronText.MetadataCompiler
             result.ParserActionTable   = lrTable.GetParserActionTable();
             result.ParserConflictActionTable = lrTable.GetConflictActionTable();
 
-            result.LocalParseContexts  = localParseContexts.ToArray();
+            result.SemanticBindings  = semanticBindings.ToArray();
 
             if (!bootstrap)
             {
@@ -176,10 +177,11 @@ namespace IronText.MetadataCompiler
             return true;
         }
 
-        private static List<LocalSemanticBinding> CollectLocalContexts(Grammar grammar, ILrDfa lrDfa)
+        private static List<SemanticBinding> CollectStackSemanticBindings(
+            Grammar grammar,
+            ILrDfa  lrDfa,
+            List<SemanticBinding> output)
         {
-            var result = new List<LocalSemanticBinding>();
-
             var states     = lrDfa.States;
             int stateCount = states.Length;
 
@@ -189,7 +191,7 @@ namespace IronText.MetadataCompiler
                 {
                     if (item.Position == 0 || item.IsReduce)
                     {
-                        // Skip items in which local context cannot be provided.
+                        // Skip items which cannot provide semantic values.
                         continue;
                     }
 
@@ -201,20 +203,20 @@ namespace IronText.MetadataCompiler
                     {
                         if (providingSymbol.LocalScope.Lookup(consumingProd.ContextRef))
                         {
-                            result.Add(
-                                new LocalSemanticBinding
+                            output.Add(
+                                new StackSemanticBinding
                                 {
                                     StackState    = parentState,
                                     StackLookback = item.Position,
-                                    Locals        = providingSymbol.LocalScope,
-                                    ConsumerRef   = consumingProd.ContextRef
+                                    Scope        = providingSymbol.LocalScope,
+                                    Reference   = consumingProd.ContextRef
                                 });
                         }
                     }
                 }
             }
 
-            return result;
+            return output;
         }
 
         public override bool Equals(object obj)

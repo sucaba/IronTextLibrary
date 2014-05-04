@@ -43,7 +43,7 @@ namespace IronText.Reflection.Managed
                 new CilSemanticValue(providerType, new MethodInfo[0]));
 
             var types =
-                Graph.AllVertexes(
+                Graph.BreadthFirst(
                         EnumerateContextGetters(providerType),
                         m => EnumerateContextGetters(m.ReturnType))
                         .Select(m => m.ReturnType)

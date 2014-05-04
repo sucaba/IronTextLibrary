@@ -139,6 +139,8 @@
     <Compile Include="Build\MetadataSyntax\TypesMetadataSyntax.cs" />
     <Compile Include="Compilation\LocalStack.cs" />
     <Compile Include="Freezing\Managed\CilFreezer.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\Code\GlobalSemanticCode.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\Code\InlinedSemanticCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\ProductionCompiler.cs" />
     <Compile Include="Reflection\Serialization\Managed\CilGrammarReader.cs" />
     <Compile Include="Reflection\Reporting\ReportData.cs" />
@@ -208,7 +210,7 @@
     <Compile Include="Reflection\Managed\MetadataException.cs" />
     <Compile Include="Reflection\Managed\ScanDataCollector.cs" />
     <Compile Include="MetadataCompiler\NamedLanguageProvider.cs" />
-    <Compile Include="MetadataCompiler\LocalSemanticBinding.cs" />
+    <Compile Include="MetadataCompiler\SemanticBinding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

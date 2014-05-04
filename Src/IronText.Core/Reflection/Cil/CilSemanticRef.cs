@@ -15,7 +15,7 @@ namespace IronText.Reflection.Managed
 
         sealed class NoneContextRef : CilSemanticRef
         {
-            public override string UniqueName { get { return null; } }
+            public override string UniqueName { get { return SharedConstants.NullSemanticRefName; } }
 
             public override bool Equals(object obj)
             {

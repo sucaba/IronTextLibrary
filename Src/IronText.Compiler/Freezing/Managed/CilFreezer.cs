@@ -102,12 +102,8 @@ namespace IronText.Freezing.Managed
                 this.emit = emit0;
                 this.args = args0;
 
-                this.contextCode = new SemanticCode(
-                                    emit,
-                                    il => il.Ldarg(args[0]),
-                                    null,
-                                    data,
-                                    data.Grammar.Globals);
+                var globals = new GlobalSemanticCode(emit, il => il.Ldarg(args[0]), data.Grammar.Globals);
+                this.contextCode = new SemanticCode(globals, emit, null, data);
 
                 CompileNode(root);
                 return emit.Ldarg(0).Ret();
@@ -163,7 +159,7 @@ namespace IronText.Freezing.Managed
 
             IActionCode IActionCode.LdSemantic(string contextName)
             {
-                contextCode.LdSemantic(contextName);
+                contextCode.LdSemantic(SemanticRef.ByName(contextName));
                 return code;
             }
 

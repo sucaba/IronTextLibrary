@@ -16,44 +16,49 @@ namespace IronText.MetadataCompiler
 {
     interface ISemanticCode
     {
-        void LdSemantic(string name);
+        bool LdSemantic(SemanticRef reference);
     }
 
     class SemanticCode : ISemanticCode
     {
-        private readonly EmitSyntax            emit;
-        private readonly Pipe<EmitSyntax>      ldGlobalScope;
-        private readonly Pipe<EmitSyntax>      ldLookback;
-        private readonly SemanticScope         globals;
-        private readonly LocalSemanticBinding[] localSemanticBindings;
+        private EmitSyntax                      emit;
+        private readonly Pipe<EmitSyntax>       ldLookback;
+        private readonly StackSemanticBinding[] localSemanticBindings;
+        private readonly ISemanticCode          globals;
 
         public SemanticCode(
-            EmitSyntax             emit,
-            Pipe<EmitSyntax>       ldGlobalScope,
-            Pipe<EmitSyntax>       ldLookback,
-            LanguageData           data,
-            SemanticScope          globals,
-            LocalSemanticBinding[] localSemanticBindings = null)
+            ISemanticCode     globals,
+            EmitSyntax        emit,
+            Pipe<EmitSyntax>  ldLookback,
+            LanguageData      data,
+            SemanticBinding[] localSemanticBindings = null)
         {
-            this.emit                  = emit;
-            this.ldGlobalScope         = ldGlobalScope;
-            this.ldLookback            = ldLookback;
             this.globals               = globals;
-            this.localSemanticBindings = localSemanticBindings;
+            this.emit                  = emit;
+            this.ldLookback            = ldLookback;
+            this.localSemanticBindings = localSemanticBindings == null 
+                                       ? new StackSemanticBinding[0] 
+                                       : localSemanticBindings
+                                            .OfType<StackSemanticBinding>()
+                                            .ToArray();
         }
 
-        public void LdSemantic(string name)
+        public bool LdSemantic(SemanticRef reference)
         {
-            if (name == null)
+            if (reference == null)
             {
-                return;
+                throw new ArgumentNullException("reference");
             }
 
-            var reference = new SemanticRef(name);
-
-            if (localSemanticBindings != null && localSemanticBindings.Length != 0)
+            if (reference == SemanticRef.None)
             {
-                var locals = localSemanticBindings.Where(lc => lc.ConsumerRef.Equals(reference)).ToArray();
+                return true;
+            }
+
+            if (localSemanticBindings.Length != 0)
+            {
+                var locals = localSemanticBindings.Where(lc => lc.Reference.Equals(reference)).ToArray();
+
                 if (locals.Length != 0)
                 {
                     var END = emit.Labels.Generate().GetRef();
@@ -84,7 +89,7 @@ namespace IronText.MetadataCompiler
 
                             if (value == locals.Length)
                             {
-                                if (LdGlobal(reference))
+                                if (globals.LdSemantic(reference))
                                 {
                                     il.Br(END);
                                 }
@@ -100,7 +105,7 @@ namespace IronText.MetadataCompiler
                             else
                             {
                                 var lc = locals[value];
-                                SemanticValue val = lc.Locals.Resolve(reference);
+                                SemanticValue val = lc.Scope.Resolve(reference);
                                 CilSemanticValue valBinding = val.Joint.The<CilSemanticValue>();
                                 valBinding.Ld(
                                     il,
@@ -116,27 +121,16 @@ namespace IronText.MetadataCompiler
                         });
 
                     emit.Label(END.Def);
-                    return;
+                    return true;
                 }
             }
             
-            if (!LdGlobal(reference))
+            if (!globals.LdSemantic(reference))
             {
                 throw new InvalidOperationException(
-                    "Semantic value '" + name + "' is not accessible.");
-            }
-        }
-
-        private bool LdGlobal(SemanticRef reference)
-        {
-            var value = globals.Resolve(reference);
-            if (value == null)
-            {
-                return false;
+                    "Semantic value '" + reference + "' is not accessible.");
             }
 
-            var binding = value.Joint.The<CilSemanticValue>();
-            binding.Ld(emit, ldGlobalScope);
             return true;
         }
     }

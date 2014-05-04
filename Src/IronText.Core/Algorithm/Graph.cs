@@ -48,46 +48,46 @@ namespace IronText.Algorithm
             sorted.Add( item );
         }
 
-        public static T[] AllVertexes<T>(T start, Func<T, IEnumerable<T>> following)
+        public static T[] BreadthFirst<T>(T start, Func<T, IEnumerable<T>> following)
         {
-            return AllVertexes(start, following, EqualityComparer<T>.Default);
+            return BreadthFirst(start, following, EqualityComparer<T>.Default);
         }
 
-        public static T[] AllVertexes<T>(T start, Func<T, IEnumerable<T>> following, IEqualityComparer<T> cmp)
+        public static T[] BreadthFirst<T>(T start, Func<T, IEnumerable<T>> following, IEqualityComparer<T> cmp)
         {
-            return AllVertexes(new[] { start }, following, cmp);
+            return BreadthFirst(new[] { start }, following, cmp);
         }
 
-        public static T[] AllVertexes<T>(IEnumerable<T> startItems, Func<T, IEnumerable<T>> following)
+        public static T[] BreadthFirst<T>(IEnumerable<T> startItems, Func<T, IEnumerable<T>> following)
         {
-            return AllVertexes(startItems, following, EqualityComparer<T>.Default);
+            return BreadthFirst(startItems, following, EqualityComparer<T>.Default);
         }
 
-        public static T[] AllVertexes<T>(IEnumerable<T> startItems, Func<T, IEnumerable<T>> following, IEqualityComparer<T> cmp)
+        public static T[] BreadthFirst<T>(IEnumerable<T> startItems, Func<T, IEnumerable<T>> following, IEqualityComparer<T> cmp)
         {
             var result = new List<T>();
-            AddAllVertexes(startItems, following, result, cmp);
+            AddBreadthFirst(startItems, following, result, cmp);
             return result.ToArray();
         }
 
-        public static void AddAllVertexes<T>(IEnumerable<T> startItems, Func<T, IEnumerable<T>> following, List<T> output, IEqualityComparer<T> cmp)
+        public static void AddBreadthFirst<T>(IEnumerable<T> startItems, Func<T, IEnumerable<T>> following, List<T> output, IEqualityComparer<T> cmp)
         {
             output.AddRange(startItems);
-            AddAllVertexes(following, output, 0, cmp);
+            AddBreadthFirst(following, output, 0, cmp);
         }
 
-        public static void AddAllVertexes<T>(Func<T, IEnumerable<T>> following, List<T> output, int frontIndex)
+        public static void AddBreadthFirst<T>(Func<T, IEnumerable<T>> following, List<T> output, int frontIndex)
         {
-            AddAllVertexes(following, output, frontIndex, EqualityComparer<T>.Default);
+            AddBreadthFirst(following, output, frontIndex, EqualityComparer<T>.Default);
         }
 
-        public static void AddAllVertexes<T>(Func<T, IEnumerable<T>> following, List<T> output, int frontIndex, IEqualityComparer<T> cmp)
+        public static void AddBreadthFirst<T>(Func<T, IEnumerable<T>> following, List<T> output, int frontIndex, IEqualityComparer<T> cmp)
         {
             while (frontIndex != output.Count)
             {
                 var item = output[frontIndex++];
-                var f = following(item).ToArray();
-                f = f.Except(output, cmp).ToArray();
+                var f = following(item);
+                f = f.Except(output, cmp);
                 output.AddRange(f);
             }
         }

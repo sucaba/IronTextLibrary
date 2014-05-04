@@ -26,7 +26,7 @@ namespace IronText.MetadataCompiler
 
         public IActionCode LdSemantic(string contextName)
         {
-            contextCode.LdSemantic(contextName);
+            contextCode.LdSemantic(SemanticRef.ByName(contextName));
             return this;
         }
 

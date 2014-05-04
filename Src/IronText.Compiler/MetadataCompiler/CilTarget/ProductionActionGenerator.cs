@@ -80,17 +80,18 @@ namespace IronText.MetadataCompiler
         {
             Def<Labels> returnLabel = emit.Labels.Generate();
 
-            var contextCode = new SemanticCode(
+            var globalSemanticCode = new GlobalSemanticCode(emit, il => il.Ldarg(ctx), data.Grammar.Globals);
+
+            var localSemanticCode = new SemanticCode(
+                globalSemanticCode,
                 emit,
-                il => il.Ldarg(ctx),
                 il => il.Ldarg(lookbackStart),
                 data,
-                data.Grammar.Globals,
-                data.LocalParseContexts);
+                data.SemanticBindings);
 
             IActionCode code = new ProductionCode(
                 emit, 
-                contextCode,
+                localSemanticCode,
                 ldRuleArgs:  il => il.Ldarg(ruleArgs),
                 ldArgsStart: il => il.Ldarg(argsStart),
                 returnLabel: returnLabel);

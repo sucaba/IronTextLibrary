@@ -24,7 +24,7 @@ namespace IronText.Reflection
             return Define(
                 (Symbol)Scope.Symbols[outcome],
                 pattern.Select(t => (Symbol)Scope.Symbols[t]),
-                contextName == null ? null : new SemanticRef(contextName));
+                SemanticRef.ByName(contextName));
         }
 
         /// <summary>

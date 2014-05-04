@@ -70,7 +70,7 @@ namespace IronText.Tests.Framework
 
             Debug.WriteLine("");
             Debug.WriteLine("All:");
-            var all = Graph.AllVertexes(roots, GetIndentedChildren).ToArray();
+            var all = Graph.BreadthFirst(roots, GetIndentedChildren).ToArray();
             foreach (var meta in all)
             {
                 Debug.WriteLine(new string('\t', metaToIndent[meta]) + meta.ToString());

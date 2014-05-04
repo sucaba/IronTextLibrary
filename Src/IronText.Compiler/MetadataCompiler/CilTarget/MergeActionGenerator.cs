@@ -82,13 +82,13 @@ namespace IronText.MetadataCompiler
                 return;
             }
 
+            var globalSemanticCode = new GlobalSemanticCode(emit, il => il.Ldarg(ctx), data.Grammar.Globals);
             var contextResolverCode = new SemanticCode(
+                                            globalSemanticCode,
                                             emit,
-                                            il => il.Ldarg(ctx),
                                             il => il.Ldarg(lookbackStart),
                                             data,
-                                            data.Grammar.Globals,
-                                            data.LocalParseContexts);
+                                            data.SemanticBindings);
 
             IActionCode code = new MergeCode(emit, contextResolverCode)
             {

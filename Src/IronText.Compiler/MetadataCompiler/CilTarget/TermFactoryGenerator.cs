@@ -50,13 +50,9 @@ namespace IronText.MetadataCompiler
                 .Switch(actionLabels)
                 ;
 
-            var contextResolver = new SemanticCode(
-                                    emit,
-                                    il => il.Do(ldRootContext),
-                                    null,
-                                    data,
-                                    data.Grammar.Globals);
-            IActionCode code = new MatcherCode(emit, contextResolver, ldText, RETURN.GetRef());
+            var globals = new GlobalSemanticCode(emit, il => il.Do(ldRootContext), data.Grammar.Globals);
+            ISemanticCode localSemanticCode  = new SemanticCode(globals, emit, null, data);
+            IActionCode code = new MatcherCode(emit, localSemanticCode, ldText, RETURN.GetRef());
 
             foreach (var matcher in data.Grammar.Matchers)
             {

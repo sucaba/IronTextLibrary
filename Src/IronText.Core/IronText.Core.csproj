@@ -323,6 +323,7 @@
     <Compile Include="Runtime\Producers\Sppf\SppfNode.cs" />
     <Compile Include="Runtime\Producers\Actions\ActionProducer.cs" />
     <Compile Include="Runtime\GLR\StackLookback.cs" />
+    <Compile Include="SharedConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="doc\CILCompilation.md" />

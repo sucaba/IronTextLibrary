@@ -844,6 +844,12 @@ namespace IronText.Lib.IL.Backend.Cecil
 
         private void Emit(OpCode opCode, string text)
         {
+            if (text == null)
+            {
+                Ldnull();
+                return;
+            }
+
             Labelize(body.Create(opCode, text));
         }
 

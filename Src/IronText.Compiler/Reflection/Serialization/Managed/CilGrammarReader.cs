@@ -163,7 +163,7 @@ namespace IronText.Reflection.Managed
             }
             else
             {
-                result = new SemanticRef(cilContext.UniqueName);
+                result = SemanticRef.ByName(cilContext.UniqueName);
             }
 
             return result;
@@ -197,7 +197,7 @@ namespace IronText.Reflection.Managed
 
             foreach (var refValuePair in platformScope)
              {
-                var reference = new SemanticRef(refValuePair.Key.UniqueName);
+                var reference = SemanticRef.ByName(refValuePair.Key.UniqueName);
                 if (!logicalScope.Lookup(reference))
                 {
                     SemanticValue value = new SemanticValue(title: refValuePair.Key.UniqueName);

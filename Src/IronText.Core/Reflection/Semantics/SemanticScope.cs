@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace IronText.Reflection
 {
-    public class SemanticScope
+    public class SemanticScope : IEnumerable<KeyValuePair<SemanticRef,SemanticValue>>
     {
         private Dictionary<SemanticRef, SemanticValue> dictionary = new Dictionary<SemanticRef, SemanticValue>();
 
@@ -32,6 +32,16 @@ namespace IronText.Reflection
         public void Add(SemanticRef reference, SemanticValue context)
         {
             dictionary.Add(reference, context);
+        }
+
+        IEnumerator<KeyValuePair<SemanticRef, SemanticValue>> IEnumerable<KeyValuePair<SemanticRef, SemanticValue>>.GetEnumerator()
+        {
+            return dictionary.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return dictionary.GetEnumerator();
         }
     }
 }
