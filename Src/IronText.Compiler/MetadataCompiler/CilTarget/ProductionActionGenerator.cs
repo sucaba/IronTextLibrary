@@ -70,7 +70,7 @@ namespace IronText.MetadataCompiler
                 lookbackStart: args[4]);
         }
 
-        public void BuildBody(
+        private void BuildBody(
             EmitSyntax emit, 
             LanguageData data,
             Ref<Args> ruleId,
