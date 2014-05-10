@@ -90,7 +90,7 @@ namespace IronText.MetadataCompiler
                 data,
                 data.SemanticBindings);
 
-            var code = new Fluent<IActionCode>(new ProductionCode(
+            var code = Fluent.Create<IActionCode>(new ProductionCode(
                 emit, 
                 localSemanticCode,
                 ldRuleArgs:  il => il.Ldarg(ruleArgs),

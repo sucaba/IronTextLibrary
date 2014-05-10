@@ -140,7 +140,7 @@ namespace IronText.Freezing.Managed
                 }
 
                 var production = grammar.Productions[productionIndex];
-                ProductionActionGenerator.CompileProduction(new Fluent<IActionCode>(code), production);
+                ProductionActionGenerator.CompileProduction(Fluent.Create<IActionCode>(code), production);
 
                 localsStack.Pop(count);
                 localsStack.Push();

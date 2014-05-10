@@ -5,23 +5,23 @@ using System.Text;
 
 namespace IronText.Framework
 {
+    public delegate void Fluent<T>(Pipe<T> action);
+
     /// <summary>
     /// Utility class which encapsulate fluent syntax object to avoid forking 
     /// and using wrong versions of current state represented by syntax.
     /// </summary>
     /// <typeparam name="TSyntax"></typeparam>
-    public sealed class Fluent<TSyntax> where TSyntax : class
+    public static class Fluent
     {
-        private TSyntax current;
-
-        public Fluent(TSyntax initial)
+        public static Fluent<T> Create<T>(T current) where T : class
         {
-            this.current = initial;
+            return (Pipe<T> action) => { current = action(current); };
         }
 
-        public void Do(Pipe<TSyntax> pipe)
+        public static void Do<T>(this Fluent<T> fluent, Pipe<T> action)
         {
-            current = pipe(current);
+            fluent(action);
         }
     }
 }
