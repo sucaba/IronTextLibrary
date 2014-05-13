@@ -29,36 +29,38 @@ namespace IronText.Tests.UseCases
         [Test]
         public void TestPipes()
         {
-            var writer = from c in PipeMonad.Current<StringBuilder>()
-                         select c.Append("hello");
+            Func<StringBuilder,Func<StringBuilder>> writer = sbp => 
+                         from c in PipeMonad.Current(sbp)
+                         let n = c.Append("prefix").Length
+                         select c.Append("hello").Append(n);
 
             var sb = new StringBuilder();
-            writer(sb);
+            writer(sb)();
             Assert.AreEqual("hello", sb.ToString());
         }
     }
 
     public static class PipeMonad
     {
-        public static Pipe<T> Current<T>() { return emit => emit; }
+        public static Func<T> Current<T>(T val) { return () => val; }
 
 
-        public static Pipe<T> SelectMany<T>(this Pipe<T> x, Func<T,Pipe<T>> func, Func<T,T,T> select)
+        public static Func<R> SelectMany<T,U,R>(this Func<T> x, Func<T,Func<U>> func, Func<T,U,R> select)
         {
             return x.Bind(          xval =>
                    func(xval).Bind( yval =>
-                       new Pipe<T>(_ => select(xval, yval))
+                       new Func<R>(() => select(xval, yval))
                    ));
         }
 
-        public static Pipe<T> Select<T>(this Pipe<T> a, Func<T,T> select)
+        public static Func<U> Select<T,U>(this Func<T> a, Func<T,U> select)
         {
-            return a.Bind(x => _ => select(x));
+            return a.Bind(x => new Func<U>(() => select(x)));
         }
 
-        private static Pipe<T> Bind<T>(this Pipe<T> a, Func<T, Pipe<T>> func)
+        private static Func<U> Bind<T,U>(this Func<T> a, Func<T, Func<U>> func)
         {
-            return emit => func(a(emit))(default(T));
+            return () => func(a())();
         }
     }
 
