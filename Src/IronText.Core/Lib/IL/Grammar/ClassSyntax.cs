@@ -1,4 +1,5 @@
 ﻿using IronText.Framework;
+using System;
 
 namespace IronText.Lib.IL
 {
@@ -16,6 +17,32 @@ namespace IronText.Lib.IL
 
         [Produce(".method")]
         WantMethAttr Method();
+    }
+
+    public static class SyntaxExtensions
+    {
+        public static WantImplAttr PrivateStaticMethod(this ClassSyntax syntax, string name, Type delegateType)
+        {
+            var signature = GetDelegateSignature(delegateType);
+            WantArgsBase args = syntax.Method()
+                    .Private.Static
+                    .Returning(syntax.Types.Import(signature.ReturnType))
+                    .Named(name)
+                    .BeginArgs();
+            
+            foreach (var param in signature.GetParameters())
+            {
+                args = args.Argument(syntax.Types.Import(param.ParameterType),  args.Args.Generate(param.Name));
+            }
+
+            return args.EndArgs();
+        }
+
+        private static System.Reflection.MethodInfo GetDelegateSignature(Type delegateType)
+        {
+            var result = delegateType.GetMethod("Invoke");
+            return result;
+        }
     }
 
     [Demand]

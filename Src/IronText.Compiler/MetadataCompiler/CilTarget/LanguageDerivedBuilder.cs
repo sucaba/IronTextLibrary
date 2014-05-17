@@ -22,6 +22,7 @@ namespace IronText.MetadataCompiler
         private const string MergeActionMethodName              = "MergeAction";
         private const string TermFactoryMethodName              = "TermFactory";
         private const string GetParserActionMethodName          = "GetParserAction";
+        private const string ScanMethodName                     = "ScannerDfa";
         private const string CreateStateToSymbolMethodName      = "CreateStateToSymbol";
         private const string CreateParserActionConflictsMethodName = "CreateParserActionConflicts";
         private const string CreateTokenComplexityTableMethodName = "CreateTokenComplexity";
@@ -132,19 +133,8 @@ namespace IronText.MetadataCompiler
             var dfaSerialization = new DfaSerialization(dfa);
             var generator = new ScannerGenerator(dfaSerialization);
 
-            var methodName = ScannerMethods.GetMethodName();
-            var args = context
-                        .Method()
-                            .Static
-                            .Returning(context.Types.Int32)
-                            .Named(methodName)
-                                .BeginArgs();
-
-            var emit = args
-                    .Argument(
-                        context.Types.Import(typeof(ScanCursor)),
-                        args.Args.Generate("cursor"))      // input
-                .EndArgs()
+            var emit = context
+                .PrivateStaticMethod(ScanMethodName, typeof(Scan1Delegate))
                     .NoInlining
                     .NoOptimization
                 .BeginBody();
@@ -166,29 +156,14 @@ namespace IronText.MetadataCompiler
         {
             var generator = new TermFactoryGenerator(data);
 
-            var args = context
-                        .Method()
-                            .Static
-                            .Returning(context.Types.Object)
-                            .Named(TermFactoryMethodName)
-                            .BeginArgs();
-
-            var rootContextArg = args.Args.Generate("rootContext");
-            var actionArg      = args.Args.Generate("action");
-            var textArg        = args.Args.Generate("textArg");
-
-            var emit = args
-                    .Argument(context.Types.Object, rootContextArg)
-                    .Argument(context.Types.Int32,  actionArg)       
-                    .Argument(context.Types.String, textArg)       
-                .EndArgs()
+            var emit = context.PrivateStaticMethod(TermFactoryMethodName, typeof(TermFactoryDelegate))
                 .BeginBody();
 
             generator.Build(
                 emit,
-                il => il.Ldarg(rootContextArg.GetRef()),
-                il => il.Ldarg(actionArg.GetRef()),
-                il => il.Ldarg(textArg.GetRef()));
+                il => il.Ldarg(0),
+                il => il.Ldarg(1),
+                il => il.Ldarg(2));
 
             return emit.EndBody();
         }
@@ -198,11 +173,9 @@ namespace IronText.MetadataCompiler
             var generator = new TokenIdentitiesSerializer(data.Grammar);
 
             return context
-                .Method().Private.Static
-                        .Returning(context.Types.Import(LanguageBase.Fields.tokenKeyToId.FieldType))
-                        .Named(CreateTokenKeyToIdMethodName)
-                    .BeginArgs()
-                    .EndArgs()
+                .PrivateStaticMethod(
+                    CreateTokenKeyToIdMethodName,
+                    typeof(Func<>).MakeGenericType(LanguageBase.Fields.tokenKeyToId.FieldType))
                 .BeginBody()
                     .Do(generator.Build)
                     .Ret()
@@ -216,19 +189,9 @@ namespace IronText.MetadataCompiler
                                     il => il.Ldarg(0),
                                     il => il.Ldarg(1));
 
-            var args = context.Method()
-                              .Private.Static
-                              .Returning(context.Types.Int32)
-                              .Named(GetParserActionMethodName)
-                              .BeginArgs();
-
-            return args
-                        .Argument(context.Types.Int32, args.Args.Generate())
-                        .Argument(context.Types.Int32, args.Args.Generate())
-                    .EndArgs()
-
+            return context
+                .PrivateStaticMethod(GetParserActionMethodName, typeof(TransitionDelegate))        
                     .NoOptimization
-
                 .BeginBody()
                     .Do(generator.Build)
                     .Ret()
@@ -238,12 +201,7 @@ namespace IronText.MetadataCompiler
         private ClassSyntax BuildMethod_CreateDefaultContext(ClassSyntax context)
         {
             return context
-                .Method()
-                      .Private.Static
-                      .Returning(context.Types.Object)
-                      .Named(CreateDefaultContextMethodName)
-                      .BeginArgs()
-                      .EndArgs()
+                .PrivateStaticMethod(CreateDefaultContextMethodName, typeof(Func<object>))
                 .BeginBody()
                     // Plan implementation of abstraction as needed
                     .Do(il=> implementationGenerator
@@ -271,12 +229,7 @@ namespace IronText.MetadataCompiler
             var grammarSerializer = new GrammarSerializer(data.Grammar);
 
             return context
-                .Method()   
-                    .Private.Static
-                    .Returning(context.Types.Import(typeof(Grammar)))
-                    .Named(CreateGrammarMethodName)
-                        .BeginArgs()
-                        .EndArgs()
+                .PrivateStaticMethod(CreateGrammarMethodName, typeof(Func<Grammar>))
                 .BeginBody()
                     .Do(grammarSerializer.Build)
                     .Ret()
@@ -286,16 +239,11 @@ namespace IronText.MetadataCompiler
         private ClassSyntax BuildMethod_CreateParserActionConflicts(ClassSyntax context)
         {
             var emit = context
-                        .Method()
-                            .Private.Static
-                            .Returning(context.Types.Import(typeof(int[])))
-                            .Named(CreateParserActionConflictsMethodName)
-                                .BeginArgs()
-                                .EndArgs()
+                        .PrivateStaticMethod(CreateParserActionConflictsMethodName, typeof(Func<int[]>))
                         .BeginBody();
             
             var resultLoc = emit.Locals.Generate().GetRef();
-            var itemLoc = emit.Locals.Generate().GetRef();
+            var itemLoc   = emit.Locals.Generate().GetRef();
             var conflicts = data.ParserConflictActionTable;
 
             emit = emit
@@ -323,12 +271,7 @@ namespace IronText.MetadataCompiler
         private ClassSyntax BuildMethod_CreateTokenComplexityTable(ClassSyntax context)
         {
             var emit = context
-                        .Method()
-                            .Private.Static
-                            .Returning(context.Types.Import(typeof(int[])))
-                            .Named(CreateTokenComplexityTableMethodName)
-                                .BeginArgs()
-                                .EndArgs()
+                        .PrivateStaticMethod(CreateTokenComplexityTableMethodName, typeof(Func<int[]>))
                         .BeginBody();
             
             var resultLoc = emit.Locals.Generate().GetRef();
@@ -360,12 +303,7 @@ namespace IronText.MetadataCompiler
         private ClassSyntax BuildMethod_CreateStateToSymbol(ClassSyntax context)
         {
             var emit = context
-                        .Method()
-                            .Private.Static
-                            .Returning(context.Types.Import(typeof(int[])))
-                            .Named(CreateStateToSymbolMethodName)
-                                .BeginArgs()
-                                .EndArgs()
+                        .PrivateStaticMethod(CreateStateToSymbolMethodName, typeof(Func<int[]>))
                         .BeginBody();
             var resultLoc = emit.Locals.Generate().GetRef();
             var stateToSymbol = data.StateToToken;
@@ -511,7 +449,7 @@ namespace IronText.MetadataCompiler
                 .Ldarg(0)
                 .LdMethodDelegate(
                     declaringTypeRef,
-                    ScannerMethods.GetMethodName(),
+                    ScanMethodName,
                     typeof(Scan1Delegate))
                 .Stfld(LanguageBase.Fields.scan1)
 

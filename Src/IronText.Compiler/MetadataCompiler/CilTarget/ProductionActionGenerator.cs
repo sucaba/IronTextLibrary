@@ -40,12 +40,6 @@ namespace IronText.MetadataCompiler
 
                 .BeginBody();
 
-            ruleId.Name        = "ruleId";
-            ruleArgs.Name      = "args";
-            argsStart.Name     = "argsStart";
-            ctx.Name           = "ctx";
-            stackLookback.Name = "stackLookback";
-
             BuildBody(
                 emit, 
                 data, 

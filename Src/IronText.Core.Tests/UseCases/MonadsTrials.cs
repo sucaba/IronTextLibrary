@@ -36,7 +36,7 @@ namespace IronText.Tests.UseCases
 
             var sb = new StringBuilder();
             writer(sb)();
-            Assert.AreEqual("hello", sb.ToString());
+            Assert.AreEqual("prefixhello6", sb.ToString());
         }
     }
 
