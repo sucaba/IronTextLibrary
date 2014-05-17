@@ -247,9 +247,9 @@ namespace IronText.MetadataCompiler
             var conflicts = data.ParserConflictActionTable;
 
             emit = emit
-                .Local(resultLoc.Def, emit.Types.Import(typeof(int[])))
+                .Local(resultLoc.Def, typeof(int[]))
                 .Ldc_I4(conflicts.Length)
-                .Newarr(emit.Types.Import(typeof(int)))
+                .Newarr(typeof(int))
                 .Stloc(resultLoc)
                 ;
 
@@ -279,9 +279,9 @@ namespace IronText.MetadataCompiler
             var table     = data.TokenComplexity;
 
             emit = emit
-                .Local(resultLoc.Def, emit.Types.Import(typeof(int[])))
+                .Local(resultLoc.Def, typeof(int[]))
                 .Ldc_I4(table.Length)
-                .Newarr(emit.Types.Import(typeof(int)))
+                .Newarr(typeof(int))
                 .Stloc(resultLoc)
                 ;
 
@@ -309,9 +309,9 @@ namespace IronText.MetadataCompiler
             var stateToSymbol = data.StateToToken;
 
             emit = emit
-                .Local(resultLoc.Def, context.Types.Import(typeof(int[])))
+                .Local(resultLoc.Def, typeof(int[]))
                 .Ldc_I4(stateToSymbol.Length)
-                .Newarr(context.Types.Import(typeof(int)))
+                .Newarr(typeof(int))
                 .Stloc(resultLoc);
 
             for (int i = 0; i != stateToSymbol.Length; ++i)

@@ -22,7 +22,7 @@ namespace IronText.MetadataCompiler
             var result = emit.Locals.Generate().GetRef();
 
             emit
-                .Local(result.Def, emit.Types.Import(LanguageBase.Fields.tokenKeyToId.FieldType))
+                .Local(result.Def, LanguageBase.Fields.tokenKeyToId.FieldType)
                 .Newobj(() => new Dictionary<object,int>())
                 .Stloc(result);
 

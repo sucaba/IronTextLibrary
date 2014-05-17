@@ -188,13 +188,12 @@ namespace IronText.Lib.IL.Generators
             }
             else if (type.IsValueType)
             {
-                var resultType = emit.Types.Import(type);
                 var resultLoc = emit.Locals.Generate("result");
 
                 emit = emit
-                    .Local(resultLoc, resultType)
+                    .Local(resultLoc, type)
                     .Ldloca(resultLoc.GetRef())
-                    .Initobj(resultType)
+                    .Initobj(type)
                     .Ldloc(resultLoc.GetRef())
                     ;
             }

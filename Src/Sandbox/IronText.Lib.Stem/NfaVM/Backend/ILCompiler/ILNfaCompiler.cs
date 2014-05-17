@@ -85,13 +85,13 @@ namespace IronText.Lib.NfaVM.ILCompiler
 
             emit
                 .Local(intTmp, emit.Types.Int32)
-                .Local(slots, emit.Types.Import(typeof(int[])))
-                .Local(labelIndexToLocation, emit.Types.Import(typeof(int[])))
+                .Local(slots, typeof(int[]))
+                .Local(labelIndexToLocation, typeof(int[]))
                 .Br(POSTCOMPILEINIT.GetRef())
                 .Label(POSTCOMPILEINIT_BACK)
-                .Local(threadTmp, emit.Types.Import(typeof(Thread)))
+                .Local(threadTmp, typeof(Thread))
                 .Ldloca(threadTmp.GetRef())
-                .Initobj(emit.Types.Import(typeof(Thread)))
+                .Initobj(typeof(Thread))
                 .Do(inputPump.EmitInitialization)
                 ;
 

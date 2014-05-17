@@ -473,6 +473,21 @@ namespace IronText.Lib.IL
                     delegateType);
         }
 
+        public static EmitSyntax Local(this EmitSyntax emit, Def<Locals> name, Type type)
+        {
+            return emit.Local(name, emit.Types.Import(type));
+        }
+
+        public static EmitSyntax Initobj(this EmitSyntax emit, Type valueType)
+        {
+            return emit.Initobj(emit.Types.Import(valueType));
+        }
+
+        public static EmitSyntax Newarr(this EmitSyntax emit, Type elementType)
+        {
+            return emit.Newarr(emit.Types.Import(elementType));
+        }
+
         private static EmitSyntax LdMethodDelegate(
             this EmitSyntax emit,
             Pipe<IMethodNs,DoneMethodSig> methodSig,

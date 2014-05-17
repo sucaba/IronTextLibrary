@@ -27,10 +27,10 @@ namespace IronText.MetadataCompiler
             var symbolVar   = emit.Locals.Generate("symbol").GetRef();
             var intArrayVar = emit.Locals.Generate("intArray").GetRef();
             emit
-                .Local(resultVar,       emit.Types.Import(typeof(Grammar)))
-                .Local(partsVar,        emit.Types.Import(typeof(int[])))
-                .Local(symbolVar.Def,   emit.Types.Import(typeof(SymbolBase)))
-                .Local(intArrayVar.Def, emit.Types.Array(emit.Types.Int32))
+                .Local(resultVar,       typeof(Grammar))
+                .Local(partsVar,        typeof(int[]))
+                .Local(symbolVar.Def,   typeof(SymbolBase))
+                .Local(intArrayVar.Def, typeof(int[]))
 
                 .Newobj(() => new Grammar())
                 .Stloc(resultVar.GetRef())
