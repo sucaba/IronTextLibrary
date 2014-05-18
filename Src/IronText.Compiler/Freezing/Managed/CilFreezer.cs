@@ -52,6 +52,7 @@ namespace IronText.Freezing.Managed
             private ISemanticLoader contextCode;
             private string currentTerminalText;
             private readonly LocalsStack localsStack;
+            private int currentProdSize;
 
             public FreezerProcess(string input)
             {
@@ -133,17 +134,22 @@ namespace IronText.Freezing.Managed
 
             void ISppfNodeVisitor.VisitBranch(int productionIndex, SppfNode[] children, Loc location)
             {
-                int count = children.Length;
-                for (int i = 0; i != count; ++i)
+                var size = children.Length;
+                for (int i = 0; i != size; ++i)
                 {
                     CompileNode(children[i]);
                 }
 
+                this.currentProdSize = children.Length;
                 var production = grammar.Productions[productionIndex];
-                ProductionActionGenerator.CompileProduction(Fluent.Create<IActionCode>(code), production);
+                ProductionActionGenerator.CompileProduction(
+                    Fluent.Create(code),
+                    localsStack,
+                    production);
 
-                localsStack.Pop(count);
+                localsStack.Pop(currentProdSize);
                 localsStack.Push();
+                this.currentProdSize = -1;
             }
 
             void ISppfNodeVisitor.VisitAlternatives(SppfNode alternatives)
@@ -157,21 +163,21 @@ namespace IronText.Freezing.Managed
                 return code;
             }
 
-            IActionCode IActionCode.LdSemantic(string contextName)
+            IActionCode IActionCode.LdSemantic(string name)
             {
-                contextCode.LdSemantic(SemanticRef.ByName(contextName));
+                contextCode.LdSemantic(SemanticRef.ByName(name));
                 return code;
             }
 
             public IActionCode LdActionArgument(int index)
             {
-                localsStack.LdSlot(index);
+                localsStack.LdSlot((localsStack.Count - currentProdSize) + index);
                 return code;
             }
 
             IActionCode IActionCode.LdActionArgument(int index, Type argType)
             {
-                localsStack.LdSlot(index);
+                LdActionArgument(index);
                 if (argType.IsValueType)
                 {
                     this.emit = emit.Unbox_Any(emit.Types.Import(argType));

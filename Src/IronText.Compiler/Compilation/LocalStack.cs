@@ -15,24 +15,29 @@ namespace IronText.Compilation
     {
         private const string SlotLocalPrefix = "slot";
 
-        private readonly Action<Pipe<EmitSyntax>> coder;
+        private readonly Fluent<EmitSyntax> coder;
         private readonly List<Ref<Locals>> slotLocals = new List<Ref<Locals>>();
         private readonly Stack<Ref<Locals>> freeSlotLocals = new Stack<Ref<Locals>>();
         private int currentSlotCount = 0;
 
-        public LocalsStack(Action<Pipe<EmitSyntax>> coder)
+        public LocalsStack(Fluent<EmitSyntax> coder)
         {
             this.coder = coder;
         }
 
+        public int Count { get { return slotLocals.Count; } }
+
         public void Pop(int count)
         {
-            for (int i = 0; i != count; ++i)
+            int first = slotLocals.Count - count;
+            int last  = first + count;
+
+            for (int i = first; i != last; ++i)
             {
                 freeSlotLocals.Push(slotLocals[i]);
             }
 
-            slotLocals.RemoveRange(0, count);
+            slotLocals.RemoveRange(first, count);
         }
 
         public void Push()

@@ -18,33 +18,37 @@ namespace IronText.Tests.Freezing
         {
             using (var interp = new Interpreter<MyCalc>())
             {
-                Assert.IsTrue(interp.Parse("1"));
-                Assert.AreEqual("1", interp.Context.Outcome);
+                Assert.IsTrue(interp.Parse("1|2^3|4"));
+                Assert.AreEqual("(1|(2^3)|4)", interp.Context.Outcome);
             }
 
             using (var freezer = new CilFreezer<MyCalc>())
             {
-                Pipe<MyCalc> code = freezer.Compile("1+1");
+                Pipe<MyCalc> code = freezer.Compile("1|2^3|4");
 
                 var context = new MyCalc();
                 Assert.AreSame(context, code(context));
-                Assert.AreEqual("11", context.Outcome);
+                Assert.AreEqual("(1|(2^3)|4)", context.Outcome);
             }
         }
 
         [Language]
         [GrammarDocument("FreezerTest.gram")]
-        [Precedence("+", 1, Associativity.Left)]
+        [Precedence("|", 1, Associativity.Left)]
+        [Precedence("^", 2, Associativity.Left)]
         public class MyCalc
         {
             [Outcome]
             public object Outcome { get; set; }
 
-            [Produce(null, "+", null)]
-            public object Combine(object x, object y) { return x.ToString() + y.ToString(); }
+            [Produce(null, "^", null)]
+            public object Pow(object x, object y) { return string.Format("({0}^{1})", x, y); }
 
-            [Literal("1")]
-            public object One(string text) { return text; }
+            [Produce(null, "|", null, "|", null)]
+            public object Tuple(object x, object y, object z) { return string.Format("({0}|{1}|{2})", x, y, z); }
+
+            [Match("digit")]
+            public object Digit(string text) { return text; }
         }
     }
 }

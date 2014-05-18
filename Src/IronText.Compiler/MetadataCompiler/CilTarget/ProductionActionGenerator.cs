@@ -7,6 +7,7 @@ using IronText.Reflection.Managed;
 using IronText.Runtime;
 using IronText.MetadataCompiler.CilTarget;
 using IronText.Framework;
+using IronText.Compilation;
 
 namespace IronText.MetadataCompiler
 {
@@ -73,6 +74,8 @@ namespace IronText.MetadataCompiler
             Ref<Args> ctx,
             Ref<Args> lookbackStart)
         {
+            var localsStack = new LocalsStack(Fluent.Create(emit));
+
             Def<Labels> returnLabel = emit.Labels.Generate();
 
             var globalSemanticCode = new GlobalSemanticLoader(emit, il => il.Ldarg(ctx), data.Grammar.Globals);
@@ -108,7 +111,7 @@ namespace IronText.MetadataCompiler
             {
                 emit.Label(jumpTable[prod.Index].Def);
 
-                CompileProduction(code, prod);
+                CompileProduction(code, localsStack, prod);
 
                 emit.Br(endWithSingleResultLabel.GetRef());
             }
@@ -121,13 +124,15 @@ namespace IronText.MetadataCompiler
                 .Ret();
         }
 
-        public static void CompileProduction(Fluent<IActionCode> code, Production prod)
+        public static void CompileProduction(Fluent<IActionCode> coder, LocalsStack localsStack, Production prod)
         {
-            var compiler = new ProductionCompiler(code);
+            var compiler = new ProductionCompiler(coder);
+
 #if false
             for (int i = 0; i != prod.Size; ++i)
             {
-                code = code.LdActionArgument(i);
+                coder(c => c.LdActionArgument(i));
+                localsStack.Push();
             }
 #endif
 
