@@ -51,7 +51,7 @@ namespace IronText.MetadataCompiler
                 ;
 
             var globals = new GlobalSemanticLoader(emit, il => il.Do(ldRootContext), data.Grammar.Globals);
-            ISemanticLoader localSemanticCode = new SemanticLoader(globals, emit, null);
+            ISemanticLoader localSemanticCode = new StackSemanticLoader(globals, emit, null);
             IActionCode code = new MatcherCode(emit, localSemanticCode, ldText, RETURN.GetRef());
 
             foreach (var matcher in data.Grammar.Matchers)

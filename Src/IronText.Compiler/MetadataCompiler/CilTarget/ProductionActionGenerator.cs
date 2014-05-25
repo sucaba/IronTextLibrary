@@ -26,11 +26,11 @@ namespace IronText.MetadataCompiler
                             .Named(methodName)
                             .BeginArgs();
 
-            Def<Args> ruleId        =  args.Args.Generate("ruleId");
-            Def<Args> ruleArgs      =  args.Args.Generate("ruleArgs");
-            Def<Args> argsStart     =  args.Args.Generate("argsStart");
-            Def<Args> ctx           =  args.Args.Generate("rootContext");
-            Def<Args> stackLookback =  args.Args.Generate("startLookback");
+            Def<Args> ruleId        = args.Args.Generate("ruleId");
+            Def<Args> ruleArgs      = args.Args.Generate("ruleArgs");
+            Def<Args> argsStart     = args.Args.Generate("argsStart");
+            Def<Args> ctx           = args.Args.Generate("rootContext");
+            Def<Args> stackLookback = args.Args.Generate("startLookback");
 
             var emit = args
                     .Argument(context.Types.Int32, ruleId)
@@ -129,7 +129,7 @@ namespace IronText.MetadataCompiler
                 throw new NotImplementedException("todo");
             }
 
-            var locals = new SemanticLoader(
+            var locals = new StackSemanticLoader(
                 globals,
                 emit,
                 il => il.Ldarg(lookbackStart),
@@ -180,7 +180,7 @@ namespace IronText.MetadataCompiler
                 returnLabel: returnLabel));
 
             // Build inlined productions within prod
-            var compiler = new ExtendedProductionCompiler(Fluent.Create(emit), varsStack);
+            var compiler = new ProductionCompiler(Fluent.Create(emit), varsStack);
             compiler.Execute(prod);
 
             CompileProduction(coder, varsStack, prod);

@@ -15,10 +15,10 @@ namespace IronText.MetadataCompiler
         private readonly VarsStack        localsStack;
 
         public InlinedProductionCode(
-            Production         inlinedProd,
-            ISemanticLoader    semanticLoader,
             Fluent<EmitSyntax> emitCoder,
-            VarsStack        localsStack)
+            ISemanticLoader    semanticLoader,
+            Production         inlinedProd,
+            VarsStack          localsStack)
         {
             this.inlinedProd   = inlinedProd;
             this.semanticLoader = semanticLoader;

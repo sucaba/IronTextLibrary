@@ -104,7 +104,7 @@ namespace IronText.Freezing.Managed
                 this.args = args0;
 
                 var globals = new GlobalSemanticLoader(emit, il => il.Ldarg(args[0]), data.Grammar.Globals);
-                this.contextCode = new SemanticLoader(globals, emit, null);
+                this.contextCode = new StackSemanticLoader(globals, emit, null);
 
                 CompileNode(root);
                 return emit.Ldarg(0).Ret();
@@ -147,8 +147,6 @@ namespace IronText.Freezing.Managed
                     localsStack,
                     production);
 
-                localsStack.Pop(currentProdSize);
-                localsStack.Push();
                 this.currentProdSize = -1;
             }
 

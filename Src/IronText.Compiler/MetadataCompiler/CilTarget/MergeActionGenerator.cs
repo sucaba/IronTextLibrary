@@ -83,7 +83,7 @@ namespace IronText.MetadataCompiler
             }
 
             var globalSemanticCode = new GlobalSemanticLoader(emit, il => il.Ldarg(ctx), data.Grammar.Globals);
-            var contextResolverCode = new SemanticLoader(globalSemanticCode, emit, il => il.Ldarg(lookbackStart), data.SemanticBindings);
+            var contextResolverCode = new StackSemanticLoader(globalSemanticCode, emit, il => il.Ldarg(lookbackStart), data.SemanticBindings);
 
             IActionCode code = new MergeCode(emit, contextResolverCode)
             {

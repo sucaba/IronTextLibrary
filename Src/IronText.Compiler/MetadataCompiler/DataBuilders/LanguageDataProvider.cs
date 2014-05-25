@@ -208,8 +208,8 @@ namespace IronText.MetadataCompiler
                                 {
                                     StackState    = parentState,
                                     StackLookback = item.Position,
-                                    Scope        = providingSymbol.LocalScope,
-                                    Reference   = consumingProd.ContextRef
+                                    Scope         = providingSymbol.LocalScope,
+                                    Reference     = consumingProd.ContextRef
                                 });
                         }
                     }

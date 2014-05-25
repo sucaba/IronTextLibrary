@@ -143,7 +143,7 @@
     <Compile Include="MetadataCompiler\CilTarget\Code\InlinedProductionCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\InlinedSemanticLoader.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\ISemanticLoader.cs" />
-    <Compile Include="MetadataCompiler\CilTarget\ExtendedProductionCompiler.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\ProductionCompiler.cs" />
     <Compile Include="Reflection\Serialization\Managed\CilGrammarReader.cs" />
     <Compile Include="Reflection\Reporting\ReportData.cs" />
     <Compile Include="Reflection\Managed\CilSymbolRefResolver.cs" />
@@ -192,7 +192,7 @@
     <Compile Include="Reflection\Reporting\ParserAutomata.cs" />
     <Compile Include="Reflection\Reporting\ParserState.cs" />
     <Compile Include="Reflection\Reporting\ParserTransition.cs" />
-    <Compile Include="MetadataCompiler\CilTarget\Code\SemanticLoader.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\Code\StackSemanticLoader.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\ProductionCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\ProductionActionGenerator.cs" />
     <Compile Include="MetadataCompiler\CilTarget\GrammarSerializer.cs" />

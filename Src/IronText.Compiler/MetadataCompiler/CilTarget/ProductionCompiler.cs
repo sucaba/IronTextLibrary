@@ -10,13 +10,13 @@ using System.Text;
 
 namespace IronText.MetadataCompiler.CilTarget
 {
-    class ExtendedProductionCompiler : IProductionComponentVisitor
+    class ProductionCompiler : IProductionComponentVisitor
     {
         private readonly Fluent<EmitSyntax> emitCoder;
-        private readonly VarsStack varsStack;
-        private Production parentProduction;
+        private readonly VarsStack          varsStack;
+        private Production                  parentProduction;
 
-        public ExtendedProductionCompiler(Fluent<EmitSyntax> emitCoder, VarsStack varsStack)
+        public ProductionCompiler(Fluent<EmitSyntax> emitCoder, VarsStack varsStack)
         {
             this.emitCoder = emitCoder;
             this.varsStack = varsStack;
@@ -55,7 +55,10 @@ namespace IronText.MetadataCompiler.CilTarget
                                                 varsStack,
                                                 globals));
             
-                ProductionActionGenerator.CompileProduction(coder, varsStack, production);
+                ProductionActionGenerator.CompileProduction(
+                                                coder,
+                                                varsStack,
+                                                production);
             }
         }
 
@@ -63,11 +66,25 @@ namespace IronText.MetadataCompiler.CilTarget
             Fluent<EmitSyntax> emitCoder,
             Production      parentProduction,
             int             indexInParent,
-            Production      production,
+            Production      childProduction,
             VarsStack       varsStack,
             ISemanticLoader globals)
         {
-            throw new NotImplementedException();
+            var semanticLoader = new InlinedSemanticLoader(
+                emitCoder,
+                globals,
+                varsStack,
+                parentProduction,
+                indexInParent,
+                childProduction);
+
+            var result = new InlinedProductionCode(
+                emitCoder,
+                semanticLoader,
+                childProduction,
+                varsStack);
+
+            return result;
         }
     }
 }

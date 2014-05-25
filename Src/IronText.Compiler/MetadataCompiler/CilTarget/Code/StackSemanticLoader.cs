@@ -14,14 +14,14 @@ using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    class SemanticLoader : ISemanticLoader
+    class StackSemanticLoader : ISemanticLoader
     {
         private EmitSyntax                      emit;
         private readonly Pipe<EmitSyntax>       ldLookback;
         private readonly StackSemanticBinding[] localSemanticBindings;
         private readonly ISemanticLoader        globals;
 
-        public SemanticLoader(ISemanticLoader globals, EmitSyntax emit, Pipe<EmitSyntax> ldLookback, SemanticBinding[] localSemanticBindings = null)
+        public StackSemanticLoader(ISemanticLoader globals, EmitSyntax emit, Pipe<EmitSyntax> ldLookback, SemanticBinding[] localSemanticBindings = null)
         {
             this.globals               = globals;
             this.emit                  = emit;
