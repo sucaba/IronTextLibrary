@@ -180,10 +180,15 @@ namespace IronText.MetadataCompiler
                 ++index;
             }
 
-            var coder = Fluent.Create<IActionCode>(new ProductionCode(emit, locals, varsStack, localsStackStart));
+            var emitCoder = Fluent.Create(emit);
+            var coder = Fluent.Create<IActionCode>(new ProductionCode(
+                    emitCoder,
+                    locals,
+                    varsStack,
+                    localsStackStart));
 
             // Build inlined productions within prod
-            var compiler = new ProductionCompiler(Fluent.Create(emit), varsStack, globals);
+            var compiler = new ProductionCompiler(emitCoder, varsStack, globals);
             compiler.Execute(prod);
 
             CompileProduction(coder, varsStack, prod);
