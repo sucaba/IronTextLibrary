@@ -86,7 +86,15 @@ namespace IronText.MetadataCompiler
             var jumpTable = new Ref<Labels>[data.Grammar.Productions.Count];
             for (int i = 0; i != jumpTable.Length; ++i)
             {
-                jumpTable[i] = emit.Labels.Generate().GetRef();
+                var prod = data.Grammar.Productions[i];
+                if (prod.IsDeleted)
+                {
+                    jumpTable[i] = defaultLabel.GetRef();
+                }
+                else
+                {
+                    jumpTable[i] = emit.Labels.Generate().GetRef();
+                }
             }
 
             emit
@@ -96,6 +104,11 @@ namespace IronText.MetadataCompiler
 
             foreach (var prod in data.Grammar.Productions)
             {
+                if (prod.IsDeleted)
+                {
+                    continue;
+                }
+
                 emit.Label(jumpTable[prod.Index].Def);
 
                 CompileProduction(emit, data, ruleArgs, argsStart, lookbackStart, returnLabel, globalSemanticCode, prod, varStack);
@@ -124,11 +137,6 @@ namespace IronText.MetadataCompiler
             Production      prod,
             VarsStack       varsStack)
         {
-            if (prod.IsExtended)
-            {
-                throw new NotImplementedException("todo");
-            }
-
             var locals = new StackSemanticLoader(
                 globals,
                 emit,
@@ -172,15 +180,10 @@ namespace IronText.MetadataCompiler
                 ++index;
             }
 
-            var coder = Fluent.Create<IActionCode>(new ProductionCode(
-                emit,
-                locals,
-                varsStack,
-                localsStackStart,
-                returnLabel: returnLabel));
+            var coder = Fluent.Create<IActionCode>(new ProductionCode(emit, locals, varsStack, localsStackStart));
 
             // Build inlined productions within prod
-            var compiler = new ProductionCompiler(Fluent.Create(emit), varsStack);
+            var compiler = new ProductionCompiler(Fluent.Create(emit), varsStack, globals);
             compiler.Execute(prod);
 
             CompileProduction(coder, varsStack, prod);

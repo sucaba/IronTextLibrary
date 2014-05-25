@@ -14,12 +14,17 @@ namespace IronText.MetadataCompiler.CilTarget
     {
         private readonly Fluent<EmitSyntax> emitCoder;
         private readonly VarsStack          varsStack;
+        private readonly ISemanticLoader    globals;
         private Production                  parentProduction;
 
-        public ProductionCompiler(Fluent<EmitSyntax> emitCoder, VarsStack varsStack)
+        public ProductionCompiler(
+            Fluent<EmitSyntax> emitCoder,
+            VarsStack          varsStack,
+            ISemanticLoader    globals)
         {
             this.emitCoder = emitCoder;
             this.varsStack = varsStack;
+            this.globals   = globals;
         }
 
         public void Execute(Production extended)
@@ -46,7 +51,6 @@ namespace IronText.MetadataCompiler.CilTarget
             this.parentProduction = savedParentProd;
             if (parentProduction != null)
             {
-                ISemanticLoader globals = null;
                 Fluent<IActionCode> coder = Fluent.Create(CreateActionCode(
                                                 emitCoder,
                                                 parentProduction,

@@ -42,6 +42,11 @@ namespace IronText.Reflection
 
             foreach (var prod in grammar.Productions)
             {
+                if (prod.IsDeleted)
+                {
+                    continue;
+                }
+
                 output.WriteLine("// {0}:", prod.Index);
                 output.Write("{0} :", prod.Outcome.Name);
                 if (prod.Pattern.Length == 0)

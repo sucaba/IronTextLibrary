@@ -208,9 +208,18 @@ namespace IronText.Reflection
                     }
                     else
                     {
-                        foreach (var symbol in Pattern)
+                        foreach (var component in Components)
                         {
-                            output.Append(" ").Append(symbol.Name);
+                            var asSymbol = component as Symbol;
+                            if (asSymbol != null)
+                            {
+                                output.Append(" ").Append(asSymbol.Name);
+                            }
+                            else
+                            {
+                                var prod = (Production)component;
+                                output.Append(" (").Append(prod.DebugProductionText).Append(")");
+                            }
                         }
                     }
                 }
