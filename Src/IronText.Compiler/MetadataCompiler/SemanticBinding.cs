@@ -30,7 +30,7 @@ namespace IronText.Extensibility
         public Production  OwningProduction    { get; set; }
 
         /// <summary>
-        /// Depth-first left-to-right position in component tree.
+        /// Breadth-first left-to-right position in component tree.
         /// </summary>
         public int         ProvidingPosition   { get; set; }
 

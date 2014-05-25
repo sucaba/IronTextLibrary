@@ -10,17 +10,22 @@ namespace IronText.MetadataCompiler
     class InlinedSemanticLoader : ISemanticLoader
     {
         private readonly ISemanticLoader              fallback;
-        private readonly Production                   extendedProduction;
         private readonly List<InlinedSemanticBinding> semanticBindings;
+        private readonly Production             	  inlinedProduction;
+        private readonly int                          parentPosition;
 
         public InlinedSemanticLoader(
             ISemanticLoader   fallback,
-            Production        extendedProduction)
+            Production        owningProduction,
+            Production        inlinedProduction,
+            int               parentPosition)
         {
-            this.fallback 		    = fallback;
-            this.extendedProduction = extendedProduction;
-            this.semanticBindings   = new List<InlinedSemanticBinding>();
-            CollectInlinedSemanticBindings(extendedProduction, semanticBindings);
+            this.fallback 		   = fallback;
+            this.inlinedProduction = inlinedProduction;
+            this.parentPosition    = parentPosition;
+            this.semanticBindings  = new List<InlinedSemanticBinding>();
+
+            //CollectInlinedSemanticBindings(owningProduction, semanticBindings);
         }
 
         public bool LdSemantic(SemanticRef reference)

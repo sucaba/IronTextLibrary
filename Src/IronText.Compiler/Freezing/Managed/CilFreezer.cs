@@ -104,7 +104,7 @@ namespace IronText.Freezing.Managed
                 this.args = args0;
 
                 var globals = new GlobalSemanticLoader(emit, il => il.Ldarg(args[0]), data.Grammar.Globals);
-                this.contextCode = new SemanticLoader(globals, emit, null, data);
+                this.contextCode = new SemanticLoader(globals, emit, null);
 
                 CompileNode(root);
                 return emit.Ldarg(0).Ret();
@@ -129,7 +129,7 @@ namespace IronText.Freezing.Managed
                     this.currentTerminalText = null;
                 }
 
-                localsStack.Push();
+                localsStack.Add();
             }
 
             void ISppfNodeVisitor.VisitBranch(int productionIndex, SppfNode[] children, Loc location)
@@ -148,7 +148,7 @@ namespace IronText.Freezing.Managed
                     production);
 
                 localsStack.Pop(currentProdSize);
-                localsStack.Push();
+                localsStack.Add();
                 this.currentProdSize = -1;
             }
 

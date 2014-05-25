@@ -16,54 +16,79 @@ namespace IronText.Compilation
         private const string SlotLocalPrefix = "slot";
 
         private readonly Fluent<EmitSyntax> coder;
-        private readonly List<Ref<Locals>> slotLocals = new List<Ref<Locals>>();
-        private readonly Stack<Ref<Locals>> freeSlotLocals = new Stack<Ref<Locals>>();
-        private int currentSlotCount = 0;
+        private readonly List<Ref<Locals>>  slots     = new List<Ref<Locals>>();
+        private readonly Stack<Ref<Locals>> freeSlots = new Stack<Ref<Locals>>();
+        private int slotSeed = 0;
 
         public LocalsStack(Fluent<EmitSyntax> coder)
         {
             this.coder = coder;
         }
 
-        public int Count { get { return slotLocals.Count; } }
+        public int Count { get { return slots.Count; } }
 
         public void Pop(int count)
         {
-            int first = slotLocals.Count - count;
+            RemoveRange(Count - count, count);
+        }
+
+        /// <summary>
+        /// Pop <paramref name="count"/> elements at <paramref name="index"/>.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="count"></param>
+        public void RemoveRange(int index, int count)
+        {
+            int first = index;
             int last  = first + count;
 
             for (int i = first; i != last; ++i)
             {
-                freeSlotLocals.Push(slotLocals[i]);
+                freeSlots.Push(slots[i]);
             }
 
-            slotLocals.RemoveRange(first, count);
+            slots.RemoveRange(first, count);
         }
 
-        public void Push()
+        /// <summary>
+        /// And push value from .net stack into slot at <paramref name="index"/>.
+        /// </summary>
+        public void Insert(int index)
         {
-            if (freeSlotLocals.Count == 0)
+            var slot = NewSlot();
+
+            coder(il => il.Stloc(slot));
+
+            slots.Insert(index, slot);
+        }
+
+        public void Add()
+        {
+            Insert(Count);
+        }
+
+        public void LdSlot(int index)
+        {
+            coder(il => il.Ldloc(slots[index]));
+        }
+
+        private Ref<Locals> NewSlot()
+        {
+            if (freeSlots.Count == 0)
             {
                 // Add one more local variable for storing argument.
                 coder(
                     il =>
                     {
-                        var l = il.Locals.Generate(SlotLocalPrefix + currentSlotCount);
-                        freeSlotLocals.Push(l.GetRef());
+                        var l = il.Locals.Generate(SlotLocalPrefix + slotSeed);
+                        freeSlots.Push(l.GetRef());
                         return il.Local(l, il.Types.Object);
                     });
 
-                ++currentSlotCount;
+                ++slotSeed;
             }
 
-            var slot = freeSlotLocals.Pop();
-            coder(il => il.Stloc(slot));
-            slotLocals.Add(slot);
-        }
-
-        public void LdSlot(int index)
-        {
-            coder(il => il.Ldloc(slotLocals[index]));
+            return freeSlots.Pop();
         }
     }
 }

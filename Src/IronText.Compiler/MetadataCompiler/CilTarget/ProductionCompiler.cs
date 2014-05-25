@@ -37,15 +37,18 @@ namespace IronText.MetadataCompiler.CilTarget
 
         public void Execute(IProductionComponent root)
         {
+            var prod = (Production)root;
+            ((IProductionComponentVisitor)this).VisitProduction(prod);
 #if false
             int size = root.Size;
             for (int i = size; i != 0; --i)
             {
                 localsStack.Push();
             }
-#endif
 
             root.Accept(this);
+#endif
+
         }
 
         void IProductionComponentVisitor.VisitSymbol(Symbol symbol)

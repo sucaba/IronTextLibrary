@@ -21,12 +21,7 @@ namespace IronText.MetadataCompiler
         private readonly StackSemanticBinding[] localSemanticBindings;
         private readonly ISemanticLoader        globals;
 
-        public SemanticLoader(
-            ISemanticLoader   globals,
-            EmitSyntax        emit,
-            Pipe<EmitSyntax>  ldLookback,
-            LanguageData      data,
-            SemanticBinding[] localSemanticBindings = null)
+        public SemanticLoader(ISemanticLoader globals, EmitSyntax emit, Pipe<EmitSyntax> ldLookback, SemanticBinding[] localSemanticBindings = null)
         {
             this.globals               = globals;
             this.emit                  = emit;

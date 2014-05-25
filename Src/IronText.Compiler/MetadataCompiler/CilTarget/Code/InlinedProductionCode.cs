@@ -1,5 +1,7 @@
-﻿using IronText.Framework;
+﻿using IronText.Compilation;
+using IronText.Framework;
 using IronText.Lib.IL;
+using IronText.Reflection;
 using IronText.Reflection.Managed;
 using System;
 
@@ -7,24 +9,55 @@ namespace IronText.MetadataCompiler
 {
     class InlinedProductionCode : IActionCode
     {
+        private readonly Fluent<EmitSyntax> emitCoder;
+        private readonly Production         inlinedProd;
+        private readonly ISemanticLoader    semanticLoader;
+        private readonly LocalsStack        localsStack;
+
+        public InlinedProductionCode(
+            Production         inlinedProd,
+            ISemanticLoader    semanticLoader,
+            Fluent<EmitSyntax> emitCoder,
+            LocalsStack        localsStack)
+        {
+            this.inlinedProd   = inlinedProd;
+            this.semanticLoader = semanticLoader;
+            this.emitCoder     = emitCoder;
+            this.localsStack   = localsStack;
+        }
+
         public IActionCode Emit(Pipe<EmitSyntax> emit)
         {
-            throw new System.NotImplementedException();
+            emitCoder(emit);
+            return this;
         }
 
         public IActionCode LdSemantic(string name)
         {
-            throw new System.NotImplementedException();
+            if (!semanticLoader.LdSemantic(SemanticRef.ByName(name)))
+            {
+                throw new NotImplementedException("todo");
+            }
+
+            return this;
         }
 
         public IActionCode LdActionArgument(int index)
         {
-            throw new System.NotImplementedException();
+            localsStack.LdSlot(localsStack.Count - inlinedProd.Components.Length + index);
+            return this;
         }
 
         public IActionCode LdActionArgument(int index, Type argType)
         {
-            throw new System.NotImplementedException();
+            LdActionArgument(index);
+            if (argType.IsValueType)
+            {
+                emitCoder(il => il
+                    .Unbox_Any(il.Types.Import(argType)));
+            }
+
+            return this;
         }
 
         public IActionCode LdMergerOldValue()

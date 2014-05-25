@@ -80,20 +80,6 @@ namespace IronText.MetadataCompiler
 
             var globalSemanticCode = new GlobalSemanticLoader(emit, il => il.Ldarg(ctx), data.Grammar.Globals);
 
-            var localSemanticCode = new SemanticLoader(
-                globalSemanticCode,
-                emit,
-                il => il.Ldarg(lookbackStart),
-                data,
-                data.SemanticBindings);
-
-            var code = Fluent.Create<IActionCode>(new ProductionCode(
-                emit, 
-                localSemanticCode,
-                ldRuleArgs:  il => il.Ldarg(ruleArgs),
-                ldArgsStart: il => il.Ldarg(argsStart),
-                returnLabel: returnLabel));
-
             var defaultLabel = emit.Labels.Generate();
             var endWithSingleResultLabel = emit.Labels.Generate();
             var jumpTable = new Ref<Labels>[data.Grammar.Productions.Count];
@@ -111,7 +97,7 @@ namespace IronText.MetadataCompiler
             {
                 emit.Label(jumpTable[prod.Index].Def);
 
-                CompileProduction(code, localsStack, prod);
+                CompileProduction(emit, data, ruleArgs, argsStart, lookbackStart, returnLabel, globalSemanticCode, prod);
 
                 emit.Br(endWithSingleResultLabel.GetRef());
             }
@@ -122,6 +108,33 @@ namespace IronText.MetadataCompiler
                 .Label(endWithSingleResultLabel)
                 .Label(returnLabel)
                 .Ret();
+        }
+
+        private static void CompileProduction(
+            EmitSyntax      emit,
+            LanguageData    data,
+            Ref<Args>       ruleArgs,
+            Ref<Args>       argsStart,
+            Ref<Args>       lookbackStart,
+            Def<Labels>     returnLabel,
+            ISemanticLoader globalSemanticCode,
+            Production      prod)
+        {
+            var localSemanticCode = new SemanticLoader(
+                globalSemanticCode,
+                emit,
+                il => il.Ldarg(lookbackStart),
+                data.SemanticBindings);
+
+            var coder = Fluent.Create<IActionCode>(new ProductionCode(
+                emit,
+                localSemanticCode,
+                ldRuleArgs: il => il.Ldarg(ruleArgs),
+                ldArgsStart: il => il.Ldarg(argsStart),
+                returnLabel: returnLabel));
+
+            var compiler = new ProductionCompiler(coder);
+            compiler.Execute(prod);
         }
 
         public static void CompileProduction(Fluent<IActionCode> coder, LocalsStack localsStack, Production prod)
