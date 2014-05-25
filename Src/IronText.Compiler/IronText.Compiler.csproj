@@ -137,7 +137,7 @@
     <Compile Include="Build\Engine\ResourceGetter.cs" />
     <Compile Include="Build\MetadataSyntax\CompositeDerivedBuilder.cs" />
     <Compile Include="Build\MetadataSyntax\TypesMetadataSyntax.cs" />
-    <Compile Include="Compilation\LocalStack.cs" />
+    <Compile Include="Compilation\VarsStack.cs" />
     <Compile Include="Freezing\Managed\CilFreezer.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\GlobalSemanticLoader.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\InlinedProductionCode.cs" />

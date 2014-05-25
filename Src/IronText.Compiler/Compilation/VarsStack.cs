@@ -11,7 +11,7 @@ namespace IronText.Compilation
     /// <summary>
     /// Compile-time stack based on local variables.
     /// </summary>
-    class LocalsStack
+    class VarsStack
     {
         private const string SlotLocalPrefix = "slot";
 
@@ -20,7 +20,7 @@ namespace IronText.Compilation
         private readonly Stack<Ref<Locals>> freeSlots = new Stack<Ref<Locals>>();
         private int slotSeed = 0;
 
-        public LocalsStack(Fluent<EmitSyntax> coder)
+        public VarsStack(Fluent<EmitSyntax> coder)
         {
             this.coder = coder;
         }
@@ -62,7 +62,7 @@ namespace IronText.Compilation
             slots.Insert(index, slot);
         }
 
-        public void Add()
+        public void Push()
         {
             Insert(Count);
         }

@@ -8,6 +8,7 @@ using IronText.Runtime;
 using IronText.MetadataCompiler.CilTarget;
 using IronText.Framework;
 using IronText.Compilation;
+using System;
 
 namespace IronText.MetadataCompiler
 {
@@ -74,7 +75,7 @@ namespace IronText.MetadataCompiler
             Ref<Args> ctx,
             Ref<Args> lookbackStart)
         {
-            var localsStack = new LocalsStack(Fluent.Create(emit));
+            var varStack = new VarsStack(Fluent.Create(emit));
 
             Def<Labels> returnLabel = emit.Labels.Generate();
 
@@ -97,7 +98,7 @@ namespace IronText.MetadataCompiler
             {
                 emit.Label(jumpTable[prod.Index].Def);
 
-                CompileProduction(emit, data, ruleArgs, argsStart, lookbackStart, returnLabel, globalSemanticCode, prod);
+                CompileProduction(emit, data, ruleArgs, argsStart, lookbackStart, returnLabel, globalSemanticCode, prod, varStack);
 
                 emit.Br(endWithSingleResultLabel.GetRef());
             }
@@ -117,27 +118,70 @@ namespace IronText.MetadataCompiler
             Ref<Args>       argsStart,
             Ref<Args>       lookbackStart,
             Def<Labels>     returnLabel,
-            ISemanticLoader globalSemanticCode,
-            Production      prod)
+            ISemanticLoader globals,
+            Production      prod,
+            VarsStack     varStack)
         {
-            var localSemanticCode = new SemanticLoader(
-                globalSemanticCode,
+            if (prod.IsExtended)
+            {
+                throw new NotImplementedException("todo");
+            }
+
+            var locals = new SemanticLoader(
+                globals,
                 emit,
                 il => il.Ldarg(lookbackStart),
                 data.SemanticBindings);
 
+            int localsStackStart = varStack.Count;
+            int index = 0;
+            foreach (var arg in prod.Pattern)
+            {
+                emit = emit
+                    .Ldarg(ruleArgs)
+                    .Ldarg(argsStart)
+                    ;
+
+                // Optimization for "+ 0".
+                if (index != 0)
+                {
+                    emit
+                        .Ldc_I4(index)
+                        .Add();
+                }
+
+                if (typeof(ActionNode).IsValueType)
+                {
+                    emit = emit
+                        .Ldelema(emit.Types.Import(typeof(ActionNode)));
+                }
+                else
+                {
+                    emit = emit
+                        .Ldelem_Ref();
+                }
+
+                emit = emit
+                    .Ldfld((ActionNode msg) => msg.Value)
+                    ;
+
+                varStack.Push();
+
+                ++index;
+            }
+
             var coder = Fluent.Create<IActionCode>(new ProductionCode(
                 emit,
-                localSemanticCode,
-                ldRuleArgs: il => il.Ldarg(ruleArgs),
-                ldArgsStart: il => il.Ldarg(argsStart),
+                locals,
+                varStack,
+                localsStackStart,
                 returnLabel: returnLabel));
 
             var compiler = new ProductionCompiler(coder);
             compiler.Execute(prod);
         }
 
-        public static void CompileProduction(Fluent<IActionCode> coder, LocalsStack localsStack, Production prod)
+        public static void CompileProduction(Fluent<IActionCode> coder, VarsStack varStack, Production prod)
         {
             var compiler = new ProductionCompiler(coder);
 
@@ -145,7 +189,7 @@ namespace IronText.MetadataCompiler
             for (int i = 0; i != prod.Size; ++i)
             {
                 coder(c => c.LdActionArgument(i));
-                localsStack.Push();
+                varStack.Push();
             }
 #endif
 

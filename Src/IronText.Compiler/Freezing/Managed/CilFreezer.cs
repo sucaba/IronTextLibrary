@@ -51,14 +51,14 @@ namespace IronText.Freezing.Managed
             private Ref<Args>[] args;
             private ISemanticLoader contextCode;
             private string currentTerminalText;
-            private readonly LocalsStack localsStack;
+            private readonly VarsStack localsStack;
             private int currentProdSize;
 
             public FreezerProcess(string input)
             {
                 this.input = input;
                 this.code = this;
-                this.localsStack = new LocalsStack(this.EmitCode);
+                this.localsStack = new VarsStack(this.EmitCode);
             }
 
             public Pipe<TContext> Outcome { get; set; }
@@ -129,7 +129,7 @@ namespace IronText.Freezing.Managed
                     this.currentTerminalText = null;
                 }
 
-                localsStack.Add();
+                localsStack.Push();
             }
 
             void ISppfNodeVisitor.VisitBranch(int productionIndex, SppfNode[] children, Loc location)
@@ -148,7 +148,7 @@ namespace IronText.Freezing.Managed
                     production);
 
                 localsStack.Pop(currentProdSize);
-                localsStack.Add();
+                localsStack.Push();
                 this.currentProdSize = -1;
             }
 

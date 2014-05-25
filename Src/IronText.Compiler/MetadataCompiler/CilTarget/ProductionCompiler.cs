@@ -13,12 +13,12 @@ namespace IronText.MetadataCompiler.CilTarget
     class ProductionCompiler : IProductionComponentVisitor, IActionCode
     {
         private readonly Fluent<IActionCode> coder;
-        private readonly LocalsStack localsStack;
+        private readonly VarsStack localsStack;
 
         public ProductionCompiler(Fluent<IActionCode> coder)
         {
             this.coder = coder;
-            this.localsStack = new LocalsStack(ILCoder);
+            this.localsStack = new VarsStack(ILCoder);
 
 #if false
             this.contextCode = new ContextCode(
