@@ -122,7 +122,7 @@ namespace IronText.MetadataCompiler
             Def<Labels>     returnLabel,
             ISemanticLoader globals,
             Production      prod,
-            VarsStack       varStack)
+            VarsStack       varsStack)
         {
             if (prod.IsExtended)
             {
@@ -135,7 +135,7 @@ namespace IronText.MetadataCompiler
                 il => il.Ldarg(lookbackStart),
                 data.SemanticBindings);
 
-            int localsStackStart = varStack.Count;
+            int localsStackStart = varsStack.Count;
             int index = 0;
             foreach (var arg in prod.Pattern)
             {
@@ -167,7 +167,7 @@ namespace IronText.MetadataCompiler
                     .Ldfld((ActionNode msg) => msg.Value)
                     ;
 
-                varStack.Push();
+                varsStack.Push();
 
                 ++index;
             }
@@ -175,15 +175,15 @@ namespace IronText.MetadataCompiler
             var coder = Fluent.Create<IActionCode>(new ProductionCode(
                 emit,
                 locals,
-                varStack,
+                varsStack,
                 localsStackStart,
                 returnLabel: returnLabel));
 
             // Build inlined productions within prod
-            //var compiler = new ExtendedProductionCompiler();
-            //compiler.Execute(prod);
+            var compiler = new ExtendedProductionCompiler(Fluent.Create(emit), varsStack);
+            compiler.Execute(prod);
 
-            CompileProduction(coder, varStack, prod);
+            CompileProduction(coder, varsStack, prod);
         }
 
         public static void CompileProduction(Fluent<IActionCode> coder, VarsStack varStack, Production prod)
