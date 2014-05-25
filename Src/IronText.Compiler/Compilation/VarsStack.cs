@@ -67,6 +67,11 @@ namespace IronText.Compilation
             Insert(Count);
         }
 
+        public void LdLastSlot()
+        {
+            LdSlot(Count - 1);
+        }
+
         public void LdSlot(int index)
         {
             coder(il => il.Ldloc(slots[index]));

@@ -99,6 +99,8 @@ namespace IronText.MetadataCompiler
                 emit.Label(jumpTable[prod.Index].Def);
 
                 CompileProduction(emit, data, ruleArgs, argsStart, lookbackStart, returnLabel, globalSemanticCode, prod, varStack);
+                varStack.LdLastSlot();
+                varStack.Pop(1);
 
                 emit.Br(endWithSingleResultLabel.GetRef());
             }
@@ -120,7 +122,7 @@ namespace IronText.MetadataCompiler
             Def<Labels>     returnLabel,
             ISemanticLoader globals,
             Production      prod,
-            VarsStack     varStack)
+            VarsStack       varStack)
         {
             if (prod.IsExtended)
             {
@@ -177,23 +179,46 @@ namespace IronText.MetadataCompiler
                 localsStackStart,
                 returnLabel: returnLabel));
 
-            var compiler = new ProductionCompiler(coder);
-            compiler.Execute(prod);
+            // Build inlined productions within prod
+            //var compiler = new ExtendedProductionCompiler();
+            //compiler.Execute(prod);
+
+            CompileProduction(coder, varStack, prod);
         }
 
         public static void CompileProduction(Fluent<IActionCode> coder, VarsStack varStack, Production prod)
         {
-            var compiler = new ProductionCompiler(coder);
-
-#if false
-            for (int i = 0; i != prod.Size; ++i)
+            var bindings = prod.Joint.All<CilProduction>();
+            if (!bindings.Any())
             {
-                coder(c => c.LdActionArgument(i));
-                varStack.Push();
+                coder.Do(c => c
+                    .Emit(il => il.Ldnull()));
             }
-#endif
+            else
+            {
+                bool first = true;
+                foreach (var binding in bindings)
+                {
+                    if (first)
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        // Result of this rule supersedes result of the prvious one
+                        coder.Do(c => c
+                            .Emit(il => il.Pop()));
+                    }
 
-            compiler.Execute(prod);
+                    coder.Do(c => c
+                        .LdSemantic(binding.Context.UniqueName)
+                        .Do(binding.ActionBuilder))
+                        ;
+                }
+            }
+
+            varStack.Pop(prod.Components.Length);
+            varStack.Push();
         }
     }
 }
