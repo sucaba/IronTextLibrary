@@ -7,10 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using IronText.Misc;
 
 namespace IronText.MetadataCompiler.CilTarget
 {
-    class ProductionCompiler : IProductionComponentVisitor
+    class ProductionCompiler
     {
         private readonly Fluent<EmitSyntax> emitCoder;
         private readonly VarsStack          varsStack;
@@ -29,23 +30,28 @@ namespace IronText.MetadataCompiler.CilTarget
 
         public void Execute(Production extended)
         {
-            ((IProductionComponent)extended).Accept(this);
+            ProcessProduction(extended, -1, 0);
         }
 
-        void IProductionComponentVisitor.VisitSymbol(Symbol symbol)
+        void ProcessComponent(IProductionComponent component, int indexInParent, int varsStackStart)
         {
+            Production production;
+            if (component.Match(out production))
+            {
+                ProcessProduction(production, indexInParent, varsStackStart);
+            }
         }
 
-        void IProductionComponentVisitor.VisitProduction(Production production)
+        void ProcessProduction(Production production, int indexInParent, int varsStackStart)
         {
             var savedParentProd = this.parentProduction;
             this.parentProduction = production;
 
-            int indexInParent = 0;
+            int localIndexInParent = 0;
             foreach (var component in production.Components)
             {
-                component.Accept(this);
-                ++indexInParent;
+                ProcessComponent(component, localIndexInParent, varsStackStart + localIndexInParent);
+                ++localIndexInParent;
             }
 
             this.parentProduction = savedParentProd;
@@ -57,11 +63,13 @@ namespace IronText.MetadataCompiler.CilTarget
                                                 indexInParent,
                                                 production,
                                                 varsStack,
+                                                varsStackStart,
                                                 globals));
             
                 ProductionActionGenerator.CompileProduction(
                                                 coder,
                                                 varsStack,
+                                                varsStackStart,
                                                 production);
             }
         }
@@ -72,21 +80,23 @@ namespace IronText.MetadataCompiler.CilTarget
             int             indexInParent,
             Production      childProduction,
             VarsStack       varsStack,
+            int             varsStackStart,
             ISemanticLoader globals)
         {
             var semanticLoader = new InlinedSemanticLoader(
                 emitCoder,
                 globals,
                 varsStack,
+                varsStackStart,
                 parentProduction,
                 indexInParent,
                 childProduction);
 
-            var result = new InlinedProductionCode(
+            var result = new ProductionCode(
                 emitCoder,
                 semanticLoader,
-                childProduction,
-                varsStack);
+                varsStack,
+                varsStackStart);
 
             return result;
         }

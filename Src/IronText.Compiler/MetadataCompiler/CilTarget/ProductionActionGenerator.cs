@@ -143,7 +143,7 @@ namespace IronText.MetadataCompiler
                 il => il.Ldarg(lookbackStart),
                 data.SemanticBindings);
 
-            int localsStackStart = varsStack.Count;
+            int varsStackStart = varsStack.Count;
             int index = 0;
             foreach (var arg in prod.Pattern)
             {
@@ -181,20 +181,26 @@ namespace IronText.MetadataCompiler
             }
 
             var emitCoder = Fluent.Create(emit);
+
+            // Build inlined productions 
+            var compiler = new ProductionCompiler(emitCoder, varsStack, globals);
+            compiler.Execute(prod);
+
+
             var coder = Fluent.Create<IActionCode>(new ProductionCode(
                     emitCoder,
                     locals,
                     varsStack,
-                    localsStackStart));
+                    varsStackStart));
 
-            // Build inlined productions within prod
-            var compiler = new ProductionCompiler(emitCoder, varsStack, globals);
-            compiler.Execute(prod);
-
-            CompileProduction(coder, varsStack, prod);
+            CompileProduction(coder, varsStack, varsStackStart, prod);
         }
 
-        public static void CompileProduction(Fluent<IActionCode> coder, VarsStack varStack, Production prod)
+        public static void CompileProduction(
+            Fluent<IActionCode> coder,
+            VarsStack           varStack,
+            int                 varsStackStart, 
+            Production          prod)
         {
             var bindings = prod.Joint.All<CilProduction>();
             if (!bindings.Any())
@@ -225,8 +231,8 @@ namespace IronText.MetadataCompiler
                 }
             }
 
-            varStack.Pop(prod.Components.Length);
-            varStack.Push();
+            varStack.RemoveRange(varsStackStart, prod.Components.Length);
+            varStack.InsertAt(varsStackStart);
         }
     }
 }

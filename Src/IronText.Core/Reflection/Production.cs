@@ -13,7 +13,11 @@ namespace IronText.Reflection
     [DebuggerDisplay("{DebugProductionText}")]
     public sealed class Production : IndexableObject<ISharedGrammarEntities>, IProductionComponent
     {
-        public Production(Symbol outcome, IEnumerable<IProductionComponent> components, SemanticRef contextRef)
+        public Production(
+            Symbol           outcome,
+            IEnumerable<IProductionComponent> components,
+            SemanticRef      contextRef,
+            ProductionFlags  flags = ProductionFlags.None)
         {
             if (outcome == null)
             {
@@ -29,6 +33,7 @@ namespace IronText.Reflection
             OutcomeToken  = outcome.Index;
             Components    = components.ToArray();
             ContextRef    = contextRef ?? SemanticRef.None;
+            Flags         = flags;
 
             Pattern       = CreateInputPattern(components);
 
@@ -36,7 +41,6 @@ namespace IronText.Reflection
 
             this.Joint = new Joint();
         }
-
 
         public int                OutcomeToken   { get; private set; }
 
@@ -62,14 +66,21 @@ namespace IronText.Reflection
 
         public SemanticRef        ContextRef     { get; private set; }
 
+        public ProductionFlags    Flags          { get; private set; }
+
         public bool               IsDeleted      { get; private set; }
+
+        public bool               HasSideEffects 
+        { 
+            get 
+            { 
+                return (Flags & ProductionFlags.HasSideEffects) == ProductionFlags.HasSideEffects;
+            }
+        }
 
         public bool               IsUsed
         {
-            get
-            {
-                return IsAugmented || IsStart || Outcome.Productions.Count > 1;
-            }
+            get { return Outcome.IsUsed; }
         }
 
         public Precedence EffectivePrecedence
@@ -254,16 +265,6 @@ namespace IronText.Reflection
             }
 
             return pattern;
-        }
-
-        void IProductionComponent.Accept(IProductionComponentVisitor visitor)
-        {
-            visitor.VisitProduction(this);
-        }
-
-        T IProductionComponent.Accept<T>(IProductionComponentVisitor<T> visitor)
-        {
-            return visitor.VisitProduction(this);
         }
 
         public void MarkDeleted()

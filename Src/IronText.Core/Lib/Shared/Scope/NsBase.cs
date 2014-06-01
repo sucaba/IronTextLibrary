@@ -17,11 +17,19 @@ namespace IronText.Lib.Shared
 
         public IFrame<TNs> Frame {  get { return FrameNode.Value; } set { FrameNode.Value = value; } }
 
-        [Produce]
-        public Push<TNs> PushFrame() { FrameNode = new SNode<IFrame<TNs>> { Value = new Frame<TNs>(), Next = FrameNode }; return null; }
+        [Produce(HasSideEffect = true)]
+        public Push<TNs> PushFrame() 
+        { 
+            FrameNode = new SNode<IFrame<TNs>> { Value = new Frame<TNs>(), Next = FrameNode };
+            return null;
+        }
 
-        [Produce]
-        public Pop<TNs> PopFrame() { FrameNode = FrameNode.Next; return null; }
+        [Produce(HasSideEffect = true)]
+        public Pop<TNs> PopFrame() 
+        { 
+            FrameNode = FrameNode.Next;
+            return null;
+        }
 
         public Def<TNs> Generate() { return Frame.Define(); }
 

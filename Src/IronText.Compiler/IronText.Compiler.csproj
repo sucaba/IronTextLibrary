@@ -140,7 +140,6 @@
     <Compile Include="Compilation\VarsStack.cs" />
     <Compile Include="Freezing\Managed\CilFreezer.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\GlobalSemanticLoader.cs" />
-    <Compile Include="MetadataCompiler\CilTarget\Code\InlinedProductionCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\InlinedSemanticLoader.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\ISemanticLoader.cs" />
     <Compile Include="MetadataCompiler\CilTarget\ProductionCompiler.cs" />

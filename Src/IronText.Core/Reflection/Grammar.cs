@@ -108,10 +108,12 @@ namespace IronText.Reflection
         {
             if (symbol == null 
                 || symbol.IsPredefined 
-                || symbol.IsStart)
+                || symbol.IsStart
+                || symbol.HasSideEffects)
             {
                 return false;
             }
+
 
             return symbol.Productions.Count == 1 
                 && (symbol.Productions.All(p => p.Size <= 1)
@@ -163,6 +165,8 @@ namespace IronText.Reflection
 
             var symbol = source.Pattern[position];
 
+            source.MarkDeleted();
+
             var producitonsToInline = symbol.Productions.ToArray();
             foreach (var inlinedProd in producitonsToInline)
             {
@@ -175,8 +179,6 @@ namespace IronText.Reflection
                     inlinedProd.MarkDeleted();
                 }
             }
-
-            source.MarkDeleted();
 
             return result;
         }

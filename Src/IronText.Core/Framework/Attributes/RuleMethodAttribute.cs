@@ -17,6 +17,8 @@ namespace IronText.Framework
 
         public int Precedence { get; set; }
 
+        public bool HasSideEffect { get; set; }
+
         public Associativity Associativity { get; set; }
 
         protected virtual MethodInfo Method
@@ -139,6 +141,7 @@ namespace IronText.Framework
                 pattern:    pattern,
                 precedence: GetPrecedence(),
                 context:    GetContext(method, thisSymbol != null),
+                flags:      HasSideEffect ? ProductionFlags.HasSideEffects : ProductionFlags.None,
                 actionBuilder:
                     code =>
                     {

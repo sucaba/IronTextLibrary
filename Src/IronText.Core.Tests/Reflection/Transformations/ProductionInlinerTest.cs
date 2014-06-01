@@ -184,7 +184,7 @@ namespace IronText.Tests.Reflection.Transformations
         {
             Assert.AreEqual(
                 0,
-                resultGrammar.Symbols[inlinedNonTerm.Index].Productions.Count,
+                resultGrammar.Symbols[inlinedNonTerm.Index].Productions.Count(p => !p.IsDeleted),
                 "Inlined productions should be removed.");
         }
 

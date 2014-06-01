@@ -117,6 +117,14 @@ namespace IronText.Stem.Tests.Lib.IL
             StringAssert.Contains("success!", output);
         }
 
+        [Test]
+        public void SwitchBugTest()
+        {
+            var filePath = DataSamples.CompileSwitchBugFilePath;
+            string output = BuildAndRun(filePath);
+            StringAssert.Contains("Success", output);
+        }
+
         private static string BuildAndRun(string filePath)
         {
             ILLanguage backend = new CecilBackendLanguage(filePath);
@@ -124,6 +132,7 @@ namespace IronText.Stem.Tests.Lib.IL
             using (var interpreter = new Interpreter<ILLanguage>(backend))
             using (var source = new StreamReader(filePath))
             {
+                interpreter.LoggingKind = LoggingKind.Console;
                 if (!interpreter.Parse(source, filePath))
                 {
                     throw new AssertionException("Parsing of file " + filePath + " failed!");

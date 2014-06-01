@@ -114,10 +114,14 @@ namespace IronText.Reflection.Managed
                 Symbol outcome = symbolResolver.GetSymbol(cilProduction.Outcome);
                 var pattern = Array.ConvertAll(cilProduction.Pattern, symbolResolver.GetSymbol);
 
-                // Try to find existing rules whith same token-signature
+                // Try to find existing rules with s same signature
                 SemanticRef contextRef = CreateActionContextRef(cilProduction.Context);
-                Production production;
-                result.Productions.FindOrAdd(outcome, pattern, contextRef, out production);
+                Production production = result.Productions.Find(outcome, pattern);
+                if (production == null)
+                {
+                    production = new Production(outcome, pattern, contextRef, cilProduction.Flags);
+                    result.Productions.Add(production);
+                }
 
                 production.Joint.Add(cilProduction);
 

@@ -5,6 +5,7 @@ using IronText.Framework;
 using IronText.Lib.IL;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,11 +19,13 @@ namespace IronText.MetadataCompiler
         private readonly int                parentPosition;
         private readonly Production         childProduction;
         private readonly VarsStack          varsStack;
+        private int varsStackStart;
 
         public InlinedSemanticLoader(
             Fluent<EmitSyntax> emitCoder,
             ISemanticLoader    globals,
             VarsStack          varsStack,
+            int                varsStackStart,
             Production         parentProduction,
             int                indexInParent,
             Production         childProduction)
@@ -30,6 +33,7 @@ namespace IronText.MetadataCompiler
             this.emitCoder         = emitCoder;
             this.globals 		   = globals;
             this.varsStack         = varsStack;
+            this.varsStackStart    = varsStackStart;
             this.parentProduction  = parentProduction;
             this.parentPosition    = indexInParent;
             this.childProduction   = childProduction;
@@ -37,10 +41,20 @@ namespace IronText.MetadataCompiler
 
         public bool LdSemantic(SemanticRef reference)
         {
+            if (reference == null)
+            {
+                throw new ArgumentNullException("reference");
+            }
+
+            if (reference == SemanticRef.None)
+            {
+                return true;
+            }
+
             var components = parentProduction.Components;
             if (parentPosition != 0 && parentPosition != components.Length && components.Length != 0)
             {
-                var providingSymbol = components[0] as Symbol;
+                var providingSymbol = (components[0] as Symbol) ?? ((Production)components[0]).Outcome;
                 if (providingSymbol != null)
                 {
                     if (providingSymbol.LocalScope.Lookup(reference))
@@ -48,11 +62,11 @@ namespace IronText.MetadataCompiler
                         SemanticValue    val        = providingSymbol.LocalScope.Resolve(reference);
                         CilSemanticValue valBinding = val.Joint.The<CilSemanticValue>();
 
-                        int varPos = varsStack.Count - childProduction.Size - parentPosition;
+                        int slotPos = varsStackStart - parentPosition;
                         emitCoder(il => valBinding
                             .Ld(il, il2 => 
                                 {
-                                    varsStack.LdSlot(varPos);
+                                    varsStack.LdSlot(slotPos);
                                     return il2;
                                 }));
                         

@@ -49,25 +49,5 @@ namespace IronText.Reflection
 
             return null;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="outcome"></param>
-        /// <param name="pattern"></param>
-        /// <param name="?"></param>
-        /// <returns><c>true</c> when production was just defined, <c>false</c> if it existed previously</returns>
-        public bool FindOrAdd(Symbol outcome, Symbol[] pattern, SemanticRef contextRef, out Production output)
-        {
-            output = Find(outcome, pattern);
-
-            if (output == null)
-            {
-                output = Define(outcome, pattern, contextRef);
-                return true;
-            }
-
-            return false;
-        }
     }
 }

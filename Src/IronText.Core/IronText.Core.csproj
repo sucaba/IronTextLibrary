@@ -117,10 +117,13 @@
     <Compile Include="Algorithm\Build\IDerivedBuilderMetadata.cs" />
     <Compile Include="Framework\Fluent.cs" />
     <Compile Include="Framework\LanguageFlags.cs" />
+    <Compile Include="Misc\Discriminatable.cs" />
     <Compile Include="Reflection\Cil\CilSemanticRef.cs" />
     <Compile Include="Reflection\Cil\CilSemanticValue.cs" />
     <Compile Include="Reflection\Cil\CilSemanticScope.cs" />
     <Compile Include="Reflection\IProductionComponent.cs" />
+    <Compile Include="Reflection\ProductionFlags.cs" />
+    <Compile Include="Reflection\Reporting\ISemanticBinding.cs" />
     <Compile Include="Reflection\Semantics\SemanticScope.cs" />
     <Compile Include="Reflection\Semantics\SemanticRef.cs" />
     <Compile Include="Reflection\RefeneceCollection.cs" />

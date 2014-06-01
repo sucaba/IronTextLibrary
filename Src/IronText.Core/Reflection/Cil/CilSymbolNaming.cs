@@ -20,6 +20,11 @@ namespace IronText.Reflection.Managed
                 return StringTokenName;
             }
 
+            if (type.IsArray)
+            {
+                return GetTypeName(type.GetElementType()) + "[]";
+            }
+
             if (!type.IsGenericType)
             {
                 return type.Name;

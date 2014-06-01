@@ -34,6 +34,12 @@ namespace IronText.Tests.Framework
         }
 
         [Test]
+        public void debugFail()
+        {
+            Assert.AreEqual(444, Eval("(begin (let x 111) (begin (let x 444) x))"), "Parent frame cell overriding broken");
+        }
+
+        [Test]
         public void Scope()
         {
             Assert.AreEqual(444, Eval("(begin (let x 444) x)"), "Single frame definition and use broken");
@@ -118,8 +124,6 @@ namespace IronText.Tests.Framework
             [SubContext]
             public CtemScanner Scanner { get; private set; }
 
-            public IFrame<Locals> ScopeFrame { get { return Scope.Frame; } set { Scope.Frame = value; } }
-
             [SubContext]
             public DefFirstNs<Locals> Scope { get; private set; }
 
@@ -138,7 +142,10 @@ namespace IronText.Tests.Framework
             public double VarRef(Ref<Locals> v) { return (double)v.Value; }
 
             [Produce("(", "begin", null, null, null, ")")]
-            public double Begin(Push<Locals> push, List<double> exprs, Pop<Locals> pop) { return exprs.LastOrDefault(); }
+            public double Begin(Push<Locals> push, List<double> exprs, Pop<Locals> pop) 
+            { 
+                return exprs.LastOrDefault();
+            }
 
             [Produce("(", null, null, ")")]
             public double Apply(Ref<Locals> f, List<double> args)

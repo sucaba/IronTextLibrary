@@ -52,5 +52,10 @@ namespace IronText.Reflection.Reporting
         {
             return data.Grammar.Joint.The<IScannerAutomata>();
         }
+
+        public ISemanticBinding[] SemanticBindings
+        {
+            get { return data.SemanticBindings; }
+        }
     }
 }

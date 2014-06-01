@@ -15,5 +15,6 @@ namespace IronText.Tests.Data
         public static readonly string CompileSample2FilePath = Path.Combine(DataDir, @"Sample2.il");
         public static readonly string CompileSample3FilePath = Path.Combine(DataDir, @"Sample3.il");
         public static readonly string CompileSample4FilePath = Path.Combine(DataDir, @"Sample4.il");
+        public static readonly string CompileSwitchBugFilePath = Path.Combine(DataDir, @"SwitchBug.il");
     }
 }

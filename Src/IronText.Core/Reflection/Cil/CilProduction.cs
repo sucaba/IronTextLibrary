@@ -7,26 +7,35 @@ namespace IronText.Reflection.Managed
 {
     public sealed class CilProduction : IEquatable<CilProduction>
     {
-        public CilProduction(CilSymbolRef outcome, IEnumerable<CilSymbolRef> pattern, CilSemanticRef context, Pipe<IActionCode> actionBuilder, Precedence precedence = null)
+        public CilProduction(
+            CilSymbolRef              outcome,
+            IEnumerable<CilSymbolRef> pattern,
+            CilSemanticRef            context,
+            Pipe<IActionCode>         actionBuilder,
+            Precedence                precedence = null,
+            ProductionFlags           flags = ProductionFlags.None)
         {
-            this.Outcome             = outcome;
-            this.Pattern             = pattern.ToArray();
-            this.Context             = context;
-            this.ActionBuilder       = actionBuilder;
-            this.Precedence          = precedence;
+            this.Outcome       = outcome;
+            this.Pattern       = pattern.ToArray();
+            this.Context       = context;
+            this.ActionBuilder = actionBuilder;
+            this.Precedence    = precedence;
+            this.Flags         = flags;
         }
 
-        public CilSemanticRef  Context       { get; private set; }
+        public CilSemanticRef    Context       { get; private set; }
 
-        public CilSymbolRef   Outcome       { get; private set; }
+        public CilSymbolRef      Outcome       { get; private set; }
 
-        public CilSymbolRef[] Pattern       { get; private set; }
+        public CilSymbolRef[]    Pattern       { get; private set; }
 
-        public Precedence     Precedence    { get; private set; }
+        public Precedence        Precedence    { get; private set; }
 
-        internal object       Owner         { get; set; }
+        public ProductionFlags   Flags         { get; private set; }
 
-        public Pipe<IActionCode> ActionBuilder         { get; private set; }
+        internal object          Owner         { get; set; }
+
+        public Pipe<IActionCode> ActionBuilder { get; private set; }
 
         public override bool Equals(object obj)
         {

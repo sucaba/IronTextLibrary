@@ -135,6 +135,7 @@ namespace IronText.Freezing.Managed
             void ISppfNodeVisitor.VisitBranch(int productionIndex, SppfNode[] children, Loc location)
             {
                 var size = children.Length;
+                int varStackStart = localsStack.Count;
                 for (int i = 0; i != size; ++i)
                 {
                     CompileNode(children[i]);
@@ -145,6 +146,7 @@ namespace IronText.Freezing.Managed
                 ProductionActionGenerator.CompileProduction(
                     Fluent.Create(code),
                     localsStack,
+                    varStackStart,
                     production);
 
                 this.currentProdSize = -1;

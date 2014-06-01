@@ -53,7 +53,7 @@ namespace IronText.Compilation
         /// <summary>
         /// And push value from .net stack into slot at <paramref name="index"/>.
         /// </summary>
-        public void Insert(int index)
+        public void InsertAt(int index)
         {
             var slot = NewSlot();
 
@@ -64,7 +64,7 @@ namespace IronText.Compilation
 
         public void Push()
         {
-            Insert(Count);
+            InsertAt(Count);
         }
 
         public void LdLastSlot()

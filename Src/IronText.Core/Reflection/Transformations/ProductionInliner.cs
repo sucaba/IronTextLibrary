@@ -19,7 +19,9 @@ namespace IronText.Reflection
         public Production Execute(Production source, int symbolPosition)
         {
             this.position = symbolPosition;
-            return (Production)VisitProduction(source);
+            var result = (Production)VisitProduction(source);
+            result.ExplicitPrecedence = source.ExplicitPrecedence;
+            return result;
         }
 
         public IProductionComponent VisitSymbol(Symbol symbol)
@@ -49,7 +51,11 @@ namespace IronText.Reflection
                 inlinedComponents[i] = production.Components[i].Accept(this);
             }
 
-            var result = new Production(production.Outcome, inlinedComponents, production.ContextRef);
+            var result = new Production(
+                production.Outcome,
+                inlinedComponents,
+                production.ContextRef,
+                flags: production.Flags);
             result.Joint.AddAll(production.Joint);
             return result;
         }

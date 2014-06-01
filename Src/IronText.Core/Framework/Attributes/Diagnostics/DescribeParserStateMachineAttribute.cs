@@ -43,6 +43,8 @@ namespace IronText.Framework
                 }
 
                 PrintTransitions(data, writer);
+
+                PrintSemanticBindings(data, writer);
             }
         }
 
@@ -96,6 +98,8 @@ namespace IronText.Framework
 
                 output.WriteLine();
             }
+
+            //foreach (var semBinding in data.)
         }
 
         private void PrintAction(IReportData data, SymbolBase symbol, StreamWriter output, ParserAction action)
@@ -268,6 +272,49 @@ namespace IronText.Framework
             }
 
             return output;
+        }
+
+        private void PrintSemanticBindings(IReportData data, StreamWriter writer)
+        {
+            writer.WriteLine();
+            writer.WriteLine("Semantic Bindings:");
+            writer.WriteLine();
+
+            int i = 0;
+            foreach (var semanticBinding in data.SemanticBindings)
+            {
+                writer.WriteLine("{0}: ", ++i);
+                    
+                writer.WriteLine(
+                    "    {{ {0} }}",
+                    semanticBinding.ProvidingProduction.DebugProductionText);
+
+                writer.WriteLine(
+                    "    =({0})=>",
+                    GetSemanticName(semanticBinding.Reference.UniqueName));
+
+                writer.WriteLine(
+                    "    {{ {0} }}",
+                    semanticBinding.ConsumingProduction.DebugProductionText);
+            }
+        }
+
+        private string GetSemanticName(string name)
+        {
+            const int MaxLength = 20;
+
+            if (name.Length < MaxLength)
+            {
+                return name;
+            }
+
+            var commaIndex = name.IndexOf(',');
+            if (commaIndex > 0)
+            {
+                return name.Substring(0, commaIndex);
+            }
+
+            return name.Substring(0, MaxLength) + "...";
         }
     }
 }

@@ -90,7 +90,7 @@ namespace IronText.MetadataCompiler
                 grammar.Reports.Add(new ConflictMessageBuilder(logging));
             }
 
-            var semanticBindings = new List<SemanticBinding>();
+            var semanticBindings = new List<StackSemanticBinding>();
             CollectStackSemanticBindings(grammar, parserDfa, semanticBindings);
 
             // Prepare language data for the language assembly generation
@@ -177,10 +177,10 @@ namespace IronText.MetadataCompiler
             return true;
         }
 
-        private static List<SemanticBinding> CollectStackSemanticBindings(
+        private static List<StackSemanticBinding> CollectStackSemanticBindings(
             Grammar grammar,
             ILrDfa  lrDfa,
-            List<SemanticBinding> output)
+            List<StackSemanticBinding> output)
         {
             var states     = lrDfa.States;
             int stateCount = states.Length;
@@ -206,10 +206,12 @@ namespace IronText.MetadataCompiler
                             output.Add(
                                 new StackSemanticBinding
                                 {
-                                    StackState    = parentState,
-                                    StackLookback = item.Position,
-                                    Scope         = providingSymbol.LocalScope,
-                                    Reference     = consumingProd.ContextRef
+                                    StackState          = parentState,
+                                    ProvidingProduction = providingProd,
+                                    StackLookback       = item.Position,
+                                    ConsumingProduction = consumingProd,
+                                    Scope               = providingSymbol.LocalScope,
+                                    Reference           = consumingProd.ContextRef
                                 });
                         }
                     }

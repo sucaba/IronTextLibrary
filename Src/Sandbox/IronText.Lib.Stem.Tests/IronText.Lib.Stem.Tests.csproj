@@ -84,21 +84,26 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\Decompiled.il" />
+    <None Include="Data\Decompiled.il">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\Sample0.il">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\SwitchBug.il">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Data\Sample1.il">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Data\Sample2.il">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Data\Sample3.il">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Data\Sample4.il">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using IronText.Collections;
+using System.Linq;
 
 namespace IronText.Reflection
 {
@@ -30,6 +31,17 @@ namespace IronText.Reflection
         /// Determines whether symbol is terminal
         /// </summary>
         public override bool IsTerminal { get { return Productions.Count == 0; } }
+
+        /// <summary>
+        /// Determines if symbol is input for at least some 'sequential' productions.
+        /// </summary>
+        public bool HasSideEffects
+        {
+            get
+            {
+                return this.Productions.Any(p => p.HasSideEffects && !p.IsDeleted);
+            }
+        }
 
         public override ReferenceCollection<Production> Productions { get { return _productions; } }
 
@@ -81,14 +93,14 @@ namespace IronText.Reflection
             get { return new IProductionComponent[0]; }
         }
 
-        void IProductionComponent.Accept(IProductionComponentVisitor visitor)
+        public bool IsUsed
         {
-            visitor.VisitSymbol(this);
-        }
-
-        T IProductionComponent.Accept<T>(IProductionComponentVisitor<T> visitor)
-        {
-            return visitor.VisitSymbol(this);
+            get
+            {
+                return IsAugmentedStart
+                    || IsStart
+                    || Scope.Productions.Any(p => !p.IsDeleted && p.Pattern.Contains(this));
+            }
         }
     }
 }

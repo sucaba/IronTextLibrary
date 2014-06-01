@@ -23,7 +23,7 @@ namespace IronText.Lib.Shared
             return result.GetRef();
         }
 
-        [Produce]
+        [Produce(HasSideEffect = true)]
         public Def<TNs> Definition(string var)
         {
             if (Frame.Get(var) != null)

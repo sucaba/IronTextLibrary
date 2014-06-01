@@ -1,4 +1,5 @@
-﻿namespace IronText.Reflection.Reporting
+﻿using System.Collections.ObjectModel;
+namespace IronText.Reflection.Reporting
 {
     /// <summary>
     /// Contract for a language report data source.
@@ -7,11 +8,13 @@
     {
         string              DestinationDirectory { get; }
 
-        IGrammarSource      Source         { get; }
+        IGrammarSource      Source           { get; }
 
-        Grammar             Grammar        { get; }
+        Grammar             Grammar          { get; }
 
-        IParserAutomata     ParserAutomata { get; }
+        IParserAutomata     ParserAutomata   { get; }
+
+        ISemanticBinding[]  SemanticBindings { get; }
 
         IScannerAutomata    GetScannerAutomata();
     }

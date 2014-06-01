@@ -52,7 +52,7 @@ namespace IronText.Build
         
         protected override bool DoRebuild(ILogging logging, ref Assembly resource)
         {
-            CilSyntax context = CecilBackend.Create(null);
+            CilSyntax context = CecilBackend.Create(sourcePath);
 
             var builder = GetBuilder();
 

@@ -17,7 +17,7 @@ namespace IronText.Lib.Shared
             return def.GetRef();
         }
 
-        [Produce]
+        [Produce(HasSideEffect = true)]
         public Def<TNs> Definition(string var)
         {
             // find also implicit definitions in this frame
