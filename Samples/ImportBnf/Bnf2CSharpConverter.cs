@@ -292,9 +292,9 @@ namespace Samples
             return this;
         }
 
-        public QStr QuotedString(char[] buffer, int start, int length)
+        public QStr QuotedString(string text)
         {
-            return QStr.Parse(buffer, start, length); 
+            return QStr.Parse(text); 
         }
 
         public void Comment(string text) 

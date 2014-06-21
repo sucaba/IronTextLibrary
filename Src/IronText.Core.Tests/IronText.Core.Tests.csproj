@@ -138,6 +138,7 @@
     <Compile Include="Framework\ParserAbstractionTest.cs" />
     <Compile Include="Samples\KeywordScannerTest.cs" />
     <Compile Include="Samples\Re2cSampleTest.cs" />
+    <Compile Include="Semantics\EclrAttributesTest.cs" />
     <Compile Include="TestUtils\Bench.cs" />
     <Compile Include="TestUtils\Collector.cs" />
     <Compile Include="TestUtils\ProgramExecutor.cs" />

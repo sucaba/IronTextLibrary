@@ -73,10 +73,9 @@ namespace Samples
         public int Integer(string text) { return int.Parse(text); }
 
         [Match("quot ~quot* quot")]
-        public string QuotedWord(char[] buffer, int start, int length)
+        public string QuotedWord(string text)
         {
-            string text = new string(buffer, start + 1, length - 2);
-            return text;
+            return text.Substring(1, text.Length - 2);
         }
 
         [Match("~(blank | quot | '-') ~(blank | quot)*")]
