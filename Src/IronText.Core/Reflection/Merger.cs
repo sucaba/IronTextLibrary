@@ -2,7 +2,7 @@
 
 namespace IronText.Reflection
 {
-    public class Merger : IndexableObject<ISharedGrammarEntities>
+    public class Merger : IndexableObject<IGrammarScope>
     {
         public Merger(Symbol symbol)
         {

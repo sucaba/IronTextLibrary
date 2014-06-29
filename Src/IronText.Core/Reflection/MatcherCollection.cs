@@ -2,9 +2,9 @@
 
 namespace IronText.Reflection
 {
-    public class MatcherCollection : IndexedCollection<Matcher,ISharedGrammarEntities>
+    public class MatcherCollection : IndexedCollection<Matcher,IGrammarScope>
     {
-        public MatcherCollection(ISharedGrammarEntities context)
+        public MatcherCollection(IGrammarScope context)
             : base(context)
         {
         }

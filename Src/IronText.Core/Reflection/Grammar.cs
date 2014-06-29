@@ -13,7 +13,7 @@ namespace IronText.Reflection
     /// - Predefined entities should not be deletable.
     /// - Organize API to avoid IsPredefined checks.
     /// </summary>
-    public sealed class Grammar : ISharedGrammarEntities
+    public sealed class Grammar : IGrammarScope
     {
         public const string UnnamedTokenName = "<unnamed token>";
         public const string UnknownTokenName = "<unknown token>";
@@ -46,12 +46,18 @@ namespace IronText.Reflection
             Symbols[PredefinedTokens.Error]           = new Symbol("$error");
 
             var startStub = new Symbol("$start-stub");
-            AugmentedProduction = Productions.Define((Symbol)Symbols[PredefinedTokens.AugmentedStart], new Symbol[] { startStub }, null);
+            AugmentedProduction = Productions.Add((Symbol)Symbols[PredefinedTokens.AugmentedStart], new Symbol[] { startStub }, null);
         }
 
         public RuntimeOptions Options { get; set; }
 
         public Joint Joint { get; private set; }
+
+        public string StartName
+        {
+            get {  return Start == null ? null : Start.Name; }
+            set {  Start = value == null ? null : Symbols.ByName(value, createMissing: true); }
+        }
 
         public Symbol Start
         {
@@ -113,7 +119,6 @@ namespace IronText.Reflection
             {
                 return false;
             }
-
 
             return symbol.Productions.Count == 1 
                 && (symbol.Productions.All(p => p.Size <= 1)
@@ -181,6 +186,30 @@ namespace IronText.Reflection
             }
 
             return result;
+        }
+
+        public Symbol Decompose(Symbol nonTerm, Func<Production,bool> criteria, string newSymbolName)
+        {
+            Symbol newSymbol = Symbols.Add(newSymbolName);
+            foreach (var prod in nonTerm.Productions.ToArray())
+            {
+                if (criteria(prod))
+                {
+                    var newProd = Productions.Add(
+                        new Production(
+                            newSymbol,
+                            prod.Components,
+                            contextRef: prod.ContextRef,
+                            flags: prod.Flags));
+                    newProd.ExplicitPrecedence = prod.ExplicitPrecedence;
+
+                    prod.MarkDeleted();
+                }
+            }
+
+            Productions.Add(new Production(nonTerm, new [] { newSymbol }));
+
+            return newSymbol;
         }
     }
 }

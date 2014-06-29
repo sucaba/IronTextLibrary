@@ -11,7 +11,7 @@ namespace IronText.Collections
             Index = NoId;
         }
 
-        public int Index { get; private set; }
+        internal int Index { get; private set; }
 
         public bool IsDetached { get { return NoId == Index; } }
 

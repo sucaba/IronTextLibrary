@@ -2,7 +2,7 @@
 
 namespace IronText.Reflection
 {
-    public class Matcher : IndexableObject<ISharedGrammarEntities>
+    public class Matcher : IndexableObject<IGrammarScope>
     {
         public Matcher(
             string           pattern,

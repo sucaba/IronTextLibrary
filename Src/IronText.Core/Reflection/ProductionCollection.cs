@@ -5,26 +5,39 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
-    public class ProductionCollection : IndexedCollection<Production, ISharedGrammarEntities>
+    public class ProductionCollection : IndexedCollection<Production, IGrammarScope>
     {
-        public ProductionCollection(ISharedGrammarEntities context)
-            : base(context)
+        public ProductionCollection(IGrammarScope scope)
+            : base(scope)
         {
         }
 
-        public Production Define(Symbol outcome, IEnumerable<Symbol> pattern, SemanticRef contextRef = null)
+        public Production Add(string outcome, IEnumerable<string> pattern, SemanticRef contextRef = null)
+        {
+            return Add(
+                Scope.Symbols.ByName(outcome, createMissing: true),
+                pattern.Select(name => Scope.Symbols.ByName(name, createMissing: true)),
+                contextRef);
+        }
+
+        public Production Add(Symbol outcome, IEnumerable<Symbol> pattern, SemanticRef contextRef = null)
         {
             var result = new Production(outcome, pattern, contextRef);
             return Add(result);
         }
 
         [Obsolete("Refactoring grammar indexing")]
-        public Production Define(int outcome, IEnumerable<int> pattern, string contextName = null)
+        public Production Add(int outcome, IEnumerable<int> pattern, string contextName = null)
         {
-            return Define(
+            return Add(
                 (Symbol)Scope.Symbols[outcome],
                 pattern.Select(t => (Symbol)Scope.Symbols[t]),
                 SemanticRef.ByName(contextName));
+        }
+
+        public Production Find(string outcome, string[] pattern)
+        {
+            return Find(Scope.Symbols[outcome], Array.ConvertAll(pattern, Scope.Symbols.ByName));
         }
 
         /// <summary>

@@ -61,14 +61,6 @@ namespace IronText.Reflection
         /// </remarks>
         public override Precedence Precedence { get; set; }
 
-        public override bool Equals(object obj)
-        {
-            var casted = obj as Symbol;
-            return casted != null && casted.Index == Index;
-        }
-
-        public override int GetHashCode() { return Index; }
-
         protected override SymbolBase DoClone()
         {
             return new Symbol(Name)

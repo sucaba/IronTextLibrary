@@ -11,10 +11,10 @@ namespace IronText.Collections
 
         private T[] indexToItem;
 
-        public IndexedCollection(TScope context = default(TScope))
+        public IndexedCollection(TScope scope = default(TScope))
         {
             indexToItem = new T[InitialCapacity];
-            this.Scope = context;
+            this.Scope = scope;
         }
 
         public TScope Scope { get; private set; }

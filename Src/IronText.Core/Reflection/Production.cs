@@ -11,12 +11,12 @@ using IronText.Algorithm;
 namespace IronText.Reflection
 {
     [DebuggerDisplay("{DebugProductionText}")]
-    public sealed class Production : IndexableObject<ISharedGrammarEntities>, IProductionComponent
+    public sealed class Production : IndexableObject<IGrammarScope>, IProductionComponent
     {
         public Production(
             Symbol           outcome,
             IEnumerable<IProductionComponent> components,
-            SemanticRef      contextRef,
+            SemanticRef      contextRef = null,
             ProductionFlags  flags = ProductionFlags.None)
         {
             if (outcome == null)
@@ -46,7 +46,7 @@ namespace IronText.Reflection
 
         public int[]              PatternTokens  { get; private set; }
 
-        public IProductionComponent[] Components { get; set; }
+        public IProductionComponent[] Components { get; private set; }
 
         public Symbol             Outcome        { get; private set; }
 
@@ -95,25 +95,6 @@ namespace IronText.Reflection
                 int index = Array.FindLastIndex(Pattern, s => s.IsTerminal);
                 return index < 0 ? null : Pattern[index].Precedence;
             }
-        }
-
-        public bool Equals(Production other)
-        {
-            return other != null
-                && other.Index == Index
-                && other.Outcome.Index == Outcome.Index
-                && Enumerable.SequenceEqual(other.Pattern, Pattern)
-                ;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as Production);
-        }
-
-        public override int GetHashCode()
-        {
-            return unchecked(Index + Outcome.Index + Pattern.Sum(s => s.Index));
         }
 
         public string Describe(Grammar grammar, int pos)

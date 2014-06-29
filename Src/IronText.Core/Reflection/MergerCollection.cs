@@ -2,9 +2,9 @@
 
 namespace IronText.Reflection
 {
-    public class MergerCollection : IndexedCollection<Merger, ISharedGrammarEntities>
+    public class MergerCollection : IndexedCollection<Merger, IGrammarScope>
     {
-        public MergerCollection(ISharedGrammarEntities ebnfContext)
+        public MergerCollection(IGrammarScope ebnfContext)
             : base(ebnfContext)
         {
         }

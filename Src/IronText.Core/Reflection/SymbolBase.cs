@@ -5,7 +5,7 @@ using IronText.Collections;
 namespace IronText.Reflection
 {
     [DebuggerDisplay("Name = {Name}")]
-    public abstract class SymbolBase : IndexableObject<ISharedGrammarEntities>, ICloneable
+    public abstract class SymbolBase : IndexableObject<IGrammarScope>, ICloneable
     {
         /// <summary>
         /// Display name
