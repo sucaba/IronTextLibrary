@@ -54,7 +54,8 @@ namespace IronText.Reflection
                 var prod = this[i];
                 if (prod.Outcome == outcome
                     && prod.Pattern.Length == pattern.Length
-                    && Enumerable.SequenceEqual(prod.Pattern, pattern))
+                    && Enumerable.SequenceEqual(prod.Pattern, pattern)
+                    && !prod.IsDeleted)
                 {
                     return prod;
                 }

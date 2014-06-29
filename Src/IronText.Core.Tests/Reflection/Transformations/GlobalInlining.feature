@@ -1,5 +1,5 @@
 ﻿Feature: GlobalInlining
-	In order to get rid of productions unneccessary for parser runtimer
+	In order to get rid of productions unneccessary for parser runtime
 	As a language data provider
 	I want to to inline some non-terminals symbols
 
