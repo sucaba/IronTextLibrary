@@ -7,7 +7,7 @@ Scenario: Extract non-terminal using 'contains symbol' criteria
     Given production 'X = D'
 	And production 'X = E'
 	And production 'X = D E'
-	And production 'X = F'
+	And production 'X = '
 	And production criteria is: input has 'E' symbol
 	When decompose symbol 'Xnew' from symbol 'X'
 	Then result symbol is 'Xnew'
@@ -15,7 +15,7 @@ Scenario: Extract non-terminal using 'contains symbol' criteria
     And production exists 'Xnew = D E'
     And 'Xnew' has 2 productions
     And production exists 'X = D'
-    And production exists 'X = F'
+    And production exists 'X = '
     And production exists 'X = Xnew'
     And 'X' has 3 productions
 
