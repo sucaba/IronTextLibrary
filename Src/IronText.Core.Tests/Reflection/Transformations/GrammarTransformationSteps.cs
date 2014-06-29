@@ -7,15 +7,22 @@ using TechTalk.SpecFlow;
 namespace IronText.Tests.Reflection.Transformations
 {
     [Binding]
-    public class DecomposeTransformationSteps
+    public class GrammarTransformationSteps
     {
         private readonly Grammar grammar;
         private Func<Production,bool> criteria;
         private Symbol resultSymbol;
+        private const string StartSymbolName = "Start";
 
-        public DecomposeTransformationSteps()
+        public GrammarTransformationSteps()
         {
-            this.grammar = new Grammar();
+            this.grammar = new Grammar { StartName = StartSymbolName };
+        }
+
+        [Given(@"used symbol '(\w+)'")]
+        public void GivenUsedSymbol(string symbolName)
+        {
+            GivenProduction(StartSymbolName, new [] { symbolName });
         }
 
         [Given(@"production '(\w+) =(.*)'")]
@@ -42,6 +49,12 @@ namespace IronText.Tests.Reflection.Transformations
             this.resultSymbol = grammar.Decompose(grammar.Symbols[fromSymbol], criteria, toSymbol);
         }
 
+        [When(@"inline grammar")]
+        public void WhenInlineGrammar()
+        {
+            grammar.Inline();
+        }
+
         [Then(@"result symbol is '(\w+)'")]
         public void ThenResultSymbolIs(string symbolName)
         {
@@ -57,7 +70,7 @@ namespace IronText.Tests.Reflection.Transformations
         [Then(@"production exists '(\w+) =(.*)'")]
         public void ThenProductionExist(string outcome, string[] pattern)
         {
-            Assert.IsNotNull(grammar.Productions.Find(outcome, pattern));
+            Assert.IsTrue(null != grammar.Productions.Find(outcome, pattern));
         }
 
         [StepArgumentTransformation]
