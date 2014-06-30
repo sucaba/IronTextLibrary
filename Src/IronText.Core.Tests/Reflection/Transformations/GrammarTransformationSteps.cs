@@ -56,13 +56,13 @@ namespace IronText.Tests.Reflection.Transformations
             grammar.Inline();
         }
 
-        [When(@"find optional pattern symbols")]
+        [When(@"find opt symbols")]
         public void WhenFindOptionalPatternSymbols()
         {
             this.resultSymbols = grammar.FindOptionalPatternSymbols();
         }
 
-        [When(@"inline optional symbols")]
+        [When(@"inline opt symbols")]
         public void WhenInlineOptionalSymbols()
         {
             grammar.InlineOptionalSymbols();

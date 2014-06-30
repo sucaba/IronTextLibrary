@@ -4,28 +4,25 @@
 	I want to to inline non-terminal symbols matching opt-symbol pattern
 
 Scenario: Opt-symbol pattern is detected
-	Given used symbol 'S'
-    And production 'S = Prefix X Suffix'
+	Given production 'S = Prefix X Suffix'
 	And production 'X = '
 	And production 'X = Y'
 	And production 'Y = t'
 	And production 'Z = '
 	And production 'Z = t'
-	When find optional pattern symbols
+	When find opt symbols
     Then result symbols are 'X Z'
 
 Scenario: Symbol with empty production is not identified as optional pattern
-	Given used symbol 'S'
-    And production 'S = Prefix X Suffix'
+	Given production 'S = Prefix X Suffix'
 	And production 'X = '
-	When find optional pattern symbols
+	When find opt symbols
     Then result symbols are ''
 
 Scenario: Symbol with identity production is not identified as optional pattern
-	Given used symbol 'S'
-    And production 'S = Prefix X Suffix'
+	Given production 'S = Prefix X Suffix'
 	And production 'X = t'
-	When find optional pattern symbols
+	When find opt symbols
     Then result symbols are ''
 
 Scenario: Optional-terminal pattern is inlined
@@ -36,12 +33,12 @@ Scenario: Optional-terminal pattern is inlined
     And production 'Y = '
     And production 'Y = T'
     And production 'T = t2'
-    When inline optional symbols 
+    When inline opt symbols 
     Then production exists 'S = Prefix Suffix'
     And production exists 'S = Prefix t1 Suffix'
     And production exists 'S = Prefix T Suffix'
     And production exists 'S = Prefix t1 T Suffix'
+    And 'S' has 4 productions
     And 'X' has 0 productions
     And 'Y' has 0 productions
-    And 'S' has 4 productions
     And 'T' has 1 productions
