@@ -211,5 +211,33 @@ namespace IronText.Reflection
 
             return newSymbol;
         }
+
+        public Symbol[] FindOptionalPatternSymbols()
+        {
+            return Symbols.OfType<Symbol>().Where(IsOptionalSymbol).ToArray();
+        }
+
+        public void InlineOptionalSymbols()
+        {
+            var symbolsToInline = FindOptionalPatternSymbols();
+            foreach (var symbol in symbolsToInline)
+            {
+                Inline(symbol);
+            }
+        }
+
+        private static bool IsOptionalSymbol(Symbol symbol)
+        {
+            if (symbol == null)
+            {
+                return false;
+            }
+
+            var prods = symbol.Productions;
+            bool result = prods.Count == 2
+                        && prods.Any(p => p.Pattern.Length == 0)
+                        && prods.Any(p => p.Pattern.Length == 1);
+            return result;
+        }
     }
 }

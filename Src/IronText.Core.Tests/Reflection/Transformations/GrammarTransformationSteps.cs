@@ -13,6 +13,7 @@ namespace IronText.Tests.Reflection.Transformations
         private Func<Production,bool> criteria;
         private Symbol resultSymbol;
         private const string StartSymbolName = "Start";
+        private Symbol[] resultSymbols;
 
         public GrammarTransformationSteps()
         {
@@ -55,6 +56,18 @@ namespace IronText.Tests.Reflection.Transformations
             grammar.Inline();
         }
 
+        [When(@"find optional pattern symbols")]
+        public void WhenFindOptionalPatternSymbols()
+        {
+            this.resultSymbols = grammar.FindOptionalPatternSymbols();
+        }
+
+        [When(@"inline optional symbols")]
+        public void WhenInlineOptionalSymbols()
+        {
+            grammar.InlineOptionalSymbols();
+        }
+
         [Then(@"result symbol is '(\w+)'")]
         public void ThenResultSymbolIs(string symbolName)
         {
@@ -71,6 +84,12 @@ namespace IronText.Tests.Reflection.Transformations
         public void ThenProductionExist(string outcome, string[] pattern)
         {
             Assert.IsTrue(null != grammar.Productions.Find(outcome, pattern));
+        }
+
+        [Then(@"result symbols are '(.*)'")]
+        public void ThenResultSymbolsAre(string[] symbols)
+        {
+            Assert.That(symbols, Is.EquivalentTo(resultSymbols.Select(s => s.Name)));
         }
 
         [StepArgumentTransformation]

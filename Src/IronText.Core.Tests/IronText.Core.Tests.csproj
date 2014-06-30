@@ -90,11 +90,16 @@
     <Compile Include="Algorithm\TdfaSimulationLexerTest.cs" />
     <Compile Include="Algorithm\TopologicalSortTest.cs" />
     <Compile Include="Algorithm\UnicodeFrequencyTest.cs" />
-    <Compile Include="Reflection\Transformations\GrammarTransformationSteps.cs" />
-    <Compile Include="Reflection\Transformations\GlobalInlining.feature.cs">
+    <Compile Include="Reflection\Transformations\OptSymbolInlining.feature.cs">
+      <DependentUpon>OptSymbolInlining.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>GlobalInlining.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Reflection\Transformations\GrammarTransformationSteps.cs" />
+    <Compile Include="Reflection\Transformations\GlobalSymbolInlining.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GlobalSymbolInlining.feature</DependentUpon>
     </Compile>
     <Compile Include="Collections\JointTest.cs" />
     <Compile Include="Framework\AmbTokenTest.cs" />
@@ -192,9 +197,13 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>DecomposeTransformation.feature.cs</LastGenOutput>
     </None>
-    <None Include="Reflection\Transformations\GlobalInlining.feature">
+    <None Include="Reflection\Transformations\OptSymbolInlining.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>GlobalInlining.feature.cs</LastGenOutput>
+      <LastGenOutput>OptSymbolInlining.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Reflection\Transformations\GlobalSymbolInlining.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>GlobalSymbolInlining.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup />

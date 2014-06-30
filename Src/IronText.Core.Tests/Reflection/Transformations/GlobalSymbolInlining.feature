@@ -1,4 +1,4 @@
-﻿Feature: GlobalInlining
+﻿Feature: Global Symbol Inlining
 	In order to get rid of productions unneccessary for parser runtime
 	As a language data provider
 	I want to to inline some non-terminals symbols
