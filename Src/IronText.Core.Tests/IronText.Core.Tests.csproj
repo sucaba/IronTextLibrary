@@ -90,6 +90,11 @@
     <Compile Include="Algorithm\TdfaSimulationLexerTest.cs" />
     <Compile Include="Algorithm\TopologicalSortTest.cs" />
     <Compile Include="Algorithm\UnicodeFrequencyTest.cs" />
+    <Compile Include="Reflection\Transformations\NullableSymbolsToOptSymbols.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>NullableSymbolsToOptSymbols.feature</DependentUpon>
+    </Compile>
     <Compile Include="Reflection\Transformations\OptSymbolInlining.feature.cs">
       <DependentUpon>OptSymbolInlining.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -196,6 +201,10 @@
     <None Include="Reflection\Transformations\DecomposeTransformation.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>DecomposeTransformation.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Reflection\Transformations\NullableSymbolsToOptSymbols.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>NullableSymbolsToOptSymbols.feature.cs</LastGenOutput>
     </None>
     <None Include="Reflection\Transformations\OptSymbolInlining.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

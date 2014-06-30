@@ -239,5 +239,34 @@ namespace IronText.Reflection
                         && prods.Any(p => p.Pattern.Length == 1);
             return result;
         }
+
+        public void NullableToOpt()
+        {
+            var nullableSymbols = FindNullableSymbols();
+            foreach (var symbol in nullableSymbols)
+            {
+                Decompose(symbol, IsNonNullable, symbol.Name + "nn");
+            }
+        }
+
+        public Symbol[] FindNullableSymbols()
+        {
+            return Symbols.OfType<Symbol>().Where(IsNullable).ToArray();
+        }
+
+        private static bool IsNonNullable(Production production)
+        {
+            return !IsNullable(production);
+        }
+
+        private static bool IsNullable(Symbol symbol)
+        {
+            return symbol != null && symbol.Productions.Any(IsNullable);
+        }
+
+        private static bool IsNullable(Production production)
+        {
+            return production.Pattern.All(IsNullable);
+        }
     }
 }

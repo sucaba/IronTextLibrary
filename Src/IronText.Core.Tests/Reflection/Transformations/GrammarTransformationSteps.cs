@@ -68,6 +68,12 @@ namespace IronText.Tests.Reflection.Transformations
             grammar.InlineOptionalSymbols();
         }
 
+        [When(@"nullable to opt symbols")]
+        public void WhenNullableToOptSymbols()
+        {
+            grammar.NullableToOpt();
+        }
+
         [Then(@"result symbol is '(\w+)'")]
         public void ThenResultSymbolIs(string symbolName)
         {
@@ -90,6 +96,12 @@ namespace IronText.Tests.Reflection.Transformations
         public void ThenResultSymbolsAre(string[] symbols)
         {
             Assert.That(symbols, Is.EquivalentTo(resultSymbols.Select(s => s.Name)));
+        }
+
+        [Then(@"symbol exists '(.*)'")]
+        public void ThenSymbolExists(string symbolName)
+        {
+            grammar.Symbols.Any(s => s.Name == symbolName);
         }
 
         [StepArgumentTransformation]
