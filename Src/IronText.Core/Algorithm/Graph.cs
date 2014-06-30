@@ -97,6 +97,17 @@ namespace IronText.Algorithm
             return Search(new [] { start }, following, match);
         }
 
+        /// <summary>
+        /// Finds path from the <paramref name="start"/> to the first element in 
+        /// a left-to-right, top-down order which matches <paramref name="match"/> predicate.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="start"></param>
+        /// <param name="following"></param>
+        /// <param name="match"></param>
+        /// <returns>
+        /// Path of nodes starting from the first one to the <i>found</i> one.
+        /// </returns>
         public static T[] Search<T>(IEnumerable<T> start, Func<T, IEnumerable<T>> following, Predicate<T> match)
         {
             var front = start.Select(x => new Node<T> { Value = x }).ToList();

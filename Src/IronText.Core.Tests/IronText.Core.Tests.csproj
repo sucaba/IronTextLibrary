@@ -90,10 +90,10 @@
     <Compile Include="Algorithm\TdfaSimulationLexerTest.cs" />
     <Compile Include="Algorithm\TopologicalSortTest.cs" />
     <Compile Include="Algorithm\UnicodeFrequencyTest.cs" />
-    <Compile Include="Reflection\Transformations\NullableSymbolsToOptSymbols.feature.cs">
+    <Compile Include="Reflection\Transformations\FindNullableSymbols.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>NullableSymbolsToOptSymbols.feature</DependentUpon>
+      <DependentUpon>FindNullableSymbols.feature</DependentUpon>
     </Compile>
     <Compile Include="Reflection\Transformations\OptSymbolInlining.feature.cs">
       <DependentUpon>OptSymbolInlining.feature</DependentUpon>
@@ -202,9 +202,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>DecomposeTransformation.feature.cs</LastGenOutput>
     </None>
-    <None Include="Reflection\Transformations\NullableSymbolsToOptSymbols.feature">
+    <None Include="Reflection\Transformations\FindNullableSymbols.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>NullableSymbolsToOptSymbols.feature.cs</LastGenOutput>
+      <LastGenOutput>FindNullableSymbols.feature.cs</LastGenOutput>
     </None>
     <None Include="Reflection\Transformations\OptSymbolInlining.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

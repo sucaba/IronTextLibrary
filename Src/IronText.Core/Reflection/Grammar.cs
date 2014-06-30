@@ -5,6 +5,7 @@ using IronText.Collections;
 using IronText.Reflection.Reporting;
 using System.Collections.Generic;
 using System.Diagnostics;
+using IronText.Algorithm;
 
 namespace IronText.Reflection
 {
@@ -240,33 +241,29 @@ namespace IronText.Reflection
             return result;
         }
 
-        public void NullableToOpt()
-        {
-            var nullableSymbols = FindNullableSymbols();
-            foreach (var symbol in nullableSymbols)
-            {
-                Decompose(symbol, IsNonNullable, symbol.Name + "nn");
-            }
-        }
-
         public Symbol[] FindNullableSymbols()
         {
-            return Symbols.OfType<Symbol>().Where(IsNullable).ToArray();
-        }
+            var result = new HashSet<Symbol>(
+                            from p in Productions
+                            where p.Pattern.Length == 0
+                            select p.Outcome);
 
-        private static bool IsNonNullable(Production production)
-        {
-            return !IsNullable(production);
-        }
+            while (true)
+            {
+                var next = 
+                           (from prod in Productions
+                           where !result.Contains(prod.Outcome) && prod.Pattern.All(result.Contains)
+                           select prod.Outcome)
+                           .ToArray();
+                if (next.Length == 0)
+                {
+                    break;
+                }
 
-        private static bool IsNullable(Symbol symbol)
-        {
-            return symbol != null && symbol.Productions.Any(IsNullable);
-        }
-
-        private static bool IsNullable(Production production)
-        {
-            return production.Pattern.All(IsNullable);
+                result.UnionWith(next);
+            }
+            
+            return result.ToArray(); 
         }
     }
 }
