@@ -71,7 +71,7 @@ namespace IronText.Tests.Reflection.Transformations
         [When(@"find nullable symbols")]
         public void WhenFindNullableSymbols()
         {
-            this.resultSymbols = grammar.FindNullableSymbols();
+            this.resultSymbols = grammar.FindNullableSymbols().ToArray();
         }
 
         [Then(@"result symbol is '(\w+)'")]

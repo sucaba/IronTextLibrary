@@ -241,7 +241,7 @@ namespace IronText.Reflection
             return result;
         }
 
-        public Symbol[] FindNullableSymbols()
+        public HashSet<Symbol> FindNullableSymbols()
         {
             var result = new HashSet<Symbol>(
                             from p in Productions
@@ -263,7 +263,7 @@ namespace IronText.Reflection
                 result.UnionWith(next);
             }
             
-            return result.ToArray(); 
+            return result; 
         }
     }
 }
