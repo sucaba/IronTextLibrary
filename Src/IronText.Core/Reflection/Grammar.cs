@@ -218,13 +218,18 @@ namespace IronText.Reflection
             return Symbols.OfType<Symbol>().Where(IsOptionalSymbol).ToArray();
         }
 
-        public void InlineOptionalSymbols()
+        public bool InlineOptionalSymbols()
         {
+            bool result = false;
+
             var symbolsToInline = FindOptionalPatternSymbols();
             foreach (var symbol in symbolsToInline)
             {
                 Inline(symbol);
+                result = true;
             }
+
+            return result;
         }
 
         private static bool IsOptionalSymbol(Symbol symbol)
@@ -241,29 +246,25 @@ namespace IronText.Reflection
             return result;
         }
 
-        public HashSet<Symbol> FindNullableSymbols()
+        public void ConvertNullableToOpt()
         {
-            var result = new HashSet<Symbol>(
-                            from p in Productions
-                            where p.Pattern.Length == 0
-                            select p.Outcome);
-
-            while (true)
+            var nullableSymbols = FindNullableNonOptSymbols();
+            foreach (var symbol in nullableSymbols)
             {
-                var next = 
-                           (from prod in Productions
-                           where !result.Contains(prod.Outcome) && prod.Pattern.All(result.Contains)
-                           select prod.Outcome)
-                           .ToArray();
-                if (next.Length == 0)
-                {
-                    break;
-                }
-
-                result.UnionWith(next);
+                Decompose(symbol, prod => !prod.Pattern.All(nullableSymbols.Contains), symbol.Name + "nn");
             }
-            
-            return result; 
+        }
+
+        public IEnumerable<Symbol> FindNullableNonOptSymbols()
+        {
+            var result = Symbols
+                   .OfType<Symbol>()
+                   .Where(s => 
+                       s.Productions.Any(p => p.Pattern.Length == 0)
+                       && s.Productions.Any(p => p.Pattern.Length != 0)
+                       && (s.Productions.Count != 2 
+                          || s.Productions.Any(p => p.Pattern.Length > 1)));
+            return result.ToArray();
         }
     }
 }

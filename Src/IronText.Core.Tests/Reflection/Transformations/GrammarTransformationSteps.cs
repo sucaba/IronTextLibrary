@@ -68,10 +68,16 @@ namespace IronText.Tests.Reflection.Transformations
             grammar.InlineOptionalSymbols();
         }
 
-        [When(@"find nullable symbols")]
-        public void WhenFindNullableSymbols()
+        [When(@"find nullable non-opt symbols")]
+        public void WhenFindNullableNonOptSymbols()
         {
-            this.resultSymbols = grammar.FindNullableSymbols().ToArray();
+            this.resultSymbols = grammar.FindNullableNonOptSymbols().ToArray();
+        }
+
+        [When(@"convert nullable symbols into opt")]
+        public void WhenConvertNullableSymbolsIntoOpt()
+        {
+            grammar.ConvertNullableToOpt();
         }
 
         [Then(@"result symbol is '(\w+)'")]
