@@ -246,7 +246,7 @@ namespace IronText.Reflection
             return result;
         }
 
-        public void ConvertNullableToOpt()
+        public void ConvertNullableNonOptToOpt()
         {
             var nullableSymbols = FindNullableNonOptSymbols();
             foreach (var symbol in nullableSymbols)

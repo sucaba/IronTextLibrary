@@ -74,10 +74,10 @@ namespace IronText.Tests.Reflection.Transformations
             this.resultSymbols = grammar.FindNullableNonOptSymbols().ToArray();
         }
 
-        [When(@"convert nullable symbols into opt")]
+        [When(@"convert nullable, non-opt symbols into opt")]
         public void WhenConvertNullableSymbolsIntoOpt()
         {
-            grammar.ConvertNullableToOpt();
+            grammar.ConvertNullableNonOptToOpt();
         }
 
         [Then(@"result symbol is '(\w+)'")]
