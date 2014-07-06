@@ -111,6 +111,19 @@ namespace IronText.Reflection
             }
         }
 
+        public void EliminateEmptyProductions()
+        {
+            var nullSymbols = Symbols
+                                .OfType<Symbol>()
+                                .Where(s => s.Productions.Count != 0 
+                                         && s.Productions.Any(p => p.Pattern.Length == 0))
+                                .ToArray();
+            foreach (var symbol in nullSymbols)
+            {
+                Inline(symbol);
+            }
+        }
+
         private static bool CanInline(Symbol symbol)
         {
             if (symbol == null 
@@ -158,7 +171,7 @@ namespace IronText.Reflection
         {
             foreach (var prod in Productions)
             {
-                if (prod.Pattern.Contains(symbol) && !prod.IsDeleted && prod.IsUsed)
+                if (prod.Pattern.Contains(symbol) && !prod.IsDeleted)// && prod.IsUsed)
                 {
                     yield return prod;
                 }

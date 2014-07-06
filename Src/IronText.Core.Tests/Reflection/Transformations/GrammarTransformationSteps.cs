@@ -80,6 +80,12 @@ namespace IronText.Tests.Reflection.Transformations
             grammar.ConvertNullableNonOptToOpt();
         }
 
+        [When(@"eliminate empty productions")]
+        public void WhenEliminateEmptyProductions()
+        {
+            grammar.EliminateEmptyProductions();
+        }
+
         [Then(@"result symbol is '(\w+)'")]
         public void ThenResultSymbolIs(string symbolName)
         {
@@ -108,6 +114,15 @@ namespace IronText.Tests.Reflection.Transformations
         public void ThenSymbolExists(string symbolName)
         {
             grammar.Symbols.Any(s => s.Name == symbolName);
+        }
+
+        [Then(@"symbol '(.*)' is not used")]
+        [Then(@"symbol '(.*)' is unused")]
+        public void ThenSymbolIsNotUsed(string symbolName)
+        {
+            Symbol found = grammar.Symbols.FirstOrDefault(s => s.Name == symbolName) as Symbol;
+            Assert.IsNotNull(found != null);
+            Assert.IsFalse(found.IsUsed);
         }
 
         [StepArgumentTransformation]

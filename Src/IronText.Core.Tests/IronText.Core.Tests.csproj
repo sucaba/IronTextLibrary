@@ -90,6 +90,11 @@
     <Compile Include="Algorithm\TdfaSimulationLexerTest.cs" />
     <Compile Include="Algorithm\TopologicalSortTest.cs" />
     <Compile Include="Algorithm\UnicodeFrequencyTest.cs" />
+    <Compile Include="Reflection\Transformations\EliminateEmpty.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EliminateEmpty.feature</DependentUpon>
+    </Compile>
     <Compile Include="Reflection\Transformations\FindNullableNonOptSymbols.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -206,6 +211,10 @@
     <None Include="Reflection\Transformations\DecomposeTransformation.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>DecomposeTransformation.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Reflection\Transformations\EliminateEmpty.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>EliminateEmpty.feature.cs</LastGenOutput>
     </None>
     <None Include="Reflection\Transformations\FindNullableNonOptSymbols.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
