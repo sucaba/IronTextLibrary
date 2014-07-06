@@ -86,13 +86,19 @@ namespace IronText.Tests.Reflection.Transformations
             grammar.EliminateEmptyProductions();
         }
 
+        [When(@"recursively eliminate empty productions")]
+        public void WhenRecursivelyEliminateEmptyProductions()
+        {
+            grammar.RecursivelyEliminateEmptyProductions();
+        }
+
         [Then(@"result symbol is '(\w+)'")]
         public void ThenResultSymbolIs(string symbolName)
         {
             Assert.AreEqual(symbolName, resultSymbol.Name);
         }
 
-        [Then(@"'(\w+)' has (\d+) productions")]
+        [Then(@"'(\w+)' has (\d+) production[s]?")]
         public void ThenSymbolHasProductionCount(string symbolName, int count)
         {
             Assert.AreEqual(count, grammar.Symbols[symbolName].Productions.Count);

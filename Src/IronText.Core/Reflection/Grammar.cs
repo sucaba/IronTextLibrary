@@ -111,8 +111,17 @@ namespace IronText.Reflection
             }
         }
 
-        public void EliminateEmptyProductions()
+        public void RecursivelyEliminateEmptyProductions()
         {
+            while (EliminateEmptyProductions())
+            {
+            }
+        }
+
+        public bool EliminateEmptyProductions()
+        {
+            bool result = false;
+
             var nullSymbols = Symbols
                                 .OfType<Symbol>()
                                 .Where(s => s.Productions.Count != 0 
@@ -120,8 +129,10 @@ namespace IronText.Reflection
                                 .ToArray();
             foreach (var symbol in nullSymbols)
             {
-                Inline(symbol);
+                result = result || Inline(symbol);
             }
+
+            return result;
         }
 
         private static bool CanInline(Symbol symbol)
@@ -141,8 +152,10 @@ namespace IronText.Reflection
                         p => p.Pattern.All(s => s.IsTerminal)));
         }
 
-        public void Inline(Symbol symbol)
+        public bool Inline(Symbol symbol)
         {
+            bool result = false;
+
             if (symbol == null)
             {
                 throw new ArgumentNullException("symbol");
@@ -163,8 +176,11 @@ namespace IronText.Reflection
                 if (pos >= 0)
                 {
                     productionsToExtend.AddRange(Extend(prod, pos));
+                    result = true;
                 }
             }
+
+            return result;
         }
 
         private IEnumerable<Production> GetProductionsHavingInput(Symbol symbol)

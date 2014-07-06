@@ -164,6 +164,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DecomposeTransformation.feature</DependentUpon>
     </Compile>
+    <Compile Include="Reflection\Transformations\RecursiveEliminateEmpty.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RecursiveEliminateEmpty.feature</DependentUpon>
+    </Compile>
     <Compile Include="Samples\CommandLineSampleTest.cs" />
     <Compile Include="Samples\DynamicLinqTest.cs" />
     <Compile Include="Samples\InheritanceGrammarRulesTest.cs" />
@@ -231,6 +236,10 @@
     <None Include="Reflection\Transformations\GlobalSymbolInlining.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>GlobalSymbolInlining.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Reflection\Transformations\RecursiveEliminateEmpty.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>RecursiveEliminateEmpty.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup />
