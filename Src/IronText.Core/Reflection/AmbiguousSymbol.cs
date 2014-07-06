@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using IronText.Collections;
+using IronText.Misc;
 
 namespace IronText.Reflection
 {
@@ -83,6 +84,11 @@ namespace IronText.Reflection
             builder.Append("}");
 
             return builder.ToString();
+        }
+
+        protected override object DoGetIdentity()
+        {
+            return IdentityFactory.FromIntegers(Tokens);
         }
     }
 }

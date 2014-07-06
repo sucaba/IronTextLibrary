@@ -111,6 +111,9 @@
     <Compile Include="Algorithm\IntegerSets\SetOrthohonator.cs" />
     <Compile Include="Algorithm\IntegerSets\SparseIntSetType.cs" />
     <Compile Include="Algorithm\IntInterval.cs" />
+    <Compile Include="Collections\Validation\DuplicateResolution.cs" />
+    <Compile Include="Collections\IgnoreNewDuplicateResolver.cs" />
+    <Compile Include="Misc\IHasIdentity.cs" />
     <Compile Include="Collections\Joint.cs" />
     <Compile Include="Diagnostics\GvGraphView.cs" />
     <Compile Include="Diagnostics\IGraphView.cs" />
@@ -118,10 +121,12 @@
     <Compile Include="Framework\Fluent.cs" />
     <Compile Include="Framework\LanguageFlags.cs" />
     <Compile Include="Misc\Discriminatable.cs" />
+    <Compile Include="Misc\IdentityFactory.cs" />
     <Compile Include="Reflection\Cil\CilSemanticRef.cs" />
     <Compile Include="Reflection\Cil\CilSemanticValue.cs" />
     <Compile Include="Reflection\Cil\CilSemanticScope.cs" />
     <Compile Include="Reflection\Comparers\SymbolIndexComparer.cs" />
+    <Compile Include="Collections\Validation\FailDuplicateResolver.cs" />
     <Compile Include="Reflection\IProductionComponent.cs" />
     <Compile Include="Reflection\ProductionFlags.cs" />
     <Compile Include="Reflection\Comparers\ProductionIndexComparer.cs" />
@@ -149,6 +154,7 @@
     <Compile Include="Reflection\Cil\CilSymbolFeature.cs" />
     <Compile Include="Reflection\RuntimeOptions.cs" />
     <Compile Include="Reflection\Transformations\ProductionInliner.cs" />
+    <Compile Include="Collections\Validation\IDuplicateResolver.cs" />
     <Compile Include="Runtime\ILanguageInternalRuntime.cs" />
     <Compile Include="Runtime\ParserAction.cs" />
     <Compile Include="Runtime\ParserActionKind.cs" />

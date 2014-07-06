@@ -31,11 +31,6 @@ namespace IronText.Reflection
             Globals     = new SemanticScope();
             Joint       = new Joint();
 
-            for (int i = PredefinedTokens.Count; i != 0; --i)
-            {
-                Symbols.Add(null); // stub
-            }
-
             Symbols[PredefinedTokens.Propagated]      = new Symbol("#");
             Symbols[PredefinedTokens.Epsilon]         = new Symbol("$eps");
             Symbols[PredefinedTokens.AugmentedStart]  = new Symbol("$start");

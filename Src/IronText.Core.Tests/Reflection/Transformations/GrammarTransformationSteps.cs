@@ -1,4 +1,5 @@
-﻿using IronText.Reflection;
+﻿using IronText.Collections;
+using IronText.Reflection;
 using NUnit.Framework;
 using System;
 using System.Linq;
@@ -9,11 +10,13 @@ namespace IronText.Tests.Reflection.Transformations
     [Binding]
     public class GrammarTransformationSteps
     {
-        private readonly Grammar grammar;
-        private Func<Production,bool> criteria;
-        private Symbol resultSymbol;
         private const string StartSymbolName = "Start";
-        private Symbol[] resultSymbols;
+
+        private readonly Grammar      grammar;
+        private Func<Production,bool> criteria;
+        private Symbol                resultSymbol;
+        private Symbol[]              resultSymbols;
+        private Exception             resultException;
 
         public GrammarTransformationSteps()
         {
@@ -42,6 +45,16 @@ namespace IronText.Tests.Reflection.Transformations
         public void GivenProductionCriteriaIsInputIsNotEmpty()
         {
             this.criteria = p => p.Pattern.Length != 0;
+        }
+
+        [Given(@"production duplicate resolver '(.*)'")]
+        public void GivenProductionDuplicateResolver(string resolverName)
+        {
+            DuplicateResolution resolution;
+            Assert.IsTrue(
+                Enum.TryParse(resolverName, out resolution),
+                "Resolver name should be valid: " + resolverName);
+            grammar.Productions.DuplicateResolution = resolution;
         }
 
         [When(@"decompose symbol '(\w+)' from symbol '(\w+)'")]
@@ -92,6 +105,23 @@ namespace IronText.Tests.Reflection.Transformations
             grammar.RecursivelyEliminateEmptyProductions();
         }
 
+        [When(@"safe adding production '(\w+) =(.*)'")]
+        public void WhenAddingProduction(string outcome, string[] pattern)
+        {
+            try
+            {
+                grammar.Productions.Add(outcome, pattern);
+            }
+            catch (AssertionException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                this.resultException = e;
+            }
+        }
+
         [Then(@"result symbol is '(\w+)'")]
         public void ThenResultSymbolIs(string symbolName)
         {
@@ -129,6 +159,20 @@ namespace IronText.Tests.Reflection.Transformations
             Symbol found = grammar.Symbols.FirstOrDefault(s => s.Name == symbolName) as Symbol;
             Assert.IsNotNull(found != null);
             Assert.IsFalse(found.IsUsed);
+        }
+
+        [Then(@"result exception is '(.*)'")]
+        public void ThenResultExceptionIs(string exceptionTypeName)
+        {
+            var exceptionType = Type.GetType(exceptionTypeName);
+            Assert.IsNotNull(resultException);
+            Assert.That(resultException, Is.InstanceOf(exceptionType));
+        }
+
+        [Then(@"no result exception caught")]
+        public void ThenNoResultExceptionCaught()
+        {
+            Assert.IsNull(resultException);
         }
 
         [StepArgumentTransformation]

@@ -1,4 +1,5 @@
 ﻿using IronText.Collections;
+using System;
 using System.Linq;
 
 namespace IronText.Reflection
@@ -12,7 +13,12 @@ namespace IronText.Reflection
 
         public Symbol(string name)
         {
-            this.Name          = name ?? Grammar.UnnamedTokenName;
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            this.Name          = name;
             this._productions  = new ReferenceCollection<Production>();
             this.LocalScope    = new SemanticScope();
             this.Joint         = new Joint();

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using IronText.Misc;
+using System;
 
 namespace IronText.Collections
 {
-    public abstract class IndexableObject<TScope> : IIndexable<TScope>
+    public abstract class IndexableObject<TScope> : IIndexable<TScope>, IHasIdentity
     {
         public const int NoId = -1;
 
@@ -21,7 +22,7 @@ namespace IronText.Collections
 
         protected virtual void DoDetaching() { }
 
-        void IIndexable<TScope>.Attach(int id, TScope context)
+        void IIndexable<TScope>.Attached(int id, TScope context)
         {
             if (!IsDetached)
             {
@@ -34,11 +35,21 @@ namespace IronText.Collections
             DoAttached();
         }
 
-        void IIndexable<TScope>.Detach(TScope context)
+        void IIndexable<TScope>.Detaching(TScope context)
         {
             DoDetaching();
 
             Index = NoId;
+        }
+
+        object IHasIdentity.Identity
+        {
+            get { return DoGetIdentity(); }
+        }
+
+        protected virtual object DoGetIdentity()
+        {
+            return IdentityFactory.FromObject(this);
         }
     }
 }

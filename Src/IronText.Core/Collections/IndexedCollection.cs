@@ -1,20 +1,26 @@
-﻿using System;
+﻿using IronText.Misc;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace IronText.Collections
 {
     public class IndexedCollection<T, TScope> : IOwner<T>, IEnumerable<T>
-        where T : class, IIndexable<TScope>
+        where T : class, IIndexable<TScope>, IHasIdentity
     {
         private const int InitialCapacity = 8;
 
         private T[] indexToItem;
 
+        private readonly Dictionary<object,int> identityToIndex = new Dictionary<object,int>();
+        private DuplicateResolution   _duplicateResolution;
+        private IDuplicateResolver<T> _duplicateResolver;
+
         public IndexedCollection(TScope scope = default(TScope))
         {
             indexToItem = new T[InitialCapacity];
             this.Scope = scope;
+            this.DuplicateResolution = DuplicateResolution.Fail;
         }
 
         public TScope Scope { get; private set; }
@@ -37,15 +43,38 @@ namespace IronText.Collections
                 }
                 else if (indexToItem[index] != null)
                 {
-                    indexToItem[index].Detach(Scope);
+                    DetachingItem(index);
                 }
 
+                AttachingItem(ref value);
                 indexToItem[index] = value;
+                AttachedItem(index);
+            }
+        }
 
-                if (value != null)
+        public DuplicateResolution DuplicateResolution
+        {
+            get {  return _duplicateResolution; }
+            set
+            {
+                if (_duplicateResolution != value || _duplicateResolver == null)
                 {
-                    indexToItem[index].Attach(index, Scope);
+                    _duplicateResolution = value;
+                    _duplicateResolver = CreateDuplicateResolver(_duplicateResolution);
                 }
+            }
+        }
+
+        private static IDuplicateResolver<T> CreateDuplicateResolver(DuplicateResolution resolution)
+        {
+            switch (resolution)
+            {
+                case DuplicateResolution.Fail:
+                    return FailDuplicateResolver<T>.Instance;
+                case DuplicateResolution.IgnoreNew:    
+                    return IgnoreNewDuplicateResolver<T>.Instance;
+                default:
+                    throw new ArgumentException("resolution");
             }
         }
 
@@ -56,14 +85,18 @@ namespace IronText.Collections
                 throw new InvalidOperationException("IndexedCollection can contain only unique items.");
             }
 
-            int index = Count;
-            if (indexToItem.Length == index)
+            int index= AttachingItem(ref item);
+            if (index < 0)
             {
-                Array.Resize(ref indexToItem, index * 2);
+                index = Count;
+                if (indexToItem.Length == index)
+                {
+                    Array.Resize(ref indexToItem, index * 2);
+                }
             }
 
-            item.Attach(index, Scope);
             indexToItem[index] = item;
+            AttachedItem(index);
 
             this.Count = index + 1;
 
@@ -79,7 +112,7 @@ namespace IronText.Collections
                 var item = indexToItem[i];
                 if (item != null)
                 {
-                    item.Detach(Scope);
+                    item.Detaching(Scope);
                     indexToItem[i] = null;
                 }
             }
@@ -144,7 +177,7 @@ namespace IronText.Collections
             {
                 if (indexToItem[i] == (object)item)
                 {
-                    item.Detach(Scope);
+                    item.Detaching(Scope);
                     indexToItem[i] = null;
                     return true;
                 }
@@ -158,7 +191,7 @@ namespace IronText.Collections
             var item = indexToItem[index];
             if (item != null)
             {
-                item.Detach(Scope);
+                item.Detaching(Scope);
                 indexToItem[index] = null;
                 return true;
             }
@@ -201,6 +234,45 @@ namespace IronText.Collections
         void IOwner<T>.Release(T item)
         {
             Remove(item);
+        }
+
+        private int AttachingItem(ref T newItem)
+        {
+            int existingIndex;
+            if (newItem != null && identityToIndex.TryGetValue(newItem.Identity, out existingIndex))
+            {
+                var existing = indexToItem[existingIndex];
+                var resolvedItem = _duplicateResolver.Resolve(existing, newItem);
+                if (resolvedItem == existing)
+                {
+                    newItem = null;
+                    return -1;
+                }
+                else
+                {
+                    DetachingItem(existingIndex);
+                    newItem = resolvedItem;
+                    return existingIndex;
+                }
+            }
+          
+            return -1;
+        }
+
+        private void AttachedItem(int index)
+        {
+            var item = indexToItem[index];
+            if (item != null)
+            {
+                identityToIndex.Add(item.Identity, index);
+                item.Attached(index, Scope);
+            }
+        }
+
+        private void DetachingItem(int index)
+        {
+            indexToItem[index].Detaching(Scope);
+            identityToIndex.Remove(indexToItem[index].Identity);
         }
     }
 }

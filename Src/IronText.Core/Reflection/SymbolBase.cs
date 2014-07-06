@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using IronText.Collections;
+using IronText.Misc;
 
 namespace IronText.Reflection
 {
@@ -37,6 +38,11 @@ namespace IronText.Reflection
         public override string ToString()
         {
             return Name;
+        }
+
+        protected override object DoGetIdentity()
+        {
+            return IdentityFactory.FromString(Name);
         }
     }
 }

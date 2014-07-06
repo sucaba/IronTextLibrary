@@ -52,6 +52,11 @@ namespace IronText.Reflection
             for (int i = 0; i != count; ++i)
             {
                 var prod = this[i];
+                if (prod == null)
+                {
+                    continue;
+                }
+
                 if (prod.Outcome == outcome
                     && prod.Pattern.Length == pattern.Length
                     && Enumerable.SequenceEqual(prod.Pattern, pattern)

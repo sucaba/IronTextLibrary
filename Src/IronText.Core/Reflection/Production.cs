@@ -7,12 +7,15 @@ using System.Linq;
 using System.Text;
 using IronText.Collections;
 using IronText.Algorithm;
+using IronText.Misc;
 
 namespace IronText.Reflection
 {
     [DebuggerDisplay("{DebugProductionText}")]
     public sealed class Production : IndexableObject<IGrammarScope>, IProductionComponent
     {
+        private readonly object _identity;
+
         public Production(
             Symbol           outcome,
             IEnumerable<IProductionComponent> components,
@@ -40,6 +43,8 @@ namespace IronText.Reflection
             PatternTokens = Array.ConvertAll(Pattern, s => s.Index);
 
             this.Joint = new Joint();
+
+            this._identity = BuildIdentity();
         }
 
         public int                OutcomeToken   { get; private set; }
@@ -252,6 +257,16 @@ namespace IronText.Reflection
         {
             this.IsDeleted = true;
             this.Outcome.Productions.Remove(this);
+        }
+
+        protected override object DoGetIdentity()
+        {
+            return _identity;
+        }
+
+        private object BuildIdentity()
+        {
+            return IdentityFactory.FromIdentities(Outcome, Pattern);
         }
     }
 }

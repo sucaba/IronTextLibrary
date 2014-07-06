@@ -10,15 +10,15 @@ namespace IronText.Collections
         bool IsDetached { get; }
 
         /// <summary>
-        /// Attaches object to an indexed collection
+        /// Is invoked immediately object is attached to an indexed collection
         /// </summary>
         /// <param name="index">Index of the object within an owning indexed collection</param>
         /// <exception cref="InvalidOperationException">when object is already attached.</exception>
-        void Attach(int index, TScope context);
+        void Attached(int index, TScope context);
 
         /// <summary>
-        /// Detaches object from an indexed collection
+        /// Is invoked before object is actually detached from an indexed collection
         /// </summary>
-        void Detach(TScope context);
+        void Detaching(TScope context);
     }
 }
