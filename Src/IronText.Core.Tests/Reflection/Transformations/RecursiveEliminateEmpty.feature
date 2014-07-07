@@ -25,12 +25,11 @@ Scenario: Multi-level null-symbols are eliminated recursively
     Then symbol 'Y' is not used
     Then symbol 'Z' is not used
 
-Scenario: Alternate null are eliminated recursively
+Scenario: Alternate nulls are eliminated recursively
 	Given production 'X = '
 	Given production 'Y = '
 	Given production 'Y = X'
     Given production 'Z = prefix Y suffix'
-    Given production duplicate resolver 'IgnoreNew'
 	When recursively eliminate empty productions
     Then production exists 'Z = prefix suffix'
     Then 'Z' has 1 production

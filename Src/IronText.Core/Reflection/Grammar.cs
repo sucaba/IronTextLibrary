@@ -6,6 +6,7 @@ using IronText.Reflection.Reporting;
 using System.Collections.Generic;
 using System.Diagnostics;
 using IronText.Algorithm;
+using IronText.Reflection.Validation;
 
 namespace IronText.Reflection
 {
@@ -114,6 +115,20 @@ namespace IronText.Reflection
         }
 
         public bool EliminateEmptyProductions()
+        {
+            var old = Productions.DuplicateResolver;
+            Productions.DuplicateResolver = ProductionDuplicateResolver.Instance;
+            try
+            {
+                return InternalEliminateEmptyProductions();
+            }
+            finally
+            {
+                Productions.DuplicateResolver = old;
+            }
+        }
+
+        private bool InternalEliminateEmptyProductions()
         {
             bool result = false;
 
