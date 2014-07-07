@@ -50,11 +50,7 @@ namespace IronText.Tests.Reflection.Transformations
         [Given(@"production duplicate resolver '(.*)'")]
         public void GivenProductionDuplicateResolver(string resolverName)
         {
-            DuplicateResolution resolution;
-            Assert.IsTrue(
-                Enum.TryParse(resolverName, out resolution),
-                "Resolver name should be valid: " + resolverName);
-            grammar.Productions.DuplicateResolution = resolution;
+            grammar.Productions.DuplicateResolver = DuplicateResolver<Production>.ByName(resolverName);
         }
 
         [When(@"decompose symbol '(\w+)' from symbol '(\w+)'")]

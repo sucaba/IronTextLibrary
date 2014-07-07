@@ -111,8 +111,6 @@
     <Compile Include="Algorithm\IntegerSets\SetOrthohonator.cs" />
     <Compile Include="Algorithm\IntegerSets\SparseIntSetType.cs" />
     <Compile Include="Algorithm\IntInterval.cs" />
-    <Compile Include="Collections\Validation\DuplicateResolution.cs" />
-    <Compile Include="Collections\IgnoreNewDuplicateResolver.cs" />
     <Compile Include="Misc\IHasIdentity.cs" />
     <Compile Include="Collections\Joint.cs" />
     <Compile Include="Diagnostics\GvGraphView.cs" />
@@ -126,7 +124,7 @@
     <Compile Include="Reflection\Cil\CilSemanticValue.cs" />
     <Compile Include="Reflection\Cil\CilSemanticScope.cs" />
     <Compile Include="Reflection\Comparers\SymbolIndexComparer.cs" />
-    <Compile Include="Collections\Validation\FailDuplicateResolver.cs" />
+    <Compile Include="Collections\Validation\DuplicateResolver.cs" />
     <Compile Include="Reflection\IProductionComponent.cs" />
     <Compile Include="Reflection\ProductionFlags.cs" />
     <Compile Include="Reflection\Comparers\ProductionIndexComparer.cs" />

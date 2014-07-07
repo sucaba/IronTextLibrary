@@ -13,14 +13,13 @@ namespace IronText.Collections
         private T[] indexToItem;
 
         private readonly Dictionary<object,int> identityToIndex = new Dictionary<object,int>();
-        private DuplicateResolution   _duplicateResolution;
         private IDuplicateResolver<T> _duplicateResolver;
 
         public IndexedCollection(TScope scope = default(TScope))
         {
-            indexToItem = new T[InitialCapacity];
+            this.indexToItem = new T[InitialCapacity];
             this.Scope = scope;
-            this.DuplicateResolution = DuplicateResolution.Fail;
+            this.DuplicateResolver = null;
         }
 
         public TScope Scope { get; private set; }
@@ -52,30 +51,10 @@ namespace IronText.Collections
             }
         }
 
-        public DuplicateResolution DuplicateResolution
+        public IDuplicateResolver<T> DuplicateResolver
         {
-            get {  return _duplicateResolution; }
-            set
-            {
-                if (_duplicateResolution != value || _duplicateResolver == null)
-                {
-                    _duplicateResolution = value;
-                    _duplicateResolver = CreateDuplicateResolver(_duplicateResolution);
-                }
-            }
-        }
-
-        private static IDuplicateResolver<T> CreateDuplicateResolver(DuplicateResolution resolution)
-        {
-            switch (resolution)
-            {
-                case DuplicateResolution.Fail:
-                    return FailDuplicateResolver<T>.Instance;
-                case DuplicateResolution.IgnoreNew:    
-                    return IgnoreNewDuplicateResolver<T>.Instance;
-                default:
-                    throw new ArgumentException("resolution");
-            }
+            get {  return _duplicateResolver; }
+            set { _duplicateResolver = value ?? DuplicateResolver<T>.Fail; }
         }
 
         public T Add(T item)
