@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IronText.Collections;
+using IronText.Reflection.Utils;
 
 namespace IronText.Reflection
 {
@@ -10,6 +11,29 @@ namespace IronText.Reflection
         public ProductionCollection(IGrammarScope scope)
             : base(scope)
         {
+        }
+
+        public Production Add(string producitonText)
+        {
+            var sketch = ProductionSketch.Parse(producitonText);
+
+            var result = Find(sketch);
+            if (result == null)
+            {
+                result = Add(sketch);
+            }
+
+            return result;
+        }
+
+        private Production Add(ProductionSketch sketch)
+        {
+            throw new NotImplementedException();
+        }
+
+        private Production Find(ProductionSketch sketch)
+        {
+            throw new NotImplementedException();
         }
 
         public Production Add(string outcome, IEnumerable<string> pattern, SemanticRef contextRef = null)

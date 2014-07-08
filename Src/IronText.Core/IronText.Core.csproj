@@ -153,6 +153,7 @@
     <Compile Include="Reflection\RuntimeOptions.cs" />
     <Compile Include="Reflection\Transformations\ProductionInliner.cs" />
     <Compile Include="Collections\Validation\IDuplicateResolver.cs" />
+    <Compile Include="Reflection\Utils\ProducitonSketch.cs" />
     <Compile Include="Reflection\Validation\ProductionDuplicateResolver.cs" />
     <Compile Include="Runtime\ILanguageInternalRuntime.cs" />
     <Compile Include="Runtime\ParserAction.cs" />
