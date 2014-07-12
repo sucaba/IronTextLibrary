@@ -8,6 +8,7 @@ using System.Text;
 using IronText.Collections;
 using IronText.Algorithm;
 using IronText.Misc;
+using IronText.Reflection.Utils;
 
 namespace IronText.Reflection
 {
@@ -257,6 +258,47 @@ namespace IronText.Reflection
         {
             this.IsDeleted = true;
             this.Outcome.Productions.Remove(this);
+        }
+
+        internal bool EqualTo(ProductionSketch sketch)
+        {
+            if (sketch == null || sketch.Outcome != Outcome.Name)
+            {
+                return false;
+            }
+
+            return Enumerable.Zip(Components, sketch.Components, ComponentEqualTo).All(s => s);
+        }
+
+        internal static bool ComponentEqualTo(IProductionComponent component, object sketchComp)
+        {
+            Symbol     symbol;
+            Production prod;
+            switch (component.Match(out symbol, out prod))
+            {
+                case 0: return symbol.Name == (sketchComp as string); 
+                case 1: return prod.EqualTo(sketchComp as ProductionSketch);
+                default:
+                    throw new ArgumentException("component");
+            }
+        }
+
+        internal ProductionSketch ToSketch()
+        {
+            return new ProductionSketch(Outcome.Name, Components.Select(ToSketch).ToArray());
+        }
+
+        internal static object ToSketch(IProductionComponent component)
+        {
+            Symbol     symbol;
+            Production prod;
+            switch (component.Match(out symbol, out prod))
+            {
+                case 0: return symbol.Name; 
+                case 1: return prod.ToSketch();
+                default:
+                    throw new ArgumentException("component");
+            }
         }
 
         protected override object DoGetIdentity()

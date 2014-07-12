@@ -31,11 +31,6 @@ namespace IronText.Reflection
             throw new NotImplementedException();
         }
 
-        private Production Find(ProductionSketch sketch)
-        {
-            throw new NotImplementedException();
-        }
-
         public Production Add(string outcome, IEnumerable<string> pattern, SemanticRef contextRef = null)
         {
             return Add(
@@ -59,9 +54,16 @@ namespace IronText.Reflection
                 SemanticRef.ByName(contextName));
         }
 
+        public Production Find(string productionText)
+        {
+            var sketch = ProductionSketch.Parse(productionText);
+            return Find(sketch);
+        }
+
         public Production Find(string outcome, string[] pattern)
         {
-            return Find(Scope.Symbols[outcome], Array.ConvertAll(pattern, Scope.Symbols.ByName));
+            var sketch = new ProductionSketch(outcome, pattern);
+            return Find(sketch);
         }
 
         /// <summary>
@@ -73,18 +75,25 @@ namespace IronText.Reflection
         public Production Find(Symbol outcome, Symbol[] pattern)
         {
             int count = Count;
-            for (int i = 0; i != count; ++i)
+            foreach (var prod in this)
             {
-                var prod = this[i];
-                if (prod == null)
-                {
-                    continue;
-                }
-
                 if (prod.Outcome == outcome
                     && prod.Pattern.Length == pattern.Length
                     && Enumerable.SequenceEqual(prod.Pattern, pattern)
                     && !prod.IsDeleted)
+                {
+                    return prod;
+                }
+            }
+
+            return null;
+        }
+        
+        private Production Find(ProductionSketch sketch)
+        {
+            foreach (var prod in this)
+            {
+                if (prod.EqualTo(sketch))
                 {
                     return prod;
                 }

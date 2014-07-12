@@ -130,10 +130,10 @@ namespace IronText.Tests.Reflection.Transformations
             Assert.AreEqual(count, grammar.Symbols[symbolName].Productions.Count);
         }
 
-        [Then(@"production exists '(\w+) =(.*)'")]
-        public void ThenProductionExist(string outcome, string[] pattern)
+        [Then(@"production exists '([^']*)'")]
+        public void ThenProductionExist(string productionText)
         {
-            Assert.IsTrue(null != grammar.Productions.Find(outcome, pattern));
+            Assert.IsTrue(null != grammar.Productions.Find(productionText));
         }
 
         [Then(@"result symbols are '(.*)'")]

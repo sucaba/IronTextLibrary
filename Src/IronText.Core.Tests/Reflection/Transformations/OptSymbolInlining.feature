@@ -34,10 +34,10 @@ Scenario: Optional-terminal pattern is inlined
     And production 'Y = T'
     And production 'T = t2'
     When inline opt symbols 
-    Then production exists 'S = Prefix Suffix'
-    And production exists 'S = Prefix t1 Suffix'
-    And production exists 'S = Prefix T Suffix'
-    And production exists 'S = Prefix t1 T Suffix'
+    Then production exists 'S = Prefix (X = ) (Y = ) Suffix'
+    And production exists 'S = Prefix (X = t1) (Y = ) Suffix'
+    And production exists 'S = Prefix (X = ) (Y = T) Suffix'
+    And production exists 'S = Prefix (X = t1) (Y = T) Suffix'
     And 'S' has 4 productions
     And 'X' has 0 productions
     And 'Y' has 0 productions

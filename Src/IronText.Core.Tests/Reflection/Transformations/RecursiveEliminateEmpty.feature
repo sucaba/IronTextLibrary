@@ -8,7 +8,7 @@ Scenario: Empty productions are eliminated recursively
 	Given production 'Y = X'
     Given production 'Z = prefix Y suffix'
 	When recursively eliminate empty productions
-    Then production exists 'Z = prefix suffix'
+    Then production exists 'Z = prefix (Y = (X = )) suffix'
     Then 'Z' has 1 production
     Then symbol 'X' is not used
     Then symbol 'Y' is not used
@@ -19,7 +19,7 @@ Scenario: Multi-level null-symbols are eliminated recursively
 	Given production 'Z = Y'
     Given production 'T = prefix X Z Y suffix'
 	When recursively eliminate empty productions
-    Then production exists 'T = prefix suffix'
+    Then production exists 'T = prefix (X = ) (Z = (Y = (X = ))) (Y = (X = )) suffix'
     Then 'T' has 1 production
     Then symbol 'X' is not used
     Then symbol 'Y' is not used
@@ -31,7 +31,7 @@ Scenario: Alternate nulls are eliminated recursively
 	Given production 'Y = X'
     Given production 'Z = prefix Y suffix'
 	When recursively eliminate empty productions
-    Then production exists 'Z = prefix suffix'
+    Then production exists 'Z = prefix (Y = (X = )) suffix'
     Then 'Z' has 1 production
     Then symbol 'X' is not used
     Then symbol 'Y' is not used
