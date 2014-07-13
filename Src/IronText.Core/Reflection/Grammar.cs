@@ -93,8 +93,8 @@ namespace IronText.Reflection
 
         public void Inline()
         {
-//            ConvertNullableNonOptToOpt();
-//            RecursivelyEliminateEmptyProductions();
+            ConvertNullableNonOptToOpt();
+            RecursivelyEliminateEmptyProductions();
 
             var symbolsToInline = (from symbol in Symbols
                                    let asNonAmb = symbol as Symbol
@@ -133,15 +133,22 @@ namespace IronText.Reflection
         {
             bool result = false;
 
-            var nullableSymbols = Symbols
-                                .OfType<Symbol>()
-                                .Where(s => s.Productions.Count != 0 
-                                         && s.Productions.Any(p => p.Pattern.Length == 0))
-                                .ToArray();
+            var nullableSymbols = FindNullableSymbols().ToArray();
             foreach (var symbol in nullableSymbols)
             {
                 result = result || Inline(symbol);
             }
+
+            return result;
+        }
+
+        private IEnumerable<Symbol> FindNullableSymbols()
+        {
+            var result = Symbols
+                    .OfType<Symbol>()
+                    .Where(s => s.Productions.Count != 0
+                             && s.Productions.Any(p => p.Pattern.Length == 0)
+                             && !s.IsRecursive);
 
             return result;
         }
@@ -240,6 +247,8 @@ namespace IronText.Reflection
         public Symbol Decompose(Symbol nonTerm, Func<Production,bool> criteria, string newSymbolName)
         {
             Symbol newSymbol = Symbols.Add(newSymbolName);
+            newSymbol.Joint.AddAll(nonTerm.Joint);
+
             foreach (var prod in nonTerm.Productions.ToArray())
             {
                 if (criteria(prod))
@@ -252,11 +261,13 @@ namespace IronText.Reflection
                             flags: prod.Flags));
                     newProd.ExplicitPrecedence = prod.ExplicitPrecedence;
 
+                    newProd.Joint.AddAll(prod.Joint);
+
                     prod.Hide();
                 }
             }
 
-            Productions.Add(new Production(nonTerm, new [] { newSymbol }));
+            Productions.Add(new Production(nonTerm, newSymbol));
 
             return newSymbol;
         }
@@ -299,7 +310,7 @@ namespace IronText.Reflection
             var nullableSymbols = FindNullableNonOptSymbols();
             foreach (var symbol in nullableSymbols)
             {
-                Decompose(symbol, prod => !prod.Pattern.All(nullableSymbols.Contains), symbol.Name + "nn");
+                Decompose(symbol, prod => !prod.Pattern.All(nullableSymbols.Contains), symbol.Name + "_d$");
             }
         }
 

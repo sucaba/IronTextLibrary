@@ -17,6 +17,17 @@ namespace IronText.Reflection
     {
         private readonly object _identity;
 
+        /// <summary>
+        /// Create identity production
+        /// </summary>
+        /// <param name="outcome"></param>
+        /// <param name="input"></param>
+        public Production(Symbol outcome, Symbol input)
+            : this(outcome, new [] { input })
+        {
+            this.HasIdentityAction = true;
+        }
+
         public Production(
             Symbol           outcome,
             IEnumerable<IProductionComponent> components,
@@ -73,6 +84,8 @@ namespace IronText.Reflection
         public SemanticRef        ContextRef     { get; private set; }
 
         public ProductionFlags    Flags          { get; private set; }
+
+        public bool               HasIdentityAction { get; private set; }
 
         public bool               HasSideEffects 
         { 
@@ -257,7 +270,9 @@ namespace IronText.Reflection
             this.Outcome.Productions.Remove(this);        } 
         internal bool EqualTo(ProductionSketch sketch)
         {
-            if (sketch == null || sketch.Outcome != Outcome.Name)
+            if (sketch == null 
+                || sketch.Outcome != Outcome.Name
+                || Components.Length != sketch.Components.Length)
             {
                 return false;
             }
@@ -303,6 +318,8 @@ namespace IronText.Reflection
 
         private object BuildIdentity()
         {
+            // Production identity is based on output and input signature and not on 
+            // on the internal components i.e. production signature should be unique
             return IdentityFactory.FromIdentities(Outcome, Pattern);
         }
     }

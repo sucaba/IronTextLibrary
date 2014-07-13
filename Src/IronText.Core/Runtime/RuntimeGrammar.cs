@@ -16,7 +16,7 @@ namespace IronText.Runtime
             IRuntimeNullableFirstTables tables = new NullableFirstTables(grammar);
             this.isNullable  = tables.TokenToNullable;
             this.MaxRuleSize = tables.MaxRuleSize;
-            this.symbolCount = grammar.Symbols.Count;
+            this.symbolCount = grammar.Symbols.IndexCount;
         }
 
         public int MaxRuleSize { get; private set; }

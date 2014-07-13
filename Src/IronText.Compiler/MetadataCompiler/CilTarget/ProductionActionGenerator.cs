@@ -83,11 +83,12 @@ namespace IronText.MetadataCompiler
 
             var defaultLabel = emit.Labels.Generate();
             var endWithSingleResultLabel = emit.Labels.Generate();
-            var jumpTable = new Ref<Labels>[data.Grammar.Productions.Count];
+            var jumpTable = new Ref<Labels>[data.Grammar.Productions.IndexCount];
             for (int i = 0; i != jumpTable.Length; ++i)
             {
                 var prod = data.Grammar.Productions[i];
-                if (prod.IsHidden)
+                // Optimize indexing
+                if (prod == null)
                 {
                     jumpTable[i] = defaultLabel.GetRef();
                 }
@@ -205,8 +206,15 @@ namespace IronText.MetadataCompiler
             var bindings = prod.Joint.All<CilProduction>();
             if (!bindings.Any())
             {
-                coder.Do(c => c
-                    .Emit(il => il.Ldnull()));
+                if (prod.HasIdentityAction)
+                {
+                    coder.Do(c => c.LdActionArgument(0));
+                }
+                else
+                {
+                    coder.Do(c => c
+                        .Emit(il => il.Ldnull()));
+                }
             }
             else
             {

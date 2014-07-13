@@ -17,6 +17,7 @@ Scenario: Extract non-terminal using 'contains symbol' criteria
     And production exists 'X = D'
     And production exists 'X = '
     And production exists 'X = Xnew'
+    And 'X = Xnew' is identity production 
     And 'X' has 3 productions
 
 Scenario: Extract non-terminal using 'is non-empty' criteria

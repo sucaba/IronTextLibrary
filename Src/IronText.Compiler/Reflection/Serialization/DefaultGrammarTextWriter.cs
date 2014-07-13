@@ -26,13 +26,13 @@ namespace IronText.Reflection
         {
             output.WriteLine("/*");
             ++output.Indent;
-            WriteSummary(output, "symbols       : {0}", grammar.Symbols.Count);
+            WriteSummary(output, "symbols       : {0}", grammar.Symbols.PublicCount);
             WriteSummary(output, "terminals     : {0}", grammar.Symbols.Where(s => s.IsTerminal).Count());
             WriteSummary(output, "non-terminals : {0}", grammar.Symbols.Where(s => !s.IsTerminal).Count());
-            WriteSummary(output, "productions(+): {0}", grammar.Productions.Count(p => !p.IsHidden));
-            WriteSummary(output, "productions(-): {0}", grammar.Productions.Count(p => p.IsHidden));
-            WriteSummary(output, "mergers       : {0}", grammar.Mergers.Count);
-            WriteSummary(output, "matchers      : {0}", grammar.Matchers.Count);
+            WriteSummary(output, "productions(+): {0}", grammar.Productions.PublicCount);
+            WriteSummary(output, "productions(-): {0}", grammar.Productions.Hidden.Count());
+            WriteSummary(output, "mergers       : {0}", grammar.Mergers.PublicCount);
+            WriteSummary(output, "matchers      : {0}", grammar.Matchers.PublicCount);
             --output.Indent;
             output.WriteLine("*/");
             output.WriteLine();
@@ -103,7 +103,7 @@ namespace IronText.Reflection
                         }
 
                         output.Write("{0} :", prod.Outcome.Name);
-                        if (prod.Pattern.Length == 0)
+                        if (prod.Components.Length == 0)
                         {
                             output.Write(" /*empty*/");
                         }

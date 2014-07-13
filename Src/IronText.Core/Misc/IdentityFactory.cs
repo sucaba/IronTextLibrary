@@ -39,7 +39,7 @@ namespace IronText.Misc
                 throw new ArgumentNullException("secondary");
             }
 
-            return main.Identity + " " + string.Join(" ", secondary.Select(id => id.Identity));
+            return main.Identity + "\n" + string.Join("\n", secondary.Select(id => id.Identity));
         }
 
         public static object FromObject(object obj)

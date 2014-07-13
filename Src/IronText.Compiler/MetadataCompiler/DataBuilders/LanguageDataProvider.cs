@@ -117,12 +117,12 @@ namespace IronText.MetadataCompiler
 
         private bool CompileScannerTdfas(Grammar grammar)
         {
-            var tokenSet = new BitSetType(grammar.Symbols.Count);
+            var tokenSet = new BitSetType(grammar.Symbols.IndexCount);
 
             IScanAmbiguityResolver scanAmbiguityResolver
                                 = new ScanAmbiguityResolver(
                                         tokenSet,
-                                        grammar.Matchers.Count);
+                                        grammar.Matchers.IndexCount);
 
             ITdfaData tdfa;
             if (!CompileTdfa(logging, grammar, out tdfa))

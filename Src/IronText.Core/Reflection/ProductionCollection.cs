@@ -74,7 +74,7 @@ namespace IronText.Reflection
         /// <returns>Rule ID or -1 if there is no such rule</returns>
         public Production Find(Symbol outcome, Symbol[] pattern)
         {
-            int count = Count;
+            int count = IndexCount;
             foreach (var prod in this)
             {
                 if (prod.Outcome == outcome

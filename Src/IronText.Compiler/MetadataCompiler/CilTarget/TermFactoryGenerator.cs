@@ -37,7 +37,7 @@ namespace IronText.MetadataCompiler
 
             var RETURN = labels.Generate();
 
-            int ruleCount = data.Grammar.Matchers.Count;
+            int ruleCount = data.Grammar.Matchers.IndexCount;
 
             var actionLabels = new Ref<Labels>[ruleCount];
             for (int i = 0; i != ruleCount; ++i)

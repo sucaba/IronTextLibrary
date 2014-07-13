@@ -25,14 +25,16 @@ namespace IronText.Collections
 
         public TScope Scope { get; private set; }
 
-        public int Count { get; private set; }
+        public int IndexCount { get; private set; }
+
+        public int PublicCount { get { return indexToItem.Count(IsPublicItem); }}
 
         /// <summary>
         /// Hidden items
         /// </summary>
         public IEnumerable<T> Hidden
         {
-            get {  return this.Where(x => x != null && x.IsHidden); }
+            get {  return indexToItem.Where(IsHiddenItem); }
         }
 
         /// <summary>
@@ -48,18 +50,18 @@ namespace IronText.Collections
             get 
             { 
                 var result = indexToItem[index]; 
-                return (result == null || result.IsHidden) ? null : result;
+                return IsPublicItem(result) ? result : null;
             }
             set
             {
                 if (index >= indexToItem.Length)
                 {
                     Array.Resize(ref indexToItem, index + 1);
-                    Count = index + 1;
+                    IndexCount = index + 1;
                 }
-                else if (index >= Count)
+                else if (index >= IndexCount)
                 {
-                    Count = index + 1;
+                    IndexCount = index + 1;
                 }
                 else if (indexToItem[index] != null)
                 {
@@ -88,7 +90,7 @@ namespace IronText.Collections
             int index= AttachingItem(ref item);
             if (index < 0)
             {
-                index = Count;
+                index = IndexCount;
                 if (indexToItem.Length == index)
                 {
                     Array.Resize(ref indexToItem, index * 2);
@@ -98,14 +100,14 @@ namespace IronText.Collections
             indexToItem[index] = item;
             AttachedItem(index);
 
-            this.Count = index + 1;
+            this.IndexCount = index + 1;
 
             return item;
         }
 
         public void Clear()
         {
-            int count = Count;
+            int count = IndexCount;
             var indexToItem = this.indexToItem;
             for (int i = 0; i != count; ++i)
             {
@@ -117,12 +119,12 @@ namespace IronText.Collections
                 }
             }
 
-            Count = 0;
+            IndexCount = 0;
         }
 
         public bool Contains(T item)
         {
-            int count = Count;
+            int count = IndexCount;
             var indexToItem = this.indexToItem;
             for (int i = 0; i != count; ++i)
             {
@@ -137,7 +139,7 @@ namespace IronText.Collections
 
         public void CopyTo(T[] array, int index)
         {
-            int count = Count;
+            int count = IndexCount;
             var indexToItem = this.indexToItem;
             for (int i = 0; i != count; ++i)
             {
@@ -156,12 +158,12 @@ namespace IronText.Collections
 
         private IEnumerator<T> GetEnumerator(bool includeHidden)
         {
-            int count = Count;
+            int count = IndexCount;
             var indexToItem = this.indexToItem;
             for (int i = 0; i != count; ++i)
             {
                 var item = indexToItem[i];
-                if (item != null && !item.IsHidden)
+                if (IsPublicItem(item))
                 {
                     yield return item;
                 }
@@ -175,7 +177,7 @@ namespace IronText.Collections
                 return false;
             }
 
-            int count = Count;
+            int count = IndexCount;
             var indexToItem = this.indexToItem;
 
             for (int i = 0; i != count; ++i)
@@ -207,9 +209,9 @@ namespace IronText.Collections
         public T[] ToArray()
         {
             var indexToItem = this.indexToItem;
-            int count = Count;
+            int count = IndexCount;
 
-            var result = new T[Count];
+            var result = new T[IndexCount];
             int j = 0;
             for (int i = 0; i != count; ++i)
             {
@@ -278,6 +280,16 @@ namespace IronText.Collections
         {
             indexToItem[index].Detaching(Scope);
             identityToIndex.Remove(indexToItem[index].Identity);
+        }
+
+        private static bool IsHiddenItem(T item)
+        {
+            return item != null && item.IsHidden;
+        }
+
+        private static bool IsPublicItem(T item)
+        {
+            return item != null && !item.IsHidden;
         }
     }
 }

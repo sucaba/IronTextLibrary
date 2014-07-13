@@ -27,7 +27,7 @@ namespace IronText.Compiler.Analysis
         /// </summary>
         public int[] GetTokenComplexity()
         {
-            var result = Enumerable.Repeat(-1, grammar.Symbols.Count).ToArray();
+            var result = Enumerable.Repeat(-1, grammar.Symbols.IndexCount).ToArray();
             var sortedTokens = Graph.TopologicalSort(
                                 new [] { PredefinedTokens.AugmentedStart },
                                 GetDependantTokens)

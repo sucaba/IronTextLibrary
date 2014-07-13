@@ -6,7 +6,7 @@ using System.Text;
 
 namespace IronText.Reflection
 {
-    public interface IProductionComponent : IDiscriminatable
+    public interface IProductionComponent : IDiscriminatable, IHasIdentity
     {
         int  Size { get; }
 

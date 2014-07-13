@@ -24,13 +24,13 @@ namespace IronText.Tests.Reflection.Transformations
             this.grammar = new Grammar { StartName = StartSymbolName };
         }
 
-        [Given(@"used symbol '(\w+)'")]
+        [Given(@"used symbol '([^']+)'")]
         public void GivenUsedSymbol(string symbolName)
         {
             GivenProduction(StartSymbolName, new [] { symbolName });
         }
 
-        [Given(@"production '(\w+) =(.*)'")]
+        [Given(@"production '([^ =]+) =(.*)'")]
         public void GivenProduction(string outcome, string[] pattern)
         {
             grammar.Productions.Add(outcome, pattern);
@@ -42,7 +42,7 @@ namespace IronText.Tests.Reflection.Transformations
             grammar.Symbols.Add(name);
         }
 
-        [Given(@"production criteria is: input has '(\w+)' symbol")]
+        [Given(@"production criteria is: input has '([^']+)' symbol")]
         public void GivenProductionCriteriaTheInputHasSymbol(string symbolName)
         {
             this.criteria = p => p.Pattern.Any(s => s.Name == symbolName);
@@ -66,7 +66,7 @@ namespace IronText.Tests.Reflection.Transformations
             resultBool = grammar.Symbols.ByName(symbol).IsRecursive;
         }
 
-        [When(@"decompose symbol '(\w+)' from symbol '(\w+)'")]
+        [When(@"decompose symbol '([^']+)' from symbol '([^']+)'")]
         public void WhenDecomposeSymbolFromSymbol(string toSymbol, string fromSymbol)
         {
             this.resultSymbol = grammar.Decompose(grammar.Symbols[fromSymbol], criteria, toSymbol);
@@ -114,7 +114,7 @@ namespace IronText.Tests.Reflection.Transformations
             grammar.RecursivelyEliminateEmptyProductions();
         }
 
-        [When(@"safe adding production '(\w+) =(.*)'")]
+        [When(@"safe adding production '([^= ]+) =(.*)'")]
         public void WhenAddingProduction(string outcome, string[] pattern)
         {
             try
@@ -131,13 +131,13 @@ namespace IronText.Tests.Reflection.Transformations
             }
         }
 
-        [Then(@"result symbol is '(\w+)'")]
+        [Then(@"result symbol is '([^']+)'")]
         public void ThenResultSymbolIs(string symbolName)
         {
             Assert.AreEqual(symbolName, resultSymbol.Name);
         }
 
-        [Then(@"'(\w+)' has (\d+) production[s]?")]
+        [Then(@"'([^']+)' has (\d+) production[s]?")]
         public void ThenSymbolHasProductionCount(string symbolName, int count)
         {
             Assert.AreEqual(count, grammar.Symbols[symbolName].Productions.Count);
@@ -146,7 +146,18 @@ namespace IronText.Tests.Reflection.Transformations
         [Then(@"production exists '([^']*)'")]
         public void ThenProductionExist(string productionText)
         {
-            Assert.IsTrue(null != grammar.Productions.Find(productionText));
+            var prod = grammar.Productions.Find(productionText);
+            if (prod == null)
+            {
+                Assert.Fail("Production '{0}' not found.", productionText);
+            }
+        }
+
+        [Then(@"'(.*)' is identity production")]
+        public void ThenIsIdentityProduction(string productionText)
+        {
+            var prod = grammar.Productions.Find(productionText);
+            Assert.IsTrue(prod.HasIdentityAction);
         }
 
         [Then(@"result symbols are '(.*)'")]

@@ -9,22 +9,22 @@ Scenario: Symbol with empty production and multiple non-empty producitons is con
 	Given production 'X = term2'
 	Given production 'X = '
 	When convert nullable, non-opt symbols into opt
-	Then production exists 'X = Xnn'
+	Then production exists 'X = X_d$'
 	Then production exists 'X = '
-	Then production exists 'Xnn = term1'
-	Then production exists 'Xnn = term2'
+	Then production exists 'X_d$ = term1'
+	Then production exists 'X_d$ = term2'
     And 'X' has 2 productions
-    And 'Xnn' has 2 productions
+    And 'X_d$' has 2 productions
 
 Scenario: Symbol with empty production and production with input size > 1 is converted into opt-symbol
 	Given production 'X = term1 term2'
 	Given production 'X = '
 	When convert nullable, non-opt symbols into opt
-	Then production exists 'X = Xnn'
+	Then production exists 'X = X_d$'
 	Then production exists 'X = '
-	Then production exists 'Xnn = term1 term2'
+	Then production exists 'X_d$ = term1 term2'
     And 'X' has 2 productions
-    And 'Xnn' has 1 productions
+    And 'X_d$' has 1 productions
 
 Scenario: Symbol with single empty production is preserved as is
 	Given production 'X = '

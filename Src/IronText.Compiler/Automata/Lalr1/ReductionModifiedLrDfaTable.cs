@@ -24,7 +24,7 @@ namespace IronText.Automata.Lalr1
 
             this.grammar = dfa.GrammarAnalysis;
             var states = dfa.States;
-            this.actionTable = actionTable ?? new MutableTable<int>(states.Length, dfa.GrammarAnalysis.Symbols.Count);
+            this.actionTable = actionTable ?? new MutableTable<int>(states.Length, dfa.GrammarAnalysis.Symbols.IndexCount);
             FillDfaTable(states);
             BuildConflictActionTable();
         }

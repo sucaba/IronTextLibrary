@@ -169,7 +169,7 @@ namespace IronText.Reflection.Utils
         private static string ParseSymbol(string text, ref int pos, int end)
         {
             int start = pos;
-            while (pos != end && char.IsLetterOrDigit(text[pos]))
+            while (pos != end && (char.IsLetterOrDigit(text[pos]) || "$_<>-[]".Contains(text[pos])))
             {
                 ++pos;
             }

@@ -103,7 +103,7 @@ namespace IronText.Runtime
             }
 
             // TODO: Generate this table in build-time instead
-            var actionToToken = new int[grammar.Matchers.Count];
+            var actionToToken = new int[grammar.Matchers.IndexCount];
             for (int i = 0; i != actionToToken.Length; ++i)
             {
                 var outcome = grammar.Matchers[i].Outcome;

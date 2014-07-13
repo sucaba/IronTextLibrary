@@ -4,7 +4,6 @@
 	I want to to inline some non-terminals symbols
 
 Scenario: Nonterminal symbol with single empty production is inlined
-	Given used symbol 'S'
     And production 'S = Prefix X Suffix'
 	And production 'X = '
 	When inline grammar
@@ -13,7 +12,6 @@ Scenario: Nonterminal symbol with single empty production is inlined
     And 'S' has 1 productions
 
 Scenario: Nonterminal symbol with nested empty production is inlined
-	Given used symbol 'S'
     And production 'S = Prefix X Suffix'
 	And production 'X = Y'
 	And production 'Y = '
@@ -24,7 +22,6 @@ Scenario: Nonterminal symbol with nested empty production is inlined
     And 'S' has 1 productions
 
 Scenario: Nonterminal symbol with 1-terminal production is inlined
-	Given used symbol 'S'
     And production 'S = Prefix X Suffix'
 	And production 'X = t'
 	When inline grammar
@@ -33,7 +30,6 @@ Scenario: Nonterminal symbol with 1-terminal production is inlined
     And 'S' has 1 productions
 
 Scenario: Nonterminal symbol with 1-non-terminal production is inlined
-	Given used symbol 'S'
     And production 'S = Prefix X Suffix'
 	And production 'X = T'
     And production 'T = T t'
@@ -44,7 +40,6 @@ Scenario: Nonterminal symbol with 1-non-terminal production is inlined
     And 'S' has 1 productions
 
 Scenario: Nonterminal symbol with 3-terminal production is inlined
-	Given used symbol 'S'
     And production 'S = Prefix X Suffix'
 	And production 'X = t s p'
 	When inline grammar
@@ -53,7 +48,6 @@ Scenario: Nonterminal symbol with 3-terminal production is inlined
     And 'S' has 1 productions
 
 Scenario: Nonterminal symbol with nested 3-terminal production is inlined
-	Given used symbol 'S'
     And production 'S = Prefix X Suffix'
 	And production 'X = Y'
 	And production 'Y = t s p'
