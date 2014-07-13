@@ -51,9 +51,10 @@ namespace IronText.Tests.Collections
             Assume.That(target.Contains(x));
 
             // When
-            target.Remove(x);
+            bool outcome = target.Remove(x);
 
             // Then
+            Assert.IsTrue(outcome);
             Assert.That(!target.Contains(x));
         }
 

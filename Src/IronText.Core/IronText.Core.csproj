@@ -111,6 +111,7 @@
     <Compile Include="Algorithm\IntegerSets\SetOrthohonator.cs" />
     <Compile Include="Algorithm\IntegerSets\SparseIntSetType.cs" />
     <Compile Include="Algorithm\IntInterval.cs" />
+    <Compile Include="Collections\IIndexedCollection.cs" />
     <Compile Include="Misc\IHasIdentity.cs" />
     <Compile Include="Collections\Joint.cs" />
     <Compile Include="Diagnostics\GvGraphView.cs" />
