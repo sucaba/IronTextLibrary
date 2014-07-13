@@ -20,11 +20,11 @@ namespace IronText.Collections
         /// </summary>
         /// <param name="index">Index of the object within an owning indexed collection</param>
         /// <exception cref="InvalidOperationException">when object is already attached.</exception>
-        void Attached(int index, TScope context);
+        void Attached(int index, TScope scope);
 
         /// <summary>
         /// Is invoked before object is actually detached from an indexed collection
         /// </summary>
-        void Detaching(TScope context);
+        void Detaching(TScope scope);
     }
 }
