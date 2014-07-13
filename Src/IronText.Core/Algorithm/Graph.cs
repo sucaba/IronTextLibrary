@@ -92,9 +92,9 @@ namespace IronText.Algorithm
             }
         }
 
-        public static T[] Search<T>(T start, Func<T, IEnumerable<T>> following, Predicate<T> match)
+        public static T[] BreadthFirstSearch<T>(T start, Func<T, IEnumerable<T>> following, Predicate<T> match)
         {
-            return Search(new [] { start }, following, match);
+            return BreadthFirstSearch(new [] { start }, following, match);
         }
 
         /// <summary>
@@ -106,35 +106,34 @@ namespace IronText.Algorithm
         /// <param name="following"></param>
         /// <param name="match"></param>
         /// <returns>
-        /// Path of nodes starting from the first one to the <i>found</i> one.
+        /// Path of nodes starting from the first one to the <i>found</i> one or 
+        /// <c>null</c> if path was not found.
         /// </returns>
-        public static T[] Search<T>(IEnumerable<T> start, Func<T, IEnumerable<T>> following, Predicate<T> match)
+        public static T[] BreadthFirstSearch<T>(IEnumerable<T> start, Func<T, IEnumerable<T>> following, Predicate<T> match)
         {
             var front = start.Select(x => new Node<T> { Value = x }).ToList();
 
-            var expaneded = new List<Node<T>>();
+            var expaneded = new List<T>();
             while (front.Count != 0)
             {
                 var item = front[0];
-                if (!expaneded.Contains(item))
+                if (match(item.Value))
                 {
-                    if (match(item.Value))
+                    var resultList = new List<T>();
+                    do
                     {
-                        var resultList = new List<T>();
-                        do
-                        {
-                            resultList.Add(item.Value);
-                            item = item.Parent;
-                        }
-                        while (item != null);
-    
-                        resultList.Reverse();
-                        return resultList.ToArray();
+                        resultList.Add(item.Value);
+                        item = item.Parent;
                     }
+                    while (item != null);
 
-                    expaneded.Add(item);
-                    front.AddRange(following(item.Value).Select(x => new Node<T> { Value = x, Parent = item }));
+                    resultList.Reverse();
+                    return resultList.ToArray();
                 }
+
+                expaneded.Add(item.Value);
+                var followingValues = following(item.Value).Except(expaneded);
+                front.AddRange(followingValues.Select(x => new Node<T> { Value = x, Parent = item }));
 
                 front.RemoveAt(0);
             }

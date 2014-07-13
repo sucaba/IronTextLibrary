@@ -1,5 +1,6 @@
 ﻿using IronText.Misc;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -26,9 +27,29 @@ namespace IronText.Collections
 
         public int Count { get; private set; }
 
+        /// <summary>
+        /// Hidden items
+        /// </summary>
+        public IEnumerable<T> Hidden
+        {
+            get {  return this.Where(x => x != null && x.IsHidden); }
+        }
+
+        /// <summary>
+        /// All items including hidden
+        /// </summary>
+        public IEnumerable<T> All
+        {
+            get {  return indexToItem.Where(x => x != null); }
+        }
+
         public T this[int index]
         {
-            get { return indexToItem[index]; }
+            get 
+            { 
+                var result = indexToItem[index]; 
+                return (result == null || result.IsHidden) ? null : result;
+            }
             set
             {
                 if (index >= indexToItem.Length)
@@ -130,12 +151,17 @@ namespace IronText.Collections
 
         public IEnumerator<T> GetEnumerator()
         {
+            return GetEnumerator(false);
+        }
+
+        private IEnumerator<T> GetEnumerator(bool includeHidden)
+        {
             int count = Count;
             var indexToItem = this.indexToItem;
             for (int i = 0; i != count; ++i)
             {
                 var item = indexToItem[i];
-                if (item != null)
+                if (item != null && !item.IsHidden)
                 {
                     yield return item;
                 }

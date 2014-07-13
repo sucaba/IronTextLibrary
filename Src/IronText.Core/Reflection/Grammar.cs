@@ -95,6 +95,9 @@ namespace IronText.Reflection
 
         public void Inline()
         {
+//            ConvertNullableNonOptToOpt();
+//            RecursivelyEliminateEmptyProductions();
+
             var symbolsToInline = (from symbol in Symbols
                                    let asNonAmb = symbol as Symbol
                                    where CanInline(asNonAmb)
@@ -132,12 +135,12 @@ namespace IronText.Reflection
         {
             bool result = false;
 
-            var nullSymbols = Symbols
+            var nullableSymbols = Symbols
                                 .OfType<Symbol>()
                                 .Where(s => s.Productions.Count != 0 
                                          && s.Productions.Any(p => p.Pattern.Length == 0))
                                 .ToArray();
-            foreach (var symbol in nullSymbols)
+            foreach (var symbol in nullableSymbols)
             {
                 result = result || Inline(symbol);
             }
@@ -197,7 +200,7 @@ namespace IronText.Reflection
         {
             foreach (var prod in Productions)
             {
-                if (prod.Pattern.Contains(symbol) && !prod.IsDeleted)// && prod.IsUsed)
+                if (prod.Pattern.Contains(symbol) && !prod.IsHidden)// && prod.IsUsed)
                 {
                     yield return prod;
                 }
@@ -210,7 +213,7 @@ namespace IronText.Reflection
 
             var symbol = source.Pattern[position];
 
-            source.MarkDeleted();
+            source.Hide();
 
             var producitonsToInline = symbol.Productions.ToArray();
             foreach (var inlinedProd in producitonsToInline)
@@ -221,7 +224,7 @@ namespace IronText.Reflection
 
                 if (!inlinedProd.IsUsed)
                 {
-                    inlinedProd.MarkDeleted();
+                    inlinedProd.Hide();
                 }
             }
 
@@ -243,7 +246,7 @@ namespace IronText.Reflection
                             flags: prod.Flags));
                     newProd.ExplicitPrecedence = prod.ExplicitPrecedence;
 
-                    prod.MarkDeleted();
+                    prod.Hide();
                 }
             }
 
@@ -304,6 +307,19 @@ namespace IronText.Reflection
                        && (s.Productions.Count != 2 
                           || s.Productions.Any(p => p.Pattern.Length > 1)));
             return result.ToArray();
+        }
+
+        internal bool IsRecursive(Symbol symbol)
+        {
+            Func<Symbol, IEnumerable<Symbol>> getChildren = 
+                parent => parent.Productions.SelectMany(p => p.Pattern);
+            
+            var path = Graph.BreadthFirstSearch(
+                            getChildren(symbol),
+                            getChildren,
+                            symbol.Equals);
+
+            return path != null;
         }
     }
 }

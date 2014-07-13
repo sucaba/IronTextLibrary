@@ -26,30 +26,38 @@ namespace IronText.Reflection
         {
             output.WriteLine("/*");
             ++output.Indent;
-            output.WriteLine("symbols       : {0}", grammar.Symbols.Count);
-            output.WriteLine("terminals     : {0}", grammar.Symbols.Where(s => s.IsTerminal).Count());
-            output.WriteLine("non-terminals : {0}", grammar.Symbols.Where(s => !s.IsTerminal).Count());
-            output.WriteLine("productions(+): {0}", grammar.Productions.Count(p => !p.IsDeleted));
-            output.WriteLine("productions(-): {0}", grammar.Productions.Count(p => p.IsDeleted));
-            output.WriteLine("mergers       : {0}", grammar.Mergers.Count);
-            output.WriteLine("matchers      : {0}", grammar.Matchers.Count);
+            WriteSummary(output, "symbols       : {0}", grammar.Symbols.Count);
+            WriteSummary(output, "terminals     : {0}", grammar.Symbols.Where(s => s.IsTerminal).Count());
+            WriteSummary(output, "non-terminals : {0}", grammar.Symbols.Where(s => !s.IsTerminal).Count());
+            WriteSummary(output, "productions(+): {0}", grammar.Productions.Count(p => !p.IsHidden));
+            WriteSummary(output, "productions(-): {0}", grammar.Productions.Count(p => p.IsHidden));
+            WriteSummary(output, "mergers       : {0}", grammar.Mergers.Count);
+            WriteSummary(output, "matchers      : {0}", grammar.Matchers.Count);
             --output.Indent;
             output.WriteLine("*/");
             output.WriteLine();
         }
 
+        private static void WriteSummary(IndentedTextWriter output, string title, int count)
+        {
+            if (count != 0)
+            {
+                output.WriteLine(title, count);
+            }
+        }
+
         private static void WriteProductions(Grammar grammar, IndentedTextWriter output)
         {
-            output.WriteLine("// Production rules:");
-            output.WriteLine();
+//            output.WriteLine("// Production rules:");
+//            output.WriteLine();
 
-            foreach (var prod in grammar.Productions)
+            foreach (var prod in grammar.Productions.All)
             {
-                output.WriteLine("// {0}:", prod.Index);
+//                output.WriteLine("// {0}:", prod.Index);
 
                 if (prod.ExplicitPrecedence != null)
                 {
-                    if (prod.IsDeleted)
+                    if (prod.IsHidden)
                     {
                         output.Write("// *deleted*:  ");
                     }
@@ -60,9 +68,9 @@ namespace IronText.Reflection
                         Enum.GetName(typeof(Associativity), prod.EffectivePrecedence.Assoc));
                 }
 
-                if (prod.IsDeleted)
+                if (prod.IsHidden)
                 {
-                    output.Write("// *deleted*:  ");
+                    output.Write("// *hidden*:  ");
                 }
 
                 InternalWriteComponent(output, prod);

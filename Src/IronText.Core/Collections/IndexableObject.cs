@@ -16,11 +16,24 @@ namespace IronText.Collections
 
         public bool IsDetached { get { return NoId == Index; } }
 
+        public bool IsHidden  { get; private set; }
+
         protected TScope Scope { get; private set; }
 
-        protected virtual void DoAttached() { }
+        public void Hide()
+        {
+            OnHiding();
+            this.IsHidden = true;
+            OnHided();
+        }
 
-        protected virtual void DoDetaching() { }
+        protected virtual void OnHiding() { }
+
+        protected virtual void OnHided() { }
+
+        protected virtual void OnAttached() { }
+
+        protected virtual void OnDetaching() { }
 
         void IIndexable<TScope>.Attached(int id, TScope context)
         {
@@ -32,12 +45,12 @@ namespace IronText.Collections
             Index = id;
             Scope = context;
 
-            DoAttached();
+            OnAttached();
         }
 
         void IIndexable<TScope>.Detaching(TScope context)
         {
-            DoDetaching();
+            OnDetaching();
 
             Index = NoId;
         }

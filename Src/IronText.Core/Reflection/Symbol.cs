@@ -45,7 +45,7 @@ namespace IronText.Reflection
         {
             get
             {
-                return this.Productions.Any(p => p.HasSideEffects && !p.IsDeleted);
+                return this.Productions.Any(p => p.HasSideEffects && !p.IsHidden);
             }
         }
 
@@ -97,7 +97,7 @@ namespace IronText.Reflection
             {
                 return IsAugmentedStart
                     || IsStart
-                    || Scope.Productions.Any(p => !p.IsDeleted && p.Pattern.Contains(this));
+                    || Scope.Productions.Any(p => !p.IsHidden && p.Pattern.Contains(this));
             }
         }
     }

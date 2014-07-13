@@ -72,10 +72,15 @@ namespace IronText.Reflection.Managed
                 return Enumerable.Empty<MethodInfo>();
             }
 
-            var path = Graph.Search(
+            var path = Graph.BreadthFirstSearch(
                         EnumerateContextGetters(providerType),
                         m => EnumerateContextGetters(m.ReturnType),
                         m => type.IsAssignableFrom(m.ReturnType));
+
+            if (path == null)
+            {
+                throw new InvalidOperationException("Internal error");
+            }
 
             return path;
         }

@@ -17,6 +17,7 @@ namespace IronText.Tests.Reflection.Transformations
         private Symbol                resultSymbol;
         private Symbol[]              resultSymbols;
         private Exception             resultException;
+        private bool                  resultBool;
 
         public GrammarTransformationSteps()
         {
@@ -35,6 +36,12 @@ namespace IronText.Tests.Reflection.Transformations
             grammar.Productions.Add(outcome, pattern);
         }
 
+        [Given(@"symbol '(.*)'")]
+        public void GivenSymbol(string name)
+        {
+            grammar.Symbols.Add(name);
+        }
+
         [Given(@"production criteria is: input has '(\w+)' symbol")]
         public void GivenProductionCriteriaTheInputHasSymbol(string symbolName)
         {
@@ -51,6 +58,12 @@ namespace IronText.Tests.Reflection.Transformations
         public void GivenProductionDuplicateResolver(string resolverName)
         {
             grammar.Productions.DuplicateResolver = DuplicateResolver<Production>.ByName(resolverName);
+        }
+
+        [When(@"detect if symbol '(.*)' is recursive")]
+        public void WhenDetectIfSymbolIsRecursive(string symbol)
+        {
+            resultBool = grammar.IsRecursive(grammar.Symbols.ByName(symbol));
         }
 
         [When(@"decompose symbol '(\w+)' from symbol '(\w+)'")]
@@ -169,6 +182,13 @@ namespace IronText.Tests.Reflection.Transformations
         public void ThenNoResultExceptionCaught()
         {
             Assert.IsNull(resultException);
+        }
+
+        [Then(@"result should be '(.*)'")]
+        public void ThenResultShouldBe(string flag)
+        {
+            bool expected = bool.Parse(flag);
+            Assert.AreEqual(expected, resultBool);
         }
 
         [StepArgumentTransformation]

@@ -74,8 +74,6 @@ namespace IronText.Reflection
 
         public ProductionFlags    Flags          { get; private set; }
 
-        public bool               IsDeleted      { get; private set; }
-
         public bool               HasSideEffects 
         { 
             get 
@@ -155,18 +153,18 @@ namespace IronText.Reflection
             }
         }
 
-        protected override void DoAttached()
+        protected override void OnAttached()
         {
-            base.DoAttached();
+            base.OnAttached();
 
             Outcome.Productions.Add(this);
         }
 
-        protected override void DoDetaching()
+        protected override void OnDetaching()
         {
             Outcome.Productions.Remove(this);
 
-            base.DoDetaching();
+            base.OnDetaching();
         }
 
         internal void SetAt(int pattIndex, Symbol symbol)
@@ -254,12 +252,9 @@ namespace IronText.Reflection
             return pattern;
         }
 
-        public void MarkDeleted()
+        protected override void OnHided()
         {
-            this.IsDeleted = true;
-            this.Outcome.Productions.Remove(this);
-        }
-
+            this.Outcome.Productions.Remove(this);        } 
         internal bool EqualTo(ProductionSketch sketch)
         {
             if (sketch == null || sketch.Outcome != Outcome.Name)

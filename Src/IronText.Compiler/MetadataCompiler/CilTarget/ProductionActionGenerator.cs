@@ -87,7 +87,7 @@ namespace IronText.MetadataCompiler
             for (int i = 0; i != jumpTable.Length; ++i)
             {
                 var prod = data.Grammar.Productions[i];
-                if (prod.IsDeleted)
+                if (prod.IsHidden)
                 {
                     jumpTable[i] = defaultLabel.GetRef();
                 }
@@ -104,7 +104,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var prod in data.Grammar.Productions)
             {
-                if (prod.IsDeleted)
+                if (prod.IsHidden)
                 {
                     continue;
                 }

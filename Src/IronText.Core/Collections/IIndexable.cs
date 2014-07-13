@@ -5,9 +5,15 @@ namespace IronText.Collections
     public interface IIndexable<TScope>
     {
         /// <summary>
-        /// Determinise if object is detached from an indexed collection
+        /// Determines if object is detached from an indexed collection
         /// </summary>
         bool IsDetached { get; }
+
+        /// <summary>
+        /// Determines if object is hidden i.e. it is present in collection but
+        /// is not enumerated or accessable by index.
+        /// </summary>
+        bool IsHidden  { get; }
 
         /// <summary>
         /// Is invoked immediately object is attached to an indexed collection

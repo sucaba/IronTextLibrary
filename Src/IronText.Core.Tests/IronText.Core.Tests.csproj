@@ -95,6 +95,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ResolutionOfProductionDuplicates.feature</DependentUpon>
     </Compile>
+    <Compile Include="Reflection\Transformations\DetectRecursiveSymbols.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DetectRecursiveSymbols.feature</DependentUpon>
+    </Compile>
     <Compile Include="Reflection\Transformations\EliminateEmpty.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -226,6 +231,10 @@
     <None Include="Reflection\Transformations\DecomposeTransformation.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>DecomposeTransformation.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Reflection\Transformations\DetectRecursiveSymbols.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>DetectRecursiveSymbols.feature.cs</LastGenOutput>
     </None>
     <None Include="Reflection\Transformations\EliminateEmpty.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
