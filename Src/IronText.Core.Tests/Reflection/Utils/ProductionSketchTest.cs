@@ -19,7 +19,7 @@ namespace IronText.Tests.Reflection.Utils
         }
 
         [Test]
-        public void SymbolComponentsAreParsedCorrectly()
+        public void FlatComponentsAreParsedCorrectly()
         {
             Assert.AreEqual(new [] { "B", "C" }, GetComponents("A = B C"));
             Assert.AreEqual(new [] { "B" }, GetComponents("A = B"));
