@@ -27,7 +27,7 @@ namespace IronText.Collections
 
         public TScope Scope { get; private set; }
 
-        public int IndexCount { get; private set; }
+        public int IndexCount { get { return intAssoc.Count; } }
 
         public int PublicCount { get { return items.Count(IsPublicItem); }}
 
@@ -56,17 +56,13 @@ namespace IronText.Collections
             }
             set
             {
-                if (intAssoc.GrowToContain(index + 1) || index >= IndexCount)
-                {
-                    IndexCount = index + 1;
-                }
-                else if (intAssoc.indexToItem[index] != null)
+                if (!intAssoc.Grow(index + 1) && intAssoc.Get(index) != null)
                 {
                     DetachingItem(index);
                 }
 
                 AttachingItem(ref value);
-                intAssoc.indexToItem[index] = value;
+                intAssoc.Set(index, value);
                 AttachedItem(index);
             }
         }
@@ -84,44 +80,29 @@ namespace IronText.Collections
                 throw new InvalidOperationException("IndexedCollection can contain only unique items.");
             }
 
-            int index= AttachingItem(ref item);
+            int index = AttachingItem(ref item);
             if (index < 0)
             {
-                index = IndexCount;
-                if (intAssoc.indexToItem.Length == index)
-                {
-                    Array.Resize(ref intAssoc.indexToItem, index * 2);
-                }
+                index = intAssoc.GenerateIndex();
             }
 
-            intAssoc.indexToItem[index] = item;
+            intAssoc.Set(index, item);
             AttachedItem(index);
-
-            this.IndexCount = index + 1;
 
             return item;
         }
 
         public bool Contains(T item)
         {
-            int count = IndexCount;
-            for (int i = 0; i != count; ++i)
-            {
-                if (intAssoc.indexToItem[i] == (object)item)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return intAssoc.Contains(item);
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            int count = IndexCount;
+            int count = intAssoc.Count;
             for (int i = 0; i != count; ++i)
             {
-                var item = intAssoc.indexToItem[i];
+                var item = intAssoc.Get(i);
                 if (IsPublicItem(item))
                 {
                     yield return item;
@@ -136,37 +117,20 @@ namespace IronText.Collections
                 return false;
             }
 
-            int count = IndexCount;
-
-            for (int i = 0; i != count; ++i)
+            int i = intAssoc.IndexOf(item);
+            if (i < 0)
             {
-                if (intAssoc.indexToItem[i] == (object)item)
-                {
-                    item.Detaching(Scope);
-                    intAssoc.indexToItem[i] = null;
-                    return true;
-                }
+                return false;
             }
 
-            return false;
+            item.Detaching(Scope);
+            intAssoc.Set(i, null);
+            return true;
         }
 
         public T[] ToArray()
         {
-            int count = IndexCount;
-
-            var result = new T[IndexCount];
-            int j = 0;
-            for (int i = 0; i != count; ++i)
-            {
-                var item = intAssoc.indexToItem[i];
-                if (item != null)
-                {
-                    result[j++] = item;
-                }
-            }
-
-            return result;
+            return intAssoc.ToArray();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -192,7 +156,7 @@ namespace IronText.Collections
             int existingIndex;
             if (newItem != null && identityToIndex.TryGetValue(newItem.Identity, out existingIndex))
             {
-                var existing = intAssoc.indexToItem[existingIndex];
+                var existing = intAssoc.Get(existingIndex);
                 var resolvedItem = _duplicateResolver.Resolve(existing, newItem);
                 if (resolvedItem == existing)
                 {
@@ -212,7 +176,7 @@ namespace IronText.Collections
 
         private void AttachedItem(int index)
         {
-            var item = intAssoc.indexToItem[index];
+            var item = intAssoc.Get(index);
             if (item != null)
             {
                 items.Add(item);
@@ -223,7 +187,7 @@ namespace IronText.Collections
 
         private void DetachingItem(int index)
         {
-            var item = intAssoc.indexToItem[index];
+            var item = intAssoc.Get(index);
             item.Detaching(Scope);
             identityToIndex.Remove(item.Identity);
             items.Remove(item);
@@ -243,27 +207,90 @@ namespace IronText.Collections
 
         class IntAssoc
         {
-            internal T[] indexToItem;
+            private T[] indexToItem;
 
             public IntAssoc(int capacity)
             {
                 this.indexToItem = new T[capacity];
             }
 
+            public int Count { get; private set; }
+
             public T Get(int index)
             {
                 return indexToItem[index];
             }
 
-            public bool GrowToContain(int count)
+            public void Set(int index, T value)
+            {
+                indexToItem[index] = value;
+            }
+
+            public int IndexOf(T item)
+            {
+                int count = Count;
+                for (int i = 0; i != count; ++i)
+                {
+                    if (Get(i) == (object)item)
+                    {
+                        return i;
+                    }
+                }
+
+                return -1;
+            }
+
+            public bool Contains(T item)
+            {
+                return IndexOf(item) >= 0;
+            }
+
+            public int GenerateIndex()
+            {
+                int result = Count;
+                if (indexToItem.Length == result)
+                {
+                    Array.Resize(ref indexToItem, result * 2);
+                }
+            
+                Count = result + 1;
+
+                return result;
+            }
+
+            public bool Grow(int count)
             {
                 if (count > indexToItem.Length)
                 {
                     Array.Resize(ref indexToItem, count);
+                    Count = count;
+                    return true;
+                }
+                else if (count > Count)
+                {
+                    Count = count;
                     return true;
                 }
 
                 return false;
+            }
+
+            public T[] ToArray()
+            {
+                int count = Count;
+
+                var result = new T[Count];
+                int j = 0;
+                for (int i = 0; i != count; ++i)
+                {
+                    var item = Get(i);
+                    if (item != null)
+                    {
+                        result[j++] = item;
+                    }
+                }
+
+                return result;
             }
         }
     }
