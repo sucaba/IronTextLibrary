@@ -63,7 +63,7 @@ namespace IronText.Tests.Reflection.Transformations
         [When(@"detect if symbol '(.*)' is recursive")]
         public void WhenDetectIfSymbolIsRecursive(string symbol)
         {
-            resultBool = grammar.IsRecursive(grammar.Symbols.ByName(symbol));
+            resultBool = grammar.Symbols.ByName(symbol).IsRecursive;
         }
 
         [When(@"decompose symbol '(\w+)' from symbol '(\w+)'")]

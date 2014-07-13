@@ -1,5 +1,7 @@
-﻿using IronText.Collections;
+﻿using IronText.Algorithm;
+using IronText.Collections;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IronText.Reflection
@@ -98,6 +100,22 @@ namespace IronText.Reflection
                 return IsAugmentedStart
                     || IsStart
                     || Scope.Productions.Any(p => !p.IsHidden && p.Pattern.Contains(this));
+            }
+        }
+
+        public bool IsRecursive
+        {
+            get
+            {
+                Func<Symbol, IEnumerable<Symbol>> getChildren =
+                    parent => parent.Productions.SelectMany(p => p.Pattern);
+
+                var path = Graph.BreadthFirstSearch(
+                                getChildren(this),
+                                getChildren,
+                                this.Equals);
+
+                return path != null;
             }
         }
     }

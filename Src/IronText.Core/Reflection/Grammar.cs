@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.IO;
-using IronText.Collections;
+﻿using IronText.Collections;
 using IronText.Reflection.Reporting;
-using System.Collections.Generic;
-using System.Diagnostics;
-using IronText.Algorithm;
 using IronText.Reflection.Validation;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace IronText.Reflection
 {
@@ -158,11 +156,19 @@ namespace IronText.Reflection
                 return false;
             }
 
-            return symbol.Productions.Count == 1 
+            var result =
+                symbol.Productions.Count == 1 
                 && (symbol.Productions.All(p => p.Size <= 1)
                     || 
                     symbol.Productions.All(
                         p => p.Pattern.All(s => s.IsTerminal)));
+
+            if (result)
+            {
+                result = !symbol.IsRecursive;
+            }
+
+            return result;
         }
 
         public bool Inline(Symbol symbol)
@@ -307,19 +313,6 @@ namespace IronText.Reflection
                        && (s.Productions.Count != 2 
                           || s.Productions.Any(p => p.Pattern.Length > 1)));
             return result.ToArray();
-        }
-
-        internal bool IsRecursive(Symbol symbol)
-        {
-            Func<Symbol, IEnumerable<Symbol>> getChildren = 
-                parent => parent.Productions.SelectMany(p => p.Pattern);
-            
-            var path = Graph.BreadthFirstSearch(
-                            getChildren(symbol),
-                            getChildren,
-                            symbol.Equals);
-
-            return path != null;
         }
     }
 }
