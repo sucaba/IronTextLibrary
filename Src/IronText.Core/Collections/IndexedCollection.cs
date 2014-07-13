@@ -94,7 +94,7 @@ namespace IronText.Collections
 
         public bool Contains(T item)
         {
-            return intAssoc.Contains(item);
+            return items.IndexOf(item) >= 0;
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -124,6 +124,7 @@ namespace IronText.Collections
             }
 
             item.Detaching(Scope);
+            items.Remove(item);
             intAssoc.Set(i, null);
             return true;
         }
@@ -238,11 +239,6 @@ namespace IronText.Collections
                 }
 
                 return -1;
-            }
-
-            public bool Contains(T item)
-            {
-                return IndexOf(item) >= 0;
             }
 
             public int GenerateIndex()
