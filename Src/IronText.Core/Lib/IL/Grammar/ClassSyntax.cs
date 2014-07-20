@@ -9,6 +9,12 @@ namespace IronText.Lib.IL
         [SubContext]
         ITypeNs Types { get; }
 
+        [Produce(".pack")]
+        ClassSyntax Pack(int value);
+
+        [Produce(".size")]
+        ClassSyntax Size(int value);
+
         [SubContext]
         IMethodNs Methods { get; }
 

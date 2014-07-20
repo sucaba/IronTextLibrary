@@ -81,6 +81,18 @@ namespace IronText.Lib.IL.Backend.Cecil
 
         public IMethodNs Methods { get; private set; }
 
+        public ClassSyntax Size(int value)
+        {
+            this.type.ClassSize = value;
+            return this;
+        }
+
+        public ClassSyntax Pack(int value)
+        {
+            this.type.PackingSize = (short)value;
+            return this;
+        }
+
         public CilDocumentSyntax BeginDocument() { return this; }
 
         public AssemblyInfoSyntax AssemblyRewrite(string fromFilePath)
