@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace IronText.Collections
 {
+    [Serializable]
     public class IndexedCollection<T, TScope> : IOwner<T>, IEnumerable<T>
         where T : class, IIndexable<TScope>, IHasIdentity
     {
@@ -16,6 +17,7 @@ namespace IronText.Collections
 
         private readonly Dictionary<object,int> identityToIndex = new Dictionary<object,int>();
         private IDuplicateResolver<T> _duplicateResolver;
+        private bool indexed;
 
         public IndexedCollection(TScope scope = default(TScope))
         {
@@ -25,9 +27,23 @@ namespace IronText.Collections
             this.DuplicateResolver = null;
         }
 
+        public void BuildIndexes()
+        {
+            this.indexed = true;
+        }
+
+        private void RequireIndexed()
+        {
+            if (!indexed)
+            {
+                // throw new InvalidOperationException();
+            }
+        }
+
+
         public TScope Scope { get; private set; }
 
-        public int IndexCount { get { return intAssoc.Count; } }
+        public int IndexCount { get { RequireIndexed(); return intAssoc.Count; } }
 
         public int PublicCount { get { return items.Count(IsPublicItem); }}
 
@@ -51,11 +67,13 @@ namespace IronText.Collections
         {
             get 
             { 
+                RequireIndexed();
                 var result = intAssoc.Get(index); 
                 return IsPublicItem(result) ? result : null;
             }
             set
             {
+                RequireIndexed();
                 if (!intAssoc.Grow(index + 1) && intAssoc.Get(index) != null)
                 {
                     DetachingItem(index);
@@ -99,15 +117,7 @@ namespace IronText.Collections
 
         public IEnumerator<T> GetEnumerator()
         {
-            int count = intAssoc.Count;
-            for (int i = 0; i != count; ++i)
-            {
-                var item = intAssoc.Get(i);
-                if (IsPublicItem(item))
-                {
-                    yield return item;
-                }
-            }
+            return items.Where(IsPublicItem).GetEnumerator();
         }
 
         public bool Remove(T item)
@@ -131,6 +141,7 @@ namespace IronText.Collections
 
         public T[] ToArray()
         {
+            RequireIndexed();
             return intAssoc.ToArray();
         }
 

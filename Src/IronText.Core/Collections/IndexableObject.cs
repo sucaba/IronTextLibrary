@@ -3,6 +3,7 @@ using System;
 
 namespace IronText.Collections
 {
+    [Serializable]
     public abstract class IndexableObject<TScope> : IIndexable<TScope>, IHasIdentity
     {
         public const int NoId = -1;

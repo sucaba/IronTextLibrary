@@ -5,6 +5,9 @@ namespace IronText.Reflection
 {
     public sealed class SemanticValue
     {
+        [NonSerialized]
+        private readonly Joint _joint = new Joint();
+
         /// <summary>
         /// No-value constant
         /// </summary>
@@ -18,12 +21,11 @@ namespace IronText.Reflection
         public SemanticValue(string title = null)
         {
             this.Title = title ?? "";
-            this.Joint = new Joint();
         }
 
         public string Title  { get; private set; }
 
-        public Joint  Joint { get; private set; }
+        public Joint  Joint { get { return _joint; } }
 
         public override string ToString() { return Title; }
     }

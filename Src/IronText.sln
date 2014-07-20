@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronText.Core", "IronText.Core\IronText.Core.csproj", "{97CFB776-52DE-40B1-854C-912C93A32AFA}"
 EndProject
@@ -39,6 +39,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E910A8
 	ProjectSection(SolutionItems) = preProject
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CecilSample", "CecilSample\CecilSample.csproj", "{AC4D3023-28F8-45E4-9278-9A75CF0C5970}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -260,17 +262,33 @@ Global
 		{E335D50C-2D7A-4778-9F51-1E700658AEE9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{E335D50C-2D7A-4778-9F51-1E700658AEE9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E335D50C-2D7A-4778-9F51-1E700658AEE9}.Release|x86.ActiveCfg = Release|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Deploy|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Deploy|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Deploy|x86.ActiveCfg = Debug|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{D9CBA8CF-E607-435C-A500-978F4268D466} = {E23ABED4-958E-4729-B862-5E3F9642266E}
-		{BA821C07-79DB-4DB6-8387-A6568340F787} = {E23ABED4-958E-4729-B862-5E3F9642266E}
 		{E2856CBC-BFB0-4AD3-B421-897226BF17AC} = {97513C57-FFB9-438B-AE05-55A459B7DF2A}
 		{E4BD2838-17F4-426A-BCAF-C04C0B530ED9} = {97513C57-FFB9-438B-AE05-55A459B7DF2A}
+		{D9CBA8CF-E607-435C-A500-978F4268D466} = {E23ABED4-958E-4729-B862-5E3F9642266E}
+		{BA821C07-79DB-4DB6-8387-A6568340F787} = {E23ABED4-958E-4729-B862-5E3F9642266E}
 		{675EB6D2-9220-464F-87EA-B99B0936FD3F} = {97513C57-FFB9-438B-AE05-55A459B7DF2A}
 		{E335D50C-2D7A-4778-9F51-1E700658AEE9} = {97513C57-FFB9-438B-AE05-55A459B7DF2A}
+		{AC4D3023-28F8-45E4-9278-9A75CF0C5970} = {97513C57-FFB9-438B-AE05-55A459B7DF2A}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = IronTextScheme2008.vsmdi

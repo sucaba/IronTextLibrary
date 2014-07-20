@@ -12,10 +12,14 @@ using IronText.Reflection.Utils;
 
 namespace IronText.Reflection
 {
+    [Serializable]
     [DebuggerDisplay("{DebugProductionText}")]
     public sealed class Production : IndexableObject<IGrammarScope>, IProductionComponent
     {
         private readonly object _identity;
+
+        [NonSerialized]
+        private readonly Joint _joint = new Joint();
 
         /// <summary>
         /// Create identity production
@@ -54,8 +58,6 @@ namespace IronText.Reflection
 
             PatternTokens = Array.ConvertAll(Pattern, s => s.Index);
 
-            this.Joint = new Joint();
-
             this._identity = BuildIdentity();
         }
 
@@ -79,7 +81,7 @@ namespace IronText.Reflection
 
         public bool               IsExtended     { get { return Components.Any(c => c is Production); } }
 
-        public Joint              Joint          { get; private set; }
+        public Joint              Joint          { get { return _joint; } }
 
         public SemanticRef        ContextRef     { get; private set; }
 

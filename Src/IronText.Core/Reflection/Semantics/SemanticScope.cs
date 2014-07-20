@@ -11,12 +11,10 @@ namespace IronText.Reflection
     {
         private Dictionary<SemanticRef, SemanticValue> dictionary = new Dictionary<SemanticRef, SemanticValue>();
 
-        public SemanticScope()
-        {
-            this.Joint = new Joint();
-        }
+        [NonSerialized]
+        private readonly Joint _joint = new Joint();
 
-        public Joint Joint { get; private set; }
+        public Joint Joint { get { return _joint; } }
 
         public bool Lookup(SemanticRef reference)
         {

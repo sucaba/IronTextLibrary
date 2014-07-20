@@ -59,6 +59,8 @@ namespace IronText.MetadataCompiler
 
             // grammar.Inline();
 
+            grammar.BuildIndexes();
+
             if (!bootstrap && !CompileScannerTdfas(grammar))
             {
                 result = null;

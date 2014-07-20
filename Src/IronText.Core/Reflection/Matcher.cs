@@ -1,9 +1,14 @@
 ﻿using IronText.Collections;
+using System;
 
 namespace IronText.Reflection
 {
+    [Serializable]
     public class Matcher : IndexableObject<IGrammarScope>
     {
+        [NonSerialized]
+        private readonly Joint _joint;
+
         public Matcher(
             string           pattern,
             SymbolBase       outcome        = null,
@@ -32,7 +37,7 @@ namespace IronText.Reflection
                 this.Disambiguation = disambiguation;
             }
 
-            this.Joint = new Joint();
+            this._joint = new Joint();
         }
 
         public ScanPattern      Pattern         { get; private set; }
@@ -41,7 +46,7 @@ namespace IronText.Reflection
 
         public SymbolBase       Outcome         { get; private set; }
 
-        public Joint            Joint           { get; private set; }
+        public Joint            Joint           { get { return _joint; } }
 
         public override string ToString()
         {

@@ -13,10 +13,17 @@ namespace IronText.Reflection
     /// - Predefined entities should not be deletable.
     /// - Organize API to avoid IsPredefined checks.
     /// </summary>
+    [Serializable]
     public sealed class Grammar : IGrammarScope
     {
         public const string UnnamedTokenName = "<unnamed token>";
         public const string UnknownTokenName = "<unknown token>";
+
+        [NonSerialized]
+        private readonly Joint _joint = new Joint();
+
+        [NonSerialized]
+        private readonly ReportCollection _reports = new ReportCollection();
 
         public Grammar()
         {
@@ -26,10 +33,10 @@ namespace IronText.Reflection
             Symbols     = new SymbolCollection(this);
             Matchers    = new MatcherCollection(this);
             Mergers     = new MergerCollection(this);
-            Reports     = new ReportCollection();
             Globals     = new SemanticScope();
-            Joint       = new Joint();
 
+            // TODO: Valid indexes for predefined symbols
+#if false
             Symbols[PredefinedTokens.Propagated]      = new Symbol("#");
             Symbols[PredefinedTokens.Epsilon]         = new Symbol("$eps");
             Symbols[PredefinedTokens.AugmentedStart]  = new Symbol("$start");
@@ -39,20 +46,33 @@ namespace IronText.Reflection
                                                          | SymbolCategory.DoNotDelete 
                                           };
             Symbols[PredefinedTokens.Error]           = new Symbol("$error");
+#endif
+            Symbols.Add("$eps");
+            Symbols.Add("#");
+            this.AugmentedStart = Symbols.Add("$start");
+            Symbols.Add(
+                new Symbol("$")
+                {
+                    Categories = SymbolCategory.DoNotInsert
+                               | SymbolCategory.DoNotDelete
+                });
+            Symbols.Add("$error");
 
             var startStub = new Symbol("$start-stub");
-            AugmentedProduction = Productions.Add((Symbol)Symbols[PredefinedTokens.AugmentedStart], new Symbol[] { startStub }, null);
+            AugmentedProduction = Productions.Add(this.AugmentedStart, new Symbol[] { startStub }, null);
         }
 
         public RuntimeOptions Options { get; set; }
 
-        public Joint Joint { get; private set; }
+        public Joint Joint { get { return _joint; } }
 
         public string StartName
         {
             get {  return Start == null ? null : Start.Name; }
             set {  Start = value == null ? null : Symbols.ByName(value, createMissing: true); }
         }
+
+        internal Symbol AugmentedStart { get; private set; }
 
         public Symbol Start
         {
@@ -72,7 +92,15 @@ namespace IronText.Reflection
 
         public MergerCollection     Mergers             { get; private set; }
 
-        public ReportCollection     Reports             { get; private set; }
+        public ReportCollection     Reports             { get { return _reports; } }
+
+        public void BuildIndexes()
+        {
+            Symbols.BuildIndexes();
+            Productions.BuildIndexes();
+            Matchers.BuildIndexes();
+            Mergers.BuildIndexes();
+        }
 
         public override string ToString()
         {

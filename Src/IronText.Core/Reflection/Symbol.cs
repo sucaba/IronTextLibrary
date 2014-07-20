@@ -9,9 +9,13 @@ namespace IronText.Reflection
     /// <summary>
     /// Deterministic symbol
     /// </summary>
+    [Serializable]
     public class Symbol : SymbolBase, IProductionComponent
     {
         private readonly ReferenceCollection<Production> _productions;
+
+        [NonSerialized]
+        private readonly Joint _joint = new Joint();
 
         public Symbol(string name)
         {
@@ -23,7 +27,6 @@ namespace IronText.Reflection
             this.Name          = name;
             this._productions  = new ReferenceCollection<Production>();
             this.LocalScope    = new SemanticScope();
-            this.Joint         = new Joint();
         }
 
         public bool IsAugmentedStart { get { return PredefinedTokens.AugmentedStart == Index; } }
@@ -53,7 +56,7 @@ namespace IronText.Reflection
 
         public override ReferenceCollection<Production> Productions { get { return _productions; } }
 
-        public Joint Joint { get; private set; }
+        public Joint Joint { get { return _joint; } }
 
         /// <summary>
         /// Provided local context
