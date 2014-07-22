@@ -86,12 +86,13 @@ namespace IronText.Tests.Lib.IL.Generators
                 .Class_()
                     .Public
                     .Named("MyClass")
-                    .Field()
-                        .Public()
-                        .Static()
-                        .OfType(bytesType)
-                        .Named("myBytes")
-                    .Method()
+
+                        .Field()
+                            .Public()
+                            .Static()
+                            .OfType(bytesType)
+                            .Named("myBytes")
+                        .Method()
                             .Static.Hidebysig.Rtspecialname.Specialname
                             .Returning(syntax.Types.Void)
                             .Named(".cctor")
@@ -118,25 +119,26 @@ namespace IronText.Tests.Lib.IL.Generators
                                     FieldName = "myBytes"
                                 })
                         .EndBody()
+
                         .Method()
                             .Public.Static.Returning(syntax.Types.Void)
                             .Named("Main")
                             .BeginArgs().EndArgs()
-                            .BeginBody()
-                                .EntryPoint()
-                                .Ldsfld(
-                                    new FieldSpec
-                                    {
-                                        FieldType = bytesType,
-                                        DeclType  = syntax.Types.Class_(ClassName.Parse("MyClass")),
-                                        FieldName = "myBytes"
-                                    })
-                                .Ldlen()
-                                .Box(syntax.Types.Int32)
-                                .Call((object o) => o.ToString())
-                                .Call((string s) => Console.WriteLine(s))
-                                .Ret()
-                            .EndBody()
+                        .BeginBody()
+                            .EntryPoint()
+                            .Ldsfld(
+                                new FieldSpec
+                                {
+                                    FieldType = bytesType,
+                                    DeclType  = syntax.Types.Class_(ClassName.Parse("MyClass")),
+                                    FieldName = "myBytes"
+                                })
+                            .Ldlen()
+                            .Box(syntax.Types.Int32)
+                            .Call((object o) => o.ToString())
+                            .Call((string s) => Console.WriteLine(s))
+                            .Ret()
+                        .EndBody()
                     .EndClass()
                 .EndDocument();
 
