@@ -111,6 +111,13 @@
     <Compile Include="Algorithm\IntegerSets\SetOrthohonator.cs" />
     <Compile Include="Algorithm\IntegerSets\SparseIntSetType.cs" />
     <Compile Include="Algorithm\IntInterval.cs" />
+    <Compile Include="Framework\NullParsing.cs" />
+    <Compile Include="Lib\IL\Grammar\WantField.cs" />
+    <Compile Include="Lib\IL\Grammar\WantFieldAt.cs" />
+    <Compile Include="Lib\IL\Grammar\WantFieldAttr.cs" />
+    <Compile Include="Lib\IL\Grammar\WantFieldInit.cs" />
+    <Compile Include="Lib\IL\Grammar\WantFieldName.cs" />
+    <Compile Include="Lib\IL\Grammar\WantFieldType.cs" />
     <Compile Include="Misc\IHasIdentity.cs" />
     <Compile Include="Collections\Joint.cs" />
     <Compile Include="Diagnostics\GvGraphView.cs" />
@@ -229,7 +236,7 @@
     <Compile Include="Lib\IL\Grammar\ClassSyntax.cs" />
     <Compile Include="Lib\IL\Grammar\CustomAttributesSyntax.cs" />
     <Compile Include="Lib\IL\Grammar\EmitSyntax.cs" />
-    <Compile Include="Lib\IL\Grammar\FieldAttrSyntax.cs" />
+    <Compile Include="Lib\IL\Grammar\WantFieldAttrThen.cs" />
     <Compile Include="Lib\IL\Grammar\ImplAttrSyntax.cs" />
     <Compile Include="Lib\IL\Grammar\MethAttrSyntax.cs" />
     <Compile Include="Lib\IL\Grammar\MethodNameSyntax.cs" />

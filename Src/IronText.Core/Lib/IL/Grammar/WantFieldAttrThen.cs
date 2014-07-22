@@ -3,51 +3,51 @@
 namespace IronText.Lib.IL
 {
     [Demand]
-    public interface FieldAttrSyntax
+    public interface WantFieldAttrThen<TNext>
     {
         [Produce("static")]
-        FieldAttrSyntax Static();
+        TNext Static();
 
         [Produce("public")]
-        FieldAttrSyntax Public();
+        TNext Public();
 
         [Produce("private")]
-        FieldAttrSyntax Private();
+        TNext Private();
 
         [Produce("family")]
-        FieldAttrSyntax Family();
+        TNext Family();
 
         [Produce("initonly")]
-        FieldAttrSyntax Initonly();
+        TNext Initonly();
 
         [Produce("rtspecialname")]
-        FieldAttrSyntax Rtspecialname();
+        TNext Rtspecialname();
 
         [Produce("specialname")]
-        FieldAttrSyntax Specialname();
+        TNext Specialname();
 
 #if false
         // TODO: Native Types
         [Parse("marshal", "(", null, ")")] 
-        FieldAttrSyntax Marshal(nativeType);
+        TNext Marshal(nativeType);
 #endif
     
         [Produce("assembly")]
-        FieldAttrSyntax Assembly();
+        TNext Assembly();
 
         [Produce("famandassem")]
-        FieldAttrSyntax Famandassem();
+        TNext Famandassem();
 
         [Produce("famorassem")]
-        FieldAttrSyntax Famorassem();
+        TNext Famorassem();
 
         [Produce("privatescope")]
-        FieldAttrSyntax Privatescope();
+        TNext Privatescope();
 
         [Produce("literal")]
-        FieldAttrSyntax Literal();
+        TNext Literal();
 
         [Produce("notserialized")]
-        FieldAttrSyntax Notserialized();
+        TNext Notserialized();
     }
 }

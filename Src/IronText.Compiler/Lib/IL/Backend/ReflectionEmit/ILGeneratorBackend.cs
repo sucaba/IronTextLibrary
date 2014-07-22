@@ -244,6 +244,11 @@ namespace IronText.Lib.IL.Backend.ReflectionEmit
             return this;
         }
 
+        public EmitSyntax Ldsfld(FieldSpec field)
+        {
+            throw new InvalidOperationException();
+        }
+
         public EmitSyntax Stfld(FieldInfo fieldInfo)
         {
             il.Emit(OpCodes.Stfld, fieldInfo);
@@ -254,6 +259,11 @@ namespace IronText.Lib.IL.Backend.ReflectionEmit
         {
             il.Emit(OpCodes.Stsfld, fieldInfo);
             return this;
+        }
+
+        public EmitSyntax Stsfld(FieldSpec field)
+        {
+            throw new InvalidOperationException();
         }
 
         public EmitSyntax Ldloc0()
@@ -440,6 +450,11 @@ namespace IronText.Lib.IL.Backend.ReflectionEmit
         {
             il.Emit(OpCodes.Ldtoken, token);
             return this;
+        }
+
+        public EmitSyntax Ldtoken(FieldSpec fieldSpec)
+        {
+            throw new NotImplementedException();
         }
 
         public EmitSyntax Ldtoken(Ref<Types> token)

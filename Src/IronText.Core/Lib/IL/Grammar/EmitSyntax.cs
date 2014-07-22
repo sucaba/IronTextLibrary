@@ -132,9 +132,15 @@ namespace IronText.Lib.IL
 
         EmitSyntax Ldfld(SR.FieldInfo fieldInfo);
 
+        [Produce("ldsfld")]
+        EmitSyntax Ldsfld(FieldSpec field);
+
         EmitSyntax Ldsfld(SR.FieldInfo fieldInfo);
 
         EmitSyntax Stfld(SR.FieldInfo fieldInfo);
+
+        [Produce("stsfld")]
+        EmitSyntax Stsfld(FieldSpec field);
 
         EmitSyntax Stsfld(SR.FieldInfo fieldInfo);
 
@@ -224,6 +230,9 @@ namespace IronText.Lib.IL
 
         [Produce("unbox.any", null)]
         EmitSyntax Unbox_Any(Ref<Types> type);
+
+        [Produce("ldtoken")]
+        EmitSyntax Ldtoken(FieldSpec fieldSpec);
 
         EmitSyntax Ldtoken(SR.FieldInfo token);
 

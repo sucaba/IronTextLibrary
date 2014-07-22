@@ -48,6 +48,11 @@ namespace IronText.Lib.IL.Backend.Cecil
             get { return ValueToRef(container.TypeSystem.Object); }
         }
 
+        public Ref<Types> ValueType 
+        {
+            get {  return Import(typeof(ValueType)); }
+        }
+
         public Ref<Types> String
         {
             get { return ValueToRef(container.TypeSystem.String); }

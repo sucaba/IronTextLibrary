@@ -31,6 +31,8 @@ namespace IronText.Lib.IL
         [Produce("value", "class", null)]
         Ref<Types> Value(ClassName className);
 
+        Ref<Types> ValueType { get; }
+
         [Produce(null, "[", "]")]
         Ref<Types> Array(Ref<Types> elementType);
 

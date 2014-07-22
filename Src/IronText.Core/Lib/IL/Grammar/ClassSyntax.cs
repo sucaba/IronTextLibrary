@@ -9,17 +9,20 @@ namespace IronText.Lib.IL
         [SubContext]
         ITypeNs Types { get; }
 
+        [SubContext]
+        IMethodNs Methods { get; }
+
+        [Produce("}")]
+        CilDocumentSyntax EndClass();
+
         [Produce(".pack")]
         ClassSyntax Pack(int value);
 
         [Produce(".size")]
         ClassSyntax Size(int value);
 
-        [SubContext]
-        IMethodNs Methods { get; }
-
-        [Produce("}")]
-        CilDocumentSyntax EndClass();
+        [Produce(".field")]
+        WantField Field();
 
         [Produce(".method")]
         WantMethAttr Method();

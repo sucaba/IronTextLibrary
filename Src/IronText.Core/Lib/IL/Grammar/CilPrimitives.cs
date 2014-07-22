@@ -86,6 +86,15 @@ namespace IronText.Lib.IL
     {
     }
 
+    public class FieldSpec
+    {
+        public Ref<Types> FieldType { get; set; }
+
+        public Ref<Types> DeclType  { get; set; }
+
+        public string     FieldName { get; set; }
+    }
+
     public class TypeSpec
     {
         public Ref<Types> Type;
@@ -174,6 +183,17 @@ namespace IronText.Lib.IL
         public static ClassName ClassName(SlashedName slashedName)
         {
             return new ClassName(slashedName);
+        }
+
+        [Produce(null, null, "::", null)]
+        public static FieldSpec Field(Ref<Types> fieldType, TypeSpec declaringType, string fieldName)
+        {
+            return new FieldSpec
+            {
+                FieldType = fieldType,
+                DeclType  = declaringType.Type,
+                FieldName = fieldName,
+            };
         }
     }
 }

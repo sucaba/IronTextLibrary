@@ -8,6 +8,7 @@ using IronText.Lib.Shared;
 using IronText.Logging;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using IronText.Runtime;
 
 namespace IronText.Lib.IL.Backend.Cecil
 {
@@ -30,6 +31,11 @@ namespace IronText.Lib.IL.Backend.Cecil
         , WantImplAttr
         , WantOpenArgs
         , WantArgs
+        , WantField
+        , WantFieldAttr
+        , WantFieldName
+        , WantFieldAt
+        , WantFieldInit
         , ParamAttrSyntax1<WantArgs>
         , ParamAttrSyntax1<WantMoreArgs>
         , WantMoreArgs
@@ -43,6 +49,7 @@ namespace IronText.Lib.IL.Backend.Cecil
         private ParameterAttributes currentParamAttr;
         private TypeAttributes currentClassAttributes;
         private AssemblyNameReference currentAssemblyRef;
+        private FieldDefinition field;
 
         public static CilSyntax Create(string filePath)
         {
@@ -66,6 +73,8 @@ namespace IronText.Lib.IL.Backend.Cecil
         public CilSyntax Result { get; set; }
 
         public CtemScanner Scanner { get; private set; }
+
+        public ILogging Logging { get; set; }
 
         public IParsing Parsing { get; set; }
 
@@ -217,23 +226,6 @@ namespace IronText.Lib.IL.Backend.Cecil
             this.type.Interfaces.Add(GetTypeValue(@interface));
             return this;
         }
-
-        /*
-        Data fields do not work with Cecil but are pretty useful in some cases.
-
-        public ClassSyntax DataField(string fieldName, byte[] bytes, FieldAttr inAttrs)
-        {
-            var attrs = FieldAttributes.Public|FieldAttributes.HasDefault|FieldAttributes.Static;
-            var field = new FieldDefinition(fieldName, attrs, GetTypeData(bytes.Length));
-
-            field.IsPublic = (inAttrs & FieldAttr.Public) == FieldAttr.Public;
-
-            field.InitialValue = bytes;
-            this.type.Fields.Add(field);
-
-            return this;
-        }
-        */
 
         internal TypeDefinition GetTypeData(int size)
         {
@@ -485,6 +477,13 @@ namespace IronText.Lib.IL.Backend.Cecil
             return this;
         }
 
+        public EmitSyntax Ldsfld(FieldSpec fieldSpec)
+        {
+            FieldReference field = GetFieldValue(fieldSpec);
+            Emit(OpCodes.Ldsfld, field);
+            return this;
+        }
+
         public EmitSyntax Ldsfld(System.Reflection.FieldInfo fieldInfo)
         {
             Emit(OpCodes.Ldsfld, module.Import(fieldInfo));
@@ -500,6 +499,13 @@ namespace IronText.Lib.IL.Backend.Cecil
         public EmitSyntax Stsfld(System.Reflection.FieldInfo fieldInfo)
         {
             Emit(OpCodes.Stsfld, module.Import(fieldInfo));
+            return this;
+        }
+
+        public EmitSyntax Stsfld(FieldSpec fieldSpec)
+        {
+            FieldReference field = GetFieldValue(fieldSpec);
+            Emit(OpCodes.Stsfld, field);
             return this;
         }
 
@@ -832,6 +838,12 @@ namespace IronText.Lib.IL.Backend.Cecil
         public EmitSyntax Ldtoken(System.Reflection.FieldInfo token)
         {
             Emit(OpCodes.Ldtoken, module.Import(token));
+            return this;
+        }
+
+        public EmitSyntax Ldtoken(FieldSpec fieldSpec)
+        {
+            Emit(OpCodes.Ldtoken, GetFieldValue(fieldSpec));
             return this;
         }
 
@@ -1615,6 +1627,122 @@ namespace IronText.Lib.IL.Backend.Cecil
         AssemblyRefSyntax CustomAttributesSyntax<AssemblyRefSyntax>.CustomAttribute(Ref<Types> customType)
         {
             throw new NotImplementedException();
+        }
+
+        public WantField Field()
+        {
+            this.field = new FieldDefinition(null, default(FieldAttributes), module.TypeSystem.Object);
+            type.Fields.Add(field);
+            return this;
+        }
+
+        public WantFieldAttr Repeat(int length)
+        {
+            throw new NotSupportedException();
+        }
+
+        WantFieldAttr WantFieldAttrThen<WantFieldAttr>.Static()
+        {
+            this.field.Attributes |= FieldAttributes.Static;
+            return this;
+        }
+
+        WantFieldAttr WantFieldAttrThen<WantFieldAttr>.Public()
+        {
+            this.field.Attributes |= FieldAttributes.Public;
+            return this;
+        }
+
+        WantFieldAttr WantFieldAttrThen<WantFieldAttr>.Private()
+        {
+            this.field.Attributes |= FieldAttributes.Private;
+            return this;
+        }
+
+        WantFieldAttr WantFieldAttrThen<WantFieldAttr>.Family()
+        {
+            this.field.Attributes |= FieldAttributes.Family;
+            return this;
+        }
+
+        public WantFieldAttr Initonly()
+        {
+            this.field.Attributes |= FieldAttributes.InitOnly;
+            return this;
+        }
+
+        WantFieldAttr WantFieldAttrThen<WantFieldAttr>.Rtspecialname()
+        {
+            this.field.Attributes |= FieldAttributes.RTSpecialName;
+            return this;
+        }
+
+        WantFieldAttr WantFieldAttrThen<WantFieldAttr>.Specialname()
+        {
+            this.field.Attributes |= FieldAttributes.SpecialName;
+            return this;
+        }
+
+        WantFieldAttr WantFieldAttrThen<WantFieldAttr>.Assembly()
+        {
+            this.field.Attributes |= FieldAttributes.Assembly;
+            return this;
+        }
+
+        WantFieldAttr WantFieldAttrThen<WantFieldAttr>.Famandassem()
+        {
+            this.field.Attributes |= FieldAttributes.FamANDAssem;
+            return this;
+        }
+
+        WantFieldAttr WantFieldAttrThen<WantFieldAttr>.Famorassem()
+        {
+            this.field.Attributes |= FieldAttributes.FamORAssem;
+            return this;
+        }
+
+        WantFieldAttr WantFieldAttrThen<WantFieldAttr>.Privatescope()
+        {
+            throw new NotSupportedException();
+        }
+
+        public WantFieldAttr Literal()
+        {
+            this.field.Attributes |= FieldAttributes.Literal;
+            return this;
+        }
+
+        public WantFieldAttr Notserialized()
+        {
+            this.field.Attributes |= FieldAttributes.NotSerialized;
+            return this;
+        }
+
+        public WantFieldName OfType(Ref<Types> type)
+        {
+            this.field.FieldType = GetTypeValue(type);
+            return this;
+        }
+
+        WantFieldAt WantFieldName.Named(string fieldName)
+        {
+            field.Name = fieldName;
+            return this;
+        }
+
+        public WantFieldInit HasRVA
+        {
+            get 
+            { 
+                field.Attributes |= FieldAttributes.HasFieldRVA;
+                return this;
+            }
+        }
+
+        ClassSyntax WantFieldInitThen<ClassSyntax>.Init(Bytes bytes)
+        {
+            field.InitialValue = bytes.Data;
+            return this;
         }
     }
 }

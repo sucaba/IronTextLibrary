@@ -1,5 +1,6 @@
 ﻿using IronText.Framework;
 using IronText.Lib.Ctem;
+using IronText.Logging;
 
 namespace IronText.Lib.IL
 {
@@ -18,6 +19,9 @@ namespace IronText.Lib.IL
     {
         [LanguageService]
         IParsing Parsing { get; set; }
+
+        [LanguageService]
+        ILogging Logging { get; set; }
 
         [SubContext]
         CtemScanner Scanner { get; }

@@ -39,7 +39,8 @@ namespace CecilSample
             {
                 var cctor = new MethodDefinition(
                                 ".cctor",
-                                MethodAttributes.Static | MethodAttributes.HideBySig | MethodAttributes.RTSpecialName | MethodAttributes.SpecialName,
+                                MethodAttributes.Static | MethodAttributes.HideBySig 
+                                | MethodAttributes.RTSpecialName | MethodAttributes.SpecialName,
                                 mod.Import(typeof(void)));
                 var il = cctor.Body.GetILProcessor();
                 LdAssemblyDataBytes(mod, dataFild, il);
