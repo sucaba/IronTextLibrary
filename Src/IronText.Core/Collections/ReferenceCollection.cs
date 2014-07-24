@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace IronText.Collections
 {
+    [Serializable]
     public class ReferenceCollection<T> : IEnumerable<T>
         where T : class
     {

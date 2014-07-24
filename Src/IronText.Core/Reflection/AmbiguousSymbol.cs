@@ -15,6 +15,7 @@ namespace IronText.Reflection
     /// Alternative can be resolved in a deterministic way when current parser state 
     /// allows only single alternative or by a forking extended-GLR parsing paths.
     /// </remarks>
+    [Serializable]
     public sealed class AmbiguousSymbol : SymbolBase
     {
         public AmbiguousSymbol(int mainToken, IEnumerable<int> tokens)

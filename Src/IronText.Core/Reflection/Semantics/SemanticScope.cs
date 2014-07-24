@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace IronText.Reflection
 {
+    [Serializable]
     public class SemanticScope : IEnumerable<KeyValuePair<SemanticRef,SemanticValue>>
     {
         private Dictionary<SemanticRef, SemanticValue> dictionary = new Dictionary<SemanticRef, SemanticValue>();

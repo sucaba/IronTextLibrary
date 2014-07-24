@@ -3,6 +3,7 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
+    [Serializable]
     public class SemanticRef : IEquatable<SemanticRef>
     {
         public static readonly SemanticRef None = new SemanticRef(SharedConstants.NullSemanticRefName);

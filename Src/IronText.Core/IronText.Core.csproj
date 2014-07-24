@@ -138,7 +138,6 @@
     <Compile Include="Reflection\Reporting\ISemanticBinding.cs" />
     <Compile Include="Reflection\Semantics\SemanticScope.cs" />
     <Compile Include="Reflection\Semantics\SemanticRef.cs" />
-    <Compile Include="Reflection\RefeneceCollection.cs" />
     <Compile Include="Reflection\Serialization\IGrammarReader.cs" />
     <Compile Include="Reflection\IGrammarSource.cs" />
     <Compile Include="Reflection\IReportDestinationHint.cs" />

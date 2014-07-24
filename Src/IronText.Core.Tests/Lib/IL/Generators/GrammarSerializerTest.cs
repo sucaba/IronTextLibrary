@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using IronText.Lib.IL.Backend.Cecil;
 using IronText.Logging;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace IronText.Tests.Lib.IL.Generators
 {
@@ -37,6 +39,36 @@ namespace IronText.Tests.Lib.IL.Generators
         }
 
         private static byte[] data = new byte[] { 65, 65, 65, 65, 65, 65, 65, 65, 65, 65 };
+
+        [Test]
+        public void BinarySerialization()
+        {
+            var originalGrammar = new Grammar();
+            var red   = originalGrammar.Symbols.Add("red");
+            var green = originalGrammar.Symbols.Add("green", SymbolCategory.ExplicitlyUsed);
+            var blue  = originalGrammar.Symbols.Add("blue");
+            originalGrammar.Productions.Add(red,  new[] { green, blue });
+            originalGrammar.Productions.Add(blue, new[] { red, green });
+            originalGrammar.Productions.Add(blue, new Symbol[0]);
+
+            originalGrammar.Start = red;
+
+            var formatter = new BinaryFormatter();
+
+            byte[] grammarBytes;
+            using (var stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, originalGrammar);
+                grammarBytes = stream.ToArray();
+            }
+
+            using (var stream = new MemoryStream(grammarBytes))
+            {
+                var recreated = (Grammar)formatter.Deserialize(stream);
+
+                Assert.IsTrue(GrammarEquals(originalGrammar, recreated));
+            }
+        }
 
         [Test]
         public void StaticDataFieldUsecase()

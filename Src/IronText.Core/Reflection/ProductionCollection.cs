@@ -6,6 +6,7 @@ using IronText.Reflection.Utils;
 
 namespace IronText.Reflection
 {
+    [Serializable]
     public class ProductionCollection : IndexedCollection<Production, IGrammarScope>
     {
         public ProductionCollection(IGrammarScope scope)

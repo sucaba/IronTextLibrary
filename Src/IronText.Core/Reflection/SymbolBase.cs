@@ -5,6 +5,7 @@ using IronText.Misc;
 
 namespace IronText.Reflection
 {
+    [Serializable]
     [DebuggerDisplay("Name = {Name}")]
     public abstract class SymbolBase : IndexableObject<IGrammarScope>, ICloneable
     {

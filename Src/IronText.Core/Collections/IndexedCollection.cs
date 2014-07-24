@@ -16,6 +16,7 @@ namespace IronText.Collections
         private readonly List<T> items;
 
         private readonly Dictionary<object,int> identityToIndex = new Dictionary<object,int>();
+        [NonSerialized]
         private IDuplicateResolver<T> _duplicateResolver;
         private bool indexed;
 
@@ -217,6 +218,7 @@ namespace IronText.Collections
             return item != null && !item.IsHidden;
         }
 
+        [Serializable]
         class IntAssoc
         {
             private T[] indexToItem;

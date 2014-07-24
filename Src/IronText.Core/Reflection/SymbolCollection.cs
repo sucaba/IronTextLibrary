@@ -5,6 +5,7 @@ using System;
 
 namespace IronText.Reflection
 {
+    [Serializable]
     public class SymbolCollection : IndexedCollection<SymbolBase, IGrammarScope>
     {
         public SymbolCollection(IGrammarScope context)

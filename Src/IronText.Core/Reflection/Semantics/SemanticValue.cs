@@ -3,6 +3,7 @@ using IronText.Collections;
 
 namespace IronText.Reflection
 {
+    [Serializable]
     public sealed class SemanticValue
     {
         [NonSerialized]

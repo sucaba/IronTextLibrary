@@ -2,6 +2,7 @@
 
 namespace IronText.Reflection
 {
+    [Serializable]
     public sealed class Precedence
     {
         public const int Min = -1;
