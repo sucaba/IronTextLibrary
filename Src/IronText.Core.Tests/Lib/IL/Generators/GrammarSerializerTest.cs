@@ -11,6 +11,7 @@ using IronText.Lib.IL.Backend.Cecil;
 using IronText.Logging;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using IronText.Tests.TestUtils;
 
 namespace IronText.Tests.Lib.IL.Generators
 {
@@ -76,8 +77,6 @@ namespace IronText.Tests.Lib.IL.Generators
             CilSyntax cilSyntax = CecilBackend.Create("ass2.exe");
             cilSyntax.Logging = ExceptionLogging.Instance;
             cilSyntax.Parsing = NullParsing.Instance;
-            string implDetailsTypeName = "ImplementationDetails";
-            string dataTypeName = "Arraytype" + data.Length;
 
             CilDocumentSyntax syntax = 
                 cilSyntax
@@ -92,28 +91,7 @@ namespace IronText.Tests.Lib.IL.Generators
 
             var bytesType = syntax.Types.Import(typeof(byte[]));
 
-                // Data type
             syntax
-                .Class_()
-                        .Explicit.Ansi.Sealed
-                        .Named(dataTypeName)
-                        .Extends(syntax.Types.ValueType)
-                    .Pack(1)
-                    .Size(10)
-                .EndClass() 
-                // Implementation details static class
-                .Class_()
-                        .Public
-                        .Named(implDetailsTypeName)
-                    .Field()
-                        .Private()
-                        .Static()
-                        .Assembly()
-                        .OfType(syntax.Types.Value(ClassName.Parse(dataTypeName)))
-                        .Named("dataField")
-                        .HasRVA
-                        .Init(new Bytes(data))
-                .EndClass()
                 // Sample of byte[] field
                 .Class_()
                     .Public
@@ -130,19 +108,7 @@ namespace IronText.Tests.Lib.IL.Generators
                             .Named(".cctor")
                             .BeginArgs().EndArgs()
                         .BeginBody()
-                            .Ldc_I4(data.Length)
-                            .Newarr(syntax.Types.UnsignedInt8)
-                            .Dup()
-                            .Ldtoken(
-                                new FieldSpec
-                                { 
-                                    FieldType = syntax.Types.Value(ClassName.Parse(dataTypeName)),
-                                    DeclType  = syntax.Types.Class_(ClassName.Parse(implDetailsTypeName)),
-                                    FieldName = "dataField"
-                                })
-                            .Call((Array arr, RuntimeFieldHandle handle) =>
-                                RuntimeHelpers.InitializeArray(arr, handle)
-                            )
+                            .With<DataStorage>().Load(data)
                             .Stsfld(
                                 new FieldSpec
                                 {
@@ -176,6 +142,8 @@ namespace IronText.Tests.Lib.IL.Generators
 
             IAssemblyWriter w = (IAssemblyWriter)syntax;
             w.Write("ass2.exe");
+            var outcome = ProgramExecutor.Execute("ass2.exe").Trim();
+            Assert.AreEqual("10", outcome);
         }
 
         public static bool GrammarEquals(Grammar x, Grammar y)

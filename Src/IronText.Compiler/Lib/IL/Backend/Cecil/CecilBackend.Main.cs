@@ -14,6 +14,7 @@ namespace IronText.Lib.IL.Backend.Cecil
 {
     partial class CecilBackend 
         : CilSyntax
+        , ICilDocumentInfo
         , CilDocumentSyntax
         , AssemblyInfoSyntax
         , AssemblyRefSyntax
@@ -41,6 +42,7 @@ namespace IronText.Lib.IL.Backend.Cecil
         , WantMoreArgs
         , WantMethodBody
         , EmitSyntax
+        , IEmitSyntaxPluginManager
         , IAssemblyReader
         , IAssemblyWriter
         , IAssemblyResolverParameters
@@ -50,6 +52,7 @@ namespace IronText.Lib.IL.Backend.Cecil
         private TypeAttributes currentClassAttributes;
         private AssemblyNameReference currentAssemblyRef;
         private FieldDefinition field;
+        private readonly Dictionary<Type, IEmitSyntaxPlugin> emitSyntaxPlugins = new Dictionary<Type, IEmitSyntaxPlugin>();
 
         public static CilSyntax Create(string filePath)
         {
@@ -70,6 +73,19 @@ namespace IronText.Lib.IL.Backend.Cecil
             this.assemblyResolver = new DefaultAssemblyResolver();
        }
 
+        IEmitSyntaxPluginManager EmitSyntax.Plugins { get { return this; } }
+
+        bool IEmitSyntaxPluginManager.TryGetPlugin(Type pluginType, out IEmitSyntaxPlugin plugin)
+        {
+            return emitSyntaxPlugins.TryGetValue(pluginType, out plugin);
+        }
+
+        void IEmitSyntaxPluginManager.Add(Type contract, IEmitSyntaxPlugin plugin)
+        {
+            emitSyntaxPlugins.Add(contract, plugin);
+        }
+
+
         public CilSyntax Result { get; set; }
 
         public CtemScanner Scanner { get; private set; }
@@ -77,6 +93,8 @@ namespace IronText.Lib.IL.Backend.Cecil
         public ILogging Logging { get; set; }
 
         public IParsing Parsing { get; set; }
+
+        public Guid Mvid { get {  return module.Mvid; } }
 
         public OnDemandNs<Labels> Labels { get; set; }
 
@@ -166,6 +184,12 @@ namespace IronText.Lib.IL.Backend.Cecil
 
         public void EndDocument()
         {
+            CilDocumentSyntax syntax = this;
+            foreach (var plugin in emitSyntaxPlugins.Values)
+            {
+                syntax = plugin.BeforeEndDocument(syntax);
+            }
+
             this.type = null;
             this.method = null;
             this.body = null;
@@ -200,7 +224,8 @@ namespace IronText.Lib.IL.Backend.Cecil
             string @namespace, name;
             SignatureUtils.SplitFullName(className, out @namespace, out name);
 
-            this.type = new TypeDefinition(
+            this.type = module.MetadataResolver.Resolve(new TypeReference(@namespace, name, module, module))
+                      ?? new TypeDefinition(
                                 @namespace,
                                 name,
                                 currentClassAttributes,

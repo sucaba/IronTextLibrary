@@ -8,6 +8,7 @@ using IronText.Logging;
 using IronText.Misc;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace IronText.Runtime
 {
@@ -18,6 +19,8 @@ namespace IronText.Runtime
             public static readonly FieldInfo isDeterministic = ExpressionUtils.GetField((LanguageBase lang) => lang.isDeterministic);
 
             public static readonly FieldInfo grammar         = ExpressionUtils.GetField((LanguageBase lang) => lang.grammar);
+
+            public static readonly FieldInfo grammarBytes    = ExpressionUtils.GetField((LanguageBase lang) => lang.grammarBytes);
 
             public static readonly FieldInfo getParserAction = ExpressionUtils.GetField((LanguageBase lang) => lang.getParserAction);
 
@@ -44,6 +47,7 @@ namespace IronText.Runtime
 
         protected internal bool          isDeterministic;
         protected Grammar                grammar;
+        protected byte[]                 grammarBytes;
         protected TransitionDelegate     getParserAction;
         protected Dictionary<object,int> tokenKeyToId;
         protected Scan1Delegate          scan1;
@@ -71,6 +75,16 @@ namespace IronText.Runtime
         {
             this.runtimeGrammar = new RuntimeGrammar(grammar);
             this.allocator = new ResourceAllocator(runtimeGrammar);
+
+
+            var formatter = new BinaryFormatter();
+            if (grammarBytes != null)
+            {
+                using (var stream = new MemoryStream(grammarBytes))
+                {
+                    this.grammar = (Grammar)formatter.Deserialize(stream);
+                }
+            }
         }
 
         public Grammar Grammar { get { return grammar; } }

@@ -71,41 +71,7 @@ namespace IronText.Lib.IL.Backend.Cecil
         {
             var declType  = GetTypeValue(fieldSpec.DeclType);
             var fieldType = module.Import(GetTypeValue(fieldSpec.FieldType));
-            var declTypeDef = declType.Resolve();
-            if (declTypeDef == null)
-            {
-                Logging.Write(
-                    new LogEntry
-                    {
-                        Severity  = Severity.Error,
-                        Location  = Parsing.Location,
-                        HLocation = Parsing.HLocation,
-                        Message   = string.Format("Unknown type '{0}'.", declType.FullName)
-                    });
-            }
-
-            FieldReference result = declTypeDef == null 
-                                    ? null 
-                                    : declTypeDef
-                                        .Fields
-                                        .SingleOrDefault(f => f.Name == fieldSpec.FieldName);
-
-            if (result == null)
-            {
-                result = new FieldReference(fieldSpec.FieldName, fieldType, declType);
-            }
-            else if (fieldType.FullName != result.FieldType.FullName)
-            {
-                Logging.Write(
-                    new LogEntry
-                    {
-                        Severity  = Severity.Error,
-                        Location  = Parsing.Location,
-                        HLocation = Parsing.HLocation,
-                        Message   = string.Format("Invalid type of '{0}' field reference.", fieldSpec.FieldName)
-                    });
-            }
-
+            var result = new FieldReference(fieldSpec.FieldName, fieldType, declType);
             return result;
         }
     }

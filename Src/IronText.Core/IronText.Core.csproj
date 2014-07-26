@@ -112,6 +112,10 @@
     <Compile Include="Algorithm\IntegerSets\SparseIntSetType.cs" />
     <Compile Include="Algorithm\IntInterval.cs" />
     <Compile Include="Framework\NullParsing.cs" />
+    <Compile Include="Lib\IL\Grammar\ICilDocumentInfo.cs" />
+    <Compile Include="Lib\IL\Grammar\Plugins\DataStorage.cs" />
+    <Compile Include="Lib\IL\Grammar\Plugins\IEmitSyntaxPlugin.cs" />
+    <Compile Include="Lib\IL\Grammar\Plugins\IEmitSyntaxPluginManager.cs" />
     <Compile Include="Lib\IL\Grammar\WantField.cs" />
     <Compile Include="Lib\IL\Grammar\WantFieldAt.cs" />
     <Compile Include="Lib\IL\Grammar\WantFieldAttr.cs" />

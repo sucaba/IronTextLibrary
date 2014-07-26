@@ -22,6 +22,11 @@ namespace IronText.Lib.IL.Backend.ReflectionEmit
             this.labelByCell = new Dictionary<object, Label>();
         }
 
+        IEmitSyntaxPluginManager EmitSyntax.Plugins
+        {
+            get {  throw new NotImplementedException(); }
+        }
+
         public Loc Location { get; set; }
 
         public DefFirstNs<Locals> Locals { get; private set; }

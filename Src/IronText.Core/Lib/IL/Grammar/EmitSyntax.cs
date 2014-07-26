@@ -31,6 +31,8 @@ namespace IronText.Lib.IL
         [SubContext]
         IMethodNs Methods { get; }
 
+        IEmitSyntaxPluginManager Plugins { get; }
+
         [Produce("}")]
         ClassSyntax EndBody();
 
@@ -495,6 +497,21 @@ namespace IronText.Lib.IL
         public static EmitSyntax Newarr(this EmitSyntax emit, Type elementType)
         {
             return emit.Newarr(emit.Types.Import(elementType));
+        }
+
+        public static T With<T>(this EmitSyntax emit)
+            where T : IEmitSyntaxPlugin, new()
+        {
+            IEmitSyntaxPlugin plugin;
+            if (!emit.Plugins.TryGetPlugin(typeof(T), out plugin))
+            {
+                plugin = new T();
+                emit.Plugins.Add(typeof(T), plugin);
+                plugin.Init((ICilDocumentInfo)emit);
+            }
+
+            plugin.SetCurrent(emit);
+            return (T)plugin;
         }
 
         private static EmitSyntax LdMethodDelegate(

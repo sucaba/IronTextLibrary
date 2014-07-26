@@ -130,6 +130,11 @@ namespace IronText.Lib.IL.Generators
 
             foreach (var method in entry.Methods)
             {
+                if (method.IsGenericMethod)
+                {
+                    throw new InvalidOperationException("Generic methods are not supported.");
+                }
+
                 WantArgsBase wantArgs =
                     classCode.Method()
                         .Private.Hidebysig.Newslot

@@ -1,12 +1,15 @@
 ﻿using IronText.Framework;
 using IronText.Lib.Ctem;
 using IronText.Lib.Shared;
+using System;
 
 namespace IronText.Lib.IL
 {
     [Demand]
     public interface CilDocumentSyntax
     {
+        Guid Mvid { get; }
+
         [SubContext]
         IResolutionScopeNs ResolutionScopeNs { get; }
 

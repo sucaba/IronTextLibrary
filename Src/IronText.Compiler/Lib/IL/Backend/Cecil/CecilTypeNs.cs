@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using IronText.Lib.Shared;
 using Mono.Cecil;
+using System.Reflection;
 
 namespace IronText.Lib.IL.Backend.Cecil
 {
