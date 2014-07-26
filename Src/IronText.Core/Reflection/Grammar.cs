@@ -25,7 +25,6 @@ namespace IronText.Reflection
         [NonSerialized]
         private readonly ReportCollection _reports = new ReportCollection();
 
-
         public Grammar()
         {
             Options     = RuntimeOptions.Default;
@@ -48,16 +47,16 @@ namespace IronText.Reflection
                                           };
             Symbols[PredefinedTokens.Error]           = new Symbol("$error");
 #endif
-            Symbols.Add("$eps");
-            Symbols.Add("#");
+            this.Epsilon = Symbols.Add("$eps");
+            this.Propagated = Symbols.Add("#");
             this.AugmentedStart = Symbols.Add("$start");
-            Symbols.Add(
-                new Symbol("$")
-                {
+            this.Eoi = new Symbol("$") {
                     Categories = SymbolCategory.DoNotInsert
                                | SymbolCategory.DoNotDelete
-                });
-            Symbols.Add("$error");
+                };
+            Symbols.Add(Eoi);
+
+            this.Error = Symbols.Add("$error");
 
             var startStub = new Symbol("$start-stub");
             AugmentedProduction = Productions.Add(this.AugmentedStart, new Symbol[] { startStub }, null);
@@ -73,7 +72,15 @@ namespace IronText.Reflection
             set {  Start = value == null ? null : Symbols.ByName(value, createMissing: true); }
         }
 
-        internal Symbol AugmentedStart { get; private set; }
+        internal Symbol AugmentedStart { get; set; }
+
+        private Symbol Epsilon         { get; set; }
+
+        private Symbol Propagated      {  get; set; }
+
+        private Symbol Eoi             {  get; set; }
+
+        internal Symbol Error          {  get; private set; }
 
         public Symbol Start
         {

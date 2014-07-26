@@ -37,7 +37,7 @@ namespace IronText.Collections
         {
             if (!indexed)
             {
-                // throw new InvalidOperationException();
+                throw new InvalidOperationException();
             }
         }
 

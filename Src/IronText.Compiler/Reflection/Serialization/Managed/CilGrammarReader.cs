@@ -64,7 +64,7 @@ namespace IronText.Reflection.Managed
                 Symbol symbol;
                 if (cilSymbol.Type == typeof(Exception))
                 {
-                    cilSymbol.Symbol = symbol = (Symbol)result.Symbols[PredefinedTokens.Error];
+                    cilSymbol.Symbol = symbol = result.Error;
                     symbol.Joint.Add(
                         new CilSymbol 
                         { 

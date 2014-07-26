@@ -25,6 +25,8 @@ namespace IronText.Tests.Framework
             grammar.Productions.Add(A, new Symbol[0]);
             grammar.Productions.Add(B, new Symbol[0]);
 
+            grammar.BuildIndexes();
+
             var target = new RuntimeGrammar(grammar);
 
             Assert.IsTrue(target.IsNullable(A.Index));
