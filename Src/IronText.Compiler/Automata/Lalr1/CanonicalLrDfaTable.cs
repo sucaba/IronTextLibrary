@@ -25,7 +25,7 @@ namespace IronText.Automata.Lalr1
             this.canOptimizeReduceStates = (dfa.Optimizations & flag) == flag;
 
             this.grammar = dfa.GrammarAnalysis;
-            this.actionTable = actionTable ?? new MutableTable<int>(dfa.States.Length, grammar.Symbols.IndexCount);
+            this.actionTable = actionTable ?? new MutableTable<int>(dfa.States.Length, grammar.SymbolCount);
             FillDfaTable(dfa.States);
             BuildConflictTable();
         }

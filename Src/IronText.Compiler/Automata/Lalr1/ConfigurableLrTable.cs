@@ -19,7 +19,7 @@ namespace IronText.Automata.Lalr1
         {
             this.grammar = dfa.GrammarAnalysis;
 
-            this.data = new MutableTable<int>(dfa.States.Length, grammar.Symbols.IndexCount);
+            this.data = new MutableTable<int>(dfa.States.Length, grammar.SymbolCount);
 
             Configure(dfa, flags, out underlyingTable); 
         }
@@ -114,7 +114,7 @@ namespace IronText.Automata.Lalr1
                 foreach (var ambToken in grammar.AmbiguousSymbols)
                 {
                     var validTokenActions = new Dictionary<int,int>();
-                    foreach (int token in ambToken.Tokens)
+                    foreach (int token in ambToken.AllTokens)
                     {
                         int cell = data.Get(i, token);
                         if (cell == 0)

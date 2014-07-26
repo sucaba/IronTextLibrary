@@ -23,7 +23,7 @@ namespace IronText.Automata.Lalr1
         private StringBuilder DescribeItem(DotItem item, StringBuilder output, bool showLookaheads = true)
         {
             int start = output.Length;
-            output.Append(grammar.SymbolName(item.Outcome)).Append(" ->");
+            output.Append(grammar.GetTokenName(item.Outcome)).Append(" ->");
             for (int i = 0; i != item.Size; ++i)
             {
                 if (item.Position == i)
@@ -31,7 +31,7 @@ namespace IronText.Automata.Lalr1
                     output.Append(" •");
                 }
 
-                output.Append(" ").Append(grammar.SymbolName(item[i]));
+                output.Append(" ").Append(grammar.GetTokenName(item[i]));
             }
 
             if (item.IsReduce)
@@ -48,7 +48,7 @@ namespace IronText.Automata.Lalr1
 
             if (showLookaheads)
             {
-                output.Append("  |LA = {").Append(string.Join(", ", item.LA.Select(grammar.SymbolName))).Append("}");
+                output.Append("  |LA = {").Append(string.Join(", ", item.LA.Select(grammar.GetTokenName))).Append("}");
             }
 
             return output;
@@ -59,7 +59,7 @@ namespace IronText.Automata.Lalr1
         {
             var sourceItem = GetItem(lr0states, sourceItemId);
             var destItem = GetItem(lr0states, destinationItemId);
-            var lookaheads = sourceItem.LA.Except(destItem.LA).Select(grammar.SymbolName);
+            var lookaheads = sourceItem.LA.Except(destItem.LA).Select(grammar.GetTokenName);
 
             var output = new StringBuilder();
             output.Append(">>> I").Append(sourceItemId.Item1).Append(": ");

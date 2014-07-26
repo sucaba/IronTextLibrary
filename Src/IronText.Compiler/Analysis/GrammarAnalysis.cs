@@ -13,11 +13,13 @@ namespace IronText.Compiler.Analysis
     {
         private readonly Grammar grammar;
         private readonly IBuildtimeNullableFirstTables tables;
+        private int[]    tokenComplexity;
 
         public GrammarAnalysis(Grammar grammar)
         {
-            this.grammar = grammar;
-            this.tables = new NullableFirstTables(grammar);
+            this.grammar         = grammar;
+            this.tables          = new NullableFirstTables(grammar);
+            this.tokenComplexity = BuildTokenComplexity(grammar);
         }
 
         /// <summary>
@@ -25,27 +27,9 @@ namespace IronText.Compiler.Analysis
         /// Relation of values is non-determined for two mutally 
         /// dependent non-terms.
         /// </summary>
-        public int[] GetTokenComplexity()
-        {
-            var result = Enumerable.Repeat(-1, grammar.Symbols.IndexCount).ToArray();
-            var sortedTokens = Graph.TopologicalSort(
-                                new [] { PredefinedTokens.AugmentedStart },
-                                GetDependantTokens)
-                                .ToArray();
-            for (int i = 0; i != sortedTokens.Length; ++i)
-            {
-                result[sortedTokens[i]] = i;
-            }
+        public int[] GetTokenComplexity() { return tokenComplexity; }
 
-            return result;
-        }
-
-        private IEnumerable<int> GetDependantTokens(int token)
-        {
-            return grammar.Symbols[token].Productions.SelectMany(rule => rule.PatternTokens);
-        }
-
-        public string SymbolName(int token)
+        public string GetTokenName(int token)
         {
             return grammar.Symbols[token].Name;
         }
@@ -55,14 +39,14 @@ namespace IronText.Compiler.Analysis
             return grammar.Symbols[token].IsTerminal;
         }
 
-        public IEnumerable<Production> GetProductions(int leftToken)
+        public IEnumerable<ProdItem> GetProductions(int leftToken)
         {
-            return grammar.Symbols[leftToken].Productions;
+            return grammar.Symbols[leftToken].Productions.Select(ToRt);
         }
 
-        public SymbolCollection Symbols
+        public int SymbolCount
         {
-            get { return grammar.Symbols; }
+            get {  return grammar.Symbols.IndexCount; }
         }
 
         public Precedence GetTermPrecedence(int token)
@@ -70,9 +54,9 @@ namespace IronText.Compiler.Analysis
             return grammar.Symbols[token].Precedence;
         }
 
-        public Production AugmentedProduction
+        public ProdItem AugmentedProduction
         {
-            get { return grammar.AugmentedProduction; }
+            get { return ToRt(grammar.AugmentedProduction); }
         }
 
         public Precedence GetProductionPrecedence(int prodId)
@@ -90,9 +74,9 @@ namespace IronText.Compiler.Analysis
             get { return tables.TokenSet; }
         }
 
-        public IEnumerable<AmbiguousSymbol> AmbiguousSymbols
+        public IEnumerable<AmbTokenInfo> AmbiguousSymbols
         {
-            get { return grammar.Symbols.OfType<AmbiguousSymbol>(); }
+            get { return grammar.Symbols.OfType<AmbiguousSymbol>().Select(ToRt); }
         }
 
         public void AddFirst(DotItem item, MutableIntSet output)
@@ -113,6 +97,42 @@ namespace IronText.Compiler.Analysis
         public bool IsTailNullable(DotItem item)
         {
             return tables.IsTailNullable(item.GetPattern(), item.Position);
+        }
+
+        private ProdItem ToRt(Production production)
+        {
+            return new ProdItem(
+                production.Index,
+                production.Outcome.Index,
+                production.Pattern.Select(sym => sym.Index));
+        }
+
+        private AmbTokenInfo ToRt(AmbiguousSymbol symbol)
+        {
+            return new AmbTokenInfo(
+                symbol.Index,
+                symbol.MainToken,
+                symbol.Tokens);
+        }
+
+        private static int[] BuildTokenComplexity(Grammar grammar)
+        {
+            var result = Enumerable.Repeat(-1, grammar.Symbols.IndexCount).ToArray();
+            var sortedTokens = Graph.TopologicalSort(
+                                new [] { PredefinedTokens.AugmentedStart },
+                                t => GetDependantTokens(grammar, t))
+                                .ToArray();
+            for (int i = 0; i != sortedTokens.Length; ++i)
+            {
+                result[sortedTokens[i]] = i;
+            }
+
+            return result;
+        }
+
+        private static IEnumerable<int> GetDependantTokens(Grammar grammar, int token)
+        {
+            return grammar.Symbols[token].Productions.SelectMany(rule => rule.PatternTokens);
         }
     }
 }

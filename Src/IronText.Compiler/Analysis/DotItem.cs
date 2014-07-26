@@ -5,31 +5,31 @@ using IronText.Reflection.Reporting;
 
 namespace IronText.Compiler.Analysis
 {
-    public class DotItem : IParserDotItem
+    public class DotItem
     {
-        private readonly Production production;
+        private readonly ProdItem production;
 
         public DotItem(DotItem other)
             : this(other.production, other.Position)
         {
         }
 
-        public DotItem(Production production, int pos) 
+        internal DotItem(ProdItem production, int pos)
         {
             this.production = production;
-            this.Position        = pos;
-            this.LA = null;
+            this.Position   = pos;
+            this.LA         = null;
         }
 
-        public int Outcome { get { return production.Outcome.Index; } }
+        public int Outcome { get { return production.Outcome; } }
 
-        public int this[int index] { get { return production.PatternTokens[index]; } }
+        public int this[int index] { get { return production.Input[index]; } }
 
-        public int[] GetPattern() { return production.PatternTokens; }
+        public int[] GetPattern() { return production.Input; }
 
-        public bool IsAugmented { get { return production.IsAugmented; } }
+        public bool IsAugmented { get { return PredefinedTokens.AugmentedStart == production.Outcome; } }
 
-        public int Size { get { return production.Size; } }
+        public int Size { get { return production.Input.Length; } }
 
         public int Position { get; private set; }
 
@@ -37,22 +37,22 @@ namespace IronText.Compiler.Analysis
 
         public bool IsKernel
         {
-            get { return Position != 0 || production.IsAugmented; }
+            get { return Position != 0 || IsAugmented; }
         }
 
         public int ProductionId { get { return production.Index; } }
 
-        public bool IsReduce { get { return Position == production.PatternTokens.Length; } }
+        public bool IsReduce { get { return Position == production.Input.Length; } }
 
-        public bool IsShiftReduce { get { return (production.PatternTokens.Length - Position) == 1; } }
+        public bool IsShiftReduce { get { return (production.Input.Length - Position) == 1; } }
 
         public int NextToken
         {
             get
             { 
-                return Position == production.Pattern.Length 
+                return Position == production.Input.Length 
                      ? -1
-                     : production.Pattern[Position].Index;
+                     : production.Input[Position];
             }
         }
 
@@ -82,11 +82,5 @@ namespace IronText.Compiler.Analysis
                             LA = LA.EditCopy()
                         };
         }
-
-        Production IParserDotItem.Production { get { return production; } }
-
-        int IParserDotItem.Position { get { return Position; } }
-
-        IEnumerable<int> IParserDotItem.LA { get { return LA; } }
     }
 }

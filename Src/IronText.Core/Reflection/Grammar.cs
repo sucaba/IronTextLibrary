@@ -25,6 +25,7 @@ namespace IronText.Reflection
         [NonSerialized]
         private readonly ReportCollection _reports = new ReportCollection();
 
+
         public Grammar()
         {
             Options     = RuntimeOptions.Default;

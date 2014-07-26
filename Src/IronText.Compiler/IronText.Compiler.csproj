@@ -83,6 +83,8 @@
     <Compile Include="Algorithm\Unicode\UnicodeIntSetType.cs" />
     <Compile Include="Algorithm\Unicode\UnicodeIntSetType.Data.cs" />
     <Compile Include="Algorithm\Unicode\UnicodeIntSetType.Disp.cs" />
+    <Compile Include="Analysis\AmbTokenInfo.cs" />
+    <Compile Include="Analysis\ProdItem.cs" />
     <Compile Include="Automata\Lalr1\CanonicalLrDfaTable.cs" />
     <Compile Include="Automata\Lalr1\ConfigurableLrTable.cs" />
     <Compile Include="Analysis\DotItem.cs" />

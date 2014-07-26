@@ -71,13 +71,13 @@ namespace IronText.MetadataCompiler
                     int action = Enumerable
                                     .Range(1, match.Groups.Count)
                                     .First(i => match.Groups[i].Success) - 1;
-                    var production = descriptor.Matchers[action];
-                    if (production.Outcome == null)
+                    var matcher = descriptor.Matchers[action];
+                    if (matcher.Outcome == null)
                     {
                         continue;
                     }
 
-                    int token = production.Outcome.Index;
+                    int token = matcher.Outcome.Index;
 
                     yield return
                         new Msg(token, match.Value, action, new Loc(Loc.MemoryString, match.Index, match.Length));
