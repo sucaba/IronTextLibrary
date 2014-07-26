@@ -19,6 +19,7 @@ namespace IronText.Collections
         [NonSerialized]
         private IDuplicateResolver<T> _duplicateResolver;
         private bool indexed;
+        private bool canModify = true;
 
         public IndexedCollection(TScope scope = default(TScope))
         {
@@ -30,14 +31,23 @@ namespace IronText.Collections
 
         public void BuildIndexes()
         {
-            this.indexed = true;
+            this.indexed   = true;
+            this.canModify = false;
         }
 
         private void RequireIndexed()
         {
             if (!indexed)
             {
-                throw new InvalidOperationException();
+                 throw new InvalidOperationException();
+            }
+        }
+
+        private void RequireModifiable()
+        {
+            if (!canModify)
+            {
+                 throw new InvalidOperationException();
             }
         }
 
@@ -72,18 +82,6 @@ namespace IronText.Collections
                 var result = intAssoc.Get(index); 
                 return IsPublicItem(result) ? result : null;
             }
-            set
-            {
-                RequireIndexed();
-                if (!intAssoc.Grow(index + 1) && intAssoc.Get(index) != null)
-                {
-                    DetachingItem(index);
-                }
-
-                AttachingItem(ref value);
-                intAssoc.Set(index, value);
-                AttachedItem(index);
-            }
         }
 
         public IDuplicateResolver<T> DuplicateResolver
@@ -94,6 +92,8 @@ namespace IronText.Collections
 
         public T Add(T item)
         {
+            RequireModifiable();
+
             if (Contains(item))
             {
                 throw new InvalidOperationException("IndexedCollection can contain only unique items.");
@@ -123,6 +123,8 @@ namespace IronText.Collections
 
         public bool Remove(T item)
         {
+            RequireModifiable();
+
             if (item == null)
             {
                 return false;
@@ -153,6 +155,8 @@ namespace IronText.Collections
 
         void IOwner<T>.Acquire(T item)
         {
+            RequireModifiable();
+
             if (!Contains(item))
             {
                 Add(item);
@@ -161,6 +165,8 @@ namespace IronText.Collections
 
         void IOwner<T>.Release(T item)
         {
+            RequireModifiable();
+
             Remove(item);
         }
 
