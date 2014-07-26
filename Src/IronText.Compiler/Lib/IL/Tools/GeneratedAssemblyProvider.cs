@@ -11,11 +11,13 @@ namespace IronText.Lib.IL
         : IExternalResourceProvider<Assembly>
     {
         private readonly string assemblyName;
+        private readonly bool saveFile;
         private Assembly assembly;
 
-        public GeneratedAssemblyProvider(string assemblyName)
+        public GeneratedAssemblyProvider(string assemblyName, bool saveFile = false)
         {
             this.assemblyName = assemblyName;
+            this.saveFile = saveFile;
         }
 
         Assembly IExternalResourceProvider<Assembly>.Resource
@@ -83,14 +85,17 @@ namespace IronText.Lib.IL
                     throw new InvalidOperationException("Backend does not support assembly writing");
                 }
 
-#if false
-                var path = Path.Combine(Environment.CurrentDirectory, assemblyName + ".dll");
-                writer.Write(path);
-                assembly = Assembly.LoadFrom(path);
-#else
-                writer.Write(stream);
-                assembly = Assembly.Load(stream.GetBuffer());
-#endif
+                if (saveFile)
+                {
+                    var path = Path.Combine(Environment.CurrentDirectory, assemblyName + ".dll");
+                    writer.Write(path);
+                    assembly = Assembly.LoadFrom(path);
+                }
+                else
+                {
+                    writer.Write(stream);
+                    assembly = Assembly.Load(stream.GetBuffer());
+                }
             }
 
             return true;
@@ -98,5 +103,4 @@ namespace IronText.Lib.IL
 
         protected abstract CilDocumentSyntax DoGenerate(CilDocumentSyntax docCode);
     }
-
 }

@@ -73,10 +73,6 @@ namespace IronText.Runtime
 
         public void Init()
         {
-            this.runtimeGrammar = new RuntimeGrammar(grammar);
-            this.allocator = new ResourceAllocator(runtimeGrammar);
-
-
             var formatter = new BinaryFormatter();
             if (grammarBytes != null)
             {
@@ -84,7 +80,11 @@ namespace IronText.Runtime
                 {
                     this.grammar = (Grammar)formatter.Deserialize(stream);
                 }
+
+                this.runtimeGrammar = new RuntimeGrammar(grammar);
             }
+
+            this.allocator      = new ResourceAllocator(runtimeGrammar);
         }
 
         public Grammar Grammar { get { return grammar; } }

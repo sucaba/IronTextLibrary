@@ -11,12 +11,14 @@ namespace IronText.Tests.TestUtils
             processInfo.UseShellExecute = false;
             processInfo.CreateNoWindow = true;
             processInfo.RedirectStandardOutput = true;
+            processInfo.RedirectStandardError = true;
 
             var process = Process.Start(processInfo);
 
             var output = process.StandardOutput.ReadToEnd();
+            var error = process.StandardError.ReadToEnd();
             process.WaitForExit();
-            return output;
+            return output + error;
         }
     }
 }

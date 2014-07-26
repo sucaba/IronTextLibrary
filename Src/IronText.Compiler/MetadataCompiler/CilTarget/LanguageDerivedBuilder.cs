@@ -16,7 +16,7 @@ namespace IronText.MetadataCompiler
 {
     public class LanguageDerivedBuilder : IDerivedBuilder<CilDocumentSyntax>
     {
-        private const string CreateGrammarMethodName            = "CreateGrammar";
+        private const string GetGrammarBytes                    = "GetGrammarBytes";
         private const string CreateTokenKeyToIdMethodName       = "CreateTokenKeyToId";
         private const string ProductionActionMethodName         = "ProducitonAction";
         private const string MergeActionMethodName              = "MergeAction";
@@ -229,7 +229,7 @@ namespace IronText.MetadataCompiler
             var grammarSerializer = new GrammarSerializer(data.Grammar);
 
             return context
-                .PrivateStaticMethod(CreateGrammarMethodName, typeof(Func<Grammar>))
+                .PrivateStaticMethod(GetGrammarBytes, typeof(Func<byte[]>))
                 .BeginBody()
                     .Do(grammarSerializer.Build)
                     .Ret()
@@ -345,7 +345,6 @@ namespace IronText.MetadataCompiler
                                         return args;
                                     })
                                 .EndArgs()
-
                             .BeginBody();
 
             // Call base constructor:
@@ -367,13 +366,13 @@ namespace IronText.MetadataCompiler
                 .Call(emit.Methods.Method(
                     _=>_
                         .StartSignature
-                        .Returning(emit.Types.Import(typeof(Grammar)))
+                        .Returning(emit.Types.Import(typeof(byte[])))
                         .DecaringType(declaringTypeRef)
-                        .Named(CreateGrammarMethodName)
+                        .Named(GetGrammarBytes)
                         .BeginArgs()
                         .EndArgs()
                     ))
-                .Stfld(LanguageBase.Fields.grammar)
+                .Stfld(LanguageBase.Fields.grammarBytes)
 
                 // Init state->token table
                 .Ldarg(0)

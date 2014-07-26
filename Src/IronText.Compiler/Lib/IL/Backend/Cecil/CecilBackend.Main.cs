@@ -987,12 +987,12 @@ namespace IronText.Lib.IL.Backend.Cecil
                 }
 
                 this.assembly.Write(
-                    filePath,
+                    filePath/*,
                     new WriterParameters 
                     { 
                         WriteSymbols = this.document != null 
                                     && !string.IsNullOrEmpty(this.document.Url) 
-                    });
+                    }*/);
             }
             else
             {

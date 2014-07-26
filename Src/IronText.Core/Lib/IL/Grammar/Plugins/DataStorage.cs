@@ -42,7 +42,7 @@ namespace IronText.Lib.IL
 
         public EmitSyntax LoadFieldHandle(byte[] data)
         {
-            string dataTypeName  = GetDataFieldTypeName(data);
+            string dataTypeName  = GetDataFieldTypeName(data.Length);
             string dataFieldName = string.Format("dataField{0}", dataFieldCount++);
 
             var fieldSpec = new FieldSpec { 
@@ -56,22 +56,22 @@ namespace IronText.Lib.IL
             return currentEmit.Ldtoken(fieldSpec);
         }
 
-        private static string GetDataFieldTypeName(byte[] data)
+        private static string GetDataFieldTypeName(int dataLength)
         {
-            return string.Format("Arraytype{0}", data.Length);
+            return string.Format("Arraytype{0}", dataLength);
         }
 
         CilDocumentSyntax IEmitSyntaxPlugin.BeforeEndDocument(CilDocumentSyntax syntax)
         {
-            foreach (var dataFieldPair in plannedFields)
+            foreach (var dataLength in plannedFields.Select(p => p.Key.Length).Distinct())
             {
                 syntax = syntax
                 .Class_()
                         .Explicit.Ansi.Sealed
-                        .Named(GetDataFieldTypeName(dataFieldPair.Key))
+                        .Named(GetDataFieldTypeName(dataLength))
                         .Extends(syntax.Types.ValueType)
                     .Pack(1)
-                    .Size(10)
+                    .Size(dataLength)
                 .EndClass();
             }
             

@@ -1,9 +1,11 @@
 ﻿using System.Text.RegularExpressions;
 using IronText.Extensibility;
 using IronText.Logging;
+using System;
 
 namespace IronText.Reflection
 {
+    [Serializable]
     public abstract class ScanPattern
     {
         public static ScanPattern CreateLiteral(string literal)
@@ -34,6 +36,7 @@ namespace IronText.Reflection
         public override string ToString() { return Pattern; }
     }
 
+    [Serializable]
     sealed class ScanLiteral : ScanPattern
     {
         private readonly string literal;
@@ -58,6 +61,7 @@ namespace IronText.Reflection
         public override Disambiguation DefaultDisambiguation { get { return Disambiguation.Exclusive; } }
     }
 
+    [Serializable]
     sealed class ScanRegular : ScanPattern
     {
         private readonly string pattern;
