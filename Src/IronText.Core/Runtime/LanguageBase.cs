@@ -9,6 +9,7 @@ using IronText.Misc;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.IO.Compression;
 
 namespace IronText.Runtime
 {
@@ -77,8 +78,9 @@ namespace IronText.Runtime
             if (grammarBytes != null)
             {
                 using (var stream = new MemoryStream(grammarBytes))
+                using (var decompressStream = new DeflateStream(stream, CompressionMode.Decompress))
                 {
-                    this.grammar = (Grammar)formatter.Deserialize(stream);
+                    this.grammar = (Grammar)formatter.Deserialize(decompressStream);
                 }
 
                 this.runtimeGrammar = new RuntimeGrammar(grammar);

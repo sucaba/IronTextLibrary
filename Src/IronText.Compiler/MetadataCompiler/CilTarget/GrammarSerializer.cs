@@ -7,6 +7,7 @@ using IronText.Lib.Shared;
 using IronText.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.IO.Compression;
 
 namespace IronText.MetadataCompiler
 {
@@ -33,7 +34,11 @@ namespace IronText.MetadataCompiler
 
             using (var stream = new MemoryStream())
             {
-                formatter.Serialize(stream, grammar);
+                using (var compressStream = new DeflateStream(stream, CompressionMode.Compress, true))
+                {
+                    formatter.Serialize(compressStream, grammar);
+                }
+
                 return stream.ToArray();
             }
         }

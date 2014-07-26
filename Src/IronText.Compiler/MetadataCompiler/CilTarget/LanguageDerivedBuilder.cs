@@ -255,7 +255,7 @@ namespace IronText.MetadataCompiler
 
             for (int i = 0; i != conflicts.Length; ++i)
             {
-                emit
+                emit = emit
                     .Ldloc(resultLoc)
                     .Ldc_I4(i)
                     .Ldc_I4(conflicts[i])

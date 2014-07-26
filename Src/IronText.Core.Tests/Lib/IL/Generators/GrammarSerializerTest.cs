@@ -4,6 +4,7 @@ using IronText.Reflection;
 using NUnit.Framework;
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -24,9 +25,12 @@ namespace IronText.Tests.Lib.IL.Generators
             var formatter = new BinaryFormatter();
             using (var stream = new MemoryStream(grammarBytes))
             {
-                var recreated = (Grammar)formatter.Deserialize(stream);
+                using (var decompress = new DeflateStream(stream, CompressionMode.Decompress, true))
+                {
+                    var recreated = (Grammar)formatter.Deserialize(decompress);
 
-                Assert.IsTrue(GrammarEquals(originalGrammar, recreated));
+                    Assert.IsTrue(GrammarEquals(originalGrammar, recreated));
+                }
             }
         }
 
