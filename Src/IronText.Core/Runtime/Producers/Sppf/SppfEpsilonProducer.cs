@@ -20,7 +20,7 @@ namespace IronText.Runtime
 
         private void BuildCache()
         {
-            int tokenCount = grammar.SymbolCount;
+            int tokenCount = grammar.TotalSymbolCount;
             tokenCache = new SppfNode[tokenCount];
 
             foreach (int token in grammar.EnumerateTokens())

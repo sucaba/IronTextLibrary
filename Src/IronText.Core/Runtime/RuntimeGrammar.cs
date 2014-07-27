@@ -8,7 +8,7 @@ namespace IronText.Runtime
     {
         private readonly Grammar grammar;
         private readonly bool[]  isNullable;
-        private readonly int     symbolCount;
+        private readonly int     totalSymbolCount;
 
         public RuntimeGrammar(Grammar grammar)
         {
@@ -16,7 +16,7 @@ namespace IronText.Runtime
             IRuntimeNullableFirstTables tables = new NullableFirstTables(grammar);
             this.isNullable  = tables.TokenToNullable;
             this.MaxRuleSize = tables.MaxRuleSize;
-            this.symbolCount = grammar.Symbols.IndexCount;
+            this.totalSymbolCount = grammar.TotalSymbolCount;
         }
 
         public int MaxRuleSize { get; private set; }
@@ -61,9 +61,9 @@ namespace IronText.Runtime
             return grammar.Symbols[token].Categories.Has(SymbolCategory.DoNotDelete);
         }
 
-        public int SymbolCount 
+        public int TotalSymbolCount 
         {
-            get { return symbolCount; }
+            get { return totalSymbolCount; }
         }
 
         public string SymbolName(int token)

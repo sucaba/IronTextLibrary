@@ -131,7 +131,11 @@ namespace IronText.Reflection.Managed
             // Create matchers
             foreach (var cilMatcher in definition.Matchers)
             {
-                SymbolBase outcome = GetMatcherOutcomeSymbol(result, symbolResolver, cilMatcher.MainOutcome, cilMatcher.AllOutcomes);
+                IAmbiguousSymbol outcome = GetMatcherOutcomeSymbol(
+                                                result,
+                                                symbolResolver,
+                                                cilMatcher.MainOutcome,
+                                                cilMatcher.AllOutcomes);
 
                 var matcher = new Matcher(
                     cilMatcher.Pattern,
@@ -173,7 +177,7 @@ namespace IronText.Reflection.Managed
             return result;
         }
 
-        private static SymbolBase GetMatcherOutcomeSymbol(
+        private static IAmbiguousSymbol GetMatcherOutcomeSymbol(
             Grammar                   grammar,
             ICilSymbolResolver        symbolResolver,
             CilSymbolRef              mainOutcome,

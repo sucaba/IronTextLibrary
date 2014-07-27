@@ -4,11 +4,50 @@ using System.Linq;
 using IronText.Algorithm;
 using IronText.Automata.Regular;
 using IronText.Reflection;
+using IronText.Compiler.Analysis;
 
 namespace IronText.MetadataCompiler
 {
-    interface IScanAmbiguityResolver
+    interface ILexicalAmbiguityCollector
     {
+        void CollectAmbiguities();
+    }
+
+    class LexicalAmbiguityCollector : ILexicalAmbiguityCollector
+    {
+        private readonly TokenProducerInfo[] actionToTokenProducer;
+        private readonly Dictionary<object, TokenProducerInfo> stateToTokenProducer;
+        private readonly IntSetType tokenSetType;
+        private readonly Grammar grammar;
+        private readonly ITdfaData tdfa;
+
+        public LexicalAmbiguityCollector(Grammar grammar, ITdfaData tdfa)
+        {
+            this.grammar               = grammar;
+            this.tdfa                  = tdfa;
+            this.actionToTokenProducer = new TokenProducerInfo[grammar.Matchers.IndexCount];
+            this.stateToTokenProducer  = new Dictionary<object, TokenProducerInfo>();
+            this.tokenSetType          = new BitSetType(grammar.TotalSymbolCount);
+        }
+
+        public void CollectAmbiguities()
+        {
+            // For each action store information about produced tokens
+            foreach (var matcher in grammar.Matchers)
+            {
+                RegisterAction(matcher);
+            }
+
+            // For each 'ambiguous scanner state' deduce all tokens
+            // which can be produced in this state.
+            foreach (var state in tdfa.EnumerateStates())
+            {
+                RegisterState(state);
+            }
+
+            DefineAmbiguities();
+        }
+
         /// <summary>
         /// Register tokens produced by an action
         /// </summary>
@@ -16,38 +55,9 @@ namespace IronText.MetadataCompiler
         /// <param name="disambiguation"></param>
         /// <param name="mainToken"></param>
         /// <param name="tokens"></param>
-        void RegisterAction(Matcher matcher);
-
-        /// <summary>
-        /// Register actions invoked in state
-        /// </summary>
-        /// <param name="state"></param>
-        /// 
-        void RegisterState(TdfaState state);
-
-        /// <summary>
-        /// Define ambiguous symbols
-        /// </summary>
-        /// <param name="grammar"></param>
-        void DefineAmbiguities(Grammar grammar);
-    }
-
-    class ScanAmbiguityResolver : IScanAmbiguityResolver
-    {
-        private readonly TokenProducerInfo[] actionToTokenProducer;
-        private readonly Dictionary<object, TokenProducerInfo> stateToTokenProducer;
-        private readonly IntSetType tokenSetType;
-
-        public ScanAmbiguityResolver(IntSetType tokenSetType, int actionCount)
+        private void RegisterAction(Matcher matcher)
         {
-            this.actionToTokenProducer = new TokenProducerInfo[actionCount];
-            this.stateToTokenProducer = new Dictionary<object, TokenProducerInfo>();
-            this.tokenSetType = tokenSetType;
-        }
-
-        public void RegisterAction(Matcher matcher)
-        {
-            SymbolBase      outcome = matcher.Outcome;
+            var outcome = matcher.Outcome;
             AmbiguousSymbol ambiguous;
             Symbol          deterministic;
 
@@ -86,7 +96,11 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        public void RegisterState(TdfaState state)
+        /// <summary>
+        /// Register actions invoked in state
+        /// </summary>
+        /// <param name="state"></param>
+        private void RegisterState(TdfaState state)
         {
             if (!state.IsAccepting)
             {
@@ -119,16 +133,27 @@ namespace IronText.MetadataCompiler
             state.Actions.Sort();
         }
 
-        public void DefineAmbiguities(Grammar grammar)
+        /// <summary>
+        /// Define ambiguous symbols
+        /// </summary>
+        private IEnumerable<AmbTokenInfo> DefineAmbiguities()
         {
+            var result = new List<AmbTokenInfo>();
+            int index = grammar.Symbols.IndexCount;
+
             foreach (var prod in stateToTokenProducer.Values)
             {
+                var amb = new AmbTokenInfo(index++, prod.MainTokenId, prod.PossibleTokens);
+                result.Add(amb);
+
                 var ambSymbol = grammar.Symbols.FindOrAddAmbiguous(prod.MainTokenId, prod.PossibleTokens);
                 prod.State.EnvelopeId = ambSymbol.Index;
 #if DEBUG
                 Debug.WriteLine("Created ambiguous symbol {0} for state #{1}", ambSymbol, prod.State.Index);
 #endif
             }
+
+            return result;
         }
 
         class TokenProducerInfo

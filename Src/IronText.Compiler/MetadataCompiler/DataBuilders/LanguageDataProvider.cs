@@ -119,13 +119,6 @@ namespace IronText.MetadataCompiler
 
         private bool CompileScannerTdfas(Grammar grammar)
         {
-            var tokenSet = new BitSetType(grammar.Symbols.IndexCount);
-
-            IScanAmbiguityResolver scanAmbiguityResolver
-                                = new ScanAmbiguityResolver(
-                                        tokenSet,
-                                        grammar.Matchers.IndexCount);
-
             ITdfaData tdfa;
             if (!CompileTdfa(logging, grammar, out tdfa))
             {
@@ -142,20 +135,8 @@ namespace IronText.MetadataCompiler
                 return false;
             }
 
-            // For each action store information about produced tokens
-            foreach (var scanProduction in grammar.Matchers)
-            {
-                scanAmbiguityResolver.RegisterAction(scanProduction);
-            }
-
-            // For each 'ambiguous scanner state' deduce all tokens
-            // which can be produced in this state.
-            foreach (var state in tdfa.EnumerateStates())
-            {
-                scanAmbiguityResolver.RegisterState(state);
-            }
-
-            scanAmbiguityResolver.DefineAmbiguities(grammar);
+            var resolver = new LexicalAmbiguityCollector(grammar, tdfa);
+            resolver.CollectAmbiguities();
 
             return true;
         }

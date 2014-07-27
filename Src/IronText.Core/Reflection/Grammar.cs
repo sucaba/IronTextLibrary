@@ -3,6 +3,7 @@ using IronText.Reflection.Reporting;
 using IronText.Reflection.Validation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
@@ -29,11 +30,12 @@ namespace IronText.Reflection
         {
             Options     = RuntimeOptions.Default;
 
-            Productions = new ProductionCollection(this);
-            Symbols     = new SymbolCollection(this);
-            Matchers    = new MatcherCollection(this);
-            Mergers     = new MergerCollection(this);
-            Globals     = new SemanticScope();
+            Productions      = new ProductionCollection(this);
+            Symbols          = new SymbolCollection(this);
+            Matchers         = new MatcherCollection(this);
+            Mergers          = new MergerCollection(this);
+            Globals          = new SemanticScope();
+            AmbiguousSymbols = new AmbiguousSymbolCollection(this);
 
             // TODO: Valid indexes for predefined symbols
 #if false
@@ -94,6 +96,8 @@ namespace IronText.Reflection
 
         public SymbolCollection     Symbols             { get; private set; }
 
+        public int                  TotalSymbolCount    { get { return Symbols.IndexCount + AmbiguousSymbols.Count; } }
+
         public ProductionCollection Productions         { get; private set; }
 
         public MatcherCollection    Matchers            { get; private set; }
@@ -101,6 +105,9 @@ namespace IronText.Reflection
         public MergerCollection     Mergers             { get; private set; }
 
         public ReportCollection     Reports             { get { return _reports; } }
+
+        public AmbiguousSymbolCollection AmbiguousSymbols { get; private set; }
+
 
         public void BuildIndexes()
         {

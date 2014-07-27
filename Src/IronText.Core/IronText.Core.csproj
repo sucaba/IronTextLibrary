@@ -131,11 +131,13 @@
     <Compile Include="Framework\LanguageFlags.cs" />
     <Compile Include="Misc\Discriminatable.cs" />
     <Compile Include="Misc\IdentityFactory.cs" />
+    <Compile Include="Reflection\AmbiguousSymbolCollection.cs" />
     <Compile Include="Reflection\Cil\CilSemanticRef.cs" />
     <Compile Include="Reflection\Cil\CilSemanticValue.cs" />
     <Compile Include="Reflection\Cil\CilSemanticScope.cs" />
     <Compile Include="Reflection\Comparers\SymbolIndexComparer.cs" />
     <Compile Include="Collections\Validation\DuplicateResolver.cs" />
+    <Compile Include="Reflection\IAmbiguousSymbol.cs" />
     <Compile Include="Reflection\Indexing\GrammarIndexer.cs" />
     <Compile Include="Reflection\Indexing\IGrammarIndexer.cs" />
     <Compile Include="Reflection\IProductionComponent.cs" />

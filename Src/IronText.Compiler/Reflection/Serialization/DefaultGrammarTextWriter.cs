@@ -145,7 +145,7 @@ namespace IronText.Reflection
             output.WriteLine();
         }
 
-        private static string Name(SymbolBase symbol)
+        private static string Name(IAmbiguousSymbol symbol)
         {
             return symbol == null ? "$skip" : symbol.Name; 
         }

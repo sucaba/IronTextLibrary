@@ -3,6 +3,7 @@ using System.Linq;
 using IronText.Algorithm;
 using IronText.Reflection;
 using IronText.Runtime;
+using System;
 
 namespace IronText.Compiler.Analysis
 {
@@ -44,9 +45,9 @@ namespace IronText.Compiler.Analysis
             return grammar.Symbols[leftToken].Productions.Select(ToRt);
         }
 
-        public int SymbolCount
+        public int TotalSymbolCount
         {
-            get {  return grammar.Symbols.IndexCount; }
+            get {  return grammar.TotalSymbolCount; }
         }
 
         public Precedence GetTermPrecedence(int token)
@@ -76,7 +77,19 @@ namespace IronText.Compiler.Analysis
 
         public IEnumerable<AmbTokenInfo> AmbiguousSymbols
         {
-            get { return grammar.Symbols.OfType<AmbiguousSymbol>().Select(ToRt); }
+            get 
+            { 
+                var oldResult = grammar.Symbols.OfType<AmbiguousSymbol>().Select(ToRt).ToArray();
+                /*
+                //var newResult = grammar.AmbiguousSymbols.Select(ToRt).ToArray();
+                if (newResult.Length != oldResult.Length)
+                {
+                    throw new InvalidOperationException();
+                }
+                */
+
+                return oldResult;
+            }
         }
 
         public void AddFirst(DotItem item, MutableIntSet output)

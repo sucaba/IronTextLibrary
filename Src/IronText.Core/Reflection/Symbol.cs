@@ -10,7 +10,7 @@ namespace IronText.Reflection
     /// Deterministic symbol
     /// </summary>
     [Serializable]
-    public class Symbol : SymbolBase, IProductionComponent
+    public class Symbol : SymbolBase, IProductionComponent, IAmbiguousSymbol
     {
         private readonly ReferenceCollection<Production> _productions;
 
@@ -28,6 +28,8 @@ namespace IronText.Reflection
             this._productions  = new ReferenceCollection<Production>();
             this.LocalScope    = new SemanticScope();
         }
+
+        public new int Index { get {  return base.Index; } }
 
         public bool IsAugmentedStart { get { return PredefinedTokens.AugmentedStart == Index; } }
 

@@ -19,7 +19,7 @@ namespace IronText.Automata.Lalr1
         {
             this.grammar = dfa.GrammarAnalysis;
 
-            this.data = new MutableTable<int>(dfa.States.Length, grammar.SymbolCount);
+            this.data = new MutableTable<int>(dfa.States.Length, grammar.TotalSymbolCount);
 
             Configure(dfa, flags, out underlyingTable); 
         }

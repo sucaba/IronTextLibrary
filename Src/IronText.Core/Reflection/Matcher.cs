@@ -11,7 +11,7 @@ namespace IronText.Reflection
 
         public Matcher(
             string           pattern,
-            SymbolBase       outcome        = null,
+            IAmbiguousSymbol outcome        = null,
             Disambiguation   disambiguation = Disambiguation.Undefined)
             : this(
                 ScanPattern.CreateRegular(pattern),
@@ -22,7 +22,7 @@ namespace IronText.Reflection
 
         public Matcher(
             ScanPattern      pattern,
-            SymbolBase       outcome        = null,
+            IAmbiguousSymbol outcome        = null,
             Disambiguation   disambiguation = Disambiguation.Undefined)
         {
             this.Pattern       = pattern;
@@ -44,7 +44,7 @@ namespace IronText.Reflection
 
         public Disambiguation   Disambiguation  { get; private set; }
 
-        public SymbolBase       Outcome         { get; private set; }
+        public IAmbiguousSymbol Outcome         { get; private set; }
 
         public Joint            Joint           { get { return _joint; } }
 

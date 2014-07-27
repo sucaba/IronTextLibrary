@@ -188,7 +188,7 @@
     <Compile Include="MetadataCompiler\CompiledLanguageProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserConflictLogging.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\LanguageDataProvider.cs" />
-    <Compile Include="MetadataCompiler\DataBuilders\ScanAmbiguityResolver.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\LexicalAmbiguityCollector.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ScannerDescriptor.cs" />
     <Compile Include="Reflection\Reporting\ParserAutomata.cs" />
     <Compile Include="Reflection\Reporting\ParserState.cs" />

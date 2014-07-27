@@ -246,7 +246,7 @@ namespace IronText.Runtime
         private int[] GetExpectedTokens(int state)
         {
             var result = new List<int>();
-            int tokenCount = grammar.SymbolCount;
+            int tokenCount = grammar.TotalSymbolCount;
 
             for (int i = 0; i != tokenCount; ++i)
             {

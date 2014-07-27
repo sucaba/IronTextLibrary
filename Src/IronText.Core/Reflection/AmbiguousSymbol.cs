@@ -16,7 +16,7 @@ namespace IronText.Reflection
     /// allows only single alternative or by a forking extended-GLR parsing paths.
     /// </remarks>
     [Serializable]
-    public sealed class AmbiguousSymbol : SymbolBase
+    public sealed class AmbiguousSymbol : SymbolBase, IAmbiguousSymbol
     {
         public AmbiguousSymbol(int mainToken, IEnumerable<int> tokens)
         {
@@ -28,6 +28,11 @@ namespace IronText.Reflection
         {
             this.MainToken = main == null ? -1 : main.Index;
             this.Tokens    = new ReadOnlyCollection<int>((from s in symbols select s.Index).ToArray());
+        }
+
+        public new int Index
+        {
+            get {  return base.Index; }
         }
 
         /// <summary>

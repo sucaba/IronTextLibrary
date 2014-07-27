@@ -47,7 +47,7 @@ namespace IronText.Collections
         {
             if (!canModify)
             {
-                 throw new InvalidOperationException();
+                 // throw new InvalidOperationException();
             }
         }
 
