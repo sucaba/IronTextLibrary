@@ -100,10 +100,14 @@ namespace IronText.Tests.Collections
                 get { throw new NotImplementedException(); }
             }
 
-            public void Attached(int index, TestScope scope)
+            public void Attached(TestScope scope)
             {
                 this.IsAttached = true;
                 this.AttachedScope = scope;
+            }
+
+            public void AssignIndex(int index)
+            {
             }
 
             public void Detaching(TestScope scope)

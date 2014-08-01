@@ -36,17 +36,21 @@ namespace IronText.Collections
 
         protected virtual void OnDetaching() { }
 
-        void IIndexable<TScope>.Attached(int id, TScope context)
+        void IIndexable<TScope>.Attached(TScope context)
         {
             if (!IsDetached)
             {
                 throw new InvalidOperationException("Object is already attached to a table.");
             }
 
-            Index = id;
             Scope = context;
 
             OnAttached();
+        }
+
+        void IIndexable<TScope>.AssignIndex(int index)
+        {
+            this.Index = index;
         }
 
         void IIndexable<TScope>.Detaching(TScope context)

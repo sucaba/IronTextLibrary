@@ -47,7 +47,7 @@ namespace IronText.Collections
         {
             if (!canModify)
             {
-                 // throw new InvalidOperationException();
+                 throw new InvalidOperationException();
             }
         }
 
@@ -105,8 +105,8 @@ namespace IronText.Collections
                 index = intAssoc.GenerateIndex();
             }
 
-            intAssoc.Set(index, item);
-            AttachedItem(index);
+            AttachedItem(item);
+            AssignIndex(index, item);
 
             return item;
         }
@@ -193,14 +193,22 @@ namespace IronText.Collections
             return -1;
         }
 
-        private void AttachedItem(int index)
+        private void AssignIndex(int index, T item)
         {
-            var item = intAssoc.Get(index);
+            if (item != null)
+            {
+                intAssoc.Set(index, item);
+                identityToIndex.Add(item.Identity, index);
+                item.AssignIndex(index);
+            }
+        }
+
+        private void AttachedItem(T item)
+        {
             if (item != null)
             {
                 items.Add(item);
-                identityToIndex.Add(item.Identity, index);
-                item.Attached(index, Scope);
+                item.Attached(Scope);
             }
         }
 
