@@ -7,9 +7,9 @@ namespace IronText.Reflection
     public enum Disambiguation
     {
         /// <summary>
-        /// Default value which should not be used in practice
+        /// Proper alternative is chosen depending on a parser state
         /// </summary>
-        Undefined = 0,
+        Contextual,
 
         /// <summary>
         /// Alternative has priority over other non-exclusive alternatives.
@@ -18,10 +18,5 @@ namespace IronText.Reflection
         /// It is error to have more than one exclusive alternative within some ambiguity
         /// </remarks>
         Exclusive,
-
-        /// <summary>
-        /// Proper alternative is chosen depending on a parser state
-        /// </summary>
-        Contextual
     }
 }

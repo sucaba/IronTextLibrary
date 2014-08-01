@@ -11,8 +11,8 @@ namespace IronText.Reflection
 
         public Matcher(
             string           pattern,
-            ITerminal outcome        = null,
-            Disambiguation   disambiguation = Disambiguation.Undefined)
+            ITerminal        outcome        = null,
+            Disambiguation?  disambiguation = null)
             : this(
                 ScanPattern.CreateRegular(pattern),
                 outcome,
@@ -22,19 +22,19 @@ namespace IronText.Reflection
 
         public Matcher(
             ScanPattern      pattern,
-            ITerminal outcome        = null,
-            Disambiguation   disambiguation = Disambiguation.Undefined)
+            ITerminal        outcome        = null,
+            Disambiguation?  disambiguation = null)
         {
             this.Pattern       = pattern;
             this.Outcome       = outcome;
 
-            if (disambiguation == Disambiguation.Undefined)
+            if (!disambiguation.HasValue)
             {
                 this.Disambiguation = pattern.DefaultDisambiguation;
             }
             else
             {
-                this.Disambiguation = disambiguation;
+                this.Disambiguation = disambiguation.Value;
             }
 
             this._joint = new Joint();
@@ -44,7 +44,7 @@ namespace IronText.Reflection
 
         public Disambiguation   Disambiguation  { get; private set; }
 
-        public ITerminal Outcome         { get; private set; }
+        public ITerminal        Outcome         { get; private set; }
 
         public Joint            Joint           { get { return _joint; } }
 
