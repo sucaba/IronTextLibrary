@@ -66,10 +66,9 @@ namespace IronText.MetadataCompiler
                 actionToTokenProducer[matcher.Index] =
                     new TokenProducerInfo
                     {
-                        MainTokenId     = -1,
                         Disambiguation  = matcher.Disambiguation,
                         RealActions     = SparseIntSetType.Instance.Of(matcher.Index),
-                        PossibleTokens  = tokenSetType.Empty
+                        AllTokens       = tokenSetType.Empty
                     };
             }
             else if ((ambiguous = outcome as AmbiguousTerminal) != null)
@@ -77,10 +76,9 @@ namespace IronText.MetadataCompiler
                 actionToTokenProducer[matcher.Index] =
                     new TokenProducerInfo
                     {
-                        MainTokenId     = ambiguous.Main.Index,
                         Disambiguation  = matcher.Disambiguation,
                         RealActions     = SparseIntSetType.Instance.Of(matcher.Index),
-                        PossibleTokens  = tokenSetType.Of(ambiguous.Alternatives.Select(alt => alt.Index))
+                        AllTokens       = tokenSetType.Of(ambiguous.Alternatives.Select(alt => alt.Index))
                     };
             }
             else if ((deterministic = outcome as Symbol) != null)
@@ -88,10 +86,9 @@ namespace IronText.MetadataCompiler
                 actionToTokenProducer[matcher.Index] =
                     new TokenProducerInfo
                     {
-                        MainTokenId     = deterministic.Index,
                         Disambiguation  = matcher.Disambiguation,
                         RealActions     = SparseIntSetType.Instance.Of(matcher.Index),
-                        PossibleTokens  = tokenSetType.Of(deterministic.Index)
+                        AllTokens       = tokenSetType.Of(deterministic.Index)
                     };
             }
         }
@@ -114,13 +111,13 @@ namespace IronText.MetadataCompiler
                 select actionToTokenProducer[act];
 
             var stateTokenProducer = TokenProducerInfo.Combine(tokenSetType, stateTokenProducers);
-            switch (stateTokenProducer.PossibleTokens.Count)
+            switch (stateTokenProducer.AllTokens.Count)
             {
                 case 0:
                     state.EnvelopeId = -1;
                     break;
                 case 1:
-                    state.EnvelopeId = stateTokenProducer.PossibleTokens.First();
+                    state.EnvelopeId = stateTokenProducer.AllTokens.First();
                     break;
                 default:
                     stateTokenProducer.State = state;
@@ -143,7 +140,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var prod in stateToTokenProducer.Values)
             {
-                var amb = new AmbTokenInfo(index, prod.MainTokenId, prod.PossibleTokens);
+                var amb = new AmbTokenInfo(index, prod.AllTokens);
                 prod.State.EnvelopeId = index;
                 result.Add(amb);
                 ++index;
@@ -160,7 +157,6 @@ namespace IronText.MetadataCompiler
         {
             public TokenProducerInfo()
             {
-                MainTokenId = PredefinedTokens.NoToken;
             }
 
             public TdfaState State { get; set; }
@@ -168,21 +164,16 @@ namespace IronText.MetadataCompiler
             public Disambiguation Disambiguation { get; set; }
 
             /// <summary>
-            /// The most probable token id or <c>-1</c> if there is no token to distinguish.
-            /// </summary>
-            public int MainTokenId { get; set; }
-
-            /// <summary>
             /// All tokens which can be produced by this rule.
             /// Can be empty for void-rules.
             /// </summary>
-            public IntSet PossibleTokens { get; set; }
+            public IntSet AllTokens { get; set; }
 
             public IntSet RealActions { get; set; }
 
             public override int GetHashCode()
             {
-                return unchecked(MainTokenId + PossibleTokens.Count + RealActions.Count);
+                return unchecked(AllTokens.First() + AllTokens.Count + RealActions.Count);
             }
 
             public override bool Equals(object obj)
@@ -193,8 +184,7 @@ namespace IronText.MetadataCompiler
             public bool Equals(TokenProducerInfo other)
             {
                 return other != null
-                    && MainTokenId == other.MainTokenId
-                    && PossibleTokens.SetEquals(other.PossibleTokens)
+                    && AllTokens.SetEquals(other.AllTokens)
                     && RealActions.SetEquals(other.RealActions);
             }
 
@@ -207,8 +197,7 @@ namespace IronText.MetadataCompiler
                             {
                                 Disambiguation = Disambiguation.Exclusive,
                                 RealActions = SparseIntSetType.Instance.Empty,
-                                PossibleTokens = tokenSetType.Empty,
-                                MainTokenId = -1,
+                                AllTokens = tokenSetType.Empty,
                             };
                     case 1: return items.First();
                 }
@@ -235,18 +224,12 @@ namespace IronText.MetadataCompiler
 
                     foreach (var item in items)
                     {
-                        if (mainToken != PredefinedTokens.NoToken && item.MainTokenId != PredefinedTokens.NoToken)
-                        {
-                            mainToken = item.MainTokenId;
-                        }
-
-                        allPossible.AddAll(item.PossibleTokens);
+                        allPossible.AddAll(item.AllTokens);
                         allActions.AddAll(item.RealActions);
                     }
 
-                    result.MainTokenId = mainToken;
                     result.RealActions = allActions.CompleteAndDestroy();
-                    result.PossibleTokens = allPossible.CompleteAndDestroy();
+                    result.AllTokens = allPossible.CompleteAndDestroy();
                 }
 
                 return result;

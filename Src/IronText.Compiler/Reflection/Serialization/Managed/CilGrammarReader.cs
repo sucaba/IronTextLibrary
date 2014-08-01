@@ -131,11 +131,7 @@ namespace IronText.Reflection.Managed
             // Create matchers
             foreach (var cilMatcher in definition.Matchers)
             {
-                ITerminal outcome = GetMatcherOutcomeSymbol(
-                                                result,
-                                                symbolResolver,
-                                                cilMatcher.MainOutcome,
-                                                cilMatcher.AllOutcomes);
+                ITerminal outcome = GetMatcherOutcomeSymbol(result, symbolResolver, cilMatcher.AllOutcomes);
 
                 var matcher = new Matcher(
                     cilMatcher.Pattern,
@@ -180,10 +176,8 @@ namespace IronText.Reflection.Managed
         private static ITerminal GetMatcherOutcomeSymbol(
             Grammar                   grammar,
             ICilSymbolResolver        symbolResolver,
-            CilSymbolRef              mainOutcome,
             IEnumerable<CilSymbolRef> allOutcomes)
         {
-            Symbol main = symbolResolver.GetSymbol(mainOutcome);
             Symbol[] all = (from outcome in allOutcomes
                              select symbolResolver.GetSymbol(outcome))
                              .ToArray();
@@ -191,8 +185,8 @@ namespace IronText.Reflection.Managed
             switch (all.Length)
             {
                 case 0:  return null;
-                case 1:  return main;
-                default: return new AmbiguousTerminal(main, all);
+                case 1:  return all[0];
+                default: return new AmbiguousTerminal(all);
             }
         }
 

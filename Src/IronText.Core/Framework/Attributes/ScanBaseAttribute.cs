@@ -73,7 +73,6 @@ namespace IronText.Framework
             if (tokenType != typeof(void))
             {
                 var outcome = CilSymbolRef.Create(tokenType, LiteralText);
-                matcher.MainOutcome = outcome;
                 matcher.AllOutcomes.Add(outcome);
             }
 

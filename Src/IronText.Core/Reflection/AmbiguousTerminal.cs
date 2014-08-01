@@ -18,9 +18,8 @@ namespace IronText.Reflection
     [Serializable]
     public sealed class AmbiguousTerminal : ITerminal
     {
-        public AmbiguousTerminal(Symbol main, Symbol[] symbols)
+        public AmbiguousTerminal(Symbol[] symbols)
         {
-            this.Main         = main;
             this.Alternatives = symbols;
         }
 
@@ -53,8 +52,6 @@ namespace IronText.Reflection
 
             }
         }
-
-        public Symbol   Main         { get; private set; }
 
         public Symbol[] Alternatives { get; private set; }
 

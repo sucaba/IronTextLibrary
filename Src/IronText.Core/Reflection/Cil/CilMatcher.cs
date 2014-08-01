@@ -17,7 +17,6 @@ namespace IronText.Reflection.Managed
             : this()
         {
             var outcome = CilSymbolRef.Create(outcomeType);
-            MainOutcome = outcome;
             AllOutcomes.Add(outcome);
         }
 
@@ -30,8 +29,6 @@ namespace IronText.Reflection.Managed
         public ScanPattern          Pattern                { get; set; }
 
         public Pipe<IActionCode>    ActionBuilder          { get; set; }
-
-        public CilSymbolRef         MainOutcome            { get; set; }
 
         public List<CilSymbolRef>   AllOutcomes            { get; private set; }
 

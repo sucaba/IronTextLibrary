@@ -103,7 +103,6 @@ namespace IronText.Reflection.Managed
             var result  = new CilMatcher
             {
                 Context         = CilSemanticRef.None,
-                MainOutcome     = outcome,
                 AllOutcomes     = { outcome },
                 Disambiguation  = Disambiguation.Exclusive,
                 Pattern         = ScanPattern.CreateLiteral(literal),
