@@ -18,8 +18,8 @@ namespace IronText.MetadataCompiler
         private readonly TokenProducerInfo[] actionToTokenProducer;
         private readonly Dictionary<object, TokenProducerInfo> stateToTokenProducer;
         private readonly IntSetType tokenSetType;
-        private readonly Grammar grammar;
-        private readonly ITdfaData tdfa;
+        private readonly Grammar    grammar;
+        private readonly ITdfaData  tdfa;
 
         public LexicalAmbiguityCollector(Grammar grammar, ITdfaData tdfa)
         {
@@ -45,7 +45,7 @@ namespace IronText.MetadataCompiler
                 RegisterState(state);
             }
 
-            return DefineAmbiguities();
+            return GetAmbiguities();
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace IronText.MetadataCompiler
                     {
                         Disambiguation  = matcher.Disambiguation,
                         RealActions     = SparseIntSetType.Instance.Of(matcher.Index),
-                        AllTokens       = tokenSetType.Empty
+                        Alternatives       = tokenSetType.Empty
                     };
             }
             else if ((ambiguous = outcome as AmbiguousTerminal) != null)
@@ -78,7 +78,7 @@ namespace IronText.MetadataCompiler
                     {
                         Disambiguation  = matcher.Disambiguation,
                         RealActions     = SparseIntSetType.Instance.Of(matcher.Index),
-                        AllTokens       = tokenSetType.Of(ambiguous.Alternatives.Select(alt => alt.Index))
+                        Alternatives       = tokenSetType.Of(ambiguous.Alternatives.Select(alt => alt.Index))
                     };
             }
             else if ((deterministic = outcome as Symbol) != null)
@@ -88,7 +88,7 @@ namespace IronText.MetadataCompiler
                     {
                         Disambiguation  = matcher.Disambiguation,
                         RealActions     = SparseIntSetType.Instance.Of(matcher.Index),
-                        AllTokens       = tokenSetType.Of(deterministic.Index)
+                        Alternatives       = tokenSetType.Of(deterministic.Index)
                     };
             }
         }
@@ -111,13 +111,13 @@ namespace IronText.MetadataCompiler
                 select actionToTokenProducer[act];
 
             var stateTokenProducer = TokenProducerInfo.Combine(tokenSetType, stateTokenProducers);
-            switch (stateTokenProducer.AllTokens.Count)
+            switch (stateTokenProducer.Alternatives.Count)
             {
                 case 0:
                     state.EnvelopeId = -1;
                     break;
                 case 1:
-                    state.EnvelopeId = stateTokenProducer.AllTokens.First();
+                    state.EnvelopeId = stateTokenProducer.Alternatives.First();
                     break;
                 default:
                     stateTokenProducer.State = state;
@@ -133,21 +133,17 @@ namespace IronText.MetadataCompiler
         /// <summary>
         /// Define ambiguous symbols
         /// </summary>
-        private IEnumerable<AmbTokenInfo> DefineAmbiguities()
+        private IEnumerable<AmbTokenInfo> GetAmbiguities()
         {
             var result = new List<AmbTokenInfo>();
             int index = grammar.Symbols.IndexCount;
 
             foreach (var prod in stateToTokenProducer.Values)
             {
-                var amb = new AmbTokenInfo(index, prod.AllTokens);
+                var amb = new AmbTokenInfo(index, prod.Alternatives);
                 prod.State.EnvelopeId = index;
                 result.Add(amb);
                 ++index;
-
-#if DEBUG
-                Debug.WriteLine("Created ambiguous symbol #{0} for state #{1}", amb.Index, prod.State.Index);
-#endif
             }
 
             return result;
@@ -167,13 +163,13 @@ namespace IronText.MetadataCompiler
             /// All tokens which can be produced by this rule.
             /// Can be empty for void-rules.
             /// </summary>
-            public IntSet AllTokens { get; set; }
+            public IntSet Alternatives { get; set; }
 
             public IntSet RealActions { get; set; }
 
             public override int GetHashCode()
             {
-                return unchecked(AllTokens.First() + AllTokens.Count + RealActions.Count);
+                return unchecked(Alternatives.First() + Alternatives.Count + RealActions.Count);
             }
 
             public override bool Equals(object obj)
@@ -184,7 +180,7 @@ namespace IronText.MetadataCompiler
             public bool Equals(TokenProducerInfo other)
             {
                 return other != null
-                    && AllTokens.SetEquals(other.AllTokens)
+                    && Alternatives.SetEquals(other.Alternatives)
                     && RealActions.SetEquals(other.RealActions);
             }
 
@@ -197,7 +193,7 @@ namespace IronText.MetadataCompiler
                             {
                                 Disambiguation = Disambiguation.Exclusive,
                                 RealActions = SparseIntSetType.Instance.Empty,
-                                AllTokens = tokenSetType.Empty,
+                                Alternatives = tokenSetType.Empty,
                             };
                     case 1: return items.First();
                 }
@@ -223,12 +219,12 @@ namespace IronText.MetadataCompiler
 
                     foreach (var item in items)
                     {
-                        allPossible.AddAll(item.AllTokens);
+                        allPossible.AddAll(item.Alternatives);
                         allActions.AddAll(item.RealActions);
                     }
 
                     result.RealActions = allActions.CompleteAndDestroy();
-                    result.AllTokens = allPossible.CompleteAndDestroy();
+                    result.Alternatives = allPossible.CompleteAndDestroy();
                 }
 
                 return result;

@@ -7,16 +7,16 @@ namespace IronText.Compiler.Analysis
 {
     internal class AmbTokenInfo
     {
-        public AmbTokenInfo(int index, IEnumerable<int> allTokens)
+        public AmbTokenInfo(int envelopeIndex, IEnumerable<int> tokens)
         {
-            this.Index     = index;
-            this.AllTokens = allTokens.ToArray();
+            this.EnvelopeIndex = envelopeIndex;
+            this.Alternatives  = tokens.ToArray();
         }
 
-        public int   Index     { get; private set; }
+        public int   EnvelopeIndex { get; private set; }
 
-        public int   MainToken { get { return AllTokens[0]; } }
+        public int   MainToken     { get { return Alternatives[0]; } }
 
-        public int[] AllTokens { get; private set; }
+        public int[] Alternatives  { get; private set; }
     }
 }

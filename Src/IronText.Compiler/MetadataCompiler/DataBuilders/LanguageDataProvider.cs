@@ -137,8 +137,8 @@ namespace IronText.MetadataCompiler
                 {
                     var ambOutcome = outcome as AmbiguousTerminal;
                     actionToToken[i] = (from amb in ambiguities
-                                       where Enumerable.SequenceEqual(amb.AllTokens, ambOutcome.Alternatives.Select(alt => alt.Index))
-                                       select amb.Index)
+                                       where Enumerable.SequenceEqual(amb.Alternatives, ambOutcome.Alternatives.Select(alt => alt.Index))
+                                       select amb.EnvelopeIndex)
                                        .SingleOrDefault();
                 }
                 else
