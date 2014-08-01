@@ -67,9 +67,6 @@ namespace IronText.Framework
 
             var matcher = new CilMatcher();
 
-            var contextType = GetContextType();
-            //var context = CilContextRef.ByType(contextType);
-
             if (tokenType != typeof(void))
             {
                 var outcome = CilSymbolRef.Create(tokenType, LiteralText);

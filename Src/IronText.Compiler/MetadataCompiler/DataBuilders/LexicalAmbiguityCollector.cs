@@ -218,7 +218,6 @@ namespace IronText.MetadataCompiler
                 if (result == null)
                 {
                     result = new TokenProducerInfo { Disambiguation = Disambiguation.Exclusive };
-                    int mainToken = PredefinedTokens.NoToken;
                     var allPossible = tokenSetType.Mutable();
                     var allActions = SparseIntSetType.Instance.Mutable();
 
