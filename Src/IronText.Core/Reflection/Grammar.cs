@@ -35,7 +35,6 @@ namespace IronText.Reflection
             Matchers         = new MatcherCollection(this);
             Mergers          = new MergerCollection(this);
             Globals          = new SemanticScope();
-            AmbiguousSymbols = new AmbiguousSymbolCollection(this);
 
             // TODO: Valid indexes for predefined symbols
 #if false
@@ -96,8 +95,6 @@ namespace IronText.Reflection
 
         public SymbolCollection     Symbols             { get; private set; }
 
-        public int                  TotalSymbolCount    { get { return Symbols.IndexCount + AmbiguousSymbols.Count; } }
-
         public ProductionCollection Productions         { get; private set; }
 
         public MatcherCollection    Matchers            { get; private set; }
@@ -105,9 +102,6 @@ namespace IronText.Reflection
         public MergerCollection     Mergers             { get; private set; }
 
         public ReportCollection     Reports             { get { return _reports; } }
-
-        public AmbiguousSymbolCollection AmbiguousSymbols { get; private set; }
-
 
         public void BuildIndexes()
         {

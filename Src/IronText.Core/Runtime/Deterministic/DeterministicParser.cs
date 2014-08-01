@@ -243,14 +243,14 @@ namespace IronText.Runtime
                 });
         }
 
-        private int[] GetExpectedTokens(int state)
+        private int[] GetExpectedTokens(int parserState)
         {
             var result = new List<int>();
-            int tokenCount = grammar.TotalSymbolCount;
+            int tokenCount = grammar.TokenCount;
 
             for (int i = 0; i != tokenCount; ++i)
             {
-                var action = actionTable(state, i);
+                var action = actionTable(parserState, i);
                 if (action != ParserAction.FailActionCell && grammar.IsTerminal(i))
                 {
                     result.Add(i);

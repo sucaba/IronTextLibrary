@@ -10,7 +10,7 @@ namespace IronText.MetadataCompiler
 {
     interface ILexicalAmbiguityCollector
     {
-        void CollectAmbiguities();
+        IEnumerable<AmbTokenInfo> CollectAmbiguities();
     }
 
     class LexicalAmbiguityCollector : ILexicalAmbiguityCollector
@@ -27,10 +27,10 @@ namespace IronText.MetadataCompiler
             this.tdfa                  = tdfa;
             this.actionToTokenProducer = new TokenProducerInfo[grammar.Matchers.IndexCount];
             this.stateToTokenProducer  = new Dictionary<object, TokenProducerInfo>();
-            this.tokenSetType          = new BitSetType(grammar.TotalSymbolCount);
+            this.tokenSetType          = new BitSetType(grammar.Symbols.IndexCount);
         }
 
-        public void CollectAmbiguities()
+        public IEnumerable<AmbTokenInfo> CollectAmbiguities()
         {
             // For each action store information about produced tokens
             foreach (var matcher in grammar.Matchers)
@@ -45,7 +45,7 @@ namespace IronText.MetadataCompiler
                 RegisterState(state);
             }
 
-            DefineAmbiguities();
+            return DefineAmbiguities();
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace IronText.MetadataCompiler
         private void RegisterAction(Matcher matcher)
         {
             var outcome = matcher.Outcome;
-            AmbiguousSymbol ambiguous;
+            AmbiguousTerminal ambiguous;
             Symbol          deterministic;
 
             if (outcome == null)
@@ -72,15 +72,15 @@ namespace IronText.MetadataCompiler
                         PossibleTokens  = tokenSetType.Empty
                     };
             }
-            else if ((ambiguous = outcome as AmbiguousSymbol) != null)
+            else if ((ambiguous = outcome as AmbiguousTerminal) != null)
             {
                 actionToTokenProducer[matcher.Index] =
                     new TokenProducerInfo
                     {
-                        MainTokenId     = ambiguous.MainToken,
+                        MainTokenId     = ambiguous.Main.Index,
                         Disambiguation  = matcher.Disambiguation,
                         RealActions     = SparseIntSetType.Instance.Of(matcher.Index),
-                        PossibleTokens  = tokenSetType.Of(ambiguous.Tokens)
+                        PossibleTokens  = tokenSetType.Of(ambiguous.Alternatives.Select(alt => alt.Index))
                     };
             }
             else if ((deterministic = outcome as Symbol) != null)
@@ -143,13 +143,13 @@ namespace IronText.MetadataCompiler
 
             foreach (var prod in stateToTokenProducer.Values)
             {
-                var amb = new AmbTokenInfo(index++, prod.MainTokenId, prod.PossibleTokens);
+                var amb = new AmbTokenInfo(index, prod.MainTokenId, prod.PossibleTokens);
+                prod.State.EnvelopeId = index;
                 result.Add(amb);
+                ++index;
 
-                var ambSymbol = grammar.Symbols.FindOrAddAmbiguous(prod.MainTokenId, prod.PossibleTokens);
-                prod.State.EnvelopeId = ambSymbol.Index;
 #if DEBUG
-                Debug.WriteLine("Created ambiguous symbol {0} for state #{1}", ambSymbol, prod.State.Index);
+                Debug.WriteLine("Created ambiguous symbol #{0} for state #{1}", amb.Index, prod.State.Index);
 #endif
             }
 

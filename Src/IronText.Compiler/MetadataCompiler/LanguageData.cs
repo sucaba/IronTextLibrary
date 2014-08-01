@@ -11,18 +11,22 @@ namespace IronText.MetadataCompiler
     /// </summary>
     internal class LanguageData
     {
-        public Grammar      Grammar             { get; set; }
+        public Grammar          Grammar             { get; set; }
 
-        public bool         IsDeterministic     { get; set; }
+        public GrammarAnalysis  Analysis            { get; set; }
 
-        public ITable<int>  ParserActionTable   { get; set; }
+        public bool             IsDeterministic     { get; set; }
 
-        public int[]        ParserConflictActionTable { get; set; }
+        public ITable<int>      ParserActionTable   { get; set; }
 
-        public int[]        StateToToken        { get; set; }
+        public int[]            ParserConflictActionTable { get; set; }
 
-        public int[]        TokenComplexity     { get; set; }
+        public int[]            StateToToken        { get; set; }
+
+        public int[]            TokenComplexity     { get; set; }
 
         public StackSemanticBinding[]  SemanticBindings  { get; set; }
+
+        public int[]            MatchActionToToken  { get; set; }
     }
 }

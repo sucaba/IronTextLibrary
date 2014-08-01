@@ -43,6 +43,8 @@ namespace IronText.Runtime
 
             public static readonly FieldInfo tokenComplexity = ExpressionUtils.GetField((LanguageBase lang) => lang.tokenComplexity);
 
+            public static readonly FieldInfo matcherToToken  = ExpressionUtils.GetField((LanguageBase lang) => lang.matcherToToken);
+
             public static readonly FieldInfo createDefaultContext = ExpressionUtils.GetField((LanguageBase lang) => lang.createDefaultContext);
         }
 
@@ -59,6 +61,7 @@ namespace IronText.Runtime
         protected int[]                  stateToSymbol;
         protected int[]                  parserConflictActions;
         protected int[]                  tokenComplexity;
+        protected int[]                  matcherToToken;
         private ResourceAllocator        allocator;
         protected Func<object>           createDefaultContext;
         private const int maxActionCount = 16;
@@ -118,22 +121,7 @@ namespace IronText.Runtime
                     logging);
             }
 
-            // TODO: Generate this table in build-time instead
-            var actionToToken = new int[grammar.Matchers.IndexCount];
-            for (int i = 0; i != actionToToken.Length; ++i)
-            {
-                var outcome = grammar.Matchers[i].Outcome;
-                if (outcome == null)
-                {
-                    actionToToken[i] = -1;
-                }
-                else
-                {
-                    actionToToken[i] = outcome.Index;
-                }
-            }
-
-            return new Scanner(scan1, input, document, context, maxActionCount, actionToToken, logging);
+            return new Scanner(scan1, input, document, context, maxActionCount, matcherToToken, logging);
         }
 
         public IPushParser CreateParser<TNode>(IProducer<TNode> producer, ILogging logging)

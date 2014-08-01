@@ -15,10 +15,12 @@ namespace IronText.Compiler.Analysis
         private readonly Grammar grammar;
         private readonly IBuildtimeNullableFirstTables tables;
         private int[]    tokenComplexity;
+        private AmbTokenInfo[] ambiguities;
 
-        public GrammarAnalysis(Grammar grammar)
+        public GrammarAnalysis(Grammar grammar, IEnumerable<AmbTokenInfo> ambiguities)
         {
             this.grammar         = grammar;
+            this.ambiguities     = ambiguities.ToArray();
             this.tables          = new NullableFirstTables(grammar);
             this.tokenComplexity = BuildTokenComplexity(grammar);
         }
@@ -30,9 +32,9 @@ namespace IronText.Compiler.Analysis
         /// </summary>
         public int[] GetTokenComplexity() { return tokenComplexity; }
 
-        public string GetTokenName(int token)
-        {
-            return grammar.Symbols[token].Name;
+        public string GetTokenName(int token) 
+        { 
+            return grammar.Symbols[token].Name; 
         }
 
         public bool IsTerminal(int token)
@@ -47,7 +49,7 @@ namespace IronText.Compiler.Analysis
 
         public int TotalSymbolCount
         {
-            get {  return grammar.TotalSymbolCount; }
+            get {  return grammar.Symbols.IndexCount + ambiguities.Length; }
         }
 
         public Precedence GetTermPrecedence(int token)
@@ -75,22 +77,7 @@ namespace IronText.Compiler.Analysis
             get { return tables.TokenSet; }
         }
 
-        public IEnumerable<AmbTokenInfo> AmbiguousSymbols
-        {
-            get 
-            { 
-                var oldResult = grammar.Symbols.OfType<AmbiguousSymbol>().Select(ToRt).ToArray();
-                /*
-                //var newResult = grammar.AmbiguousSymbols.Select(ToRt).ToArray();
-                if (newResult.Length != oldResult.Length)
-                {
-                    throw new InvalidOperationException();
-                }
-                */
-
-                return oldResult;
-            }
-        }
+        public IEnumerable<AmbTokenInfo> AmbiguousSymbols { get { return ambiguities; } }
 
         public void AddFirst(DotItem item, MutableIntSet output)
         {
@@ -118,14 +105,6 @@ namespace IronText.Compiler.Analysis
                 production.Index,
                 production.Outcome.Index,
                 production.Pattern.Select(sym => sym.Index));
-        }
-
-        private AmbTokenInfo ToRt(AmbiguousSymbol symbol)
-        {
-            return new AmbTokenInfo(
-                symbol.Index,
-                symbol.MainToken,
-                symbol.Tokens);
         }
 
         private static int[] BuildTokenComplexity(Grammar grammar)

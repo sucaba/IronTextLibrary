@@ -38,7 +38,7 @@ namespace IronText.Tests.Framework.Performance
                 grammar.Productions.Add(outcome, pattern);
             }
 
-            var target = new Lalr1Dfa(new GrammarAnalysis(grammar), LrTableOptimizations.Default);
+            var target = new Lalr1Dfa(new GrammarAnalysis(grammar, new AmbTokenInfo[0]), LrTableOptimizations.Default);
         }
     }
 }

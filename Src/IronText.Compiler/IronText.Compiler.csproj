@@ -156,7 +156,6 @@
     <Compile Include="Lib\IL\Backend\Cecil\CecilMethodNs.cs" />
     <Compile Include="Lib\IL\Backend\Cecil\CecilResolutionScopeNs.cs" />
     <Compile Include="Lib\IL\Backend\Cecil\CecilTypeNs.cs" />
-    <Compile Include="Lib\IL\Backend\Cecil\IGenericContext.cs" />
     <Compile Include="Lib\IL\Backend\Cecil\RewriteScopeResolver.cs" />
     <Compile Include="Lib\IL\Backend\ReflectionEmit\ILGeneratorBackend.cs" />
     <Compile Include="Lib\IL\CilBackend.cs" />

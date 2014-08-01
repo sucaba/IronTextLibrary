@@ -94,13 +94,15 @@ namespace IronText.Tests.Algorithm
                 int ruleIndex = tdfa.GetAction(acceptingState.Value) ?? -1;
                 int tokenLength = pos - start;
 
-                var prod = descriptor.Matchers[ruleIndex];
+                var matcher = descriptor.Matchers[ruleIndex];
 
-                if (prod.Outcome != null)
+                if (matcher.Outcome != null)
                 {
+                    var detOutcome = (Symbol)matcher.Outcome;
+
                     // Emit next token
                     visitor = visitor.Next(
-                        new Msg(prod.Outcome.Index, text.Substring(start, tokenLength), null, new Loc(Loc.MemoryString, start, pos)));
+                        new Msg(detOutcome.Index, text.Substring(start, tokenLength), null, new Loc(Loc.MemoryString, start, pos)));
                 }
 
                 start = pos;

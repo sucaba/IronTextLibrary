@@ -131,7 +131,7 @@ namespace IronText.Reflection.Managed
             // Create matchers
             foreach (var cilMatcher in definition.Matchers)
             {
-                IAmbiguousSymbol outcome = GetMatcherOutcomeSymbol(
+                ITerminal outcome = GetMatcherOutcomeSymbol(
                                                 result,
                                                 symbolResolver,
                                                 cilMatcher.MainOutcome,
@@ -177,7 +177,7 @@ namespace IronText.Reflection.Managed
             return result;
         }
 
-        private static IAmbiguousSymbol GetMatcherOutcomeSymbol(
+        private static ITerminal GetMatcherOutcomeSymbol(
             Grammar                   grammar,
             ICilSymbolResolver        symbolResolver,
             CilSymbolRef              mainOutcome,
@@ -192,7 +192,7 @@ namespace IronText.Reflection.Managed
             {
                 case 0:  return null;
                 case 1:  return main;
-                default: return new AmbiguousSymbol(main, all);
+                default: return new AmbiguousTerminal(main, all);
             }
         }
 

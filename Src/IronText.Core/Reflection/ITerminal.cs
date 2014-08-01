@@ -5,10 +5,8 @@ using System.Text;
 
 namespace IronText.Reflection
 {
-    public interface IAmbiguousSymbol
+    public interface ITerminal
     {
         string Name { get; }
-
-        int Index { get; }
     }
 }

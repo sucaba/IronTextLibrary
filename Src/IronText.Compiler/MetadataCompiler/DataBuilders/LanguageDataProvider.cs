@@ -61,7 +61,8 @@ namespace IronText.MetadataCompiler
 
             grammar.BuildIndexes();
 
-            if (!bootstrap && !CompileScannerTdfas(grammar))
+            IEnumerable<AmbTokenInfo> ambiguities = null;
+            if (!bootstrap && !CompileScannerTdfas(grammar, out ambiguities))
             {
                 result = null;
                 return false;
@@ -70,13 +71,16 @@ namespace IronText.MetadataCompiler
             // Build parsing tables
             ILrDfa parserDfa = null;
 
-            var grammarAnalysis = new GrammarAnalysis(grammar);
+            var analysis = new GrammarAnalysis(grammar, ambiguities ?? new AmbTokenInfo[0]);
+
+            int[] matchActionToToken = BuildMatchActionToTokenTable(grammar, ambiguities ?? new AmbTokenInfo[0]);
+
             logging.WithTimeLogging(
                 source.LanguageName,
                 source.Origin,
                 () =>
                 {
-                    parserDfa = new Lalr1Dfa(grammarAnalysis, LrTableOptimizations.Default);
+                    parserDfa = new Lalr1Dfa(analysis, LrTableOptimizations.Default);
                 },
                 "building LALR1 DFA");
 
@@ -98,10 +102,12 @@ namespace IronText.MetadataCompiler
             // Prepare language data for the language assembly generation
             result.IsDeterministic     = !lrTable.RequiresGlr;
             result.Grammar             = grammar;
-            result.TokenComplexity     = grammarAnalysis.GetTokenComplexity();
+            result.Analysis            = analysis;               
+            result.TokenComplexity     = analysis.GetTokenComplexity();
             result.StateToToken        = parserDfa.GetStateToSymbolTable();
             result.ParserActionTable   = lrTable.GetParserActionTable();
             result.ParserConflictActionTable = lrTable.GetConflictActionTable();
+            result.MatchActionToToken  = matchActionToToken;
 
             result.SemanticBindings  = semanticBindings.ToArray();
 
@@ -117,7 +123,35 @@ namespace IronText.MetadataCompiler
             return true;
         }
 
-        private bool CompileScannerTdfas(Grammar grammar)
+        private int[] BuildMatchActionToTokenTable(Grammar grammar, IEnumerable<AmbTokenInfo> ambiguities)
+        {
+            var actionToToken = new int[grammar.Matchers.IndexCount];
+            for (int i = 0; i != actionToToken.Length; ++i)
+            {
+                var outcome = grammar.Matchers[i].Outcome;
+                if (outcome == null)
+                {
+                    actionToToken[i] = -1;
+                }
+                else if (outcome is AmbiguousTerminal)
+                {
+                    var ambOutcome = outcome as AmbiguousTerminal;
+                    actionToToken[i] = (from amb in ambiguities
+                                       where Enumerable.SequenceEqual(amb.AllTokens, ambOutcome.Alternatives.Select(alt => alt.Index))
+                                       select amb.Index)
+                                       .SingleOrDefault();
+                }
+                else
+                {
+                    var detOutcome = (Symbol)outcome;
+                    actionToToken[i] = detOutcome.Index;
+                }
+            }
+
+            return actionToToken;
+        }
+
+        private bool CompileScannerTdfas(Grammar grammar, out IEnumerable<AmbTokenInfo> ambiguities)
         {
             ITdfaData tdfa;
             if (!CompileTdfa(logging, grammar, out tdfa))
@@ -132,11 +166,12 @@ namespace IronText.MetadataCompiler
                                     source.LanguageName)
                     });
 
+                ambiguities = null;
                 return false;
             }
 
             var resolver = new LexicalAmbiguityCollector(grammar, tdfa);
-            resolver.CollectAmbiguities();
+            ambiguities = resolver.CollectAmbiguities();
 
             return true;
         }

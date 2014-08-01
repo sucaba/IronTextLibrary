@@ -10,7 +10,7 @@ namespace IronText.Reflection
     /// Deterministic symbol
     /// </summary>
     [Serializable]
-    public class Symbol : SymbolBase, IProductionComponent, IAmbiguousSymbol
+    public class Symbol : SymbolBase, IProductionComponent, ITerminal
     {
         private readonly ReferenceCollection<Production> _productions;
 

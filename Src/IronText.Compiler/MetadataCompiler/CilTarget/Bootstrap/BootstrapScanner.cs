@@ -77,7 +77,8 @@ namespace IronText.MetadataCompiler
                         continue;
                     }
 
-                    int token = matcher.Outcome.Index;
+                    var detOutcome = (Symbol)matcher.Outcome; // BootstrapScanner does not support lexical ambiguities
+                    int token = detOutcome.Index;
 
                     yield return
                         new Msg(token, match.Value, action, new Loc(Loc.MemoryString, match.Index, match.Length));

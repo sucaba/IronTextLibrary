@@ -90,7 +90,8 @@ namespace IronText.Runtime
         {
             if (IsTerminal)
             {
-                return grammar.Matchers[MatcherIndex].Outcome.Index;
+                // TODO: Lexical ambiguities. Return index of resolved symbol.
+                return ((Symbol)grammar.Matchers[MatcherIndex].Outcome).Index;
             }
 
             return grammar.Productions[-id].Outcome.Index;
