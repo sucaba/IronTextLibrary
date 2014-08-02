@@ -4,7 +4,9 @@ using System;
 namespace IronText.Collections
 {
     [Serializable]
-    public abstract class IndexableObject<TScope> : IIndexable<TScope>, IHasIdentity
+    public abstract class IndexableObject<TScope> 
+        : IIndexable<TScope>, IHasIdentity
+        where TScope : class
     {
         public const int NoId = -1;
 

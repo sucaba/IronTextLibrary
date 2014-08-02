@@ -176,8 +176,8 @@ namespace IronText.Tests.Reflection.Transformations
         [Then(@"symbol '(.*)' is unused")]
         public void ThenSymbolIsNotUsed(string symbolName)
         {
-            Symbol found = grammar.Symbols.FirstOrDefault(s => s.Name == symbolName) as Symbol;
-            Assert.IsNotNull(found != null);
+            var found = grammar.Symbols.FirstOrDefault(s => s.Name == symbolName);
+            Assert.IsNotNull(found);
             Assert.IsFalse(found.IsUsed);
         }
 

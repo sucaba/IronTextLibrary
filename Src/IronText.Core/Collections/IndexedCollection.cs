@@ -38,7 +38,11 @@ namespace IronText.Collections
             int count = indexes.Length;
             for (int i = 0; i != count; ++i)
             {
-                indexes[i].AssignIndex(i);
+                var item = indexes[i];
+                if (IsPublicItem(item))
+                {
+                    item.AssignIndex(i);
+                }
             }
         }
 

@@ -56,14 +56,8 @@ namespace IronText.MetadataCompiler
 
         private IEnumerable<Tuple<object,int>> EnumerateTokenKeyToId()
         {
-            foreach (var symbolBase in grammar.Symbols)
+            foreach (var symbol in grammar.Symbols)
             {
-                var symbol = symbolBase as Symbol;
-                if (symbol == null)
-                {
-                    continue;
-                }
-
                 var cilSymbol = symbol.Joint.Get<CilSymbol>();
                 if (cilSymbol == null)
                 {

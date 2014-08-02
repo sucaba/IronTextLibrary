@@ -109,7 +109,7 @@ namespace IronText.Framework
             return SymbolToHtml(grammar.Symbols[token]);
         }
 
-        private string SymbolToHtml(SymbolBase symbol)
+        private string SymbolToHtml(Symbol symbol)
         {
             var result = HttpUtility.HtmlEncode(symbol.Name);
             result = result.Replace("{", "&#123;");

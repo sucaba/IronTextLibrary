@@ -75,7 +75,7 @@ namespace IronText.Tests.Algorithm
                 var matcher = descriptor.Matchers[action];
                 if (matcher.Outcome != null)
                 {
-                    var detOutcome = (Symbol)matcher.Outcome;
+                    var detOutcome = (Symbol)matcher.Outcome; // Only deterministic symbols supported
 
                     // Emit next token
                     visitor = visitor.Next(

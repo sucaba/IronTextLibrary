@@ -1,7 +1,9 @@
 ﻿using IronText.Algorithm;
 using IronText.Collections;
+using IronText.Misc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace IronText.Reflection
@@ -10,7 +12,8 @@ namespace IronText.Reflection
     /// Deterministic symbol
     /// </summary>
     [Serializable]
-    public class Symbol : SymbolBase, IProductionComponent, ITerminal
+    [DebuggerDisplay("Name = {Name}")]
+    public class Symbol : IndexableObject<IGrammarScope>, IProductionComponent, ITerminal
     {
         private readonly ReferenceCollection<Production> _productions;
 
@@ -29,21 +32,23 @@ namespace IronText.Reflection
             this.LocalScope    = new SemanticScope();
         }
 
-        public new int Index { get {  return base.Index; } }
+        /// <summary>
+        /// Display name
+        /// </summary>
+        public string Name { get; protected set; }
+
+        public bool IsPredefined { get { return 0 <= Index && Index < PredefinedTokens.Count; } }
+
+        public SymbolCategory Categories { get; set; }
 
         public bool IsAugmentedStart { get { return PredefinedTokens.AugmentedStart == Index; } }
 
         public bool IsStart { get { return Scope.Start == this; } }
 
         /// <summary>
-        /// Categories token belongs to
-        /// </summary>
-        public override SymbolCategory Categories { get; set; }
-
-        /// <summary>
         /// Determines whether symbol is terminal
         /// </summary>
-        public override bool IsTerminal { get { return Productions.Count == 0; } }
+        public bool IsTerminal { get { return Productions.Count == 0; } }
 
         /// <summary>
         /// Determines if symbol is input for at least some 'sequential' productions.
@@ -56,7 +61,7 @@ namespace IronText.Reflection
             }
         }
 
-        public override ReferenceCollection<Production> Productions { get { return _productions; } }
+        public ReferenceCollection<Production> Productions { get { return _productions; } }
 
         public Joint Joint { get { return _joint; } }
 
@@ -72,16 +77,7 @@ namespace IronText.Reflection
         /// If production has no associated precedence, it is calculated from
         /// the last terminal token in a production pattern.
         /// </remarks>
-        public override Precedence Precedence { get; set; }
-
-        protected override SymbolBase DoClone()
-        {
-            return new Symbol(Name)
-            {
-                Precedence = Precedence,
-                Categories = Categories
-            };
-        }
+        public Precedence Precedence { get; set; }
 
         int IProductionComponent.Size
         {
@@ -122,6 +118,16 @@ namespace IronText.Reflection
 
                 return path != null;
             }
+        }
+
+        protected override object DoGetIdentity()
+        {
+            return IdentityFactory.FromString(Name);
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

@@ -6,7 +6,7 @@ using System;
 namespace IronText.Reflection
 {
     [Serializable]
-    public class SymbolCollection : IndexedCollection<SymbolBase, IGrammarScope>
+    public class SymbolCollection : IndexedCollection<Symbol, IGrammarScope>
     {
         public SymbolCollection(IGrammarScope context)
             : base(context)
@@ -43,15 +43,8 @@ namespace IronText.Reflection
 
                 found = Add(symbolName);
             }
-            
-            var result = found as Symbol;
-            if (result == null)
-            {
-                var msg = string.Format("Cannot search by symbol name '{0}'.", symbolName);
-                throw new ArgumentException(msg, "symbolName");
-            }
 
-            return (Symbol)found;
+            return found;
         }
     }
 }

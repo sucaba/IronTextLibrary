@@ -102,7 +102,7 @@ namespace IronText.Framework
             //foreach (var semBinding in data.)
         }
 
-        private void PrintAction(IReportData data, SymbolBase symbol, StreamWriter output, ParserAction action)
+        private void PrintAction(IReportData data, Symbol symbol, StreamWriter output, ParserAction action)
         {
             if (action == null || action.Kind == ParserActionKind.Fail)
             {

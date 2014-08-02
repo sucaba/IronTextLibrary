@@ -50,8 +50,8 @@ namespace IronText.Reflection
         public Production Add(int outcome, IEnumerable<int> pattern, string contextName = null)
         {
             return Add(
-                (Symbol)Scope.Symbols[outcome],
-                pattern.Select(t => (Symbol)Scope.Symbols[t]),
+                Scope.Symbols[outcome],
+                pattern.Select(t => Scope.Symbols[t]),
                 SemanticRef.ByName(contextName));
         }
 

@@ -78,7 +78,7 @@ namespace IronText.MetadataCompiler
                     {
                         Disambiguation  = matcher.Disambiguation,
                         RealActions     = SparseIntSetType.Instance.Of(matcher.Index),
-                        Alternatives       = tokenSetType.Of(ambiguous.Alternatives.Select(alt => alt.Index))
+                        Alternatives    = tokenSetType.Of(ambiguous.Alternatives.Select(alt => alt.Index))
                     };
             }
             else if ((deterministic = outcome as Symbol) != null)

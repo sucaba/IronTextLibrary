@@ -10,11 +10,9 @@ namespace IronText.Reflection.Indexing
     /// </summary>
     public interface IGrammarIndexer
     {
-        int        IndexOf(SymbolBase symbol);
+        int        IndexOf(Symbol symbol);
 
         int        IndexOf(Production production);
-
-        SymbolBase GetAnySymbol(int symbolIndex);
 
         Symbol     GetSymbol(int symbolIndex);
 

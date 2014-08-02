@@ -133,12 +133,7 @@ namespace IronText.Reflection
             ConvertNullableNonOptToOpt();
             RecursivelyEliminateEmptyProductions();
 
-            var symbolsToInline = (from symbol in Symbols
-                                   let asNonAmb = symbol as Symbol
-                                   where CanInline(asNonAmb)
-                                   select asNonAmb)
-                                  .ToArray();
-
+            var symbolsToInline = Symbols.Where(CanInline).ToArray();
             foreach (var symbol in symbolsToInline)
             {
                 Inline(symbol);
@@ -182,7 +177,6 @@ namespace IronText.Reflection
         private IEnumerable<Symbol> FindNullableSymbols()
         {
             var result = Symbols
-                    .OfType<Symbol>()
                     .Where(s => s.Productions.Count != 0
                              && s.Productions.Any(p => p.Pattern.Length == 0)
                              && !s.IsRecursive);
@@ -311,7 +305,7 @@ namespace IronText.Reflection
 
         public Symbol[] FindOptionalPatternSymbols()
         {
-            return Symbols.OfType<Symbol>().Where(IsOptionalSymbol).ToArray();
+            return Symbols.Where(IsOptionalSymbol).ToArray();
         }
 
         public bool InlineOptionalSymbols()
@@ -354,7 +348,6 @@ namespace IronText.Reflection
         public IEnumerable<Symbol> FindNullableNonOptSymbols()
         {
             var result = Symbols
-                   .OfType<Symbol>()
                    .Where(s => 
                        s.Productions.Any(p => p.Pattern.Length == 0)
                        && s.Productions.Any(p => p.Pattern.Length != 0)

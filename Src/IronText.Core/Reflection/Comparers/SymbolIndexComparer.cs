@@ -6,28 +6,28 @@ using System.Text;
 
 namespace IronText.Reflection
 {
-    internal class SymbolIndexComparer : IEqualityComparer<SymbolBase>, IEqualityComparer
+    internal class SymbolIndexComparer : IEqualityComparer<Symbol>, IEqualityComparer
     {
         public static readonly SymbolIndexComparer Instance = new SymbolIndexComparer();
 
-        public bool Equals(SymbolBase x, SymbolBase y)
+        public bool Equals(Symbol x, Symbol y)
         {
             return (x == y) || (x != null && y != null && x.Index == y.Index);
         }
 
-        public int GetHashCode(SymbolBase obj)
+        public int GetHashCode(Symbol obj)
         {
             return obj == null ? -1 : obj.Index;
         }
 
-        public bool Equals(object x, object y)
+        public new bool Equals(object x, object y)
         {
-            return Equals(x as SymbolBase, y as SymbolBase);
+            return Equals(x as Symbol, y as Symbol);
         }
 
         public int GetHashCode(object obj)
         {
-            return GetHashCode(obj as SymbolBase);
+            return GetHashCode(obj as Symbol);
         }
     }
 }

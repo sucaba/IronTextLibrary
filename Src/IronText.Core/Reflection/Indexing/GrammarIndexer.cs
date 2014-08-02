@@ -14,7 +14,7 @@ namespace IronText.Reflection.Indexing
             this.grammar = grammar;
         }
 
-        public int IndexOf(SymbolBase symbol)
+        public int IndexOf(Symbol symbol)
         {
             return symbol.Index;
         }
@@ -24,14 +24,14 @@ namespace IronText.Reflection.Indexing
             return production.Index;
         }
 
-        public SymbolBase GetAnySymbol(int symbolIndex)
+        public Symbol GetAnySymbol(int symbolIndex)
         {
             return grammar.Symbols[symbolIndex];
         }
 
         public Symbol GetSymbol(int symbolIndex)
         {
-            return (Symbol)grammar.Symbols[symbolIndex];
+            return grammar.Symbols[symbolIndex];
         }
 
         public Production GetProduction(int prodIndex)

@@ -217,7 +217,6 @@
     <Compile Include="Reflection\Matcher.cs" />
     <Compile Include="Reflection\MatcherCollection.cs" />
     <Compile Include="Reflection\Symbol.cs" />
-    <Compile Include="Reflection\SymbolBase.cs" />
     <Compile Include="Reflection\SymbolCollection.cs" />
     <Compile Include="Lib\Ctem\CtemScanner.cs" />
     <Compile Include="Lib\Ctem\Num.cs" />

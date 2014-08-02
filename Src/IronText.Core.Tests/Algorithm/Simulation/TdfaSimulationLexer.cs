@@ -98,7 +98,7 @@ namespace IronText.Tests.Algorithm
 
                 if (matcher.Outcome != null)
                 {
-                    var detOutcome = (Symbol)matcher.Outcome;
+                    var detOutcome = (Symbol)matcher.Outcome; // Only deterministic symbols supported
 
                     // Emit next token
                     visitor = visitor.Next(

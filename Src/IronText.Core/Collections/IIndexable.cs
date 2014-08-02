@@ -22,11 +22,11 @@ namespace IronText.Collections
         /// <exception cref="InvalidOperationException">when object is already attached.</exception>
         void Attached(TScope scope);
 
-        void AssignIndex(int index);
-
         /// <summary>
         /// Is invoked before object is actually detached from an indexed collection
         /// </summary>
         void Detaching(TScope scope);
+
+        void AssignIndex(int index);
     }
 }

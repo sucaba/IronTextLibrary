@@ -24,7 +24,7 @@ namespace IronText.Reflection
             return unchecked(obj.Index + obj.Outcome.Index + obj.Pattern.Length);
         }
 
-        public bool Equals(object x, object y)
+        public new bool Equals(object x, object y)
         {
             if (x == y)
             {
