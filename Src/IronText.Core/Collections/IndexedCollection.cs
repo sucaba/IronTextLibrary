@@ -12,18 +12,17 @@ namespace IronText.Collections
     {
         private const int InitialCapacity = 8;
 
-        private readonly IntAssoc intAssoc;
         private readonly List<T> items;
 
-        private readonly Dictionary<object,int> identityToIndex = new Dictionary<object,int>();
         [NonSerialized]
         private IDuplicateResolver<T> _duplicateResolver;
-        private bool indexed;
+        private bool indexed   = false;
         private bool canModify = true;
+        private T[] indexes;
+        private readonly Dictionary<object,T> identityToItem = new Dictionary<object,T>();
 
         public IndexedCollection(TScope scope = default(TScope))
         {
-            this.intAssoc = new IntAssoc(InitialCapacity);
             this.items = new List<T>(InitialCapacity);
             this.Scope = scope;
             this.DuplicateResolver = null;
@@ -33,6 +32,14 @@ namespace IronText.Collections
         {
             this.indexed   = true;
             this.canModify = false;
+
+            this.indexes = items.ToArray();
+
+            int count = indexes.Length;
+            for (int i = 0; i != count; ++i)
+            {
+                indexes[i].AssignIndex(i);
+            }
         }
 
         private void RequireIndexed()
@@ -54,7 +61,7 @@ namespace IronText.Collections
 
         public TScope Scope { get; private set; }
 
-        public int IndexCount { get { RequireIndexed(); return intAssoc.Count; } }
+        public int IndexCount { get { RequireIndexed(); return indexes.Length; } }
 
         public int PublicCount { get { return items.Count(IsPublicItem); }}
 
@@ -79,8 +86,7 @@ namespace IronText.Collections
             get 
             { 
                 RequireIndexed();
-                var result = intAssoc.Get(index); 
-                return IsPublicItem(result) ? result : null;
+                return indexes[index];
             }
         }
 
@@ -94,26 +100,47 @@ namespace IronText.Collections
         {
             RequireModifiable();
 
+            if (item == null)
+            {
+                throw new ArgumentNullException("item");
+            }
+
             if (Contains(item))
             {
                 throw new InvalidOperationException("IndexedCollection can contain only unique items.");
             }
 
-            int index = AttachingItem(ref item);
-            if (index < 0)
+            if (!AttachingItem(ref item))
             {
-                index = intAssoc.GenerateIndex();
+                return item;
             }
 
             AttachedItem(item);
-            AssignIndex(index, item);
-
             return item;
+        }
+
+        private bool AttachingItem(ref T newItem)
+        {
+            T existing;
+            if (identityToItem.TryGetValue(newItem.Identity, out existing))
+            {
+                var resolved = _duplicateResolver.Resolve(existing, newItem);
+                if (resolved == existing)
+                {
+                    newItem = existing;
+                    return false;
+                }
+                
+                DetachingItem(existing);
+                newItem = resolved;
+            }
+
+            return true;
         }
 
         public bool Contains(T item)
         {
-            return items.IndexOf(item) >= 0;
+            return item != null && items.Contains(item);
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -130,22 +157,13 @@ namespace IronText.Collections
                 return false;
             }
 
-            int i = intAssoc.IndexOf(item);
-            if (i < 0)
-            {
-                return false;
-            }
-
-            item.Detaching(Scope);
-            items.Remove(item);
-            intAssoc.Set(i, null);
-            return true;
+            return DetachingItem(item);
         }
 
         public T[] ToArray()
         {
             RequireIndexed();
-            return intAssoc.ToArray();
+            return indexes;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -170,54 +188,18 @@ namespace IronText.Collections
             Remove(item);
         }
 
-        private int AttachingItem(ref T newItem)
+        private bool DetachingItem(T item)
         {
-            int existingIndex;
-            if (newItem != null && identityToIndex.TryGetValue(newItem.Identity, out existingIndex))
-            {
-                var existing = intAssoc.Get(existingIndex);
-                var resolvedItem = _duplicateResolver.Resolve(existing, newItem);
-                if (resolvedItem == existing)
-                {
-                    newItem = null;
-                    return -1;
-                }
-                else
-                {
-                    DetachingItem(existingIndex);
-                    newItem = resolvedItem;
-                    return existingIndex;
-                }
-            }
-          
-            return -1;
-        }
-
-        private void AssignIndex(int index, T item)
-        {
-            if (item != null)
-            {
-                intAssoc.Set(index, item);
-                identityToIndex.Add(item.Identity, index);
-                item.AssignIndex(index);
-            }
+            item.Detaching(Scope);
+            identityToItem.Remove(item.Identity);
+            return items.Remove(item);
         }
 
         private void AttachedItem(T item)
         {
-            if (item != null)
-            {
-                items.Add(item);
-                item.Attached(Scope);
-            }
-        }
-
-        private void DetachingItem(int index)
-        {
-            var item = intAssoc.Get(index);
-            item.Detaching(Scope);
-            identityToIndex.Remove(item.Identity);
-            items.Remove(item);
+            identityToItem.Add(item.Identity, item);
+            items.Add(item);
+            item.Attached(Scope);
         }
 
         private static bool IsHiddenItem(T item)
@@ -225,97 +207,9 @@ namespace IronText.Collections
             return item != null && item.IsHidden;
         }
 
-        // TODO: Make public indexed and hidden non-indexed. 
-        // This way code will be simple and fast.
         private static bool IsPublicItem(T item)
         {
-            return item != null && !item.IsHidden;
-        }
-
-        [Serializable]
-        class IntAssoc
-        {
-            private T[] indexToItem;
-
-            public IntAssoc(int capacity)
-            {
-                this.indexToItem = new T[capacity];
-            }
-
-            public int Count { get; private set; }
-
-            public T Get(int index)
-            {
-                return indexToItem[index];
-            }
-
-            public void Set(int index, T value)
-            {
-                indexToItem[index] = value;
-            }
-
-            public int IndexOf(T item)
-            {
-                int count = Count;
-                for (int i = 0; i != count; ++i)
-                {
-                    if (Get(i) == (object)item)
-                    {
-                        return i;
-                    }
-                }
-
-                return -1;
-            }
-
-            public int GenerateIndex()
-            {
-                int result = Count;
-                if (indexToItem.Length == result)
-                {
-                    Array.Resize(ref indexToItem, result * 2);
-                }
-            
-                Count = result + 1;
-
-                return result;
-            }
-
-            public bool Grow(int count)
-            {
-                if (count > indexToItem.Length)
-                {
-                    Array.Resize(ref indexToItem, count);
-                    Count = count;
-                    return true;
-                }
-                else if (count > Count)
-                {
-                    Count = count;
-                    return true;
-                }
-
-                return false;
-            }
-
-            public T[] ToArray()
-            {
-                int count = Count;
-
-                var result = new T[Count];
-                int j = 0;
-                for (int i = 0; i != count; ++i)
-                {
-                    var item = Get(i);
-                    if (item != null)
-                    {
-                        result[j++] = item;
-                    }
-                }
-
-                return result;
-            }
+            return !item.IsHidden;
         }
     }
-
 }

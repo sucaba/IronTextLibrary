@@ -76,6 +76,8 @@ namespace IronText.Tests.Bootstrap
                 }
             };
 
+            grammar.BuildIndexes();
+
             var target = new BootstrapScanner(
                 " (1 (\"bar\" +))",
                 ScannerDescriptor.FromScanRules(grammar.Matchers, ExceptionLogging.Instance),

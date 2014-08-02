@@ -46,6 +46,8 @@ namespace IronText.Tests.Algorithm
                     new Matcher(ScanPattern.CreateLiteral(")"), rParen),
                 }
             };
+
+            grammar.BuildIndexes();
            
             var target = new DfaSimulationLexer(
                 " (1 (\"bar\" +))",

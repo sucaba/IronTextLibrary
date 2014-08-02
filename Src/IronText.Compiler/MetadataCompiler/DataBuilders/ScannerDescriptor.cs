@@ -51,11 +51,11 @@ namespace IronText.MetadataCompiler
 
             pattern.Append("(");
             bool first = true;
-            foreach (var scanRule in descriptor.Matchers)
+            foreach (var matcher in descriptor.Matchers)
             {
-                if (literalToAction != null && scanRule.Pattern.IsLiteral)
+                if (literalToAction != null && matcher.Pattern.IsLiteral)
                 {
-                    literalToAction.Add(scanRule.Pattern.Literal, scanRule.Index);
+                    literalToAction.Add(matcher.Pattern.Literal, matcher.Index);
                     continue;
                 }
 
@@ -70,10 +70,10 @@ namespace IronText.MetadataCompiler
 
                 pattern
                     .Append("( ")
-                        .Append(scanRule.Pattern.Pattern)
+                        .Append(matcher.Pattern.Pattern)
                     .Append(" )")
                         .Append(' ')
-                    .Append("action(").Append(scanRule.Index).Append(")");
+                    .Append("action(").Append(matcher.Index).Append(")");
             }
 
             if (pattern.Length == 1)
@@ -162,13 +162,13 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        private static void CheckAllRulesHaveIndex(IEnumerable<Matcher> scanProductions)
+        private static void CheckAllRulesHaveIndex(IEnumerable<Matcher> matchers)
         {
-            foreach (var scanProduction in scanProductions)
+            foreach (var matcher in matchers)
             {
-                if (scanProduction.Index < 0)
+                if (matcher.Index < 0)
                 {
-                    throw new ArgumentException("Rule " + scanProduction + " has no index.", "rules");
+                    throw new ArgumentException("Matcher " + matcher + " has no index.", "rules");
                 }
             }
         }

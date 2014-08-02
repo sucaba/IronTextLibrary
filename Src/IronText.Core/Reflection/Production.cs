@@ -49,21 +49,18 @@ namespace IronText.Reflection
             }
 
             Outcome       = outcome;
-            OutcomeToken  = outcome.Index;
             Components    = components.ToArray();
             ContextRef    = contextRef ?? SemanticRef.None;
             Flags         = flags;
 
             Pattern       = CreateInputPattern(components);
 
-            PatternTokens = Array.ConvertAll(Pattern, s => s.Index);
-
             this._identity = BuildIdentity();
         }
 
-        public int                OutcomeToken   { get; private set; }
+        public int                OutcomeToken   { get { return Outcome.Index; } }
 
-        public int[]              PatternTokens  { get; private set; }
+        public int[]              PatternTokens  { get { return Array.ConvertAll(Pattern, s => s.Index); } }
 
         public IProductionComponent[] Components { get; private set; }
 
@@ -269,7 +266,9 @@ namespace IronText.Reflection
 
         protected override void OnHided()
         {
-            this.Outcome.Productions.Remove(this);        } 
+            this.Outcome.Productions.Remove(this);
+        } 
+
         internal bool EqualTo(ProductionSketch sketch)
         {
             if (sketch == null 

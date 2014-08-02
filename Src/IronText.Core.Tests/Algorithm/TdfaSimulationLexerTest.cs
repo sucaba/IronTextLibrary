@@ -69,6 +69,8 @@ namespace IronText.Tests.Algorithm
                 }
             };
             
+            grammar.BuildIndexes();
+
             var target = new TdfaSimulationLexer(
                 "b:=10Q \"foo\"",
                 ScannerDescriptor.FromScanRules(grammar.Matchers, ExceptionLogging.Instance));
