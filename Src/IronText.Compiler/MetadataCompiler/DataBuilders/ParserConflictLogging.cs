@@ -116,7 +116,7 @@ namespace IronText.MetadataCompiler
             var prod = item.Production;
             output.Write(prod.Outcome.Name);
             output.Write(" ->");
-            for (int i = 0; i != prod.Pattern.Length; ++i)
+            for (int i = 0; i != prod.Input.Length; ++i)
             {
                 if (item.Position == i)
                 {
@@ -124,10 +124,10 @@ namespace IronText.MetadataCompiler
                 }
 
                 output.Write(" ");
-                output.Write(prod.Pattern[i].Name);
+                output.Write(prod.Input[i].Name);
             }
 
-            if (item.Position == prod.Pattern.Length)
+            if (item.Position == prod.Input.Length)
             {
                 output.Write(" .>");
             }
@@ -183,10 +183,10 @@ namespace IronText.MetadataCompiler
             output.Write(prod.Outcome.Name);
             output.Write(" ->");
 
-            for (int i = 0; i != prod.Pattern.Length; ++i)
+            for (int i = 0; i != prod.Input.Length; ++i)
             {
                 output.Write(" ");
-                output.Write(prod.Pattern[i].Name);
+                output.Write(prod.Input[i].Name);
             }
         }
     }

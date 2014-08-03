@@ -1,5 +1,6 @@
 ﻿using IronText.Collections;
 using IronText.Reflection;
+using IronText.Reflection.Transformations;
 using NUnit.Framework;
 using System;
 using System.Linq;
@@ -45,13 +46,13 @@ namespace IronText.Tests.Reflection.Transformations
         [Given(@"production criteria is: input has '([^']+)' symbol")]
         public void GivenProductionCriteriaTheInputHasSymbol(string symbolName)
         {
-            this.criteria = p => p.Pattern.Any(s => s.Name == symbolName);
+            this.criteria = p => p.Input.Any(s => s.Name == symbolName);
         }
 
         [Given(@"production criteria is: input is not empty")]
         public void GivenProductionCriteriaIsInputIsNotEmpty()
         {
-            this.criteria = p => p.Pattern.Length != 0;
+            this.criteria = p => p.Input.Length != 0;
         }
 
         [Given(@"production duplicate resolver '(.*)'")]
@@ -131,6 +132,13 @@ namespace IronText.Tests.Reflection.Transformations
             }
         }
 
+        [When(@"eliminate right nullable symbols")]
+        public void WhenEliminateRightNullableSymbols()
+        {
+            var transformation = new EliminateRightNulls(grammar);
+            transformation.Apply();
+        }
+
         [Then(@"result symbol is '([^']+)'")]
         public void ThenResultSymbolIs(string symbolName)
         {
@@ -179,6 +187,14 @@ namespace IronText.Tests.Reflection.Transformations
             var found = grammar.Symbols.FirstOrDefault(s => s.Name == symbolName);
             Assert.IsNotNull(found);
             Assert.IsFalse(found.IsUsed);
+        }
+
+        [Then(@"symbol '(.*)' is used")]
+        public void ThenSymbolIsUsed(string symbolName)
+        {
+            var found = grammar.Symbols.FirstOrDefault(s => s.Name == symbolName);
+            Assert.IsNotNull(found);
+            Assert.IsTrue(found.IsUsed);
         }
 
         [Then(@"result exception is '(.*)'")]

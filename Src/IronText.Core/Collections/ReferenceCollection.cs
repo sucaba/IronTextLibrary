@@ -30,6 +30,16 @@ namespace IronText.Collections
             return items[0];
         }
 
+        public T Last()
+        {
+            if (items.Count == 0)
+            {
+                throw new InvalidOperationException("Cannot take first item of the empty collection.");
+            }
+
+            return items[items.Count - 1];
+        }
+
         internal IOwner<T> Owner
         {
             get { return this.owner; }

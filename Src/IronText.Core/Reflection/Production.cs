@@ -53,24 +53,24 @@ namespace IronText.Reflection
             ContextRef    = contextRef ?? SemanticRef.None;
             Flags         = flags;
 
-            Pattern       = CreateInputPattern(components);
+            Input       = CreateInputPattern(components);
 
             this._identity = BuildIdentity();
         }
 
         public int                OutcomeToken   { get { return Outcome.Index; } }
 
-        public int[]              PatternTokens  { get { return Array.ConvertAll(Pattern, s => s.Index); } }
+        public int[]              InputTokens    { get { return Array.ConvertAll(Input, s => s.Index); } }
 
         public IProductionComponent[] Components { get; private set; }
 
         public Symbol             Outcome        { get; private set; }
 
-        public Symbol[]           Pattern        { get; private set; }
+        public Symbol[]           Input          { get; private set; }
 
         public Precedence         ExplicitPrecedence { get; set; }
 
-        public int                Size           { get { return PatternTokens.Length; } }
+        public int                IntputSize     { get { return InputTokens.Length; } }
 
         public bool               IsStart        { get { return Scope.Start == Outcome; } }
 
@@ -108,8 +108,8 @@ namespace IronText.Reflection
                     return ExplicitPrecedence;
                 }
 
-                int index = Array.FindLastIndex(Pattern, s => s.IsTerminal);
-                return index < 0 ? null : Pattern[index].Precedence;
+                int index = Array.FindLastIndex(Input, s => s.IsTerminal);
+                return index < 0 ? null : Input[index].Precedence;
             }
         }
 
@@ -131,27 +131,27 @@ namespace IronText.Reflection
         {
             if (symbol == null)
             {
-                PatternTokens[pattIndex]  = -1;
-                Pattern[pattIndex] = null;
+                InputTokens[pattIndex]  = -1;
+                Input[pattIndex] = null;
             }
             else
             {
-                PatternTokens[pattIndex]  = symbol.Index;
-                Pattern[pattIndex] = symbol;
+                InputTokens[pattIndex]  = symbol.Index;
+                Input[pattIndex] = symbol;
             }
         }
 
         int IProductionComponent.Size
         {
-            get { return Pattern.Length; }
+            get { return Input.Length; }
         }
 
         void IProductionComponent.CopyTo(Symbol[] output, int startIndex)
         {
-            int count = Pattern.Length;
+            int count = Input.Length;
             for (int i = 0; i != count; ++i)
             {
-                output[startIndex++] = Pattern[i];
+                output[startIndex++] = Input[i];
             }
         }
 
@@ -226,7 +226,7 @@ namespace IronText.Reflection
         {
             // Production identity is based on output and input signature and not on 
             // on the internal components i.e. production signature should be unique
-            return IdentityFactory.FromIdentities(Outcome, Pattern);
+            return IdentityFactory.FromIdentities(Outcome, Input);
         }
 
         public override string ToString()
@@ -242,7 +242,7 @@ namespace IronText.Reflection
         {
             output.Write("{0} =", Outcome.Name);
 
-            foreach (var symbol in Pattern)
+            foreach (var symbol in Input)
             {
                 output.Write(" ");
                 output.Write(symbol.Name);

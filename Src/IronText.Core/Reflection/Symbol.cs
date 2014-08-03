@@ -100,7 +100,7 @@ namespace IronText.Reflection
             {
                 return IsAugmentedStart
                     || IsStart
-                    || Scope.Productions.Any(p => !p.IsHidden && p.Pattern.Contains(this));
+                    || Scope.Productions.Any(p => !p.IsHidden && p.Input.Contains(this));
             }
         }
 
@@ -109,7 +109,7 @@ namespace IronText.Reflection
             get
             {
                 Func<Symbol, IEnumerable<Symbol>> getChildren =
-                    parent => parent.Productions.SelectMany(p => p.Pattern);
+                    parent => parent.Productions.SelectMany(p => p.Input);
 
                 var path = Graph.BreadthFirstSearch(
                                 getChildren(this),

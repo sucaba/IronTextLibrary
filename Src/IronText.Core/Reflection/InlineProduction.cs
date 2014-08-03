@@ -9,7 +9,7 @@ namespace IronText.Reflection
         {
             this.Position   = position;
             this.Production = production;
-            this.Pattern    = (int[])production.PatternTokens.Clone();
+            this.Pattern    = (int[])production.InputTokens.Clone();
         }
 
         /// <summary>

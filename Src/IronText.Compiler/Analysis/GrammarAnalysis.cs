@@ -104,7 +104,7 @@ namespace IronText.Compiler.Analysis
             return new ProdItem(
                 production.Index,
                 production.Outcome.Index,
-                production.Pattern.Select(sym => sym.Index));
+                production.Input.Select(sym => sym.Index));
         }
 
         private static int[] BuildTokenComplexity(Grammar grammar)
@@ -124,7 +124,7 @@ namespace IronText.Compiler.Analysis
 
         private static IEnumerable<int> GetDependantTokens(Grammar grammar, int token)
         {
-            return grammar.Symbols[token].Productions.SelectMany(rule => rule.PatternTokens);
+            return grammar.Symbols[token].Productions.SelectMany(rule => rule.InputTokens);
         }
     }
 }

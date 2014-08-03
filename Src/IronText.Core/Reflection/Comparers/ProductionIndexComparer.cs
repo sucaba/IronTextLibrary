@@ -15,13 +15,13 @@ namespace IronText.Reflection
             return y != null
                 && x.Index == y.Index
                 && x.Outcome.Index == y.Outcome.Index
-                && Enumerable.SequenceEqual(x.Pattern, y.Pattern, SymbolIndexComparer.Instance)
+                && Enumerable.SequenceEqual(x.Input, y.Input, SymbolIndexComparer.Instance)
                 ;
         }
 
         public int GetHashCode(Production obj)
         {
-            return unchecked(obj.Index + obj.Outcome.Index + obj.Pattern.Length);
+            return unchecked(obj.Index + obj.Outcome.Index + obj.Input.Length);
         }
 
         public new bool Equals(object x, object y)

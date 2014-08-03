@@ -37,10 +37,10 @@ namespace IronText.Runtime
             int nullableCount = 0;
             foreach (var rule in grammar.Productions)
             {
-                int i = rule.PatternTokens.Length;
+                int i = rule.InputTokens.Length;
                 while (i != 0)
                 {
-                    int token = rule.PatternTokens[--i];
+                    int token = rule.InputTokens[--i];
                     if (tokenCache[token] == null)
                     {
                         break;
@@ -50,18 +50,18 @@ namespace IronText.Runtime
                 }
 
                 ruleEndOffsetInCache[rule.Index] = nullableCount;
-                ruleOffsetInCache[rule.Index] = nullableCount - rule.PatternTokens.Length;
+                ruleOffsetInCache[rule.Index] = nullableCount - rule.InputTokens.Length;
             }
 
             this.ruleCache = new SppfNode[nullableCount];
 
             foreach (var rule in grammar.Productions)
             {
-                int endOffset = ruleOffsetInCache[rule.Index] + rule.PatternTokens.Length;
-                int i = rule.PatternTokens.Length;
+                int endOffset = ruleOffsetInCache[rule.Index] + rule.InputTokens.Length;
+                int i = rule.InputTokens.Length;
                 while (i != 0)
                 {
-                    int token = rule.PatternTokens[--i];
+                    int token = rule.InputTokens[--i];
                     if (tokenCache[token] == null)
                     {
                         break;
@@ -78,15 +78,15 @@ namespace IronText.Runtime
 
             var production = 
               (from r in grammar.GetProductions(nonTerm)
-               where r.PatternTokens.All(grammar.IsNullable)
-               orderby r.PatternTokens.Length ascending
+               where r.InputTokens.All(grammar.IsNullable)
+               orderby r.InputTokens.Length ascending
                select r)
                .First();
 
-            var args = new SppfNode[production.PatternTokens.Length];
+            var args = new SppfNode[production.InputTokens.Length];
             for (int i = 0; i != args.Length; ++i)
             {
-                args[i] = InternalGetNullable(production.PatternTokens[i]);
+                args[i] = InternalGetNullable(production.InputTokens[i]);
             }
 
             return new SppfNode(production.Index, Loc.Unknown, args);

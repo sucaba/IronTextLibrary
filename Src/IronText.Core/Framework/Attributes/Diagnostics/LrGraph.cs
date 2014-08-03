@@ -81,17 +81,17 @@ namespace IronText.Framework
                     item.Production.Index,
                     SymbolToHtml(prod.Outcome));
 
-                for (int k = 0; k != prod.Pattern.Length; ++k)
+                for (int k = 0; k != prod.Input.Length; ++k)
                 {
                     if (item.Position == k)
                     {
                         output.Append("&bull;");
                     }
 
-                    output.Append(" ").Append(SymbolToHtml(prod.Pattern[k]));
+                    output.Append(" ").Append(SymbolToHtml(prod.Input[k]));
                 }
 
-                if (item.Position == prod.Pattern.Length)
+                if (item.Position == prod.Input.Length)
                 {
                     output.Append("&bull;");
                 }

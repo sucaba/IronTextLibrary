@@ -112,7 +112,7 @@ namespace IronText.Runtime
             this._parsingLocation = location;
             this._parsingHLocation = hLocation;
 
-            if (rule.PatternTokens.Length > prefix.Count)
+            if (rule.InputTokens.Length > prefix.Count)
             {
                 FillEpsilonSuffix(rule.Index, prefix.Count, prefix.Array, prefix.Offset + prefix.Count, stackLookback);
             }

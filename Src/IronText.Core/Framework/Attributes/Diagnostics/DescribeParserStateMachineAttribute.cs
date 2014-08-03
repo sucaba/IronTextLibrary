@@ -230,7 +230,7 @@ namespace IronText.Framework
             output.Write(production.Outcome.Name);
             output.Write(" ->");
             int i = 0;
-            foreach (var symbol in production.Pattern)
+            foreach (var symbol in production.Input)
             {
                 if (item.Position == i)
                 {
@@ -243,7 +243,7 @@ namespace IronText.Framework
                 ++i;
             }
 
-            if (item.Position == production.PatternTokens.Length)
+            if (item.Position == production.InputTokens.Length)
             {
                 output.Write(" •");
             }
@@ -265,7 +265,7 @@ namespace IronText.Framework
             output.Write(rule.Outcome.Name);
             output.Write(" ->");
 
-            foreach (var symbol in rule.Pattern)
+            foreach (var symbol in rule.Input)
             {
                 output.Write(" ");
                 output.Write(symbol.Name);

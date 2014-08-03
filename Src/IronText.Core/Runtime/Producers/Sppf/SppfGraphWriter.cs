@@ -87,7 +87,7 @@ namespace IronText.Runtime
 #endif
                         ,
                         tokenName,
-                        string.Join(" ", from s in rule.Pattern select s.Name));
+                        string.Join(" ", from s in rule.Input select s.Name));
             }
             else
             {
@@ -165,7 +165,7 @@ namespace IronText.Runtime
                 return string.Format(
                         "{0} -> {1}",
                         production.Outcome.Name,
-                        string.Join(" ", from s in production.Pattern select s.Name));
+                        string.Join(" ", from s in production.Input select s.Name));
             }
 
             return production.Outcome.Name;

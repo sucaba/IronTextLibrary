@@ -33,10 +33,10 @@ namespace IronText.Runtime
                 return GetDefault(prod.OutcomeToken, stackLookback);
             }
 
-            SppfNode[] children = new SppfNode[prod.Pattern.Length];
+            SppfNode[] children = new SppfNode[prod.Input.Length];
             parts.CopyTo(children, 0);
 
-            if (prod.PatternTokens.Length > parts.Count)
+            if (prod.InputTokens.Length > parts.Count)
             {
                 FillEpsilonSuffix(prod.Index, parts.Count, children, parts.Count, stackLookback);
             }

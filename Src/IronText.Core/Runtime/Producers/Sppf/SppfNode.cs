@@ -203,7 +203,7 @@ namespace IronText.Runtime
                     output.WriteLine("{0}{1} = {2}", indent, "ID", ProductionIndex);
                     var prod = grammar.Productions[ProductionIndex];
                     output.Write("{0}Rule: {1} -> ", indent, prod.Outcome.Name);
-                    output.WriteLine(string.Join(" ", from s in prod.Pattern select s.Name));
+                    output.WriteLine(string.Join(" ", from s in prod.Input select s.Name));
                 }
             }
 

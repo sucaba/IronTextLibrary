@@ -181,6 +181,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RecursiveEliminateEmpty.feature</DependentUpon>
     </Compile>
+    <Compile Include="Reflection\Transformations\RightNullableElimination.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RightNullableElimination.feature</DependentUpon>
+    </Compile>
     <Compile Include="Reflection\Utils\ProductionSketchTest.cs" />
     <Compile Include="Samples\CommandLineSampleTest.cs" />
     <Compile Include="Samples\DynamicLinqTest.cs" />
@@ -261,6 +266,10 @@
     <None Include="Reflection\Transformations\RecursiveEliminateEmpty.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>RecursiveEliminateEmpty.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Reflection\Transformations\RightNullableElimination.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>RightNullableElimination.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup />

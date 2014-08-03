@@ -78,8 +78,8 @@ namespace IronText.Reflection
             foreach (var prod in this)
             {
                 if (prod.Outcome == outcome
-                    && prod.Pattern.Length == pattern.Length
-                    && Enumerable.SequenceEqual(prod.Pattern, pattern)
+                    && prod.Input.Length == pattern.Length
+                    && Enumerable.SequenceEqual(prod.Input, pattern)
                     && !prod.IsHidden)
                 {
                     return prod;

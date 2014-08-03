@@ -146,7 +146,7 @@ namespace IronText.MetadataCompiler
 
             int varsStackStart = varsStack.Count;
             int index = 0;
-            foreach (var arg in prod.Pattern)
+            foreach (var arg in prod.Input)
             {
                 emit = emit
                     .Ldarg(ruleArgs)

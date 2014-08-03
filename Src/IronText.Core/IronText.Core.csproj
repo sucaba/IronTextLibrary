@@ -165,6 +165,9 @@
     <Compile Include="Reflection\Cil\CilMerger.cs" />
     <Compile Include="Reflection\Cil\CilSymbolFeature.cs" />
     <Compile Include="Reflection\RuntimeOptions.cs" />
+    <Compile Include="Reflection\Traits\ProductionTraits.cs" />
+    <Compile Include="Reflection\Traits\SymbolTraits.cs" />
+    <Compile Include="Reflection\Transformations\EliminateRightNulls.cs" />
     <Compile Include="Reflection\Transformations\ProductionInliner.cs" />
     <Compile Include="Collections\Validation\IDuplicateResolver.cs" />
     <Compile Include="Reflection\Utils\ProducitonSketch.cs" />

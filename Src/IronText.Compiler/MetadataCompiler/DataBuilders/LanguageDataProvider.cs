@@ -214,8 +214,8 @@ namespace IronText.MetadataCompiler
                     }
 
                     var providingProd   = grammar.Productions[item.ProductionId];
-                    var providingSymbol = providingProd.Pattern[0];
-                    var childSymbol     = providingProd.Pattern[item.Position];
+                    var providingSymbol = providingProd.Input[0];
+                    var childSymbol     = providingProd.Input[item.Position];
 
                     foreach (var consumingProd in childSymbol.Productions)
                     {

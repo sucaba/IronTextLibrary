@@ -85,7 +85,7 @@ namespace IronText.Reflection
 
         public Symbol Start
         {
-            get { return AugmentedProduction.Pattern[0]; }
+            get { return AugmentedProduction.Input[0]; }
             set { AugmentedProduction.SetAt(0, value); }
         }
 
@@ -186,7 +186,7 @@ namespace IronText.Reflection
         {
             var result = Symbols
                     .Where(s => s.Productions.Count != 0
-                             && s.Productions.Any(p => p.Pattern.Length == 0)
+                             && s.Productions.Any(p => p.Input.Length == 0)
                              && !s.IsRecursive);
 
             return result;
@@ -204,10 +204,10 @@ namespace IronText.Reflection
 
             var result =
                 symbol.Productions.Count == 1 
-                && (symbol.Productions.All(p => p.Size <= 1)
+                && (symbol.Productions.All(p => p.IntputSize <= 1)
                     || 
                     symbol.Productions.All(
-                        p => p.Pattern.All(s => s.IsTerminal)));
+                        p => p.Input.All(s => s.IsTerminal)));
 
             if (result)
             {
@@ -237,10 +237,10 @@ namespace IronText.Reflection
             {
                 var prod = productionsToExtend[i];
 
-                int pos = Array.IndexOf(prod.Pattern, symbol);
+                int pos = Array.IndexOf(prod.Input, symbol);
                 if (pos >= 0)
                 {
-                    productionsToExtend.AddRange(Extend(prod, pos));
+                    productionsToExtend.AddRange(ExpandAt(prod, pos));
                     result = true;
                 }
             }
@@ -252,18 +252,18 @@ namespace IronText.Reflection
         {
             foreach (var prod in Productions)
             {
-                if (prod.Pattern.Contains(symbol) && !prod.IsHidden)// && prod.IsUsed)
+                if (prod.Input.Contains(symbol) && !prod.IsHidden)// && prod.IsUsed)
                 {
                     yield return prod;
                 }
             }
         }
 
-        internal IEnumerable<Production> Extend(Production source, int position)
+        internal IEnumerable<Production> ExpandAt(Production source, int position)
         {
             var result = new List<Production>();
 
-            var symbol = source.Pattern[position];
+            var symbol = source.Input[position];
 
             source.Hide();
 
@@ -313,7 +313,7 @@ namespace IronText.Reflection
 
         public Symbol[] FindOptionalPatternSymbols()
         {
-            return Symbols.Where(IsOptionalSymbol).ToArray();
+            return Symbols.Where(SymbolTraits.IsOptionalSymbol).ToArray();
         }
 
         public bool InlineOptionalSymbols()
@@ -330,26 +330,12 @@ namespace IronText.Reflection
             return result;
         }
 
-        private static bool IsOptionalSymbol(Symbol symbol)
-        {
-            if (symbol == null)
-            {
-                return false;
-            }
-
-            var prods = symbol.Productions;
-            bool result = prods.Count == 2
-                        && prods.Any(p => p.Pattern.Length == 0)
-                        && prods.Any(p => p.Pattern.Length == 1);
-            return result;
-        }
-
         public void ConvertNullableNonOptToOpt()
         {
             var nullableSymbols = FindNullableNonOptSymbols();
             foreach (var symbol in nullableSymbols)
             {
-                Decompose(symbol, prod => !prod.Pattern.All(nullableSymbols.Contains), symbol.Name + "_d$");
+                Decompose(symbol, prod => !prod.Input.All(nullableSymbols.Contains), symbol.Name + SymbolTraits.SomeSymbolSuffix);
             }
         }
 
@@ -357,10 +343,10 @@ namespace IronText.Reflection
         {
             var result = Symbols
                    .Where(s => 
-                       s.Productions.Any(p => p.Pattern.Length == 0)
-                       && s.Productions.Any(p => p.Pattern.Length != 0)
+                       s.Productions.Any(p => p.Input.Length == 0)
+                       && s.Productions.Any(p => p.Input.Length != 0)
                        && (s.Productions.Count != 2 
-                          || s.Productions.Any(p => p.Pattern.Length > 1)));
+                          || s.Productions.Any(p => p.Input.Length > 1)));
             return result.ToArray();
         }
     }
