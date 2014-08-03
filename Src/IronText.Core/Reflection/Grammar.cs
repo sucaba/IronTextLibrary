@@ -130,24 +130,32 @@ namespace IronText.Reflection
 
         public void Inline()
         {
-            ConvertNullableNonOptToOpt();
-            RecursivelyEliminateEmptyProductions();
+            InlineNonAlternateAliasSymbols();
+        }
 
-            var symbolsToInline = Symbols.Where(CanInline).ToArray();
+        public void InlineNonAlternateAliasSymbols()
+        {
+            var symbolsToInline = Symbols.Where(IsNonAlternateAliasSymbol).ToArray();
             foreach (var symbol in symbolsToInline)
             {
                 Inline(symbol);
             }
         }
 
-        public void RecursivelyEliminateEmptyProductions()
+        public void InlineEmptyProductions()
+        {
+            ConvertNullableNonOptToOpt();
+            RecursivelyEliminateEmptyProductions();
+        }
+
+        internal void RecursivelyEliminateEmptyProductions()
         {
             while (EliminateEmptyProductions())
             {
             }
         }
 
-        public bool EliminateEmptyProductions()
+        internal bool EliminateEmptyProductions()
         {
             var old = Productions.DuplicateResolver;
             Productions.DuplicateResolver = ProductionDuplicateResolver.Instance;
@@ -184,7 +192,7 @@ namespace IronText.Reflection
             return result;
         }
 
-        private static bool CanInline(Symbol symbol)
+        private static bool IsNonAlternateAliasSymbol(Symbol symbol)
         {
             if (symbol == null 
                 || symbol.IsPredefined 
@@ -251,7 +259,7 @@ namespace IronText.Reflection
             }
         }
 
-        public IEnumerable<Production> Extend(Production source, int position)
+        internal IEnumerable<Production> Extend(Production source, int position)
         {
             var result = new List<Production>();
 

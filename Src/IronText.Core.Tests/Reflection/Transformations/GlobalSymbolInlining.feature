@@ -1,7 +1,7 @@
 ﻿Feature: Global Symbol Inlining
 	In order to get rid of productions unneccessary for parser runtime
 	As a language data provider
-	I want to to inline some non-terminals symbols
+	I want to to inline some non-terminal symbols
 
 Scenario: Nonterminal symbol with single empty production is inlined
     And production 'S = Prefix X Suffix'

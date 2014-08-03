@@ -57,7 +57,7 @@ namespace IronText.MetadataCompiler
 
             grammar.Joint.Add(source);
 
-            // grammar.Inline();
+            // grammar.InlineEmptyProductions();
 
             grammar.BuildIndexes();
 

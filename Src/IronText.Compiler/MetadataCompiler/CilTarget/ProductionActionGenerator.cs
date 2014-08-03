@@ -206,14 +206,18 @@ namespace IronText.MetadataCompiler
             var bindings = prod.Joint.All<CilProduction>();
             if (!bindings.Any())
             {
-                if (prod.HasIdentityAction)
+                if (prod.IsAugmented)
+                {
+                    coder.Do(c => c.Emit(il => il.Ldnull()));
+                }
+                else if (prod.HasIdentityAction)
                 {
                     coder.Do(c => c.LdActionArgument(0));
                 }
                 else
                 {
-                    coder.Do(c => c
-                        .Emit(il => il.Ldnull()));
+                    var msg = string.Format("Production '{0}' has no associated managed action.", prod);
+                    throw new InvalidOperationException(msg);
                 }
             }
             else
