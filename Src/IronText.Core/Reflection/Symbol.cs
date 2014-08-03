@@ -41,7 +41,7 @@ namespace IronText.Reflection
 
         public SymbolCategory Categories { get; set; }
 
-        public bool IsAugmentedStart { get { return PredefinedTokens.AugmentedStart == Index; } }
+        public bool IsAugmentedStart { get { return Scope.AugmentedProduction.Outcome == (object)this; } }
 
         public bool IsStart { get { return Scope.Start == this; } }
 

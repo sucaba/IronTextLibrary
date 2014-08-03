@@ -10,7 +10,10 @@ namespace IronText.Reflection
         public static bool HasEmptyInputTail(this Production prod)
         {
             int len = prod.Input.Length;
-            var result = len != 0 && prod.Input[len - 1].HasEmptyProduction();
+            var result = len != 0 
+                       && prod.Input[len - 1].HasEmptyProduction()
+                       && !prod.IsAugmented;
+
             return result;
         }
 

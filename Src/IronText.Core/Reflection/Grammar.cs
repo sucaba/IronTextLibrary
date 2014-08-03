@@ -89,7 +89,7 @@ namespace IronText.Reflection
             set { AugmentedProduction.SetAt(0, value); }
         }
 
-        internal Production         AugmentedProduction { get; private set; }
+        public Production           AugmentedProduction { get; private set; }
 
         public SemanticScope        Globals             { get; private set; }
 

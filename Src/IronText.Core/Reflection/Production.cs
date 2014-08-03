@@ -53,7 +53,7 @@ namespace IronText.Reflection
             ContextRef    = contextRef ?? SemanticRef.None;
             Flags         = flags;
 
-            Input       = CreateInputPattern(components);
+            Input         = CreateInputPattern(components);
 
             this._identity = BuildIdentity();
         }
@@ -74,7 +74,7 @@ namespace IronText.Reflection
 
         public bool               IsStart        { get { return Scope.Start == Outcome; } }
 
-        public bool               IsAugmented    { get { return PredefinedTokens.AugmentedStart == OutcomeToken; } }
+        public bool               IsAugmented    { get { return this == (object)Scope.AugmentedProduction; } }
 
         public bool               IsExtended     { get { return Components.Any(c => c is Production); } }
 
@@ -131,13 +131,13 @@ namespace IronText.Reflection
         {
             if (symbol == null)
             {
-                InputTokens[pattIndex]  = -1;
-                Input[pattIndex] = null;
+                Components[0] = null;
+                Input[0]      = null;
             }
             else
             {
-                InputTokens[pattIndex]  = symbol.Index;
-                Input[pattIndex] = symbol;
+                Components[pattIndex] = symbol;
+                Input[0]              = symbol;
             }
         }
 

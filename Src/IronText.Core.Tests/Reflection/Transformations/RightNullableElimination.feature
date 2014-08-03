@@ -61,6 +61,12 @@ Scenario: Left-recursive symbol with empty production inlining
      # Is used because of second production for 'A'
     Then symbol 'X' is used
 
+Scenario: (-) Augmented production is not expanded
+	Given production 'Start = '
+	When eliminate right nullable symbols
+	Then production exists '$start = Start'
+    And  symbol 'Start' is used
+
 Scenario: (-) 1-time used empty symbol is not inlined in a middle of production
 	Given production 'A = Prefix X Suffix'
     Given production 'X = '

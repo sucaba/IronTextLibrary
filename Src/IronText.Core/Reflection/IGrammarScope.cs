@@ -5,6 +5,8 @@ namespace IronText.Reflection
     {
         Symbol               Start       { get; }
 
+        Production           AugmentedProduction { get; }
+
         SymbolCollection     Symbols     { get; }
 
         ProductionCollection Productions { get; }

@@ -8,16 +8,34 @@ namespace IronText.Collections
         : IIndexable<TScope>, IHasIdentity
         where TScope : class
     {
-        public const int NoId = -1;
+        private const int NoId = -1;
+
+        private bool hasIndex;
+        private int _index = NoId;
 
         public IndexableObject()
         {
-            Index = NoId;
         }
 
-        internal int Index { get; private set; }
+        internal int Index 
+        {
+            get 
+            {  
+                if (!hasIndex)
+                {
+                    throw new InvalidOperationException("Object was not indexed.");
+                }
 
-        public bool IsDetached { get { return NoId == Index; } }
+                return this._index; 
+            }
+            set
+            {
+                this._index    = value;
+                this.hasIndex  = true;
+            }
+        }
+
+        public bool IsDetached { get { return Scope == null; } }
 
         public bool IsHidden  { get; private set; }
 
@@ -59,7 +77,8 @@ namespace IronText.Collections
         {
             OnDetaching();
 
-            Index = NoId;
+            this._index = NoId;
+            hasIndex = false;
         }
 
         object IHasIdentity.Identity

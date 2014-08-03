@@ -10,6 +10,7 @@ using IronText.Extensibility;
 using IronText.Logging;
 using IronText.Reflection;
 using IronText.Reflection.Reporting;
+using IronText.Reflection.Transformations;
 
 namespace IronText.MetadataCompiler
 {
@@ -57,7 +58,8 @@ namespace IronText.MetadataCompiler
 
             grammar.Joint.Add(source);
 
-            // grammar.InlineEmptyProductions();
+            // var transform = new EliminateRightNulls(grammar);
+            // transform.Apply();
 
             grammar.BuildIndexes();
 
