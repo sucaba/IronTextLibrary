@@ -33,16 +33,13 @@ namespace IronText.Collections
             this.indexed   = true;
             this.canModify = false;
 
-            this.indexes = items.ToArray();
+            this.indexes = items.Where(IsPublicItem).ToArray();
 
             int count = indexes.Length;
             for (int i = 0; i != count; ++i)
             {
                 var item = indexes[i];
-                if (IsPublicItem(item))
-                {
-                    item.AssignIndex(i);
-                }
+                item.AssignIndex(i);
             }
         }
 

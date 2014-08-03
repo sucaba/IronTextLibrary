@@ -59,6 +59,11 @@ namespace IronText.Reflection
 
             this.Error = Symbols.Add("$error");
 
+            foreach (var sym in Symbols)
+            {
+                sym.IsPredefined = true;
+            }
+
             var startStub = new Symbol("$start-stub");
             AugmentedProduction = Productions.Add(this.AugmentedStart, new Symbol[] { startStub }, null);
         }

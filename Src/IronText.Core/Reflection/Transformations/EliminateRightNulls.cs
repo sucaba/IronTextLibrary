@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IronText.Reflection.Validation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,20 @@ namespace IronText.Reflection.Transformations
         }
 
         public void Apply()
+        {
+            var oldResolver = grammar.Productions.DuplicateResolver;
+            grammar.Productions.DuplicateResolver = ProductionDuplicateResolver.Instance;
+            try
+            {
+                InternalApply();
+            }
+            finally
+            {
+                grammar.Productions.DuplicateResolver = oldResolver;
+            }
+        }
+
+        private void InternalApply()
         {
             while (true)
             {

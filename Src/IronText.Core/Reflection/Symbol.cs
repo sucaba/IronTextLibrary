@@ -37,13 +37,13 @@ namespace IronText.Reflection
         /// </summary>
         public string Name { get; protected set; }
 
-        public bool IsPredefined { get { return 0 <= Index && Index < PredefinedTokens.Count; } }
+        public bool IsPredefined { get; internal set; }
 
         public SymbolCategory Categories { get; set; }
 
         public bool IsAugmentedStart { get { return Scope.AugmentedProduction.Outcome == (object)this; } }
 
-        public bool IsStart { get { return Scope.Start == this; } }
+        public bool IsStart { get { return Scope.Start == (object)this; } }
 
         /// <summary>
         /// Determines whether symbol is terminal

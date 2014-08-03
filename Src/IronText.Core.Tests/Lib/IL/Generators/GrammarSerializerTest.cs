@@ -38,6 +38,7 @@ namespace IronText.Tests.Lib.IL.Generators
         public void GrammarIsBinarySerializableTest()
         {
             var originalGrammar = BuildSampleGrammar();
+            originalGrammar.BuildIndexes();
 
             var formatter = new BinaryFormatter();
 
@@ -76,6 +77,7 @@ namespace IronText.Tests.Lib.IL.Generators
             originalGrammar.Productions.Add(blue, new Symbol[0]);
 
             originalGrammar.Start = red;
+            originalGrammar.BuildIndexes();
             return originalGrammar;
         }
     }
