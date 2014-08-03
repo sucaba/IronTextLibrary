@@ -113,58 +113,6 @@ namespace IronText.Reflection
             }
         }
 
-        public string Describe(Grammar grammar, int pos)
-        {
-            using (var writer = new StringWriter())
-            {
-                Describe(pos, writer);
-                return writer.ToString();
-            }
-        }
-
-        public string Describe(Grammar grammar)
-        {
-            using (var writer = new StringWriter())
-            {
-                Describe(grammar, writer);
-                return writer.ToString();
-            }
-        }
-
-        public void Describe(int pos, TextWriter output)
-        {
-            output.Write("{0} ->", Outcome.Name);
-
-            int i = 0;
-            foreach (var symbol in Pattern)
-            {
-                if (pos == i)
-                {
-                    output.Write(" •");
-                }
-
-                output.Write(" ");
-                output.Write(symbol.Name);
-                ++i;
-            }
-
-            if (pos == PatternTokens.Length)
-            {
-                output.Write(" •");
-            }
-        }
-
-        public void Describe(Grammar grammar, TextWriter output)
-        {
-            output.Write("{0} ->", Outcome.Name);
-
-            foreach (var symbol in Pattern)
-            {
-                output.Write(" ");
-                output.Write(symbol.Name);
-            }
-        }
-
         protected override void OnAttached()
         {
             base.OnAttached();
@@ -190,49 +138,6 @@ namespace IronText.Reflection
             {
                 PatternTokens[pattIndex]  = symbol.Index;
                 Pattern[pattIndex] = symbol;
-            }
-        }
-
-        public string DebugProductionText
-        {
-            get
-            {
-                var output = new StringBuilder();
-                if (IsDetached)
-                {                
-                    output
-                        .Append(Outcome.Index)
-                        .Append(" ->")
-                        .Append(string.Join(" ", PatternTokens));
-                }
-                else
-                {
-                    output
-                        .Append(Outcome.Name)
-                        .Append(" ->");
-                    if (Size == 0)
-                    {
-                        output.Append(" /*empty*/");
-                    }
-                    else
-                    {
-                        foreach (var component in Components)
-                        {
-                            var asSymbol = component as Symbol;
-                            if (asSymbol != null)
-                            {
-                                output.Append(" ").Append(asSymbol.Name);
-                            }
-                            else
-                            {
-                                var prod = (Production)component;
-                                output.Append(" (").Append(prod.DebugProductionText).Append(")");
-                            }
-                        }
-                    }
-                }
-
-                return output.ToString();
             }
         }
 
@@ -323,5 +228,27 @@ namespace IronText.Reflection
             // on the internal components i.e. production signature should be unique
             return IdentityFactory.FromIdentities(Outcome, Pattern);
         }
+
+        public override string ToString()
+        {
+            using (var writer = new StringWriter())
+            {
+                Describe(writer);
+                return writer.ToString();
+            }
+        }
+
+        public void Describe(TextWriter output)
+        {
+            output.Write("{0} =", Outcome.Name);
+
+            foreach (var symbol in Pattern)
+            {
+                output.Write(" ");
+                output.Write(symbol.Name);
+            }
+        }
+
+        public string DebugProductionText { get { return ToString(); } }
     }
 }
