@@ -58,8 +58,8 @@ namespace IronText.MetadataCompiler
 
             grammar.Joint.Add(source);
 
-            // var transform = new EliminateRightNulls(grammar);
-            // transform.Apply();
+            var transform = new EliminateRightNulls(grammar);
+            transform.Apply();
 
             grammar.BuildIndexes();
 
