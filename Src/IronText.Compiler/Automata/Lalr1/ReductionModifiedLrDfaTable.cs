@@ -5,6 +5,8 @@ using IronText.Compiler.Analysis;
 using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Runtime;
+using System.Diagnostics;
+using System;
 
 namespace IronText.Automata.Lalr1
 {
@@ -23,10 +25,10 @@ namespace IronText.Automata.Lalr1
             this.canOptimizeReduceStates = (dfa.Optimizations & flag) == flag;
 
             this.grammar = dfa.GrammarAnalysis;
-            var states = dfa.States;
-            this.actionTable = actionTable ?? new MutableTable<int>(states.Length, dfa.GrammarAnalysis.TotalSymbolCount);
-            FillDfaTable(states);
-            BuildConflictActionTable();
+
+            this.actionTable = actionTable ?? new MutableTable<int>(dfa.States.Length, grammar.TotalSymbolCount);
+            FillDfaTable(dfa.States);
+            BuildConflictTable();
         }
 
         public bool RequiresGlr { get { return true; } }
@@ -40,7 +42,7 @@ namespace IronText.Automata.Lalr1
 
         public ITable<int> GetParserActionTable() { return actionTable; }
 
-        private void BuildConflictActionTable()
+        private void BuildConflictTable()
         {
             var conflictList = new List<int>();
             foreach (var conflict in transitionToConflict.Values)
@@ -67,6 +69,7 @@ namespace IronText.Automata.Lalr1
             for (int i = 0; i != states.Length; ++i)
             {
                 var state = states[i];
+                Debug.Assert(i == state.Index);
 
                 foreach (var item in state.Items)
                 {
@@ -101,7 +104,14 @@ namespace IronText.Automata.Lalr1
 
                     bool isStartRule = item.IsAugmented;
 
-                    if (item.IsReduce || grammar.IsTailNullable(item))
+                    bool isTailNullable = !isStartRule && !item.IsReduce && grammar.IsTailNullable(item);
+                    if (isTailNullable)
+                    {
+                        // Ensure that tail-nullable productions where eliminated
+                        throw new InvalidOperationException("Tail nullable productions are not supported");
+                    }
+
+                    if (item.IsReduce || isTailNullable)
                     {
                         ParserAction action;
 
@@ -118,6 +128,7 @@ namespace IronText.Automata.Lalr1
                         }
                         else
                         {
+
                             action = new ParserAction
                             {
                                 Kind         = ParserActionKind.Reduce,
@@ -228,12 +239,7 @@ namespace IronText.Automata.Lalr1
             }
             else
             {
-#if LALR1_TOLERANT
-                // Unsupported conflict type. Use first action
-                output = actionX;
-#else
                 output = ParserAction.Encode(ParserActionKind.Conflict, 0);
-#endif
                 return false;
             }
 
@@ -242,12 +248,7 @@ namespace IronText.Automata.Lalr1
 
             if (shiftTokenPrecedence == null && reduceRulePrecedence == null)
             {
-#if LALR1_TOLERANT
-                // In case of conflict prefer shift over reduce
-                output = shiftAction;
-#else
                 output = ParserAction.Encode(ParserActionKind.Conflict, 0);
-#endif
                 return false;
             }
             else if (shiftTokenPrecedence == null)

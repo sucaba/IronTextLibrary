@@ -243,6 +243,7 @@ namespace IronText.Tests.Performance
         }
 
         [Language(LanguageFlags.ForceNonDeterministic)]
+        [DescribeParserStateMachine("Lalr1PerfLangAsGlr.gram")]
         public class Lalr1PerfLangAsGlr : Lalr1PerfLang
         {
         }

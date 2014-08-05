@@ -25,7 +25,7 @@ namespace IronText.Compiler.Analysis
 
         public int this[int index] { get { return production.Input[index]; } }
 
-        public int[] GetPattern() { return production.Input; }
+        public int[] GetInputTokens() { return production.Input; }
 
         public bool IsAugmented { get { return PredefinedTokens.AugmentedStart == production.Outcome; } }
 

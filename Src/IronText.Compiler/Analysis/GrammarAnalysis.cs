@@ -81,7 +81,7 @@ namespace IronText.Compiler.Analysis
 
         public void AddFirst(DotItem item, MutableIntSet output)
         {
-            bool isNullable = tables.AddFirst(item.GetPattern(), item.Position, output);
+            bool isNullable = tables.AddFirst(item.GetInputTokens(), item.Position, output);
 
             if (isNullable)
             {
@@ -91,12 +91,12 @@ namespace IronText.Compiler.Analysis
 
         public bool HasFirst(DotItem item, int token)
         {
-            return tables.HasFirst(item.GetPattern(), item.Position, token);
+            return tables.HasFirst(item.GetInputTokens(), item.Position, token);
         }
 
         public bool IsTailNullable(DotItem item)
         {
-            return tables.IsTailNullable(item.GetPattern(), item.Position);
+            return tables.IsTailNullable(item.GetInputTokens(), item.Position);
         }
 
         private ProdItem ToRt(Production production)

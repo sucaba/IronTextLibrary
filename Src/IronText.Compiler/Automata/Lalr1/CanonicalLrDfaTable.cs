@@ -14,10 +14,9 @@ namespace IronText.Automata.Lalr1
         private readonly GrammarAnalysis grammar;
         private readonly Dictionary<TransitionKey, ParserConflictInfo> transitionToConflict 
             = new Dictionary<TransitionKey, ParserConflictInfo>();
-
-        private IMutableTable<int> actionTable;
-        private int[]              conflictActionTable;
-        private readonly bool      canOptimizeReduceStates;
+        private readonly IMutableTable<int> actionTable;
+        private int[]  conflictActionTable;
+        private readonly bool canOptimizeReduceStates;
 
         public CanonicalLrDfaTable(ILrDfa dfa, IMutableTable<int> actionTable)
         {
@@ -25,6 +24,7 @@ namespace IronText.Automata.Lalr1
             this.canOptimizeReduceStates = (dfa.Optimizations & flag) == flag;
 
             this.grammar = dfa.GrammarAnalysis;
+
             this.actionTable = actionTable ?? new MutableTable<int>(dfa.States.Length, grammar.TotalSymbolCount);
             FillDfaTable(dfa.States);
             BuildConflictTable();
@@ -37,10 +37,9 @@ namespace IronText.Automata.Lalr1
             get { return transitionToConflict.Values.ToArray(); }
         }
 
-        public int[] GetConflictActionTable()
-        {
-            return conflictActionTable;        
-        }
+        public int[] GetConflictActionTable() { return conflictActionTable; }
+
+        public ITable<int> GetParserActionTable() { return actionTable; }
 
         private void BuildConflictTable()
         {
@@ -64,8 +63,6 @@ namespace IronText.Automata.Lalr1
             this.conflictActionTable = conflictList.ToArray();
         }
 
-        public ITable<int> GetParserActionTable() { return this.actionTable; }
-
         private void FillDfaTable(DotState[] states)
         {
             for (int i = 0; i != states.Length; ++i)
@@ -85,7 +82,7 @@ namespace IronText.Automata.Lalr1
                         {
                             var action = new ParserAction
                             {
-                                Kind = ParserActionKind.ShiftReduce,
+                                Kind         = ParserActionKind.ShiftReduce,
                                 ProductionId = item.ProductionId
                             };
 

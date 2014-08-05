@@ -191,6 +191,7 @@ namespace IronText.Tests.Framework
         }
 
         [Language(LanguageFlags.ForceNonDeterministic)]
+        [DescribeParserStateMachine("RightNullable.gram")]
         public interface RightNullable
         {
             [Produce(null, null, "a", "b")]
@@ -217,6 +218,7 @@ namespace IronText.Tests.Framework
         /// </summary>
         [Language(LanguageFlags.ForceNonDeterministic)]
         [ParserGraph("RightNullable0.gv")]
+        [DescribeParserStateMachine("RightNullable0.gram")]
         public interface RightNullable0
         {
             [Produce]
