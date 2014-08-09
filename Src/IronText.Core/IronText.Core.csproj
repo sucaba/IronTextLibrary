@@ -122,6 +122,7 @@
     <Compile Include="Lib\IL\Grammar\WantFieldInit.cs" />
     <Compile Include="Lib\IL\Grammar\WantFieldName.cs" />
     <Compile Include="Lib\IL\Grammar\WantFieldType.cs" />
+    <Compile Include="Misc\ReferenceComparer.cs" />
     <Compile Include="Misc\IHasIdentity.cs" />
     <Compile Include="Collections\Joint.cs" />
     <Compile Include="Diagnostics\GvGraphView.cs" />

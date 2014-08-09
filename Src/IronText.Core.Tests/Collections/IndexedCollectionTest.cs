@@ -11,6 +11,8 @@ namespace IronText.Tests.Collections
     [TestFixture]
     public class IndexedCollectionTest
     {
+        const string DefaultStr = "<default>";
+
         private TestScope collectionScope;
         private TestIndexedCollection target;
         private TestIndexableObject x;
@@ -122,7 +124,6 @@ namespace IronText.Tests.Collections
         {
             GivenIndexedCollectionOfSize2();
 
-            const string DefaultStr = "<default>";
             var array = target.CreateCompatibleArray<string>(DefaultStr);
 
             Assert.AreEqual(StartIndex + 2, array.Length);
@@ -133,10 +134,43 @@ namespace IronText.Tests.Collections
         {
             GivenIndexedCollectionOfSize2();
 
-            const string DefaultStr = "<default>";
             var array = target.CreateCompatibleArray<string>(DefaultStr);
 
             Assert.That(array.Take(StartIndex), Is.All.EqualTo(DefaultStr));
+        }
+
+        [Test]
+        public void ForcedIndexOverlappingWithOtherIndexIsUsedForIndexing()
+        {
+            int xForcedIndex = StartIndex + 1;
+            int yForcedIndex = StartIndex + 0;
+            target.Add(x, xForcedIndex);
+            target.Add(y, yForcedIndex);
+            target.BuildIndexes(StartIndex);
+
+            Assert.AreEqual(xForcedIndex, x.AssignedIndex);
+            Assert.AreEqual(yForcedIndex, y.AssignedIndex);
+        }
+
+        [Test]
+        public void ForcedIndexOutOfRangeIsUsedForIndexing()
+        {
+            int xForcedIndex = StartIndex + 10; // big enough
+            int yForcedIndex = StartIndex + 0;
+            target.Add(x, xForcedIndex);
+            target.Add(y, yForcedIndex);
+            target.BuildIndexes(StartIndex);
+
+            Assert.AreEqual(xForcedIndex, x.AssignedIndex);
+            Assert.AreEqual(yForcedIndex, y.AssignedIndex);
+        }
+
+        [Test]
+        public void TooLowForcedIndexCannotBeUsed()
+        {
+            int xForcedIndex = StartIndex - 1; // too low 
+            target.Add(x, xForcedIndex);
+            Assert.Throws<InvalidOperationException>(() => target.BuildIndexes(StartIndex));
         }
 
         private void GivenIndexedCollectionOfSize2()
@@ -190,6 +224,14 @@ namespace IronText.Tests.Collections
             {
                 this.DetachingScope = scope;
             }
+
+            public override bool Equals(object obj)
+            {
+                throw new AssertionException("item.Equals() shot not be used in indexed collection.");
+            }
+
+            // Prevent warning
+            public override int GetHashCode() { return base.GetHashCode(); }
         }
 
         class TestIndexedCollection : IndexedCollection<TestIndexableObject,TestScope>

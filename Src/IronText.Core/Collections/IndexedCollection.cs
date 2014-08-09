@@ -20,6 +20,7 @@ namespace IronText.Collections
         private bool canModify = true;
         private T[] indexes;
         private readonly Dictionary<object,T> identityToItem = new Dictionary<object,T>();
+        private readonly Dictionary<int, T> forcedIndexes = new Dictionary<int,T>();
 
         public IndexedCollection(TScope scope = default(TScope))
         {
@@ -34,19 +35,43 @@ namespace IronText.Collections
             this.indexed   = true;
             this.canModify = false;
 
-            this.indexes = new T[startIndex + items.Count(IsPublicItem)];
+            int lastForcedIndex = forcedIndexes.Count == 0 ? 0 : forcedIndexes.Keys.Max() + 1;
+            int lastIndex = Math.Max(startIndex + items.Count(IsPublicItem), lastForcedIndex);
+            this.indexes = new T[lastIndex];
 
+            foreach (var pair in forcedIndexes)
+            {
+                if (pair.Key < startIndex)
+                {
+                    throw new InvalidOperationException("Forced index should be lower than a start index.");
+                }
+
+                indexes[pair.Key] = pair.Value;
+                pair.Value.AssignIndex(pair.Key);
+            }
+
+            var itemsToIndex = items.Except(forcedIndexes.Values, ReferenceComparer<T>.Default);
             int count = indexes.Length;
             int i = startIndex;
-            foreach (var item in items)
+            foreach (var item in itemsToIndex)
             {
                 if (IsPublicItem(item))
                 {
+                    while (forcedIndexes.ContainsKey(i))
+                    {
+                        ++i;
+                    }
+
                     indexes[i] = item;
                     item.AssignIndex(i);
                     ++i;
                 }
             }
+        }
+
+        private bool HasForcedIndex(T item)
+        {
+            return forcedIndexes.Values.Contains(item);
         }
 
         private void RequireIndexed()
@@ -110,7 +135,7 @@ namespace IronText.Collections
             set { _duplicateResolver = value ?? DuplicateResolver<T>.Fail; }
         }
 
-        public T Add(T item)
+        public T Add(T item, int forcedIndex = -1)
         {
             RequireModifiable();
 
@@ -130,6 +155,12 @@ namespace IronText.Collections
             }
 
             AttachedItem(item);
+
+            if (forcedIndex >= 0)
+            {
+                forcedIndexes.Add(forcedIndex, item);
+            }
+
             return item;
         }
 
@@ -154,7 +185,7 @@ namespace IronText.Collections
 
         public bool Contains(T item)
         {
-            return item != null && items.Contains(item);
+            return item != null && items.Exists(it => object.ReferenceEquals(it, item));
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -216,9 +247,17 @@ namespace IronText.Collections
 
         private bool DetachingItem(T item)
         {
+            int pos = items.FindIndex(it => object.ReferenceEquals(it, item));
+            if (pos < 0)
+            {
+                return false;
+            }
+
             item.Detaching(Scope);
             identityToItem.Remove(item.Identity);
-            return items.Remove(item);
+
+            items.RemoveAt(pos);
+            return true;
         }
 
         private void AttachedItem(T item)

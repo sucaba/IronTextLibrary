@@ -5,6 +5,7 @@ using IronText.Diagnostics;
 using IronText.Framework;
 using IronText.Runtime;
 using NUnit.Framework;
+using IronText.Misc;
 
 namespace IronText.Tests.Framework
 {
@@ -71,27 +72,12 @@ namespace IronText.Tests.Framework
                 var allNodes = sppf.Flatten().ToArray();
 
                 var NUM = lang.Identify("3");
-                var numNodes = allNodes.Where(n => n.GetTokenId(gram) == NUM).Distinct(IdentityComparer.Default).ToArray();
+                var numNodes = allNodes.Where(n => n.GetTokenId(gram) == NUM).Distinct(ReferenceComparer<SppfNode>.Default).ToArray();
                 Assert.AreEqual(3, numNodes.Length, "Leaf SPPF nodes should be shared");
 
                 var POW = lang.Identify("^");
-                var powNodes = allNodes.Where(n => n.GetTokenId(gram) == POW).Distinct(IdentityComparer.Default).ToArray();
+                var powNodes = allNodes.Where(n => n.GetTokenId(gram) == POW).Distinct(ReferenceComparer<SppfNode>.Default).ToArray();
                 Assert.AreEqual(2, powNodes.Length, "Leaf SPPF nodes should be shared");
-            }
-        }
-
-        class IdentityComparer : IEqualityComparer<object>
-        {
-            public static readonly IdentityComparer Default = new IdentityComparer();
-
-            bool IEqualityComparer<object>.Equals(object x, object y)
-            {
-                return object.ReferenceEquals(x, y);
-            }
-
-            int IEqualityComparer<object>.GetHashCode(object obj)
-            {
-                return obj.GetHashCode();
             }
         }
 
