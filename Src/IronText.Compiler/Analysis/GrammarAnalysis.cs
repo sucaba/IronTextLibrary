@@ -4,6 +4,7 @@ using IronText.Algorithm;
 using IronText.Reflection;
 using IronText.Runtime;
 using System;
+using IronText.Misc;
 
 namespace IronText.Compiler.Analysis
 {
@@ -109,11 +110,7 @@ namespace IronText.Compiler.Analysis
 
         private static int[] BuildTokenComplexity(Grammar grammar)
         {
-            var result = new int[grammar.Symbols.LastIndex];
-            for (int i = 0; i != result.Length; ++i)
-            {
-                result[i] = -1;
-            }
+            var result =  grammar.Symbols.CreateCompatibleArray(IndexingConstants.NoIndex);
 
             var sortedTokens = Graph.TopologicalSort(
                                 new [] { PredefinedTokens.AugmentedStart },

@@ -77,7 +77,7 @@ namespace IronText.Runtime
             this.allocator            = allocator;
             this.logging              = logging;
 
-            this.pendingReductions = new ModifiedReduction[grammar.Productions.LastIndex];
+            this.pendingReductions = new ModifiedReduction[grammar.Productions.PublicCount];
 
             switch (producer.ReductionOrder)
             {

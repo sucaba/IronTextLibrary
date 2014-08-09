@@ -37,10 +37,6 @@ namespace IronText.Reflection
             Globals     = new SemanticScope();
 
             Symbol[] predefined = {
-                // Transient usage of indexes when building LR table. No need to handle in grammar explicitly. 
-                // Later can be achieved by providing lower value for indexes in IndexedCollection
-                new Symbol("$eps"),   
-                new Symbol("#"),
                 // Predefined indexes to simplify code and improve performance. Used in grammar.
                 // This can be implemented by adding predefinedIndex constructor argument 
                 (AugmentedStart = new Symbol("$start")),
@@ -96,7 +92,7 @@ namespace IronText.Reflection
 
         public void BuildIndexes()
         {
-            Symbols.BuildIndexes();
+            Symbols.BuildIndexes(PredefinedTokens.AugmentedStart);
             Productions.BuildIndexes();
             Matchers.BuildIndexes();
             Mergers.BuildIndexes();

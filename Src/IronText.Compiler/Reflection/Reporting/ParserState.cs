@@ -47,8 +47,10 @@ namespace IronText.Reflection.Reporting
                 if (transitions == null)
                 {
                     var list = new List<IParserTransition>();
-                    int tokenCount = data.Grammar.Symbols.LastIndex;
-                    for (int token = PredefinedTokens.Eoi; token != tokenCount; ++token)
+                    int first = data.Grammar.Symbols.StartIndex;
+                    int last  = data.Grammar.Symbols.LastIndex;
+
+                    for (int token = first; token != last; ++token)
                     {
                         var actions = GetAllParserActions(dotState.Index, token);
                         if (actions.Count() != 0)

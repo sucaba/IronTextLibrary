@@ -25,7 +25,7 @@ namespace IronText.MetadataCompiler
         {
             this.grammar               = grammar;
             this.tdfa                  = tdfa;
-            this.actionToTokenProducer = new TokenProducerInfo[grammar.Matchers.LastIndex];
+            this.actionToTokenProducer = grammar.Matchers.CreateCompatibleArray<TokenProducerInfo>(null);
             this.stateToTokenProducer  = new Dictionary<object, TokenProducerInfo>();
             this.tokenSetType          = new BitSetType(grammar.Symbols.LastIndex);
         }

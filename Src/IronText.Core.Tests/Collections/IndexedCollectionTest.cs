@@ -117,6 +117,35 @@ namespace IronText.Tests.Collections
             Assert.AreSame(y, target[y.AssignedIndex.Value]);
         }
 
+        [Test]
+        public void CreateCompatibleArrayReturnsArrayOfCorrectSize()
+        {
+            GivenIndexedCollectionOfSize2();
+
+            const string DefaultStr = "<default>";
+            var array = target.CreateCompatibleArray<string>(DefaultStr);
+
+            Assert.AreEqual(StartIndex + 2, array.Length);
+        }
+
+        [Test]
+        public void CreateCompatibleArrayReturnsArrayWithFilledEmptySlots()
+        {
+            GivenIndexedCollectionOfSize2();
+
+            const string DefaultStr = "<default>";
+            var array = target.CreateCompatibleArray<string>(DefaultStr);
+
+            Assert.That(array.Take(StartIndex), Is.All.EqualTo(DefaultStr));
+        }
+
+        private void GivenIndexedCollectionOfSize2()
+        {
+            target.Add(x);
+            target.Add(y);
+            target.BuildIndexes(StartIndex);
+        }
+
         class TestScope
         {
         }

@@ -79,11 +79,11 @@ namespace IronText.Runtime
                 envelope.HLocation);
         }
 
-        public ActionNode CreateBranch(Production rule, ArraySlice<ActionNode> prefix, IStackLookback<ActionNode> stackLookback)
+        public ActionNode CreateBranch(Production prod, ArraySlice<ActionNode> prefix, IStackLookback<ActionNode> stackLookback)
         {
             if (prefix.Count == 0)
             {
-                return GetDefault(rule.OutcomeToken, stackLookback);
+                return GetDefault(prod.OutcomeToken, stackLookback);
             }
 
             Loc location;
@@ -112,14 +112,14 @@ namespace IronText.Runtime
             this._parsingLocation = location;
             this._parsingHLocation = hLocation;
 
-            if (rule.InputTokens.Length > prefix.Count)
+            if (prod.InputTokens.Length > prefix.Count)
             {
-                FillEpsilonSuffix(rule.Index, prefix.Count, prefix.Array, prefix.Offset + prefix.Count, stackLookback);
+                FillEpsilonSuffix(prod.Index, prefix.Count, prefix.Array, prefix.Offset + prefix.Count, stackLookback);
             }
 
-            object value = grammarAction(rule.Index, prefix.Array, prefix.Offset, context, stackLookback);
+            object value = grammarAction(prod.Index, prefix.Array, prefix.Offset, context, stackLookback);
 
-            return new ActionNode(rule.OutcomeToken, value, location, hLocation);
+            return new ActionNode(prod.OutcomeToken, value, location, hLocation);
         }
 
         public ActionNode Merge(ActionNode alt1, ActionNode alt2, IStackLookback<ActionNode> stackLookback)

@@ -54,11 +54,12 @@ namespace IronText.Runtime
 
         private void Build()
         {
-            int count = grammar.Symbols.LastIndex;
-            this.firsts     = new MutableIntSet[count];
-            this.isNullable = new bool[count];
+            int first = grammar.Symbols.StartIndex;
+            int last  = grammar.Symbols.LastIndex;
+            this.firsts     = grammar.Symbols.CreateCompatibleArray<MutableIntSet>(null);
+            this.isNullable = grammar.Symbols.CreateCompatibleArray<bool>(false);
 
-            for (int i = 0; i != count; ++i)
+            for (int i = first; i != last; ++i)
             {
                 firsts[i] = tokenSet.Mutable();
                 if (grammar.Symbols[i].IsTerminal)
@@ -102,7 +103,7 @@ namespace IronText.Runtime
             }
             while (changed);
 
-            for (int i = 0; i != count; ++i)
+            for (int i = first; i != last; ++i)
             {
                 bool hasEpsilon = firsts[i].Contains(PredefinedTokens.Epsilon);
                 if (hasEpsilon)

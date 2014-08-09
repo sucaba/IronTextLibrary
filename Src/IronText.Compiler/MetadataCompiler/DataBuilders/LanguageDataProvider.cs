@@ -11,6 +11,7 @@ using IronText.Logging;
 using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Reflection.Transformations;
+using IronText.Misc;
 
 namespace IronText.MetadataCompiler
 {
@@ -127,13 +128,17 @@ namespace IronText.MetadataCompiler
 
         private int[] BuildMatchActionToTokenTable(Grammar grammar, IEnumerable<AmbTokenInfo> ambiguities)
         {
-            var actionToToken = new int[grammar.Matchers.LastIndex];
-            for (int i = 0; i != actionToToken.Length; ++i)
+            var actionToToken = grammar.Matchers.CreateCompatibleArray<int>(IndexingConstants.NoIndex);
+
+            int first = grammar.Matchers.StartIndex;
+            int last  = grammar.Matchers.LastIndex;
+
+            for (int i = first; i != last; ++i)
             {
                 var outcome = grammar.Matchers[i].Outcome;
                 if (outcome == null)
                 {
-                    actionToToken[i] = -1;
+                    actionToToken[i] = IndexingConstants.NoIndex; // Skip tokens like whitespace and comments
                 }
                 else if (outcome is AmbiguousTerminal)
                 {

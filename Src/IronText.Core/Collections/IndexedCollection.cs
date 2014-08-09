@@ -180,6 +180,18 @@ namespace IronText.Collections
             return indexes;
         }
 
+        public U[] CreateCompatibleArray<U>(U freeSlot)
+        {
+            int last = LastIndex;
+            var result = new U[last];
+            while (last != 0)
+            {
+                result[--last] = freeSlot;
+            }
+
+            return result;
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();

@@ -35,12 +35,15 @@ namespace IronText.MetadataCompiler
             var labels = emit.Labels;
             var locals = emit.Locals;
 
-            var RETURN = labels.Generate();
+            var RETURN  = labels.Generate();
+            var DEFAULT = labels.Generate();
 
-            int ruleCount = data.Grammar.Matchers.LastIndex;
 
-            var actionLabels = new Ref<Labels>[ruleCount];
-            for (int i = 0; i != ruleCount; ++i)
+            var actionLabels = data.Grammar.Matchers.CreateCompatibleArray(DEFAULT.GetRef());
+            int first = data.Grammar.Matchers.StartIndex;
+            int last  = data.Grammar.Matchers.LastIndex;
+
+            for (int i = first; i != last; ++i)
             {
                 actionLabels[i] = labels.Generate().GetRef();
             }
@@ -62,7 +65,9 @@ namespace IronText.MetadataCompiler
             }
 
             // Load null value for incorrectly implemented actions
-            emit.Ldnull();
+            emit
+                .Label(DEFAULT)
+                .Ldnull();
 
             return emit
                 .Label(RETURN)
