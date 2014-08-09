@@ -20,6 +20,8 @@ namespace IronText.Reflection
         public const string UnnamedTokenName = "<unnamed token>";
         public const string UnknownTokenName = "<unknown token>";
 
+        private const int AugStartProductionIndex = 0;
+
         [NonSerialized]
         private readonly Joint _joint = new Joint();
 
@@ -30,28 +32,34 @@ namespace IronText.Reflection
         {
             Options     = RuntimeOptions.Default;
 
-            Productions = new ProductionCollection(this);
-            Symbols     = new SymbolCollection(this);
-            Matchers    = new MatcherCollection(this);
-            Mergers     = new MergerCollection(this);
-            Globals     = new SemanticScope();
-
-            Symbol[] predefined = {
-                // Predefined indexes to simplify code and improve performance. Used in grammar.
-                // This can be implemented by adding predefinedIndex constructor argument 
-                (AugmentedStart = new Symbol("$start")),
-                (Eoi = new Symbol("$") { Categories = SymbolCategory.DoNotInsert | SymbolCategory.DoNotDelete }),
-                (Error = new Symbol("$error"))
-            };
-
-            foreach (var sym in predefined)
-            {
-                Symbols.Add(sym);
-                sym.IsPredefined = true;
-            }
+            AugmentedStart = new Symbol("$start");
+            Error          = new Symbol("$error");
+            Eoi            = new Symbol("$")       { Categories = SymbolCategory.DoNotInsert | SymbolCategory.DoNotDelete };
 
             var startStub = new Symbol("$start-stub");
-            AugmentedProduction = Productions.Add(this.AugmentedStart, new Symbol[] { startStub }, null);
+            AugmentedProduction = new Production(this.AugmentedStart, new [] { startStub });
+
+            Symbols        = new SymbolCollection(this)
+            {
+                { AugmentedStart, PredefinedTokens.AugmentedStart },
+                { Error,          PredefinedTokens.Error          }, 
+                { Eoi,            PredefinedTokens.Eoi            }
+            };
+
+            Productions    = new ProductionCollection(this)
+            {
+                { AugmentedProduction, AugStartProductionIndex }
+            };
+
+            Matchers       = new MatcherCollection(this);
+            Mergers        = new MergerCollection(this);
+            Globals        = new SemanticScope();
+
+            foreach (var symbol in new[] { AugmentedStart, Error, Eoi})
+            {
+                symbol.IsPredefined = true;
+            }
+
         }
 
         public RuntimeOptions Options { get; set; }
