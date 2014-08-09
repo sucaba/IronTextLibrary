@@ -14,6 +14,8 @@ namespace IronText.Tests.Collections
         private TestScope collectionScope;
         private TestIndexedCollection target;
         private TestIndexableObject x;
+        private TestIndexableObject y;
+        private const int StartIndex = 5;
 
         [SetUp]
         public void SetUp()
@@ -21,6 +23,7 @@ namespace IronText.Tests.Collections
             this.collectionScope = new TestScope();
             this.target = new TestIndexedCollection(collectionScope);            
             this.x = new TestIndexableObject("x");
+            this.y = new TestIndexableObject("y");
         }
 
         [Test]
@@ -72,6 +75,48 @@ namespace IronText.Tests.Collections
             Assert.That(x.DetachingScope, Is.SameAs(collectionScope));
         }
 
+        [Test]
+        public void BuildIndexAssignesIndexesToObjects()
+        {
+            target.Add(x);
+            target.BuildIndexes(StartIndex);
+            Assert.IsTrue(x.AssignedIndex.HasValue);
+        }
+
+        [Test]
+        public void BuildIndexAssignesIndexesEntriesStartingFromLimit()
+        {
+            target.Add(x);
+            target.BuildIndexes(StartIndex);
+            Assert.AreEqual(StartIndex, x.AssignedIndex);
+        }
+
+        [Test]
+        public void StartIndexPropertyHasProvidedValue()
+        {
+            target.BuildIndexes(StartIndex);
+            Assert.AreEqual(StartIndex, target.StartIndex);
+        }
+
+        [Test]
+        public void IndexCountContainsIndexCountPlusStartIndex()
+        {
+            target.Add(x);
+            target.Add(y);
+            target.BuildIndexes(StartIndex);
+            Assert.AreEqual(StartIndex + 2, target.LastIndex);
+        }
+
+        [Test]
+        public void IndexedItemsAreAccessibleByIndex()
+        {
+            target.Add(x);
+            target.Add(y);
+            target.BuildIndexes(StartIndex);
+            Assert.AreSame(x, target[x.AssignedIndex.Value]);
+            Assert.AreSame(y, target[y.AssignedIndex.Value]);
+        }
+
         class TestScope
         {
         }
@@ -83,6 +128,7 @@ namespace IronText.Tests.Collections
             public  TestScope AttachedScope;
             public  TestScope DetachingScope;
             public  bool      IsAttached;
+            public  int?      AssignedIndex;
 
             public TestIndexableObject(string name) { this.Name = name; }
 
@@ -97,7 +143,7 @@ namespace IronText.Tests.Collections
 
             public bool IsHidden
             {
-                get { throw new NotImplementedException(); }
+                get { return false; }
             }
 
             public void Attached(TestScope scope)
@@ -108,6 +154,7 @@ namespace IronText.Tests.Collections
 
             public void AssignIndex(int index)
             {
+                this.AssignedIndex = index;
             }
 
             public void Detaching(TestScope scope)

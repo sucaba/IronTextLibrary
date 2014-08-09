@@ -51,7 +51,7 @@ namespace IronText.Runtime
                 producer,
                 allocator,
                 logging,
-                new Gss<T>(stateToPriorToken.Length + grammar.Productions.IndexCount))
+                new Gss<T>(stateToPriorToken.Length + grammar.Productions.LastIndex))
         {
         }
 
@@ -77,7 +77,7 @@ namespace IronText.Runtime
             this.allocator            = allocator;
             this.logging              = logging;
 
-            this.pendingReductions = new ModifiedReduction[grammar.Productions.IndexCount];
+            this.pendingReductions = new ModifiedReduction[grammar.Productions.LastIndex];
 
             switch (producer.ReductionOrder)
             {

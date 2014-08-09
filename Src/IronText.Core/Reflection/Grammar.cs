@@ -30,37 +30,27 @@ namespace IronText.Reflection
         {
             Options     = RuntimeOptions.Default;
 
-            Productions      = new ProductionCollection(this);
-            Symbols          = new SymbolCollection(this);
-            Matchers         = new MatcherCollection(this);
-            Mergers          = new MergerCollection(this);
-            Globals          = new SemanticScope();
+            Productions = new ProductionCollection(this);
+            Symbols     = new SymbolCollection(this);
+            Matchers    = new MatcherCollection(this);
+            Mergers     = new MergerCollection(this);
+            Globals     = new SemanticScope();
 
-            // TODO: Valid indexes for predefined symbols
-#if false
-            Symbols[PredefinedTokens.Propagated]      = new Symbol("#");
-            Symbols[PredefinedTokens.Epsilon]         = new Symbol("$eps");
-            Symbols[PredefinedTokens.AugmentedStart]  = new Symbol("$start");
-            Symbols[PredefinedTokens.Eoi]             = new Symbol("$")
-                                          { 
-                                              Categories = SymbolCategory.DoNotInsert 
-                                                         | SymbolCategory.DoNotDelete 
-                                          };
-            Symbols[PredefinedTokens.Error]           = new Symbol("$error");
-#endif
-            this.Epsilon = Symbols.Add("$eps");
-            this.Propagated = Symbols.Add("#");
-            this.AugmentedStart = Symbols.Add("$start");
-            this.Eoi = new Symbol("$") {
-                    Categories = SymbolCategory.DoNotInsert
-                               | SymbolCategory.DoNotDelete
-                };
-            Symbols.Add(Eoi);
+            Symbol[] predefined = {
+                // Transient usage of indexes when building LR table. No need to handle in grammar explicitly. 
+                // Later can be achieved by providing lower value for indexes in IndexedCollection
+                new Symbol("$eps"),   
+                new Symbol("#"),
+                // Predefined indexes to simplify code and improve performance. Used in grammar.
+                // This can be implemented by adding predefinedIndex constructor argument 
+                (AugmentedStart = new Symbol("$start")),
+                (Eoi = new Symbol("$") { Categories = SymbolCategory.DoNotInsert | SymbolCategory.DoNotDelete }),
+                (Error = new Symbol("$error"))
+            };
 
-            this.Error = Symbols.Add("$error");
-
-            foreach (var sym in Symbols)
+            foreach (var sym in predefined)
             {
+                Symbols.Add(sym);
                 sym.IsPredefined = true;
             }
 
@@ -79,10 +69,6 @@ namespace IronText.Reflection
         }
 
         internal Symbol AugmentedStart { get; set; }
-
-        private Symbol Epsilon         { get; set; }
-
-        private Symbol Propagated      {  get; set; }
 
         private Symbol Eoi             {  get; set; }
 

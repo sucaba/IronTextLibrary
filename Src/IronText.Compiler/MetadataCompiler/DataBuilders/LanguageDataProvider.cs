@@ -127,7 +127,7 @@ namespace IronText.MetadataCompiler
 
         private int[] BuildMatchActionToTokenTable(Grammar grammar, IEnumerable<AmbTokenInfo> ambiguities)
         {
-            var actionToToken = new int[grammar.Matchers.IndexCount];
+            var actionToToken = new int[grammar.Matchers.LastIndex];
             for (int i = 0; i != actionToToken.Length; ++i)
             {
                 var outcome = grammar.Matchers[i].Outcome;

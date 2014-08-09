@@ -25,9 +25,9 @@ namespace IronText.MetadataCompiler
         {
             this.grammar               = grammar;
             this.tdfa                  = tdfa;
-            this.actionToTokenProducer = new TokenProducerInfo[grammar.Matchers.IndexCount];
+            this.actionToTokenProducer = new TokenProducerInfo[grammar.Matchers.LastIndex];
             this.stateToTokenProducer  = new Dictionary<object, TokenProducerInfo>();
-            this.tokenSetType          = new BitSetType(grammar.Symbols.IndexCount);
+            this.tokenSetType          = new BitSetType(grammar.Symbols.LastIndex);
         }
 
         public IEnumerable<AmbTokenInfo> CollectAmbiguities()
@@ -136,7 +136,7 @@ namespace IronText.MetadataCompiler
         private IEnumerable<AmbTokenInfo> GetAmbiguities()
         {
             var result = new List<AmbTokenInfo>();
-            int index = grammar.Symbols.IndexCount;
+            int index = grammar.Symbols.LastIndex;
 
             foreach (var prod in stateToTokenProducer.Values)
             {

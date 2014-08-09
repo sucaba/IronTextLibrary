@@ -28,18 +28,24 @@ namespace IronText.Collections
             this.DuplicateResolver = null;
         }
 
-        public void BuildIndexes()
+        public void BuildIndexes(int startIndex = 0)
         {
+            this.StartIndex = startIndex;
             this.indexed   = true;
             this.canModify = false;
 
-            this.indexes = items.Where(IsPublicItem).ToArray();
+            this.indexes = new T[startIndex + items.Count(IsPublicItem)];
 
             int count = indexes.Length;
-            for (int i = 0; i != count; ++i)
+            int i = startIndex;
+            foreach (var item in items)
             {
-                var item = indexes[i];
-                item.AssignIndex(i);
+                if (IsPublicItem(item))
+                {
+                    indexes[i] = item;
+                    item.AssignIndex(i);
+                    ++i;
+                }
             }
         }
 
@@ -59,12 +65,19 @@ namespace IronText.Collections
             }
         }
 
+        public TScope  Scope       { get; private set; }
 
-        public TScope Scope { get; private set; }
+        /// <summary>
+        /// Index of the first indexed element
+        /// </summary>
+        public int     StartIndex  { get; private set; }
 
-        public int IndexCount { get { RequireIndexed(); return indexes.Length; } }
+        /// <summary>
+        /// Index of element following the last one
+        /// </summary>
+        public int     LastIndex   { get { RequireIndexed(); return indexes.Length; } }
 
-        public int PublicCount { get { return items.Count(IsPublicItem); }}
+        public int     PublicCount { get { return items.Count(IsPublicItem); }}
 
         /// <summary>
         /// Hidden items

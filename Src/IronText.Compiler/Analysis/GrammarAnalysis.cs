@@ -49,7 +49,7 @@ namespace IronText.Compiler.Analysis
 
         public int TotalSymbolCount
         {
-            get {  return grammar.Symbols.IndexCount + ambiguities.Length; }
+            get {  return grammar.Symbols.LastIndex + ambiguities.Length; }
         }
 
         public Precedence GetTermPrecedence(int token)
@@ -109,7 +109,12 @@ namespace IronText.Compiler.Analysis
 
         private static int[] BuildTokenComplexity(Grammar grammar)
         {
-            var result = Enumerable.Repeat(-1, grammar.Symbols.IndexCount).ToArray();
+            var result = new int[grammar.Symbols.LastIndex];
+            for (int i = 0; i != result.Length; ++i)
+            {
+                result[i] = -1;
+            }
+
             var sortedTokens = Graph.TopologicalSort(
                                 new [] { PredefinedTokens.AugmentedStart },
                                 t => GetDependantTokens(grammar, t))

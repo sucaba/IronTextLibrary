@@ -83,7 +83,7 @@ namespace IronText.MetadataCompiler
 
             var defaultLabel = emit.Labels.Generate();
             var endWithSingleResultLabel = emit.Labels.Generate();
-            var jumpTable = new Ref<Labels>[data.Grammar.Productions.IndexCount];
+            var jumpTable = new Ref<Labels>[data.Grammar.Productions.LastIndex];
             for (int i = 0; i != jumpTable.Length; ++i)
             {
                 var prod = data.Grammar.Productions[i];

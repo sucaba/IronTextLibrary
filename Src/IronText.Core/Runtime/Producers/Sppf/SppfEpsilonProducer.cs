@@ -31,8 +31,8 @@ namespace IronText.Runtime
                 }
             }
 
-            ruleOffsetInCache = new int[grammar.Productions.IndexCount];
-            ruleEndOffsetInCache = new int[grammar.Productions.IndexCount];
+            ruleOffsetInCache = new int[grammar.Productions.LastIndex];
+            ruleEndOffsetInCache = new int[grammar.Productions.LastIndex];
 
             int nullableCount = 0;
             foreach (var rule in grammar.Productions)
