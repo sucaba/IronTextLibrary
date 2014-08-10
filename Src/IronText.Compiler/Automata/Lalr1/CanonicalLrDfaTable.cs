@@ -48,9 +48,9 @@ namespace IronText.Automata.Lalr1
             {
                 var refAction = new ParserAction
                             {
-                                Kind   = ParserActionKind.Conflict,
-                                Value1 = conflictList.Count,
-                                Size   = (short)conflict.Actions.Count
+                                Kind          = ParserActionKind.Conflict,
+                                Value1        = conflictList.Count,
+                                ConflictCount = (short)conflict.Actions.Count
                             };
                              
                 actionTable.Set(conflict.State, conflict.Token, ParserAction.Encode(refAction));

@@ -23,7 +23,7 @@ namespace IronText.Runtime
             {
                 if (grammar.IsNullable(token))
                 {
-                    tokenCache[token] = InternalGetNullable(token);
+                    InternalGetNullable(token);
                 }
             }
         }
@@ -32,15 +32,24 @@ namespace IronText.Runtime
         {
             Debug.Assert(grammar.IsNullable(nonTerm));
 
-            var production = grammar.GetNullableProductions(nonTerm).First();
+            SppfNode result = tokenCache[nonTerm];
 
-            var args = new SppfNode[production.InputTokens.Length];
-            for (int i = 0; i != args.Length; ++i)
+            if (result == null)
             {
-                args[i] = InternalGetNullable(production.InputTokens[i]);
+                var production = grammar.GetNullableProductions(nonTerm).First();
+
+                int[] input = production.InputTokens;
+                int   len   = input.Length;
+                var args = new SppfNode[len];
+                for (int i = 0; i != len; ++i)
+                {
+                    args[i] = InternalGetNullable(input[i]);
+                }
+
+                result = tokenCache[nonTerm] = new SppfNode(production.Index, Loc.Unknown, args);
             }
 
-            return new SppfNode(production.Index, Loc.Unknown, args);
+            return result;
         }
 
         public SppfNode GetDefault(int nonTerm, IStackLookback<SppfNode> stackLookback)

@@ -41,9 +41,6 @@ namespace IronText.Runtime
         [FieldOffset(sizeof(ParserActionKind))]
         public int              ProductionId;
 
-        [FieldOffset(sizeof(ParserActionKind))]
-        public int              ExternalToken;
-
         [FieldOffset(sizeof(ParserActionKind) + sizeof(int))]
         public short Value2;
 
@@ -51,7 +48,14 @@ namespace IronText.Runtime
         /// Size of the reduction for reduction modified DFA
         /// </summary>
         [FieldOffset(sizeof(ParserActionKind) + sizeof(int))]
-        public short Size;
+        public short ProdSize;
+
+        /// <summary>
+        /// Count of conflict in transition
+        /// </summary>
+        [FieldOffset(sizeof(ParserActionKind) + sizeof(int))]
+        public short ConflictCount;
+
 
         public static bool operator==(ParserAction x, ParserAction y)
         {
@@ -84,7 +88,7 @@ namespace IronText.Runtime
         {
             int result = ((byte)action.Kind) 
                 | (action.Value1 << Value1StartBit)
-                | (action.Size << Value2StartBit)
+                | (action.Value2 << Value2StartBit)
                 ;
             return result;
         }
@@ -133,7 +137,7 @@ namespace IronText.Runtime
             if (kind != ParserActionKind.Fail)
             {
                 result.Value1 = (cell & Value1Mask) >> Value1StartBit;
-                result.Size = (short)((cell & Value2Mask) >> Value2StartBit);
+                result.Value2 = (short)((cell & Value2Mask) >> Value2StartBit);
             }
 
             return kind;

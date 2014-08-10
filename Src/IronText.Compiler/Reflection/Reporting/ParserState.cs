@@ -78,7 +78,7 @@ namespace IronText.Reflection.Reporting
             }
             else if (action.Kind == ParserActionKind.Conflict)
             {
-                for (int i = 0; i != action.Size; ++i)
+                for (int i = 0; i != action.ConflictCount; ++i)
                 {
                     yield return
                         ParserAction.Decode(

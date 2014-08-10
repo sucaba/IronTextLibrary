@@ -49,9 +49,9 @@ namespace IronText.Automata.Lalr1
             {
                 var refAction = new ParserAction
                             {
-                                Kind   = ParserActionKind.Conflict,
-                                Value1 = conflictList.Count,
-                                Size   = (short)conflict.Actions.Count
+                                Kind          = ParserActionKind.Conflict,
+                                Value1        = conflictList.Count,
+                                ConflictCount = (short)conflict.Actions.Count
                             };
                              
                 actionTable.Set(conflict.State, conflict.Token, ParserAction.Encode(refAction));
@@ -85,7 +85,7 @@ namespace IronText.Automata.Lalr1
                             {
                                 Kind         = ParserActionKind.ShiftReduce,
                                 ProductionId = item.ProductionId,
-                                Size         = (short)item.Size
+                                ProdSize     = (short)item.Size
                             };
 
                             AddAction(i, nextToken, action);
@@ -128,12 +128,11 @@ namespace IronText.Automata.Lalr1
                         }
                         else
                         {
-
                             action = new ParserAction
                             {
                                 Kind         = ParserActionKind.Reduce,
                                 ProductionId = item.ProductionId,
-                                Size         = (short)item.Position
+                                ProdSize     = (short)item.Position
                             };
                         }
 

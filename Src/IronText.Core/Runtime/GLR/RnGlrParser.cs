@@ -146,7 +146,7 @@ namespace IronText.Runtime
                             lookahead,
                             termValue,
                             action.ProductionId,
-                            action.Size);
+                            action.ProdSize);
                     }
                 }
 
@@ -360,7 +360,7 @@ namespace IronText.Runtime
                             X,
                             z,
                             action.ProductionId,
-                            action.Size);
+                            action.ProdSize);
                         continue;
                     default:
                         throw new InvalidOperationException(
@@ -509,7 +509,7 @@ namespace IronText.Runtime
                 case ParserActionKind.Reduce:
                     rule = grammar.Productions[action.ProductionId];
                     pendingReductionsCount = 1;
-                    pendingReductions[0] = new ModifiedReduction(rule, action.Size);
+                    pendingReductions[0] = new ModifiedReduction(rule, action.ProdSize);
                     break;
                 case ParserActionKind.Accept:
                     accepted = true;
@@ -525,7 +525,7 @@ namespace IronText.Runtime
                             case ParserActionKind.Reduce:
                                 var crule = grammar.Productions[conflictAction.ProductionId];
                                 pendingReductions[pendingReductionsCount++]
-                                    = new ModifiedReduction(crule, conflictAction.Size);
+                                    = new ModifiedReduction(crule, conflictAction.ProdSize);
                                 break;
                         }
                     }
