@@ -85,7 +85,6 @@ namespace IronText.Automata.Lalr1
                             {
                                 Kind         = ParserActionKind.ShiftReduce,
                                 ProductionId = item.ProductionId,
-                                ProdSize     = (short)item.Size
                             };
 
                             AddAction(i, nextToken, action);
@@ -132,7 +131,6 @@ namespace IronText.Automata.Lalr1
                             {
                                 Kind         = ParserActionKind.Reduce,
                                 ProductionId = item.ProductionId,
-                                ProdSize     = (short)item.Position
                             };
                         }
 

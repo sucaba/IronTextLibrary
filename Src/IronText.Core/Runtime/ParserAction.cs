@@ -45,12 +45,6 @@ namespace IronText.Runtime
         public short Value2;
 
         /// <summary>
-        /// Size of the reduction for reduction modified DFA
-        /// </summary>
-        [FieldOffset(sizeof(ParserActionKind) + sizeof(int))]
-        public short ProdSize;
-
-        /// <summary>
         /// Count of conflict in transition
         /// </summary>
         [FieldOffset(sizeof(ParserActionKind) + sizeof(int))]
