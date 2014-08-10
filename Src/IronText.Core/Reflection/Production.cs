@@ -70,7 +70,7 @@ namespace IronText.Reflection
 
         public Precedence         ExplicitPrecedence { get; set; }
 
-        public int                IntputSize     { get { return Input.Length; } }
+        public int                InputSize     { get { return Input.Length; } }
 
         public bool               IsStart        { get { return Scope.Start == Outcome; } }
 

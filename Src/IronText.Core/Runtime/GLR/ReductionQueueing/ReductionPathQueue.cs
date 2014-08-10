@@ -35,7 +35,7 @@ namespace IronText.Runtime
         {
             Debug.Assert(rightLink != null);
 
-            int size = prod.IntputSize;
+            int size = prod.InputSize;
             int tail = size == 0 ? 0 : 1;
             GssReducePath<T>.GetAll(
                 rightLink.LeftNode,
@@ -48,7 +48,7 @@ namespace IronText.Runtime
 
         public void Enqueue(GssNode<T> rightNode, Production prod)
         {
-            if (prod.IntputSize == 0)
+            if (prod.InputSize == 0)
             {
                 GssReducePath<T>.GetAll(rightNode, 0, 0, prod, null, InternalEnqueue);
             }

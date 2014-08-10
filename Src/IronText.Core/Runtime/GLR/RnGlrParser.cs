@@ -26,7 +26,7 @@ namespace IronText.Runtime
         private readonly Dictionary<long,T> N = new Dictionary<long,T>();
         private readonly T[]                  nodeBuffer;
         private readonly int[]                tokenComplexity;
-        private readonly ModifiedReduction[]  pendingReductions;
+        private readonly Production[]  pendingReductions;
         private int pendingReductionsCount = 0;
 
         private bool                          accepted = false;
@@ -77,7 +77,7 @@ namespace IronText.Runtime
             this.allocator            = allocator;
             this.logging              = logging;
 
-            this.pendingReductions = new ModifiedReduction[grammar.Productions.PublicCount];
+            this.pendingReductions = new Production[grammar.Productions.PublicCount];
 
             switch (producer.ReductionOrder)
             {
@@ -141,12 +141,7 @@ namespace IronText.Runtime
                     var action = GetShiftReduce(frontNode.State, lookahead);
                     if (action.Kind == ParserActionKind.ShiftReduce)
                     {
-                        PlanShiftReduce(
-                            frontNode,
-                            lookahead,
-                            termValue,
-                            action.ProductionId,
-                            action.ProdSize);
+                        PlanShiftReduce(frontNode, lookahead, termValue, action.ProductionId);
                     }
                 }
 
@@ -289,19 +284,19 @@ namespace IronText.Runtime
 
                 for (int i = 0; i != pendingReductionsCount; ++i)
                 {
-                    var red = pendingReductions[i];
-                    if (red.Size != 0)
+                    var prod = pendingReductions[i];
+                    if (prod.InputSize != 0)
                     {
-                        R.Enqueue(w, red.Rule);
+                        R.Enqueue(w, prod);
                     }
                 }
 
                 for (int i = 0; i != pendingReductionsCount; ++i)
                 {
-                    var red = pendingReductions[i];
-                    if (red.Size == 0)
+                    var prod = pendingReductions[i];
+                    if (prod.InputSize == 0)
                     {
-                        R.Enqueue(w, red.Rule);
+                        R.Enqueue(w, prod);
                     }
                 }
             }
@@ -355,12 +350,7 @@ namespace IronText.Runtime
                         l = action.State;
                         break;
                     case ParserActionKind.ShiftReduce: // Goto-Reduce action
-                        PlanShiftReduce(
-                            u,
-                            X,
-                            z,
-                            action.ProductionId,
-                            action.ProdSize);
+                        PlanShiftReduce(u, X, z, action.ProductionId);
                         continue;
                     default:
                         throw new InvalidOperationException(
@@ -385,10 +375,10 @@ namespace IronText.Runtime
                         GetReductions(l, lookahead);
                         for (int i = 0; i != pendingReductionsCount; ++i)
                         {
-                            var red = pendingReductions[i];
-                            if (red.Size != 0)
+                            var prod = pendingReductions[i];
+                            if (prod.InputSize != 0)
                             {
-                                R.Enqueue(newLink, red.Rule);
+                                R.Enqueue(newLink, prod);
                             }
                         }
                     }
@@ -398,13 +388,12 @@ namespace IronText.Runtime
                     var w = gss.GetFrontNode(l, lookahead);
 
                     GetReductions(l, lookahead);
-                    //foreach (var red in reductions)
                     for (int i = 0; i != pendingReductionsCount; ++i)
                     {
-                        var red = pendingReductions[i];
-                        if (red.Size == 0)
+                        var prod = pendingReductions[i];
+                        if (prod.InputSize == 0)
                         {
-                            R.Enqueue(w, red.Rule);
+                            R.Enqueue(w, prod);
                         }
                     }
 
@@ -412,10 +401,10 @@ namespace IronText.Runtime
                     {
                         for (int i = 0; i != pendingReductionsCount; ++i)
                         {
-                            var red = pendingReductions[i];
-                            if (red.Size != 0)
+                            var prod = pendingReductions[i];
+                            if (prod.InputSize != 0)
                             {
-                                R.Enqueue(newLink, red.Rule);
+                                R.Enqueue(newLink, prod);
                             }
                         }
                     }
@@ -434,7 +423,7 @@ namespace IronText.Runtime
             }
         }
 
-        private void PlanShiftReduce(GssNode<T> frontNode, int shiftToken, T shiftValue, int rule, int size)
+        private void PlanShiftReduce(GssNode<T> frontNode, int shiftToken, T shiftValue, int rule)
         {
             int fakeState = MakeFakeDestState(frontNode.State, shiftToken);
 
@@ -509,7 +498,7 @@ namespace IronText.Runtime
                 case ParserActionKind.Reduce:
                     rule = grammar.Productions[action.ProductionId];
                     pendingReductionsCount = 1;
-                    pendingReductions[0] = new ModifiedReduction(rule, action.ProdSize);
+                    pendingReductions[0] = rule;
                     break;
                 case ParserActionKind.Accept:
                     accepted = true;
@@ -524,8 +513,7 @@ namespace IronText.Runtime
                         {
                             case ParserActionKind.Reduce:
                                 var crule = grammar.Productions[conflictAction.ProductionId];
-                                pendingReductions[pendingReductionsCount++]
-                                    = new ModifiedReduction(crule, conflictAction.ProdSize);
+                                pendingReductions[pendingReductionsCount++] = crule;
                                 break;
                         }
                     }

@@ -23,7 +23,7 @@ namespace IronText.Runtime
 
         public void Enqueue(GssNode<T> rightNode, Production prod)
         {
-            if (prod.IntputSize == 0)
+            if (prod.InputSize == 0)
             {
                 reductions.Enqueue(
                     new Reduction<T>(rightNode, prod, null));

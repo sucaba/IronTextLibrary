@@ -313,7 +313,6 @@
     <Compile Include="Runtime\GLR\ReductionQueueing\IReductionQueue.cs" />
     <Compile Include="Runtime\IResourceAllocator.cs" />
     <Compile Include="Runtime\IStackLookback.cs" />
-    <Compile Include="Runtime\GLR\ModifiedReduction.cs" />
     <Compile Include="Runtime\Msg.cs" />
     <Compile Include="Runtime\ILanguageRuntime.cs" />
     <Compile Include="Runtime\LanguageBase.cs" />
