@@ -15,28 +15,18 @@ namespace IronText.Runtime
 
         public bool IsEmpty { get { return reductions.Count == 0 && pendingPaths.Count == 0; } }
 
-        public void Enqueue(GssLink<T> rightLink, Production rule, int size)
+        public void Enqueue(GssLink<T> rightLink, Production prod)
         {
             reductions.Enqueue(
-                new Reduction<T>(
-                    rightLink.LeftNode,
-                    rule,
-                    size,
-                    -1,
-                    rightLink));
+                new Reduction<T>(rightLink.LeftNode, prod, rightLink));
         }
 
-        public void Enqueue(GssNode<T> rightNode, Production rule, int size)
+        public void Enqueue(GssNode<T> rightNode, Production prod)
         {
-            if (size == 0)
+            if (prod.IntputSize == 0)
             {
                 reductions.Enqueue(
-                    new Reduction<T>(
-                        rightNode,
-                        rule,
-                        0,
-                        -1,
-                        null));
+                    new Reduction<T>(rightNode, prod, null));
             }
             else
             {
@@ -44,12 +34,7 @@ namespace IronText.Runtime
                 while (link != null)
                 {
                     reductions.Enqueue(
-                        new Reduction<T>(
-                            link.LeftNode,
-                            rule,
-                            size,
-                            -1,
-                            link));
+                        new Reduction<T>(link.LeftNode, prod, link));
 
                     link = link.NextLink;
                 }

@@ -31,25 +31,26 @@ namespace IronText.Runtime
 
         public bool IsEmpty { get { return paths.Count == 0; } }
 
-        public void Enqueue(GssLink<T> rightLink, Production rule, int size)
+        public void Enqueue(GssLink<T> rightLink, Production prod)
         {
             Debug.Assert(rightLink != null);
 
+            int size = prod.IntputSize;
             int tail = size == 0 ? 0 : 1;
             GssReducePath<T>.GetAll(
                 rightLink.LeftNode,
                 size - tail,
                 tail,
-                rule,
+                prod,
                 rightLink,
                 InternalEnqueue);
         }
 
-        public void Enqueue(GssNode<T> rightNode, Production rule, int size)
+        public void Enqueue(GssNode<T> rightNode, Production prod)
         {
-            if (size == 0)
+            if (prod.IntputSize == 0)
             {
-                GssReducePath<T>.GetAll(rightNode, 0, 0, rule, null, InternalEnqueue);
+                GssReducePath<T>.GetAll(rightNode, 0, 0, prod, null, InternalEnqueue);
             }
             else
             {
@@ -57,7 +58,7 @@ namespace IronText.Runtime
                 
                 while (link != null)
                 {
-                    Enqueue(link, rule, size);
+                    Enqueue(link, prod);
 
                     link = link.NextLink;
                 }

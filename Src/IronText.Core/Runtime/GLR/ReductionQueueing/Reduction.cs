@@ -8,16 +8,14 @@ namespace IronText.Runtime
         public readonly Production Rule;
         public readonly int        Token;
         public readonly int        Size;
-        public readonly int        EpsilonIndex;
-        public readonly GssLink<T> RightLink; 
+        public readonly GssLink<T> RightLink;
 
-        public Reduction(GssNode<T> rightNode, Production rule, int size, int epsilonIndex, GssLink<T> rightLink)
+        public Reduction(GssNode<T> rightNode, Production prod, GssLink<T> rightLink)
         {
-            this.Rule           = rule;
+            this.Rule           = prod;
             this.RightNode      = rightNode;
-            this.Token          = rule.OutcomeToken;
-            this.Size           = size;
-            this.EpsilonIndex   = epsilonIndex;
+            this.Token          = prod.OutcomeToken;
+            this.Size           = prod.IntputSize;
             this.RightLink      = rightLink;
         }
     }

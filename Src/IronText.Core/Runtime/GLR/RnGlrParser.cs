@@ -292,7 +292,7 @@ namespace IronText.Runtime
                     var red = pendingReductions[i];
                     if (red.Size != 0)
                     {
-                        R.Enqueue(w, red.Rule, red.Size);
+                        R.Enqueue(w, red.Rule);
                     }
                 }
 
@@ -301,7 +301,7 @@ namespace IronText.Runtime
                     var red = pendingReductions[i];
                     if (red.Size == 0)
                     {
-                        R.Enqueue(w, red.Rule, red.Size);
+                        R.Enqueue(w, red.Rule);
                     }
                 }
             }
@@ -388,7 +388,7 @@ namespace IronText.Runtime
                             var red = pendingReductions[i];
                             if (red.Size != 0)
                             {
-                                R.Enqueue(newLink, red.Rule, red.Size);
+                                R.Enqueue(newLink, red.Rule);
                             }
                         }
                     }
@@ -404,7 +404,7 @@ namespace IronText.Runtime
                         var red = pendingReductions[i];
                         if (red.Size == 0)
                         {
-                            R.Enqueue(w, red.Rule, 0);
+                            R.Enqueue(w, red.Rule);
                         }
                     }
 
@@ -415,7 +415,7 @@ namespace IronText.Runtime
                             var red = pendingReductions[i];
                             if (red.Size != 0)
                             {
-                                R.Enqueue(newLink, red.Rule, red.Size);
+                                R.Enqueue(newLink, red.Rule);
                             }
                         }
                     }
@@ -441,7 +441,7 @@ namespace IronText.Runtime
             var newLink = gss.Push(frontNode, fakeState, shiftValue);
             if (newLink != null)
             {
-                R.Enqueue(newLink, grammar.Productions[rule], size);
+                R.Enqueue(newLink, grammar.Productions[rule]);
             }
         }
 
