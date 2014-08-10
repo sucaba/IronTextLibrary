@@ -146,12 +146,12 @@ namespace IronText.Runtime
                         {
                             stateStack.Push(-1, value);
                             this.currentRule = grammar.Productions[action.ProductionId];
-                            stateStack.Start = stateStack.Count - currentRule.InputTokens.Length;
+                            stateStack.Start = stateStack.Count - currentRule.InputLength;
                             value = producer.CreateBranch(
                                 currentRule,
-                                stateStack.PeekTail(currentRule.InputTokens.Length),
+                                stateStack.PeekTail(currentRule.InputLength),
                                 (IStackLookback<TNode>)stateStack);
-                            stateStack.Pop(currentRule.InputTokens.Length);
+                            stateStack.Pop(currentRule.InputLength);
                             action = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.OutcomeToken));
                         }
                         while (action.Kind == ParserActionKind.ShiftReduce);
@@ -308,13 +308,13 @@ namespace IronText.Runtime
             while (act.Kind == ParserActionKind.Reduce)
             {
                 this.currentRule = grammar.Productions[act.ProductionId];
-                stateStack.Start = stateStack.Count - currentRule.InputTokens.Length;
+                stateStack.Start = stateStack.Count - currentRule.InputLength;
                 value = producer.CreateBranch(
                             currentRule,
-                            stateStack.PeekTail(currentRule.InputTokens.Length),
+                            stateStack.PeekTail(currentRule.InputLength),
                             (IStackLookback<TNode>)stateStack);
 
-                stateStack.Pop(currentRule.InputTokens.Length);
+                stateStack.Pop(currentRule.InputLength);
                 act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.OutcomeToken));
 
                 while (act.Kind == ParserActionKind.ShiftReduce) // == GotoReduce
@@ -322,13 +322,13 @@ namespace IronText.Runtime
                     stateStack.Push(-1, value);
 
                     this.currentRule = grammar.Productions[act.ProductionId];
-                    stateStack.Start = stateStack.Count - currentRule.InputTokens.Length;
+                    stateStack.Start = stateStack.Count - currentRule.InputLength;
                     value = producer.CreateBranch(
                             currentRule,
-                            stateStack.PeekTail(currentRule.InputTokens.Length),
+                            stateStack.PeekTail(currentRule.InputLength),
                             (IStackLookback<TNode>)stateStack);
 
-                    stateStack.Pop(currentRule.InputTokens.Length);
+                    stateStack.Pop(currentRule.InputLength);
                     act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.OutcomeToken));
                 }
 

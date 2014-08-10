@@ -60,7 +60,7 @@ namespace IronText.Reflection
 
         public int                OutcomeToken   { get { return Outcome.Index; } }
 
-        public int[]              InputTokens    { get { return Array.ConvertAll(Input, s => s.Index); } }
+        public IEnumerable<int>   InputTokens    { get { return Input.Select(s => s.Index); } }
 
         public IProductionComponent[] Components { get; private set; }
 
@@ -70,7 +70,7 @@ namespace IronText.Reflection
 
         public Precedence         ExplicitPrecedence { get; set; }
 
-        public int                InputSize     { get { return Input.Length; } }
+        public int                InputLength    { get { return Input.Length; } }
 
         public bool               IsStart        { get { return Scope.Start == Outcome; } }
 

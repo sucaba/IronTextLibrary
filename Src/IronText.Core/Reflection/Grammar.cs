@@ -199,7 +199,7 @@ namespace IronText.Reflection
 
             var result =
                 symbol.Productions.Count == 1 
-                && (symbol.Productions.All(p => p.InputSize <= 1)
+                && (symbol.Productions.All(p => p.InputLength <= 1)
                     || 
                     symbol.Productions.All(
                         p => p.Input.All(s => s.IsTerminal)));

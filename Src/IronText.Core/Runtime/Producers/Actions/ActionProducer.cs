@@ -113,7 +113,7 @@ namespace IronText.Runtime
             this._parsingLocation = location;
             this._parsingHLocation = hLocation;
 
-            if (prod.InputTokens.Length > prefix.Count)
+            if (prod.InputLength > prefix.Count)
             {
                 throw new NotSupportedException();
             }

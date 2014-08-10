@@ -37,7 +37,7 @@ namespace IronText.Runtime
             this.firsts     = new MutableIntSet[count];
             this.isNullable = new bool[count];
 
-            MaxRuleSize = grammar.Productions.Select(r => r.InputTokens.Length).Max();
+            MaxRuleSize = grammar.Productions.Select(r => r.InputLength).Max();
             Build();
         }
 
@@ -79,7 +79,7 @@ namespace IronText.Runtime
                 }
                 else if (prod.Input[0].IsTerminal)
                 {
-                    firsts[prod.OutcomeToken].Add(prod.InputTokens[0]);
+                    firsts[prod.OutcomeToken].Add(prod.Input[0].Index);
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace IronText.Runtime
 
                 foreach (var prod in recursiveProds)
                 {
-                    if (InternalAddFirsts(prod.InputTokens, firsts[prod.OutcomeToken]))
+                    if (InternalAddFirsts(prod.InputTokens, firsts[prod.Outcome.Index]))
                     {
                         changed = true;
                     }

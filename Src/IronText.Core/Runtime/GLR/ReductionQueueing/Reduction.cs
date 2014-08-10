@@ -15,7 +15,7 @@ namespace IronText.Runtime
             this.Rule           = prod;
             this.RightNode      = rightNode;
             this.Token          = prod.OutcomeToken;
-            this.Size           = prod.InputSize;
+            this.Size           = prod.InputLength;
             this.RightLink      = rightLink;
         }
     }

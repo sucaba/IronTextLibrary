@@ -38,7 +38,7 @@ namespace IronText.Tests.MetdataCompiler
         }
 
         [Theory]
-        public void TestRMEncoding(
+        public void Test2ValueEncoding(
             [Values(123, ParserAction.Value1Max, 0, 1)]
             int value1, 
             [Values(123, 1, 2, ParserAction.Value2Max, 0, 1)]

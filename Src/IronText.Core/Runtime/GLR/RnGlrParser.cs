@@ -285,7 +285,7 @@ namespace IronText.Runtime
                 for (int i = 0; i != pendingReductionsCount; ++i)
                 {
                     var prod = pendingReductions[i];
-                    if (prod.InputSize != 0)
+                    if (prod.InputLength != 0)
                     {
                         R.Enqueue(w, prod);
                     }
@@ -294,7 +294,7 @@ namespace IronText.Runtime
                 for (int i = 0; i != pendingReductionsCount; ++i)
                 {
                     var prod = pendingReductions[i];
-                    if (prod.InputSize == 0)
+                    if (prod.InputLength == 0)
                     {
                         R.Enqueue(w, prod);
                     }
@@ -376,7 +376,7 @@ namespace IronText.Runtime
                         for (int i = 0; i != pendingReductionsCount; ++i)
                         {
                             var prod = pendingReductions[i];
-                            if (prod.InputSize != 0)
+                            if (prod.InputLength != 0)
                             {
                                 R.Enqueue(newLink, prod);
                             }
@@ -391,7 +391,7 @@ namespace IronText.Runtime
                     for (int i = 0; i != pendingReductionsCount; ++i)
                     {
                         var prod = pendingReductions[i];
-                        if (prod.InputSize == 0)
+                        if (prod.InputLength == 0)
                         {
                             R.Enqueue(w, prod);
                         }
@@ -402,7 +402,7 @@ namespace IronText.Runtime
                         for (int i = 0; i != pendingReductionsCount; ++i)
                         {
                             var prod = pendingReductions[i];
-                            if (prod.InputSize != 0)
+                            if (prod.InputLength != 0)
                             {
                                 R.Enqueue(newLink, prod);
                             }
@@ -446,7 +446,7 @@ namespace IronText.Runtime
                     break;
                 case ParserActionKind.Conflict:
                     int start = action.Value1;
-                    int last = action.Value1 + action.Value2;
+                    int last = action.Value1 + action.ConflictCount;
                     while (start != last)
                     {
                         var conflictAction = ParserAction.Decode(conflictActionsTable[start++]);
@@ -471,7 +471,7 @@ namespace IronText.Runtime
                     return action;
                 case ParserActionKind.Conflict:
                     int start = action.Value1;
-                    int last = action.Value1 + action.Value2;
+                    int last = action.Value1 + action.ConflictCount;
                     while (start != last)
                     {
                         var conflictAction = ParserAction.Decode(conflictActionsTable[start++]);
@@ -505,7 +505,7 @@ namespace IronText.Runtime
                     break;
                 case ParserActionKind.Conflict:
                     int start = action.Value1;
-                    int last = action.Value1 + action.Value2;
+                    int last = action.Value1 + action.ConflictCount;
                     while (start != last)
                     {
                         var conflictAction = ParserAction.Decode(conflictActionsTable[start++]);

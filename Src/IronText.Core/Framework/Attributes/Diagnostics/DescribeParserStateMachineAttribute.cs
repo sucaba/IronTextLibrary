@@ -243,7 +243,7 @@ namespace IronText.Framework
                 ++i;
             }
 
-            if (item.Position == production.InputTokens.Length)
+            if (item.Position == production.InputLength)
             {
                 output.Write(" •");
             }

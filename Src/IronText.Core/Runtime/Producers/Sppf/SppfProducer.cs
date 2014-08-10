@@ -37,7 +37,7 @@ namespace IronText.Runtime
             SppfNode[] children = new SppfNode[prod.Input.Length];
             parts.CopyTo(children, 0);
 
-            if (prod.InputTokens.Length > parts.Count)
+            if (prod.InputLength > parts.Count)
             {
                 throw new NotSupportedException();
                 // FillEpsilonSuffix(prod.Index, parts.Count, children, parts.Count, stackLookback);

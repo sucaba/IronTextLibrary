@@ -34,7 +34,7 @@ namespace IronText.Runtime
             return 
                from r in GetProductions(outcome)
                where r.InputTokens.All(IsNullable)
-               orderby r.InputTokens.Length ascending
+               orderby r.InputLength ascending
                select r;
         }
 

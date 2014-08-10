@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace IronText.Reflection
@@ -9,7 +10,7 @@ namespace IronText.Reflection
         {
             this.Position   = position;
             this.Production = production;
-            this.Pattern    = (int[])production.InputTokens.Clone();
+            this.Pattern    = production.InputTokens.ToArray();
         }
 
         /// <summary>
