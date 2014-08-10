@@ -29,7 +29,16 @@ namespace IronText.Runtime
 
         public bool IsNullable(int token) { return isNullable[token]; }
 
-        public IEnumerable<Production> GetProductions(int outcome)
+        public IEnumerable<Production> GetNullableProductions(int outcome)
+        {
+            return 
+               from r in GetProductions(outcome)
+               where r.InputTokens.All(IsNullable)
+               orderby r.InputTokens.Length ascending
+               select r;
+        }
+
+        private IEnumerable<Production> GetProductions(int outcome)
         {
             return grammar.Symbols[outcome].Productions;
         }

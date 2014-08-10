@@ -2,6 +2,7 @@
 using IronText.Framework;
 using IronText.Logging;
 using IronText.Reflection;
+using System;
 
 namespace IronText.Runtime
 {
@@ -114,7 +115,7 @@ namespace IronText.Runtime
 
             if (prod.InputTokens.Length > prefix.Count)
             {
-                FillEpsilonSuffix(prod.Index, prefix.Count, prefix.Array, prefix.Offset + prefix.Count, stackLookback);
+                throw new NotSupportedException();
             }
 
             object value = grammarAction(prod.Index, prefix.Array, prefix.Offset, context, stackLookback);

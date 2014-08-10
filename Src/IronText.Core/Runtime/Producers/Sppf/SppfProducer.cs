@@ -1,6 +1,7 @@
 ﻿using IronText.Algorithm;
 using IronText.Logging;
 using IronText.Reflection;
+using System;
 
 namespace IronText.Runtime
 {
@@ -38,7 +39,8 @@ namespace IronText.Runtime
 
             if (prod.InputTokens.Length > parts.Count)
             {
-                FillEpsilonSuffix(prod.Index, parts.Count, children, parts.Count, stackLookback);
+                throw new NotSupportedException();
+                // FillEpsilonSuffix(prod.Index, parts.Count, children, parts.Count, stackLookback);
             }
 
             Loc location;

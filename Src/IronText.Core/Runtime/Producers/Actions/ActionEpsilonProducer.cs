@@ -6,7 +6,7 @@ namespace IronText.Runtime
 {
     class ActionEpsilonProducer
     {
-        private readonly RuntimeGrammar       grammar;
+        private readonly RuntimeGrammar           grammar;
         private readonly ProductionActionDelegate productionAction;
         private readonly object                   context;
 
@@ -27,12 +27,7 @@ namespace IronText.Runtime
         {
             Debug.Assert(grammar.IsNullable(nonTerm));
 
-            var production = 
-                      (from r in grammar.GetProductions(nonTerm)
-                       where r.InputTokens.All(grammar.IsNullable)
-                       orderby r.InputTokens.Length ascending
-                       select r)
-                       .First();
+            var production = grammar.GetNullableProductions(nonTerm).First();
 
             var args = new ActionNode[production.InputTokens.Length];
             for (int i = 0; i != args.Length; ++i)
@@ -42,17 +37,6 @@ namespace IronText.Runtime
 
             var value = productionAction(production.Index, args, 0, context, stackLookback);
             return new ActionNode(nonTerm, value, Loc.Unknown, HLoc.Unknown);
-        }
-
-        public void FillEpsilonSuffix(int prodId, int prefixSize, ActionNode[] buffer, int destIndex, IStackLookback<ActionNode> stackLookback)
-        {
-            var production = grammar.Productions[prodId];
-            int i   = prefixSize;
-            int end = production.InputTokens.Length;
-            while (i != end)
-            {
-                buffer[destIndex++] = GetDefault(production.InputTokens[i++], stackLookback);
-            }
         }
     }
 }

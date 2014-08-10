@@ -8,9 +8,6 @@ namespace IronText.Runtime
     {
         private readonly RuntimeGrammar grammar;
         private SppfNode[] tokenCache;
-        private SppfNode[] ruleCache;
-        private int[] ruleOffsetInCache;
-        private int[] ruleEndOffsetInCache;
 
         public SppfEpsilonProducer(RuntimeGrammar grammar)
         {
@@ -20,8 +17,7 @@ namespace IronText.Runtime
 
         private void BuildCache()
         {
-            int tokenCount = grammar.LastToken;
-            tokenCache = new SppfNode[tokenCount];
+            this.tokenCache = new SppfNode[grammar.LastToken];
 
             foreach (int token in grammar.EnumerateTokens())
             {
@@ -30,58 +26,13 @@ namespace IronText.Runtime
                     tokenCache[token] = InternalGetNullable(token);
                 }
             }
-
-            ruleOffsetInCache    = new int[grammar.LastProductionIndex];
-            ruleEndOffsetInCache = new int[grammar.LastProductionIndex];
-
-            int nullableCount = 0;
-            foreach (var prod in grammar.Productions)
-            {
-                int i = prod.InputTokens.Length;
-                while (i != 0)
-                {
-                    int token = prod.InputTokens[--i];
-                    if (tokenCache[token] == null)
-                    {
-                        break;
-                    }
-
-                    ++nullableCount;
-                }
-
-                ruleEndOffsetInCache[prod.Index] = nullableCount;
-                ruleOffsetInCache[prod.Index] = nullableCount - prod.InputTokens.Length;
-            }
-
-            this.ruleCache = new SppfNode[nullableCount];
-
-            foreach (var prod in grammar.Productions)
-            {
-                int endOffset = ruleOffsetInCache[prod.Index] + prod.InputTokens.Length;
-                int i = prod.InputTokens.Length;
-                while (i != 0)
-                {
-                    int token = prod.InputTokens[--i];
-                    if (tokenCache[token] == null)
-                    {
-                        break;
-                    }
-
-                    ruleCache[--endOffset] = tokenCache[token];
-                }
-            }
         }
 
         private SppfNode InternalGetNullable(int nonTerm)
         {
             Debug.Assert(grammar.IsNullable(nonTerm));
 
-            var production = 
-              (from r in grammar.GetProductions(nonTerm)
-               where r.InputTokens.All(grammar.IsNullable)
-               orderby r.InputTokens.Length ascending
-               select r)
-               .First();
+            var production = grammar.GetNullableProductions(nonTerm).First();
 
             var args = new SppfNode[production.InputTokens.Length];
             for (int i = 0; i != args.Length; ++i)
@@ -90,17 +41,6 @@ namespace IronText.Runtime
             }
 
             return new SppfNode(production.Index, Loc.Unknown, args);
-        }
-
-        public void FillEpsilonSuffix(int prodId, int prefixSize, SppfNode[] dest, int destIndex, IStackLookback<SppfNode> stackLookback)
-        {
-            int i   = ruleOffsetInCache[prodId] + prefixSize;
-            int end = ruleEndOffsetInCache[prodId];
-
-            while (i != end)
-            {
-                dest[destIndex++] = ruleCache[i++];
-            }
         }
 
         public SppfNode GetDefault(int nonTerm, IStackLookback<SppfNode> stackLookback)

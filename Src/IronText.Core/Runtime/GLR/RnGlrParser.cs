@@ -56,7 +56,7 @@ namespace IronText.Runtime
         }
 
         private RnGlrParser(
-            RuntimeGrammar   grammar,
+            RuntimeGrammar      grammar,
             int[]               tokenComplexity,
             TransitionDelegate  transition,
             int[]               stateToPriorToken,
@@ -313,7 +313,7 @@ namespace IronText.Runtime
             {
                 GssReducePath<T> path = R.Dequeue();
 
-                int X = path.Rule.OutcomeToken;
+                int X = path.Production.OutcomeToken;
                 int m = path.Size;
 
                 GssNode<T> u = path.LeftNode;
@@ -327,7 +327,7 @@ namespace IronText.Runtime
                 {
                     path.CopyDataTo(nodeBuffer);
                     T Λ = producer.CreateBranch(
-                            path.Rule,
+                            path.Production,
                             new ArraySlice<T>(nodeBuffer, 0, path.Size),
                             lookback: path.LeftNode);
 

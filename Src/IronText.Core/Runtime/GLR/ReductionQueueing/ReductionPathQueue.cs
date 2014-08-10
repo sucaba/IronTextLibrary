@@ -94,7 +94,7 @@ namespace IronText.Runtime
                 return false;
             }
 
-            return tokenComplexity[x.Rule.OutcomeToken] < tokenComplexity[y.Rule.OutcomeToken];
+            return tokenComplexity[x.Production.OutcomeToken] < tokenComplexity[y.Production.OutcomeToken];
         }
 
         public GssReducePath<T> Dequeue()

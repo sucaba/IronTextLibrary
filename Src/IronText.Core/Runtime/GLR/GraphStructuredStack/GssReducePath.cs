@@ -6,24 +6,24 @@ namespace IronText.Runtime
 {
     sealed class GssReducePath<T>
     {
-        public readonly GssNode<T> LeftNode;
+        public readonly GssNode<T>   LeftNode;
         public readonly GssLink<T>[] Links;    // Left-to-right reduction path labels
         public readonly int          Size;
-        public readonly Production      Rule;
+        public readonly Production   Production;
 
-        public GssReducePath(GssNode<T> leftNode, GssLink<T>[] links, Production rule, int size)
+        public GssReducePath(GssNode<T> leftNode, GssLink<T>[] links, Production prod, int size)
         {
-            this.LeftNode = leftNode;
-            this.Links = links;
-            this.Rule = rule;
-            this.Size = size;
+            this.LeftNode   = leftNode;
+            this.Links      = links;
+            this.Production = prod;
+            this.Size       = size;
         }
 
         public static void GetAll(
             GssNode<T> rightNode,
             int        size,
             int        tail,
-            Production    rule,
+            Production prod,
             GssLink<T> rightLink,
             Action<GssReducePath<T>> action0)
         {
@@ -45,7 +45,7 @@ namespace IronText.Runtime
 
             if (size == 0)
             {
-                action( new GssReducePath<T>(rightNode, new GssLink<T>[tail], rule, fullSize) );
+                action( new GssReducePath<T>(rightNode, new GssLink<T>[tail], prod, fullSize) );
             }
             else if (size <= rightNode.DeterministicDepth)
             {
@@ -61,7 +61,7 @@ namespace IronText.Runtime
                     node = link.LeftNode;
                 }
 
-                action( new GssReducePath<T>(node, links, rule, fullSize) );
+                action( new GssReducePath<T>(node, links, prod, fullSize) );
             }
             else
             {
@@ -107,7 +107,7 @@ namespace IronText.Runtime
                 int count = front.Count;
                 for (int i = 0; i != count; ++i)
                 {
-                    action( new GssReducePath<T>(front[i].LeftNode, frontPaths[i], rule, fullSize) );
+                    action( new GssReducePath<T>(front[i].LeftNode, frontPaths[i], prod, fullSize) );
                 }
             }
         }
