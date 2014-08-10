@@ -32,15 +32,10 @@ namespace IronText.Runtime
         public IEnumerable<Production> GetNullableProductions(int outcome)
         {
             return 
-               from r in GetProductions(outcome)
-               where r.InputTokens.All(IsNullable)
-               orderby r.InputLength ascending
-               select r;
-        }
-
-        private IEnumerable<Production> GetProductions(int outcome)
-        {
-            return grammar.Symbols[outcome].Productions;
+               from prod in grammar.Symbols[outcome].Productions
+               where prod.InputTokens.All(IsNullable)
+               orderby prod.InputLength ascending
+               select prod;
         }
 
         /// <summary>

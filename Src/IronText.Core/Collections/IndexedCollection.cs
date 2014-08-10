@@ -69,11 +69,6 @@ namespace IronText.Collections
             }
         }
 
-        private bool HasForcedIndex(T item)
-        {
-            return forcedIndexes.Values.Contains(item);
-        }
-
         private void RequireIndexed()
         {
             if (!indexed)
