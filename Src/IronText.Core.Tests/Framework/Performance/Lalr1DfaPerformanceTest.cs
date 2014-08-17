@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using IronText.Automata.Lalr1;
 using IronText.Compiler;
 using IronText.Compiler.Analysis;
@@ -17,27 +18,27 @@ namespace IronText.Tests.Framework.Performance
         [Test]
         public void Test()
         {
-            const int tokenCount = 50;
-            const int ruleSize = 10;
+            const int tokenCount     = 50;
+            const int productionSize = 10;
 
-            int[] tokens = new int[tokenCount];
-            
             this.grammar = new Grammar();
+            var symbols = new Symbol[tokenCount];
 
             for (int i = 0; i != tokenCount; ++i)
             {
-                tokens[i] = grammar.Symbols.Add(i.ToString()).Index;
+                symbols[i] = grammar.Symbols.Add(i.ToString());
             }
 
-            int iterationCount = tokenCount - ruleSize;
-            for (int i = 0; i < iterationCount; ++i)
+            int last  = tokenCount - productionSize;
+            for (int i = 0; i != last; ++i)
             {
-                int outcome = tokens[i];
-                int[] pattern = new int[ruleSize];
-                Array.Copy(tokens, i + 1, pattern, 0, ruleSize);
-                grammar.Productions.Add(outcome, pattern);
+                var outcome = symbols[i];
+                var input   = symbols.Skip(i + 1).Take(productionSize).ToArray();
+                grammar.Productions.Add(outcome, input);
             }
 
+            grammar.Start = symbols[0];
+            grammar.BuildIndexes();
             var target = new Lalr1Dfa(new GrammarAnalysis(grammar, new AmbTokenInfo[0]), LrTableOptimizations.Default);
         }
     }
