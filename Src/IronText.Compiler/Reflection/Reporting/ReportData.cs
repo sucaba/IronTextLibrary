@@ -50,7 +50,7 @@ namespace IronText.Reflection.Reporting
 
         public IScannerAutomata GetScannerAutomata()
         {
-            return data.Grammar.Joint.The<IScannerAutomata>();
+            return data.ScannerTdfa;
         }
 
         public ISemanticBinding[] SemanticBindings

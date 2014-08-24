@@ -64,8 +64,9 @@ namespace IronText.MetadataCompiler
 
             grammar.BuildIndexes();
 
+            ITdfaData tdfa = null;
             IEnumerable<AmbTokenInfo> ambiguities = null;
-            if (!bootstrap && !CompileScannerTdfas(grammar, out ambiguities))
+            if (!bootstrap && !CompileScannerTdfas(grammar, out tdfa, out ambiguities))
             {
                 result = null;
                 return false;
@@ -111,6 +112,7 @@ namespace IronText.MetadataCompiler
             result.ParserActionTable   = lrTable.GetParserActionTable();
             result.ParserConflictActionTable = lrTable.GetConflictActionTable();
             result.MatchActionToToken  = matchActionToToken;
+            result.ScannerTdfa         = tdfa;
 
             result.SemanticBindings  = semanticBindings.ToArray();
 
@@ -158,9 +160,8 @@ namespace IronText.MetadataCompiler
             return actionToToken;
         }
 
-        private bool CompileScannerTdfas(Grammar grammar, out IEnumerable<AmbTokenInfo> ambiguities)
+        private bool CompileScannerTdfas(Grammar grammar, out ITdfaData tdfa, out IEnumerable<AmbTokenInfo> ambiguities)
         {
-            ITdfaData tdfa;
             if (!CompileTdfa(logging, grammar, out tdfa))
             {
                 logging.Write(
@@ -197,7 +198,6 @@ namespace IronText.MetadataCompiler
 
             var regTree = new RegularTree(ast);
             outcome = new RegularToTdfaAlgorithm(regTree, literalToAction).Data;
-            grammar.Joint.Add(outcome);
 
             return true;
         }

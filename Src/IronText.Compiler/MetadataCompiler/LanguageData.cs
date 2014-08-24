@@ -1,5 +1,6 @@
 ﻿using IronText.Algorithm;
 using IronText.Automata.Lalr1;
+using IronText.Automata.Regular;
 using IronText.Compiler.Analysis;
 using IronText.Extensibility;
 using IronText.Reflection;
@@ -28,5 +29,7 @@ namespace IronText.MetadataCompiler
         public StackSemanticBinding[]  SemanticBindings  { get; set; }
 
         public int[]            MatchActionToToken  { get; set; }
+
+        public ITdfaData        ScannerTdfa { get; set; }
     }
 }

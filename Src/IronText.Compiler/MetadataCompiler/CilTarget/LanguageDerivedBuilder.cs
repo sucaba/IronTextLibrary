@@ -131,7 +131,7 @@ namespace IronText.MetadataCompiler
                     Message = string.Format("Started compiling Scan1 modes for {0} language", languageName.LanguageName)
                 });
 
-            ITdfaData dfa = data.Grammar.Joint.The<ITdfaData>();
+            ITdfaData dfa = data.ScannerTdfa;
             var dfaSerialization = new DfaSerialization(dfa);
             var generator = new ScannerGenerator(dfaSerialization);
 
