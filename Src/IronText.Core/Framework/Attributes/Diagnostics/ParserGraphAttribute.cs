@@ -1,30 +1,12 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using IronText.Extensibility;
-using IronText.Reflection.Reporting;
+﻿using IronText.Reports;
 
 namespace IronText.Framework
 {
-    public class ParserGraphAttribute : LanguageMetadataAttribute, IReport
+    public class ParserGraphAttribute : ReportAttribute
     {
-        private readonly string fileName;
-
         public ParserGraphAttribute(string fileName)
+            : base(typeof(ParserGraphReport), fileName)
         {
-            this.fileName = fileName;
-        }
-
-        public override IEnumerable<IReport> GetReports()
-        {
-            return new[] { this };
-        }
-
-        public void Build(IReportData data)
-        {
-            string path = Path.Combine(data.DestinationDirectory, fileName);
-
-            var graph = new LrGraph(data);
-            graph.WriteGv(path);
         }
     }
 }

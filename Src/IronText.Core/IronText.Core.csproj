@@ -111,6 +111,7 @@
     <Compile Include="Algorithm\IntegerSets\SetOrthohonator.cs" />
     <Compile Include="Algorithm\IntegerSets\SparseIntSetType.cs" />
     <Compile Include="Algorithm\IntInterval.cs" />
+    <Compile Include="Framework\Attributes\ReportAttribute.cs" />
     <Compile Include="Framework\NullParsing.cs" />
     <Compile Include="Lib\IL\Grammar\ICilDocumentInfo.cs" />
     <Compile Include="Lib\IL\Grammar\Plugins\DataStorage.cs" />
@@ -145,6 +146,12 @@
     <Compile Include="Reflection\Comparers\ProductionIndexComparer.cs" />
     <Compile Include="Reflection\Reporting\ParserDotItem.cs" />
     <Compile Include="Reflection\Reporting\ISemanticBinding.cs" />
+    <Compile Include="Reports\ParserStateMachineReport.cs" />
+    <Compile Include="Reports\GrammarReport.cs" />
+    <Compile Include="Reflection\Reporting\LrGraph.cs" />
+    <Compile Include="Reports\ParserGraphReport.cs" />
+    <Compile Include="Reports\ScannerReport.cs" />
+    <Compile Include="Reports\ScannerGraphReport.cs" />
     <Compile Include="Reflection\Semantics\SemanticScope.cs" />
     <Compile Include="Reflection\Semantics\SemanticRef.cs" />
     <Compile Include="Reflection\Serialization\IGrammarReader.cs" />
@@ -326,7 +333,7 @@
     <Compile Include="Runtime\GLR\GraphStructuredStack\IGss.cs" />
     <Compile Include="Runtime\IPushParser.cs" />
     <Compile Include="Runtime\IScanner.cs" />
-    <Compile Include="Framework\Attributes\Diagnostics\LrGraph.cs" />
+    <Compile Include="Reports\LrGraph.cs" />
     <Compile Include="Runtime\Producers\Sppf\ISppfNodeVisitor.cs" />
     <Compile Include="Runtime\Producers\Sppf\SppfEpsilonProducer.cs" />
     <Compile Include="Runtime\Producers\Sppf\SppfGraphWriter.cs" />

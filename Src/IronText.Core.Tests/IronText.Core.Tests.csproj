@@ -204,6 +204,7 @@
     <Compile Include="SpecFlowNUnitExtension.cs" />
     <Compile Include="TestUtils\Bench.cs" />
     <Compile Include="TestUtils\Collector.cs" />
+    <Compile Include="TestUtils\ParserSut.cs" />
     <Compile Include="TestUtils\ProgramExecutor.cs" />
     <Compile Include="DeploymentItemAttribute.cs" />
     <Compile Include="UseCases\MonadsTrials.cs" />

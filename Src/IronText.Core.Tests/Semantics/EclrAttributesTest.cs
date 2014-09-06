@@ -1,6 +1,7 @@
-﻿#if false
-using IronText.Framework;
+﻿using IronText.Framework;
+using IronText.Reflection;
 using IronText.Runtime;
+using IronText.Tests.TestUtils;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -9,23 +10,39 @@ using System.Text;
 
 namespace IronText.Tests.Semantics
 {
-    class SemanticAttribute : Attribute
-    {
-
-    }
-
     [TestFixture]
     public class EclrAttributesTest
     {
         [Test]
         public void Test()
         {
-            using (var interp = new Interpreter<DeclareUseLang>())
+            var grammar = new Grammar
             {
-                interp.Parse("dcl x dcl y use x use y");
-            }
+                StartName = "S",
+                Productions =
+                {
+                    { "S",       new [] { "DclList", "StList" } },
+                    { "DclList", new [] { "DcList", "Dc" } },
+                    { "DclList", new [] { "Dc" } },
+                    { "StList",  new [] { "StList", "St" } },
+                    { "StList",  new [] { "St" } },
+                    { "Dc",      new [] { "'dcl'", "id" } },
+                    { "St",      new [] { "'use'", "id" } },
+                },
+                Matchers = 
+                {
+                    { "dcl" },
+                    { "use" },
+                    { "id", "(alpha | '_') (alnum | '_')*" },
+                    { null, "blank+" }
+                }
+            };
+
+            var sut = new ParserSut(grammar);
+            sut.Parse("dcl x dcl y use x use y");
         }
 
+#if false
         [Language]
         [GrammarDocument("DeclareUseLang.gram")]
         public interface DeclareUseLang
@@ -70,6 +87,6 @@ namespace IronText.Tests.Semantics
         public interface StList { }
         public interface Dc { }
         public interface St { }
+#endif
     }
 }
-#endif

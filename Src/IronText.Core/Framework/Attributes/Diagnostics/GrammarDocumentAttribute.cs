@@ -1,33 +1,12 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using IronText.Extensibility;
-using IronText.Reflection.Reporting;
+﻿using IronText.Reports;
 
 namespace IronText.Framework
 {
-    public class GrammarDocumentAttribute : LanguageMetadataAttribute, IReport
+    public class GrammarDocumentAttribute : ReportAttribute
     {
-        private readonly string fileName;
-
         public GrammarDocumentAttribute(string fileName)
+            : base(typeof(GrammarReport), fileName)
         {
-            this.fileName = fileName;
-        }
-
-        public override IEnumerable<IReport> GetReports()
-        {
-            return new [] { this };
-        }
-
-        public void Build(IReportData data)
-        {
-            string path = Path.Combine(data.DestinationDirectory, fileName);
-
-            using (var grammarFile = new StreamWriter(path, false, Encoding.UTF8))
-            {
-                grammarFile.Write(data.Grammar);
-            }
         }
     }
 }

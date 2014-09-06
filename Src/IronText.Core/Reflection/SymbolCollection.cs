@@ -32,6 +32,11 @@ namespace IronText.Reflection
 
         public Symbol ByName(string symbolName, bool createMissing)
         {
+            if (symbolName == null)
+            {
+                return null;
+            }
+
             var found = this.FirstOrDefault(s => s.Name == symbolName);
             if (found == null)
             {
