@@ -1,5 +1,6 @@
 ﻿using IronText.Framework;
 using IronText.Reflection;
+using IronText.Reports;
 using IronText.Runtime;
 using IronText.Tests.TestUtils;
 using NUnit.Framework;
@@ -22,7 +23,7 @@ namespace IronText.Tests.Semantics
                 Productions =
                 {
                     { "S",       new [] { "DclList", "StList" } },
-                    { "DclList", new [] { "DcList", "Dc" } },
+                    { "DclList", new [] { "DclList", "Dc" } },
                     { "DclList", new [] { "Dc" } },
                     { "StList",  new [] { "StList", "St" } },
                     { "StList",  new [] { "St" } },
@@ -37,6 +38,9 @@ namespace IronText.Tests.Semantics
                     { null, "blank+" }
                 }
             };
+
+            grammar.Reports.Add(new ScannerGraphReport("EclrTest_Scanner.gv"));
+            grammar.Reports.Add(new ParserGraphReport("EclrTest_Parser.gv"));
 
             var sut = new ParserSut(grammar);
             sut.Parse("dcl x dcl y use x use y");
