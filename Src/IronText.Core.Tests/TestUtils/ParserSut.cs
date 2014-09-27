@@ -44,7 +44,7 @@ namespace IronText.Tests.TestUtils
 
         public void Parse(StringReader input, string document)
         {
-            var logging   = new TextLogging(Console.Out);
+            var logging   = ExceptionLogging.Instance;
             var rtGrammar = new RuntimeGrammar(grammar);
             var producer  = new ActionProducer(rtGrammar, null, ProductionAction, TermFactory, null);
             IReceiver<Msg>   parser;
@@ -71,13 +71,22 @@ namespace IronText.Tests.TestUtils
             }
 
             var scanSimulation = new TdfaSimulation(data.ScannerTdfa);
-            foreach (var msg in ScanAll(scanSimulation, input.ReadToEnd().ToCharArray()))
+            char[] buffer = new char[1024];
+            int len = input.ReadBlock(buffer, 0, buffer.Length - 1);
+            buffer[len] = Scanner.Sentinel;
+
+            foreach (var msg in ScanAll(scanSimulation, buffer))
             {
                 parser = parser.Next(msg);
                 if (parser == null)
                 {
                     break;
                 }
+            }
+
+            if (parser != null)
+            {
+                parser.Done();
             }
         }
 
@@ -102,11 +111,6 @@ namespace IronText.Tests.TestUtils
             return data.ParserActionTable.Get(state, token);
         }
 
-        public static int Scan1Delegate(ScanCursor cursor)
-        {
-            throw new NotImplementedException();
-        }
-
         private static bool TryNextWithTunnels(ITdfaSimulation automaton, int state, int item, out int nextState)
         {
             int currentState = state;
@@ -125,24 +129,27 @@ namespace IronText.Tests.TestUtils
 
         private IEnumerable<Msg> ScanAll(ITdfaSimulation automaton, char[] input)
         {
-            int state = automaton.Start;
-            int acceptPos = -1;
-            int startPos  = 0;
-            int? acceptingState = null;
-            for (int pos = 0; pos != input.Length;)
+            int cursor = 0;
+            int state  = automaton.Start;
+            int marker = -1;
+            int start  = 0;
+            int acceptingState = -1;
+
+
+            while(true)
             {
-                var item = input[pos];
+                var item = input[cursor];
                 int nextState;
 
                 if (!TryNextWithTunnels(automaton, state, item, out nextState))
                 {
-                    if (!acceptingState.HasValue)
+                    if (acceptingState < 0)
                     {
-                        var msg = string.Format("Scan failed at {0} position.", acceptPos);
+                        var msg = string.Format("Scan failed at {0} position.", marker);
                         throw new InvalidOperationException(msg);
                     }
 
-                    int? action = automaton.GetAction(acceptingState.Value);
+                    int? action = automaton.GetAction(acceptingState);
                     if (action.HasValue)
                     {
                         int token = data.MatchActionToToken[action.Value];
@@ -150,24 +157,29 @@ namespace IronText.Tests.TestUtils
                         {
                             yield return new Msg(
                                     token,
-                                    new string(input, startPos, (acceptPos - startPos)),
+                                    new string(input, start, (marker - start)),
                                     null,
-                                    new Loc(startPos, acceptPos));
+                                    new Loc(start, marker));
                         }
                     }
 
+                    if (item == Scanner.Sentinel)
+                    {
+                        break;
+                    }
+
                     state = 0;
-                    startPos = pos = acceptPos;
-                    acceptPos = -1;
-                    acceptingState = null;
+                    start = cursor = marker;
+                    marker = -1;
+                    acceptingState = -1;
                 }
                 else
                 {
-                    ++pos;
+                    ++cursor;
                     state = nextState;
                     if (automaton.IsAccepting(state))
                     {
-                        acceptPos      = pos;
+                        marker      = cursor;
                         acceptingState = state;
                     }
                 }

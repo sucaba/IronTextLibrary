@@ -36,11 +36,14 @@ namespace IronText.Tests.Semantics
                     { "use" },
                     { "id", "(alpha | '_') (alnum | '_')*" },
                     { null, "blank+" }
+                },
+                Reports =
+                {
+                    new ScannerGraphReport("EclrTest_Scanner.gv"),
+                    new ParserGraphReport("EclrTest_Parser.gv"),
+                    new ParserStateMachineReport("EclrTest.info")
                 }
             };
-
-            grammar.Reports.Add(new ScannerGraphReport("EclrTest_Scanner.gv"));
-            grammar.Reports.Add(new ParserGraphReport("EclrTest_Parser.gv"));
 
             var sut = new ParserSut(grammar);
             sut.Parse("dcl x dcl y use x use y");
