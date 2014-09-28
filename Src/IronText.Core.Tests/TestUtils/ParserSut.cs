@@ -91,10 +91,10 @@ namespace IronText.Tests.TestUtils
         }
 
         private static object ProductionAction(
-            int         ruleId,      // rule being reduced
-            ActionNode[] parts,       // array containing path being reduced
-            int         firstIndex,  // starting index of the path being reduced
-            object      context,     // user provided context
+            int          productionIndex, // production being reduced
+            ActionNode[] parts,           // array containing path being reduced
+            int          firstIndex,      // starting index of the path being reduced
+            object       context,         // user provided context
             IStackLookback<ActionNode> lookback    // access to the prior stack states and values
             )
         {

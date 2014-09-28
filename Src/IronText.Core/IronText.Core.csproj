@@ -138,6 +138,8 @@
     <Compile Include="Reflection\Cil\CilSemanticScope.cs" />
     <Compile Include="Reflection\Comparers\SymbolIndexComparer.cs" />
     <Compile Include="Collections\Validation\DuplicateResolver.cs" />
+    <Compile Include="Reflection\InjectedActionParameter.cs" />
+    <Compile Include="Reflection\InjectedActionParameterCollection.cs" />
     <Compile Include="Reflection\ITerminal.cs" />
     <Compile Include="Reflection\Indexing\GrammarIndexer.cs" />
     <Compile Include="Reflection\Indexing\IGrammarIndexer.cs" />

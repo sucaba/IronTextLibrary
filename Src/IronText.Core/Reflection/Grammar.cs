@@ -61,6 +61,7 @@ namespace IronText.Reflection
             }
 
             this.SymbolProperties = new SymbolPropertyCollection(this);
+            this.InjectedActionParameters = new InjectedActionParameterCollection(this);
         }
 
         public RuntimeOptions Options { get; set; }
@@ -101,6 +102,8 @@ namespace IronText.Reflection
 
         public SymbolPropertyCollection SymbolProperties { get; private set; }
 
+        public InjectedActionParameterCollection InjectedActionParameters { get; private set; }
+
         public void BuildIndexes()
         {
             Symbols.BuildIndexes(PredefinedTokens.AugmentedStart);
@@ -108,6 +111,7 @@ namespace IronText.Reflection
             Matchers.BuildIndexes();
             Mergers.BuildIndexes();
             SymbolProperties.BuildIndexes();
+            InjectedActionParameters.BuildIndexes();
         }
 
         public override string ToString()
