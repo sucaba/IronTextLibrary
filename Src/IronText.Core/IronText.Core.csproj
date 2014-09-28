@@ -146,6 +146,8 @@
     <Compile Include="Reflection\Comparers\ProductionIndexComparer.cs" />
     <Compile Include="Reflection\Reporting\ParserDotItem.cs" />
     <Compile Include="Reflection\Reporting\ISemanticBinding.cs" />
+    <Compile Include="Reflection\SymbolProperty.cs" />
+    <Compile Include="Reflection\SymbolPropertyCollection.cs" />
     <Compile Include="Reports\ParserStateMachineReport.cs" />
     <Compile Include="Reports\GrammarReport.cs" />
     <Compile Include="Reflection\Reporting\LrGraph.cs" />

@@ -60,6 +60,7 @@ namespace IronText.Reflection
                 symbol.IsPredefined = true;
             }
 
+            this.SymbolProperties = new SymbolPropertyCollection(this);
         }
 
         public RuntimeOptions Options { get; set; }
@@ -98,12 +99,15 @@ namespace IronText.Reflection
 
         public ReportCollection     Reports             { get { return _reports; } }
 
+        public SymbolPropertyCollection SymbolProperties { get; private set; }
+
         public void BuildIndexes()
         {
             Symbols.BuildIndexes(PredefinedTokens.AugmentedStart);
             Productions.BuildIndexes();
             Matchers.BuildIndexes();
             Mergers.BuildIndexes();
+            SymbolProperties.BuildIndexes();
         }
 
         public override string ToString()

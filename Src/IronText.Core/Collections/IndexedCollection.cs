@@ -22,7 +22,7 @@ namespace IronText.Collections
         private readonly Dictionary<object,T> identityToItem = new Dictionary<object,T>();
         private readonly Dictionary<int, T> forcedIndexes = new Dictionary<int,T>();
 
-        public IndexedCollection(TScope scope = default(TScope))
+        public IndexedCollection(TScope scope)
         {
             this.items = new List<T>(InitialCapacity);
             this.Scope = scope;
