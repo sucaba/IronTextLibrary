@@ -12,7 +12,7 @@ namespace IronText.Tests.Reflection
         private readonly Production production = new Production(new Symbol("outcome"), new [] { new Symbol("arg0"),  new Symbol("arg1") });
 
         [Test]
-        public void ConstructintTest()
+        public void ConstructionTest()
         {
             var target = new InjectedActionParameter(production, ValidPosition);
             Assert.AreSame(production, target.Production);

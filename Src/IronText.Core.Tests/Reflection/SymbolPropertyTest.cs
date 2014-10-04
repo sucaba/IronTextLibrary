@@ -48,8 +48,8 @@ namespace IronText.Tests.Reflection
         [Test]
         public void AddByInvalidDotExpressionCausesExceptionTest()
         {
-            Assert.Throws<InvalidOperationException>(()=> { grammar.SymbolProperties.Add(SymName +  Name); }, "Missing dot case");
-            Assert.Throws<InvalidOperationException>(()=> { grammar.SymbolProperties.Add(SymName + ".." + Name); }, "Too many dots case");
+            Assert.Throws<ArgumentException>(()=> { grammar.SymbolProperties.Add(SymName +  Name); }, "Missing dot case");
+            Assert.Throws<ArgumentException>(()=> { grammar.SymbolProperties.Add(SymName + ".." + Name); }, "Too many dots case");
         }
 
         [Test]

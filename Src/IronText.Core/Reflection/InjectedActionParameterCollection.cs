@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IronText.Reflection
 {
+    [Serializable]
     public class InjectedActionParameterCollection : IndexedCollection<InjectedActionParameter, IGrammarScope>
     {
         public InjectedActionParameterCollection(IGrammarScope scope)

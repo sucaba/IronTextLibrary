@@ -17,6 +17,7 @@ namespace IronText.Reflection
     /// he just needs to add injected parameter of type 'Environment' which will be resolved 
     /// in runtime to the nearest defined scope.
     /// </remarks>
+    [Serializable]
     public class InjectedActionParameter : IndexableObject<IGrammarScope>
     {
         /// <summary>

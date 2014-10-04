@@ -10,6 +10,7 @@ namespace IronText.Reflection
     /// <summary>
     /// Collection of symbol properties (AKA Synthesized Attribute).
     /// </summary>
+    [Serializable]
     public class SymbolPropertyCollection : IndexedCollection<SymbolProperty,IGrammarScope>
     {
         public SymbolPropertyCollection(IGrammarScope scope)
@@ -32,7 +33,7 @@ namespace IronText.Reflection
             string[] parts = dotExpression.Split('.');
             if (parts.Length != 2)
             {
-                throw new InvalidOperationException("Invalid dot expression. Expected format is '<symbol-name>.<property>'.");
+                throw new ArgumentException("Invalid dot expression. Expected format is '<symbol-name>.<property>'.", "dotExpression");
             }
             
             var result = new SymbolProperty(Scope.Symbols.ByName(parts[0].Trim(), createMissing: true), parts[1].Trim());
