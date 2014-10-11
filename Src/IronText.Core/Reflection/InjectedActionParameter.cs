@@ -7,7 +7,7 @@ using System.Text;
 namespace IronText.Reflection
 {
     /// <summary>
-    /// Action parameter which value will be injected from the nearest source.
+    /// Injected action parameter will deviler value from the nearest source.
     /// </summary>
     /// <remarks>
     /// The most relevant concept to this class is *inherited attribute*. However inherited

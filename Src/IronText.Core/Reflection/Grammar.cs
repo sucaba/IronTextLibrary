@@ -61,6 +61,7 @@ namespace IronText.Reflection
             }
 
             this.SymbolProperties = new SymbolPropertyCollection(this);
+            this.InheritedProperties = new InheritedPropertyCollection(this);
             this.InjectedActionParameters = new InjectedActionParameterCollection(this);
         }
 
@@ -101,6 +102,8 @@ namespace IronText.Reflection
         public ReportCollection     Reports             { get { return _reports; } }
 
         public SymbolPropertyCollection SymbolProperties { get; private set; }
+
+        internal InheritedPropertyCollection InheritedProperties { get; private set; }
 
         public InjectedActionParameterCollection InjectedActionParameters { get; private set; }
 
