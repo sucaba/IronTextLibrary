@@ -152,7 +152,7 @@ namespace IronText.Runtime
 
         public IProducer<ActionNode> CreateActionProducer(object context)
         {
-            var result = new ActionProducer(runtimeGrammar, context, grammarAction, termFactory, this.merge);
+            var result = new ActionProducer(runtimeGrammar, context, grammarAction, termFactory, this.merge, new Dictionary<string,object>());
 
             return result;
         }

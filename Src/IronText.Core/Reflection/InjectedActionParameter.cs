@@ -18,33 +18,29 @@ namespace IronText.Reflection
     /// in runtime to the nearest defined scope.
     /// </remarks>
     [Serializable]
-    public class InjectedActionParameter : IndexableObject<IGrammarScope>
+    public class InjectedActionParameter : IProductionComponent
     {
         /// <summary>
         /// Creates instance of the <see cref="InjectedActionParameter"/>
         /// </summary>
-        /// <param name="production"></param>
-        /// <param name="position"></param>
-        /// <exception cref="ArgumentNullException">when <see cref="production"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentAutOfRangeException">when position is less then 0 greather then production top-level component count.</exception>
-        public InjectedActionParameter(Production production, int position)
+        public InjectedActionParameter(string name)
         {
-            if (production == null)
+            if (name == null)
             {
-                throw new ArgumentNullException("production");
+                throw new ArgumentNullException("name");
             }
 
-            if (position < 0 || position > production.Components.Length)
-            {
-                throw new ArgumentOutOfRangeException("position");
-            }
-
-            this.Production = production;
-            this.Position   = position;
+            this.Name = name;
         }
 
-        public Production Production { get; private set; }
+        public object Identity  { get { return this; } }
 
-        public int        Position   { get; private set; }
+        public string Name      { get; private set; }
+
+        public int    InputSize { get { return 0; } }
+
+        public void FillInput(Symbol[] input, int startIndex) { }
+
+        public IProductionComponent[] ChildComponents { get { return new IProductionComponent[0]; } }
     }
 }

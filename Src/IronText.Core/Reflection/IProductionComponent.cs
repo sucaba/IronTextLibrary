@@ -8,11 +8,11 @@ namespace IronText.Reflection
 {
     public interface IProductionComponent : IDiscriminatable, IHasIdentity
     {
-        int  Size { get; }
+        int  InputSize { get; }
 
-        void CopyTo(Symbol[] output, int startIndex);
+        void FillInput(Symbol[] input, int startIndex);
 
-        IProductionComponent[] Components { get; }
+        IProductionComponent[] ChildComponents { get; }
     }
     
     public static class ProductionComponentVisitorExtensions

@@ -24,6 +24,10 @@ namespace IronText.Automata.Regular
             var positionBuilder = new PositionBuilder();
             AugmentedRoot.Accept(positionBuilder, null);
             Positions = positionBuilder.Positions;
+            if (Positions.Count == 1)
+            {
+                AugmentedRoot = EoiCharSetNode;
+            }
 
             EoiPosition = Positions.FindIndex(pos => pos.Characters.Contains(EoiChar));
             Debug.Assert(EoiPosition >= 0);

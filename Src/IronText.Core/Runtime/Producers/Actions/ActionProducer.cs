@@ -3,6 +3,7 @@ using IronText.Framework;
 using IronText.Logging;
 using IronText.Reflection;
 using System;
+using System.Collections.Generic;
 
 namespace IronText.Runtime
 {
@@ -22,21 +23,29 @@ namespace IronText.Runtime
         private Loc  _scanningLocation;
         private HLoc _scanningHLocation;
         private readonly object[] ruleArgBuffer;
+        private Dictionary<string, object> globals;
 
         public ActionProducer(
             RuntimeGrammar           grammar,
             object                   context,
             ProductionActionDelegate grammarAction,
             TermFactoryDelegate      termFactory,
-            MergeDelegate            merge)
+            MergeDelegate            merge,
+            Dictionary<string,object> globals)
             : base(grammar, context, grammarAction)
         {
+            if (globals == null)
+            {
+                throw new ArgumentNullException("globals");
+            }
+
             this.grammar        = grammar;
             this.context        = context;
             this.grammarAction  = grammarAction;
             this.termFactory    = termFactory;
             this.merge          = merge;
             this.ruleArgBuffer  = new object[grammar.MaxRuleSize];
+            this.globals        = globals;
 
             if (context != null)
             {
@@ -57,6 +66,18 @@ namespace IronText.Runtime
         public ReductionOrder ReductionOrder { get { return ReductionOrder.ByRuleDependency; } }
 
         public ActionNode Result { get; set; }
+
+        public ActionNode CreateStart()
+        {
+            SListOfInhProp inh = null;
+            foreach (var pair in globals)
+            {
+                int inhIndex = grammar.GetStartInheritedPropertyIndex(pair.Key);
+                inh = new SListOfInhProp { InhIndex = inhIndex, Value = pair.Value, Next = inh };
+            }
+
+            return new ActionNode(0, null, Loc.Unknown, HLoc.Unknown, inh);
+        }
 
         public ActionNode CreateLeaf(Msg envelope, MsgData data)
         {

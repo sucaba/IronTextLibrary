@@ -49,7 +49,7 @@ namespace IronText.Reflection
             }
 
             Outcome       = outcome;
-            Components    = components.ToArray();
+            ChildComponents    = components.ToArray();
             ContextRef    = contextRef ?? SemanticRef.None;
             Flags         = flags;
 
@@ -62,7 +62,7 @@ namespace IronText.Reflection
 
         public IEnumerable<int>   InputTokens    { get { return Input.Select(s => s.Index); } }
 
-        public IProductionComponent[] Components { get; private set; }
+        public IProductionComponent[] ChildComponents { get; private set; }
 
         public Symbol             Outcome        { get; private set; }
 
@@ -76,7 +76,7 @@ namespace IronText.Reflection
 
         public bool               IsAugmented    { get { return this == (object)Scope.AugmentedProduction; } }
 
-        public bool               IsExtended     { get { return Components.Any(c => c is Production); } }
+        public bool               IsExtended     { get { return ChildComponents.Any(c => c is Production); } }
 
         public Joint              Joint          { get { return _joint; } }
 
@@ -131,22 +131,22 @@ namespace IronText.Reflection
         {
             if (symbol == null)
             {
-                Components[0] = null;
+                ChildComponents[0] = null;
                 Input[0]      = null;
             }
             else
             {
-                Components[pattIndex] = symbol;
+                ChildComponents[pattIndex] = symbol;
                 Input[0]              = symbol;
             }
         }
 
-        int IProductionComponent.Size
+        int IProductionComponent.InputSize
         {
             get { return Input.Length; }
         }
 
-        void IProductionComponent.CopyTo(Symbol[] output, int startIndex)
+        void IProductionComponent.FillInput(Symbol[] output, int startIndex)
         {
             int count = Input.Length;
             for (int i = 0; i != count; ++i)
@@ -157,13 +157,13 @@ namespace IronText.Reflection
 
         private static Symbol[] CreateInputPattern(IEnumerable<IProductionComponent> components)
         {
-            int size = components.Sum(comp => comp.Size);
+            int size = components.Sum(comp => comp.InputSize);
             var pattern = new Symbol[size];
             int i = 0;
             foreach (var comp in components)
             {
-                comp.CopyTo(pattern, i);
-                i += comp.Size;
+                comp.FillInput(pattern, i);
+                i += comp.InputSize;
             }
 
             return pattern;
@@ -178,12 +178,12 @@ namespace IronText.Reflection
         {
             if (sketch == null 
                 || sketch.Outcome != Outcome.Name
-                || Components.Length != sketch.Components.Length)
+                || ChildComponents.Length != sketch.Components.Length)
             {
                 return false;
             }
 
-            return Enumerable.Zip(Components, sketch.Components, ComponentEqualTo).All(s => s);
+            return Enumerable.Zip(ChildComponents, sketch.Components, ComponentEqualTo).All(s => s);
         }
 
         internal static bool ComponentEqualTo(IProductionComponent component, object sketchComp)
@@ -201,7 +201,7 @@ namespace IronText.Reflection
 
         internal ProductionSketch ToSketch()
         {
-            return new ProductionSketch(Outcome.Name, Components.Select(ToSketch).ToArray());
+            return new ProductionSketch(Outcome.Name, ChildComponents.Select(ToSketch).ToArray());
         }
 
         internal static object ToSketch(IProductionComponent component)

@@ -4,7 +4,7 @@ using System;
 namespace IronText.Reflection
 {
     /// <summary>
-    /// Represents 'Inherited Attribute' concpet from ECLR papers.
+    /// Represents 'Inherited Attribute' concept from ECLR papers.
     /// </summary>
     /// <remarks>
     /// Inherited means that symbol will recieve some value from environment 

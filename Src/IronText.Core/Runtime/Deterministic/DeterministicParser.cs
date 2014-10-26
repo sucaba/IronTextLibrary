@@ -63,7 +63,7 @@ namespace IronText.Runtime
         public void Reset()
         {
             stateStack.Clear();
-            stateStack.Push(0, default(TNode));
+            stateStack.Push(0, producer.CreateStart());
         }
 
         public IReceiver<Msg> Done()

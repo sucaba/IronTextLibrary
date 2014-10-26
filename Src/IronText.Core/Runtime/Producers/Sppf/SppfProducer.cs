@@ -18,6 +18,8 @@ namespace IronText.Runtime
 
         public SppfNode Result { get; set; }
 
+        public SppfNode CreateStart() { return null; }
+
         public SppfNode CreateLeaf(Msg envelope, MsgData data)
         { 
             return new SppfNode(data.Action, data.Text, envelope.Location, envelope.HLocation);

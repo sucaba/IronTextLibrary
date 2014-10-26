@@ -15,7 +15,7 @@ namespace IronText.Tests.Semantics
     public class EclrAttributesTest
     {
         [Test]
-        public void Test()
+        public void SimulationSmokeTest()
         {
             var grammar = new Grammar
             {
@@ -47,6 +47,42 @@ namespace IronText.Tests.Semantics
 
             var sut = new ParserSut(grammar);
             sut.Parse("dcl x dcl y use x use y");
+        }
+
+        [Test]
+        public void GlobalsToInjectedParamsTest()
+        {
+            var grammar = new Grammar
+            {
+                StartName = "S",
+                Productions =
+                {
+                    { "S",      new [] { "?val" } },
+                },
+                /*
+                Matchers = 
+                {
+                    { null, "blank+" }
+                },
+                */
+                Reports =
+                {
+                    new ScannerGraphReport("EclrGlobalsToInjectedParamsTest_Scanner.gv"),
+                    new ParserGraphReport("EclrGlobalsToInjectedParamsTest.gv"),
+                    new ParserStateMachineReport("EclrGlobalsToInjectedParamsTest.info")
+                }
+            };
+
+            var globalValProp = new InheritedProperty(grammar.Start, "val");
+            grammar.InheritedProperties.Add(globalValProp);
+
+            var sut = new ParserSut(grammar);
+            string expectedVal = "foo-bar";
+            object gotVal       = null;
+            sut.ProductionHooks.Add("S = ?val", new Func<object, object>(id => gotVal = id));
+            sut.Parse("", new Dictionary<string,object> { { globalValProp.Name, expectedVal } });
+
+            Assert.AreEqual(expectedVal, gotVal);
         }
     }
 }

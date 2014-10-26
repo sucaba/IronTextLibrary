@@ -237,7 +237,7 @@ namespace IronText.MetadataCompiler
                 }
             }
 
-            varStack.RemoveRange(varsStackStart, prod.Components.Length);
+            varStack.RemoveRange(varsStackStart, prod.ChildComponents.Length);
             varStack.InsertAt(varsStackStart);
         }
     }

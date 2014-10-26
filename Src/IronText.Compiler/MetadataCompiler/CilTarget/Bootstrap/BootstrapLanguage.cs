@@ -7,6 +7,7 @@ using IronText.Reflection.Managed;
 using IronText.Runtime;
 using System.Reflection.Emit;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace IronText.MetadataCompiler
 {
@@ -72,7 +73,7 @@ namespace IronText.MetadataCompiler
 
         public IProducer<ActionNode> CreateActionProducer(object context)
         {
-            return new ActionProducer(runtimeGrammar, context, grammarAction, termFactory,  this.merge);
+            return new ActionProducer(runtimeGrammar, context, grammarAction, termFactory,  this.merge, new Dictionary<string,object>());
         }
 
         private int GetParserAction(int state, int token)

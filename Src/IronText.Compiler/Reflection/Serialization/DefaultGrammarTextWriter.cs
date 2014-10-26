@@ -103,13 +103,13 @@ namespace IronText.Reflection
                         }
 
                         output.Write("{0} :", prod.Outcome.Name);
-                        if (prod.Components.Length == 0)
+                        if (prod.ChildComponents.Length == 0)
                         {
                             output.Write(" /*empty*/");
                         }
                         else
                         {
-                            foreach (var child in prod.Components)
+                            foreach (var child in prod.ChildComponents)
                             {
                                 output.Write(' ');
                                 InternalWriteComponent(output, child, true);

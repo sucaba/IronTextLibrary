@@ -16,7 +16,7 @@ namespace IronText.Reflection.Validation
 
         public Production Resolve(Production existingItem, Production newItem)
         {
-            if (existingItem.Components.Length > newItem.Components.Length)
+            if (existingItem.ChildComponents.Length > newItem.ChildComponents.Length)
             {
                 return newItem;
             }

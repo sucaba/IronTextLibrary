@@ -79,17 +79,17 @@ namespace IronText.Reflection
         /// </remarks>
         public Precedence Precedence { get; set; }
 
-        int IProductionComponent.Size
+        int IProductionComponent.InputSize
         {
             get { return 1; }
         }
 
-        void IProductionComponent.CopyTo(Symbol[] output, int startIndex)
+        void IProductionComponent.FillInput(Symbol[] output, int startIndex)
         {
             output[startIndex] = this;
         }
 
-        IProductionComponent[] IProductionComponent.Components
+        IProductionComponent[] IProductionComponent.ChildComponents
         {
             get { return new IProductionComponent[0]; }
         }

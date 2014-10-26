@@ -141,7 +141,6 @@
     <Compile Include="Reflection\InheritedProperty.cs" />
     <Compile Include="Reflection\InheritedPropertyCollection.cs" />
     <Compile Include="Reflection\InjectedActionParameter.cs" />
-    <Compile Include="Reflection\InjectedActionParameterCollection.cs" />
     <Compile Include="Reflection\ITerminal.cs" />
     <Compile Include="Reflection\Indexing\GrammarIndexer.cs" />
     <Compile Include="Reflection\Indexing\IGrammarIndexer.cs" />

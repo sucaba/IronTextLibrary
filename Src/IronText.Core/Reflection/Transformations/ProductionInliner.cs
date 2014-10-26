@@ -44,11 +44,11 @@ namespace IronText.Reflection
 
         public IProductionComponent VisitProduction(Production production)
         {
-            int count = production.Components.Length;
+            int count = production.ChildComponents.Length;
             var inlinedComponents = new IProductionComponent[count];
             for (int i = 0; i != count; ++i)
             {
-                inlinedComponents[i] = production.Components[i].Accept(this);
+                inlinedComponents[i] = production.ChildComponents[i].Accept(this);
             }
 
             var result = new Production(

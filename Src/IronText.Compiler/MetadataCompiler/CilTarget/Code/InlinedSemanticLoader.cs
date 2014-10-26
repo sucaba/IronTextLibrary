@@ -51,7 +51,7 @@ namespace IronText.MetadataCompiler
                 return true;
             }
 
-            var components = parentProduction.Components;
+            var components = parentProduction.ChildComponents;
             if (parentPosition != 0 && parentPosition != components.Length && components.Length != 0)
             {
                 var providingSymbol = (components[0] as Symbol) ?? ((Production)components[0]).Outcome;

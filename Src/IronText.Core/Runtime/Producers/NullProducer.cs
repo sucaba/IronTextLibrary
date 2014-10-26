@@ -14,6 +14,8 @@ namespace IronText.Runtime
             set { }
         }
 
+        public T CreateStart() { return default(T); }
+
         public T CreateLeaf(Msg envelope, MsgData msg) { return default(T); }
 
         public T CreateBranch(Production rule, Algorithm.ArraySlice<T> parts, IStackLookback<T> lookback)

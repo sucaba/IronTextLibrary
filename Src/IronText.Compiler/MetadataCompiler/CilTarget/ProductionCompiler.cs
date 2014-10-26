@@ -48,7 +48,7 @@ namespace IronText.MetadataCompiler.CilTarget
             this.parentProduction = production;
 
             int localIndexInParent = 0;
-            foreach (var component in production.Components)
+            foreach (var component in production.ChildComponents)
             {
                 ProcessComponent(component, localIndexInParent, varsStackStart + localIndexInParent);
                 ++localIndexInParent;

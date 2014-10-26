@@ -62,7 +62,6 @@ namespace IronText.Reflection
 
             this.SymbolProperties = new SymbolPropertyCollection(this);
             this.InheritedProperties = new InheritedPropertyCollection(this);
-            this.InjectedActionParameters = new InjectedActionParameterCollection(this);
         }
 
         public RuntimeOptions Options { get; set; }
@@ -105,8 +104,6 @@ namespace IronText.Reflection
 
         internal InheritedPropertyCollection InheritedProperties { get; private set; }
 
-        public InjectedActionParameterCollection InjectedActionParameters { get; private set; }
-
         public void BuildIndexes()
         {
             Symbols.BuildIndexes(PredefinedTokens.AugmentedStart);
@@ -114,7 +111,7 @@ namespace IronText.Reflection
             Matchers.BuildIndexes();
             Mergers.BuildIndexes();
             SymbolProperties.BuildIndexes();
-            InjectedActionParameters.BuildIndexes();
+            InheritedProperties.BuildIndexes();
         }
 
         public override string ToString()
@@ -301,7 +298,7 @@ namespace IronText.Reflection
                     var newProd = Productions.Add(
                         new Production(
                             newSymbol,
-                            prod.Components,
+                            prod.ChildComponents,
                             contextRef: prod.ContextRef,
                             flags: prod.Flags));
                     newProd.ExplicitPrecedence = prod.ExplicitPrecedence;

@@ -28,6 +28,12 @@ namespace IronText.Tests.Reflection.Utils
         }
 
         [Test]
+        public void QuotedComponentsIsParsedCorrectly()
+        {
+            Assert.AreEqual(new [] { "'B'" }, GetComponents("A='B'"));
+        }
+
+        [Test]
         public void InlinedComponentIsParsedCorrectly()
         {
             var sketch = PS.Parse("A = (B = C)");

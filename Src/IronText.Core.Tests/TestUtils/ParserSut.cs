@@ -7,6 +7,7 @@ using IronText.Runtime;
 using IronText.Tests.Algorithm;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 
 namespace IronText.Tests.TestUtils
@@ -23,6 +24,8 @@ namespace IronText.Tests.TestUtils
             this.grammar = grammar;
 
             BuildTables();
+
+            this.ProductionHooks = new Dictionary<string,Delegate>();
         }
 
         private void BuildTables()
@@ -37,16 +40,16 @@ namespace IronText.Tests.TestUtils
             this.data = provider.Resource;
         }
 
-        public void Parse(string text)
+        public void Parse(string text, Dictionary<string,object> globals = null)
         {
-            Parse(new StringReader(text), Loc.MemoryString);
+            Parse(new StringReader(text), Loc.MemoryString, globals);
         }
 
-        public void Parse(StringReader input, string document)
+        public void Parse(StringReader input, string document, Dictionary<string,object> globals = null)
         {
             var logging   = ExceptionLogging.Instance;
             var rtGrammar = new RuntimeGrammar(grammar);
-            var producer  = new ActionProducer(rtGrammar, null, ProductionAction, TermFactory, null);
+            var producer  = new ActionProducer(rtGrammar, null, ProductionAction, TermFactory, null, globals);
             IReceiver<Msg>   parser;
             if (data.IsDeterministic)
             {
@@ -90,7 +93,9 @@ namespace IronText.Tests.TestUtils
             }
         }
 
-        private static object ProductionAction(
+        public Dictionary<string, Delegate> ProductionHooks { get; private set; }
+
+        private object ProductionAction(
             int          productionIndex, // production being reduced
             ActionNode[] parts,           // array containing path being reduced
             int          firstIndex,      // starting index of the path being reduced
@@ -98,7 +103,30 @@ namespace IronText.Tests.TestUtils
             IStackLookback<ActionNode> lookback    // access to the prior stack states and values
             )
         {
-            return null;
+            object result = null;
+
+            foreach (var pair in ProductionHooks)
+            {
+                var prodName = pair.Key;
+                var action   = pair.Value;
+
+                var hookProd = grammar.Productions.Find(prodName);
+                var prod = grammar.Productions[productionIndex];
+                if (hookProd != prod)
+                {
+                    continue;
+                }
+
+                object[] args = new object[action.Method.GetParameters().Length];
+                for (int i = 0; i != args.Length; ++i)
+                {
+                    args[i] = parts[firstIndex + i].Value;
+                }
+
+                action.DynamicInvoke(args);
+            }
+
+            return result;
         }
 
         private static object TermFactory(object context, int action, string text)
@@ -145,7 +173,7 @@ namespace IronText.Tests.TestUtils
                 {
                     if (acceptingState < 0)
                     {
-                        var msg = string.Format("Scan failed at {0} position.", marker);
+                        var msg = string.Format("Scan failed at {0} position.", start);
                         throw new InvalidOperationException(msg);
                     }
 
