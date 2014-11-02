@@ -8,7 +8,6 @@ using System.Text;
 using IronText.Collections;
 using IronText.Algorithm;
 using IronText.Misc;
-using IronText.Reflection.Utils;
 
 namespace IronText.Reflection
 {
@@ -173,31 +172,6 @@ namespace IronText.Reflection
         {
             this.Outcome.Productions.Remove(this);
         } 
-
-        internal bool EqualTo(ProductionSketch sketch)
-        {
-            if (sketch == null 
-                || sketch.Outcome != Outcome.Name
-                || ChildComponents.Length != sketch.Components.Length)
-            {
-                return false;
-            }
-
-            return Enumerable.Zip(ChildComponents, sketch.Components, ComponentEqualTo).All(s => s);
-        }
-
-        internal static bool ComponentEqualTo(IProductionComponent component, object sketchComp)
-        {
-            Symbol     symbol;
-            Production prod;
-            switch (component.Match(out symbol, out prod))
-            {
-                case 0: return symbol.Name == (sketchComp as string); 
-                case 1: return prod.EqualTo(sketchComp as ProductionSketch);
-                default:
-                    throw new ArgumentException("component");
-            }
-        }
 
         internal ProductionSketch ToSketch()
         {

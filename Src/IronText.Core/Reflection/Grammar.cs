@@ -15,7 +15,7 @@ namespace IronText.Reflection
     /// - Organize API to avoid IsPredefined checks.
     /// </summary>
     [Serializable]
-    public sealed class Grammar : IGrammarScope
+    public sealed class Grammar : IGrammarScope, IDependencyResolver
     {
         public const string UnnamedTokenName = "<unnamed token>";
         public const string UnknownTokenName = "<unknown token>";
@@ -63,6 +63,8 @@ namespace IronText.Reflection
             this.SymbolProperties = new SymbolPropertyCollection(this);
             this.InheritedProperties = new InheritedPropertyCollection(this);
         }
+
+        private IDependencyResolver DR { get {  return this; } }
 
         public RuntimeOptions Options { get; set; }
 
@@ -116,13 +118,7 @@ namespace IronText.Reflection
 
         public override string ToString()
         {
-            var writerType = Type.GetType("IronText.Reflection.DefaultTextGrammarWriter, IronText.Compiler");
-            if (writerType == null)
-            {
-                return "IronText.Reflection.Grammar";
-            }
-
-            var writer = (IGrammarTextWriter)Activator.CreateInstance(writerType);
+            var writer = DR.Resolve<IGrammarTextWriter>();
 
             using (var output = new StringWriter())
             {
@@ -351,6 +347,37 @@ namespace IronText.Reflection
                        && (s.Productions.Count != 2 
                           || s.Productions.Any(p => p.Input.Length > 1)));
             return result.ToArray();
+        }
+
+        object IDependencyResolver.Resolve(Type type)
+        {
+            if (type == typeof(ISymbolParser) || type == typeof(IProductionParser))
+            {
+                return new GrammarElementParser(this);
+            }
+
+            if (type == typeof(ISymbolTextMatcher) || type == typeof(IProductionTextMatcher))
+            {
+                return new GrammarElementMatcher();
+            }
+
+            if (type == typeof(IGrammarScope))
+            {
+                return this;
+            }
+            
+            if (type == typeof(IGrammarTextWriter))
+            {
+                var writerType = Type.GetType("IronText.Reflection.DefaultTextGrammarWriter, IronText.Compiler");
+                if (writerType == null)
+                {
+                    return "IronText.Reflection.Grammar";
+                }
+
+                return (IGrammarTextWriter)Activator.CreateInstance(writerType);
+            }
+
+            return null;
         }
     }
 }

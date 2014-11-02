@@ -1,10 +1,10 @@
-﻿using IronText.Reflection.Utils;
+﻿using IronText.Reflection;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PS = IronText.Reflection.Utils.ProductionSketch;
+using PS = IronText.Reflection.ProductionSketch;
 
 namespace IronText.Tests.Reflection.Utils
 {

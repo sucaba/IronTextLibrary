@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace IronText.Reflection.Utils
+namespace IronText.Reflection
 {
     internal class ProductionSketch
     {

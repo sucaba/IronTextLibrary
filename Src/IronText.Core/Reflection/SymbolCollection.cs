@@ -6,7 +6,7 @@ using System;
 namespace IronText.Reflection
 {
     [Serializable]
-    public class SymbolCollection : IndexedCollection<Symbol, IGrammarScope>
+    public class SymbolCollection : GrammarEntityCollection<Symbol, IGrammarScope>
     {
         public SymbolCollection(IGrammarScope context)
             : base(context)
@@ -37,7 +37,9 @@ namespace IronText.Reflection
                 return null;
             }
 
-            var found = this.FirstOrDefault(s => s.Name == symbolName);
+            var matcher = DR.Resolve<ISymbolTextMatcher>();
+
+            var found = this.FirstOrDefault(s => matcher.MatchSymbol(s, symbolName));
             if (found == null)
             {
                 if (!createMissing)

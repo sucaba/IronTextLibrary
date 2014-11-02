@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using IronText.Collections;
-using IronText.Reflection.Utils;
 
 namespace IronText.Reflection
 {
     [Serializable]
-    public class ProductionCollection : IndexedCollection<Production, IGrammarScope>
+    public class ProductionCollection : GrammarEntityCollection<Production, IGrammarScope>
     {
         public ProductionCollection(IGrammarScope scope)
             : base(scope)
@@ -16,7 +15,8 @@ namespace IronText.Reflection
 
         public Production Add(string producitonText)
         {
-            var sketch = ProductionSketch.Parse(producitonText);
+            var parser = DR.Resolve<IProductionParser>();
+            var sketch = parser.BuildSketch(producitonText);
 
             var result = Find(sketch);
             if (result == null)
@@ -32,15 +32,24 @@ namespace IronText.Reflection
             throw new NotImplementedException();
         }
 
-        public Production Add(string outcome, IEnumerable<string> pattern, SemanticRef contextRef = null)
+        public Production Add(string outcome, IEnumerable<string> pattern)
         {
-            return Add(
-                Scope.Symbols.ByName(outcome, createMissing: true),
-                pattern.Select(name => Scope.Symbols.ByName(name, createMissing: true)),
-                contextRef);
+            Production result;
+
+            var matcher = DR.Resolve<IProductionTextMatcher>();
+            result = this.FirstOrDefault(p => matcher.MatchProduction(p, outcome, pattern));
+            if (result == null)
+            {
+                var parser = DR.Resolve<IProductionParser>();
+
+                result = parser.ParseProduction(outcome, pattern);
+                Add(result);
+            }
+
+            return result;
         }
 
-        public Production Add(Symbol outcome, IEnumerable<Symbol> pattern, SemanticRef contextRef = null)
+        public Production Add(Symbol outcome, IEnumerable<IProductionComponent> pattern, SemanticRef contextRef = null)
         {
             var result = new Production(outcome, pattern, contextRef);
             return Add(result);
@@ -91,15 +100,10 @@ namespace IronText.Reflection
         
         private Production Find(ProductionSketch sketch)
         {
-            foreach (var prod in this)
-            {
-                if (prod.EqualTo(sketch))
-                {
-                    return prod;
-                }
-            }
+            var matcher = DR.Resolve<IProductionTextMatcher>();
 
-            return null;
+            var result = this.FirstOrDefault(p => matcher.MatchProduction(p, sketch));
+            return result;
         }
     }
 }

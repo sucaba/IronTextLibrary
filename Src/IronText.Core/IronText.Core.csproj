@@ -111,6 +111,7 @@
     <Compile Include="Algorithm\IntegerSets\SetOrthohonator.cs" />
     <Compile Include="Algorithm\IntegerSets\SparseIntSetType.cs" />
     <Compile Include="Algorithm\IntInterval.cs" />
+    <Compile Include="DI\IDependencyResolver.cs" />
     <Compile Include="Framework\Attributes\ReportAttribute.cs" />
     <Compile Include="Framework\NullParsing.cs" />
     <Compile Include="Lib\IL\Grammar\ICilDocumentInfo.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="Reflection\Cil\CilSemanticScope.cs" />
     <Compile Include="Reflection\Comparers\SymbolIndexComparer.cs" />
     <Compile Include="Collections\Validation\DuplicateResolver.cs" />
+    <Compile Include="Reflection\GrammarEntityCollection.cs" />
     <Compile Include="Reflection\InheritedProperty.cs" />
     <Compile Include="Reflection\InheritedPropertyCollection.cs" />
     <Compile Include="Reflection\InjectedActionParameter.cs" />
@@ -149,6 +151,12 @@
     <Compile Include="Reflection\Comparers\ProductionIndexComparer.cs" />
     <Compile Include="Reflection\Reporting\ParserDotItem.cs" />
     <Compile Include="Reflection\Reporting\ISemanticBinding.cs" />
+    <Compile Include="Reflection\Serialization\GrammarElementMatcher.cs" />
+    <Compile Include="Reflection\Serialization\GrammarElementParser.cs" />
+    <Compile Include="Reflection\Serialization\IProductionTextMatcher.cs" />
+    <Compile Include="Reflection\Serialization\IProductionParser.cs" />
+    <Compile Include="Reflection\Serialization\ISymbolTextMatcher.cs" />
+    <Compile Include="Reflection\Serialization\ISymbolParser.cs" />
     <Compile Include="Reflection\SymbolProperty.cs" />
     <Compile Include="Reflection\SymbolPropertyCollection.cs" />
     <Compile Include="Reports\ParserStateMachineReport.cs" />
@@ -183,7 +191,7 @@
     <Compile Include="Reflection\Transformations\EliminateRightNulls.cs" />
     <Compile Include="Reflection\Transformations\ProductionInliner.cs" />
     <Compile Include="Collections\Validation\IDuplicateResolver.cs" />
-    <Compile Include="Reflection\Utils\ProducitonSketch.cs" />
+    <Compile Include="Reflection\Serialization\ProducitonSketch.cs" />
     <Compile Include="Reflection\Validation\ProductionDuplicateResolver.cs" />
     <Compile Include="Runtime\ILanguageInternalRuntime.cs" />
     <Compile Include="Runtime\ParserAction.cs" />

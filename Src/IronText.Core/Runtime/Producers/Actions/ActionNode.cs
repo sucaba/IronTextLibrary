@@ -8,6 +8,10 @@ namespace IronText.Runtime
         public readonly object Value;
         public readonly Loc    Location;
         public readonly HLoc   HLocation;
+
+        /// <summary>
+        /// Inherited properties of the state create after shifting on <see cref="Token"/>.
+        /// </summary>
         public readonly SListOfInhProp InheritedProperties;
 
         public ActionNode(int token, object value, Loc loc, HLoc hLoc, SListOfInhProp inh = null)
