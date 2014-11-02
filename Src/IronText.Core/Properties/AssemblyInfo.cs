@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -34,6 +35,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("IronText.Core.Tests")]
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("IronText.Compiler")]
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("IronText.Lib.Stem.Tests")]
+[assembly: InternalsVisibleTo("IronText.Core.Tests")]
+[assembly: InternalsVisibleTo("IronText.Compiler")]
+[assembly: InternalsVisibleTo("IronText.Lib.Stem.Tests")]
+
+// Give Moq access to mock internal interfaces
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

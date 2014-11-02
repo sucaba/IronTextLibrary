@@ -7,6 +7,11 @@ namespace IronText.Reflection
 {
     internal class ProductionSketch
     {
+        public ProductionSketch(string outcome, IEnumerable<object> components)
+            : this(outcome, components.ToArray())
+        {
+        }
+
         public ProductionSketch(string outcome, params object[] components)
         {
             this.Outcome    = outcome;

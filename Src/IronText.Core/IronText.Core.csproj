@@ -152,12 +152,13 @@
     <Compile Include="Reflection\Reporting\ParserDotItem.cs" />
     <Compile Include="Reflection\Reporting\ISemanticBinding.cs" />
     <Compile Include="Reflection\Serialization\GrammarElementMatcher.cs" />
-    <Compile Include="Reflection\Serialization\GrammarElementParser.cs" />
+    <Compile Include="Reflection\Serialization\IAddOnlyCollection.cs" />
+    <Compile Include="Reflection\Serialization\INameResolver.cs" />
+    <Compile Include="Reflection\Serialization\ProductionNameResolver.cs" />
     <Compile Include="Reflection\Serialization\IInjectedActionParameterTextMatcher.cs" />
     <Compile Include="Reflection\Serialization\IProductionTextMatcher.cs" />
-    <Compile Include="Reflection\Serialization\IProductionParser.cs" />
+    <Compile Include="Reflection\Serialization\IProductionNameResolver.cs" />
     <Compile Include="Reflection\Serialization\ISymbolTextMatcher.cs" />
-    <Compile Include="Reflection\Serialization\ISymbolParser.cs" />
     <Compile Include="Reflection\SymbolProperty.cs" />
     <Compile Include="Reflection\SymbolPropertyCollection.cs" />
     <Compile Include="Reports\ParserStateMachineReport.cs" />

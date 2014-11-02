@@ -6,46 +6,24 @@ using IronText.Collections;
 namespace IronText.Reflection
 {
     [Serializable]
-    public class ProductionCollection : GrammarEntityCollection<Production, IGrammarScope>
+    public class ProductionCollection : GrammarEntityCollection<Production, IGrammarScope>, IAddOnlyCollection<Production>
     {
         public ProductionCollection(IGrammarScope scope)
             : base(scope)
         {
         }
 
-        public Production Add(string producitonText)
+        public Production Add(string text)
         {
-            var parser = DR.Resolve<IProductionParser>();
-            var sketch = parser.BuildSketch(producitonText);
-
-            var result = Find(sketch);
-            if (result == null)
-            {
-                result = Add(sketch);
-            }
-
+            var resolver = DR.Resolve<IProductionNameResolver>();
+            var result = resolver.Resolve(text, createMissing: true);
             return result;
-        }
-
-        private Production Add(ProductionSketch sketch)
-        {
-            throw new NotImplementedException();
         }
 
         public Production Add(string outcome, IEnumerable<string> pattern)
         {
-            Production result;
-
-            var matcher = DR.Resolve<IProductionTextMatcher>();
-            result = this.FirstOrDefault(p => matcher.Match(p, outcome, pattern));
-            if (result == null)
-            {
-                var parser = DR.Resolve<IProductionParser>();
-
-                result = parser.ParseProduction(outcome, pattern);
-                Add(result);
-            }
-
+            var resolver = DR.Resolve<IProductionNameResolver>();
+            var result = resolver.Resolve(outcome, pattern, createMissing: true);
             return result;
         }
 
@@ -55,18 +33,9 @@ namespace IronText.Reflection
             return Add(result);
         }
 
-        [Obsolete("Refactoring grammar indexing")]
-        public Production Add(int outcome, IEnumerable<int> pattern, string contextName = null)
+        public Production Find(string text)
         {
-            return Add(
-                Scope.Symbols[outcome],
-                pattern.Select(t => Scope.Symbols[t]),
-                SemanticRef.ByName(contextName));
-        }
-
-        public Production Find(string productionText)
-        {
-            var sketch = ProductionSketch.Parse(productionText);
+            var sketch = ProductionSketch.Parse(text);
             return Find(sketch);
         }
 
@@ -74,6 +43,14 @@ namespace IronText.Reflection
         {
             var sketch = new ProductionSketch(outcome, pattern);
             return Find(sketch);
+        }
+        
+        private Production Find(ProductionSketch sketch)
+        {
+            var resolver = DR.Resolve<IProductionNameResolver>();
+
+            var result = resolver.Resolve(sketch, createMissing: false);
+            return result;
         }
 
         /// <summary>
@@ -97,13 +74,10 @@ namespace IronText.Reflection
 
             return null;
         }
-        
-        private Production Find(ProductionSketch sketch)
-        {
-            var matcher = DR.Resolve<IProductionTextMatcher>();
 
-            var result = this.FirstOrDefault(p => matcher.Match(p, sketch));
-            return result;
+        void IAddOnlyCollection<Production>.Add(Production item)
+        {
+            base.Add(item);
         }
     }
 }

@@ -63,10 +63,12 @@ namespace IronText.Reflection
         {
             Symbol     symbol;
             Production prod;
-            switch (component.Match(out symbol, out prod))
+            InjectedActionParameter injectedParam;
+            switch (component.Match(out symbol, out prod, out injectedParam))
             {
-                case 0: return symbol.Name == (sketchComp as string); 
+                case 0: return Match(symbol, sketchComp as string); 
                 case 1: return Match(prod, sketchComp as ProductionSketch);
+                case 2: return Match(injectedParam, sketchComp as string);
                 default:
                     throw new ArgumentException("component");
             }

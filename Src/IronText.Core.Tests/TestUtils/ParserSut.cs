@@ -159,10 +159,9 @@ namespace IronText.Tests.TestUtils
         {
             int cursor = 0;
             int state  = automaton.Start;
-            int marker = -1;
+            int marker = 0;
             int start  = 0;
-            int acceptingState = -1;
-
+            int acceptingState = automaton.IsAccepting(state) ? state : -1;
 
             while(true)
             {

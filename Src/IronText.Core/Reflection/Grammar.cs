@@ -351,9 +351,9 @@ namespace IronText.Reflection
 
         object IDependencyResolver.Resolve(Type type)
         {
-            if (type == typeof(ISymbolParser) || type == typeof(IProductionParser))
+            if (type == typeof(IProductionNameResolver))
             {
-                return new GrammarElementParser(this);
+                return new ProductionNameResolver(Symbols, Productions, DR.Resolve<IProductionTextMatcher>());
             }
 
             if (type == typeof(ISymbolTextMatcher) || type == typeof(IProductionTextMatcher) || type == typeof(IInjectedActionParameterTextMatcher))
