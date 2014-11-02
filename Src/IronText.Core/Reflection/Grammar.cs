@@ -356,7 +356,7 @@ namespace IronText.Reflection
                 return new GrammarElementParser(this);
             }
 
-            if (type == typeof(ISymbolTextMatcher) || type == typeof(IProductionTextMatcher))
+            if (type == typeof(ISymbolTextMatcher) || type == typeof(IProductionTextMatcher) || type == typeof(IInjectedActionParameterTextMatcher))
             {
                 return new GrammarElementMatcher();
             }

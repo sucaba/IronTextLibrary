@@ -153,6 +153,7 @@
     <Compile Include="Reflection\Reporting\ISemanticBinding.cs" />
     <Compile Include="Reflection\Serialization\GrammarElementMatcher.cs" />
     <Compile Include="Reflection\Serialization\GrammarElementParser.cs" />
+    <Compile Include="Reflection\Serialization\IInjectedActionParameterTextMatcher.cs" />
     <Compile Include="Reflection\Serialization\IProductionTextMatcher.cs" />
     <Compile Include="Reflection\Serialization\IProductionParser.cs" />
     <Compile Include="Reflection\Serialization\ISymbolTextMatcher.cs" />

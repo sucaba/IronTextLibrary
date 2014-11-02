@@ -28,9 +28,15 @@ namespace IronText.Tests.Reflection.Utils
         }
 
         [Test]
-        public void QuotedComponentsIsParsedCorrectly()
+        public void QuotedComponentIsParsedCorrectly()
         {
             Assert.AreEqual(new [] { "'B'" }, GetComponents("A='B'"));
+        }
+
+        [Test]
+        public void PlaceholderComponentIsParsedCorrectly()
+        {
+            Assert.AreEqual(new [] { "?B" }, GetComponents("A=?B"));
         }
 
         [Test]

@@ -97,6 +97,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ResolutionOfProductionDuplicates.feature</DependentUpon>
     </Compile>
+    <Compile Include="Reflection\Serialization\InjectedActionParameterTextMatcher.cs" />
+    <Compile Include="Reflection\Serialization\SymbolTextMatcherTest.cs" />
+    <Compile Include="Reflection\Serialization\ProductionTextMatcherTest.cs" />
     <Compile Include="Reflection\SymbolPropertyTest.cs" />
     <Compile Include="Reflection\Transformations\DetectRecursiveSymbols.feature.cs">
       <AutoGen>True</AutoGen>

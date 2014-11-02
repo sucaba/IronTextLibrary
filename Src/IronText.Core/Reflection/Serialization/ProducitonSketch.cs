@@ -107,12 +107,12 @@ namespace IronText.Reflection
                 return result;
             }
 
-            return ParseSymbol(text, ref pos, end);
+            return ParseName(text, ref pos, end);
         }
 
         private static ProductionSketch ParseProduction(string text, ref int pos, int end)
         {
-            string outcome = ParseSymbol(text, ref pos, end);
+            string outcome = ParseName(text, ref pos, end);
             if (outcome == null)
             {
                 var msg = string.Format("error({0}): Unable to parse symbol.", pos + 1);
@@ -166,10 +166,10 @@ namespace IronText.Reflection
             ++pos;
         }
 
-        private static string ParseSymbol(string text, ref int pos, int end)
+        private static string ParseName(string text, ref int pos, int end)
         {
             int start = pos;
-            while (pos != end && (char.IsLetterOrDigit(text[pos]) || "'$_<>-[]".Contains(text[pos])))
+            while (pos != end && (char.IsLetterOrDigit(text[pos]) || "?'$_<>-[]".Contains(text[pos])))
             {
                 ++pos;
             }

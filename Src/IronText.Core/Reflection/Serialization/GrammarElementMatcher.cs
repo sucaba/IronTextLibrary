@@ -6,7 +6,10 @@ using IronText.Misc;
 
 namespace IronText.Reflection
 {
-    class GrammarElementMatcher : ISymbolTextMatcher, IProductionTextMatcher
+    class GrammarElementMatcher 
+        : ISymbolTextMatcher
+        , IProductionTextMatcher
+        , IInjectedActionParameterTextMatcher
     {
         public bool MatchSymbol(Symbol symbol, string text)
         {
@@ -37,14 +40,27 @@ namespace IronText.Reflection
             return result;
         }
 
+        public bool Match(InjectedActionParameter p, string text)
+        {
+            int len = p.Name.Length;
+            if (len + 1 != text.Length)
+            {
+                return false;
+            }
+
+            return text.Length != 0 
+                && text[0] == '?' 
+                && 0 == string.Compare(p.Name, 0, text, 1, len);
+        }
+
         private bool MatchComponents(Production production, IEnumerable<object> components)
         {
             bool result = production.ChildComponents.Length == components.Count()
-                       && Enumerable.Zip(production.ChildComponents, components, MatchProductionComponent).All(s => s);
+                       && Enumerable.Zip(production.ChildComponents, components, MatchComponent).All(s => s);
             return result;
         }
 
-        private bool MatchProductionComponent(IProductionComponent component, object sketchComp)
+        private bool MatchComponent(IProductionComponent component, object sketchComp)
         {
             Symbol     symbol;
             Production prod;
