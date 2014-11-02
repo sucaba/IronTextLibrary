@@ -19,9 +19,21 @@ namespace IronText.Tests.Reflection.Serialization
         }
 
         [Test]
-        public void SymbolMatch()
+        public void PositiveMatchTest()
         {
             Assert.IsTrue(sut.MatchSymbol(new Symbol("foo"), "foo"));
+        }
+
+        [Test]
+        public void EmptyNameMatchTest()
+        {
+            Assert.IsTrue(sut.MatchSymbol(new Symbol(""), ""));
+        }
+
+        [Test]
+        public void NegativeMatchTest()
+        {
+            Assert.IsFalse(sut.MatchSymbol(new Symbol("?foo"), "?foo"));
         }
     }
 }

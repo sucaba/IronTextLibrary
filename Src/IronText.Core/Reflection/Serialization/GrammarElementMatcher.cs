@@ -13,7 +13,7 @@ namespace IronText.Reflection
     {
         public bool MatchSymbol(Symbol symbol, string text)
         {
-            return symbol.Name == text;
+            return symbol.Name == text && (text.Length == 0 || text[0] != '?');
         }
 
         public bool MatchProduction(Production production, string text)

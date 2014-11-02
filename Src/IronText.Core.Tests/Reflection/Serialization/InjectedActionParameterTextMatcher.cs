@@ -19,9 +19,15 @@ namespace IronText.Tests.Reflection.Serialization
         }
 
         [Test]
-        public void InjecttedActionParametterMatch()
+        public void PositiveMatchTest()
         {
             Assert.IsTrue(sut.Match(new InjectedActionParameter("foo"), "?foo"));
+        }
+
+        [Test]
+        public void NegativeMatchTest()
+        {
+            Assert.IsFalse(sut.Match(new InjectedActionParameter("foo"), "foo"));
         }
     }
 }
