@@ -1,8 +1,7 @@
-﻿using System;
+﻿using IronText.Misc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using IronText.Misc;
 
 namespace IronText.Reflection
 {

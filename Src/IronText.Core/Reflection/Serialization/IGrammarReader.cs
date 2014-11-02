@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using IronText.Logging;
-using IronText.Reflection.Reporting;
+﻿using IronText.Logging;
 
 namespace IronText.Reflection
 {
