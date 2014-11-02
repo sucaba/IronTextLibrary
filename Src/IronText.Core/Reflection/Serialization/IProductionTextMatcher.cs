@@ -7,10 +7,10 @@ namespace IronText.Reflection
 {
     internal interface IProductionTextMatcher
     {
-        bool MatchProduction(Production production, ProductionSketch sketch);
+        bool Match(Production production, ProductionSketch sketch);
 
-        bool MatchProduction(Production production, string text);
+        bool Match(Production production, string text);
 
-        bool MatchProduction(Production p, string outcome, IEnumerable<string> pattern);
+        bool Match(Production p, string outcome, IEnumerable<string> pattern);
     }
 }

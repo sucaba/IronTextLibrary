@@ -2,6 +2,6 @@
 {
     internal interface ISymbolTextMatcher
     {
-        bool MatchSymbol(Symbol symbol, string text);
+        bool Match(Symbol symbol, string text);
     }
 }

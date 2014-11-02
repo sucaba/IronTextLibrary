@@ -37,7 +37,7 @@ namespace IronText.Reflection
             Production result;
 
             var matcher = DR.Resolve<IProductionTextMatcher>();
-            result = this.FirstOrDefault(p => matcher.MatchProduction(p, outcome, pattern));
+            result = this.FirstOrDefault(p => matcher.Match(p, outcome, pattern));
             if (result == null)
             {
                 var parser = DR.Resolve<IProductionParser>();
@@ -102,7 +102,7 @@ namespace IronText.Reflection
         {
             var matcher = DR.Resolve<IProductionTextMatcher>();
 
-            var result = this.FirstOrDefault(p => matcher.MatchProduction(p, sketch));
+            var result = this.FirstOrDefault(p => matcher.Match(p, sketch));
             return result;
         }
     }

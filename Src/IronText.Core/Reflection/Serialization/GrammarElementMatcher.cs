@@ -11,25 +11,25 @@ namespace IronText.Reflection
         , IProductionTextMatcher
         , IInjectedActionParameterTextMatcher
     {
-        public bool MatchSymbol(Symbol symbol, string text)
+        public bool Match(Symbol symbol, string text)
         {
             return symbol.Name == text && (text.Length == 0 || text[0] != '?');
         }
 
-        public bool MatchProduction(Production production, string text)
+        public bool Match(Production production, string text)
         {
             var sketch = ProductionSketch.Parse(text);
-            return MatchProduction(production, sketch);
+            return Match(production, sketch);
         }
-        public bool MatchProduction(Production production, string outcome, IEnumerable<string> pattern)
+        public bool Match(Production production, string outcome, IEnumerable<string> pattern)
         {
-            bool result = MatchSymbol(production.Outcome, outcome)
+            bool result = Match(production.Outcome, outcome)
                        && MatchComponents(production, pattern);
 
             return result;
         }
 
-        public bool MatchProduction(Production production, ProductionSketch sketch)
+        public bool Match(Production production, ProductionSketch sketch)
         {
             if (sketch == null || sketch.Outcome != production.Outcome.Name)
             {
@@ -67,7 +67,7 @@ namespace IronText.Reflection
             switch (component.Match(out symbol, out prod))
             {
                 case 0: return symbol.Name == (sketchComp as string); 
-                case 1: return MatchProduction(prod, sketchComp as ProductionSketch);
+                case 1: return Match(prod, sketchComp as ProductionSketch);
                 default:
                     throw new ArgumentException("component");
             }

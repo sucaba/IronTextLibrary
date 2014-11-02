@@ -39,7 +39,7 @@ namespace IronText.Reflection
 
             var matcher = DR.Resolve<ISymbolTextMatcher>();
 
-            var found = this.FirstOrDefault(s => matcher.MatchSymbol(s, symbolName));
+            var found = this.FirstOrDefault(s => matcher.Match(s, symbolName));
             if (found == null)
             {
                 if (!createMissing)

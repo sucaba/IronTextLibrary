@@ -21,19 +21,19 @@ namespace IronText.Tests.Reflection.Serialization
         [Test]
         public void PositiveMatchTest()
         {
-            Assert.IsTrue(sut.MatchSymbol(new Symbol("foo"), "foo"));
+            Assert.IsTrue(sut.Match(new Symbol("foo"), "foo"));
         }
 
         [Test]
         public void EmptyNameMatchTest()
         {
-            Assert.IsTrue(sut.MatchSymbol(new Symbol(""), ""));
+            Assert.IsTrue(sut.Match(new Symbol(""), ""));
         }
 
         [Test]
         public void NegativeMatchTest()
         {
-            Assert.IsFalse(sut.MatchSymbol(new Symbol("?foo"), "?foo"));
+            Assert.IsFalse(sut.Match(new Symbol("?foo"), "?foo"));
         }
     }
 }
