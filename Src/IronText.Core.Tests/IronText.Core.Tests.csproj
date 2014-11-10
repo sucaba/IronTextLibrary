@@ -92,6 +92,7 @@
     <Compile Include="Algorithm\UnicodeFrequencyTest.cs" />
     <Compile Include="Collections\IndexedCollectionTest.cs" />
     <Compile Include="Lib\IL\Plugins\DataStorageTest.cs" />
+    <Compile Include="Reflection\ProductionSemanticActionTest.cs" />
     <Compile Include="Reflection\ResolutionOfProductionDuplicates.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

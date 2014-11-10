@@ -143,6 +143,7 @@
     <Compile Include="Reflection\InheritedProperty.cs" />
     <Compile Include="Reflection\InheritedPropertyCollection.cs" />
     <Compile Include="Reflection\InjectedActionParameter.cs" />
+    <Compile Include="Reflection\ISymbolProperty.cs" />
     <Compile Include="Reflection\ITerminal.cs" />
     <Compile Include="Reflection\Indexing\GrammarIndexer.cs" />
     <Compile Include="Reflection\Indexing\IGrammarIndexer.cs" />
@@ -151,6 +152,10 @@
     <Compile Include="Reflection\Comparers\ProductionIndexComparer.cs" />
     <Compile Include="Reflection\Reporting\ParserDotItem.cs" />
     <Compile Include="Reflection\Reporting\ISemanticBinding.cs" />
+    <Compile Include="Reflection\SemanticActionCollection.cs" />
+    <Compile Include="Reflection\Semantics\CopyOutToOutSemanticAction.cs" />
+    <Compile Include="Reflection\Semantics\SemanticAction.cs" />
+    <Compile Include="Reflection\Serialization\DotExpression.cs" />
     <Compile Include="Reflection\Serialization\GrammarElementMatcher.cs" />
     <Compile Include="Reflection\Serialization\IAddOnlyCollection.cs" />
     <Compile Include="Reflection\Serialization\INameResolver.cs" />

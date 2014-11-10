@@ -25,18 +25,9 @@ namespace IronText.Reflection
         /// <returns><see cref="SymbolProperty"/> instance</returns>
         public SymbolProperty Add(string dotExpression)
         {
-            if (dotExpression == null)
-            {
-                throw new ArgumentNullException("dotExpression");
-            }
-
-            string[] parts = dotExpression.Split('.');
-            if (parts.Length != 2)
-            {
-                throw new ArgumentException("Invalid dot expression. Expected format is '<symbol-name>.<property>'.", "dotExpression");
-            }
+            string[] parts = DotExpression.Parse(dotExpression);
             
-            var result = new SymbolProperty(Scope.Symbols.ByName(parts[0].Trim(), createMissing: true), parts[1].Trim());
+            var result = new SymbolProperty(Scope.Symbols.ByName(parts[0], createMissing: true), parts[1]);
             Add(result);
             return result;
         }

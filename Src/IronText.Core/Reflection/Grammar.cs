@@ -60,8 +60,9 @@ namespace IronText.Reflection
                 symbol.IsPredefined = true;
             }
 
-            this.SymbolProperties = new SymbolPropertyCollection(this);
+            this.SymbolProperties    = new SymbolPropertyCollection(this);
             this.InheritedProperties = new InheritedPropertyCollection(this);
+            this.SemanticActions     = new SemanticActionCollection(this);
         }
 
         private IDependencyResolver DR { get {  return this; } }
@@ -102,9 +103,11 @@ namespace IronText.Reflection
 
         public ReportCollection     Reports             { get { return _reports; } }
 
-        public SymbolPropertyCollection SymbolProperties { get; private set; }
+        public SymbolPropertyCollection      SymbolProperties { get; private set; }
 
         internal InheritedPropertyCollection InheritedProperties { get; private set; }
+
+        internal SemanticActionCollection    SemanticActions { get; private set; }
 
         public void BuildIndexes()
         {

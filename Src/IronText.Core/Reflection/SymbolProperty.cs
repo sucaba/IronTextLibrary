@@ -10,7 +10,7 @@ namespace IronText.Reflection
     /// Definition of runtime property of particular symbol (AKA Synthesized Attribute).
     /// </summary>
     [Serializable]
-    public class SymbolProperty : IndexableObject<IGrammarScope>
+    public class SymbolProperty : IndexableObject<IGrammarScope>, ISymbolProperty
     {
         public SymbolProperty(Symbol symbol, string name)
         {

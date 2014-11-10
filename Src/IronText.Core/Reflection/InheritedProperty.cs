@@ -11,7 +11,7 @@ namespace IronText.Reflection
     /// before symbol even appear in stack.
     /// </remarks>
     [Serializable]
-    internal class InheritedProperty : IndexableObject<IGrammarScope>
+    internal class InheritedProperty : IndexableObject<IGrammarScope>, ISymbolProperty
     {
         public InheritedProperty(Symbol symbol, string name)
         {
