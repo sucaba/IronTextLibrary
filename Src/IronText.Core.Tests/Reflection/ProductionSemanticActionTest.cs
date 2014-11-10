@@ -23,6 +23,8 @@ namespace IronText.Tests.Reflection
             };
 
             grammar.SemanticActions.Add("S = X", "S?fromProp", "X.toProp");
+
+            Assert.AreSame(grammar.Productions.Find("S = X"), grammar.SemanticActions.Single().Production);
         }
     }
 }

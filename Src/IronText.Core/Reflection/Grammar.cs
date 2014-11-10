@@ -117,6 +117,7 @@ namespace IronText.Reflection
             Mergers.BuildIndexes();
             SymbolProperties.BuildIndexes();
             InheritedProperties.BuildIndexes();
+            SemanticActions.BuildIndexes();
         }
 
         public override string ToString()
