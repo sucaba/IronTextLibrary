@@ -69,11 +69,11 @@ namespace IronText.Runtime
 
         public ActionNode CreateStart()
         {
-            SListOfInhProp inh = null;
+            PropertyValueNode inh = null;
             foreach (var pair in globals)
             {
                 int inhIndex = grammar.GetStartInheritedPropertyIndex(pair.Key);
-                inh = new SListOfInhProp { InhIndex = inhIndex, Value = pair.Value, Next = inh };
+                new PropertyValueNode(inhIndex, pair.Value).SetNext(inh);
             }
 
             return new ActionNode(0, null, Loc.Unknown, HLoc.Unknown, inh);

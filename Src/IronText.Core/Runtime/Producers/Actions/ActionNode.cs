@@ -1,4 +1,5 @@
-﻿using IronText.Logging;
+﻿using IronText.Collections;
+using IronText.Logging;
 
 namespace IronText.Runtime
 {
@@ -10,26 +11,41 @@ namespace IronText.Runtime
         public readonly HLoc   HLocation;
 
         /// <summary>
-        /// Inherited properties of the state create after shifting on <see cref="Token"/>.
+        /// Inherited properties of a state (union of inherited properties of all tokens following this state).
         /// </summary>
-        public readonly SListOfInhProp InheritedProperties;
+        public readonly PropertyValueNode StateProperties;
 
-        public ActionNode(int token, object value, Loc loc, HLoc hLoc, SListOfInhProp inh = null)
+        /// <summary>
+        /// Synth. Properties of a token
+        /// </summary>
+        public PropertyValueNode TokenProperties { get; private set; }
+
+        public ActionNode(int token, object value, Loc loc, HLoc hLoc, PropertyValueNode stateProperties = null)
         {
-            this.Token      = token;
-            this.Value      = value;
-            this.Location   = loc;
-            this.HLocation  = hLoc;
-            this.InheritedProperties = inh;
+            this.Token           = token;
+            this.Value           = value;
+            this.Location        = loc;
+            this.HLocation       = hLoc;
+            this.StateProperties = stateProperties;
+        }
+
+        public void SetTokenProperty(int propertyIndex, object value)
+        {
+            TokenProperties = new PropertyValueNode(propertyIndex, value).SetNext(TokenProperties);
         }
     }
 
-    public class SListOfInhProp
+    public class PropertyValueNode : SListNode<PropertyValueNode>
     {
-        public SListOfInhProp Next     { get; set; }
+        public PropertyValueNode(int propIndex, object value)
+        {
+            this.PropertyIndex = propIndex;
+            this.Value = value;
+        }
 
-        public int            InhIndex { get; set; }
+        public int    PropertyIndex { get; private set; }
 
-        public object         Value    { get; set; }
+        public object Value         { get; private set; }
     }
+
 }
