@@ -9,48 +9,47 @@ using System.Text;
 namespace IronText.Tests.Reflection.Serialization
 {
     [TestFixture]
-    public class ProductionNameResolverTest
+    public class ProductionResolverTest
     {
-        private IProductionNameResolver sut;
-        private Mock<INameResolver<Symbol>> symbolNameResolverMock;
+        private IProductionResolver sut;
+        private Mock<ISymbolResolver> symbolNameResolverMock;
         private Mock<IAddOnlyCollection<Production>> collectionMock;
         private Mock<IProductionTextMatcher> matcherMock;
 
         [SetUp]
         public void SetUp()
         {
-            this.symbolNameResolverMock = new Mock<INameResolver<Symbol>>(MockBehavior.Strict); 
+            this.symbolNameResolverMock = new Mock<ISymbolResolver>(MockBehavior.Strict); 
             this.collectionMock         = new Mock<IAddOnlyCollection<Production>>(MockBehavior.Strict); 
             this.matcherMock            = new Mock<IProductionTextMatcher>(MockBehavior.Strict);
-            this.sut                    = new ProductionNameResolver(symbolNameResolverMock.Object, collectionMock.Object, matcherMock.Object);
+            this.sut                    = new ProductionResolver(symbolNameResolverMock.Object, collectionMock.Object, matcherMock.Object);
         }
 
         [Test]
-        public void CreateMissingProductionTest()
+        public void CreateInstanceTest()
         {
             symbolNameResolverMock
-                .Setup(sr => sr.Resolve("A", true))
+                .Setup(sr => sr.Resolve("A"))
                 .Returns(new Symbol("A"));
             symbolNameResolverMock
-                .Setup(sr => sr.Resolve("B", true))
+                .Setup(sr => sr.Resolve("B"))
                 .Returns(new Symbol("B"));
             symbolNameResolverMock
-                .Setup(sr => sr.Resolve("C", true))
+                .Setup(sr => sr.Resolve("C"))
                 .Returns(new Symbol("C"));
             collectionMock
-                .Setup(coll => coll.GetEnumerator())
-                .Returns((IEnumerator<Production>)new List<Production>().GetEnumerator());
-            collectionMock.Setup(coll => coll.Add(It.IsAny<Production>()));
-            var prod = sut.Resolve("A = B C", createMissing: true);
+                .Setup(c => c.Add(It.IsAny<Production>()));
+            var prod = sut.Create("A = B C");
             Assert.IsNotNull(prod);
             Assert.AreEqual("A", prod.Outcome.Name);
             symbolNameResolverMock.VerifyAll();
-            collectionMock.VerifyAll();
+            collectionMock
+                .Verify(c => c.Add(prod));
             matcherMock.VerifyAll();
         }
 
         [Test]
-        public void FindExistingProductionTest([Values(false, true)]bool createMissing)
+        public void FindExistingProductionTest()
         {
             var existingProduction = new Production(new Symbol("A"), new [] { new Symbol("B"), new Symbol("C") });
 
@@ -59,9 +58,22 @@ namespace IronText.Tests.Reflection.Serialization
                 .Returns(true);
             collectionMock
                 .Setup(coll => coll.GetEnumerator())
-                .Returns((IEnumerator<Production>)new List<Production> { existingProduction }.GetEnumerator());
-            var prod = sut.Resolve("A = B C", createMissing: createMissing);
+                .Returns(new List<Production> { existingProduction }.GetEnumerator());
+            var prod = sut.Find("A = B C");
             Assert.AreSame(existingProduction, prod);
+            symbolNameResolverMock.VerifyAll();
+            collectionMock.VerifyAll();
+            matcherMock.VerifyAll();
+        }
+
+        [Test]
+        public void FindMissingProductionTest()
+        {
+            collectionMock
+                .Setup(coll => coll.GetEnumerator())
+                .Returns(new List<Production>().GetEnumerator());
+            var prod = sut.Find("A = B C");
+            Assert.IsNull(prod);
             symbolNameResolverMock.VerifyAll();
             collectionMock.VerifyAll();
             matcherMock.VerifyAll();

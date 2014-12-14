@@ -6,7 +6,7 @@ using System;
 namespace IronText.Reflection
 {
     [Serializable]
-    public class SymbolCollection : GrammarEntityCollection<Symbol, IGrammarScope>, INameResolver<Symbol>
+    public class SymbolCollection : GrammarEntityCollection<Symbol, IGrammarScope>, ISymbolResolver
     {
         public SymbolCollection(IGrammarScope context)
             : base(context)
@@ -54,9 +54,19 @@ namespace IronText.Reflection
             return found;
         }
 
-        Symbol INameResolver<Symbol>.Resolve(string name, bool createMissing)
+        Symbol IReferenceResolver<Symbol,string>.Resolve(string name)
         {
-            return ByName(name, createMissing);
+            return ByName(name, true);
+        }
+
+        Symbol IReferenceResolver<Symbol, string>.Find(string name)
+        {
+            return ByName(name, false);
+        }
+
+        Symbol IReferenceResolver<Symbol, string>.Create(string name)
+        {
+            return Add(name);
         }
     }
 }

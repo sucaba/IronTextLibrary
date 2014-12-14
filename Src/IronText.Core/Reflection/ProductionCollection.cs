@@ -15,15 +15,20 @@ namespace IronText.Reflection
 
         public Production Add(string text)
         {
-            var resolver = DR.Resolve<IProductionNameResolver>();
-            var result = resolver.Resolve(text, createMissing: true);
+            var sketch = ProductionSketch.Parse(text);
+
+            var resolver = DR.Resolve<IProductionResolver>();
+            var result = resolver.Create(sketch);
+
             return result;
         }
 
         public Production Add(string outcome, IEnumerable<string> pattern)
         {
-            var resolver = DR.Resolve<IProductionNameResolver>();
-            var result = resolver.Resolve(outcome, pattern, createMissing: true);
+            var sketch = new ProductionSketch(outcome, pattern);
+
+            var resolver = DR.Resolve<IProductionResolver>();
+            var result = resolver.Create(sketch);
             return result;
         }
 
@@ -47,9 +52,9 @@ namespace IronText.Reflection
         
         private Production Find(ProductionSketch sketch)
         {
-            var resolver = DR.Resolve<IProductionNameResolver>();
+            var resolver = DR.Resolve<IProductionResolver>();
 
-            var result = resolver.Resolve(sketch, createMissing: false);
+            var result = resolver.Find(sketch);
             return result;
         }
 

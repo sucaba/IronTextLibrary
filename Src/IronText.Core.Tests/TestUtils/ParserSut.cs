@@ -4,6 +4,7 @@ using IronText.MetadataCompiler;
 using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Runtime;
+using IronText.Runtime.Producers.Actions;
 using IronText.Tests.Algorithm;
 using System;
 using System.Collections.Generic;
@@ -118,18 +119,14 @@ namespace IronText.Tests.TestUtils
                 }
 
                 object[] args = new object[action.Method.GetParameters().Length];
-                for (int i = 0; i != args.Length; ++i)
-                {
-                    args[i] = parts[firstIndex + i].Value;
-                }
-
+                new SemanticArgumentBuilder(parts, firstIndex, args, lookback).FillSemanticParameters(prod);
                 action.DynamicInvoke(args);
             }
 
             return result;
         }
 
-        private static object TermFactory(object context, int action, string text)
+                private static object TermFactory(object context, int action, string text)
         {
             return null;
         }

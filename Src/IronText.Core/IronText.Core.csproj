@@ -145,6 +145,7 @@
     <Compile Include="Reflection\InheritedPropertyCollection.cs" />
     <Compile Include="Reflection\InjectedActionParameter.cs" />
     <Compile Include="Reflection\ISymbolProperty.cs" />
+    <Compile Include="Reflection\Serialization\ISymbolResolver.cs" />
     <Compile Include="Reflection\ITerminal.cs" />
     <Compile Include="Reflection\Indexing\GrammarIndexer.cs" />
     <Compile Include="Reflection\Indexing\IGrammarIndexer.cs" />
@@ -154,16 +155,15 @@
     <Compile Include="Reflection\Reporting\ParserDotItem.cs" />
     <Compile Include="Reflection\Reporting\ISemanticBinding.cs" />
     <Compile Include="Reflection\SemanticActionCollection.cs" />
-    <Compile Include="Reflection\Semantics\CopyOutToOutSemanticAction.cs" />
     <Compile Include="Reflection\Semantics\SemanticAction.cs" />
     <Compile Include="Reflection\Serialization\DotExpression.cs" />
     <Compile Include="Reflection\Serialization\GrammarElementMatcher.cs" />
     <Compile Include="Reflection\Serialization\IAddOnlyCollection.cs" />
-    <Compile Include="Reflection\Serialization\INameResolver.cs" />
-    <Compile Include="Reflection\Serialization\ProductionNameResolver.cs" />
+    <Compile Include="Reflection\Serialization\IReferenceResolver.cs" />
+    <Compile Include="Reflection\Serialization\ProductionResolver.cs" />
     <Compile Include="Reflection\Serialization\IInjectedActionParameterTextMatcher.cs" />
     <Compile Include="Reflection\Serialization\IProductionTextMatcher.cs" />
-    <Compile Include="Reflection\Serialization\IProductionNameResolver.cs" />
+    <Compile Include="Reflection\Serialization\IProductionResolver.cs" />
     <Compile Include="Reflection\Serialization\ISymbolTextMatcher.cs" />
     <Compile Include="Reflection\SymbolProperty.cs" />
     <Compile Include="Reflection\SymbolPropertyCollection.cs" />
@@ -241,6 +241,7 @@
     <Compile Include="Reflection\Merger.cs" />
     <Compile Include="Reflection\MergerCollection.cs" />
     <Compile Include="Runtime\Producers\Actions\ActionNode.cs" />
+    <Compile Include="Runtime\Producers\Actions\SemanticArgumentBuilder.cs" />
     <Compile Include="Runtime\Tables\NullableFirstTables.cs" />
     <Compile Include="Reflection\InlineProduction.cs" />
     <Compile Include="Reflection\ProductionCollection.cs" />

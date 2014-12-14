@@ -34,18 +34,13 @@ namespace IronText.Runtime
             Dictionary<string,object> globals)
             : base(grammar, context, grammarAction)
         {
-            if (globals == null)
-            {
-                throw new ArgumentNullException("globals");
-            }
-
             this.grammar        = grammar;
             this.context        = context;
             this.grammarAction  = grammarAction;
             this.termFactory    = termFactory;
             this.merge          = merge;
             this.ruleArgBuffer  = new object[grammar.MaxRuleSize];
-            this.globals        = globals;
+            this.globals        = globals ?? new Dictionary<string,object>();
 
             if (context != null)
             {
@@ -72,8 +67,7 @@ namespace IronText.Runtime
             PropertyValueNode inh = null;
             foreach (var pair in globals)
             {
-                int inhIndex = grammar.GetStartInheritedPropertyIndex(pair.Key);
-                new PropertyValueNode(inhIndex, pair.Value).SetNext(inh);
+                inh = new PropertyValueNode(pair.Key, pair.Value).SetNext(inh);
             }
 
             return new ActionNode(0, null, Loc.Unknown, HLoc.Unknown, inh);

@@ -64,7 +64,7 @@ namespace IronText.Misc
             val3 = self as T3;
             if (val3 != null)
             {
-                return 1;
+                return 2;
             }
             
             return -1;

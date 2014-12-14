@@ -8,7 +8,7 @@ namespace IronText.Reflection
 {
     internal class DotExpression
     {
-        private static Regex regex = new Regex(@"\s*([^?.]+)\s*([?.])\s*([^?.]+)\s*", RegexOptions.Compiled);
+        private static Regex regex = new Regex(@"\s*([^?.\s]+)\s*([?.])\s*([^?.\s]+)\s*", RegexOptions.Compiled);
 
         public static string[] Parse(string expr)
         {

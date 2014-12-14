@@ -28,13 +28,13 @@ namespace IronText.Tests.Reflection.Transformations
         [Given(@"used symbol '([^']+)'")]
         public void GivenUsedSymbol(string symbolName)
         {
-            GivenProduction(StartSymbolName, new [] { symbolName });
+            GivenProduction(StartSymbolName + " = " + symbolName);
         }
 
-        [Given(@"production '([^ =]+) =(.*)'")]
-        public void GivenProduction(string outcome, string[] pattern)
+        [Given(@"production '([^']+)'")]
+        public void GivenProduction(string productionText)
         {
-            grammar.Productions.Add(outcome, pattern);
+            grammar.Productions.Add(productionText);
         }
 
         [Given(@"symbol '(.*)'")]
@@ -115,12 +115,12 @@ namespace IronText.Tests.Reflection.Transformations
             grammar.RecursivelyEliminateEmptyProductions();
         }
 
-        [When(@"safe adding production '([^= ]+) =(.*)'")]
-        public void WhenAddingProduction(string outcome, string[] pattern)
+        [When(@"safe adding production '([^']+)'")]
+        public void WhenAddingProduction(string productionText)
         {
             try
             {
-                grammar.Productions.Add(outcome, pattern);
+                grammar.Productions.Add(productionText);
             }
             catch (AssertionException)
             {

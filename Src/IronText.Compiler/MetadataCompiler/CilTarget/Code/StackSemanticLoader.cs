@@ -104,7 +104,7 @@ namespace IronText.MetadataCompiler
                                         .Do(ldLookback)
                                         .Ldc_I4(lc.StackLookback)
                                         .Call((IStackLookback<ActionNode> lb, int backOffset)
-                                                => lb.GetValueAt(backOffset))
+                                                => lb.GetNodeAt(backOffset))
                                         .Ldfld((ActionNode msg) => msg.Value));
                                 il.Br(END);
                             }

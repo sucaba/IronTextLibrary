@@ -3,14 +3,14 @@ using System.Linq;
 
 namespace IronText.Reflection
 {
-    class ProductionNameResolver : IProductionNameResolver
+    class ProductionResolver : IProductionResolver
     {
-        private readonly INameResolver<Symbol>          symbolNameResolver;
+        private readonly ISymbolResolver          symbolNameResolver;
         private readonly IAddOnlyCollection<Production> collection;
         private readonly IProductionTextMatcher         matcher;
 
-        public ProductionNameResolver(
-            INameResolver<Symbol>   symbolNameResolver,
+        public ProductionResolver(
+            ISymbolResolver         symbolNameResolver,
             IAddOnlyCollection<Production> productions,
             IProductionTextMatcher  textMatcher)
         {
@@ -19,36 +19,30 @@ namespace IronText.Reflection
             this.matcher            = textMatcher;
         }
 
-        public Production Resolve(string text, bool createMissing)
-        {
-            var sketch = ProductionSketch.Parse(text);
-            return Resolve(sketch, createMissing);
-        }
-
-        public Production Resolve(string outcome, IEnumerable<string> components, bool createMissing)
-        {
-            var sketch = new ProductionSketch(outcome, components);
-            return Resolve(sketch, createMissing);
-        }
-
-        public Production Resolve(ProductionSketch sketch, bool createMissing)
+        public Production Find(ProductionSketch sketch)
         {
             Production result = collection.FirstOrDefault(p => matcher.Match(p, sketch));
-            if (result == null && createMissing)
-            {
-                result = CreateProduction(sketch);
-                collection.Add(result);
-            }
-
             return result;
+        }
+
+        public Production Create(ProductionSketch sketch)
+        {
+            var result = CreateInstance(sketch);
+            collection.Add(result);
+            return result;
+        }
+
+        public Production Resolve(ProductionSketch sketch)
+        {
+            return Find(sketch) ?? Create(sketch);
         }
 
         private Symbol ResolveSymbol(string name)
         {
-            return symbolNameResolver.Resolve(name, createMissing: true);
+            return symbolNameResolver.Resolve(name);
         }
 
-        private Production CreateProduction(ProductionSketch sketch)
+        private Production CreateInstance(ProductionSketch sketch)
         {
             Symbol outcomeSymbol = ResolveSymbol(sketch.Outcome);
             var components = sketch.Components.Select(CreateComponent).ToArray();
@@ -70,7 +64,7 @@ namespace IronText.Reflection
                 return ResolveSymbol(asString);
             }
 
-            var result = CreateProduction((ProductionSketch)sketchOrText);
+            var result = CreateInstance((ProductionSketch)sketchOrText);
             return result;
         }
 

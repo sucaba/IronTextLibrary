@@ -29,8 +29,9 @@ namespace IronText.Runtime
 
             var production = grammar.GetNullableProductions(nonTerm).First();
 
-            var args = new ActionNode[production.InputLength];
-            for (int i = 0; i != args.Length; ++i)
+            int len = production.InputLength;
+            var args = new ActionNode[len];
+            for (int i = 0; i != len; ++i)
             {
                 args[i] = InternalGetNullable(production.Input[i].Index, stackLookback);
             }

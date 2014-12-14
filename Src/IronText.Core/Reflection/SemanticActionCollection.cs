@@ -16,8 +16,8 @@ namespace IronText.Reflection
 
         internal SemanticAction Add(string productionText, string fromExpr, string toExpr)
         {
-            var resolver = DR.Resolve<IProductionNameResolver>();
-            var production = resolver.Resolve(productionText, createMissing: false);
+            var resolver = DR.Resolve<IProductionResolver>();
+            var production = resolver.Find(productionText);
             var from       = ParseProp(fromExpr);
             var to         = ParseProp(toExpr);
             var item       = SemanticAction.MakeCopyOutToOut(production, from, to);

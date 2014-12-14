@@ -7,6 +7,11 @@ namespace IronText.Reflection
 {
     internal class ProductionSketch
     {
+        public static implicit operator ProductionSketch(string text)
+        {
+            return Parse(text);
+        }
+
         public ProductionSketch(string outcome, IEnumerable<object> components)
             : this(outcome, components.ToArray())
         {

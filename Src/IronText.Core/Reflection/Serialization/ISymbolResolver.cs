@@ -5,8 +5,7 @@ using System.Text;
 
 namespace IronText.Reflection
 {
-    internal interface INameResolver<T>
+    internal interface ISymbolResolver : IReferenceResolver<Symbol, string>
     {
-        T Resolve(string name, bool createMissing = false);
     }
 }

@@ -9,10 +9,10 @@ namespace IronText.Runtime
         int GetParentState();
 
         /// <summary>
-        /// Gets semantic value at the prior stack state.
+        /// Gets syntax node at the prior stack state.
         /// </summary>
         /// <param name="backOffset">Lookback index starting from the 1 (1 stands for prior state transition)</param>
         /// <returns></returns>
-        T GetValueAt(int backOffset);
+        T GetNodeAt(int backOffset);
     }
 }

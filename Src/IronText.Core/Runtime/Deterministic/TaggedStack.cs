@@ -111,7 +111,7 @@ namespace IronText.Runtime
 
         public int GetParentState() { return tags[Start - 1]; }
 
-        public T GetValueAt(int backOffset)
+        public T GetNodeAt(int backOffset)
         {
             return data[Start - backOffset];
         }

@@ -15,19 +15,6 @@ namespace IronText.Reflection
             return symbol.Name == text && (text.Length == 0 || text[0] != '?');
         }
 
-        public bool Match(Production production, string text)
-        {
-            var sketch = ProductionSketch.Parse(text);
-            return Match(production, sketch);
-        }
-        public bool Match(Production production, string outcome, IEnumerable<string> pattern)
-        {
-            bool result = Match(production.Outcome, outcome)
-                       && MatchComponents(production, pattern);
-
-            return result;
-        }
-
         public bool Match(Production production, ProductionSketch sketch)
         {
             if (sketch == null || sketch.Outcome != production.Outcome.Name)

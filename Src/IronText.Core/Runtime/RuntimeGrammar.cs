@@ -84,18 +84,5 @@ namespace IronText.Runtime
         {
             return grammar.Symbols[token].Categories;
         }
-
-        public int GetStartInheritedPropertyIndex(string name)
-        {
-            var prop = grammar.InheritedProperties.FirstOrDefault(inh => inh.Name == name && inh.Symbol == grammar.Start);
-            if (prop == null)
-            {
-                string msg = string.Format("Inherited property '{0}' does not exist.", name);
-                throw new ArgumentException(msg, "name");
-            }
-
-            return prop.Index;
-        }
     }
-
 }
