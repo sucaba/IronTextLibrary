@@ -7,6 +7,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace IronText.Tests.Semantics
@@ -54,35 +55,37 @@ namespace IronText.Tests.Semantics
         {
             var grammar = new Grammar
             {
-                StartName = "S",
-                Productions =
-                {
-                    { "S",      new [] { "?val" } },
-                },
-                /*
-                Matchers = 
-                {
-                    { null, "blank+" }
-                },
-                */
-                Reports =
-                {
-                    new ScannerGraphReport("EclrGlobalsToInjectedParamsTest_Scanner.gv"),
-                    new ParserGraphReport("EclrGlobalsToInjectedParamsTest.gv"),
-                    new ParserStateMachineReport("EclrGlobalsToInjectedParamsTest.info")
-                }
+                StartName   = "S",
+                Productions = { "S = ?val" }
             };
 
-            var globalValProp = new InheritedProperty(grammar.Start, "val");
-            grammar.InheritedProperties.Add(globalValProp);
+            grammar.DefineGlobal("val");
 
             var sut = new ParserSut(grammar);
-            string expectedVal = "foo-bar";
-            object gotVal       = null;
-            sut.ProductionHooks.Add("S = ?val", new Func<object, object>(id => gotVal = id));
-            sut.Parse("", new Dictionary<string,object> { { globalValProp.Name, expectedVal } });
+            object expected = "foo-bar", got = null;
+            sut.ProductionHooks.Add("S = ?val", new Func<object, object>(id => got = id));
+            sut.Parse("", new Dictionary<string,object> { { "val", expected } });
 
-            Assert.AreEqual(expectedVal, gotVal);
+            Assert.AreEqual(expected, got);
+        }
+
+        [Test]
+        public void SymbolPropertyToInjectedParamsTest()
+        {
+            var grammar = new Grammar
+            {
+                StartName = "S",
+                Productions = { "S = X ?param", "X =" }
+            };
+
+            var sut = new ParserSut(grammar);
+            object expected = "foo-bar", got = null;
+            sut.ProductionHooks.Add("X = ", new Func<IDataContext, object>(data => { data.SetOutput("param", expected); return null; }));
+            sut.ProductionHooks.Add("S = X ?param", new Func<object, object, object>((x, val) => got = val));
+            sut.Parse("");
+
+            Assert.AreEqual(expected, got);
         }
     }
 }
+

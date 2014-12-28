@@ -109,6 +109,12 @@ namespace IronText.Reflection
 
         internal SemanticActionCollection    SemanticActions { get; private set; }
 
+        public void DefineGlobal(string name)
+        {
+            var globalValProp = new InheritedProperty(Start, name);
+            InheritedProperties.Add(globalValProp);
+        }
+
         public void BuildIndexes()
         {
             Symbols.BuildIndexes(PredefinedTokens.AugmentedStart);

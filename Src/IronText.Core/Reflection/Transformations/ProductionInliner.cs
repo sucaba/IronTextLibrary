@@ -19,12 +19,12 @@ namespace IronText.Reflection
         public Production Execute(Production source, int symbolPosition)
         {
             this.position = symbolPosition;
-            var result = (Production)VisitProduction(source);
+            var result = (Production)Visit(source);
             result.ExplicitPrecedence = source.ExplicitPrecedence;
             return result;
         }
 
-        public IProductionComponent VisitSymbol(Symbol symbol)
+        public IProductionComponent Visit(Symbol symbol)
         {
             IProductionComponent result;
 
@@ -42,7 +42,7 @@ namespace IronText.Reflection
             return result;
         }
 
-        public IProductionComponent VisitProduction(Production production)
+        public IProductionComponent Visit(Production production)
         {
             int count = production.ChildComponents.Length;
             var inlinedComponents = new IProductionComponent[count];
@@ -58,6 +58,11 @@ namespace IronText.Reflection
                 flags: production.Flags);
             result.Joint.AddAll(production.Joint);
             return result;
+        }
+
+        public IProductionComponent Visit(InjectedActionParameter param)
+        {
+            return param;
         }
     }
 }

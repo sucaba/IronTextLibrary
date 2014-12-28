@@ -3,6 +3,45 @@ using IronText.Logging;
 
 namespace IronText.Runtime
 {
+    public interface IDataContext
+    {
+        object GetOutput(string name);
+        void SetOutput(string name, object value);
+
+        object GetInput(string name, int occurrance = 0);
+    }
+
+    class DataContext : IDataContext
+    {
+        private readonly PropertyValueNode input;
+        private PropertyValueNode output;
+
+        public DataContext(PropertyValueNode input)
+        {
+            this.output = null;
+            this.input  = input;
+        }
+
+        public object GetOutput(string name)
+        {
+            object result;
+            output.TryGetValue(name, out result);
+            return result;
+        }
+
+        public void SetOutput(string name, object value)
+        {
+            this.output = output.SetNext(new PropertyValueNode(name, value));
+        }
+
+        public object GetInput(string name, int occurrance = 0)
+        {
+            object result;
+            input.TryGetValue(name, out result);
+            return result;
+        }
+    }
+
     public class ActionNode
     {
         public readonly int    Token;

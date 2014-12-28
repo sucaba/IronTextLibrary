@@ -7,6 +7,7 @@ using IronText.Runtime;
 using IronText.Runtime.Producers.Actions;
 using IronText.Tests.Algorithm;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -119,14 +120,28 @@ namespace IronText.Tests.TestUtils
                 }
 
                 object[] args = new object[action.Method.GetParameters().Length];
-                new SemanticArgumentBuilder(parts, firstIndex, args, lookback).FillSemanticParameters(prod);
+                bool hasDataContext = HasDataContext(action.Method);
+                int outputStartIndex = 0;
+                if (hasDataContext)
+                {
+                    outputStartIndex = 1;
+                    args[0] = null; // TODO
+                }
+
+                new SemanticArgumentBuilder(parts, firstIndex, args, outputStartIndex, lookback).FillSemanticParameters(prod);
                 action.DynamicInvoke(args);
             }
 
             return result;
         }
 
-                private static object TermFactory(object context, int action, string text)
+        private bool HasDataContext(System.Reflection.MethodInfo methodInfo)
+        {
+            var param = methodInfo.GetParameters().FirstOrDefault();
+            return param != null && param.ParameterType == typeof(IDataContext);
+        }
+
+        private static object TermFactory(object context, int action, string text)
         {
             return null;
         }

@@ -31,10 +31,12 @@ namespace IronText.Reflection
         {
             Symbol     symbol;
             Production production;
-            switch (self.Match(out symbol, out production))
+            InjectedActionParameter param;
+            switch (self.Match(out symbol, out production, out param))
             {
-                case 0: return visitor.VisitSymbol(symbol);
-                case 1: return visitor.VisitProduction(production);
+                case 0: return visitor.Visit(symbol);
+                case 1: return visitor.Visit(production);
+                case 2: return visitor.Visit(param);
             }
 
             throw new ArgumentException("self");
@@ -43,15 +45,19 @@ namespace IronText.Reflection
 
     public interface IProductionComponentVisitor
     {
-        void VisitSymbol(Symbol symbol);
+        void Visit(Symbol symbol);
 
-        void VisitProduction(Production production);
+        void Visit(Production production);
+
+        void Visit(InjectedActionParameter param);
     }
 
     public interface IProductionComponentVisitor<T>
     {
-        T VisitSymbol(Symbol symbol);
+        T Visit(Symbol symbol);
 
-        T VisitProduction(Production production);
+        T Visit(Production production);
+
+        T Visit(InjectedActionParameter param);
     }
 }

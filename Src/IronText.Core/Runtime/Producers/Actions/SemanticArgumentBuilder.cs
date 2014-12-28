@@ -20,13 +20,14 @@ namespace IronText.Runtime.Producers.Actions
             ActionNode[] nodes,
             int          firstIndex,
             object[]     output,
+            int          outputIndex,
             IStackLookback<ActionNode> lookback)
         {
             this.nodes        = nodes;
             this.firstIndex   = firstIndex;
             this.currentIndex = firstIndex;
             this.output       = output;
-            this.outputIndex  = 0;
+            this.outputIndex  = outputIndex;
             this.lookback     = lookback;
         }
 
