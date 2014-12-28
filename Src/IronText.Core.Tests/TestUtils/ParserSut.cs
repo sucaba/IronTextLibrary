@@ -51,6 +51,7 @@ namespace IronText.Tests.TestUtils
         {
             var logging   = ExceptionLogging.Instance;
             var rtGrammar = new RuntimeGrammar(grammar);
+
             var producer  = new ActionProducer(rtGrammar, null, ProductionAction, TermFactory, null, globals);
             IReceiver<Msg>   parser;
             if (data.IsDeterministic)
@@ -97,13 +98,7 @@ namespace IronText.Tests.TestUtils
 
         public Dictionary<string, Delegate> ProductionHooks { get; private set; }
 
-        private object ProductionAction(
-            int          productionIndex, // production being reduced
-            ActionNode[] parts,           // array containing path being reduced
-            int          firstIndex,      // starting index of the path being reduced
-            object       context,         // user provided context
-            IStackLookback<ActionNode> lookback    // access to the prior stack states and values
-            )
+        private object ProductionAction(ProductionActionArgs pargs)
         {
             object result = null;
 
@@ -113,7 +108,7 @@ namespace IronText.Tests.TestUtils
                 var action   = pair.Value;
 
                 var hookProd = grammar.Productions.Find(prodName);
-                var prod = grammar.Productions[productionIndex];
+                var prod = grammar.Productions[pargs.ProductionIndex];
                 if (hookProd != prod)
                 {
                     continue;
@@ -128,7 +123,7 @@ namespace IronText.Tests.TestUtils
                     args[0] = null; // TODO
                 }
 
-                new SemanticArgumentBuilder(parts, firstIndex, args, outputStartIndex, lookback).FillSemanticParameters(prod);
+                new SemanticArgumentBuilder(pargs, args, outputStartIndex).FillSemanticParameters(prod);
                 action.DynamicInvoke(args);
             }
 

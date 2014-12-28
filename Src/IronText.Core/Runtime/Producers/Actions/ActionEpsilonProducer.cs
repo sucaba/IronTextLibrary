@@ -36,7 +36,8 @@ namespace IronText.Runtime
                 args[i] = InternalGetNullable(production.Input[i].Index, stackLookback);
             }
 
-            var value = productionAction(production.Index, args, 0, context, stackLookback);
+            var pargs = new ProductionActionArgs(production.Index, args, 0, context, stackLookback);
+            var value = productionAction(pargs);
             return new ActionNode(nonTerm, value, Loc.Unknown, HLoc.Unknown);
         }
     }

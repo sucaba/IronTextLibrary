@@ -26,6 +26,7 @@ namespace IronText.MetadataCompiler
                             .Named(methodName)
                             .BeginArgs();
 
+            Def<Args> pargs         = args.Args.Generate("pargs"); 
             Def<Args> ruleId        = args.Args.Generate("ruleId");
             Def<Args> ruleArgs      = args.Args.Generate("ruleArgs");
             Def<Args> argsStart     = args.Args.Generate("argsStart");
@@ -33,11 +34,7 @@ namespace IronText.MetadataCompiler
             Def<Args> stackLookback = args.Args.Generate("startLookback");
 
             var emit = args
-                    .Argument(context.Types.Int32, ruleId)
-                    .Argument(context.Types.Import(typeof(ActionNode[])), ruleArgs)
-                    .Argument(context.Types.Int32, argsStart)
-                    .Argument(context.Types.Object, ctx)
-                    .Argument(context.Types.Import(typeof(IStackLookback<ActionNode>)), stackLookback)
+                    .Argument(context.Types.Import(typeof(ProductionActionArgs)), pargs)
                     .EndArgs()
 
                 .BeginBody();
@@ -45,41 +42,29 @@ namespace IronText.MetadataCompiler
             BuildBody(
                 emit, 
                 data, 
-                ruleId.GetRef(),
-                ruleArgs.GetRef(),
-                argsStart.GetRef(),
-                ctx.GetRef(),
-                stackLookback.GetRef());
+                pargs.GetRef());
 
             return emit.EndBody();
         }
 
         public void BuildBody(EmitSyntax emit, LanguageData data, Ref<Args>[] args)
         {
-            BuildBody(
-                emit,
-                data,
-                ruleId:     args[0],
-                ruleArgs:   args[1],
-                argsStart:  args[2],
-                ctx:        args[3],
-                lookbackStart: args[4]);
+            BuildBody(emit, data, pargs: args[0]);
         }
 
-        private void BuildBody(
-            EmitSyntax emit, 
-            LanguageData data,
-            Ref<Args> ruleId,
-            Ref<Args> ruleArgs,
-            Ref<Args> argsStart,
-            Ref<Args> ctx,
-            Ref<Args> lookbackStart)
+        private void BuildBody(EmitSyntax emit, LanguageData data, Ref<Args> pargs)
         {
             var varStack = new VarsStack(Fluent.Create(emit));
 
             Def<Labels> returnLabel = emit.Labels.Generate();
 
-            var globalSemanticCode = new GlobalSemanticLoader(emit, il => il.Ldarg(ctx), data.Grammar.Globals);
+            Pipe<EmitSyntax> ldCtx = il => il
+                                        .Ldarg(pargs)
+                                        .Ldprop((ProductionActionArgs a) => a.Context);
+            Pipe<EmitSyntax> ldRuleId = il => il
+                                        .Ldarg(pargs)
+                                        .Ldprop((ProductionActionArgs a) => a.ProductionIndex);
+            var globalSemanticCode = new GlobalSemanticLoader(emit, ldCtx, data.Grammar.Globals);
 
             var defaultLabel = emit.Labels.Generate();
             var endWithSingleResultLabel = emit.Labels.Generate();
@@ -93,7 +78,7 @@ namespace IronText.MetadataCompiler
             }
 
             emit
-                .Do(il => il.Ldarg(ruleId))
+                .Do(ldRuleId)
                 .Switch(jumpTable)
                 .Br(defaultLabel.GetRef());
 
@@ -106,7 +91,7 @@ namespace IronText.MetadataCompiler
 
                 emit.Label(jumpTable[prod.Index].Def);
 
-                CompileProduction(emit, data, ruleArgs, argsStart, lookbackStart, returnLabel, globalSemanticCode, prod, varStack);
+                CompileProduction(emit, data, pargs, returnLabel, globalSemanticCode, prod, varStack);
                 varStack.LdLastSlot();
                 varStack.Pop(1);
 
@@ -124,49 +109,32 @@ namespace IronText.MetadataCompiler
         private static void CompileProduction(
             EmitSyntax      emit,
             LanguageData    data,
-            Ref<Args>       ruleArgs,
-            Ref<Args>       argsStart,
-            Ref<Args>       lookbackStart,
+            Ref<Args>       pargs,
             Def<Labels>     returnLabel,
             ISemanticLoader globals,
             Production      prod,
             VarsStack       varsStack)
         {
+            Pipe<EmitSyntax> ldLookback = il => il
+                                        .Ldarg(pargs)
+                                        .Ldprop((ProductionActionArgs a) => a.Lookback);
             var locals = new StackSemanticLoader(
                 globals,
                 emit,
-                il => il.Ldarg(lookbackStart),
+                ldLookback,
                 data.SemanticBindings);
+
+            Func<int,Pipe<EmitSyntax>> ldSyntaxArg = i => il => il
+                                        .Ldarg(pargs)
+                                        .Ldc_I4(i)
+                                        .Call((ProductionActionArgs _0, int _1) => _0.GetSyntaxArg(_1));
 
             int varsStackStart = varsStack.Count;
             int index = 0;
             foreach (var arg in prod.Input)
             {
                 emit = emit
-                    .Ldarg(ruleArgs)
-                    .Ldarg(argsStart)
-                    ;
-
-                // Optimization for "+ 0".
-                if (index != 0)
-                {
-                    emit
-                        .Ldc_I4(index)
-                        .Add();
-                }
-
-                if (typeof(ActionNode).IsValueType)
-                {
-                    emit = emit
-                        .Ldelema(emit.Types.Import(typeof(ActionNode)));
-                }
-                else
-                {
-                    emit = emit
-                        .Ldelem_Ref();
-                }
-
-                emit = emit
+                    .Do(ldSyntaxArg(index))
                     .Ldfld((ActionNode msg) => msg.Value)
                     ;
 

@@ -20,8 +20,9 @@ namespace IronText.Lib.IL
             string typeName,
             string methodName,
             Type delegateType,
-            Func<EmitSyntax,Ref<Args>[],EmitSyntax> codeBuilder)
-            : base(assemblyName)
+            Func<EmitSyntax,Ref<Args>[],EmitSyntax> codeBuilder,
+            bool saveFile = false)
+            : base(assemblyName, saveFile)
         {
             this.typeName = typeName;
             this.methodName = methodName;

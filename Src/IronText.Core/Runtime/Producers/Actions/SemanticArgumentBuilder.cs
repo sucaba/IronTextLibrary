@@ -9,26 +9,20 @@ namespace IronText.Runtime.Producers.Actions
 {
     internal class SemanticArgumentBuilder
     {
-        private readonly ActionNode[] nodes;
-        private readonly int firstIndex;
+        private readonly ProductionActionArgs pargs;
         private readonly object[] output;
-        private readonly IStackLookback<ActionNode> lookback;
-        private int currentIndex;
         private int outputIndex;
+        private int currentIndex;
 
         public SemanticArgumentBuilder(
-            ActionNode[] nodes,
-            int          firstIndex,
+            ProductionActionArgs pargs,
             object[]     output,
-            int          outputIndex,
-            IStackLookback<ActionNode> lookback)
+            int          outputIndex)
         {
-            this.nodes        = nodes;
-            this.firstIndex   = firstIndex;
-            this.currentIndex = firstIndex;
+            this.pargs        = pargs;
+            this.currentIndex = 0;
             this.output       = output;
             this.outputIndex  = outputIndex;
-            this.lookback     = lookback;
         }
 
         public void FillSemanticParameters(IProductionComponent root)
@@ -46,7 +40,7 @@ namespace IronText.Runtime.Producers.Actions
                     }
                     break;
                 case 1:
-                    output[outputIndex++] = nodes[currentIndex++].Value;
+                    output[outputIndex++] = pargs.GetSyntaxArg(currentIndex++).Value;
                     break;
                 case 2:
                     foreach (var node in REnumerateNodes())
@@ -66,19 +60,19 @@ namespace IronText.Runtime.Producers.Actions
 
         private IEnumerable<ActionNode> REnumerateNodes()
         {
-            if (currentIndex < nodes.Length)
+            if (currentIndex < pargs.SyntaxArgCount)
             {
                 int topmostIndex = currentIndex;
-                for (;topmostIndex >= firstIndex; --topmostIndex)
+                for (;topmostIndex >= 0; --topmostIndex)
                 {
-                    yield return nodes[topmostIndex];
+                    yield return pargs.GetSyntaxArg(topmostIndex);
                 }
             }
             else
             {
                 for(int i = 0; ;)
                 {
-                    yield return lookback.GetNodeAt(++i);
+                    yield return pargs.Lookback.GetNodeAt(++i);
                 }
             }
         }

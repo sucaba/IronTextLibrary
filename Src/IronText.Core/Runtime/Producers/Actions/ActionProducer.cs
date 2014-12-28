@@ -14,7 +14,7 @@ namespace IronText.Runtime
         , IScanning
     {
         private readonly RuntimeGrammar grammar;
-        private readonly ProductionActionDelegate grammarAction;
+        private readonly ProductionActionDelegate productionAction;
         private readonly TermFactoryDelegate termFactory;
         private readonly MergeDelegate merge;
         private readonly object context;
@@ -28,15 +28,15 @@ namespace IronText.Runtime
         public ActionProducer(
             RuntimeGrammar           grammar,
             object                   context,
-            ProductionActionDelegate grammarAction,
+            ProductionActionDelegate productionAction,
             TermFactoryDelegate      termFactory,
             MergeDelegate            merge,
             Dictionary<string,object> globals)
-            : base(grammar, context, grammarAction)
+            : base(grammar, context, productionAction)
         {
             this.grammar        = grammar;
             this.context        = context;
-            this.grammarAction  = grammarAction;
+            this.productionAction  = productionAction;
             this.termFactory    = termFactory;
             this.merge          = merge;
             this.ruleArgBuffer  = new object[grammar.MaxRuleSize];
@@ -133,7 +133,8 @@ namespace IronText.Runtime
                 throw new NotSupportedException();
             }
 
-            object value = grammarAction(prod.Index, prefix.Array, prefix.Offset, context, stackLookback);
+            var pargs = new ProductionActionArgs(prod.Index, prefix.Array, prefix.Offset, context, stackLookback);
+            object value = productionAction(pargs);
 
             return new ActionNode(prod.OutcomeToken, value, location, hLocation);
         }

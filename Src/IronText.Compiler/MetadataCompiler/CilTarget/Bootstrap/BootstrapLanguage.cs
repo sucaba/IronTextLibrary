@@ -100,7 +100,8 @@ namespace IronText.MetadataCompiler
                 { 
                     generator.BuildBody(emit, data, args);
                     return emit.Ret();
-                }).Delegate;
+                },
+                saveFile: true).Delegate;
             return result;
         }
 

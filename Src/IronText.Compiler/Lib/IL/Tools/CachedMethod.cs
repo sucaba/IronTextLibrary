@@ -8,7 +8,8 @@ namespace IronText.Lib.IL
     {
         public CachedMethod(
             string assemblyName,
-            Func<EmitSyntax,Ref<Args>[],EmitSyntax> codeBuilder)
+            Func<EmitSyntax,Ref<Args>[],EmitSyntax> codeBuilder,
+            bool saveFile = false)
         {
             const string typeName = "CachedMethod";
             const string methodName = "Invoke";
@@ -18,7 +19,8 @@ namespace IronText.Lib.IL
                                         typeName,
                                         methodName,
                                         typeof(TDelegate),
-                                        codeBuilder);
+                                        codeBuilder,
+                                        saveFile);
             var delegateProvider = new DelegateProvider<TDelegate>(
                                         assemblyProvider,
                                         typeName,
