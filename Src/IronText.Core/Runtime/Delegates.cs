@@ -11,7 +11,7 @@ namespace IronText.Runtime
     {
         private readonly ActionNode[] parts;
         private readonly int firstIndex;
-        private int partCount;
+        private int      _syntaxArgCount;
 
         public ProductionActionArgs(
             int          productionIndex,
@@ -23,31 +23,23 @@ namespace IronText.Runtime
             this.ProductionIndex = productionIndex;
             this.parts           = parts;
             this.firstIndex      = firstIndex;
-            this.partCount       = parts.Length - firstIndex;
+            this._syntaxArgCount = parts.Length - firstIndex;
             this.Context         = context;
             this.Lookback        = lookback;
         }
 
-        public int ProductionIndex { get; private set; }        
+        public int      ProductionIndex { get; private set; }        
 
-        public ActionNode GetSyntaxArg(int index) { return parts[firstIndex + index]; }
+        public int      SyntaxArgCount  { get {  return _syntaxArgCount; } }
 
-        public int SyntaxArgCount { get {  return partCount; } }
-
-        public object Context { get; private set; }
+        public object   Context         { get; private set; }
 
         public IStackLookback<ActionNode> Lookback { get; private set; }
+
+        public ActionNode GetSyntaxArg(int index) { return parts[firstIndex + index]; }
     }
 
     public delegate object ProductionActionDelegate(ProductionActionArgs args);
-    /*
-        int         ruleId,      // rule being reduced
-        ActionNode[] parts,       // array containing path being reduced
-        int         firstIndex,  // starting index of the path being reduced
-        object      context,     // user provided context
-        IStackLookback<ActionNode> lookback    // access to the prior stack states and values
-        );
-    */
 
     public delegate object MergeDelegate(
         int     token,
