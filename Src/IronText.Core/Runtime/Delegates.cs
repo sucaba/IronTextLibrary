@@ -44,27 +44,19 @@ namespace IronText.Runtime
 
         public ActionNode GetSyntaxArg(int index) { return parts[firstIndex + index]; }
 
-        public object GetOutcomeProperty(string name)
+        public object GetSynthesized(string name)
         {
             return resultNode.GetTokenProperty(name);
         }
 
-        public void SetOutcomeProperty(string name, object value)
+        public void SetSynthesized(string name, object value)
         {
             this.resultNode.SetTokenProperty(name, value);
         }
 
-        public object GetInherited(int position, string name)
+        public object GetInherited(string name)
         {
-            ActionNode priorNode;
-            if (position == 0)
-            {
-                priorNode = Lookback.GetNodeAt(1);
-            }
-            else
-            {
-                priorNode = parts[firstIndex + position - 1];
-            }
+            ActionNode priorNode = Lookback.GetNodeAt(1);
 
             object result = priorNode.GetFollowingStateProperty(name);
             return result;
@@ -75,7 +67,7 @@ namespace IronText.Runtime
             resultNode.SetFollwoingStateProperty(name, value);
         }
 
-        public object GetInputProperty(int position, string name)
+        public object GetSynthesized(int position, string name)
         {
             var node = GetSyntaxArg(position);
             var result = node.GetTokenProperty(name);

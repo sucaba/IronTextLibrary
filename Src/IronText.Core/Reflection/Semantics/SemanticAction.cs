@@ -40,7 +40,7 @@ namespace IronText.Reflection
             public override void Invoke(ProductionActionArgs pargs)
             {
                 var production = Scope.Productions[pargs.ProductionIndex];
-                var value = pargs.GetInputProperty(0, From.Name);
+                var value = pargs.GetSynthesized(0, From.Name);
                 //string toName = pargs.SetInherited(1, To.Name, value);
             }
         }

@@ -51,7 +51,7 @@ namespace IronText.Tests.Semantics
         }
 
         [Test]
-        public void GlobalsToInjectedParamsTest()
+        public void InheritedTest()
         {
             var grammar = new Grammar
             {
@@ -63,7 +63,7 @@ namespace IronText.Tests.Semantics
 
             var sut = new ParserSut(grammar);
             object expected = "foo-bar", got = null;
-            sut.ProductionHooks.Add("S = ", ctx => got = ctx.GetInherited(0, "val"));
+            sut.ProductionHooks.Add("S = ", ctx => got = ctx.GetInherited("val"));
             sut.Parse("", new Dictionary<string,object> { { "val", expected } });
 
             Assert.AreEqual(expected, got);
@@ -71,7 +71,7 @@ namespace IronText.Tests.Semantics
 
 
         [Test]
-        public void TransferSymbolPropertyTest()
+        public void SynthesizedTest()
         {
             var grammar = new Grammar
             {
@@ -90,11 +90,11 @@ namespace IronText.Tests.Semantics
 
             sut.ProductionHooks.Add(
                 "X = 'b'", 
-                data => data.SetOutcomeProperty("val", expected)
+                data => data.SetSynthesized("val", expected)
             );
             sut.ProductionHooks.Add(
                 "S = 'a' X 'z'",
-                data => got = data.GetInputProperty(1, "val"));
+                data => got = data.GetSynthesized(1, "val"));
 
             sut.Parse("abz");
 

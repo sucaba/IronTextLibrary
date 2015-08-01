@@ -7,27 +7,12 @@ namespace IronText.Runtime
 
     public interface IDataContext
     {
-        object GetOutcomeProperty(string name);
-        void SetOutcomeProperty(string name, object value);
+        object GetSynthesized(string name);
+        void SetSynthesized(string name, object value);
 
-        object GetInputProperty(int position, string name);
+        object GetSynthesized(int position, string name);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="position">
-        /// Production input position (before the corresponding input token).
-        /// <c>Production.InputLength</c> position corresponds to the position after the last token.</param>
-        /// <param name="name">Inherited attribute name</param>
-        /// <returns></returns>
-        object GetInherited(int position, string name);
-
-        /// <summary>
-        /// Set inherited attribute value which will be used after the pending production.
-        /// </summary>
-        /// <param name="name">Attribute name</param>
-        /// <param name="value">Attribute value</param>
-        void SetInherited(string name, object value);
+        object GetInherited(string name);
     }
 
     public class ActionNode
