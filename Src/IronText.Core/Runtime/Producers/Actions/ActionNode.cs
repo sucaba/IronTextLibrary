@@ -3,56 +3,44 @@ using IronText.Logging;
 
 namespace IronText.Runtime
 {
+    public delegate void DataAction(IDataContext dataContext);
+
     public interface IDataContext
     {
-        object GetOutput(string name);
-        void SetOutput(string name, object value);
+        object GetOutcomeProperty(string name);
+        void SetOutcomeProperty(string name, object value);
 
-        object GetInput(string name, int occurrance = 0);
-    }
+        object GetInputProperty(int position, string name);
 
-    class DataContext : IDataContext
-    {
-        private readonly PropertyValueNode input;
-        private PropertyValueNode output;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="position">
+        /// Production input position (before the corresponding input token).
+        /// <c>Production.InputLength</c> position corresponds to the position after the last token.</param>
+        /// <param name="name">Inherited attribute name</param>
+        /// <returns></returns>
+        object GetInherited(int position, string name);
 
-        public DataContext(PropertyValueNode input)
-        {
-            this.output = null;
-            this.input  = input;
-        }
-
-        public object GetOutput(string name)
-        {
-            object result;
-            output.TryGetValue(name, out result);
-            return result;
-        }
-
-        public void SetOutput(string name, object value)
-        {
-            this.output = output.SetNext(new PropertyValueNode(name, value));
-        }
-
-        public object GetInput(string name, int occurrance = 0)
-        {
-            object result;
-            input.TryGetValue(name, out result);
-            return result;
-        }
+        /// <summary>
+        /// Set inherited attribute value which will be used after the pending production.
+        /// </summary>
+        /// <param name="name">Attribute name</param>
+        /// <param name="value">Attribute value</param>
+        void SetInherited(string name, object value);
     }
 
     public class ActionNode
     {
         public readonly int    Token;
-        public readonly object Value;
+        public object Value;
         public readonly Loc    Location;
         public readonly HLoc   HLocation;
 
         /// <summary>
         /// Inherited properties of a state (union of inherited properties of all tokens following this state).
         /// </summary>
-        public readonly PropertyValueNode FollowingStateProperties;
+        public PropertyValueNode FollowingStateProperties;
 
         /// <summary>
         /// Synth. Properties of a token
@@ -68,9 +56,28 @@ namespace IronText.Runtime
             this.FollowingStateProperties = stateProperties;
         }
 
+        public object GetTokenProperty(string name)
+        {
+            object result;
+            TokenProperties.TryGetValue(name, out result);
+            return result;
+        }
+
         public void SetTokenProperty(string name, object value)
         {
             TokenProperties = new PropertyValueNode(name, value).SetNext(TokenProperties);
+        }
+
+        public object GetFollowingStateProperty(string name)
+        {
+            object result;
+            FollowingStateProperties.TryGetValue(name, out result);
+            return result;
+        }
+
+        public void SetFollwoingStateProperty(string name, object value)
+        {
+            FollowingStateProperties = new PropertyValueNode(name, value).SetNext(FollowingStateProperties);
         }
     }
 

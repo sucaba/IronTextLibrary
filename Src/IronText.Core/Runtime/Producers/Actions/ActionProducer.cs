@@ -133,10 +133,11 @@ namespace IronText.Runtime
                 throw new NotSupportedException();
             }
 
-            var pargs = new ProductionActionArgs(prod.Index, prefix.Array, prefix.Offset, context, stackLookback);
-            object value = productionAction(pargs);
+            var result = new ActionNode(prod.OutcomeToken, null, location, hLocation);
 
-            return new ActionNode(prod.OutcomeToken, value, location, hLocation);
+            var pargs = new ProductionActionArgs(prod.Index, prefix.Array, prefix.Offset, prefix.Count, context, stackLookback, result);
+            result.Value = productionAction(pargs);
+            return result;
         }
 
         public ActionNode Merge(ActionNode alt1, ActionNode alt2, IStackLookback<ActionNode> stackLookback)

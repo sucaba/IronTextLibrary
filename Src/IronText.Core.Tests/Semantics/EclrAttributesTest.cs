@@ -56,33 +56,47 @@ namespace IronText.Tests.Semantics
             var grammar = new Grammar
             {
                 StartName   = "S",
-                Productions = { "S = ?val" }
+                Productions = { "S = " }
             };
 
             grammar.DefineGlobal("val");
 
             var sut = new ParserSut(grammar);
             object expected = "foo-bar", got = null;
-            sut.ProductionHooks.Add("S = ?val", new Func<object, object>(id => got = id));
+            sut.ProductionHooks.Add("S = ", ctx => got = ctx.GetInherited(0, "val"));
             sut.Parse("", new Dictionary<string,object> { { "val", expected } });
 
             Assert.AreEqual(expected, got);
         }
 
+
         [Test]
-        public void SymbolPropertyToInjectedParamsTest()
+        public void TransferSymbolPropertyTest()
         {
             var grammar = new Grammar
             {
                 StartName = "S",
-                Productions = { "S = X ?param", "X =" }
+                Productions = { "S = 'a' X 'z'", "X = 'b'" },
+                Matchers =
+                {
+                    { "a" },
+                    { "b" },
+                    { "z" },
+                }
             };
 
             var sut = new ParserSut(grammar);
             object expected = "foo-bar", got = null;
-            sut.ProductionHooks.Add("X = ", new Func<IDataContext, object>(data => { data.SetOutput("param", expected); return null; }));
-            sut.ProductionHooks.Add("S = X ?param", new Func<object, object, object>((x, val) => got = val));
-            sut.Parse("");
+
+            sut.ProductionHooks.Add(
+                "X = 'b'", 
+                data => data.SetOutcomeProperty("val", expected)
+            );
+            sut.ProductionHooks.Add(
+                "S = 'a' X 'z'",
+                data => got = data.GetInputProperty(1, "val"));
+
+            sut.Parse("abz");
 
             Assert.AreEqual(expected, got);
         }

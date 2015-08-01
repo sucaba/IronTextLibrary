@@ -241,7 +241,6 @@
     <Compile Include="Reflection\Merger.cs" />
     <Compile Include="Reflection\MergerCollection.cs" />
     <Compile Include="Runtime\Producers\Actions\ActionNode.cs" />
-    <Compile Include="Runtime\Producers\Actions\SemanticArgumentBuilder.cs" />
     <Compile Include="Runtime\Tables\NullableFirstTables.cs" />
     <Compile Include="Reflection\InlineProduction.cs" />
     <Compile Include="Reflection\ProductionCollection.cs" />

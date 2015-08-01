@@ -8,7 +8,7 @@ namespace IronText.Reflection
 {
     internal class DotExpression
     {
-        private static Regex regex = new Regex(@"\s*([^?.\s]+)\s*([?.])\s*([^?.\s]+)\s*", RegexOptions.Compiled);
+        private static Regex regex = new Regex(@"\s* ([^!.\s]+) \s* ([!.?]) \s* ([^!.\s]+) \s*", RegexOptions.Compiled|RegexOptions.IgnorePatternWhitespace);
 
         public static string[] Parse(string expr)
         {
@@ -21,7 +21,8 @@ namespace IronText.Reflection
             var m = regex.Match(expr);
             if (!m.Success)
             {
-                throw new ArgumentException("Invalid dot expression. Expected format is '<symbol-name>[.?]<property>'.", "dotExpression");
+                var msg = string.Format("Invalid dot expression '{0}'. Expected format is '<symbol-name>[.?]<property>'.", expr);
+                throw new ArgumentException(msg, "dotExpression");
             }
 
             result[0] = m.Groups[1].Value;

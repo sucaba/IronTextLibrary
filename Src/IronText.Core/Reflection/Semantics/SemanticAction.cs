@@ -1,4 +1,5 @@
 ﻿using IronText.Collections;
+using IronText.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,9 @@ namespace IronText.Reflection
 
         public Production Production { get; private set; }
 
+        public abstract void Invoke(ProductionActionArgs pargs);
 
-        class CopySemanticAction : SemanticAction
+        internal class CopySemanticAction : SemanticAction
         {
             public CopySemanticAction(Production production, ISymbolProperty from, ISymbolProperty to)
                 : base(production)
@@ -34,6 +36,13 @@ namespace IronText.Reflection
             public ISymbolProperty From { get; private set; }
 
             public ISymbolProperty To   { get; private set; }
+
+            public override void Invoke(ProductionActionArgs pargs)
+            {
+                var production = Scope.Productions[pargs.ProductionIndex];
+                var value = pargs.GetInputProperty(0, From.Name);
+                //string toName = pargs.SetInherited(1, To.Name, value);
+            }
         }
     }
 }

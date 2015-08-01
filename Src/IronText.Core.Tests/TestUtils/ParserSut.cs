@@ -4,7 +4,6 @@ using IronText.MetadataCompiler;
 using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Runtime;
-using IronText.Runtime.Producers.Actions;
 using IronText.Tests.Algorithm;
 using System;
 using System.Linq;
@@ -27,7 +26,7 @@ namespace IronText.Tests.TestUtils
 
             BuildTables();
 
-            this.ProductionHooks = new Dictionary<string,Delegate>();
+            this.ProductionHooks = new Dictionary<string, DataAction>();
         }
 
         private void BuildTables()
@@ -96,7 +95,7 @@ namespace IronText.Tests.TestUtils
             }
         }
 
-        public Dictionary<string, Delegate> ProductionHooks { get; private set; }
+        public Dictionary<string, DataAction> ProductionHooks { get; private set; }
 
         private object ProductionAction(ProductionActionArgs pargs)
         {
@@ -114,26 +113,18 @@ namespace IronText.Tests.TestUtils
                     continue;
                 }
 
-                object[] args = new object[action.Method.GetParameters().Length];
-                bool hasDataContext = HasDataContext(action.Method);
-                int outputStartIndex = 0;
-                if (hasDataContext)
-                {
-                    outputStartIndex = 1;
-                    args[0] = null; // TODO
-                }
+                action(pargs);
 
-                new SemanticArgumentBuilder(pargs, args, outputStartIndex).FillSemanticParameters(prod);
-                action.DynamicInvoke(args);
+                foreach (var semanticAction in grammar.SemanticActions)
+                {
+                    if (semanticAction.Production == prod) // TODO: inlined productions?
+                    {
+                        semanticAction.Invoke(pargs);
+                    }
+                }
             }
 
             return result;
-        }
-
-        private bool HasDataContext(System.Reflection.MethodInfo methodInfo)
-        {
-            var param = methodInfo.GetParameters().FirstOrDefault();
-            return param != null && param.ParameterType == typeof(IDataContext);
         }
 
         private static object TermFactory(object context, int action, string text)

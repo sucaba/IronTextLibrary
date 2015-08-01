@@ -27,9 +27,9 @@ namespace IronText.Reflection
         private ISymbolProperty ParseProp(string dotExpr)
         {
             var parts = DotExpression.Parse(dotExpr);
-            switch (parts[2])
+            switch (parts[1])
             {
-                case "?": return new InheritedProperty(Scope.Symbols.ByName(parts[0]), parts[1]);
+                case "!": return new InheritedProperty(Scope.Symbols.ByName(parts[0]), parts[1]);
                 default:  return new SymbolProperty(Scope.Symbols.ByName(parts[0]), parts[1]);
             }
         }
