@@ -18,6 +18,17 @@ namespace IronText.Reflection
         {
         }
 
+        public SymbolProperty Find(string symbolName, string property)
+        {
+            var result = this.FirstOrDefault(p => p.Symbol.Name == symbolName && p.Name == property);
+            if (result == null)
+            {
+                throw new ArgumentException("name");
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Add symbol peroperty by dot-expression.
         /// </summary>

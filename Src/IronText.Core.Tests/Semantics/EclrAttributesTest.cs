@@ -51,7 +51,7 @@ namespace IronText.Tests.Semantics
         }
 
         [Test]
-        public void InheritedTest()
+        public void GlobalToInheritedTest()
         {
             var grammar = new Grammar
             {
@@ -69,6 +69,72 @@ namespace IronText.Tests.Semantics
             Assert.AreEqual(expected, got);
         }
 
+        [Test]
+        public void CopyInheritedBetweenStatesTest()
+        {
+            var grammar = new Grammar
+            {
+                StartName   = "S",
+                Productions = { 
+                    "S = 'x' X",
+                    "X = "
+                },
+                Matchers = {
+                   { "x" }
+                },
+                SymbolProperties = {
+                    "X.val",
+                    "S.val",
+                }
+            };
+
+            grammar.DefineGlobal("val");
+
+            grammar.SemanticActions.Add(
+                SemanticAction.MakeCopyOutToOut(
+                    grammar.Productions.Find("S = X"),
+                    grammar.SymbolProperties.Find("S", "val"),
+                    grammar.SymbolProperties.Find("X", "val")));
+
+            var sut = new ParserSut(grammar);
+            object expected = "foo-bar", got = null;
+            sut.ProductionHooks.Add("X = ", ctx => got = ctx.GetInherited("val"));
+            sut.Parse("x", new Dictionary<string,object> { { "val", expected } });
+
+            Assert.AreEqual(expected, got);
+        }
+
+        [Test]
+        public void CopyInheritedWithinTheSameStateTest()
+        {
+            var grammar = new Grammar
+            {
+                StartName   = "S",
+                Productions = { 
+                    "S = X",
+                    "X = "
+                },
+                SymbolProperties = {
+                    "X.val",
+                    "S.val",
+                }
+            };
+
+            grammar.DefineGlobal("val");
+
+            grammar.SemanticActions.Add(
+                SemanticAction.MakeCopyOutToOut(
+                    grammar.Productions.Find("S = X"),
+                    grammar.SymbolProperties.Find("S", "val"),
+                    grammar.SymbolProperties.Find("X", "val")));
+
+            var sut = new ParserSut(grammar);
+            object expected = "foo-bar", got = null;
+            sut.ProductionHooks.Add("X = ", ctx => got = ctx.GetInherited("val"));
+            sut.Parse("", new Dictionary<string,object> { { "val", expected } });
+
+            Assert.AreEqual(expected, got);
+        }
 
         [Test]
         public void SynthesizedTest()

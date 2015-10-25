@@ -3,18 +3,6 @@ using IronText.Logging;
 
 namespace IronText.Runtime
 {
-    public delegate void DataAction(IDataContext dataContext);
-
-    public interface IDataContext
-    {
-        object GetSynthesized(string name);
-        void SetSynthesized(string name, object value);
-
-        object GetSynthesized(int position, string name);
-
-        object GetInherited(string name);
-    }
-
     public class ActionNode
     {
         public readonly int    Token;
@@ -25,7 +13,7 @@ namespace IronText.Runtime
         /// <summary>
         /// Inherited properties of a state (union of inherited properties of all tokens following this state).
         /// </summary>
-        public PropertyValueNode FollowingStateProperties;
+        public PropertyValueNode InheritedStateProperties;
 
         /// <summary>
         /// Synth. Properties of a token
@@ -38,31 +26,31 @@ namespace IronText.Runtime
             this.Value           = value;
             this.Location        = loc;
             this.HLocation       = hLoc;
-            this.FollowingStateProperties = stateProperties;
+            this.InheritedStateProperties = stateProperties;
         }
 
-        public object GetTokenProperty(string name)
+        public object GetSynthesizedProperty(string name)
         {
             object result;
             TokenProperties.TryGetValue(name, out result);
             return result;
         }
 
-        public void SetTokenProperty(string name, object value)
+        public void SetSynthesizedProperty(string name, object value)
         {
             TokenProperties = new PropertyValueNode(name, value).SetNext(TokenProperties);
         }
 
-        public object GetFollowingStateProperty(string name)
+        public object GetInheritedStateProperty(string name)
         {
             object result;
-            FollowingStateProperties.TryGetValue(name, out result);
+            InheritedStateProperties.TryGetValue(name, out result);
             return result;
         }
 
-        public void SetFollwoingStateProperty(string name, object value)
+        public void SetInheritedStateProperty(string name, object value)
         {
-            FollowingStateProperties = new PropertyValueNode(name, value).SetNext(FollowingStateProperties);
+            InheritedStateProperties = new PropertyValueNode(name, value).SetNext(InheritedStateProperties);
         }
     }
 
@@ -77,7 +65,6 @@ namespace IronText.Runtime
         public string Name  { get; private set; }
 
         public object Value { get; private set; }
-
     }
 
     public static class PropertyValueNodeExtensions
@@ -100,5 +87,4 @@ namespace IronText.Runtime
             return false;
         }
     }
-
 }

@@ -26,6 +26,7 @@ namespace IronText.Runtime
 
         public int LastProductionIndex  { get {  return grammar.Productions.LastIndex; } }
 
+        // TODO: All Grammar-level entities should be removed from the runtime layer.
         public ProductionCollection Productions { get { return grammar.Productions; } }
 
         public bool IsNullable(int token) { return isNullable[token]; }

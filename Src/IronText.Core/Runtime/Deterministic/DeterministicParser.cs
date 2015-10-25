@@ -63,7 +63,7 @@ namespace IronText.Runtime
         public void Reset()
         {
             stateStack.Clear();
-            stateStack.Push(0, producer.CreateStart());
+            PushNode(0, producer.CreateStart());
         }
 
         public IReceiver<Msg> Done()
@@ -136,7 +136,17 @@ namespace IronText.Runtime
 
                 case ParserActionKind.Shift:
                     {
-                        stateStack.Push(action.State, producer.CreateLeaf(envelope, data));
+                        // There two approaches:
+                        // 1) Ineffective one when we deal with items in state:
+                        //    foreach item in state S
+                        //      let B = following-non-term(item)
+                        //      foreach rule : (I = F(IDataContext c)) in sem-rules(item) where I in IN(B)
+                        //          apply rule(IDataContext c based on production rule of item)
+                        // 2) Effective, based on rules which act upon offsets.
+                        //    foreach offsetBasedRule in state S
+                        //      apply offsetBasedRule(IDataContext c based on state S and stack state)
+                        var node = producer.CreateLeaf(envelope, data);
+                        PushNode(action.State, node);
                         break;
                     }
                 case ParserActionKind.ShiftReduce:
@@ -144,7 +154,7 @@ namespace IronText.Runtime
                         TNode value = producer.CreateLeaf(envelope, data);
                         do
                         {
-                            stateStack.Push(-1, value);
+                            PushNode(-1, value);
                             this.currentRule = grammar.Productions[action.ProductionId];
                             stateStack.Start = stateStack.Count - currentRule.InputLength;
                             value = producer.CreateBranch(
@@ -162,7 +172,7 @@ namespace IronText.Runtime
                         }
 
                         Debug.Assert(action.Kind == ParserActionKind.Shift);
-                        stateStack.Push(action.State, value);
+                        PushNode(action.State, value);
                         break;
                     }
                 
@@ -319,7 +329,7 @@ namespace IronText.Runtime
 
                 while (act.Kind == ParserActionKind.ShiftReduce) // == GotoReduce
                 {
-                    stateStack.Push(-1, value);
+                    PushNode(-1, value);
 
                     this.currentRule = grammar.Productions[act.ProductionId];
                     stateStack.Start = stateStack.Count - currentRule.InputLength;
@@ -332,13 +342,18 @@ namespace IronText.Runtime
                     act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.OutcomeToken));
                 }
 
-                stateStack.Push(act.State, value);
+                PushNode(act.State, value);
 
                 // reduce or final shift
                 act = ParserAction.Decode(actionTable(act.State, token));
             }
 
             return act;
+        }
+
+        private void PushNode(int state, TNode value)
+        {
+            stateStack.Push(state, value);
         }
     }
 }

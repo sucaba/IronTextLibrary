@@ -26,7 +26,7 @@ namespace IronText.Tests.TestUtils
 
             BuildTables();
 
-            this.ProductionHooks = new Dictionary<string, DataAction>();
+            this.ProductionHooks = new Dictionary<string, ReductionAction>();
         }
 
         private void BuildTables()
@@ -95,7 +95,7 @@ namespace IronText.Tests.TestUtils
             }
         }
 
-        public Dictionary<string, DataAction> ProductionHooks { get; private set; }
+        public Dictionary<string, ReductionAction> ProductionHooks { get; private set; }
 
         private object ProductionAction(ProductionActionArgs pargs)
         {

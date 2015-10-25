@@ -7,7 +7,7 @@ namespace IronText.Runtime
 
     public delegate object TermFactoryDelegate(object context, int action, string text);
 
-    public class ProductionActionArgs : IDataContext
+    public class ProductionActionArgs : IReductionContext
     {
         private readonly ActionNode[] parts;
         private readonly int firstIndex;
@@ -46,31 +46,31 @@ namespace IronText.Runtime
 
         public object GetSynthesized(string name)
         {
-            return resultNode.GetTokenProperty(name);
+            return resultNode.GetSynthesizedProperty(name);
         }
 
         public void SetSynthesized(string name, object value)
         {
-            this.resultNode.SetTokenProperty(name, value);
+            this.resultNode.SetSynthesizedProperty(name, value);
         }
 
         public object GetInherited(string name)
         {
             ActionNode priorNode = Lookback.GetNodeAt(1);
 
-            object result = priorNode.GetFollowingStateProperty(name);
+            object result = priorNode.GetInheritedStateProperty(name);
             return result;
         }
 
         public void SetInherited(string name, object value)
         {
-            resultNode.SetFollwoingStateProperty(name, value);
+            resultNode.SetInheritedStateProperty(name, value);
         }
 
         public object GetSynthesized(int position, string name)
         {
             var node = GetSyntaxArg(position);
-            var result = node.GetTokenProperty(name);
+            var result = node.GetSynthesizedProperty(name);
             return result;
         }
     }

@@ -31,6 +31,7 @@ namespace IronText.Runtime
         T CreateLeaf(Msg envelope, MsgData data);
 
         // Branch for production rule
+        // TODO: All Grammar-level entities should be removed from the runtime layer.
         T CreateBranch(Production rule, ArraySlice<T> parts, IStackLookback<T> lookback);
 
         // Merge derivation alternatives
