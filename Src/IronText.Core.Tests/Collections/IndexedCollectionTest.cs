@@ -17,7 +17,8 @@ namespace IronText.Tests.Collections
         private TestIndexedCollection target;
         private TestIndexableObject x;
         private TestIndexableObject y;
-        private const int StartIndex = 5;
+        private TestIndexableObject z;
+        private const int StartIndex = 0;
 
         [SetUp]
         public void SetUp()
@@ -26,6 +27,7 @@ namespace IronText.Tests.Collections
             this.target = new TestIndexedCollection(collectionScope);            
             this.x = new TestIndexableObject("x");
             this.y = new TestIndexableObject("y");
+            this.z = new TestIndexableObject("z");
         }
 
         [Test]
@@ -81,32 +83,32 @@ namespace IronText.Tests.Collections
         public void BuildIndexAssignesIndexesToObjects()
         {
             target.Add(x);
-            target.BuildIndexes(StartIndex);
+            target.BuildIndexes();
             Assert.IsTrue(x.AssignedIndex.HasValue);
         }
 
         [Test]
-        public void BuildIndexAssignesIndexesEntriesStartingFromLimit()
+        public void BuildIndexAssignesIndexesEntriesStartingFromZero()
         {
             target.Add(x);
-            target.BuildIndexes(StartIndex);
-            Assert.AreEqual(StartIndex, x.AssignedIndex);
+            target.BuildIndexes();
+            Assert.AreEqual(0, x.AssignedIndex);
         }
 
         [Test]
-        public void StartIndexPropertyHasProvidedValue()
+        public void StartIndexPropertyIsAlwaysZero()
         {
-            target.BuildIndexes(StartIndex);
-            Assert.AreEqual(StartIndex, target.StartIndex);
+            target.BuildIndexes();
+            Assert.AreEqual(0, target.StartIndex);
         }
 
         [Test]
-        public void IndexCountContainsIndexCountPlusStartIndex()
+        public void AddedItemsHaveSubsequentFreeIndexes()
         {
             target.Add(x);
             target.Add(y);
-            target.BuildIndexes(StartIndex);
-            Assert.AreEqual(StartIndex + 2, target.LastIndex);
+            target.BuildIndexes();
+            Assert.AreEqual(2, target.LastIndex);
         }
 
         [Test]
@@ -114,19 +116,19 @@ namespace IronText.Tests.Collections
         {
             target.Add(x);
             target.Add(y);
-            target.BuildIndexes(StartIndex);
+            target.BuildIndexes();
             Assert.AreSame(x, target[x.AssignedIndex.Value]);
             Assert.AreSame(y, target[y.AssignedIndex.Value]);
         }
 
         [Test]
-        public void CreateCompatibleArrayReturnsArrayOfCorrectSize()
+        public void CreateCompatibleArrayReturnsArrayOfSizeEqualLastIndex()
         {
             GivenIndexedCollectionOfSize2();
 
             var array = target.CreateCompatibleArray<string>(DefaultStr);
 
-            Assert.AreEqual(StartIndex + 2, array.Length);
+            Assert.AreEqual(2, array.Length);
         }
 
         [Test]
@@ -136,48 +138,50 @@ namespace IronText.Tests.Collections
 
             var array = target.CreateCompatibleArray<string>(DefaultStr);
 
-            Assert.That(array.Take(StartIndex), Is.All.EqualTo(DefaultStr));
+            Assert.That(array.Take(2), Is.All.EqualTo(DefaultStr));
         }
 
         [Test]
-        public void ForcedIndexOverlappingWithOtherIndexIsUsedForIndexing()
+        public void ForcedIndexAreUsed()
         {
-            int xForcedIndex = StartIndex + 1;
-            int yForcedIndex = StartIndex + 0;
+            const int xForcedIndex = 1;
+            const int yForcedIndex = 0;
+
             target.Add(x, xForcedIndex);
             target.Add(y, yForcedIndex);
-            target.BuildIndexes(StartIndex);
+
+            target.BuildIndexes();
 
             Assert.AreEqual(xForcedIndex, x.AssignedIndex);
             Assert.AreEqual(yForcedIndex, y.AssignedIndex);
         }
 
         [Test]
-        public void ForcedIndexOutOfRangeIsUsedForIndexing()
+        public void ForcedIndexIsNotUsedForSubsequentAutoindexing()
         {
-            int xForcedIndex = StartIndex + 10; // big enough
-            int yForcedIndex = StartIndex + 0;
-            target.Add(x, xForcedIndex);
-            target.Add(y, yForcedIndex);
-            target.BuildIndexes(StartIndex);
+            target.Add(x, 1);
+            target.Add(y);
+            target.Add(z);
+            target.BuildIndexes();
 
-            Assert.AreEqual(xForcedIndex, x.AssignedIndex);
-            Assert.AreEqual(yForcedIndex, y.AssignedIndex);
+            Assert.AreEqual(1, x.AssignedIndex);
+            Assert.AreEqual(0, y.AssignedIndex);
+            Assert.AreEqual(2, z.AssignedIndex);
         }
 
         [Test]
-        public void TooLowForcedIndexCannotBeUsed()
+        public void IndexGapsCauseBuildIndexToFail()
         {
-            int xForcedIndex = StartIndex - 1; // too low 
-            target.Add(x, xForcedIndex);
-            Assert.Throws<InvalidOperationException>(() => target.BuildIndexes(StartIndex));
+            target.Add(x, 0);
+            target.Add(y, 2);
+            Assert.Throws<InvalidOperationException>(target.BuildIndexes);
         }
 
         private void GivenIndexedCollectionOfSize2()
         {
             target.Add(x);
             target.Add(y);
-            target.BuildIndexes(StartIndex);
+            target.BuildIndexes();
         }
 
         class TestScope

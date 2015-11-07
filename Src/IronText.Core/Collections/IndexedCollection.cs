@@ -29,35 +29,29 @@ namespace IronText.Collections
             this.DuplicateResolver = null;
         }
 
-        public void BuildIndexes(int startIndex = 0)
+        public void BuildIndexes()
         {
-            this.StartIndex = startIndex;
             this.indexed   = true;
             this.canModify = false;
 
             int lastForcedIndex = forcedIndexes.Count == 0 ? 0 : forcedIndexes.Keys.Max() + 1;
-            int lastIndex = Math.Max(startIndex + items.Count(IsPublicItem), lastForcedIndex);
+            int lastIndex = Math.Max(items.Count(IsPublicItem), lastForcedIndex);
             this.indexes = new T[lastIndex];
 
             foreach (var pair in forcedIndexes)
             {
-                if (pair.Key < startIndex)
-                {
-                    throw new InvalidOperationException("Forced index should be lower than a start index.");
-                }
-
                 indexes[pair.Key] = pair.Value;
                 pair.Value.AssignIndex(pair.Key);
             }
 
             var itemsToIndex = items.Except(forcedIndexes.Values, ReferenceComparer<T>.Default);
             int count = indexes.Length;
-            int i = startIndex;
+            int i = 0;
             foreach (var item in itemsToIndex)
             {
                 if (IsPublicItem(item))
                 {
-                    while (forcedIndexes.ContainsKey(i))
+                    while (indexes[i] != null)
                     {
                         ++i;
                     }
@@ -66,6 +60,12 @@ namespace IronText.Collections
                     item.AssignIndex(i);
                     ++i;
                 }
+            }
+
+            int firstEmptyIndex = Array.IndexOf(indexes, null);
+            if (firstEmptyIndex >= 0)
+            {
+                throw new InvalidOperationException("Index gap is not allowed. Index = " + firstEmptyIndex);
             }
         }
 
@@ -90,7 +90,7 @@ namespace IronText.Collections
         /// <summary>
         /// Index of the first indexed element
         /// </summary>
-        public int     StartIndex  { get; private set; }
+        public int     StartIndex  { get { return 0; } }
 
         /// <summary>
         /// Index of element following the last one
