@@ -26,8 +26,8 @@ namespace IronText.Runtime
         }
 
         public SppfNode CreateBranch(
-                            Production           prod,
-                            ArraySlice<SppfNode> parts,
+                            RuntimeProduction        prod,
+                            ArraySlice<SppfNode>     parts,
                             IStackLookback<SppfNode> stackLookback)
         {
             // Produce more dense tree
@@ -36,7 +36,7 @@ namespace IronText.Runtime
                 return GetDefault(prod.OutcomeToken, stackLookback);
             }
 
-            SppfNode[] children = new SppfNode[prod.Input.Length];
+            SppfNode[] children = new SppfNode[prod.InputLength];
             parts.CopyTo(children, 0);
 
             if (prod.InputLength > parts.Count)

@@ -26,7 +26,7 @@ namespace IronText.Runtime
         private readonly Dictionary<long,T> N = new Dictionary<long,T>();
         private readonly T[]                  nodeBuffer;
         private readonly int[]                tokenComplexity;
-        private readonly Production[]  pendingReductions;
+        private readonly RuntimeProduction[]  pendingReductions;
         private int pendingReductionsCount = 0;
 
         private bool                          accepted = false;
@@ -51,7 +51,7 @@ namespace IronText.Runtime
                 producer,
                 allocator,
                 logging,
-                new Gss<T>(stateToPriorToken.Length + grammar.Productions.LastIndex))
+                new Gss<T>(stateToPriorToken.Length + grammar.LastProductionIndex))
         {
         }
 
@@ -77,7 +77,7 @@ namespace IronText.Runtime
             this.allocator            = allocator;
             this.logging              = logging;
 
-            this.pendingReductions = new Production[grammar.Productions.PublicCount];
+            this.pendingReductions = new RuntimeProduction[grammar.RuntimeProductions.Length];
 
             switch (producer.ReductionOrder)
             {
@@ -430,7 +430,7 @@ namespace IronText.Runtime
             var newLink = gss.Push(frontNode, fakeState, shiftValue);
             if (newLink != null)
             {
-                R.Enqueue(newLink, grammar.Productions[rule]);
+                R.Enqueue(newLink, grammar.RuntimeProductions[rule]);
             }
         }
 
@@ -492,11 +492,11 @@ namespace IronText.Runtime
             pendingReductionsCount = 0;
 
             ParserAction action = GetDfaCell(state, token);
-            Production rule;
+            RuntimeProduction rule;
             switch (action.Kind)
             {
                 case ParserActionKind.Reduce:
-                    rule = grammar.Productions[action.ProductionId];
+                    rule = grammar.RuntimeProductions[action.ProductionId];
                     pendingReductionsCount = 1;
                     pendingReductions[0] = rule;
                     break;
@@ -512,7 +512,7 @@ namespace IronText.Runtime
                         switch (conflictAction.Kind)
                         {
                             case ParserActionKind.Reduce:
-                                var crule = grammar.Productions[conflictAction.ProductionId];
+                                var crule = grammar.RuntimeProductions[conflictAction.ProductionId];
                                 pendingReductions[pendingReductionsCount++] = crule;
                                 break;
                         }

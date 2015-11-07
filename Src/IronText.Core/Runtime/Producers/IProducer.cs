@@ -32,7 +32,7 @@ namespace IronText.Runtime
 
         // Branch for production rule
         // TODO: All Grammar-level entities should be removed from the runtime layer.
-        T CreateBranch(Production rule, ArraySlice<T> parts, IStackLookback<T> lookback);
+        T CreateBranch(RuntimeProduction rule, ArraySlice<T> parts, IStackLookback<T> lookback);
 
         // Merge derivation alternatives
         T Merge(T alt1, T alt2, IStackLookback<T> lookback);

@@ -15,13 +15,13 @@ namespace IronText.Runtime
 
         public bool IsEmpty { get { return reductions.Count == 0 && pendingPaths.Count == 0; } }
 
-        public void Enqueue(GssLink<T> rightLink, Production prod)
+        public void Enqueue(GssLink<T> rightLink, RuntimeProduction prod)
         {
             reductions.Enqueue(
                 new Reduction<T>(rightLink.LeftNode, prod, rightLink));
         }
 
-        public void Enqueue(GssNode<T> rightNode, Production prod)
+        public void Enqueue(GssNode<T> rightNode, RuntimeProduction prod)
         {
             if (prod.InputLength == 0)
             {

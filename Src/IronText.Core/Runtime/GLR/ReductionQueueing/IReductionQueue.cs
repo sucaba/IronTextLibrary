@@ -8,8 +8,8 @@ namespace IronText.Runtime
 
         GssReducePath<TNode> Dequeue();
 
-        void Enqueue(GssNode<TNode> tailNode, Production prod);
+        void Enqueue(GssNode<TNode> tailNode, RuntimeProduction prod);
 
-        void Enqueue(GssLink<TNode> tailLink, Production prod);
+        void Enqueue(GssLink<TNode> tailLink, RuntimeProduction prod);
     }
 }

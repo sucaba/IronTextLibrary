@@ -17,8 +17,7 @@ namespace IronText.Runtime
 
         private readonly TaggedStack<TNode> stateStack;
 
-        private readonly Production[] rules;
-        private Production            currentRule;
+        private RuntimeProduction  currentRule;
         private IProducer<TNode>   producer;
         private readonly ResourceAllocator allocator;
         private ILogging logging;
@@ -53,7 +52,6 @@ namespace IronText.Runtime
         {
             this.producer       = producer;
             this.grammar        = grammar;
-            this.rules          = grammar.Productions.ToArray();
             this.actionTable    = actionTable;
             this.allocator      = allocator;
             this.logging        = logging;
@@ -155,7 +153,7 @@ namespace IronText.Runtime
                         do
                         {
                             PushNode(-1, value);
-                            this.currentRule = grammar.Productions[action.ProductionId];
+                            this.currentRule = grammar.RuntimeProductions[action.ProductionId];
                             stateStack.Start = stateStack.Count - currentRule.InputLength;
                             value = producer.CreateBranch(
                                 currentRule,
@@ -317,7 +315,7 @@ namespace IronText.Runtime
 
             while (act.Kind == ParserActionKind.Reduce)
             {
-                this.currentRule = grammar.Productions[act.ProductionId];
+                this.currentRule = grammar.RuntimeProductions[act.ProductionId];
                 stateStack.Start = stateStack.Count - currentRule.InputLength;
                 value = producer.CreateBranch(
                             currentRule,
@@ -331,7 +329,7 @@ namespace IronText.Runtime
                 {
                     PushNode(-1, value);
 
-                    this.currentRule = grammar.Productions[act.ProductionId];
+                    this.currentRule = grammar.RuntimeProductions[act.ProductionId];
                     stateStack.Start = stateStack.Count - currentRule.InputLength;
                     value = producer.CreateBranch(
                             currentRule,

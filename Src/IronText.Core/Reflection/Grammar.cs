@@ -41,9 +41,11 @@ namespace IronText.Reflection
 
             Symbols        = new SymbolCollection(this)
             {
-                { AugmentedStart, PredefinedTokens.AugmentedStart },
-                { Error,          PredefinedTokens.Error          }, 
-                { Eoi,            PredefinedTokens.Eoi            }
+                { new Symbol("$epsilon"),   PredefinedTokens.Epsilon        },
+                { new Symbol("$progaged"),  PredefinedTokens.Propagated     },
+                { AugmentedStart,           PredefinedTokens.AugmentedStart },
+                { Error,                    PredefinedTokens.Error          }, 
+                { Eoi,                      PredefinedTokens.Eoi            }
             };
 
             Productions    = new ProductionCollection(this)
@@ -117,7 +119,7 @@ namespace IronText.Reflection
 
         public void BuildIndexes()
         {
-            Symbols.BuildIndexes(PredefinedTokens.AugmentedStart);
+            Symbols.BuildIndexes();
             Productions.BuildIndexes();
             Matchers.BuildIndexes();
             Mergers.BuildIndexes();

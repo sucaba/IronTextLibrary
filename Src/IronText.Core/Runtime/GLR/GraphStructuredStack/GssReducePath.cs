@@ -9,9 +9,9 @@ namespace IronText.Runtime
         public readonly GssNode<T>   LeftNode;
         public readonly GssLink<T>[] Links;    // Left-to-right reduction path labels
         public readonly int          Size;
-        public readonly Production   Production;
+        public readonly RuntimeProduction   Production;
 
-        public GssReducePath(GssNode<T> leftNode, GssLink<T>[] links, Production prod, int size)
+        public GssReducePath(GssNode<T> leftNode, GssLink<T>[] links, RuntimeProduction prod, int size)
         {
             this.LeftNode   = leftNode;
             this.Links      = links;
@@ -23,7 +23,7 @@ namespace IronText.Runtime
             GssNode<T> rightNode,
             int        size,
             int        tail,
-            Production prod,
+            RuntimeProduction prod,
             GssLink<T> rightLink,
             Action<GssReducePath<T>> action0)
         {

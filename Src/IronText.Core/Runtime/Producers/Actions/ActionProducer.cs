@@ -95,7 +95,7 @@ namespace IronText.Runtime
                 envelope.HLocation);
         }
 
-        public ActionNode CreateBranch(Production prod, ArraySlice<ActionNode> prefix, IStackLookback<ActionNode> stackLookback)
+        public ActionNode CreateBranch(RuntimeProduction prod, ArraySlice<ActionNode> prefix, IStackLookback<ActionNode> stackLookback)
         {
             if (prefix.Count == 0)
             {

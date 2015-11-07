@@ -31,7 +31,7 @@ namespace IronText.Runtime
 
         public bool IsEmpty { get { return paths.Count == 0; } }
 
-        public void Enqueue(GssLink<T> rightLink, Production prod)
+        public void Enqueue(GssLink<T> rightLink, RuntimeProduction prod)
         {
             Debug.Assert(rightLink != null);
 
@@ -46,7 +46,7 @@ namespace IronText.Runtime
                 InternalEnqueue);
         }
 
-        public void Enqueue(GssNode<T> rightNode, Production prod)
+        public void Enqueue(GssNode<T> rightNode, RuntimeProduction prod)
         {
             if (prod.InputLength == 0)
             {

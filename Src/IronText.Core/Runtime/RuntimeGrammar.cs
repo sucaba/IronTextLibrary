@@ -10,6 +10,9 @@ namespace IronText.Runtime
         private readonly Grammar grammar;
         private readonly bool[]  isNullable;
         private readonly int     lastToken;
+        private readonly RuntimeProduction[] _runtimeProductions;
+        private readonly SymbolCategory[] _symbolCategories;
+        private readonly string[] _symbolNames;
 
         public RuntimeGrammar(Grammar grammar)
         {
@@ -18,16 +21,27 @@ namespace IronText.Runtime
             this.isNullable  = tables.TokenToNullable;
             this.MaxRuleSize = tables.MaxRuleSize;
             this.lastToken   = grammar.Symbols.LastIndex;
+            this._runtimeProductions =
+                Array.ConvertAll(
+                    grammar.Productions.ToArray(),
+                    p => new RuntimeProduction(
+                        p.Index,
+                        p.OutcomeToken,
+                        p.InputLength));
+            this.StartProductionIndex = grammar.Productions.StartIndex;
+            this.LastProductionIndex = grammar.Productions.LastIndex;
+
+            this._symbolCategories = Array.ConvertAll(grammar.Symbols.ToArray(), s => s.Categories);
+            this._symbolNames = Array.ConvertAll(grammar.Symbols.ToArray(), s => s.Name);
         }
 
-        public int MaxRuleSize { get; private set; }
+        public int MaxRuleSize          { get; private set; }
 
-        public int StartProductionIndex { get {  return grammar.Productions.StartIndex; } }
+        public int StartProductionIndex { get; private set; }
 
-        public int LastProductionIndex  { get {  return grammar.Productions.LastIndex; } }
+        public int LastProductionIndex  { get; private set; }
 
-        // TODO: All Grammar-level entities should be removed from the runtime layer.
-        public ProductionCollection Productions { get { return grammar.Productions; } }
+        public RuntimeProduction[] RuntimeProductions { get { return _runtimeProductions; } }
 
         public bool IsNullable(int token) { return isNullable[token]; }
 
@@ -58,17 +72,17 @@ namespace IronText.Runtime
 
         public bool IsBeacon(int token)
         {
-            return grammar.Symbols[token].Categories.Has(SymbolCategory.Beacon);
+            return _symbolCategories[token].Has(SymbolCategory.Beacon);
         }
 
         public bool IsDontInsert(int token)
         {
-            return grammar.Symbols[token].Categories.Has(SymbolCategory.DoNotInsert);
+            return _symbolCategories[token].Has(SymbolCategory.DoNotInsert);
         }
 
         public bool IsDontDelete(int token)
         {
-            return grammar.Symbols[token].Categories.Has(SymbolCategory.DoNotDelete);
+            return _symbolCategories[token].Has(SymbolCategory.DoNotDelete);
         }
 
         public int LastToken 
@@ -78,12 +92,12 @@ namespace IronText.Runtime
 
         public string SymbolName(int token)
         {
-            return grammar.Symbols[token].Name;
+            return _symbolNames[token];
         }
 
         public SymbolCategory GetTokenCategories(int token)
         {
-            return grammar.Symbols[token].Categories;
+            return this._symbolCategories[token];
         }
     }
 }
