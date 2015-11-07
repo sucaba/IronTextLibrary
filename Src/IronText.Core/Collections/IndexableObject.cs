@@ -37,20 +37,15 @@ namespace IronText.Collections
 
         public bool IsDetached { get { return Scope == null; } }
 
-        public bool IsHidden  { get; private set; }
+        public bool IsSoftRemoved  { get; private set; }
 
         protected TScope Scope { get; private set; }
 
-        public void Hide()
+        public void SoftRemove()
         {
-            OnHiding();
-            this.IsHidden = true;
-            OnHided();
+            OnDetaching();
+            this.IsSoftRemoved = true;
         }
-
-        protected virtual void OnHiding() { }
-
-        protected virtual void OnHided() { }
 
         protected virtual void OnAttached() { }
 

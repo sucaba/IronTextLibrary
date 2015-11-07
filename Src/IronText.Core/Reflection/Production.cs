@@ -168,11 +168,6 @@ namespace IronText.Reflection
             return pattern;
         }
 
-        protected override void OnHided()
-        {
-            this.Outcome.Productions.Remove(this);
-        } 
-
         internal ProductionSketch ToSketch()
         {
             return new ProductionSketch(Outcome.Name, ChildComponents.Select(ToSketch).ToArray());

@@ -57,7 +57,7 @@ namespace IronText.Reflection
         {
             get
             {
-                return this.Productions.Any(p => p.HasSideEffects && !p.IsHidden);
+                return this.Productions.Any(p => p.HasSideEffects);
             }
         }
 
@@ -100,7 +100,7 @@ namespace IronText.Reflection
             {
                 return IsAugmentedStart
                     || IsStart
-                    || Scope.Productions.Any(p => !p.IsHidden && p.Input.Contains(this));
+                    || Scope.Productions.Any(p => p.Input.Contains(this));
             }
         }
 

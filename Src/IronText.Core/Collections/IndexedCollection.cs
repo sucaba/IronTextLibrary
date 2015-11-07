@@ -97,14 +97,14 @@ namespace IronText.Collections
         /// </summary>
         public int     LastIndex   { get { RequireIndexed(); return indexes.Length; } }
 
-        public int     PublicCount { get { return items.Count(IsPublicItem); }}
+        public int     PublicCount { get { return items.Count(IsPublicItem); } }
 
         /// <summary>
         /// Hidden items
         /// </summary>
         public IEnumerable<T> Hidden
         {
-            get {  return items.Where(IsHiddenItem); }
+            get {  return items.Where(item => item != null && item.IsSoftRemoved); }
         }
 
         /// <summary>
@@ -188,6 +188,13 @@ namespace IronText.Collections
             return items.Where(IsPublicItem).GetEnumerator();
         }
 
+        public void SoftRemove(T item)
+        {
+            RequireModifiable();
+
+            item.SoftRemove();
+        }
+
         public bool Remove(T item)
         {
             RequireModifiable();
@@ -262,14 +269,9 @@ namespace IronText.Collections
             item.Attached(Scope);
         }
 
-        private static bool IsHiddenItem(T item)
-        {
-            return item != null && item.IsHidden;
-        }
-
         private static bool IsPublicItem(T item)
         {
-            return !item.IsHidden;
+            return !item.IsSoftRemoved;
         }
     }
 }

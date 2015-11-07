@@ -70,8 +70,7 @@ namespace IronText.Reflection
             {
                 if (prod.Outcome == outcome
                     && prod.Input.Length == pattern.Length
-                    && Enumerable.SequenceEqual(prod.Input, pattern)
-                    && !prod.IsHidden)
+                    && Enumerable.SequenceEqual(prod.Input, pattern))
                 {
                     return prod;
                 }

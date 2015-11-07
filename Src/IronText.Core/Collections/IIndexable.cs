@@ -13,7 +13,9 @@ namespace IronText.Collections
         /// Determines if object is hidden i.e. it is present in collection but
         /// is not enumerated or accessable by index.
         /// </summary>
-        bool IsHidden  { get; }
+        bool IsSoftRemoved  { get; }
+
+        void SoftRemove();
 
         /// <summary>
         /// Is invoked immediately object is attached to an indexed collection

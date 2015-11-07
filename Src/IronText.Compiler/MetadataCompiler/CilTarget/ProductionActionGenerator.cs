@@ -84,11 +84,6 @@ namespace IronText.MetadataCompiler
 
             foreach (var prod in data.Grammar.Productions)
             {
-                if (prod.IsHidden)
-                {
-                    continue;
-                }
-
                 emit.Label(jumpTable[prod.Index].Def);
 
                 CompileProduction(emit, data, pargs, returnLabel, globalSemanticCode, prod, varStack);

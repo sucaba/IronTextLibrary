@@ -208,10 +208,12 @@ namespace IronText.Tests.Collections
                 get { throw new NotImplementedException(); }
             }
 
-            public bool IsHidden
+            public bool IsSoftRemoved
             {
                 get { return false; }
             }
+
+            public void SoftRemove() { }
 
             public void Attached(TestScope scope)
             {

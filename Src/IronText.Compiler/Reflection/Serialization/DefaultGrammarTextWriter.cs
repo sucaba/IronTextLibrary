@@ -57,7 +57,7 @@ namespace IronText.Reflection
 
                 if (prod.ExplicitPrecedence != null)
                 {
-                    if (prod.IsHidden)
+                    if (prod.IsSoftRemoved)
                     {
                         output.Write("// *deleted*:  ");
                     }
@@ -68,7 +68,7 @@ namespace IronText.Reflection
                         Enum.GetName(typeof(Associativity), prod.EffectivePrecedence.Assoc));
                 }
 
-                if (prod.IsHidden)
+                if (prod.IsSoftRemoved)
                 {
                     output.Write("// *hidden*:  ");
                 }
