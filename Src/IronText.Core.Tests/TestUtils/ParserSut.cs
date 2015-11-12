@@ -49,7 +49,7 @@ namespace IronText.Tests.TestUtils
         public void Parse(StringReader input, string document, Dictionary<string,object> globals = null)
         {
             var logging   = ExceptionLogging.Instance;
-            var rtGrammar = new RuntimeGrammar(grammar);
+            var rtGrammar = grammar.ToRuntime();
 
             var producer  = new ActionProducer(rtGrammar, null, ProductionAction, TermFactory, null, globals);
             IReceiver<Msg>   parser;

@@ -27,7 +27,7 @@ namespace IronText.Tests.Framework
 
             grammar.BuildIndexes();
 
-            var target = new RuntimeGrammar(grammar);
+            var target = grammar.ToRuntime();;
 
             Assert.IsTrue(target.IsNullable(A.Index));
             Assert.IsTrue(target.IsNullable(B.Index));

@@ -7,45 +7,36 @@ namespace IronText.Runtime
 {
     internal class RuntimeGrammar
     {
-        private readonly int                 lastToken;
         private readonly bool[]              tokenIsNullable;
         private readonly bool[]              tokenIsTerminal;
         private readonly SymbolCategory[]    tokenCategories;
         private readonly string[]            tokenNames;
         private readonly int[]               nonPredefinedTokens;
 
-        public RuntimeGrammar(Grammar grammar)
+        public RuntimeGrammar(
+            int                 tokenCount,
+            RuntimeProduction[] runtimeProductions,
+            bool[]              tokenIsNullable,
+            bool[]              tokenIsTerminal,
+            int[]               nonPredefinedTokens,
+            SymbolCategory[]    tokenCategories,
+            string[]            tokenNames)
         {
-            IRuntimeNullableFirstTables tables = new NullableFirstTables(grammar);
-            this.tokenIsNullable  = tables.TokenToNullable;
-            this.tokenIsTerminal  = grammar.Symbols.CreateCompatibleArray(false);
-            for (int tok = 0; tok != tokenIsTerminal.Length; ++tok)
-            {
-                tokenIsTerminal[tok] = grammar.Symbols[tok].IsTerminal;
-            }
+            this.TokenCount           = tokenCount;
+            this.tokenIsNullable      = tokenIsNullable;
+            this.tokenIsTerminal      = tokenIsTerminal;
+            this.tokenCategories      = tokenCategories;
+            this.tokenNames           = tokenNames;
+            this.nonPredefinedTokens  = nonPredefinedTokens;
 
-            this.MaxProductionLength = tables.MaxProductionLength;
-            this.lastToken   = grammar.Symbols.LastIndex;
-            this.RuntimeProductions =
-                Array.ConvertAll(
-                    grammar.Productions.ToArray(),
-                    p => new RuntimeProduction(
-                        p.Index,
-                        p.OutcomeToken,
-                        p.InputTokens.ToArray()));
-            this.nonPredefinedTokens = (from s in grammar.Symbols
-                                          where !s.IsPredefined
-                                          select s.Index).ToArray();
-            this.StartProductionIndex = grammar.Productions.StartIndex;
-            this.LastProductionIndex = grammar.Productions.LastIndex;
-
-            this.tokenCategories = Array.ConvertAll(grammar.Symbols.ToArray(), s => s.Categories);
-            this.tokenNames = Array.ConvertAll(grammar.Symbols.ToArray(), s => s.Name);
+            this.RuntimeProductions   = runtimeProductions;
+            this.MaxProductionLength  = runtimeProductions.Select(r => r.InputLength).Max();
+            this.LastProductionIndex  = runtimeProductions.Length;
         }
 
         public int MaxProductionLength  { get; private set; }
 
-        public int StartProductionIndex { get; private set; }
+        public int StartProductionIndex { get { return 0; } }
 
         public int LastProductionIndex  { get; private set; }
 
@@ -90,10 +81,7 @@ namespace IronText.Runtime
             return tokenCategories[token].Has(SymbolCategory.DoNotDelete);
         }
 
-        public int LastToken 
-        {
-            get { return lastToken; }
-        }
+        public int TokenCount { get; private set; }
 
         public string SymbolName(int token)
         {

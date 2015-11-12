@@ -95,7 +95,7 @@ namespace IronText.Collections
         /// <summary>
         /// Index of element following the last one
         /// </summary>
-        public int     LastIndex   { get { RequireIndexed(); return indexes.Length; } }
+        public int     Count       { get { RequireIndexed(); return indexes.Length; } }
 
         public int     PublicCount { get { return items.Count(IsPublicItem); } }
 
@@ -213,9 +213,26 @@ namespace IronText.Collections
             return indexes;
         }
 
+        public U[] CreateCompatibleArray<U>(Func<T, U> convert)
+        {
+            int last = Count;
+            var result = new U[last];
+            for (int i = 0; i != last; ++i)
+            {
+                result[i] = convert(indexes[i]);
+            }
+            
+            return result;
+        }
+
+        public U[] CreateCompatibleArray<U>()
+        {
+            return new U[Count];
+        }
+
         public U[] CreateCompatibleArray<U>(U freeSlot)
         {
-            int last = LastIndex;
+            int last = Count;
             var result = new U[last];
             while (last != 0)
             {

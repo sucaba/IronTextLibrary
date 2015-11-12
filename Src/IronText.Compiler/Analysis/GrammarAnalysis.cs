@@ -50,7 +50,7 @@ namespace IronText.Compiler.Analysis
 
         public int TotalSymbolCount
         {
-            get {  return grammar.Symbols.LastIndex + ambiguities.Length; }
+            get {  return grammar.Symbols.Count + ambiguities.Length; }
         }
 
         public Precedence GetTermPrecedence(int token)

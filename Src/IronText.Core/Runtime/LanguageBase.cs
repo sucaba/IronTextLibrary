@@ -86,7 +86,7 @@ namespace IronText.Runtime
                     this.grammar = (Grammar)formatter.Deserialize(decompressStream);
                 }
 
-                this.runtimeGrammar = new RuntimeGrammar(grammar);
+                this.runtimeGrammar = grammar.ToRuntime();
             }
 
             this.allocator      = new ResourceAllocator(runtimeGrammar);

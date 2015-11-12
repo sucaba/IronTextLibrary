@@ -41,7 +41,7 @@ namespace IronText.MetadataCompiler
 
             var actionLabels = data.Grammar.Matchers.CreateCompatibleArray(DEFAULT.GetRef());
             int first = data.Grammar.Matchers.StartIndex;
-            int last  = data.Grammar.Matchers.LastIndex;
+            int last  = data.Grammar.Matchers.Count;
 
             for (int i = first; i != last; ++i)
             {

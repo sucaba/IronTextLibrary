@@ -48,7 +48,7 @@ namespace IronText.Reflection.Reporting
                 {
                     var list = new List<IParserTransition>();
                     int first = data.Grammar.Symbols.StartIndex;
-                    int last  = data.Grammar.Symbols.LastIndex;
+                    int last  = data.Grammar.Symbols.Count;
 
                     for (int token = first; token != last; ++token)
                     {

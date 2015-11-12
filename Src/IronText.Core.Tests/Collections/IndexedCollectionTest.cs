@@ -108,7 +108,7 @@ namespace IronText.Tests.Collections
             target.Add(x);
             target.Add(y);
             target.BuildIndexes();
-            Assert.AreEqual(2, target.LastIndex);
+            Assert.AreEqual(2, target.Count);
         }
 
         [Test]

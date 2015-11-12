@@ -71,7 +71,7 @@ namespace IronText.MetadataCompiler
 
             var jumpTable = data.Grammar.Productions.CreateCompatibleArray(defaultLabel.GetRef());
             int first = data.Grammar.Productions.StartIndex;
-            int last  = data.Grammar.Productions.LastIndex;
+            int last  = data.Grammar.Productions.Count;
             for (int i = first; i != last; ++i)
             {
                 jumpTable[i] = emit.Labels.Generate().GetRef();

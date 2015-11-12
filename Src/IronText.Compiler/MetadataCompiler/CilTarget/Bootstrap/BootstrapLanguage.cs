@@ -37,7 +37,7 @@ namespace IronText.MetadataCompiler
 
         public void Init()
         {
-            this.runtimeGrammar = new RuntimeGrammar(data.Grammar);
+            this.runtimeGrammar = data.Grammar.ToRuntime();
             this.allocator = new ResourceAllocator(runtimeGrammar);
         }
 

@@ -133,7 +133,7 @@ namespace IronText.MetadataCompiler
             var actionToToken = grammar.Matchers.CreateCompatibleArray<int>(IndexingConstants.NoIndex);
 
             int first = grammar.Matchers.StartIndex;
-            int last  = grammar.Matchers.LastIndex;
+            int last  = grammar.Matchers.Count;
 
             for (int i = first; i != last; ++i)
             {

@@ -140,6 +140,7 @@
     <Compile Include="Reflection\Cil\CilSemanticScope.cs" />
     <Compile Include="Reflection\Comparers\SymbolIndexComparer.cs" />
     <Compile Include="Collections\Validation\DuplicateResolver.cs" />
+    <Compile Include="Reflection\Conversions\GrammarRuntimeExtensions.cs" />
     <Compile Include="Reflection\GrammarEntityCollection.cs" />
     <Compile Include="Reflection\InheritedProperty.cs" />
     <Compile Include="Reflection\InheritedPropertyCollection.cs" />

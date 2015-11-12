@@ -32,7 +32,7 @@ namespace IronText.Runtime
         public NullableFirstTables(Grammar grammar)
         {
             this.grammar    = grammar;
-            int count       = grammar.Symbols.LastIndex;
+            int count       = grammar.Symbols.Count;
             this.tokenSet   = new BitSetType(count);
             this.firsts     = new MutableIntSet[count];
             this.isNullable = new bool[count];
@@ -55,8 +55,8 @@ namespace IronText.Runtime
         private void Build()
         {
             int first = grammar.Symbols.StartIndex;
-            int last  = grammar.Symbols.LastIndex;
-            this.firsts     = grammar.Symbols.CreateCompatibleArray<MutableIntSet>(null);
+            int last  = grammar.Symbols.Count;
+            this.firsts     = grammar.Symbols.CreateCompatibleArray<MutableIntSet>();
             this.isNullable = grammar.Symbols.CreateCompatibleArray<bool>(false);
 
             for (int i = first; i != last; ++i)

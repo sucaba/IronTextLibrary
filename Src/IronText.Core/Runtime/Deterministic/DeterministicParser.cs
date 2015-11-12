@@ -254,7 +254,7 @@ namespace IronText.Runtime
         private int[] GetExpectedTokens(int parserState)
         {
             var result = new List<int>();
-            int tokenCount = grammar.LastToken;
+            int tokenCount = grammar.TokenCount;
 
             for (int i = 0; i != tokenCount; ++i)
             {
