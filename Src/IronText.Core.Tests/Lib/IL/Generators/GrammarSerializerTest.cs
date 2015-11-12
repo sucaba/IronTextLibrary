@@ -1,6 +1,7 @@
 ﻿using IronText.Lib.IL;
 using IronText.MetadataCompiler;
 using IronText.Reflection;
+using IronText.Runtime;
 using NUnit.Framework;
 using System;
 using System.IO;

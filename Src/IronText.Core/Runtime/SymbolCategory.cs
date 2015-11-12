@@ -1,5 +1,5 @@
 ﻿
-namespace IronText.Reflection
+namespace IronText.Runtime
 {
     public enum SymbolCategory
     {

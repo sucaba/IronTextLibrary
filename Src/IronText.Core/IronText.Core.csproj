@@ -211,7 +211,7 @@
     <Compile Include="Extensibility\ScannerUtils.cs" />
     <Compile Include="Reflection\Cil\CilMatcher.cs" />
     <Compile Include="Reflection\Cil\CilSymbolNaming.cs" />
-    <Compile Include="Reflection\SymbolCategory.cs" />
+    <Compile Include="Runtime\SymbolCategory.cs" />
     <Compile Include="Framework\Attributes\TokenCategoryAttribute.cs" />
     <Compile Include="Framework\Attributes\Diagnostics\ParserGraphAttribute.cs" />
     <Compile Include="Framework\Attributes\Diagnostics\ScannerGraphAttribute.cs" />

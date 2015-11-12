@@ -6,6 +6,7 @@ using IronText.Extensibility;
 using IronText.Logging;
 using IronText.Reflection.Reporting;
 using System.Collections.ObjectModel;
+using IronText.Runtime;
 
 namespace IronText.Reflection.Managed
 {
