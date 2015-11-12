@@ -29,7 +29,7 @@ namespace IronText.Runtime
                     continue;
                 }
 
-                return (ILanguageRuntime)Activator.CreateInstance(type, cilLanguageName);
+                return (ILanguageRuntime)Activator.CreateInstance(type);
             }
 
             return null;

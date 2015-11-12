@@ -1,5 +1,4 @@
-﻿
-namespace IronText.Runtime
+﻿namespace IronText.Runtime
 {
     public sealed class Interpreter<TDefinition> : Interpreter
         where TDefinition : class

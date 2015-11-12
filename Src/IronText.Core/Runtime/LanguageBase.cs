@@ -1,15 +1,10 @@
-﻿using System;
+﻿using IronText.Logging;
+using IronText.Misc;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using IronText.Framework;
-using IronText.Logging;
-using IronText.Misc;
-using IronText.Reflection;
-using IronText.Reflection.Managed;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO.Compression;
 
 namespace IronText.Runtime
 {
@@ -35,8 +30,6 @@ namespace IronText.Runtime
 
             public static readonly FieldInfo merge           = ExpressionUtils.GetField((LanguageBase lang) => lang.merge);
 
-            public static readonly FieldInfo name            = ExpressionUtils.GetField((LanguageBase lang) => lang.name);
-
             public static readonly FieldInfo stateToSymbol   = ExpressionUtils.GetField((LanguageBase lang) => lang.stateToSymbol);
 
             public static readonly FieldInfo parserConflictActions = ExpressionUtils.GetField((LanguageBase lang) => lang.parserConflictActions);
@@ -59,7 +52,6 @@ namespace IronText.Runtime
         protected TermFactoryDelegate    termFactory;
         protected ProductionActionDelegate  grammarAction;
         protected MergeDelegate          merge;
-        protected CilGrammarSource           name;
         protected int[]                  stateToSymbol;
         protected int[]                  parserConflictActions;
         protected int[]                  tokenComplexity;
@@ -69,9 +61,8 @@ namespace IronText.Runtime
         private const int maxActionCount = 16;
         private RuntimeGrammar           _runtimeGrammar;
 
-        public LanguageBase(CilGrammarSource name) 
+        public LanguageBase() 
         { 
-            this.name = name;
             this.merge = DefaultMerge;
         }
 
@@ -203,7 +194,7 @@ namespace IronText.Runtime
                 {
                     if (sourceGrammar == null)
                     {
-                        this.sourceGrammar = ByteSerialization.DeserializeBytes<Grammar>(grammarBytes);
+                        this.sourceGrammar = ByteSerialization.DeserializeBytes(grammarBytes);
                     }
                 }
             }

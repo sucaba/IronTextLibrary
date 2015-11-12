@@ -1,14 +1,12 @@
-﻿using System;
+﻿using IronText.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using IronText.Logging;
-using IronText.Reflection;
 
 namespace IronText.Runtime
 {
     public class Interpreter : IDisposable
     {
-        private ILanguageRuntime   language;
         private object      context;
         private ILogging    logging;
         private LoggingKind logKind;
@@ -20,13 +18,15 @@ namespace IronText.Runtime
 
         public Interpreter(object context, ILanguageRuntime language)
         {
-            this.language = language;
+            this.LanguageRuntime = language;
             this.context = context;
             this.logging = new MemoryLogging();
 
             // Default behavior
             this.LoggingKind = LoggingKind.ThrowOnError;
         }
+
+        internal protected ILanguageRuntime LanguageRuntime { get; private set; }
 
         public LoggingKind LoggingKind
         {
@@ -71,8 +71,6 @@ namespace IronText.Runtime
             }
         }
 
-        public Grammar Grammar { get { return language.GetGrammar(); } }
-
         public object Context
         {
             get { return context; }
@@ -109,7 +107,7 @@ namespace IronText.Runtime
         {
             Clear();
 
-            var result = language.CreateScanner(context, input, document, GetCurrentLogging());
+            var result = LanguageRuntime.CreateScanner(context, input, document, GetCurrentLogging());
             return result;
         }
 
@@ -122,9 +120,9 @@ namespace IronText.Runtime
 
             Clear();
 
-            var scanner  = language.CreateScanner(context, input, document, GetCurrentLogging());
+            var scanner  = LanguageRuntime.CreateScanner(context, input, document, GetCurrentLogging());
             var producer = NullProducer<int>.Instance;
-            var parser   = language.CreateParser(producer, GetCurrentLogging());
+            var parser   = LanguageRuntime.CreateParser(producer, GetCurrentLogging());
             scanner.Accept(parser);
 
             return ErrorCount == 0;
@@ -144,9 +142,9 @@ namespace IronText.Runtime
 
             Clear();
 
-            var scanner  = language.CreateScanner(context, input, document, GetCurrentLogging());
-            var producer = language.CreateActionProducer(context);
-            var parser   = language.CreateParser(producer, logging);
+            var scanner  = LanguageRuntime.CreateScanner(context, input, document, GetCurrentLogging());
+            var producer = LanguageRuntime.CreateActionProducer(context);
+            var parser   = LanguageRuntime.CreateParser(producer, logging);
             scanner.Accept(parser);
 
             return ErrorCount == 0;
@@ -170,8 +168,8 @@ namespace IronText.Runtime
 
             Clear();
 
-            var producer = language.CreateActionProducer(context);
-            var parser   = language.CreateParser(producer, GetCurrentLogging());
+            var producer = LanguageRuntime.CreateActionProducer(context);
+            var parser   = LanguageRuntime.CreateParser(producer, GetCurrentLogging());
             parser.Feed(input).Done();
 
             return ErrorCount == 0;
@@ -199,9 +197,9 @@ namespace IronText.Runtime
 
             Clear();
 
-            var scanner    = language.CreateScanner(context, input, document, GetCurrentLogging());
-            var producer = new SppfProducer(((ILanguageInternalRuntime)language).RuntimeGrammar);
-            var parser   = language.CreateParser(producer, logging);
+            var scanner    = LanguageRuntime.CreateScanner(context, input, document, GetCurrentLogging());
+            var producer = new SppfProducer(((ILanguageInternalRuntime)LanguageRuntime).RuntimeGrammar);
+            var parser   = LanguageRuntime.CreateParser(producer, logging);
             scanner.Accept(parser);
 
             return producer.Result;
@@ -227,7 +225,7 @@ namespace IronText.Runtime
         {
             if (disposing)
             {
-                this.language = null;
+                this.LanguageRuntime = null;
                 this.context = null;
                 this.logging = null;
             }

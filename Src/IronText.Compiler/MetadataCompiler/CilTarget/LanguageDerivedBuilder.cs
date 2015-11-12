@@ -385,13 +385,6 @@ namespace IronText.MetadataCompiler
                             .Returning(context.Types.Void)
                             .Named(".ctor")
                                 .BeginArgs()
-                                .Do(args =>
-                                    {
-                                        var type = context.Types.Import(typeof(CilGrammarSource));
-                                        var arg = args.Args.Generate();
-                                        args.Argument(type, arg);
-                                        return args;
-                                    })
                                 .EndArgs()
                             .BeginBody();
 
@@ -399,8 +392,7 @@ namespace IronText.MetadataCompiler
             // this:
             emit = emit
                 .Ldarg(0) // this
-                .Ldarg(1) // LanguageName
-                .Call(emit.Methods.Import(typeof(LanguageBase).GetConstructor(new[] { typeof(CilGrammarSource) })))
+                .Call(emit.Methods.Import(typeof(LanguageBase).GetConstructor(Type.EmptyTypes)))
                 ;
 
             emit

@@ -28,7 +28,7 @@ namespace IronText.Tests.Framework
 
                 using (var graph = new GvGraphView(typeof(SAdBLang).Name + "_sppf.gv"))
                 {
-                    sppf.WriteGraph(graph, interp.Grammar, true);
+                    sppf.WriteGraph(graph, interp.GetGrammar(), true);
                 }
             }
         }

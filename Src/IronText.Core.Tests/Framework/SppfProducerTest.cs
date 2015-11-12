@@ -19,10 +19,10 @@ namespace IronText.Tests.Framework
             using (var interp = new Interpreter<RecursiveTree>())
             {
                 var sppf = interp.BuildTree("a");
-                sppf.WriteIndented(interp.Grammar, Console.Out, 0);
+                sppf.WriteIndented(interp.GetGrammar(), Console.Out, 0);
                 using (var graph = new GvGraphView(typeof(RecursiveTree).Name + "_sppf_amb.gv"))
                 {
-                    sppf.WriteGraph(graph, interp.Grammar, true);
+                    sppf.WriteGraph(graph, interp.GetGrammar(), true);
                 }
             }
         }
@@ -33,10 +33,10 @@ namespace IronText.Tests.Framework
             using (var interp = new Interpreter<ShareBranchNodesWithTree>())
             {
                 var sppf = interp.BuildTree("bb");
-                sppf.WriteIndented(interp.Grammar, Console.Out, 0);
+                sppf.WriteIndented(interp.GetGrammar(), Console.Out, 0);
                 using (var graph = new GvGraphView(typeof(ShareBranchNodesWithTree).Name + "_sppf_amb.gv"))
                 {
-                    sppf.WriteGraph(graph, interp.Grammar, true);
+                    sppf.WriteGraph(graph, interp.GetGrammar(), true);
                 }
             }
         }
@@ -47,10 +47,10 @@ namespace IronText.Tests.Framework
             using (var interp = new Interpreter<RightNullableWithTree>())
             {
                 var sppf = interp.BuildTree("aaab");
-                sppf.WriteIndented(interp.Grammar, Console.Out, 0);
+                sppf.WriteIndented(interp.GetGrammar(), Console.Out, 0);
                 using (var graph = new GvGraphView(typeof(RightNullableWithTree).Name + "_sppf_amb.gv"))
                 {
-                    sppf.WriteGraph(graph, interp.Grammar, true);
+                    sppf.WriteGraph(graph, interp.GetGrammar(), true);
                 }
             }
         }
@@ -88,10 +88,10 @@ namespace IronText.Tests.Framework
             using (var interp = new Interpreter<NondeterministicCalcForTree>())
             {
                 var sppf = interp.BuildTree("3^3");
-                sppf.WriteIndented(interp.Grammar, Console.Out, 0);
+                sppf.WriteIndented(interp.GetGrammar(), Console.Out, 0);
                 using (var graph = new GvGraphView(typeof(NondeterministicCalcForTree).Name + "_sppf_det.gv"))
                 {
-                    sppf.WriteGraph(graph, interp.Grammar);
+                    sppf.WriteGraph(graph, interp.GetGrammar());
                 }
             }
         }
@@ -102,10 +102,10 @@ namespace IronText.Tests.Framework
             using (var interp = new Interpreter<NondeterministicCalcForTree>())
             {
                 var sppf = interp.BuildTree("3");
-                sppf.WriteIndented(interp.Grammar, Console.Out, 0);
+                sppf.WriteIndented(interp.GetGrammar(), Console.Out, 0);
                 using (var graph = new GvGraphView(typeof(NondeterministicCalcForTree).Name + "0_sppf_det.gv"))
                 {
-                    sppf.WriteGraph(graph, interp.Grammar);
+                    sppf.WriteGraph(graph, interp.GetGrammar());
                 }
             }
         }

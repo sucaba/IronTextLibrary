@@ -63,7 +63,7 @@ namespace IronText.MetadataCompiler
                 return false;
             }
 
-            Resource = (ILanguageRuntime)Activator.CreateInstance(type, languageName);
+            Resource = (ILanguageRuntime)Activator.CreateInstance(type);
             return true;
         }
 
