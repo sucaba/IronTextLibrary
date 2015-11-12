@@ -153,7 +153,7 @@ namespace IronText.Runtime
                         do
                         {
                             PushNode(-1, value);
-                            this.currentRule = grammar.RuntimeProductions[action.ProductionId];
+                            this.currentRule = grammar.Productions[action.ProductionId];
                             stateStack.Start = stateStack.Count - currentRule.InputLength;
                             value = producer.CreateBranch(
                                 currentRule,
@@ -315,7 +315,7 @@ namespace IronText.Runtime
 
             while (act.Kind == ParserActionKind.Reduce)
             {
-                this.currentRule = grammar.RuntimeProductions[act.ProductionId];
+                this.currentRule = grammar.Productions[act.ProductionId];
                 stateStack.Start = stateStack.Count - currentRule.InputLength;
                 value = producer.CreateBranch(
                             currentRule,
@@ -329,7 +329,7 @@ namespace IronText.Runtime
                 {
                     PushNode(-1, value);
 
-                    this.currentRule = grammar.RuntimeProductions[act.ProductionId];
+                    this.currentRule = grammar.Productions[act.ProductionId];
                     stateStack.Start = stateStack.Count - currentRule.InputLength;
                     value = producer.CreateBranch(
                             currentRule,

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using IronText.Reflection;
-using System;
 
 namespace IronText.Runtime
 {
-    internal class RuntimeGrammar
+    [Serializable]
+    public class RuntimeGrammar
     {
         private readonly bool[]              tokenIsNullable;
         private readonly bool[]              tokenIsTerminal;
@@ -18,7 +18,7 @@ namespace IronText.Runtime
             SymbolCategory[]    tokenCategories,
             bool[]              tokenIsNullable,
             bool[]              tokenIsTerminal,
-            RuntimeProduction[] runtimeProductions)
+            RuntimeProduction[] productions)
         {
             this.TokenCount           = tokenNames.Length;
             this.tokenIsNullable      = tokenIsNullable;
@@ -27,22 +27,21 @@ namespace IronText.Runtime
             this.tokenNames           = tokenNames;
             this.nonPredefinedTokens  = Enumerable.Range(0, TokenCount).Except(PredefinedTokens.All).ToArray();
 
-            this.RuntimeProductions   = runtimeProductions;
-            this.MaxProductionLength  = runtimeProductions.Select(r => r.InputLength).Max();
-            this.ProductionCount      = runtimeProductions.Length;
+            this.Productions          = productions;
+            this.MaxProductionLength  = productions.Select(r => r.InputLength).Max();
         }
+
+        public int TokenCount { get; private set; }
 
         public int MaxProductionLength  { get; private set; }
 
-        public int ProductionCount      { get; private set; }
-
-        public RuntimeProduction[] RuntimeProductions { get; private set; }
+        public RuntimeProduction[] Productions { get; private set; }
 
         public bool IsNullable(int token) { return tokenIsNullable[token]; }
 
         public IEnumerable<RuntimeProduction> GetNullableProductions(int outcome)
         {
-            return from prod in RuntimeProductions
+            return from prod in Productions
                    where prod.OutcomeToken == outcome && prod.Input.All(IsNullable)
                    orderby prod.InputLength ascending
                    select prod;
@@ -76,8 +75,6 @@ namespace IronText.Runtime
         {
             return tokenCategories[token].Has(SymbolCategory.DoNotDelete);
         }
-
-        public int TokenCount { get; private set; }
 
         public string SymbolName(int token)
         {

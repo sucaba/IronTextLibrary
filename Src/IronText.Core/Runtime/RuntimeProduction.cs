@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace IronText.Runtime
 {
+    [Serializable]
     public class RuntimeProduction
     {
         public RuntimeProduction(int index, int outcome, int[] input)
@@ -12,6 +10,7 @@ namespace IronText.Runtime
             this.Index            = index;
             this.OutcomeToken     = outcome;
             this.Input            = input;
+            this.InputLength      = input.Length;
         }
 
         public int   Index        { get; private set; }
@@ -20,6 +19,6 @@ namespace IronText.Runtime
 
         public int[] Input        { get; private set; }
 
-        public int   InputLength  { get { return Input.Length; } }
+        public int   InputLength  { get; private set; }
     }
 }

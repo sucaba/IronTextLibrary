@@ -16,8 +16,6 @@ namespace IronText.Runtime
 
     internal interface IRuntimeNullableFirstTables
     {
-        int MaxProductionLength { get; }
-
         bool[] TokenToNullable { get; }
     }
 
@@ -37,11 +35,8 @@ namespace IronText.Runtime
             this.firsts     = new MutableIntSet[count];
             this.isNullable = new bool[count];
 
-            MaxProductionLength = grammar.Productions.Select(r => r.InputLength).Max();
             Build();
         }
-
-        public int MaxProductionLength { get; private set; }
 
         public bool[] TokenToNullable { get { return isNullable; } }
 

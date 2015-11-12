@@ -51,7 +51,7 @@ namespace IronText.Runtime
                 producer,
                 allocator,
                 logging,
-                new Gss<T>(stateToPriorToken.Length + grammar.ProductionCount))
+                new Gss<T>(stateToPriorToken.Length + grammar.Productions.Length))
         {
         }
 
@@ -77,7 +77,7 @@ namespace IronText.Runtime
             this.allocator            = allocator;
             this.logging              = logging;
 
-            this.pendingReductions = new RuntimeProduction[grammar.RuntimeProductions.Length];
+            this.pendingReductions = new RuntimeProduction[grammar.Productions.Length];
 
             switch (producer.ReductionOrder)
             {
@@ -430,7 +430,7 @@ namespace IronText.Runtime
             var newLink = gss.Push(frontNode, fakeState, shiftValue);
             if (newLink != null)
             {
-                R.Enqueue(newLink, grammar.RuntimeProductions[rule]);
+                R.Enqueue(newLink, grammar.Productions[rule]);
             }
         }
 
@@ -496,7 +496,7 @@ namespace IronText.Runtime
             switch (action.Kind)
             {
                 case ParserActionKind.Reduce:
-                    rule = grammar.RuntimeProductions[action.ProductionId];
+                    rule = grammar.Productions[action.ProductionId];
                     pendingReductionsCount = 1;
                     pendingReductions[0] = rule;
                     break;
@@ -512,7 +512,7 @@ namespace IronText.Runtime
                         switch (conflictAction.Kind)
                         {
                             case ParserActionKind.Reduce:
-                                var crule = grammar.RuntimeProductions[conflictAction.ProductionId];
+                                var crule = grammar.Productions[conflictAction.ProductionId];
                                 pendingReductions[pendingReductionsCount++] = crule;
                                 break;
                         }
