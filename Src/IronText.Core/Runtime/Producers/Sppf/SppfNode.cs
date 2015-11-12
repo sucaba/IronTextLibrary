@@ -1,17 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using IronText.Diagnostics;
-using IronText.Logging;
-using IronText.Reflection;
+﻿using IronText.Logging;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace IronText.Runtime
 {
     public sealed class SppfNode
     {
-        private int id;
+        internal int id;
 
         /// <summary>
         /// Positive value for token and negative value for production index
@@ -86,17 +82,6 @@ namespace IronText.Runtime
             }
         }
 
-        public int GetTokenId(Grammar grammar)
-        {
-            if (IsTerminal)
-            {
-                // TODO: Lexical ambiguities. Return index of resolved symbol.
-                return ((Symbol)grammar.Matchers[MatcherIndex].Outcome).Index;
-            }
-
-            return grammar.Productions[-id].Outcome.Index;
-        }
-
         internal SppfNode AddAlternative(SppfNode other)
         {
 #if DEBUG
@@ -147,15 +132,6 @@ namespace IronText.Runtime
             return visitor.VisitBranch(ProductionIndex, Children, Location);
         }
 
-        public override string ToString()
-        {
-            using (var output = new StringWriter())
-            {
-                WriteIndented(null, output, 0);
-                return output.ToString();
-            }
-        }
-
         public IEnumerable<SppfNode> Flatten()
         {
             var result = new List<SppfNode>();
@@ -183,48 +159,6 @@ namespace IronText.Runtime
             {
                 NextAlternative.Flatten(all);
             }
-        }
-
-        public void WriteIndented(Grammar grammar, TextWriter output, int indentLevel)
-        {
-            const int IndentStep = 2;
-
-            string indent = new string(' ', indentLevel);
-            if (grammar != null)
-            {
-                if (IsTerminal)
-                {
-                    output.WriteLine("{0}{1} = {2}", indent, "ID", MatcherIndex);
-                    var matcher = grammar.Matchers[MatcherIndex];
-                    output.WriteLine("{0}{1} = {2}", indent, "Token", matcher.Outcome.Name);
-                }
-                else
-                {
-                    output.WriteLine("{0}{1} = {2}", indent, "ID", ProductionIndex);
-                    var prod = grammar.Productions[ProductionIndex];
-                    output.Write("{0}Rule: {1} -> ", indent, prod.Outcome.Name);
-                    output.WriteLine(string.Join(" ", from s in prod.Input select s.Name));
-                }
-            }
-
-            output.WriteLine("{0}{1} = {2}", indent, "Loc", Location);
-            if (Children != null && Children.Length != 0)
-            {
-                output.WriteLine(indent + "Children (" + Children.Length + ")");
-
-                int i = 0;
-                foreach (var child in Children)
-                {
-                    output.WriteLine(indent + "#" + i++ + ":");
-                    child.WriteIndented(grammar, output, indentLevel + 2 * IndentStep);
-                }
-            }
-        }
-
-        public void WriteGraph(IGraphView graph, Grammar grammar, bool showRules = false)
-        {
-            var graphWriter = new SppfGraphWriter(grammar, graph, showRules: showRules);
-            graphWriter.WriteGraph(this);
         }
 
         public bool EquivalentTo(SppfNode alt)

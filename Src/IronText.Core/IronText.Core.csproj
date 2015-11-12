@@ -112,6 +112,7 @@
     <Compile Include="Algorithm\IntegerSets\SparseIntSetType.cs" />
     <Compile Include="Algorithm\IntInterval.cs" />
     <Compile Include="Collections\SListNode.cs" />
+    <Compile Include="Diagnostics\DiagnosticExtensions.cs" />
     <Compile Include="DI\IDependencyResolver.cs" />
     <Compile Include="Framework\Attributes\ReportAttribute.cs" />
     <Compile Include="Framework\NullParsing.cs" />
@@ -245,7 +246,6 @@
     <Compile Include="Reflection\MergerCollection.cs" />
     <Compile Include="Runtime\Producers\Actions\ActionNode.cs" />
     <Compile Include="Runtime\RuntimeProduction.cs" />
-    <Compile Include="Runtime\Tables\NullableFirstTables.cs" />
     <Compile Include="Reflection\InlineProduction.cs" />
     <Compile Include="Reflection\ProductionCollection.cs" />
     <Compile Include="Reflection\Semantics\SemanticValue.cs" />
@@ -361,7 +361,7 @@
     <Compile Include="Reports\LrGraph.cs" />
     <Compile Include="Runtime\Producers\Sppf\ISppfNodeVisitor.cs" />
     <Compile Include="Runtime\Producers\Sppf\SppfEpsilonProducer.cs" />
-    <Compile Include="Runtime\Producers\Sppf\SppfGraphWriter.cs" />
+    <Compile Include="Diagnostics\SppfGraphWriter.cs" />
     <Compile Include="Runtime\Producers\Actions\ActionEpsilonProducer.cs" />
     <Compile Include="Runtime\GLR\ReductionQueueing\ReductionQueue.cs" />
     <Compile Include="Runtime\ResourceAllocator.cs" />

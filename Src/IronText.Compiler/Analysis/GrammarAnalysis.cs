@@ -5,6 +5,7 @@ using IronText.Reflection;
 using IronText.Runtime;
 using System;
 using IronText.Misc;
+using IronText.MetadataCompiler;
 
 namespace IronText.Compiler.Analysis
 {

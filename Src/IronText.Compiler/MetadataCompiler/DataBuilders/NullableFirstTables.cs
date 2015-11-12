@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using IronText.Algorithm;
+﻿using IronText.Algorithm;
 using IronText.Reflection;
+using IronText.Runtime;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace IronText.Runtime
+namespace IronText.MetadataCompiler
 {
     internal interface IBuildtimeNullableFirstTables
     {
