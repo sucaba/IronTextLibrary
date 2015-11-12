@@ -13,6 +13,7 @@ using System.Text;
 namespace IronText.Tests.Semantics
 {
     [TestFixture]
+    [Explicit]
     public class EclrAttributesTest
     {
         [Test]

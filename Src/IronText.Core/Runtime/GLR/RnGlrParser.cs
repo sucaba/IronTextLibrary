@@ -72,7 +72,7 @@ namespace IronText.Runtime
             this.stateToPriorToken    = stateToPriorToken;
             this.conflictActionsTable = conflictActionsTable;
             this.gss                  = gss;
-            this.nodeBuffer           = new T[grammar.MaxRuleSize];
+            this.nodeBuffer           = new T[grammar.MaxProductionLength];
             this.producer             = producer;
             this.allocator            = allocator;
             this.logging              = logging;

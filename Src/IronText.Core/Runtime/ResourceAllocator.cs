@@ -12,7 +12,7 @@ namespace IronText.Runtime
 
         public object[] AllocateRuleValuesBuffer()
         {
-            return new object[grammar.MaxRuleSize];
+            return new object[grammar.MaxProductionLength];
         }
     }
 }

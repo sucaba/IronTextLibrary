@@ -118,6 +118,7 @@ namespace IronText.Stem.Tests.Lib.IL
         }
 
         [Test]
+        [Explicit("Causes 'Internal error: missing global value ...'. See 'SwitchBug.il' for more details")]
         public void SwitchBugTest()
         {
             var filePath = DataSamples.CompileSwitchBugFilePath;

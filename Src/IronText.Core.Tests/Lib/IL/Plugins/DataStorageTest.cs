@@ -81,6 +81,7 @@ namespace IronText.Tests.Lib.IL.Plugins
                                     DeclType  = syntax.Types.Class_(ClassName.Parse("MyClass")),
                                     FieldName = "myBytes2"
                                 })
+                            .Ret()
                         .EndBody()
 
                         .Method()

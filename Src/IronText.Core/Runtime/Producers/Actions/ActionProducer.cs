@@ -39,7 +39,7 @@ namespace IronText.Runtime
             this.productionAction  = productionAction;
             this.termFactory    = termFactory;
             this.merge          = merge;
-            this.ruleArgBuffer  = new object[grammar.MaxRuleSize];
+            this.ruleArgBuffer  = new object[grammar.MaxProductionLength];
             this.globals        = globals ?? new Dictionary<string,object>();
 
             if (context != null)
