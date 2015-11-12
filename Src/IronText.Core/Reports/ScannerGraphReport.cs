@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using IronText.Diagnostics;
-using IronText.Extensibility;
+﻿using IronText.Diagnostics;
 using IronText.Reflection.Reporting;
+using System.IO;
 
 namespace IronText.Reports
 {

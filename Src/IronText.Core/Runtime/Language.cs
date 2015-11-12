@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using IronText.Logging;
+﻿using IronText.Logging;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace IronText.Runtime
 {

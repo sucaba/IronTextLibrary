@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-namespace IronText.Reflection.Reporting
+﻿namespace IronText.Reflection.Reporting
 {
     /// <summary>
     /// Contract for a language report data source.

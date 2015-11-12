@@ -1,9 +1,6 @@
-﻿using System;
+﻿using IronText.Collections;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using IronText.Collections;
-using System.Collections.ObjectModel;
 
 namespace IronText.Reflection
 {

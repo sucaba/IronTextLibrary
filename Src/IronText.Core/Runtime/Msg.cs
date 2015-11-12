@@ -1,5 +1,5 @@
-﻿using System;
-using IronText.Logging;
+﻿using IronText.Logging;
+using System;
 
 namespace IronText.Runtime
 {

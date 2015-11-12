@@ -1,5 +1,5 @@
-﻿using System;
-using IronText.Collections;
+﻿using IronText.Collections;
+using System;
 
 namespace IronText.Reflection
 {

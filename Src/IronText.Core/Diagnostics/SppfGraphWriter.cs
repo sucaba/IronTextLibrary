@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using IronText.Logging;
+﻿using IronText.Logging;
 using IronText.Reflection;
 using IronText.Runtime;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IronText.Diagnostics
 {

@@ -1,5 +1,5 @@
-﻿using System;
-using IronText.Algorithm;
+﻿using IronText.Algorithm;
+using System;
 
 namespace IronText.Runtime
 {

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using IronText.Misc;
+using System;
 using System.IO;
 using System.Reflection;
-using IronText.Misc;
 
 namespace IronText.Reflection.Managed
 {

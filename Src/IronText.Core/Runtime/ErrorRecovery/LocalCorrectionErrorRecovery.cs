@@ -1,10 +1,9 @@
-﻿// #define SPELLING_FEATURE
+﻿using IronText.Logging;
+// #define SPELLING_FEATURE
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using IronText.Logging;
-using IronText.Reflection;
 
 namespace IronText.Runtime
 {

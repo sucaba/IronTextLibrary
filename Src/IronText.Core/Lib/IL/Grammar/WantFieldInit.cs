@@ -1,9 +1,4 @@
 ﻿using IronText.Framework;
-using IronText.Lib.Ctem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace IronText.Lib.IL
 {

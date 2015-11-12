@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
+﻿using IronText.Logging;
+using System.Diagnostics;
 using System.Linq;
-using IronText.Logging;
 
 namespace IronText.Runtime
 {

@@ -1,7 +1,6 @@
-﻿using System;
-using IronText.Framework;
+﻿using IronText.Framework;
 using IronText.Lib.Shared;
-using System.Reflection;
+using System;
 
 namespace IronText.Lib.IL
 {

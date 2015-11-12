@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using IronText.Logging;
+using System.Collections.Generic;
 using System.IO;
-using IronText.Logging;
 
 namespace IronText.Runtime
 {

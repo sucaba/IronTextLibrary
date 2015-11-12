@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using IronText.Reflection.Reporting;
 using System.IO;
-using IronText.Extensibility;
-using IronText.Reflection.Reporting;
 
 namespace IronText.Reports
 {

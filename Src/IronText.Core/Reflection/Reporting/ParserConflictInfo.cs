@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using IronText.Runtime;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using IronText.Runtime;
 
 namespace IronText.Reflection.Reporting
 {

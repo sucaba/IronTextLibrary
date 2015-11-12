@@ -1,5 +1,4 @@
 ﻿using System;
-using IronText.Collections;
 
 namespace IronText.Reflection
 {

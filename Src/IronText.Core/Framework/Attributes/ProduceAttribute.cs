@@ -1,8 +1,8 @@
-﻿using System;
+﻿using IronText.Reflection;
+using IronText.Reflection.Managed;
+using System;
 using System.Linq;
 using System.Reflection;
-using IronText.Reflection;
-using IronText.Reflection.Managed;
 
 namespace IronText.Framework
 {

@@ -150,8 +150,6 @@
     <Compile Include="Reflection\ISymbolProperty.cs" />
     <Compile Include="Reflection\Serialization\ISymbolResolver.cs" />
     <Compile Include="Reflection\ITerminal.cs" />
-    <Compile Include="Reflection\Indexing\GrammarIndexer.cs" />
-    <Compile Include="Reflection\Indexing\IGrammarIndexer.cs" />
     <Compile Include="Reflection\IProductionComponent.cs" />
     <Compile Include="Reflection\ProductionFlags.cs" />
     <Compile Include="Reflection\Comparers\ProductionIndexComparer.cs" />

@@ -1,5 +1,4 @@
-﻿using IronText.Reflection;
-
+﻿
 namespace IronText.Runtime
 {
     struct Reduction<T>

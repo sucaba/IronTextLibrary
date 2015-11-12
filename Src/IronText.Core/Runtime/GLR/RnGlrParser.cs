@@ -1,9 +1,8 @@
-﻿using System;
+﻿using IronText.Algorithm;
+using IronText.Diagnostics;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using IronText.Algorithm;
-using IronText.Diagnostics;
-using IronText.Reflection;
 
 namespace IronText.Runtime
 {

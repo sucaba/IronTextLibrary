@@ -1,8 +1,8 @@
-﻿using System.Text.RegularExpressions;
-using IronText.Extensibility;
+﻿using IronText.Extensibility;
 using IronText.Logging;
 using IronText.Misc;
 using IronText.Reflection;
+using System.Text.RegularExpressions;
 
 namespace IronText.Framework
 {

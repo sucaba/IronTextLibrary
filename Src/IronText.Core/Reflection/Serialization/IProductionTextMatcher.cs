@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-
+﻿
 namespace IronText.Reflection
 {
     internal interface IProductionTextMatcher
