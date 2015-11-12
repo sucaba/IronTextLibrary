@@ -12,6 +12,8 @@ namespace IronText.Runtime
         /// </summary>
         Grammar        Grammar { get; }
 
+        RuntimeGrammar  RuntimeGrammar { get; }
+
         /// <summary>
         /// Determines whether parsing algorithm being used is deterministic.
         /// </summary>

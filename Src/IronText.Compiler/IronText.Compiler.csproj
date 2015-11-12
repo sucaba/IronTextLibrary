@@ -196,7 +196,7 @@
     <Compile Include="MetadataCompiler\CilTarget\Code\StackSemanticLoader.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\ProductionCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\ProductionActionGenerator.cs" />
-    <Compile Include="MetadataCompiler\CilTarget\GrammarSerializer.cs" />
+    <Compile Include="MetadataCompiler\CilTarget\CilByteGenerator.cs" />
     <Compile Include="MetadataCompiler\CilTarget\LanguageDerivedBuilder.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\MergerCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\MergeActionGenerator.cs" />

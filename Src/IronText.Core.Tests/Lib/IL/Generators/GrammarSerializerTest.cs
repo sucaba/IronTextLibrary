@@ -19,7 +19,7 @@ namespace IronText.Tests.Lib.IL.Generators
         {
             var originalGrammar = BuildSampleGrammar();
 
-            GrammarSerializer target = new GrammarSerializer(originalGrammar);
+            CilByteGenerator<Grammar> target = new CilByteGenerator<Grammar>(originalGrammar);
             var factory = new CachedMethod<Func<byte[]>>("GrammarSerializerTest.Assembly0", (emit, args) => { target.Build(emit); return emit.Ret(); }).Delegate;
             var grammarBytes = factory();
 

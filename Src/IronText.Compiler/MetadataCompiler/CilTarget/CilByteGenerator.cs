@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using IronText.Lib.Ctem;
-using IronText.Lib.IL;
-using IronText.Reflection;
-using IronText.Lib.Shared;
-using IronText.Collections;
-using System.Runtime.Serialization.Formatters.Binary;
+﻿using IronText.Lib.IL;
 using System.IO;
 using System.IO.Compression;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace IronText.MetadataCompiler
 {
     /// <summary>
     /// Generates IL code for creating <see cref="Grammar"/> instance 
     /// </summary>
-    public class GrammarSerializer
+    public class CilByteGenerator<T>
     {
-        private Grammar grammar;
+        private T obj;
 
-        public GrammarSerializer(Grammar grammar)
+        public CilByteGenerator(T obj)
         {
-            this.grammar = grammar;
+            this.obj = obj;
         }
 
         public EmitSyntax Build(EmitSyntax emit)
@@ -36,7 +30,7 @@ namespace IronText.MetadataCompiler
             {
                 using (var compressStream = new DeflateStream(stream, CompressionMode.Compress, true))
                 {
-                    formatter.Serialize(compressStream, grammar);
+                    formatter.Serialize(compressStream, obj);
                 }
 
                 return stream.ToArray();

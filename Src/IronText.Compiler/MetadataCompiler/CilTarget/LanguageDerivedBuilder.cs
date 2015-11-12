@@ -17,6 +17,7 @@ namespace IronText.MetadataCompiler
     public class LanguageDerivedBuilder : IDerivedBuilder<CilDocumentSyntax>
     {
         private const string GetGrammarBytes                    = "GetGrammarBytes";
+        private const string GetRtGrammarBytes                  = "GetRtGrammarBytes";
         private const string CreateTokenKeyToIdMethodName       = "CreateTokenKeyToId";
         private const string ProductionActionMethodName         = "ProducitonAction";
         private const string MergeActionMethodName              = "MergeAction";
@@ -83,6 +84,7 @@ namespace IronText.MetadataCompiler
                         .Named(languageName.LanguageTypeName)
                         .Extends(context.Types.Import(typeof(LanguageBase)))
                     .Do(BuildMethod_CreateGrammar)
+                    .Do(BuildMethod_CreateRtGrammar)
                     .Do(BuildMethod_GetParserAction)
                     .Do(BuildMethod_CreateTokenIdentities)
                     .Do(BuildMethod_Scan1)
@@ -228,12 +230,24 @@ namespace IronText.MetadataCompiler
 
         private ClassSyntax BuildMethod_CreateGrammar(ClassSyntax context)
         {
-            var grammarSerializer = new GrammarSerializer(data.Grammar);
+            var generator = new CilByteGenerator<Grammar>(data.Grammar);
 
             return context
                 .PrivateStaticMethod(GetGrammarBytes, typeof(Func<byte[]>))
                 .BeginBody()
-                    .Do(grammarSerializer.Build)
+                    .Do(generator.Build)
+                    .Ret()
+                .EndBody();
+        }
+
+        private ClassSyntax BuildMethod_CreateRtGrammar(ClassSyntax context)
+        {
+            var generator = new CilByteGenerator<RuntimeGrammar>(data.RuntimeGrammar);
+
+            return context
+                .PrivateStaticMethod(GetRtGrammarBytes, typeof(Func<byte[]>))
+                .BeginBody()
+                    .Do(generator.Build)
                     .Ret()
                 .EndBody();
         }
@@ -407,6 +421,19 @@ namespace IronText.MetadataCompiler
                         .EndArgs()
                     ))
                 .Stfld(LanguageBase.Fields.grammarBytes)
+
+                // Init runtime grammar
+                .Ldarg(0)
+                .Call(emit.Methods.Method(
+                    _=>_
+                        .StartSignature
+                        .Returning(emit.Types.Import(typeof(byte[])))
+                        .DecaringType(declaringTypeRef)
+                        .Named(GetRtGrammarBytes)
+                        .BeginArgs()
+                        .EndArgs()
+                    ))
+                .Stfld(LanguageBase.Fields.rtGrammarBytes)
 
                 // Init state->token table
                 .Ldarg(0)

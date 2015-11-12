@@ -23,6 +23,8 @@ namespace IronText.Runtime
 
             public static readonly FieldInfo grammarBytes    = ExpressionUtils.GetField((LanguageBase lang) => lang.grammarBytes);
 
+            public static readonly FieldInfo rtGrammarBytes  = ExpressionUtils.GetField((LanguageBase lang) => lang.rtGrammarBytes);
+
             public static readonly FieldInfo getParserAction = ExpressionUtils.GetField((LanguageBase lang) => lang.getParserAction);
 
             public static readonly FieldInfo tokenKeyToId    = ExpressionUtils.GetField((LanguageBase lang) => lang.tokenKeyToId);
@@ -49,8 +51,10 @@ namespace IronText.Runtime
         }
 
         protected internal bool          isDeterministic;
+        private readonly object          grammarLock = new object();
         protected Grammar                grammar;
         protected byte[]                 grammarBytes;
+        protected byte[]                 rtGrammarBytes;
         protected TransitionDelegate     getParserAction;
         protected Dictionary<object,int> tokenKeyToId;
         protected Scan1Delegate          scan1;
@@ -65,7 +69,6 @@ namespace IronText.Runtime
         private ResourceAllocator        allocator;
         protected Func<object>           createDefaultContext;
         private const int maxActionCount = 16;
-        private RuntimeGrammar runtimeGrammar;
 
         public LanguageBase(CilGrammarSource name) 
         { 
@@ -75,24 +78,47 @@ namespace IronText.Runtime
 
         public bool IsDeterministic { get { return isDeterministic; } }
 
+        public RuntimeGrammar RuntimeGrammar { get; private set; }
+
         public void Init()
         {
-            var formatter = new BinaryFormatter();
-            if (grammarBytes != null)
-            {
-                using (var stream = new MemoryStream(grammarBytes))
-                using (var decompressStream = new DeflateStream(stream, CompressionMode.Decompress))
-                {
-                    this.grammar = (Grammar)formatter.Deserialize(decompressStream);
-                }
-
-                this.runtimeGrammar = grammar.ToRuntime();
-            }
-
-            this.allocator      = new ResourceAllocator(runtimeGrammar);
+            this.RuntimeGrammar = DeserializeBytes<RuntimeGrammar>(rtGrammarBytes);
+            this.allocator      = new ResourceAllocator(RuntimeGrammar);
         }
 
-        public Grammar Grammar { get { return grammar; } }
+        private static T DeserializeBytes<T>(byte[] data)
+        {
+            if (data == null)
+            {
+                throw new ArgumentNullException("data");
+            }
+
+            using (var stream = new MemoryStream(data))
+            using (var decompressStream = new DeflateStream(stream, CompressionMode.Decompress))
+            {
+                var formatter = new BinaryFormatter();
+                return (T)formatter.Deserialize(decompressStream);
+            }
+        }
+
+        public Grammar Grammar
+        {
+            get
+            {
+                if (grammar == null)
+                {
+                    lock (grammarLock)
+                    {
+                        if (grammar == null)
+                        {
+                            this.grammar = DeserializeBytes<Grammar>(grammarBytes);
+                        }
+                    }
+                }
+
+                return grammar;
+            }
+        }
 
         public object CreateDefaultContext()
         {
@@ -130,7 +156,7 @@ namespace IronText.Runtime
             {
                 return new DeterministicParser<TNode>(
                     producer,
-                    runtimeGrammar,
+                    RuntimeGrammar,
                     getParserAction,
                     allocator,
                     logging
@@ -139,7 +165,7 @@ namespace IronText.Runtime
             else
             {
                 return new RnGlrParser<TNode>(
-                    runtimeGrammar,
+                    RuntimeGrammar,
                     tokenComplexity,
                     getParserAction,
                     stateToSymbol,
@@ -152,7 +178,7 @@ namespace IronText.Runtime
 
         public IProducer<ActionNode> CreateActionProducer(object context)
         {
-            var result = new ActionProducer(runtimeGrammar, context, grammarAction, termFactory, this.merge, new Dictionary<string,object>());
+            var result = new ActionProducer(RuntimeGrammar, context, grammarAction, termFactory, this.merge, new Dictionary<string,object>());
 
             return result;
         }
@@ -191,7 +217,7 @@ namespace IronText.Runtime
             Debug.WriteLine("------------------------------");
             Debug.WriteLine(
                 "Default merging of token {0} values in state {1}:",
-                (object)runtimeGrammar.SymbolName(token),
+                (object)RuntimeGrammar.SymbolName(token),
                 stackLookback.GetParentState());
             Debug.WriteLine("  '{0}'", alt1);
             Debug.WriteLine(" and");
@@ -203,7 +229,7 @@ namespace IronText.Runtime
 
         RuntimeGrammar ILanguageInternalRuntime.RuntimeGrammar
         {
-            get { return runtimeGrammar; }
+            get { return RuntimeGrammar; }
         }
     }
 }

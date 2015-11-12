@@ -106,6 +106,7 @@ namespace IronText.MetadataCompiler
             // Prepare language data for the language assembly generation
             result.IsDeterministic     = !lrTable.RequiresGlr;
             result.Grammar             = grammar;
+            result.RuntimeGrammar      = grammar.ToRuntime();
             result.Analysis            = analysis;               
             result.TokenComplexity     = analysis.GetTokenComplexity();
             result.StateToToken        = parserDfa.GetStateToSymbolTable();

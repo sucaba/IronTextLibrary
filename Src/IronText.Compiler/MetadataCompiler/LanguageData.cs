@@ -4,6 +4,7 @@ using IronText.Automata.Regular;
 using IronText.Compiler.Analysis;
 using IronText.Extensibility;
 using IronText.Reflection;
+using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
@@ -13,6 +14,8 @@ namespace IronText.MetadataCompiler
     internal class LanguageData
     {
         public Grammar          Grammar             { get; set; }
+
+        public RuntimeGrammar   RuntimeGrammar      { get; set; }
 
         public GrammarAnalysis  Analysis            { get; set; }
 

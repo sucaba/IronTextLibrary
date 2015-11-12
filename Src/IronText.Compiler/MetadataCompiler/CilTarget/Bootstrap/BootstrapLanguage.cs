@@ -21,7 +21,6 @@ namespace IronText.MetadataCompiler
         private readonly TermFactoryDelegate termFactory;
         private readonly MergeDelegate merge;
         private ResourceAllocator allocator;
-        private RuntimeGrammar runtimeGrammar;
         private readonly ScannerDescriptor scannerDescriptor;
 
         public BootstrapLanguage(CilGrammarSource source, LanguageData data)
@@ -35,10 +34,12 @@ namespace IronText.MetadataCompiler
             this.scannerDescriptor = ScannerDescriptor.FromScanRules(data.Grammar.Matchers, ExceptionLogging.Instance);
         }
 
+        public RuntimeGrammar RuntimeGrammar { get; private set; }
+
         public void Init()
         {
-            this.runtimeGrammar = data.Grammar.ToRuntime();
-            this.allocator = new ResourceAllocator(runtimeGrammar);
+            this.RuntimeGrammar = data.RuntimeGrammar;
+            this.allocator = new ResourceAllocator(RuntimeGrammar);
         }
 
         public bool IsDeterministic { get { return data.IsDeterministic; } }
@@ -64,7 +65,7 @@ namespace IronText.MetadataCompiler
         {
             return new DeterministicParser<TNode>(
                 producer,
-                runtimeGrammar,
+                RuntimeGrammar,
                 GetParserAction,
                 allocator,
                 logging
@@ -73,7 +74,7 @@ namespace IronText.MetadataCompiler
 
         public IProducer<ActionNode> CreateActionProducer(object context)
         {
-            return new ActionProducer(runtimeGrammar, context, grammarAction, termFactory,  this.merge, new Dictionary<string,object>());
+            return new ActionProducer(RuntimeGrammar, context, grammarAction, termFactory,  this.merge, new Dictionary<string,object>());
         }
 
         private int GetParserAction(int state, int token)
@@ -119,7 +120,7 @@ namespace IronText.MetadataCompiler
 
         RuntimeGrammar ILanguageInternalRuntime.RuntimeGrammar
         {
-            get { return runtimeGrammar; }
+            get { return RuntimeGrammar; }
         }
     }
 }
