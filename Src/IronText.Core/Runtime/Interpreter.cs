@@ -71,7 +71,7 @@ namespace IronText.Runtime
             }
         }
 
-        public Grammar Grammar { get { return language.Grammar; } }
+        public Grammar Grammar { get { return language.GetGrammar(); } }
 
         public object Context
         {

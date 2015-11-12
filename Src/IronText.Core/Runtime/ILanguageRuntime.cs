@@ -1,19 +1,11 @@
-﻿using System;
+﻿using IronText.Logging;
+using System;
 using System.IO;
-using IronText.Logging;
-using IronText.Reflection;
 
 namespace IronText.Runtime
 {
     public interface ILanguageRuntime
     {
-        /// <summary>
-        /// Language grammar
-        /// </summary>
-        Grammar        Grammar { get; }
-
-        RuntimeGrammar  RuntimeGrammar { get; }
-
         /// <summary>
         /// Determines whether parsing algorithm being used is deterministic.
         /// </summary>

@@ -5,6 +5,7 @@ using IronText.Framework;
 using IronText.Lib.IL;
 using IronText.Logging;
 using IronText.Runtime;
+using IronText.Reflection;
 using IronText.Tests.Data;
 using IronText.Tests.TestUtils;
 using NUnit.Framework;
@@ -96,7 +97,7 @@ namespace IronText.Stem.Tests.Lib.IL
                 using (var graph = new GvGraphView("Cil_Sample2_sppf.gv"))
                 {
                     var lang = Language.Get(typeof(ILLanguage));
-                    sppf.WriteGraph(graph, lang.Grammar, true);
+                    sppf.WriteGraph(graph, lang.GetGrammar(), true);
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using IronText.Runtime;
+﻿using IronText.Misc;
+using IronText.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,12 @@ namespace IronText.Reflection
 {
     internal static class GrammarRuntimeExtensions
     {
+        public static Grammar GetGrammar(this ILanguageRuntime language)
+        {
+            var internals = (ILanguageInternalRuntime)language;
+            return (Grammar)internals.GetSourceGrammar();
+        }
+
         public static RuntimeGrammar ToRuntime(this Grammar grammar)
         {
             IRuntimeNullableFirstTables tables = new NullableFirstTables(grammar);

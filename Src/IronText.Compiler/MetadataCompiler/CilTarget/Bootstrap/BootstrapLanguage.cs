@@ -118,9 +118,9 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        RuntimeGrammar ILanguageInternalRuntime.RuntimeGrammar
+        object ILanguageInternalRuntime.GetSourceGrammar()
         {
-            get { return RuntimeGrammar; }
+            return this.data.Grammar;
         }
     }
 }

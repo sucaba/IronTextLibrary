@@ -4,6 +4,7 @@ using System.Linq;
 using IronText.Diagnostics;
 using IronText.Framework;
 using IronText.Runtime;
+using IronText.Reflection;
 using NUnit.Framework;
 using IronText.Misc;
 
@@ -58,15 +59,15 @@ namespace IronText.Tests.Framework
         public void TestAmbiguousTree()
         {
             var lang = Language.Get(typeof(NondeterministicCalcForTree));
-            var gram = lang.Grammar;
+            var gram = lang.GetGrammar();
 
             using (var interp = new Interpreter<NondeterministicCalcForTree>())
             {
                 var sppf = interp.BuildTree("3^3^3");
-                sppf.WriteIndented(lang.Grammar, Console.Out, 0);
+                sppf.WriteIndented(lang.GetGrammar(), Console.Out, 0);
                 using (var graph = new GvGraphView(typeof(NondeterministicCalcForTree).Name + "_sppf_amb.gv"))
                 {
-                    sppf.WriteGraph(graph, lang.Grammar);
+                    sppf.WriteGraph(graph, lang.GetGrammar());
                 }
 
                 var allNodes = sppf.Flatten().ToArray();

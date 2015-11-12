@@ -3,6 +3,8 @@ namespace IronText.Runtime
 {
     internal interface ILanguageInternalRuntime
     {
-        RuntimeGrammar RuntimeGrammar { get; }
+        object         GetSourceGrammar();
+
+        RuntimeGrammar RuntimeGrammar     { get; }
     }
 }

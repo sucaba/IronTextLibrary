@@ -6,6 +6,7 @@ using IronText.Algorithm;
 using IronText.Extensibility;
 using IronText.Framework;
 using IronText.Runtime;
+using IronText.Reflection;
 using NUnit.Framework;
 
 namespace IronText.Tests.Framework
@@ -17,7 +18,7 @@ namespace IronText.Tests.Framework
         [Explicit]
         public void Dbg()
         {
-            Console.WriteLine(Language.Get(typeof(MainLang)).Grammar);
+            Console.WriteLine(Language.Get(typeof(MainLang)).GetGrammar());
         }
 
         [Test]
