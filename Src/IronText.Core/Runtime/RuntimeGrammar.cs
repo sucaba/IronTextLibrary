@@ -14,15 +14,14 @@ namespace IronText.Runtime
         private readonly int[]               nonPredefinedTokens;
 
         public RuntimeGrammar(
-            int                 tokenCount,
-            RuntimeProduction[] runtimeProductions,
+            string[]            tokenNames,
+            SymbolCategory[]    tokenCategories,
             bool[]              tokenIsNullable,
             bool[]              tokenIsTerminal,
-            int[]               nonPredefinedTokens,
-            SymbolCategory[]    tokenCategories,
-            string[]            tokenNames)
+            RuntimeProduction[] runtimeProductions,
+            int[]               nonPredefinedTokens)
         {
-            this.TokenCount           = tokenCount;
+            this.TokenCount           = tokenNames.Length;
             this.tokenIsNullable      = tokenIsNullable;
             this.tokenIsTerminal      = tokenIsTerminal;
             this.tokenCategories      = tokenCategories;
