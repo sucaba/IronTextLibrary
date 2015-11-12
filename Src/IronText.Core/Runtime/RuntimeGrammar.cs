@@ -27,7 +27,7 @@ namespace IronText.Runtime
                     p => new RuntimeProduction(
                         p.Index,
                         p.OutcomeToken,
-                        p.InputLength));
+                        p.InputTokens.ToArray()));
             this.StartProductionIndex = grammar.Productions.StartIndex;
             this.LastProductionIndex = grammar.Productions.LastIndex;
 
@@ -45,13 +45,12 @@ namespace IronText.Runtime
 
         public bool IsNullable(int token) { return isNullable[token]; }
 
-        public IEnumerable<Production> GetNullableProductions(int outcome)
+        public IEnumerable<RuntimeProduction> GetNullableProductions(int outcome)
         {
-            return 
-               from prod in grammar.Symbols[outcome].Productions
-               where prod.InputTokens.All(IsNullable)
-               orderby prod.InputLength ascending
-               select prod;
+            return from prod in _runtimeProductions
+                   where prod.OutcomeToken == outcome && prod.Input.All(IsNullable)
+                   orderby prod.InputLength ascending
+                   select prod;
         }
 
         /// <summary>

@@ -38,7 +38,7 @@ namespace IronText.Runtime
             {
                 var production = grammar.GetNullableProductions(nonTerm).First();
 
-                int[] input = production.InputTokens.ToArray();
+                int[] input = production.Input;
                 int   len   = input.Length;
                 var args = new SppfNode[len];
                 for (int i = 0; i != len; ++i)

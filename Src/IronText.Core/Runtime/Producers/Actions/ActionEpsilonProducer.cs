@@ -33,7 +33,7 @@ namespace IronText.Runtime
             var args = new ActionNode[len];
             for (int i = 0; i != len; ++i)
             {
-                args[i] = InternalGetNullable(production.Input[i].Index, stackLookback);
+                args[i] = InternalGetNullable(production.Input[i], stackLookback);
             }
 
             var resultNode = new ActionNode(nonTerm, null, Loc.Unknown, HLoc.Unknown);
