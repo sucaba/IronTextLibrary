@@ -4,6 +4,7 @@ using System.Diagnostics;
 using IronText.Algorithm;
 using IronText.Compiler.Analysis;
 using IronText.Reflection;
+using IronText.Runtime;
 
 namespace IronText.Automata.Lalr1
 {

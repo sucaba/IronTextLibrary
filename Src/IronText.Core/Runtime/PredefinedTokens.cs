@@ -1,4 +1,4 @@
-﻿namespace IronText.Reflection
+﻿namespace IronText.Runtime
 {
     public static class PredefinedTokens
     {
@@ -15,5 +15,7 @@
         public const int Error          = 4;
 
         public const int Count          = 5;
+
+        public static readonly int[] All = new [] { Epsilon, Propagated, AugmentedStart, Eoi, Error };
     }
 }

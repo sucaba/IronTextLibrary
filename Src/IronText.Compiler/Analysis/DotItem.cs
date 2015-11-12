@@ -2,6 +2,7 @@
 using IronText.Algorithm;
 using IronText.Reflection;
 using IronText.Reflection.Reporting;
+using IronText.Runtime;
 
 namespace IronText.Compiler.Analysis
 {

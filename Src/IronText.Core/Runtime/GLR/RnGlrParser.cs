@@ -51,7 +51,7 @@ namespace IronText.Runtime
                 producer,
                 allocator,
                 logging,
-                new Gss<T>(stateToPriorToken.Length + grammar.LastProductionIndex))
+                new Gss<T>(stateToPriorToken.Length + grammar.ProductionCount))
         {
         }
 

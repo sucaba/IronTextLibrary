@@ -179,7 +179,7 @@
     <Compile Include="Reflection\Serialization\IGrammarReader.cs" />
     <Compile Include="Reflection\IGrammarSource.cs" />
     <Compile Include="Reflection\IReportDestinationHint.cs" />
-    <Compile Include="Reflection\PredefinedTokens.cs" />
+    <Compile Include="Runtime\PredefinedTokens.cs" />
     <Compile Include="Reflection\Reporting\IReport.cs" />
     <Compile Include="Reflection\Reporting\ReportCollection.cs" />
     <Compile Include="Reflection\Serialization\IGrammarTextWriter.cs" />

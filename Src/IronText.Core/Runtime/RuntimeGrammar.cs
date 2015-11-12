@@ -18,26 +18,23 @@ namespace IronText.Runtime
             SymbolCategory[]    tokenCategories,
             bool[]              tokenIsNullable,
             bool[]              tokenIsTerminal,
-            RuntimeProduction[] runtimeProductions,
-            int[]               nonPredefinedTokens)
+            RuntimeProduction[] runtimeProductions)
         {
             this.TokenCount           = tokenNames.Length;
             this.tokenIsNullable      = tokenIsNullable;
             this.tokenIsTerminal      = tokenIsTerminal;
             this.tokenCategories      = tokenCategories;
             this.tokenNames           = tokenNames;
-            this.nonPredefinedTokens  = nonPredefinedTokens;
+            this.nonPredefinedTokens  = Enumerable.Range(0, TokenCount).Except(PredefinedTokens.All).ToArray();
 
             this.RuntimeProductions   = runtimeProductions;
             this.MaxProductionLength  = runtimeProductions.Select(r => r.InputLength).Max();
-            this.LastProductionIndex  = runtimeProductions.Length;
+            this.ProductionCount      = runtimeProductions.Length;
         }
 
         public int MaxProductionLength  { get; private set; }
 
-        public int StartProductionIndex { get { return 0; } }
-
-        public int LastProductionIndex  { get; private set; }
+        public int ProductionCount      { get; private set; }
 
         public RuntimeProduction[] RuntimeProductions { get; private set; }
 

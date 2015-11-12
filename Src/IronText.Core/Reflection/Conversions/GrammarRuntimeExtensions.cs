@@ -13,14 +13,9 @@ namespace IronText.Reflection
             IRuntimeNullableFirstTables tables = new NullableFirstTables(grammar);
             var tokenIsNullable     = tables.TokenToNullable;
 
-            var tokenIsTerminal = grammar.Symbols.CreateCompatibleArray(s => s.IsTerminal);
-            var tokenCategories = grammar.Symbols.CreateCompatibleArray(s => s.Categories);
-            var tokenNames      = grammar.Symbols.CreateCompatibleArray(s => s.Name);
-            var nonPredefinedTokens = (from s in grammar.Symbols
-                                       where !s.IsPredefined
-                                       select s.Index)
-                                      .ToArray();
-
+            var tokenIsTerminal    = grammar.Symbols.CreateCompatibleArray(s => s.IsTerminal);
+            var tokenCategories    = grammar.Symbols.CreateCompatibleArray(s => s.Categories);
+            var tokenNames         = grammar.Symbols.CreateCompatibleArray(s => s.Name);
             var runtimeProductions = grammar.Productions.CreateCompatibleArray(ToRuntime);
 
             return new RuntimeGrammar(
@@ -28,8 +23,7 @@ namespace IronText.Reflection
                         tokenCategories,
                         tokenIsNullable,
                         tokenIsTerminal,
-                        runtimeProductions,
-                        nonPredefinedTokens);
+                        runtimeProductions);
         }
 
         public static RuntimeProduction ToRuntime(this Production prod)
