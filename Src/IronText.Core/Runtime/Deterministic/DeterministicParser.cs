@@ -198,7 +198,7 @@ namespace IronText.Runtime
                 return null;
             }
 
-            this.producer = producer.GetErrorRecoveryProducer();
+            this.producer = producer.GetRecoveryProducer();
 
             IReceiver<Msg> result = new LocalCorrectionErrorRecovery(grammar, this, logging);
             if (priorInput != null)

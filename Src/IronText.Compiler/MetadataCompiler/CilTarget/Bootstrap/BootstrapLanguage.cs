@@ -62,7 +62,7 @@ namespace IronText.MetadataCompiler
             return new DeterministicParser<TNode>(producer, RuntimeGrammar, GetParserAction, logging);
         }
 
-        public IProducer<ActionNode> CreateActionProducer(object context)
+        public IProducer<ActionNode> CreateProducer(object context)
         {
             return new ActionProducer(RuntimeGrammar, context, grammarAction, termFactory,  this.merge, new Dictionary<string,object>());
         }

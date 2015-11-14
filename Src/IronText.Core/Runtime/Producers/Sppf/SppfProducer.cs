@@ -79,6 +79,6 @@ namespace IronText.Runtime
             return alt1.AddAlternative(alt2);
         }
 
-        public IProducer<SppfNode> GetErrorRecoveryProducer() { return this; }
+        public IProducer<SppfNode> GetRecoveryProducer() { return this; }
     }
 }

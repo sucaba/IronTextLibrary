@@ -157,7 +157,7 @@ namespace IronText.Runtime
 
         HLoc IScanning.HLocation { get { return this._scanningHLocation; } }
 
-        public IProducer<ActionNode> GetErrorRecoveryProducer()
+        public IProducer<ActionNode> GetRecoveryProducer()
         {
             return NullProducer<ActionNode>.Instance;
         }

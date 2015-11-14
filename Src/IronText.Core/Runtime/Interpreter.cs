@@ -143,7 +143,7 @@ namespace IronText.Runtime
             Clear();
 
             var scanner  = LanguageRuntime.CreateScanner(context, input, document, GetCurrentLogging());
-            var producer = LanguageRuntime.CreateActionProducer(context);
+            var producer = LanguageRuntime.CreateProducer(context);
             var parser   = LanguageRuntime.CreateParser(producer, logging);
             scanner.Accept(parser);
 
@@ -168,7 +168,7 @@ namespace IronText.Runtime
 
             Clear();
 
-            var producer = LanguageRuntime.CreateActionProducer(context);
+            var producer = LanguageRuntime.CreateProducer(context);
             var parser   = LanguageRuntime.CreateParser(producer, GetCurrentLogging());
             parser.Feed(input).Done();
 

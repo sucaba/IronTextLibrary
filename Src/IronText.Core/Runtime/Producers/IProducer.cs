@@ -19,10 +19,7 @@ namespace IronText.Runtime
     {
         ReductionOrder ReductionOrder { get; }
 
-        // Producer used just before error recovery start
-        IProducer<T> GetErrorRecoveryProducer();
-
-        T Result { get; set; }
+        T  Result         { get; set; }
 
         T CreateStart();
 
@@ -38,5 +35,8 @@ namespace IronText.Runtime
 
         // Get epsilon node corresponding to the non-term
         T GetDefault(int token, IStackLookback<T> lookback);
+
+        // Producer used just before error recovery start
+        IProducer<T> GetRecoveryProducer();
     }
 }

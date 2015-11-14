@@ -35,6 +35,6 @@ namespace IronText.Runtime
         {
         }
 
-        public IProducer<T> GetErrorRecoveryProducer() { return this; }
+        public IProducer<T> GetRecoveryProducer() { return this; }
     }
 }

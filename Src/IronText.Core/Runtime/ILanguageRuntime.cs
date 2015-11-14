@@ -15,7 +15,7 @@ namespace IronText.Runtime
 
         object CreateDefaultContext();
 
-        IProducer<ActionNode> CreateActionProducer(object context);
+        IProducer<ActionNode> CreateProducer(object context);
 
         IScanner CreateScanner(object context, TextReader input, string document, ILogging logging = null);
 
