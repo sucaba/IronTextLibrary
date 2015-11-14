@@ -203,7 +203,7 @@
     <Compile Include="Reflection\Serialization\ProducitonSketch.cs" />
     <Compile Include="Reflection\Validation\ProductionDuplicateResolver.cs" />
     <Compile Include="Runtime\IReductionContext.cs" />
-    <Compile Include="Runtime\ILanguageInternalRuntime.cs" />
+    <Compile Include="Runtime\ISourceGrammarProvider.cs" />
     <Compile Include="Runtime\ParserAction.cs" />
     <Compile Include="Runtime\ParserActionKind.cs" />
     <Compile Include="Reflection\Reporting\ParserConflictInfo.cs" />

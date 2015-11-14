@@ -12,7 +12,7 @@ namespace IronText.Reflection
 
         public static Grammar GetGrammar(this ILanguageRuntime language)
         {
-            var internals = (ILanguageInternalRuntime)language;
+            var internals = (ISourceGrammarProvider)language;
             return (Grammar)internals.GetSourceGrammar();
         }
     }

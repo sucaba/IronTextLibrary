@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace IronText.MetadataCompiler
 {
-    class BootstrapLanguage : ILanguageRuntime, IInternalInitializable, IBootstrapLanguage, ILanguageInternalRuntime
+    class BootstrapLanguage : ILanguageRuntime, IInternalInitializable, IBootstrapLanguage, ISourceGrammarProvider
     {
         private delegate object TokenFactoryDelegate1(string text, object rootContext);
 
@@ -118,7 +118,7 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        object ILanguageInternalRuntime.GetSourceGrammar()
+        object ISourceGrammarProvider.GetSourceGrammar()
         {
             return this.data.Grammar;
         }

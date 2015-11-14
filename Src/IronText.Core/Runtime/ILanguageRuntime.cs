@@ -6,22 +6,24 @@ namespace IronText.Runtime
 {
     public interface ILanguageRuntime
     {
+        RuntimeGrammar RuntimeGrammar { get; }
+
         /// <summary>
         /// Determines whether parsing algorithm being used is deterministic.
         /// </summary>
-        bool           IsDeterministic { get; }
+        bool IsDeterministic { get; }
 
-        object         CreateDefaultContext();
+        object CreateDefaultContext();
 
         IProducer<ActionNode> CreateActionProducer(object context);
 
-        IScanner       CreateScanner(object context, TextReader input, string document, ILogging logging = null);
+        IScanner CreateScanner(object context, TextReader input, string document, ILogging logging = null);
 
-        IPushParser    CreateParser<TNode>(IProducer<TNode> producer, ILogging logging = null);
+        IPushParser CreateParser<TNode>(IProducer<TNode> producer, ILogging logging = null);
 
-        int            Identify(string literal);
+        int Identify(string literal);
 
-        int            Identify(Type symbolType);
+        int Identify(Type symbolType);
     }
 
     public static class LanguageExtensions
