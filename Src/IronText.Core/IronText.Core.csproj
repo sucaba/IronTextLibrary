@@ -341,7 +341,6 @@
     <Compile Include="Runtime\GLR\ReductionQueueing\ReductionPathQueue.cs" />
     <Compile Include="Runtime\GLR\ReductionQueueing\Reduction.cs" />
     <Compile Include="Runtime\GLR\ReductionQueueing\IReductionQueue.cs" />
-    <Compile Include="Runtime\IResourceAllocator.cs" />
     <Compile Include="Runtime\IStackLookback.cs" />
     <Compile Include="Runtime\Msg.cs" />
     <Compile Include="Runtime\ILanguageRuntime.cs" />
@@ -362,7 +361,6 @@
     <Compile Include="Diagnostics\SppfGraphWriter.cs" />
     <Compile Include="Runtime\Producers\Actions\ActionEpsilonProducer.cs" />
     <Compile Include="Runtime\GLR\ReductionQueueing\ReductionQueue.cs" />
-    <Compile Include="Runtime\ResourceAllocator.cs" />
     <Compile Include="Runtime\Producers\IProducer.cs" />
     <Compile Include="Runtime\Deterministic\TaggedStack.cs" />
     <Compile Include="Runtime\GLR\RnGlrParser.cs" />

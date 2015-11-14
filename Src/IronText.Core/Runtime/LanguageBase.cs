@@ -56,7 +56,6 @@ namespace IronText.Runtime
         protected int[] parserConflictActions;
         protected int[] tokenComplexity;
         protected int[] matcherToToken;
-        private ResourceAllocator allocator;
         protected Func<object> createDefaultContext;
         private const int maxActionCount = 16;
         private RuntimeGrammar _runtimeGrammar;
@@ -73,7 +72,6 @@ namespace IronText.Runtime
         public void Init()
         {
             this._runtimeGrammar = ByteSerialization.DeserializeBytes<RuntimeGrammar>(rtGrammarBytes);
-            this.allocator = new ResourceAllocator(_runtimeGrammar);
         }
 
         public object CreateDefaultContext()
@@ -110,13 +108,7 @@ namespace IronText.Runtime
         {
             if (isDeterministic)
             {
-                return new DeterministicParser<TNode>(
-                    producer,
-                    _runtimeGrammar,
-                    getParserAction,
-                    allocator,
-                    logging
-                    );
+                return new DeterministicParser<TNode>(producer, _runtimeGrammar, getParserAction, logging);
             }
             else
             {
@@ -127,7 +119,6 @@ namespace IronText.Runtime
                     stateToSymbol,
                     parserConflictActions,
                     producer,
-                    allocator,
                     logging);
             }
         }

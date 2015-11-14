@@ -11,14 +11,13 @@ namespace IronText.Runtime
     {
         private const int InitialValueStackSize = 32;
 
-        private readonly RuntimeGrammar     grammar;
-        private readonly TransitionDelegate     actionTable;
+        private readonly RuntimeGrammar grammar;
+        private readonly TransitionDelegate actionTable;
 
         private readonly TaggedStack<TNode> stateStack;
 
-        private RuntimeProduction  currentRule;
-        private IProducer<TNode>   producer;
-        private readonly ResourceAllocator allocator;
+        private RuntimeProduction currentRule;
+        private IProducer<TNode> producer;
         private ILogging logging;
         private Msg priorInput;
         private bool isVerifier;
@@ -27,14 +26,11 @@ namespace IronText.Runtime
             IProducer<TNode>   producer,
             RuntimeGrammar     grammar,
             TransitionDelegate actionTable,
-            ResourceAllocator  allocator,
-            ILogging           logging
-            )
+            ILogging           logging)
             : this(
                 producer,
                 grammar,
                 actionTable,
-                allocator,
                 logging,
                 new TaggedStack<TNode>(InitialValueStackSize))
         {
@@ -42,19 +38,17 @@ namespace IronText.Runtime
         }
 
         private DeterministicParser(
-            IProducer<TNode>      producer,
-            RuntimeGrammar        grammar,
-            TransitionDelegate    actionTable,
-            ResourceAllocator     allocator,
-            ILogging              logging,
-            TaggedStack<TNode>    stateStack)
+            IProducer<TNode>   producer,
+            RuntimeGrammar     grammar,
+            TransitionDelegate actionTable,
+            ILogging           logging,
+            TaggedStack<TNode> stateStack)
         {
-            this.producer       = producer;
-            this.grammar        = grammar;
-            this.actionTable    = actionTable;
-            this.allocator      = allocator;
-            this.logging        = logging;
-            this.stateStack     = stateStack;
+            this.producer    = producer;
+            this.grammar     = grammar;
+            this.actionTable = actionTable;
+            this.logging     = logging;
+            this.stateStack  = stateStack;
         }
 
         public void Reset()
@@ -172,7 +166,7 @@ namespace IronText.Runtime
                         PushNode(action.State, value);
                         break;
                     }
-                
+
                 case ParserActionKind.Accept:
                     producer.Result = stateStack.Peek();
                     return FinalReceiver<Msg>.Instance;
@@ -194,9 +188,9 @@ namespace IronText.Runtime
                     logging.Write(
                         new LogEntry
                         {
-                            Severity  = Severity.Error,
-                            Message   = "Unexpected end of file.",
-                            Location  = currentInput.Location,
+                            Severity = Severity.Error,
+                            Message = "Unexpected end of file.",
+                            Location = currentInput.Location,
                             HLocation = currentInput.HLocation,
                         });
                 }
@@ -246,7 +240,7 @@ namespace IronText.Runtime
                     Severity = Severity.Error,
                     Location = msg.Location,
                     HLocation = msg.HLocation,
-                    Message  = message.ToString()
+                    Message = message.ToString()
                 });
         }
 
@@ -273,7 +267,6 @@ namespace IronText.Runtime
                 NullProducer<object>.Instance,
                 grammar,
                 actionTable,
-                allocator,
                 NullLogging.Instance,
                 stateStack.CloneWithoutData());
 

@@ -16,7 +16,6 @@ namespace IronText.Runtime
         private readonly int[]                stateToPriorToken;
         private readonly TransitionDelegate   transition;
         private          IProducer<T>         producer;
-        private readonly ResourceAllocator    allocator;
         private Msg priorInput;
 
         private readonly Gss<T>               gss;
@@ -39,7 +38,6 @@ namespace IronText.Runtime
             int[]               stateToPriorToken,
             int[]               conflictActionsTable,
             IProducer<T>        producer,
-            ResourceAllocator   allocator,
             ILogging            logging)
             : this(
                 grammar,
@@ -48,7 +46,6 @@ namespace IronText.Runtime
                 stateToPriorToken,
                 conflictActionsTable,
                 producer,
-                allocator,
                 logging,
                 new Gss<T>(stateToPriorToken.Length + grammar.Productions.Length))
         {
@@ -61,7 +58,6 @@ namespace IronText.Runtime
             int[]               stateToPriorToken,
             int[]               conflictActionsTable,
             IProducer<T>        producer,
-            ResourceAllocator   allocator,
             ILogging            logging,
             Gss<T>              gss)
         {
@@ -73,7 +69,6 @@ namespace IronText.Runtime
             this.gss                  = gss;
             this.nodeBuffer           = new T[grammar.MaxProductionLength];
             this.producer             = producer;
-            this.allocator            = allocator;
             this.logging              = logging;
 
             this.pendingReductions = new RuntimeProduction[grammar.Productions.Length];
@@ -558,7 +553,6 @@ namespace IronText.Runtime
                             stateToPriorToken,
                             conflictActionsTable,
                             NullProducer<T>.Instance,
-                            allocator,
                             NullLogging.Instance,
                             gss.CloneWithoutData());
 

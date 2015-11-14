@@ -2,13 +2,10 @@
 using IronText.Logging;
 using IronText.MetadataCompiler;
 using IronText.Reflection;
-using IronText.Reflection.Reporting;
 using IronText.Runtime;
 using IronText.Tests.Algorithm;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 
 namespace IronText.Tests.TestUtils
@@ -31,7 +28,7 @@ namespace IronText.Tests.TestUtils
 
         private void BuildTables()
         {
-            var source   = new DirectGrammarSource(outputDirectory, grammar, "test language");
+            var source = new DirectGrammarSource(outputDirectory, grammar, "test language");
             var provider = new LanguageDataProvider(source, false);
             if (!ResourceContext.Instance.LoadOrBuild(provider))
             {
@@ -41,26 +38,21 @@ namespace IronText.Tests.TestUtils
             this.data = provider.Resource;
         }
 
-        public void Parse(string text, Dictionary<string,object> globals = null)
+        public void Parse(string text, Dictionary<string, object> globals = null)
         {
             Parse(new StringReader(text), Loc.MemoryString, globals);
         }
 
-        public void Parse(StringReader input, string document, Dictionary<string,object> globals = null)
+        public void Parse(StringReader input, string document, Dictionary<string, object> globals = null)
         {
-            var logging   = ExceptionLogging.Instance;
+            var logging = ExceptionLogging.Instance;
             var rtGrammar = grammar.ToRuntime();
 
-            var producer  = new ActionProducer(rtGrammar, null, ProductionAction, TermFactory, null, globals);
-            IReceiver<Msg>   parser;
+            var producer = new ActionProducer(rtGrammar, null, ProductionAction, TermFactory, null, globals);
+            IReceiver<Msg> parser;
             if (data.IsDeterministic)
             {
-                parser = new DeterministicParser<ActionNode>(
-                            producer,
-                            rtGrammar,
-                            Transition,
-                            null,
-                            logging);
+                parser = new DeterministicParser<ActionNode>(producer, rtGrammar, Transition, logging);
             }
             else
             {
@@ -71,7 +63,6 @@ namespace IronText.Tests.TestUtils
                             data.StateToToken,
                             data.ParserConflictActionTable,
                             producer,
-                            null,
                             logging);
             }
 
@@ -104,7 +95,7 @@ namespace IronText.Tests.TestUtils
             foreach (var pair in ProductionHooks)
             {
                 var prodName = pair.Key;
-                var action   = pair.Value;
+                var action = pair.Value;
 
                 var hookProd = grammar.Productions.Find(prodName);
                 var prod = grammar.Productions[pargs.ProductionIndex];
@@ -156,12 +147,12 @@ namespace IronText.Tests.TestUtils
         private IEnumerable<Msg> ScanAll(ITdfaSimulation automaton, char[] input)
         {
             int cursor = 0;
-            int state  = automaton.Start;
+            int state = automaton.Start;
             int marker = 0;
-            int start  = 0;
+            int start = 0;
             int acceptingState = automaton.IsAccepting(state) ? state : -1;
 
-            while(true)
+            while (true)
             {
                 var item = input[cursor];
                 int nextState;
@@ -204,7 +195,7 @@ namespace IronText.Tests.TestUtils
                     state = nextState;
                     if (automaton.IsAccepting(state))
                     {
-                        marker      = cursor;
+                        marker = cursor;
                         acceptingState = state;
                     }
                 }
@@ -229,7 +220,7 @@ namespace IronText.Tests.TestUtils
 
             public string FullLanguageName { get; private set; }
 
-            public string Origin { get; private set; } 
+            public string Origin { get; private set; }
 
             public string ReaderTypeName { get { return typeof(DirectGrammarReader).AssemblyQualifiedName; } }
 
@@ -247,5 +238,5 @@ namespace IronText.Tests.TestUtils
             }
         }
     }
-    
+
 }

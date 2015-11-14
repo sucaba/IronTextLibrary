@@ -20,7 +20,6 @@ namespace IronText.MetadataCompiler
         private readonly ProductionActionDelegate grammarAction;
         private readonly TermFactoryDelegate termFactory;
         private readonly MergeDelegate merge;
-        private ResourceAllocator allocator;
         private readonly ScannerDescriptor scannerDescriptor;
 
         public BootstrapLanguage(CilGrammarSource source, LanguageData data)
@@ -39,7 +38,6 @@ namespace IronText.MetadataCompiler
         public void Init()
         {
             this.RuntimeGrammar = data.RuntimeGrammar;
-            this.allocator = new ResourceAllocator(RuntimeGrammar);
         }
 
         public bool IsDeterministic { get { return data.IsDeterministic; } }
@@ -63,13 +61,7 @@ namespace IronText.MetadataCompiler
 
         public IPushParser CreateParser<TNode>(IProducer<TNode> producer, ILogging logging)
         {
-            return new DeterministicParser<TNode>(
-                producer,
-                RuntimeGrammar,
-                GetParserAction,
-                allocator,
-                logging
-                );
+            return new DeterministicParser<TNode>(producer, RuntimeGrammar, GetParserAction, logging);
         }
 
         public IProducer<ActionNode> CreateActionProducer(object context)
