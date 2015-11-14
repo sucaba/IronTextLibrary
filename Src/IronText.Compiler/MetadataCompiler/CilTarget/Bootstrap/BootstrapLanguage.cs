@@ -42,8 +42,6 @@ namespace IronText.MetadataCompiler
 
         public bool IsDeterministic { get { return data.IsDeterministic; } }
 
-        public Grammar Grammar { get { return data.Grammar; } }
-
         public object CreateDefaultContext()
         {
             return Activator.CreateInstance(source.DefinitionType);
