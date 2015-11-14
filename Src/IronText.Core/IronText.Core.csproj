@@ -226,7 +226,7 @@
     <Compile Include="Framework\Attributes\MatchAttribute.cs" />
     <Compile Include="Framework\Attributes\LiteralAttribute.cs" />
     <Compile Include="Framework\Attributes\LanguageServiceAttribute.cs" />
-    <Compile Include="Runtime\Loaders\CilExistingLanguageLoader.cs" />
+    <Compile Include="Runtime\Loaders\TypedLanguageLoader.cs" />
     <Compile Include="Runtime\IBootstrapLanguage.cs" />
     <Compile Include="Runtime\IInternalInitializable.cs" />
     <Compile Include="Runtime\Loaders\ILanguageLoader.cs" />

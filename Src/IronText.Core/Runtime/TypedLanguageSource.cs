@@ -12,52 +12,38 @@ namespace IronText.Runtime
     {
         public TypedLanguageSource(Type definitionType)
         {
+            if (definitionType == null)
+            {
+                throw new ArgumentNullException("definitionType");
+            }
+
             this.DefinitionType = definitionType;
         }
 
-        public Type DefinitionType { get; private set; }
+        public Type     DefinitionType      { get; private set; }
 
-        public Assembly SourceAssembly
-        {
-            get { return DefinitionType.Assembly; }
+        public Assembly SourceAssembly      { get { return DefinitionType.Assembly; }
         }
 
-        public string FullLanguageName 
+        public string   FullLanguageName    { get { return DefinitionType.FullName; }
+        }
+
+        public string   LanguageName        { get { return DefinitionType.Name; } }
+
+        public string   GrammarOrigin       { get { return ReflectionUtils.ToString(DefinitionType); } }
+
+        public string   GrammarFileName     { get { return LanguageTypeName + ".gram"; } }
+
+        public string   ScannerInfoFileName { get { return LanguageTypeName + ".scan"; } }
+
+        public string   GrammarInfoFileName { get { return LanguageTypeName + ".info"; } }
+
+        public string   LanguageTypeName    
         { 
-            get { return DefinitionType.FullName; }
+            get { return DefinitionType.Namespace + ".Derived." + DefinitionType.Name + "_Language"; } 
         }
 
-        public string LanguageName 
-        { 
-            get { return DefinitionType.Name; }
-        }
-
-        public string GrammarOrigin
-        {
-            get { return ReflectionUtils.ToString(DefinitionType); }
-        }
-
-        public string GrammarFileName
-        {
-            get { return LanguageTypeName + ".gram"; }
-        }
-
-        public string ScannerInfoFileName
-        {
-            get { return LanguageTypeName + ".scan"; }
-        }
-
-        public string GrammarInfoFileName
-        {
-            get { return LanguageTypeName + ".info"; }
-        }
-
-        public string LanguageTypeName
-        {
-            get { return DefinitionType.Namespace + ".Derived." + DefinitionType.Name + "_Language"; }
-        }
-
-        public override string ToString() { return FullLanguageName; }
+        public override string ToString()   { return FullLanguageName; }
 
         public override bool Equals(object obj)
         {

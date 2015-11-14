@@ -1,10 +1,8 @@
-﻿using IronText.Reflection;
-using IronText.Reflection.Managed;
-using System;
+﻿using System;
 
 namespace IronText.Runtime
 {
-    class CilExistingLanguageLoader : ILanguageLoader
+    class TypedLanguageLoader : ILanguageLoader
     {
         public ILanguageRuntime Load(ILanguageSource name)
         {

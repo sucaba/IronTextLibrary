@@ -1,6 +1,4 @@
-﻿using IronText.Reflection;
-
-namespace IronText.Runtime
+﻿namespace IronText.Runtime
 {
     public interface ILanguageLoader
     {

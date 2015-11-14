@@ -1,6 +1,4 @@
 ﻿using IronText.Logging;
-using IronText.Reflection;
-using IronText.Reflection.Managed;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,7 +29,7 @@ namespace IronText.Runtime
             }
             else
             {
-                var loader = GetLoader() ?? new CilExistingLanguageLoader();
+                var loader = GetLoader() ?? new TypedLanguageLoader();
                 result = loader.Load(source);
                 if (result == null)
                 {
