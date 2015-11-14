@@ -127,15 +127,6 @@ namespace IronText.Runtime
 
                 case ParserActionKind.Shift:
                     {
-                        // There two approaches:
-                        // 1) Ineffective one when we deal with items in state:
-                        //    foreach item in state S
-                        //      let B = following-non-term(item)
-                        //      foreach rule : (I = F(IDataContext c)) in sem-rules(item) where I in IN(B)
-                        //          apply rule(IDataContext c based on production rule of item)
-                        // 2) Effective, based on rules which act upon offsets.
-                        //    foreach offsetBasedRule in state S
-                        //      apply offsetBasedRule(IDataContext c based on state S and stack state)
                         var node = producer.CreateLeaf(envelope, data);
                         PushNode(action.State, node);
                         break;
@@ -153,7 +144,7 @@ namespace IronText.Runtime
                                 stateStack.PeekTail(currentRule.InputLength),
                                 (IStackLookback<TNode>)stateStack);
                             stateStack.Pop(currentRule.InputLength);
-                            action = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.OutcomeToken));
+                            action = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));
                         }
                         while (action.Kind == ParserActionKind.ShiftReduce);
 
@@ -271,7 +262,6 @@ namespace IronText.Runtime
                 stateStack.CloneWithoutData());
 
             result.isVerifier = true;
-
             return result;
         }
 
@@ -315,7 +305,7 @@ namespace IronText.Runtime
                             (IStackLookback<TNode>)stateStack);
 
                 stateStack.Pop(currentRule.InputLength);
-                act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.OutcomeToken));
+                act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));
 
                 while (act.Kind == ParserActionKind.ShiftReduce) // == GotoReduce
                 {
@@ -329,7 +319,7 @@ namespace IronText.Runtime
                             (IStackLookback<TNode>)stateStack);
 
                     stateStack.Pop(currentRule.InputLength);
-                    act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.OutcomeToken));
+                    act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));
                 }
 
                 PushNode(act.State, value);
@@ -344,6 +334,17 @@ namespace IronText.Runtime
         private void PushNode(int state, TNode value)
         {
             stateStack.Push(state, value);
+
+            // Note: There two approaches:
+            // 1) Ineffective one when we deal with items in state:
+            //    foreach item in state S
+            //      let B = following-non-term(item)
+            //      foreach rule : (I = F(IDataContext c)) in sem-rules(item) where I in IN(B)
+            //          apply rule(IDataContext c based on production rule of item)
+            // 2) Effective, based on rules which act upon offsets.
+            //    foreach offsetBasedRule in state S
+            //      apply offsetBasedRule(IDataContext c based on state S and stack state)
+            producer.Shifted(stateStack);
         }
     }
 }

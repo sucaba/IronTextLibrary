@@ -16,6 +16,7 @@ namespace IronText.Runtime
         private readonly ProductionActionDelegate productionAction;
         private readonly TermFactoryDelegate termFactory;
         private readonly MergeDelegate merge;
+        private readonly ShiftActionDelegate shiftAction;
         private readonly object context;
         private Loc  _parsingLocation;
         private HLoc _parsingHLocation;
@@ -55,6 +56,8 @@ namespace IronText.Runtime
                     typeof(IScanning),
                     this);
             }
+
+            this.shiftAction = lookback => {}; //Console.WriteLine("Shift to state: {0}", lookback.GetTopState());
         }
 
         public ReductionOrder ReductionOrder { get { return ReductionOrder.ByRuleDependency; } }
@@ -98,7 +101,7 @@ namespace IronText.Runtime
         {
             if (prefix.Count == 0)
             {
-                return GetDefault(prod.OutcomeToken, stackLookback);
+                return GetDefault(prod.Outcome, stackLookback);
             }
 
             Loc location;
@@ -132,7 +135,7 @@ namespace IronText.Runtime
                 throw new NotSupportedException();
             }
 
-            var result = new ActionNode(prod.OutcomeToken, null, location, hLocation);
+            var result = new ActionNode(prod.Outcome, null, location, hLocation);
 
             var pargs = new ProductionActionArgs(prod.Index, prefix.Array, prefix.Offset, prefix.Count, context, stackLookback, result);
             result.Value = productionAction(pargs);
@@ -160,6 +163,11 @@ namespace IronText.Runtime
         public IProducer<ActionNode> GetRecoveryProducer()
         {
             return NullProducer<ActionNode>.Instance;
+        }
+
+        public void Shifted(IStackLookback<ActionNode> lookback)
+        {
+            shiftAction(lookback);
         }
     }
 }

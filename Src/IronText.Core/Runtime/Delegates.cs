@@ -84,4 +84,12 @@ namespace IronText.Runtime
         object  context,        // user provided context
         IStackLookback<ActionNode> lookback   // access to the prior stack states and values
         );
+
+    /// <summary>
+    /// Called on each shift to update inherited attributes
+    /// </summary>
+    /// <param name="lookback"></param>
+    /// <returns></returns>
+    public delegate void ShiftActionDelegate(
+        IStackLookback<ActionNode> lookback);
 }

@@ -38,5 +38,7 @@ namespace IronText.Runtime
 
         // Producer used just before error recovery start
         IProducer<T> GetRecoveryProducer();
+
+        void Shifted(IStackLookback<T> lookback);
     }
 }

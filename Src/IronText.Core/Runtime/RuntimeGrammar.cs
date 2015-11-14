@@ -42,7 +42,7 @@ namespace IronText.Runtime
         public IEnumerable<RuntimeProduction> GetNullableProductions(int outcome)
         {
             return from prod in Productions
-                   where prod.OutcomeToken == outcome && prod.Input.All(IsNullable)
+                   where prod.Outcome == outcome && prod.Input.All(IsNullable)
                    orderby prod.InputLength ascending
                    select prod;
         }

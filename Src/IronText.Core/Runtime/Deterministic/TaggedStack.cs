@@ -109,6 +109,8 @@ namespace IronText.Runtime
             return new ArraySlice<T>(data, Count - size, size);
         }
 
+        public int GetTopState() { return PeekTag(); }
+
         public int GetParentState() { return tags[Start - 1]; }
 
         public T GetNodeAt(int backOffset)

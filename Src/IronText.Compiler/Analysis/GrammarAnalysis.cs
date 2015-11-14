@@ -10,7 +10,7 @@ using IronText.MetadataCompiler;
 namespace IronText.Compiler.Analysis
 {
     /// <summary>
-    /// Prebuilds various tables related to <see cref="IronText.Framework.BnfGrammar"/>
+    /// Prebuilds various tables related to <see cref="IronText.Reflection.Grammar"/>
     /// </summary>
     sealed class GrammarAnalysis
     {
@@ -44,7 +44,7 @@ namespace IronText.Compiler.Analysis
             return grammar.Symbols[token].IsTerminal;
         }
 
-        public IEnumerable<ProdItem> GetProductions(int leftToken)
+        public IEnumerable<RuntimeProduction> GetProductions(int leftToken)
         {
             return grammar.Symbols[leftToken].Productions.Select(ToRt);
         }
@@ -59,7 +59,7 @@ namespace IronText.Compiler.Analysis
             return grammar.Symbols[token].Precedence;
         }
 
-        public ProdItem AugmentedProduction
+        public RuntimeProduction AugmentedProduction
         {
             get { return ToRt(grammar.AugmentedProduction); }
         }
@@ -101,9 +101,9 @@ namespace IronText.Compiler.Analysis
             return tables.IsTailNullable(item.GetInputTokens(), item.Position);
         }
 
-        private ProdItem ToRt(Production production)
+        private RuntimeProduction ToRt(Production production)
         {
-            return new ProdItem(
+            return new RuntimeProduction(
                 production.Index,
                 production.Outcome.Index,
                 production.Input.Select(sym => sym.Index));

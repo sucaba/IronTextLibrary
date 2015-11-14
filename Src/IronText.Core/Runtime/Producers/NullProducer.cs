@@ -26,15 +26,10 @@ namespace IronText.Runtime
 
         public T GetDefault(int nonTerm, IStackLookback<T> lookback) { return default(T); }
 
-        public void FillEpsilonSuffix(
-            int ruleId,
-            int prefixSize,
-            T[] buffer,
-            int destIndex,
-            IStackLookback<T> lookback)
+        public IProducer<T> GetRecoveryProducer() { return this; }
+
+        public void Shifted(IStackLookback<T> lookback)
         {
         }
-
-        public IProducer<T> GetRecoveryProducer() { return this; }
     }
 }

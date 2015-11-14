@@ -302,7 +302,7 @@ namespace IronText.Runtime
             {
                 GssReducePath<T> path = R.Dequeue();
 
-                int X = path.Production.OutcomeToken;
+                int X = path.Production.Outcome;
                 int m = path.Size;
 
                 GssNode<T> u = path.LeftNode;

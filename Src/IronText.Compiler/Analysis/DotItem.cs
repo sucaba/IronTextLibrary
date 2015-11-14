@@ -1,21 +1,18 @@
-﻿using System.Collections.Generic;
-using IronText.Algorithm;
-using IronText.Reflection;
-using IronText.Reflection.Reporting;
+﻿using IronText.Algorithm;
 using IronText.Runtime;
 
 namespace IronText.Compiler.Analysis
 {
     public class DotItem
     {
-        private readonly ProdItem production;
+        private readonly RuntimeProduction production;
 
         public DotItem(DotItem other)
             : this(other.production, other.Position)
         {
         }
 
-        internal DotItem(ProdItem production, int pos)
+        internal DotItem(RuntimeProduction production, int pos)
         {
             this.production = production;
             this.Position   = pos;

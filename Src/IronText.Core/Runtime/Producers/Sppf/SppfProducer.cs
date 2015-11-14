@@ -32,7 +32,7 @@ namespace IronText.Runtime
             // Produce more dense tree
             if (parts.Count == 0)
             {
-                return GetDefault(prod.OutcomeToken, stackLookback);
+                return GetDefault(prod.Outcome, stackLookback);
             }
 
             SppfNode[] children = new SppfNode[prod.InputLength];
@@ -80,5 +80,10 @@ namespace IronText.Runtime
         }
 
         public IProducer<SppfNode> GetRecoveryProducer() { return this; }
+
+
+        public void Shifted(IStackLookback<SppfNode> lookback)
+        {
+        }
     }
 }
