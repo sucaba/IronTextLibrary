@@ -77,7 +77,7 @@ namespace IronText.Freezing.Managed
             private void GetLanguageData()
             {
                 Type definitionType = typeof(TContext);
-                var source = new CilGrammarSource(definitionType);
+                var source = new TypedLanguageSource(definitionType);
 
                 var dataProvider = new LanguageDataProvider(source, false);
                 ResourceContext.Instance.LoadOrBuild(dataProvider, out this.data);

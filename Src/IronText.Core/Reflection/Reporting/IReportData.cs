@@ -1,4 +1,6 @@
-﻿namespace IronText.Reflection.Reporting
+﻿using IronText.Runtime;
+
+namespace IronText.Reflection.Reporting
 {
     /// <summary>
     /// Contract for a language report data source.
@@ -7,7 +9,7 @@
     {
         string              DestinationDirectory { get; }
 
-        IGrammarSource      Source           { get; }
+        ILanguageSource      Source           { get; }
 
         Grammar             Grammar          { get; }
 

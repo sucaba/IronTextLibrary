@@ -1,9 +1,10 @@
 ﻿using IronText.Logging;
+using IronText.Runtime;
 
 namespace IronText.Reflection
 {
     public interface IGrammarReader
     {
-        Grammar Read(IGrammarSource source, ILogging logging);
+        Grammar Read(ILanguageSource source, ILogging logging);
     }
 }

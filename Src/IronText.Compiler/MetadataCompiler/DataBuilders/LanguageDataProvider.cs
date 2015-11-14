@@ -12,16 +12,17 @@ using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Reflection.Transformations;
 using IronText.Misc;
+using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
     internal class LanguageDataProvider : ResourceGetter<LanguageData>
     {
-        private readonly IGrammarSource source;
+        private readonly ILanguageSource source;
         private readonly bool           bootstrap;
         private ILogging                logging;
 
-        public LanguageDataProvider(IGrammarSource source, bool bootstrap)
+        public LanguageDataProvider(ILanguageSource source, bool bootstrap)
         {
             this.source    = source;
             this.bootstrap = bootstrap;
@@ -34,7 +35,7 @@ namespace IronText.MetadataCompiler
 
             result = new LanguageData();
 
-            var readerType = Type.GetType(source.ReaderTypeName);
+            var readerType = Type.GetType(source.GrammarReaderTypeName);
             if (readerType == null)
             {
                 logging.Write(
@@ -43,9 +44,9 @@ namespace IronText.MetadataCompiler
                         Severity = Severity.Error,
                         Message = string.Format(
                                     "Unable to find grammar reader '{0}' for language '{1}'",
-                                    source.ReaderTypeName,
+                                    source.GrammarReaderTypeName,
                                     source.LanguageName),
-                        Origin = source.Origin
+                        Origin = source.GrammarOrigin
                     });
                 return false;
             }
@@ -81,7 +82,7 @@ namespace IronText.MetadataCompiler
 
             logging.WithTimeLogging(
                 source.LanguageName,
-                source.Origin,
+                source.GrammarOrigin,
                 () =>
                 {
                     parserDfa = new Lalr1Dfa(analysis, LrTableOptimizations.Default);
@@ -169,7 +170,7 @@ namespace IronText.MetadataCompiler
                     new LogEntry
                     {
                         Severity = Severity.Error,
-                        Origin   = source.Origin,
+                        Origin   = source.GrammarOrigin,
                         Message  = string.Format(
                                     "Unable to create scanner for '{0}' language.",
                                     source.LanguageName)

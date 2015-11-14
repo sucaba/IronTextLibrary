@@ -177,8 +177,8 @@
     <Compile Include="Reflection\Semantics\SemanticScope.cs" />
     <Compile Include="Reflection\Semantics\SemanticRef.cs" />
     <Compile Include="Reflection\Serialization\IGrammarReader.cs" />
-    <Compile Include="Reflection\IGrammarSource.cs" />
-    <Compile Include="Reflection\IReportDestinationHint.cs" />
+    <Compile Include="Runtime\ILanguageSource.cs" />
+    <Compile Include="Runtime\IReportDestinationHint.cs" />
     <Compile Include="Runtime\PredefinedTokens.cs" />
     <Compile Include="Reflection\Reporting\IReport.cs" />
     <Compile Include="Reflection\Reporting\ReportCollection.cs" />
@@ -313,7 +313,7 @@
     <Compile Include="Extensibility\MetadataParser.cs" />
     <Compile Include="Framework\Attributes\StaticContextAttribute.cs" />
     <Compile Include="Framework\Attributes\LanguageAttribute.cs" />
-    <Compile Include="Reflection\Cil\CilGrammarSource.cs" />
+    <Compile Include="Runtime\TypedLanguageSource.cs" />
     <Compile Include="Misc\Attributes.cs" />
     <Compile Include="Misc\ExpressionUtils.cs" />
     <Compile Include="Misc\PropertyComparer.cs" />

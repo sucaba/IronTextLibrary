@@ -4,6 +4,6 @@ namespace IronText.Runtime
 {
     public interface ILanguageLoader
     {
-        ILanguageRuntime Load(IGrammarSource languageName);
+        ILanguageRuntime Load(ILanguageSource languageName);
     }
 }

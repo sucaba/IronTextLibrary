@@ -16,13 +16,13 @@ namespace IronText.MetadataCompiler
         private delegate object TokenFactoryDelegate1(string text, object rootContext);
 
         private readonly LanguageData data;
-        private readonly CilGrammarSource source;
+        private readonly TypedLanguageSource source;
         private readonly ProductionActionDelegate grammarAction;
         private readonly TermFactoryDelegate termFactory;
         private readonly MergeDelegate merge;
         private readonly ScannerDescriptor scannerDescriptor;
 
-        public BootstrapLanguage(CilGrammarSource source, LanguageData data)
+        public BootstrapLanguage(TypedLanguageSource source, LanguageData data)
         {
             this.source = source;
             this.data = data;

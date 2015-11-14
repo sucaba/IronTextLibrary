@@ -31,14 +31,14 @@ namespace IronText.MetadataCompiler
         private const string CreateDefaultContextMethodName     = "InternalCreateDefaultContext";
 
         private readonly LanguageData data;
-        private readonly CilGrammarSource languageName;
+        private readonly TypedLanguageSource languageName;
         private Ref<Types> declaringTypeRef;
         private readonly ImplementationGenerator implementationGenerator;
         private ILogging logging;
 
         public LanguageDerivedBuilder(Type definitionType)
         {
-            this.languageName = new CilGrammarSource(definitionType);
+            this.languageName = new TypedLanguageSource(definitionType);
 
             var dataProvider = new LanguageDataProvider(languageName, false);
             ResourceContext.Instance.LoadOrBuild(dataProvider, out this.data);
@@ -60,7 +60,7 @@ namespace IronText.MetadataCompiler
                         Message = string.Format(
                             "Failed to compile '{0}' language definition.",
                             languageName.FullLanguageName),
-                        Origin = languageName.Origin
+                        Origin = languageName.GrammarOrigin
                     });
 
                 return null;

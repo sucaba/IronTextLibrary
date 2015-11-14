@@ -10,10 +10,10 @@ namespace IronText.MetadataCompiler
 {
     public class CompiledLanguageProvider : IExternalResourceProvider<ILanguageRuntime>
     {
-        private readonly CilGrammarSource languageName;
+        private readonly TypedLanguageSource languageName;
         private readonly IExternalResourceProvider<Assembly> assemblyProvider;
 
-        public CompiledLanguageProvider(CilGrammarSource languageName, IExternalResourceProvider<Assembly> assemblyProvider)
+        public CompiledLanguageProvider(TypedLanguageSource languageName, IExternalResourceProvider<Assembly> assemblyProvider)
         {
             this.languageName = languageName;
             this.assemblyProvider = assemblyProvider;

@@ -1,7 +1,6 @@
-﻿
-namespace IronText.Reflection
+﻿namespace IronText.Runtime
 {
-    public interface IGrammarSource
+    public interface ILanguageSource
     {
         /// <summary>
         /// Display language name
@@ -16,11 +15,11 @@ namespace IronText.Reflection
         /// <summary>
         /// Grammar defintion type name or file name containing grammar.
         /// </summary>
-        string Origin            { get; }
+        string GrammarOrigin     { get; }
 
         /// <summary>
         /// Assembly qualified type name of a grammar reader
         /// </summary>
-        string ReaderTypeName   { get; }
+        string GrammarReaderTypeName   { get; }
     }
 }

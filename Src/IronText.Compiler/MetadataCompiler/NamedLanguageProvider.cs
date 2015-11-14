@@ -12,12 +12,12 @@ namespace IronText.MetadataCompiler
 {
     public class NamedLanguageProvider : IExternalResourceProvider<ILanguageRuntime>
     {
-        private static readonly Dictionary<IGrammarSource, ILanguageRuntime> bootstrapLanguages = new Dictionary<IGrammarSource, ILanguageRuntime>();
+        private static readonly Dictionary<ILanguageSource, ILanguageRuntime> bootstrapLanguages = new Dictionary<ILanguageSource, ILanguageRuntime>();
 
-        private readonly IGrammarSource languageName;
+        private readonly ILanguageSource languageName;
         private IExternalResourceProvider<ILanguageRuntime> provider;
 
-        public NamedLanguageProvider(IGrammarSource languageName)
+        public NamedLanguageProvider(ILanguageSource languageName)
         {
             this.languageName = languageName;
         }
@@ -61,7 +61,7 @@ namespace IronText.MetadataCompiler
                 return provider;
             }
 
-            var cilLanguageName = (CilGrammarSource)this.languageName;
+            var cilLanguageName = (TypedLanguageSource)this.languageName;
 
             if (Attributes.Exists<DerivedAssemblyMarker>(cilLanguageName.SourceAssembly))
             {

@@ -16,9 +16,9 @@ namespace IronText.Reflection.Managed
     {
         private ILogging logging;
 
-        public Grammar Read(IGrammarSource source, ILogging logging)
+        public Grammar Read(ILanguageSource source, ILogging logging)
         {
-            var cilSource = source as CilGrammarSource;
+            var cilSource = source as TypedLanguageSource;
             if (cilSource == null)
             {
                 return null;
@@ -30,7 +30,7 @@ namespace IronText.Reflection.Managed
 
             logging.WithTimeLogging(
                 cilSource.LanguageName,
-                cilSource.Origin,
+                cilSource.GrammarOrigin,
                 () =>
                 {
                     definition = new CilGrammar(cilSource, logging);

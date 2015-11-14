@@ -14,15 +14,15 @@ namespace IronText.Runtime
     {
         private const string DefaultLanguageLoaderTypeName = "IronText.Runtime.LanguageLoader, IronText.Compiler";
 
-        private static readonly Dictionary<IGrammarSource, ILanguageRuntime> languages 
-            = new Dictionary<IGrammarSource, ILanguageRuntime>();
+        private static readonly Dictionary<ILanguageSource, ILanguageRuntime> languages 
+            = new Dictionary<ILanguageSource, ILanguageRuntime>();
 
         public static ILanguageRuntime Get(Type definitionType)
         {
-            return Get(new CilGrammarSource(definitionType));
+            return Get(new TypedLanguageSource(definitionType));
         }
 
-        public static ILanguageRuntime Get(IGrammarSource source)
+        public static ILanguageRuntime Get(ILanguageSource source)
         {
             ILanguageRuntime result;
             if (languages.TryGetValue(source, out result))

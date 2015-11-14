@@ -6,9 +6,9 @@ namespace IronText.Runtime
 {
     class CilExistingLanguageLoader : ILanguageLoader
     {
-        public ILanguageRuntime Load(IGrammarSource name)
+        public ILanguageRuntime Load(ILanguageSource name)
         {
-            var cilLanguageName = name as CilGrammarSource;
+            var cilLanguageName = name as TypedLanguageSource;
             if (cilLanguageName == null)
             {
                 return null;

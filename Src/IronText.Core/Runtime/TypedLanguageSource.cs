@@ -3,14 +3,14 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace IronText.Reflection.Managed
+namespace IronText.Runtime
 {
     /// <summary>
     /// Language identity and naming policy for language assembly
     /// </summary>
-    public class CilGrammarSource : IGrammarSource, IReportDestinationHint
+    public class TypedLanguageSource : ILanguageSource, IReportDestinationHint
     {
-        public CilGrammarSource(Type definitionType)
+        public TypedLanguageSource(Type definitionType)
         {
             this.DefinitionType = definitionType;
         }
@@ -32,7 +32,7 @@ namespace IronText.Reflection.Managed
             get { return DefinitionType.Name; }
         }
 
-        public string Origin
+        public string GrammarOrigin
         {
             get { return ReflectionUtils.ToString(DefinitionType); }
         }
@@ -61,13 +61,13 @@ namespace IronText.Reflection.Managed
 
         public override bool Equals(object obj)
         {
-            var casted = obj as CilGrammarSource;
+            var casted = obj as TypedLanguageSource;
             return casted != null && casted.FullLanguageName == FullLanguageName;
         }
 
         public override int GetHashCode() { return FullLanguageName.GetHashCode(); }
 
-        public string ReaderTypeName
+        public string GrammarReaderTypeName
         {
             get { return "IronText.Reflection.Managed.CilGrammarReader, IronText.Compiler"; }
         }

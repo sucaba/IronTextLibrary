@@ -17,7 +17,7 @@ namespace IronText.Reflection.Managed
         private readonly CilMerger[]                        mergers;
         private readonly List<CilSymbolFeature<Precedence>> precedence;
 
-        public CilGrammar(CilGrammarSource source, ILogging logging)
+        public CilGrammar(TypedLanguageSource source, ILogging logging)
         {
             Type definitionType = source.DefinitionType;
 
@@ -110,7 +110,7 @@ namespace IronText.Reflection.Managed
                 .Where(symbol => !IsSpecialSymbol(symbol))
                 .Except(termsProducedByScanner);
 
-            CheckAllScanRulesDefined(undefinedTerminals, source.Origin, logging);
+            CheckAllScanRulesDefined(undefinedTerminals, source.GrammarOrigin, logging);
 
             precedence = metadata.SelectMany(m => m.GetSymbolPrecedence()).ToList();
 

@@ -35,7 +35,7 @@ namespace CSharpParser.Tests
             var timer = new Stopwatch();
             timer.Start();
 
-            var name = new CilGrammarSource(typeof(ICsGrammar));
+            var name = new TypedLanguageSource(typeof(ICsGrammar));
             var provider = new IronText.MetadataCompiler.LanguageDataProvider(name, false);
             IronText.Build.ResourceContext.Instance.LoadOrBuild(provider);
             var data = provider.Resource;

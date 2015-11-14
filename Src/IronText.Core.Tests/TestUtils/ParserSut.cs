@@ -202,7 +202,7 @@ namespace IronText.Tests.TestUtils
             }
         }
 
-        class DirectGrammarSource : IGrammarSource, IReportDestinationHint
+        class DirectGrammarSource : ILanguageSource, IReportDestinationHint
         {
             internal readonly Grammar grammar;
             private string outputDirectory;
@@ -213,16 +213,16 @@ namespace IronText.Tests.TestUtils
                 this.grammar = grammar;
                 this.LanguageName = languageName;
                 this.FullLanguageName = languageName;
-                this.Origin = "<uknown>";
+                this.GrammarOrigin = "<uknown>";
             }
 
             public string LanguageName { get; private set; }
 
             public string FullLanguageName { get; private set; }
 
-            public string Origin { get; private set; }
+            public string GrammarOrigin { get; private set; }
 
-            public string ReaderTypeName { get { return typeof(DirectGrammarReader).AssemblyQualifiedName; } }
+            public string GrammarReaderTypeName { get { return typeof(DirectGrammarReader).AssemblyQualifiedName; } }
 
             string IReportDestinationHint.OutputDirectory
             {
@@ -232,7 +232,7 @@ namespace IronText.Tests.TestUtils
 
         public class DirectGrammarReader : IGrammarReader
         {
-            public Grammar Read(IGrammarSource source, ILogging logging)
+            public Grammar Read(ILanguageSource source, ILogging logging)
             {
                 return ((DirectGrammarSource)source).grammar;
             }

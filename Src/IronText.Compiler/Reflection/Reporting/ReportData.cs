@@ -2,19 +2,20 @@
 using IronText.Automata.Lalr1;
 using IronText.MetadataCompiler;
 using IronText.Reflection;
+using IronText.Runtime;
 
 namespace IronText.Reflection.Reporting
 {
     class ReportData : IReportData
     {
-        private readonly IGrammarSource source;
+        private readonly ILanguageSource source;
         private IParserAutomata parserAutomata;
         internal readonly LanguageData data;
         internal readonly ParserConflictInfo[] parserConflicts;
         internal readonly DotState[] parserStates;
 
         internal ReportData(
-            IGrammarSource       source,
+            ILanguageSource       source,
             LanguageData         data,
             ParserConflictInfo[] parserConflicts,
             DotState[]           parserStates)
@@ -39,7 +40,7 @@ namespace IronText.Reflection.Reporting
             } 
         }
 
-        public IGrammarSource Source { get { return source; } }
+        public ILanguageSource Source { get { return source; } }
 
         public Grammar Grammar { get { return data.Grammar; } }
 
