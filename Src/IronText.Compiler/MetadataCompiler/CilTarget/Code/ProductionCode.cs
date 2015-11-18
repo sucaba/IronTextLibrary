@@ -5,73 +5,49 @@ using IronText.Lib.Shared;
 using IronText.Reflection.Managed;
 using IronText.Runtime;
 using IronText.Reflection;
+using IronText.Compilation;
 
 namespace IronText.MetadataCompiler
 {
     class ProductionCode : IActionCode
     {
-        private EmitSyntax                emit;
-        private readonly Def<Labels>      returnLabel;
-        private readonly Pipe<EmitSyntax> ldRuleArgs;
-        private readonly Pipe<EmitSyntax> ldArgsStart;
-
-        private ISemanticLoader contextCode;
+        private Fluent<EmitSyntax> emitCoder;
+        private ISemanticLoader    semanticLoader;
+        private readonly VarsStack varsStack;
+        private readonly int       varsStackStart;
 
         public ProductionCode(
-            EmitSyntax       emit,
-            ISemanticLoader    contextCode,
-            Pipe<EmitSyntax> ldRuleArgs,
-            Pipe<EmitSyntax> ldArgsStart,
-            Def<Labels>      returnLabel)
+            Fluent<EmitSyntax>  emitCoder,
+            ISemanticLoader     semanticLoader,
+            VarsStack           varsStack,
+            int                 varsStackStart)
         {
-            this.emit        = emit;
-            this.contextCode = contextCode;
-            this.ldRuleArgs  = ldRuleArgs;
-            this.ldArgsStart = ldArgsStart;
-            this.returnLabel = returnLabel;
+            this.emitCoder      = emitCoder;
+            this.semanticLoader = semanticLoader;
+            this.varsStack      = varsStack;
+            this.varsStackStart = varsStackStart;
         }
 
-        public IActionCode LdSemantic(string contextName)
+        public IActionCode LdSemantic(string name)
         {
-            contextCode.LdSemantic(SemanticRef.ByName(contextName));
+            if (!semanticLoader.LdSemantic(SemanticRef.ByName(name)))
+            {
+                var msg = string.Format("Undefined semantic value for reference '{0}'", name);
+                throw new InvalidOperationException(msg);
+            }
+
             return this;
         }
 
         public IActionCode Emit(Pipe<EmitSyntax> pipe)
         {
-            emit = pipe(emit);
+            emitCoder(pipe);
             return this;
         }
 
         public IActionCode LdActionArgument(int index)
         {
-            emit = emit
-                .Do(ldRuleArgs)
-                .Do(ldArgsStart);
-
-            // Optimization for "+ 0".
-            if (index != 0)
-            {
-                emit
-                    .Ldc_I4(index)
-                    .Add();
-            }
-
-            if (typeof(ActionNode).IsValueType)
-            {
-                emit = emit
-                    .Ldelema(emit.Types.Import(typeof(ActionNode)));
-            }
-            else
-            {
-                emit = emit
-                    .Ldelem_Ref();
-            }
-
-            emit = emit
-                .Ldfld((ActionNode msg) => msg.Value)
-                ;
-
+            varsStack.LdSlot(varsStackStart + index);
             return this;
         }
 
@@ -80,15 +56,12 @@ namespace IronText.MetadataCompiler
             LdActionArgument(index);
             if (argType.IsValueType)
             {
-                emit.Unbox_Any(emit.Types.Import(argType)); 
+
+                emitCoder(il => il
+                    .Unbox_Any(il.Types.Import(argType))); 
             }
 
             return this;
-        }
-
-        public void EmitReturn()
-        {
-            emit.Br(returnLabel.GetRef());
         }
 
         public IActionCode LdMergerOldValue()
