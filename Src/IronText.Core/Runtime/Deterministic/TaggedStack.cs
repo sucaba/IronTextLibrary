@@ -12,6 +12,8 @@ namespace IronText.Runtime
         private T[]     data;
         private int     Capacity;
         public int      Count;
+        // TODO: Get rid of this because it overcomplicates stack access and causes perf issues.
+        //       Planning to remove it after introducing ECLR semantics.
         public int      Start;
         public int currentRecoveryStart;
         public int currentRecoveryCount;
@@ -108,8 +110,6 @@ namespace IronText.Runtime
         {
             return new ArraySlice<T>(data, Count - size, size);
         }
-
-        public int GetTopState() { return PeekTag(); }
 
         public int GetParentState() { return tags[Start - 1]; }
 

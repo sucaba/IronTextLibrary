@@ -3,8 +3,6 @@ namespace IronText.Runtime
 {
     public interface IStackLookback<T>
     {
-        int GetTopState();
-
         // TODO: Remove it along with the old semantic logic.
         /// <summary>
         /// Get state before reduction path
