@@ -1,4 +1,5 @@
-﻿using IronText.Reflection;
+﻿#if ENABLE_SEM0
+using IronText.Reflection;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -28,3 +29,4 @@ namespace IronText.Tests.Reflection
         }
     }
 }
+#endif

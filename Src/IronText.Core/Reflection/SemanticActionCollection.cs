@@ -10,6 +10,7 @@ namespace IronText.Reflection
         {
         }
 
+#if ENABLE_SEM0
         internal SemanticAction Add(string productionText, string fromExpr, string toExpr)
         {
             var resolver = DR.Resolve<IProductionResolver>();
@@ -19,6 +20,7 @@ namespace IronText.Reflection
             var item       = SemanticAction.MakeCopyOutToOut(production, from, to);
             return Add(item);
         }
+#endif
 
         private ISymbolProperty ParseProp(string dotExpr)
         {

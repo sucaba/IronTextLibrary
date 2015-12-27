@@ -7,10 +7,12 @@ namespace IronText.Reflection
     [Serializable]
     internal abstract class SemanticAction : IndexableObject<IGrammarScope>
     {
+#if ENABLE_SEM0
         public static SemanticAction MakeCopyOutToOut(Production production, ISymbolProperty from, ISymbolProperty to)
         {
             return new CopySemanticAction(production, from, to);
         }
+#endif
 
         public SemanticAction(Production production)
         {
@@ -21,6 +23,7 @@ namespace IronText.Reflection
 
         public abstract void Invoke(ProductionActionArgs pargs);
 
+#if ENABLE_SEM0
         internal class CopySemanticAction : SemanticAction
         {
             public CopySemanticAction(Production production, ISymbolProperty from, ISymbolProperty to)
@@ -41,5 +44,6 @@ namespace IronText.Reflection
                 //string toName = pargs.SetInherited(1, To.Name, value);
             }
         }
+#endif
     }
 }

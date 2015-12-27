@@ -1,4 +1,5 @@
-﻿using IronText.Framework;
+﻿#if ENABLE_SEM0
+using IronText.Framework;
 using IronText.Reflection;
 using IronText.Reports;
 using IronText.Runtime;
@@ -174,3 +175,4 @@ namespace IronText.Tests.Semantics
     }
 }
 
+#endif
