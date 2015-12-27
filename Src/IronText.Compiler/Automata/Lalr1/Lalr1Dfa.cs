@@ -169,10 +169,6 @@ namespace IronText.Automata.Lalr1
 
                 foreach (var fromItem in fromKernel)
                 {
-                    // TODO: It is possible to perform closure on the fromItem itself
-                    //       and return exsiting item instances in fromState. This way
-                    //       we can make DotItem a class (currently struct) and reuse
-                    //       instances all over.
                     var J = ClosureLr0(
                         new MutableDotItemSet 
                         {

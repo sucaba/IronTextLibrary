@@ -108,6 +108,10 @@ namespace IronText.Tests.Semantics
         [Test]
         public void CopyInheritedWithinTheSameStateTest()
         {
+            // $start.val = "foo-bar"
+            // S = X   s{ X.val = S.val }
+            // X = "x" s{ assert X.val == "foo-bar" }
+
             var grammar = new Grammar
             {
                 StartName   = "S",

@@ -168,6 +168,13 @@ namespace IronText.Runtime
         public void Shifted(IStackLookback<ActionNode> lookback)
         {
             shiftAction(lookback);
+            /*
+            var topNode = lookback.GetNodeAt(0);
+            foreach (RuntimeInheritedAttr attr in GetInheritedAttrs(topNode))
+            {
+                topNode.SetInheritedStateProperty(attr.Name, )
+            }
+            */
         }
     }
 }
