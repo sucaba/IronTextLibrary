@@ -7,6 +7,6 @@ namespace IronText.Reflection
 {
     public static class SynthesizedAttributeNames
     {
-        public const string Main = "__$main";  
+        public const string Main = "$main";  
     }
 }

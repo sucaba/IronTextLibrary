@@ -52,6 +52,8 @@ namespace IronText.Reflection
             Input         = CreateInputPattern(components);
 
             this._identity = BuildIdentity();
+
+            Semantics     = new ProductionSemantics(this);
         }
 
         public int                OutcomeToken   { get { return Outcome.Index; } }

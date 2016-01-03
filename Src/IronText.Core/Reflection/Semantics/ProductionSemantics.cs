@@ -7,6 +7,7 @@ using System.Text;
 
 namespace IronText.Reflection
 {
+    [Serializable]
     public class ProductionSemantics : IEnumerable<SemanticFormula>
     {
         private readonly Production prod;
@@ -18,14 +19,12 @@ namespace IronText.Reflection
 
         public void Add(SemanticFormula formula)
         {
-            throw new NotImplementedException();
         }
 
         public void Add(
             SemanticVariable      lhe,
             SemanticReference     rhe)
         {
-            throw new NotImplementedException();
         }
 
         public void Add<T>(
@@ -33,7 +32,6 @@ namespace IronText.Reflection
             SemanticReference[]   actualRefs,
             Expression<Func<T,T>> func)
         {
-            throw new NotImplementedException();
         }
 
         public void Add<T1, T2, T3, T4, T>(
@@ -41,7 +39,6 @@ namespace IronText.Reflection
             SemanticReference[] actualRefs,
             Expression<Func<T1, T2, T3, T4, T>> func)
         {
-            throw new NotImplementedException();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

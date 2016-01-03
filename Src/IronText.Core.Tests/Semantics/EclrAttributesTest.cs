@@ -19,14 +19,6 @@ namespace IronText.Tests.Semantics
         [Test]
         public void AttributeECsAreIdentifiedTest()
         {
-            // INH Equivalence Class (EC) rules:
-            // 1) Different attribute names within the same EC cannot belong to the same grammar symbol.
-            //    EC stack node can contain only single value while 2 INH attributes can have different values.
-            // 2) INH attributes belong to the same EC if there is at least one copy rule between them and they
-            //    are not violating rule 1.
-            // 3) Copy rules between attributes in the same EC will not be executed in runtime 
-            //    because they are not needed.
-            // 4) For implementation simplicity EC stacks are synchronized with a parsing stack.
             var grammar = new Grammar
             {
                 StartName = "S",

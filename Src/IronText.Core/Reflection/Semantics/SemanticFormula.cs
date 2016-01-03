@@ -1,7 +1,10 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace IronText.Reflection
 {
+
+    [Serializable]
     public class SemanticFormula
     {
         public SemanticFormula(

@@ -41,8 +41,8 @@ namespace IronText.Reflection
 
             Symbols        = new SymbolCollection(this)
             {
-                { new Symbol("$epsilon")  { IsPredefined = true },   PredefinedTokens.Epsilon        },
-                { new Symbol("$progaged") { IsPredefined = true },  PredefinedTokens.Propagated     },
+                { new Symbol("$epsilon")  { IsPredefined = true },  PredefinedTokens.Epsilon        },
+                { new Symbol("$propagated") { IsPredefined = true },  PredefinedTokens.Propagated     },
                 { AugmentedStart,           PredefinedTokens.AugmentedStart },
                 { Error,                    PredefinedTokens.Error          }, 
                 { Eoi,                      PredefinedTokens.Eoi            }

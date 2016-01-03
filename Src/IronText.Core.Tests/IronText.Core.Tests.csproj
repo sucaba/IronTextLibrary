@@ -208,6 +208,7 @@
     <Compile Include="Framework\ParserAbstractionTest.cs" />
     <Compile Include="Samples\KeywordScannerTest.cs" />
     <Compile Include="Samples\Re2cSampleTest.cs" />
+    <Compile Include="Semantics\BuildEquivalenceClassesTest.cs" />
     <Compile Include="Semantics\EclrAttributesTest.cs" />
     <Compile Include="SpecFlowNUnitExtension.cs" />
     <Compile Include="TestUtils\Bench.cs" />
