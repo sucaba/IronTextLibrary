@@ -1,5 +1,4 @@
-﻿#if ENABLE_SEM0
-using IronText.Framework;
+﻿using IronText.Framework;
 using IronText.Reflection;
 using IronText.Reports;
 using IronText.Runtime;
@@ -17,6 +16,36 @@ namespace IronText.Tests.Semantics
     [Explicit]
     public class EclrAttributesTest
     {
+        [Test]
+        public void AttributeECsAreIdentifiedTest()
+        {
+            // INH Equivalence Class (EC) rules:
+            // 1) Different attribute names within the same EC cannot belong to the same grammar symbol.
+            //    EC stack node can contain only single value while 2 INH attributes can have different values.
+            // 2) INH attributes belong to the same EC if there is at least one copy rule between them and they
+            //    are not violating rule 1.
+            // 3) Copy rules between attributes in the same EC will not be executed in runtime 
+            //    because they are not needed.
+            // 4) For implementation simplicity EC stacks are synchronized with a parsing stack.
+            var grammar = new Grammar
+            {
+                StartName = "S",
+                Productions =
+                {
+                    @"S : E E E " +
+                        "{ E[1].Env = S.Env + 1 }" + // State push
+                        "{ E[2].Env = S.Env }"     + // Reuse value from stack with offset -2 (-1 is stack top)
+                        "{ E[3].Env = S.Env2 }"      // State push
+                                                     // S.Env, S.Env2 are in different ECs according to the rule #1
+                    ,   
+                    // [ x, x + 1, y ]
+                    "E : 't' { use E.Env /* EC?, offset? */ }",
+                    // E.Env => EC1_stack[-1] // last
+                }
+            };
+        }
+
+#if ENABLE_SEM0
         [Test]
         public void SimulationSmokeTest()
         {
@@ -172,7 +201,7 @@ namespace IronText.Tests.Semantics
 
             Assert.AreEqual(expected, got);
         }
+#endif
     }
 }
 
-#endif

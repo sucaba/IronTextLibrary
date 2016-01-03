@@ -148,6 +148,11 @@
     <Compile Include="Reflection\InheritedPropertyCollection.cs" />
     <Compile Include="Reflection\InjectedActionParameter.cs" />
     <Compile Include="Reflection\ISymbolProperty.cs" />
+    <Compile Include="Reflection\Semantics\ProductionSemantics.cs" />
+    <Compile Include="Reflection\Semantics\SemanticFormula.cs" />
+    <Compile Include="Reflection\Semantics\SemanticReference.cs" />
+    <Compile Include="Reflection\Semantics\SemanticVariable.cs" />
+    <Compile Include="Reflection\Semantics\SynthesizedAttributeNames.cs" />
     <Compile Include="Reflection\Serialization\ISymbolResolver.cs" />
     <Compile Include="Reflection\ITerminal.cs" />
     <Compile Include="Reflection\IProductionComponent.cs" />

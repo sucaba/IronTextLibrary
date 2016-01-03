@@ -76,6 +76,8 @@ namespace IronText.Reflection
 
         public Joint              Joint          { get { return _joint; } }
 
+        public ProductionSemantics Semantics    { get; private set; }
+
         public SemanticRef        ContextRef     { get; private set; }
 
         public ProductionFlags    Flags          { get; private set; }
