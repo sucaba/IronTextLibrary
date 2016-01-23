@@ -8,10 +8,10 @@ namespace IronText.Reflection
     /// </summary>
     /// <remarks>
     /// Inherited means that symbol will recieve some value from environment 
-    /// before symbol even appear in stack.
+    /// before symbol even appear in a stack.
     /// </remarks>
     [Serializable]
-    internal class InheritedProperty : IndexableObject<IGrammarScope>, ISymbolProperty
+    public class InheritedProperty : IndexableObject<IGrammarScope>, ISymbolProperty
     {
         public InheritedProperty(Symbol symbol, string name)
         {

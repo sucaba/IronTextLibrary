@@ -18,11 +18,18 @@ namespace IronText.Reflection
         public SymbolProperty Find(string symbolName, string property)
         {
             var result = this.FirstOrDefault(p => p.Symbol.Name == symbolName && p.Name == property);
-            if (result == null)
-            {
-                throw new ArgumentException("name");
-            }
+            return result;
+        }
 
+        public SymbolProperty Find(Symbol symbol, string property)
+        {
+            var result = this.FirstOrDefault(p => symbol.Equals(p.Symbol) && p.Name == property);
+            return result;
+        }
+
+        public SymbolProperty FindOrAdd(Symbol symbol, string property)
+        {
+            var result = Find(symbol, property) ?? Add(new SymbolProperty(symbol, property));
             return result;
         }
 

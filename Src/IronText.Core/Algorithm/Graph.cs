@@ -14,7 +14,7 @@ namespace IronText.Algorithm
             return tarjan.Result;
         }
 #endif
-        public static IEnumerable<T> TopologicalSort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> following)
+        public static List<T> TopologicalSort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> following)
         {
             var result = new List<T>();
             var visited = new HashSet<T>();
@@ -139,6 +139,38 @@ namespace IronText.Algorithm
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Clustering for undirected graph
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="all"></param>
+        /// <param name="following"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
+        public static List<List<T>> Cluster<T>(
+            IEnumerable<T>         all,
+            Func<T,IEnumerable<T>> following,
+            IEqualityComparer<T>   comparer = null)
+        {
+            if (comparer == null)
+            {
+                comparer = EqualityComparer<T>.Default;
+            }
+
+            var result = new List<List<T>>();
+            foreach (var v in all)
+            {
+                if (result.Any(c => c.Contains(v)))
+                {
+                    continue;
+                }
+
+                result.Add(TopologicalSort(new[] { v }, following));
+            }
+
+            return result;
         }
         
         class Node<T>

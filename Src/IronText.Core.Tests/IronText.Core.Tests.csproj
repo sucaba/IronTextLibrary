@@ -78,6 +78,7 @@
     <Compile Include="Algorithm\BitSetTest.cs" />
     <Compile Include="Algorithm\BinaryDecisionTreeBuilderTest.cs" />
     <Compile Include="Algorithm\DecisionTreeBuilderTest.cs" />
+    <Compile Include="Algorithm\Graphs\GraphClusterTest.cs" />
     <Compile Include="Algorithm\IntIntervalTest.cs" />
     <Compile Include="Algorithm\IntMaps\SparseTableTest.cs" />
     <Compile Include="Algorithm\MutableIntMapTest.cs" />
@@ -98,6 +99,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ResolutionOfProductionDuplicates.feature</DependentUpon>
     </Compile>
+    <Compile Include="Reflection\Semantics\SemanticFormulaTest.cs" />
     <Compile Include="Reflection\Semantics\UseCaseTests.cs" />
     <Compile Include="Reflection\Serialization\ProductionResolverTest.cs" />
     <Compile Include="Reflection\Serialization\InjectedActionParameterTextMatcher.cs" />
@@ -208,7 +210,7 @@
     <Compile Include="Framework\ParserAbstractionTest.cs" />
     <Compile Include="Samples\KeywordScannerTest.cs" />
     <Compile Include="Samples\Re2cSampleTest.cs" />
-    <Compile Include="Semantics\BuildEquivalenceClassesTest.cs" />
+    <Compile Include="Semantics\InheritedAttributeECPartitionTest.cs" />
     <Compile Include="Semantics\EclrAttributesTest.cs" />
     <Compile Include="SpecFlowNUnitExtension.cs" />
     <Compile Include="TestUtils\Bench.cs" />

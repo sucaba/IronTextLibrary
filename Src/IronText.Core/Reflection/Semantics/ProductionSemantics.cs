@@ -11,20 +11,35 @@ namespace IronText.Reflection
     public class ProductionSemantics : IEnumerable<SemanticFormula>
     {
         private readonly Production prod;
+        private List<SemanticFormula> formulas = new List<SemanticFormula>();
 
         public ProductionSemantics(Production prod)
         {
             this.prod = prod;
         }
 
-        public void Add(SemanticFormula formula)
+        private void Add(SemanticFormula formula)
         {
+            var lhe = formula.Lhe;
+            if (lhe.Position < 0)
+            {
+                var symbol = prod.Outcome;
+                prod.Scope.SymbolProperties.FindOrAdd(symbol, lhe.Name);
+            }
+            else
+            {
+                var symbol = prod.Input[lhe.Position];
+                prod.Scope.InheritedProperties.FindOrAdd(symbol, lhe.Name);
+            }
+
+            formulas.Add(formula);
         }
 
         public void Add(
             SemanticVariable      lhe,
             SemanticReference     rhe)
         {
+            Add(new SemanticFormula(lhe, rhe));
         }
 
         public void Add<T>(
@@ -32,6 +47,7 @@ namespace IronText.Reflection
             SemanticReference[]   actualRefs,
             Expression<Func<T,T>> func)
         {
+            Add(new SemanticFormula(lhe, actualRefs, func));
         }
 
         public void Add<T1, T2, T3, T4, T>(
@@ -39,16 +55,17 @@ namespace IronText.Reflection
             SemanticReference[] actualRefs,
             Expression<Func<T1, T2, T3, T4, T>> func)
         {
+            Add(new SemanticFormula(lhe, actualRefs, func));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return formulas.GetEnumerator();
         }
 
         IEnumerator<SemanticFormula> IEnumerable<SemanticFormula>.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return formulas.GetEnumerator();
         }
     }
 }

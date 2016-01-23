@@ -105,11 +105,30 @@ namespace IronText.Reflection
 
         public ReportCollection     Reports             { get { return _reports; } }
 
-        public SymbolPropertyCollection      SymbolProperties { get; private set; }
+        public SymbolPropertyCollection     SymbolProperties { get; private set; }
 
-        internal InheritedPropertyCollection InheritedProperties { get; private set; }
+        public InheritedPropertyCollection  InheritedProperties { get; private set; }
 
         internal SemanticActionCollection    SemanticActions { get; private set; }
+
+        internal List<KeyValuePair<int,int>> GetInheritedCopyRules()
+        {
+            var result = new List<KeyValuePair<int,int>>();
+            foreach (var prod in Productions)
+            {
+                foreach (SemanticFormula formula in prod.Semantics)
+                {
+                    if (formula.IsCopy)
+                    {
+                        result.Add(new KeyValuePair<int,int>(
+                            InheritedProperties.Resolve(prod, formula.ActualRefs[0]).Index,
+                            InheritedProperties.Resolve(prod, formula.Lhe).Index));
+                    }
+                }
+            }
+
+            return result;
+        }
 
         public void DefineGlobal(string name)
         {

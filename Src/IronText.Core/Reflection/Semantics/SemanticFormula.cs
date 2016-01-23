@@ -10,22 +10,25 @@ namespace IronText.Reflection
         public SemanticFormula(
             SemanticVariable    lhe,
             SemanticReference[] actualRefs,
-            LambdaExpression    formula)
+            LambdaExpression    func)
         {
+            this.Lhe        = lhe;
+            this.ActualRefs = actualRefs;
         }
 
         public SemanticFormula(
             SemanticVariable  lhe,
             SemanticReference rhe)
         {
+            this.Lhe        = lhe;
+            this.ActualRefs = new[] { rhe };
+            this.IsCopy     = true;
         }
 
         public SemanticVariable    Lhe        { get; private set; }
 
         public SemanticReference[] ActualRefs { get; private set; }
 
-        // Note: this should not be exposed because there maybe 
-        // non-CLR ways to construct a formula.
-        // internal LambdaExpression    Formula
+        public bool IsCopy { get; private set; }
     }
 }

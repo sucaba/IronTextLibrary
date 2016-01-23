@@ -12,11 +12,11 @@ namespace IronText.Tests.Reflection.Semantics
         /// </remarks>
         void InheritedCalculationUsingInhSyntUnknownAttributes(Production prod)
         {
-            var C2_z = new SemanticVariable(4, "z", typeof(int));
-            var A_x  = new SemanticReference(0, "x");
-            var B1_y = new SemanticReference(1, "y");
-            var B2_y = new SemanticReference(2, "y");
-            var D_t  = new SemanticReference(5, "x");
+            var C2_z = new SemanticVariable("z", 4);
+            var A_x  = new SemanticReference("x", 0);
+            var B1_y = new SemanticReference("y", 1);
+            var B2_y = new SemanticReference("y", 2);
+            var D_t  = new SemanticReference("x", 5);
 
             new Production(new Symbol(""), new Symbol(""))
             {
@@ -40,11 +40,11 @@ namespace IronText.Tests.Reflection.Semantics
         /// </remarks>
         void MainValueSemantics()
         {
-            var A       = new SemanticVariable(typeof(int));
+            var A       = new SemanticVariable();
             var B1      = new SemanticReference(1);
             var B2      = new SemanticReference(2);
             var C       = new SemanticReference(3);
-            var A_inh1  = new SemanticReference(0, "inh1");
+            var A_inh1  = new SemanticReference("inh1", 0);
 
             new Production(new Symbol(""), new Symbol(""))
             {
@@ -67,8 +67,8 @@ namespace IronText.Tests.Reflection.Semantics
         /// </remarks>
         void CopyInheritedCausesAttributesBelongToTheSameEC()
         {
-            var C_z = new SemanticVariable(2, "z", typeof(int));
-            var A_x = new SemanticReference(0, "x");
+            var C_z = new SemanticVariable("z", 2);
+            var A_x = new SemanticReference("x", 0);
 
             new Production(new Symbol(""), new Symbol(""))
             {

@@ -4,6 +4,8 @@ namespace IronText.Reflection
 {
     public class SemanticVariable
     {
+        public const int OutcomePosition = -1;
+
         /// <summary>
         /// </summary>
         /// <param name="position">
@@ -12,26 +14,23 @@ namespace IronText.Reflection
         /// <param name="name"></param>
         /// negative indexes means first attribute with the name.
         /// <param name="type"></param>
-        public SemanticVariable(int position, string name, Type type = null)
+        public SemanticVariable(string name, int position = OutcomePosition)
         {
             this.Name     = name;
             this.Position = position;
-            this.Type     = type ?? typeof(object);
         }
 
         /// <summary>
         /// Main synthesized result.
         /// </summary>
         /// <param name="type"></param>
-        public SemanticVariable(Type type = null)
-            : this(0, SynthesizedAttributeNames.Main, type)
+        public SemanticVariable()
+            : this(SynthesizedAttributeNames.Main, OutcomePosition)
         {
         }
 
         public string Name     { get; private set; }
 
         public int    Position { get; private set; }
-
-        public Type   Type     { get; private set; }
     }
 }

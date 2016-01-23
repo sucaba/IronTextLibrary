@@ -36,7 +36,7 @@ namespace IronText.Reflection
         /// <summary>
         /// Display name
         /// </summary>
-        public string Name { get; protected set; }
+        public string Name { get; private set; }
 
         public bool IsPredefined { get; internal set; }
 
@@ -129,6 +129,22 @@ namespace IronText.Reflection
         public override string ToString()
         {
             return Name;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Symbol);
+        }
+
+        public bool Equals(Symbol symbol)
+        {
+            return symbol != null
+                && object.Equals(symbol.DoGetIdentity(), this.DoGetIdentity());
+        }
+
+        public override int GetHashCode()
+        {
+            return this.DoGetIdentity().GetHashCode();
         }
     }
 }

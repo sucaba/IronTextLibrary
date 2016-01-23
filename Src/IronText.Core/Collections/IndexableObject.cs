@@ -39,7 +39,7 @@ namespace IronText.Collections
 
         public bool IsSoftRemoved  { get; private set; }
 
-        protected TScope Scope { get; private set; }
+        protected internal TScope Scope { get; private set; }
 
         public void SoftRemove()
         {

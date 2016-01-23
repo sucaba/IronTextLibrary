@@ -12,5 +12,9 @@ namespace IronText.Reflection
         ProductionCollection Productions { get; }
         
         MatcherCollection    Matchers    { get; }
+
+        SymbolPropertyCollection      SymbolProperties { get; }
+
+        InheritedPropertyCollection   InheritedProperties { get;  }
     }
 }
