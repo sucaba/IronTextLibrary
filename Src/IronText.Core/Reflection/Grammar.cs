@@ -1,4 +1,5 @@
-﻿using IronText.Collections;
+﻿using IronText.Algorithm;
+using IronText.Collections;
 using IronText.Reflection.Reporting;
 using IronText.Reflection.Validation;
 using IronText.Runtime;
@@ -67,13 +68,6 @@ namespace IronText.Reflection
             this.SemanticActions     = new SemanticActionCollection(this);
         }
 
-        public IEnumerable<int[]> GetIncompatibleInheritedGroups()
-        {
-            var result = InheritedProperties.GroupBy(inh => inh.Symbol)
-                        .Select(g => g.Select(inh => inh.Index).ToArray());
-            return result;
-        }
-
         private IDependencyResolver DR { get {  return this; } }
 
         public RuntimeOptions Options { get; set; }
@@ -117,25 +111,6 @@ namespace IronText.Reflection
         public InheritedPropertyCollection  InheritedProperties { get; private set; }
 
         internal SemanticActionCollection    SemanticActions { get; private set; }
-
-        internal List<KeyValuePair<int,int>> GetInheritedCopyRules()
-        {
-            var result = new List<KeyValuePair<int,int>>();
-            foreach (var prod in Productions)
-            {
-                foreach (SemanticFormula formula in prod.Semantics)
-                {
-                    if (formula.IsCopy)
-                    {
-                        result.Add(new KeyValuePair<int,int>(
-                            InheritedProperties.Resolve(prod, formula.ActualRefs[0]).Index,
-                            InheritedProperties.Resolve(prod, formula.Lhe).Index));
-                    }
-                }
-            }
-
-            return result;
-        }
 
         public void DefineGlobal(string name)
         {
