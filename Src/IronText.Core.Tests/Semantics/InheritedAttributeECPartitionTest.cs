@@ -55,14 +55,14 @@ namespace IronText.Tests.Semantics
         }
 
         [Test]
-        public void Test()
+        public void SameSymbolInhAttrsPreventECPartitioningTest()
         {
             var grammar = new Grammar
             {
                 StartName = "S",
                 Productions =
                 {
-                    "S : E E E",
+                    "S : E E",
                     "E : 't'"
                 },
                 InheritedProperties =
@@ -73,33 +73,23 @@ namespace IronText.Tests.Semantics
                 }
             };
 
-            var prod = grammar.Productions.Find("S : E E E");
-
-            // State push
-            prod.Semantics.Add(
-                    new SemanticVariable("Env", 0),
-                    new [] { new SemanticReference("Env") },
-                    (int env) => env + 1);
+            var prod = grammar.Productions.Find("S : E E");
 
             // Reuse value from stack with offset -2 (-1 is stack top)
             prod.Semantics.Add(
-                    new SemanticVariable("Env", 1),
+                    new SemanticVariable("Env", 0),
                     new SemanticReference("Env"));
 
             // State push
             // S.Env, S.Env2 are in different ECs according to the rule #1
             prod.Semantics.Add(
-                    new SemanticVariable("Env", 2),
+                    new SemanticVariable("Env", 1),
                     new SemanticReference("Env2"));
 
-            // [ x, x + 1, y ]
-            // E.Env => EC1_stack[-1] // last
             grammar.BuildIndexes();
 
-            Assert.AreEqual(3, grammar.InheritedProperties.Count);
-
             var sut = new InheritedAttributeECPartition(grammar);
-            Assert.AreEqual(2, sut.ECs.Count);
+            Assert.AreEqual(grammar.InheritedProperties.Count, sut.ECs.Count);
         }
     }
 }

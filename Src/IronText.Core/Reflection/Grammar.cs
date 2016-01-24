@@ -67,6 +67,13 @@ namespace IronText.Reflection
             this.SemanticActions     = new SemanticActionCollection(this);
         }
 
+        public IEnumerable<int[]> GetIncompatibleInheritedGroups()
+        {
+            var result = InheritedProperties.GroupBy(inh => inh.Symbol)
+                        .Select(g => g.Select(inh => inh.Index).ToArray());
+            return result;
+        }
+
         private IDependencyResolver DR { get {  return this; } }
 
         public RuntimeOptions Options { get; set; }
