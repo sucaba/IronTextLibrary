@@ -17,7 +17,7 @@ namespace IronText.Tests.Semantics
     //    because they are not needed.
     // 4) For implementation simplicity EC stacks are synchronized with a parsing stack.
     [TestFixture]
-    public class InheritedAttributeECPartitionTest
+    public class InheritedAttributeECCollectionTest
     {
         [Test]
         public void CopyRuleCausesInhAttrsToBeInTheSameECTest()
@@ -50,8 +50,8 @@ namespace IronText.Tests.Semantics
 
             Assert.AreEqual(2, grammar.InheritedProperties.Count);
 
-            var sut = new InheritedAttributeECPartition(grammar);
-            Assert.AreEqual(1, sut.ECs.Count);
+            var sut = new InheritedPropertyECCollection(grammar);
+            Assert.AreEqual(1, sut.Count);
         }
 
         [Test]
@@ -88,8 +88,10 @@ namespace IronText.Tests.Semantics
 
             grammar.BuildIndexes();
 
-            var sut = new InheritedAttributeECPartition(grammar);
-            Assert.AreEqual(grammar.InheritedProperties.Count, sut.ECs.Count);
+            var sut = new InheritedPropertyECCollection(grammar);
+            CollectionAssert.AreEquivalent(
+                grammar.InheritedProperties.Select(inh => new[] { inh.Index }),
+                sut);
         }
     }
 }

@@ -67,9 +67,15 @@ namespace IronText.Collections
             {
                 throw new InvalidOperationException("Index gap is not allowed. Index = " + firstEmptyIndex);
             }
+
+            WhenDoneBuildIndexes();
         }
 
-        private void RequireIndexed()
+        protected virtual void WhenDoneBuildIndexes()
+        {
+        }
+
+        protected void RequireIndexed()
         {
             if (!indexed)
             {
@@ -77,7 +83,7 @@ namespace IronText.Collections
             }
         }
 
-        private void RequireModifiable()
+        protected void RequireModifiable()
         {
             if (!canModify)
             {

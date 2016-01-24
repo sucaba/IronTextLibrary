@@ -17,7 +17,7 @@ namespace IronText.Collections
         {
         }
 
-        internal int Index 
+        internal int Index
         {
             get 
             {  

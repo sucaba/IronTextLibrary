@@ -6,35 +6,43 @@ using System;
 
 namespace IronText.Semantics
 {
-    internal class InheritedAttributeECPartition
+    internal class InheritedPropertyECCollection 
+        : GrammarEntityCollection<InheritedPropertyEC,IGrammarScope>
     {
-        private readonly Grammar grammar;
-
-        public InheritedAttributeECPartition(Grammar grammar)
+        public InheritedPropertyECCollection(Grammar grammar)
+            : base(grammar)
         {
-            this.grammar = grammar; 
-
             List<Edge> edges = GetInheritedCopyRules();
 
             // Augment copy pairs with reverse direction
             edges.AddRange(edges.Select(e => e.Opposite).ToArray());
 
-            ECs = Graph.Cluster(
-                Enumerable.Range(0, grammar.InheritedProperties.Count),
+            var ecs = Graph.Cluster(
+                Enumerable.Range(0, Scope.InheritedProperties.Count),
                 fromProp => from edge in edges
                             where edge.From == fromProp
                             select edge.To);
 
             var incompatibleGroups = GetIncompatibleInheritedGroups();
-            if (ECs.Any(c => HasConflictingPairs(c, incompatibleGroups)))
+            if (ecs.Any(c => HasConflictingPairs(c, incompatibleGroups)))
             {
-                ECs = grammar.InheritedProperties
-                             .Select(inh => new List<int> { inh.Index })
-                             .ToList();
+                foreach (var inh in Scope.InheritedProperties)
+                {
+                    Add(new InheritedPropertyEC { inh.Index });
+                }
             }
-        }
+            else
+            {
+                foreach (var ec in ecs)
+                {
+                    var item = new InheritedPropertyEC();
+                    item.AddRange(ec);
+                    Add(item);
+                }
+            }
 
-        public List<List<int>> ECs { get; private set; }
+            BuildIndexes();
+        }
 
         private static bool HasConflictingPairs(List<int> cluster, IEnumerable<int[]> incompatibleGroups)
         {
@@ -50,15 +58,15 @@ namespace IronText.Semantics
         internal List<Edge> GetInheritedCopyRules()
         {
             var result = new List<Edge>();
-            foreach (var prod in grammar.Productions)
+            foreach (var prod in Scope.Productions)
             {
                 foreach (SemanticFormula formula in prod.Semantics)
                 {
                     if (formula.IsCopy)
                     {
                         result.Add(new Edge(
-                            grammar.InheritedProperties.Resolve(prod, formula.ActualRefs[0]).Index,
-                            grammar.InheritedProperties.Resolve(prod, formula.Lhe).Index));
+                            Scope.InheritedProperties.Resolve(prod, formula.ActualRefs[0]).Index,
+                            Scope.InheritedProperties.Resolve(prod, formula.Lhe).Index));
                     }
                 }
             }
@@ -68,7 +76,7 @@ namespace IronText.Semantics
 
         internal IEnumerable<int[]> GetIncompatibleInheritedGroups()
         {
-            var result = grammar.InheritedProperties.GroupBy(inh => inh.Symbol)
+            var result = Scope.InheritedProperties.GroupBy(inh => inh.Symbol)
                         .Select(g => g.Select(inh => inh.Index).ToArray());
             return result;
         }
