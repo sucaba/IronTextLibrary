@@ -1,4 +1,5 @@
 ﻿
+using IronText.Algorithm.IntegerSets.Impl;
 using System;
 
 namespace IronText.Algorithm
@@ -11,8 +12,8 @@ namespace IronText.Algorithm
         {
         }
 
-        public BitSet(IntSetType setType, uint[] words)
-            : base(setType, words)
+        internal BitSet(IntSetType setType, MutableBitSetImpl impl)
+            : base(setType, impl)
         {
         }
     }

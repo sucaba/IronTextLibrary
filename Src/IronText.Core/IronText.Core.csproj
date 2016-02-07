@@ -101,6 +101,8 @@
     <Compile Include="Algorithm\IntegerSets\BitSetBase.cs" />
     <Compile Include="Algorithm\IntegerSets\BitSetType.cs" />
     <Compile Include="Algorithm\IntegerSets\IIntSet.cs" />
+    <Compile Include="Algorithm\IntegerSets\Impl\IMutableBitSetOfT.cs" />
+    <Compile Include="Algorithm\IntegerSets\Impl\MutableBitSetImpl.cs" />
     <Compile Include="Algorithm\IntegerSets\IntervalIntSet.cs" />
     <Compile Include="Algorithm\IntegerSets\IntervalIntSetBase.cs" />
     <Compile Include="Algorithm\IntegerSets\IntPartition.cs" />
