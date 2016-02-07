@@ -55,7 +55,7 @@ namespace IronText.Semantics
             return cluster.Where(group.Contains).Take(2).Count() > 1;
         }
 
-        internal List<Edge> GetInheritedCopyRules()
+        private List<Edge> GetInheritedCopyRules()
         {
             var result = new List<Edge>();
             foreach (var prod in Scope.Productions)
@@ -74,10 +74,12 @@ namespace IronText.Semantics
             return result;
         }
 
-        internal IEnumerable<int[]> GetIncompatibleInheritedGroups()
+        private IEnumerable<int[]> GetIncompatibleInheritedGroups()
         {
-            var result = Scope.InheritedProperties.GroupBy(inh => inh.Symbol)
-                        .Select(g => g.Select(inh => inh.Index).ToArray());
+            var result = Scope.InheritedProperties
+                        .GroupBy(inh => inh.Symbol)
+                        .Select(g => g.Select(inh => inh.Index)
+                                      .ToArray());
             return result;
         }
     }

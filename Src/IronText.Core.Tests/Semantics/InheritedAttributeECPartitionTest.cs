@@ -9,10 +9,10 @@ using System.Text;
 namespace IronText.Tests.Semantics
 {
     // INH Equivalence Class (EC) rules:
-    // 1) Different attribute names within the same EC cannot belong to the same grammar symbol.
+    // 1) Different attribute belonging to the same grammar symbol cannot be in the same EC.
     //    EC stack node can contain only single value while 2 INH attributes can have different values.
     // 2) INH attributes belong to the same EC if there is at least one copy rule between them and they
-    //    are not violating rule 1.
+    //    are not violating directly or indirectly rule #1.
     // 3) Copy rules between attributes in the same EC will not be executed in runtime 
     //    because they are not needed.
     // 4) For implementation simplicity EC stacks are synchronized with a parsing stack.
@@ -73,12 +73,10 @@ namespace IronText.Tests.Semantics
 
             var prod = grammar.Productions.Find("S : E E");
 
-            // Reuse value from stack with offset -2 (-1 is stack top)
             prod.Semantics.Add(
                     new SemanticVariable("Env", 0),
                     new SemanticReference("Env"));
 
-            // State push
             // S.Env, S.Env2 are in different ECs according to the rule #1
             prod.Semantics.Add(
                     new SemanticVariable("Env", 1),
