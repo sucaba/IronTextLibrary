@@ -98,10 +98,10 @@
     <Compile Include="Algorithm\Edge.cs" />
     <Compile Include="Algorithm\Graph.cs" />
     <Compile Include="Algorithm\IntegerSets\BitSet.cs" />
-    <Compile Include="Algorithm\IntegerSets\BitSetBase.cs" />
     <Compile Include="Algorithm\IntegerSets\BitSetType.cs" />
     <Compile Include="Algorithm\IntegerSets\IIntSet.cs" />
-    <Compile Include="Algorithm\IntegerSets\Impl\IMutableBitSetOfT.cs" />
+    <Compile Include="Algorithm\IntegerSets\Impl\IHasImpl.cs" />
+    <Compile Include="Algorithm\IntegerSets\Impl\IBitSetOfT.cs" />
     <Compile Include="Algorithm\IntegerSets\Impl\MutableBitSetImpl.cs" />
     <Compile Include="Algorithm\IntegerSets\IntervalIntSet.cs" />
     <Compile Include="Algorithm\IntegerSets\IntervalIntSetBase.cs" />

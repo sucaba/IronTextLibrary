@@ -50,10 +50,6 @@ namespace IronText.Tests.Algorithm
             IntSet.Of(IntSet.MaxValue),
             IntSet.Of(0),
             IntSet.Of(5),
-            IntSet.Of(5),
-            IntSet.Of(10),
-            IntSet.Of(21),
-            IntSet.Of(100),
             IntSet.Of(10),
             IntSet.Range(0, 100),
             IntSet.Range(10, 10),
@@ -425,6 +421,12 @@ namespace IronText.Tests.Algorithm
             }
 
             set_is_optimized(got);
+        }
+
+        [Theory]
+        public void immutable_instance_is_not_castable_to_mutable(IntSet instance)
+        {
+            Assert.IsNotInstanceOf<MutableIntSet>(instance);
         }
 
         private IEnumerable<int> ExceptValues(IntInterval[] intervals)

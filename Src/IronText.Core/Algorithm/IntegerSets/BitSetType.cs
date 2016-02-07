@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IronText.Algorithm.IntegerSets.Impl;
+using System;
 using System.Collections.Generic;
 
 namespace IronText.Algorithm
@@ -38,33 +39,33 @@ namespace IronText.Algorithm
 
         public override int MaxValue { get { return _bitCount - 1; } }
 
-        public override IntSet All{ get { return _all; } }
+        public override IntSet All { get { return _all; } }
 
         public override IntSet Empty { get { return _empty; } }
 
         public override IntSet Of(int value)
         {
-            var result = new MutableBitSet(this, _bitCount, false);
-            result.Add(value);
-            return result;
+            var impl = new MutableBitSetImpl(_bitCount, false);
+            impl.Add(value);
+            return new BitSet(this, impl);
         }
 
         public override IntSet Of(IEnumerable<int> value)
         {
-            var result = new MutableBitSet(this, _bitCount, false);
+            var impl = new MutableBitSetImpl(_bitCount, false);
             foreach (var item in value)
             {
-                result.Add(item);
+                impl.Add(item);
             }
 
-            return result;
+            return new BitSet(this, impl);
         }
 
         public override IntSet Range(int from, int to)
         {
-            var result = new MutableBitSet(this, _bitCount, false);
-            result.Add(new IntInterval(from, to));
-            return result;
+            var impl = new MutableBitSetImpl(_bitCount, false);
+            impl.Add(new IntInterval(from, to));
+            return new BitSet(this, impl);
         }
 
         public override IntSet Ranges(IEnumerable<IntInterval> intervals)
@@ -74,13 +75,13 @@ namespace IronText.Algorithm
                 throw new ArgumentNullException("intervals");
             }
 
-            var result = new MutableBitSet(this, _bitCount, false);
+            var impl = new MutableBitSetImpl(_bitCount, false);
             foreach (var item in intervals)
             {
-                result.Add(item);
+                impl.Add(item);
             }
 
-            return result;
+            return new BitSet(this, impl);
         }
 
         public override MutableIntSet Mutable()
