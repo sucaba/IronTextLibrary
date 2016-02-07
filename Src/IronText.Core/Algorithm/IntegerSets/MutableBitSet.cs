@@ -93,6 +93,11 @@ namespace IronText.Algorithm
             return impl.Equals(ImplOf(other));
         }
 
+        protected override int DoGetIntSetHash()
+        {
+            return impl.GetHashCode();
+        }
+
         public override IntSet Clone()
         {
             return new BitSet(setType, impl.Clone());

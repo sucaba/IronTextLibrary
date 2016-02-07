@@ -112,6 +112,11 @@ namespace IronText.Algorithm
             return impl.Equals(ImplOf(other));
         }
 
+        protected override int DoGetIntSetHash()
+        {
+            return impl.GetHashCode();
+        }
+
         public override string ToCharSetString()
         {
             return impl.ToCharSetString();

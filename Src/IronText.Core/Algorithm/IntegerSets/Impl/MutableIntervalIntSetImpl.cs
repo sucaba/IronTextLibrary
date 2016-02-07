@@ -72,7 +72,12 @@ namespace IronText.Algorithm.IntegerSets.Impl
 
             return true; 
         }
-        
+
+        public override int GetHashCode()
+        {
+            return hash;
+        }
+
         public bool Contains(Int actual)
         {
             if (bounds.Contains(actual))

@@ -13,9 +13,6 @@ namespace IronText.Algorithm
 
         protected internal readonly IntSetType setType;
 
-        // (firstElement or 0) << 16 | (intervalCount & 0x0000ffff) 
-        internal int hash;
-
         protected IntSet(IntSetType setType) { this.setType = setType; }
 
         public IntSetType SetType { get { return setType; } }
@@ -56,7 +53,9 @@ namespace IronText.Algorithm
             return casted != null && SetEquals(casted);
         }
 
-        public override int GetHashCode() { return hash; }
+        public override int GetHashCode() { return DoGetIntSetHash(); }
+
+        protected abstract int DoGetIntSetHash();
 
         public abstract MutableIntSet EditCopy();
 
