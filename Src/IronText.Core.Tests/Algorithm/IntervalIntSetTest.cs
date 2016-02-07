@@ -337,6 +337,12 @@ namespace IronText.Tests.Algorithm
             Assert.AreEqual(1, target.Count);
         }
 
+        [Theory]
+        public void immutable_instance_is_not_castable_to_mutable(IntSet instance)
+        {
+            Assert.IsNotInstanceOf<MutableIntSet>(instance);
+        }
+
         private IEnumerable<int> ExceptValues(IntInterval[] intervals)
         {
             foreach (var value in Values)

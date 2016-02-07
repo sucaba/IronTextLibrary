@@ -101,10 +101,11 @@
     <Compile Include="Algorithm\IntegerSets\BitSetType.cs" />
     <Compile Include="Algorithm\IntegerSets\IIntSet.cs" />
     <Compile Include="Algorithm\IntegerSets\Impl\IHasImpl.cs" />
-    <Compile Include="Algorithm\IntegerSets\Impl\IBitSetOfT.cs" />
+    <Compile Include="Algorithm\IntegerSets\Impl\IBitSet.cs" />
+    <Compile Include="Algorithm\IntegerSets\Impl\IMutableBitSet.cs" />
     <Compile Include="Algorithm\IntegerSets\Impl\MutableBitSetImpl.cs" />
+    <Compile Include="Algorithm\IntegerSets\Impl\MutableIntervalIntSetImpl.cs" />
     <Compile Include="Algorithm\IntegerSets\IntervalIntSet.cs" />
-    <Compile Include="Algorithm\IntegerSets\IntervalIntSetBase.cs" />
     <Compile Include="Algorithm\IntegerSets\IntPartition.cs" />
     <Compile Include="Algorithm\IntegerSets\IntSet.cs" />
     <Compile Include="Algorithm\IntegerSets\IntSetType.cs" />

@@ -1,34 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using Int = System.Int32;
+using System.Collections;
 
-namespace IronText.Algorithm
+namespace IronText.Algorithm.IntegerSets.Impl
 {
     [Serializable]
-    public abstract class IntervalIntSetBase : MutableIntSet
+    public class MutableIntervalIntSetImpl 
+        : IEnumerable<Int>
+        , IMutableBitSet<MutableIntervalIntSetImpl>
     {
+        private const int MinValue = Int.MinValue;
+        private const int MaxValue = Int.MaxValue;
+
         // Global bounds for performance
-        internal IntInterval bounds;
+        private IntInterval bounds;
 
         // Sorted disjoined intervals
-        internal List<IntInterval> intervals;
+        private List<IntInterval> intervals;
+
+        private int hash;
 
         /// <summary>
         /// Unsafe constructor for constructing from the ready intervals list
         /// </summary>
-        /// <param name="setType"></param>
         /// <param name="intervals">sorted intervals list or <c>null</c></param>
-        protected IntervalIntSetBase(IntSetType setType)
-            : base(setType)
+        public MutableIntervalIntSetImpl()
         {
             this.intervals = new List<IntInterval>();
             UpdateHashAndBounds();
         }
 
-        public override bool IsEmpty { get { return intervals.Count == 0; } }
+        public bool IsEmpty { get { return intervals.Count == 0; } }
 
-        public override Int Count 
+        public Int Count 
         {
             get
             {
@@ -43,12 +49,13 @@ namespace IronText.Algorithm
             }
         }
 
-        public override IntSet Clone() { return TypedClone(); }
-
-        public override bool SetEquals(IntSet other0)
+        public bool Equals(MutableIntervalIntSetImpl other)
         {
-            var other = (IntervalIntSetBase)other0;
-            if (hash != other.hash) return false;
+            if (hash != other.hash)
+            {
+                return false;
+            }
+
             if (bounds != other.bounds || intervals.Count != other.intervals.Count)
             {
                 return false;
@@ -66,7 +73,7 @@ namespace IronText.Algorithm
             return true; 
         }
         
-        public override bool Contains(Int actual)
+        public bool Contains(Int actual)
         {
             if (bounds.Contains(actual))
             {
@@ -82,13 +89,11 @@ namespace IronText.Algorithm
             return false;
         }
 
-        public override IntSet Intersect(IntSet other0)
+        public MutableIntervalIntSetImpl Intersect(MutableIntervalIntSetImpl other)
         {
-            IntervalIntSetBase other = (IntervalIntSetBase)other0;
-
             if (bounds.Intersects(other.bounds))
             {
-                var result = new IntervalIntSet(setType);
+                var result = new MutableIntervalIntSetImpl();
 
                 var otherIntervals = other.intervals;
                 int myCount = intervals.Count;
@@ -146,42 +151,41 @@ namespace IronText.Algorithm
                 return result;
             }
 
-            return setType.Empty;
+            return new MutableIntervalIntSetImpl();
         }
 
-        public override IntSet Union(IntSet other0)
+        public MutableIntervalIntSetImpl Union(MutableIntervalIntSetImpl other)
         {
-            var result = TypedClone();
+            var result = Clone();
             result.AddAll(this);
-            result.AddAll(other0);
+            result.AddAll(other);
             result.UpdateHash();
             return result;
         }
 
-        public override IntSet Complement(IntSet vocabulary0)
+        public MutableIntervalIntSetImpl Complement(MutableIntervalIntSetImpl vocabulary)
         {
-            var vocabulary = vocabulary0 as IntervalIntSetBase;
             if (vocabulary == null)
             {
-                throw new ArgumentException("Unsupported set type:" + vocabulary0, "vocabulary");
+                throw new ArgumentException("Unsupported set type:" + vocabulary, "vocabulary");
             }
 
-            var result = new IntervalIntSet(setType);
-            Int previous = setType.MinValue;
+            var result = new MutableIntervalIntSetImpl();
+            Int previous = MinValue;
             foreach (var interval in intervals)
             {
                 if (interval.First != previous)
                 {
-                    var set = setType.Range(previous, interval.First - 1);
+                    var set = Range(previous, interval.First - 1);
                     result.AddAll(set.Intersect(vocabulary));
                 }
 
                 previous = interval.Last + 1;
             }
 
-            if (previous != setType.MaxValue)
+            if (previous != MaxValue)
             {
-                var set = setType.Range(previous, setType.MaxValue);
+                var set = Range(previous, MaxValue);
                 result.AddAll(set.Intersect(vocabulary));
             }
 
@@ -189,10 +193,9 @@ namespace IronText.Algorithm
             return result;
         }
 
-        public override void AddAll(IntSet other)
+        public void AddAll(MutableIntervalIntSetImpl other)
         {
-            var otherIntervalSet = (IntervalIntSetBase)other;
-            foreach (var interval in otherIntervalSet.intervals)
+            foreach (var interval in other.intervals)
             {
                 Add(interval);
             }
@@ -200,20 +203,20 @@ namespace IronText.Algorithm
             UpdateHash();
         }
 
-        public override void RemoveAll(IntSet other)
+        public void RemoveAll(MutableIntervalIntSetImpl other)
         {
-            var complemented = (IntervalIntSetBase)other.Complement(this);
+            var complemented = other.Complement(this);
             this.intervals = complemented.intervals;
             this.bounds = complemented.bounds;
             this.hash = complemented.hash;
         }
 
-        public override void Add(Int value)
+        public void Add(Int value)
         {
             Add(new IntInterval(value, value));
         }
 
-        public override Int PopAny()
+        public Int PopAny()
         {
             if (intervals.Count == 0)
             {
@@ -233,7 +236,7 @@ namespace IronText.Algorithm
             return result;
         }
 
-        public override void Remove(Int value)
+        public void Remove(Int value)
         {
             if (bounds.Contains(value))
             {
@@ -303,7 +306,7 @@ namespace IronText.Algorithm
         }
 #endif
 
-        public override void Add(IntInterval newInterval)
+        public void Add(IntInterval newInterval)
         {
             if (newInterval.First > newInterval.Last)
             {
@@ -385,19 +388,21 @@ namespace IronText.Algorithm
             }
         }
 
-        public override IEnumerator<Int> GetEnumerator() { return All().GetEnumerator(); }
+        public IEnumerator<Int> GetEnumerator() { return All().GetEnumerator(); }
+
+        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
 
         public override string ToString() 
         { 
             return "{" + string.Join(", ", intervals) + "}"; 
         }
 
-        public override string ToCharSetString() 
+        public string ToCharSetString() 
         { 
             return "{" + string.Join(", ", intervals.Select(interv => interv.ToCharSetString())) + "}"; 
         }
 
-        public override Int Min()
+        public Int Min()
         {
             if (intervals.Count == 0)
             {
@@ -407,7 +412,7 @@ namespace IronText.Algorithm
             return intervals[0].First;
         }
 
-        public override Int Max()
+        public Int Max()
         {
             int count = intervals.Count;
             if (count == 0)
@@ -418,15 +423,16 @@ namespace IronText.Algorithm
             return intervals[count - 1].Last;
         }
 
-        internal IntervalIntSet TypedClone()
+        public MutableIntervalIntSetImpl Clone()
         {
-            var result = new IntervalIntSet(setType);
+            var result = new MutableIntervalIntSetImpl();
             foreach (var item in intervals)
             {
                 result.intervals.Add(item);
             }
 
             result.bounds = bounds;
+            result.hash = hash;
             return result;
         }
 
@@ -437,7 +443,7 @@ namespace IronText.Algorithm
                 for (Int i = interval.First; i <= interval.Last; ++i)
                 {
                     yield return i;
-                    if (i == setType.MaxValue)
+                    if (i == MaxValue)
                     {
                         break;
                     }
@@ -460,7 +466,7 @@ namespace IronText.Algorithm
 
         protected void UpdateHashAndBounds()
         {
-            bounds = new IntInterval(setType.MaxValue, setType.MinValue);
+            bounds = new IntInterval(MaxValue, MinValue);
             foreach (var interval in intervals)
             {
                 bounds = bounds.Union(interval);
@@ -474,13 +480,14 @@ namespace IronText.Algorithm
             this.hash = (int)(this.bounds.First << 16) | (this.intervals.Count & 0x0000ffff);
         }
 
-        public override MutableIntSet EditCopy()
-        {
-            var result = new MutableIntervalIntSet(setType);
-            result.AddAll(this);
-            return result;
-        }
+        public IEnumerable<IntInterval> EnumerateIntervals() { return intervals; }
 
-        public override IEnumerable<IntInterval> EnumerateIntervals() { return intervals; }
+        private static MutableIntervalIntSetImpl Range(int first, int last)
+        {
+            return new MutableIntervalIntSetImpl
+            {
+                new IntInterval(first, last)
+            };
+        }
     }
 }
