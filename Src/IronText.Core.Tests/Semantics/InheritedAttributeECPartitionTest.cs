@@ -44,8 +44,6 @@ namespace IronText.Tests.Semantics
                     new SemanticVariable("Env", 0),
                     new SemanticReference("Env"));
 
-            // [ x, x + 1, y ]
-            // E.Env => EC1_stack[-1] // last
             grammar.BuildIndexes();
 
             Assert.AreEqual(2, grammar.InheritedProperties.Count);

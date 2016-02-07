@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Int = System.Int32;
 
 namespace IronText.Algorithm
 {
+    [Serializable]
     public class SparseIntSetType : IntSetType
     {
         private readonly IntSet empty;

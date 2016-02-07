@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace IronText.Algorithm
 {
+    [Serializable]
     public class BitSetType : IntSetType
     {
         // Consider 1 Kb as a max memory allowed for bitset

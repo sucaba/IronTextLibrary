@@ -4,6 +4,7 @@ using Int = System.Int32;
 
 namespace IronText.Algorithm
 {
+    [Serializable]
     public sealed class IntervalIntSet : IntervalIntSetBase
     {
         /// <summary>

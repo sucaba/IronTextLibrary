@@ -1,7 +1,9 @@
-﻿using Int = System.Int32;
+﻿using System;
+using Int = System.Int32;
 
 namespace IronText.Algorithm
 {
+    [Serializable]
     public abstract class MutableIntSet : IntSet
     {
         protected MutableIntSet(IntSetType setType) : base(setType) { }

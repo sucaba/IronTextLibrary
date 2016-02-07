@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace IronText.Algorithm
 {
+    [Serializable]
     public class BitSetBase : MutableIntSet
     {
         private const int BitsInWord = 0x20;

@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Int = System.Int32;
 
 namespace IronText.Algorithm
 {
+    [Serializable]
     public abstract class IntSet : IEnumerable<Int>, IIntSet
     {
         public static IntSet Clone(IntSet set) { return set.Clone(); }

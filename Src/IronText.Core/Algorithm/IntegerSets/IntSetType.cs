@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Int = System.Int32;
 
@@ -7,6 +8,7 @@ namespace IronText.Algorithm
     /// <summary>
     /// Provides information on integer set type acts as a factory of the particular int set.
     /// </summary>
+    [Serializable]
     public abstract class IntSetType
     {
         public abstract Int MinValue { get; }

@@ -1,6 +1,9 @@
 ﻿
+using System;
+
 namespace IronText.Algorithm
 {
+    [Serializable]
     public sealed class BitSet : BitSetBase
     {
         public BitSet(IntSetType setType, int bitCount, bool defaultBit)

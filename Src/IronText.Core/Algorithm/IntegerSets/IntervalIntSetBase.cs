@@ -5,6 +5,7 @@ using Int = System.Int32;
 
 namespace IronText.Algorithm
 {
+    [Serializable]
     public abstract class IntervalIntSetBase : MutableIntSet
     {
         // Global bounds for performance
