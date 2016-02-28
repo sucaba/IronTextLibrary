@@ -99,25 +99,31 @@ namespace IronText.Runtime
 
         State IStackLookback<T>.GetParentState() { return State; }
 
-        T IStackLookback<T>.GetNodeAt(int count)
+        State IStackLookback<T>.GetState(int backoffset)
         {
+            var node = GetNodeAtDepth(backoffset);
+            return node.State;
+        }
+
+        T IStackLookback<T>.GetNodeAt(int backoffset)
+        {
+            var node = GetNodeAtDepth(backoffset);
+            return node.FirstLink.Label;
+        }
+
+        private GssNode<T> GetNodeAtDepth(int depth)
+        {
+            Debug.Assert(depth > 0, "Depth should be at least 1");
+            Debug.Assert(this.DeterministicDepth >= depth, "Non-deterministic lookback.");
+
             GssNode<T> node = this;
 
-            Debug.Assert(count > 0,  "Lookback should be at least 1 token back");
-            Debug.Assert(node.DeterministicDepth >= count,  "Non-deterministic lookback.");
-
-            GssLink<T> lastLink = null;
-            GssNode<T> lastNode = null;
-
-            do
+            while (0 != --depth)
             {
-                lastNode = node;
-                lastLink = node.FirstLink;
-                node = lastLink.LeftNode;
+                node = node.FirstLink.LeftNode;
             }
-            while (--count != 0);
 
-            return lastLink.Label;
+            return node;
         }
 
         public override string ToString()

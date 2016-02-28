@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DIAGNOSTICS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DIAGNOSTICS;ENABLE_SEM0</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>default</LangVersion>
@@ -188,6 +188,7 @@
     <Compile Include="Reflection\Serialization\IGrammarReader.cs" />
     <Compile Include="Runtime\ILanguageSource.cs" />
     <Compile Include="Runtime\IReportDestinationHint.cs" />
+    <Compile Include="Runtime\StackLookbackExtensions.cs" />
     <Compile Include="Runtime\PredefinedTokens.cs" />
     <Compile Include="Reflection\Reporting\IReport.cs" />
     <Compile Include="Reflection\Reporting\ReportCollection.cs" />

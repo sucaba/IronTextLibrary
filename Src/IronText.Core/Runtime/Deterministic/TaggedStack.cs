@@ -14,7 +14,6 @@ namespace IronText.Runtime
         public int      Count;
         // TODO: Get rid of this because it overcomplicates stack access and causes perf issues.
         //       Planning to remove it after introducing ECLR semantics.
-        public int      Start;
         public int currentRecoveryStart;
         public int currentRecoveryCount;
         private readonly CircularStack<int> savedTags = new CircularStack<int>(100);
@@ -111,11 +110,16 @@ namespace IronText.Runtime
             return new ArraySlice<T>(data, Count - size, size);
         }
 
-        public int GetParentState() { return tags[Start - 1]; }
+        public int GetParentState() { return GetState(1); }
+
+        public int GetState(int backoffset)
+        {
+            return tags[Count - backoffset];
+        }
 
         public T GetNodeAt(int backOffset)
         {
-            return data[Start - backOffset];
+            return data[Count - backOffset];
         }
 
         public void BeginEdit()

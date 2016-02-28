@@ -3,11 +3,12 @@ namespace IronText.Runtime
 {
     public interface IStackLookback<T>
     {
-        // TODO: Remove it along with the old semantic logic.
         /// <summary>
         /// Get state before reduction path
         /// </summary>
         int GetParentState();
+
+        int GetState(int backOffset);
 
         /// <summary>
         /// Gets syntax node at the prior stack state.

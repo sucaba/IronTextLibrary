@@ -16,6 +16,7 @@ namespace IronText.Tests.Semantics
     [Explicit]
     public class EclrAttributesTest
     {
+#if false
         [Test]
         public void AttributeECsAreIdentifiedTest()
         {
@@ -36,6 +37,7 @@ namespace IronText.Tests.Semantics
                 }
             };
         }
+#endif
 
 #if ENABLE_SEM0
         [Test]

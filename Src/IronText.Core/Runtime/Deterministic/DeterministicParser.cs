@@ -138,11 +138,10 @@ namespace IronText.Runtime
                         {
                             PushNode(-1, value);
                             this.currentRule = grammar.Productions[action.ProductionId];
-                            stateStack.Start = stateStack.Count - currentRule.InputLength;
                             value = producer.CreateBranch(
                                 currentRule,
                                 stateStack.PeekTail(currentRule.InputLength),
-                                (IStackLookback<TNode>)stateStack);
+                                stateStack.ShiftedLookback(currentRule.InputLength));
                             stateStack.Pop(currentRule.InputLength);
                             action = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));
                         }
@@ -298,11 +297,10 @@ namespace IronText.Runtime
             while (act.Kind == ParserActionKind.Reduce)
             {
                 this.currentRule = grammar.Productions[act.ProductionId];
-                stateStack.Start = stateStack.Count - currentRule.InputLength;
                 value = producer.CreateBranch(
                             currentRule,
                             stateStack.PeekTail(currentRule.InputLength),
-                            (IStackLookback<TNode>)stateStack);
+                            stateStack.ShiftedLookback(currentRule.InputLength));
 
                 stateStack.Pop(currentRule.InputLength);
                 act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));
@@ -312,11 +310,10 @@ namespace IronText.Runtime
                     PushNode(-1, value);
 
                     this.currentRule = grammar.Productions[act.ProductionId];
-                    stateStack.Start = stateStack.Count - currentRule.InputLength;
                     value = producer.CreateBranch(
                             currentRule,
                             stateStack.PeekTail(currentRule.InputLength),
-                            (IStackLookback<TNode>)stateStack);
+                            stateStack.ShiftedLookback(currentRule.InputLength));
 
                     stateStack.Pop(currentRule.InputLength);
                     act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));
@@ -335,7 +332,7 @@ namespace IronText.Runtime
         {
             stateStack.Push(state, value);
 
-            // Note: There two approaches:
+            // Note: There are two approaches:
             // 1) Ineffective one when we deal with items in state:
             //    foreach item in state S
             //      let B = following-non-term(item)
