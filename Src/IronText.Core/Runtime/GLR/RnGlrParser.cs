@@ -304,13 +304,14 @@ namespace IronText.Runtime
 
                 int X = path.Production.Outcome;
                 int m = path.Size;
+                var stackLookback = path.GetStackLookback();
 
                 GssNode<T> u = path.LeftNode;
                 State k = u.State;
                 T z;
                 if (m == 0)
                 {
-                    z = producer.GetDefault(X, (IStackLookback<T>)u);
+                    z = producer.GetDefault(X, stackLookback);
                 }
                 else
                 {
@@ -318,14 +319,14 @@ namespace IronText.Runtime
                     T Λ = producer.CreateBranch(
                             path.Production,
                             new ArraySlice<T>(nodeBuffer, 0, path.Size),
-                            lookback: path.LeftNode);
+                            stackLookback);
 
                     int c = u.Layer;
                     T currentValue;
                     var Nkey = GetNKey(X, c);
                     if (N.TryGetValue(Nkey, out currentValue))
                     {
-                        z = producer.Merge(currentValue, Λ, (IStackLookback<T>)u);
+                        z = producer.Merge(currentValue, Λ, stackLookback);
                     }
                     else
                     {

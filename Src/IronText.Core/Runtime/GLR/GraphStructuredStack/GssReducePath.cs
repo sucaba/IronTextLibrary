@@ -18,6 +18,11 @@ namespace IronText.Runtime
             this.Size       = size;
         }
 
+        public IStackLookback<T> GetStackLookback()
+        {
+            return LeftNode;
+        } 
+
         public static void GetAll(
             GssNode<T> rightNode,
             int        size,
