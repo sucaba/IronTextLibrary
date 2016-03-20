@@ -19,16 +19,24 @@ namespace IronText.MetadataCompiler
         private readonly TypedLanguageSource source;
         private readonly ProductionActionDelegate grammarAction;
         private readonly TermFactoryDelegate termFactory;
+        private readonly ShiftActionDelegate shiftAction;
         private readonly MergeDelegate merge;
         private readonly ScannerDescriptor scannerDescriptor;
 
         public BootstrapLanguage(TypedLanguageSource source, LanguageData data)
         {
-            this.source = source;
-            this.data = data;
+            this.source        = source;
+            this.data          = data;
             this.grammarAction = BuildExecuteRuleAction();
-            this.termFactory = BuildTermFactory();
-            this.merge = (int token, object x, object y, object context, IStackLookback<ActionNode> stackLookback) => y;
+            this.termFactory   = BuildTermFactory();
+            this.shiftAction   = null;
+            this.merge = (
+                        int token,
+                        object x,
+                        object y,
+                        object context,
+                        IStackLookback<ActionNode> stackLookback
+                        ) => y;
 
             this.scannerDescriptor = ScannerDescriptor.FromScanRules(data.Grammar.Matchers, ExceptionLogging.Instance);
         }
@@ -64,7 +72,14 @@ namespace IronText.MetadataCompiler
 
         public IProducer<ActionNode> CreateProducer(object context)
         {
-            return new ActionProducer(RuntimeGrammar, context, grammarAction, termFactory,  this.merge, new Dictionary<string,object>());
+            return new ActionProducer(
+                        RuntimeGrammar,
+                        context,
+                        grammarAction,
+                        termFactory,
+                        shiftAction,
+                        this.merge,
+                        new Dictionary<int,object>());
         }
 
         private int GetParserAction(int state, int token)

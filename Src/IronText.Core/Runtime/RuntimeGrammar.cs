@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using IronText.Runtime.Semantics;
 
 namespace IronText.Runtime
 {
@@ -12,13 +13,15 @@ namespace IronText.Runtime
         private readonly SymbolCategory[]    tokenCategories;
         private readonly string[]            tokenNames;
         private readonly int[]               nonPredefinedTokens;
+        private readonly RuntimeFormula[][]  stateToFormulas;
 
         public RuntimeGrammar(
             string[]            tokenNames,
             SymbolCategory[]    tokenCategories,
             bool[]              tokenIsNullable,
             bool[]              tokenIsTerminal,
-            RuntimeProduction[] productions)
+            RuntimeProduction[] productions,
+            RuntimeFormula[][]  stateToFormulas)
         {
             this.TokenCount           = tokenNames.Length;
             this.tokenIsNullable      = tokenIsNullable;
@@ -28,6 +31,7 @@ namespace IronText.Runtime
             this.nonPredefinedTokens  = Enumerable.Range(0, TokenCount).Except(PredefinedTokens.All).ToArray();
 
             this.Productions          = productions;
+            this.stateToFormulas      = stateToFormulas;
             this.MaxProductionLength  = productions.Select(r => r.InputLength).Max();
         }
 
@@ -84,6 +88,11 @@ namespace IronText.Runtime
         public SymbolCategory GetTokenCategories(int token)
         {
             return this.tokenCategories[token];
+        }
+
+        public RuntimeFormula[] GetFormulas(int shiftedState)
+        {
+            return this.stateToFormulas[shiftedState];
         }
     }
 }

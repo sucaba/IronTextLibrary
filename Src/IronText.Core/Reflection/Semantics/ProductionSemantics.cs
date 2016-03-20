@@ -20,6 +20,13 @@ namespace IronText.Reflection
 
         private void Add(SemanticFormula formula)
         {
+            AddLhePropertyToGrammar(formula);
+
+            formulas.Add(formula);
+        }
+
+        private void AddLhePropertyToGrammar(SemanticFormula formula)
+        {
             var lhe = formula.Lhe;
             if (lhe.Position < 0)
             {
@@ -31,8 +38,6 @@ namespace IronText.Reflection
                 var symbol = prod.Input[lhe.Position];
                 prod.Scope.InheritedProperties.FindOrAdd(symbol, lhe.Name);
             }
-
-            formulas.Add(formula);
         }
 
         public void Add(

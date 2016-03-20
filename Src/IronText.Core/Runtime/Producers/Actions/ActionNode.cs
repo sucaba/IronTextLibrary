@@ -29,52 +29,52 @@ namespace IronText.Runtime
             this.InheritedStateProperties = stateProperties;
         }
 
-        public object GetSynthesizedProperty(string name)
+        public object GetSynthesizedProperty(int synthIndex)
         {
             object result;
-            TokenProperties.TryGetValue(name, out result);
+            TokenProperties.TryGetValue(synthIndex, out result);
             return result;
         }
 
-        public void SetSynthesizedProperty(string name, object value)
+        public void SetSynthesizedProperty(int synthIndex, object value)
         {
-            TokenProperties = new PropertyValueNode(name, value).SetNext(TokenProperties);
+            TokenProperties = new PropertyValueNode(synthIndex, value).SetNext(TokenProperties);
         }
 
-        public object GetInheritedStateProperty(string name)
+        public object GetInheritedStateProperty(int inhIndex)
         {
             object result;
-            InheritedStateProperties.TryGetValue(name, out result);
+            InheritedStateProperties.TryGetValue(inhIndex, out result);
             return result;
         }
 
-        public void SetInheritedStateProperty(string name, object value)
+        public void SetInheritedStateProperty(int inhIndex, object value)
         {
-            InheritedStateProperties = new PropertyValueNode(name, value).SetNext(InheritedStateProperties);
+            InheritedStateProperties = new PropertyValueNode(inhIndex, value).SetNext(InheritedStateProperties);
         }
     }
 
     public class PropertyValueNode : SListNode<PropertyValueNode>
     {
-        public PropertyValueNode(string name, object value)
+        public PropertyValueNode(int index, object value)
         {
-            this.Name  = name;
+            this.Index  = index;
             this.Value = value;
         }
 
-        public string Name  { get; private set; }
+        public int    Index { get; private set; }
 
         public object Value { get; private set; }
     }
 
     public static class PropertyValueNodeExtensions
     {
-        public static bool TryGetValue(this PropertyValueNode self, string name, out object value)
+        public static bool TryGetValue(this PropertyValueNode self, int inhIndex, out object value)
         {
             PropertyValueNode node = self;
             while (node != null)
             {
-                if (node.Name == name)
+                if (node.Index == inhIndex)
                 {
                     value = node.Value;
                     return true;

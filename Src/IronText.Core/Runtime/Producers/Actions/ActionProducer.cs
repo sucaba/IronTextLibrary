@@ -1,6 +1,7 @@
 ﻿using IronText.Algorithm;
 using IronText.Framework;
 using IronText.Logging;
+using IronText.Runtime.Semantics;
 using System;
 using System.Collections.Generic;
 
@@ -23,15 +24,16 @@ namespace IronText.Runtime
         private Loc  _scanningLocation;
         private HLoc _scanningHLocation;
         private readonly object[] ruleArgBuffer;
-        private Dictionary<string, object> globals;
+        private Dictionary<int, object> inhIndexToValue;
 
         public ActionProducer(
             RuntimeGrammar           grammar,
             object                   context,
             ProductionActionDelegate productionAction,
             TermFactoryDelegate      termFactory,
+            ShiftActionDelegate      shiftAction,
             MergeDelegate            merge,
-            Dictionary<string,object> globals)
+            Dictionary<int,object>   inhIndexToValue)
             : base(grammar, context, productionAction)
         {
             this.grammar        = grammar;
@@ -40,7 +42,7 @@ namespace IronText.Runtime
             this.termFactory    = termFactory;
             this.merge          = merge;
             this.ruleArgBuffer  = new object[grammar.MaxProductionLength];
-            this.globals        = globals ?? new Dictionary<string,object>();
+            this.inhIndexToValue        = inhIndexToValue ?? new Dictionary<int,object>();
 
             if (context != null)
             {
@@ -57,7 +59,14 @@ namespace IronText.Runtime
                     this);
             }
 
-            this.shiftAction = lookback => {}; //Console.WriteLine("Shift to state: {0}", lookback.GetTopState());
+            if (shiftAction == null)
+            {
+                this.shiftAction = lookback => { };
+            }
+            else
+            {
+                this.shiftAction = shiftAction;
+            }
         }
 
         public ReductionOrder ReductionOrder { get { return ReductionOrder.ByRuleDependency; } }
@@ -67,7 +76,7 @@ namespace IronText.Runtime
         public ActionNode CreateStart()
         {
             PropertyValueNode inh = null;
-            foreach (var pair in globals)
+            foreach (var pair in inhIndexToValue)
             {
                 inh = new PropertyValueNode(pair.Key, pair.Value).SetNext(inh);
             }
@@ -167,14 +176,14 @@ namespace IronText.Runtime
 
         public void Shifted(IStackLookback<ActionNode> lookback)
         {
-            shiftAction(lookback);
-            /*
-            var topNode = lookback.GetNodeAt(0);
-            foreach (RuntimeInheritedAttr attr in GetInheritedAttrs(topNode))
+            int shiftedState = lookback.GetParentState();
+            RuntimeFormula[] formulas = grammar.GetFormulas(shiftedState);
+            foreach (var formula in formulas)
             {
-                topNode.SetInheritedStateProperty(attr.Name, )
+                formula.Excecute(lookback);
             }
-            */
+
+            shiftAction(lookback);
         }
     }
 }

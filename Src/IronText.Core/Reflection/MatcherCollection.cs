@@ -13,7 +13,7 @@ namespace IronText.Reflection
 
         public Matcher Add(string literal, Disambiguation? disambiguation = null)
         {
-            var outcomeSymbol = Scope.Symbols.ByName("'" + literal + "'");
+            var outcomeSymbol = Scope.Symbols.ByName("'" + literal + "'", true);
             var result = new Matcher(ScanPattern.CreateLiteral(literal), outcomeSymbol, disambiguation);
             return Add(result);
         }

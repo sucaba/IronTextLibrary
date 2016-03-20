@@ -30,5 +30,7 @@ namespace IronText.Reflection
         public SemanticReference[] ActualRefs { get; private set; }
 
         public bool IsCopy { get; private set; }
+
+        public bool IsCalledOnReduce { get { return Lhe.Position < 0; } }
     }
 }

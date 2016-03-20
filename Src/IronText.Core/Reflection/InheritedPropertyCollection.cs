@@ -38,6 +38,15 @@ namespace IronText.Reflection
             return result;
         }
 
+        public InheritedProperty Add(string dotExpression)
+        {
+            string[] parts = DotExpression.Parse(dotExpression);
+            
+            var result = new InheritedProperty(Scope.Symbols.ByName(parts[0], createMissing: true), parts[1]);
+            Add(result);
+            return result;
+        }
+
         internal InheritedProperty Resolve(Production prod, SemanticReference semanticReference)
         {
             if (semanticReference.Position >= 0)

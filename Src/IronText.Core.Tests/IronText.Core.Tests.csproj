@@ -93,7 +93,6 @@
     <Compile Include="Algorithm\UnicodeFrequencyTest.cs" />
     <Compile Include="Collections\IndexedCollectionTest.cs" />
     <Compile Include="Lib\IL\Plugins\DataStorageTest.cs" />
-    <Compile Include="Reflection\ProductionSemanticActionTest.cs" />
     <Compile Include="Reflection\ResolutionOfProductionDuplicates.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -210,8 +209,10 @@
     <Compile Include="Framework\ParserAbstractionTest.cs" />
     <Compile Include="Samples\KeywordScannerTest.cs" />
     <Compile Include="Samples\Re2cSampleTest.cs" />
+    <Compile Include="Semantics\PassingGlobalInheritedAttributeTest - Copy.cs" />
+    <Compile Include="Semantics\CopyingInheritedAttributeTest.cs" />
     <Compile Include="Semantics\InheritedAttributeECPartitionTest.cs" />
-    <Compile Include="Semantics\EclrAttributesTest.cs" />
+    <Compile Include="Simulation\SmokeTest.cs" />
     <Compile Include="SpecFlowNUnitExtension.cs" />
     <Compile Include="TestUtils\Bench.cs" />
     <Compile Include="TestUtils\Collector.cs" />

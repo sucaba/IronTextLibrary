@@ -5,6 +5,7 @@ using IronText.Compiler.Analysis;
 using IronText.Extensibility;
 using IronText.Reflection;
 using IronText.Runtime;
+using IronText.Runtime.Semantics;
 
 namespace IronText.MetadataCompiler
 {
@@ -26,6 +27,8 @@ namespace IronText.MetadataCompiler
         public int[]            ParserConflictActionTable { get; set; }
 
         public int[]            StateToToken        { get; set; }
+
+        public RuntimeFormula[][] StateToFormulas { get; set; }
 
         public int[]            TokenComplexity     { get; set; }
 

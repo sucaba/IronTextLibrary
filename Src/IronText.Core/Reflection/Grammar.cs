@@ -65,7 +65,6 @@ namespace IronText.Reflection
 
             this.SymbolProperties    = new SymbolPropertyCollection(this);
             this.InheritedProperties = new InheritedPropertyCollection(this);
-            this.SemanticActions     = new SemanticActionCollection(this);
         }
 
         private IDependencyResolver DR { get {  return this; } }
@@ -110,14 +109,6 @@ namespace IronText.Reflection
 
         public InheritedPropertyCollection  InheritedProperties { get; private set; }
 
-        internal SemanticActionCollection    SemanticActions { get; private set; }
-
-        public void DefineGlobal(string name)
-        {
-            var globalValProp = new InheritedProperty(Start, name);
-            InheritedProperties.Add(globalValProp);
-        }
-
         public void BuildIndexes()
         {
             Symbols.BuildIndexes();
@@ -126,7 +117,6 @@ namespace IronText.Reflection
             Mergers.BuildIndexes();
             SymbolProperties.BuildIndexes();
             InheritedProperties.BuildIndexes();
-            SemanticActions.BuildIndexes();
         }
 
         public override string ToString()

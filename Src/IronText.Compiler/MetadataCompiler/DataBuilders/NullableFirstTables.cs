@@ -20,7 +20,7 @@ namespace IronText.MetadataCompiler
         bool[] TokenToNullable { get; }
     }
 
-    public class NullableFirstTables : IBuildtimeNullableFirstTables, IRuntimeNullableFirstTables
+    internal class NullableFirstTables : IBuildtimeNullableFirstTables, IRuntimeNullableFirstTables
     {
         private BitSetType      tokenSet;
         private MutableIntSet[] firsts;

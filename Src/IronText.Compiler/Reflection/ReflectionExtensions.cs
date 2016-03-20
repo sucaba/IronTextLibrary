@@ -1,5 +1,6 @@
 ﻿using IronText.MetadataCompiler;
 using IronText.Runtime;
+using IronText.Runtime.Semantics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,11 @@ namespace IronText.Reflection
     public static class ReflectionExtensions
     {
         public static RuntimeGrammar ToRuntime(this Grammar grammar)
+        {
+            return ToRuntime(grammar, null);
+        }
+
+        public static RuntimeGrammar ToRuntime(this Grammar grammar, RuntimeFormula[][] stateToFormulas)
         {
             IRuntimeNullableFirstTables tables = new NullableFirstTables(grammar);
             var tokenIsNullable     = tables.TokenToNullable;
@@ -24,7 +30,8 @@ namespace IronText.Reflection
                         tokenCategories,
                         tokenIsNullable,
                         tokenIsTerminal,
-                        runtimeProductions);
+                        runtimeProductions,
+                        stateToFormulas);
         }
 
         public static RuntimeProduction ToRuntime(this Production prod)

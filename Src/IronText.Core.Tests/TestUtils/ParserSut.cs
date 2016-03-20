@@ -3,6 +3,7 @@ using IronText.Logging;
 using IronText.MetadataCompiler;
 using IronText.Reflection;
 using IronText.Runtime;
+using IronText.Runtime.Semantics;
 using IronText.Tests.Algorithm;
 using System;
 using System.Collections.Generic;
@@ -38,21 +39,33 @@ namespace IronText.Tests.TestUtils
             this.data = provider.Resource;
         }
 
-        public void Parse(string text, Dictionary<string, object> globals = null)
+        public void Parse(string text, Dictionary<int, object> inhIndexToValue = null)
         {
-            Parse(new StringReader(text), Loc.MemoryString, globals);
+            Parse(new StringReader(text), Loc.MemoryString, inhIndexToValue);
         }
 
-        public void Parse(StringReader input, string document, Dictionary<string, object> globals = null)
+        public void Parse(StringReader input, string document, Dictionary<int, object> inhIndexToValue = null)
         {
             var logging = ExceptionLogging.Instance;
-            var rtGrammar = grammar.ToRuntime();
+            var rtGrammar = grammar.ToRuntime(data.StateToFormulas);
 
-            var producer = new ActionProducer(rtGrammar, null, ProductionAction, TermFactory, null, globals);
+            var producer = new ActionProducer(
+                                    rtGrammar,
+                                    null,
+                                    ProductionAction,
+                                    TermFactory,
+                                    ShiftAction,
+                                    null,
+                                    inhIndexToValue);
+
             IReceiver<Msg> parser;
             if (data.IsDeterministic)
             {
-                parser = new DeterministicParser<ActionNode>(producer, rtGrammar, Transition, logging);
+                parser = new DeterministicParser<ActionNode>(
+                            producer,
+                            rtGrammar,
+                            Transition,
+                            logging);
             }
             else
             {
@@ -88,6 +101,10 @@ namespace IronText.Tests.TestUtils
 
         public Dictionary<string, ReductionAction> ProductionHooks { get; private set; }
 
+        private void ShiftAction(IStackLookback<ActionNode> lookback)
+        {
+        }
+
         private object ProductionAction(ProductionActionArgs pargs)
         {
             object result = null;
@@ -106,11 +123,11 @@ namespace IronText.Tests.TestUtils
 
                 action(pargs);
 
-                foreach (var semanticAction in grammar.SemanticActions)
+                foreach (var formula in prod.Semantics)
                 {
-                    if (semanticAction.Production == prod) // TODO: inlined productions?
+                    if (formula.IsCalledOnReduce && formula.IsCopy)
                     {
-                        semanticAction.Invoke(pargs);
+                        //semanticAction.Invoke(pargs);
                     }
                 }
             }

@@ -62,6 +62,7 @@
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalBranchDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalOperator.cs" />
     <Compile Include="Algorithm\Functions.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\StateToFormulasProvider.cs" />
     <Compile Include="Semantics\InheritedPropertyECCollection.cs" />
     <Compile Include="Semantics\InheritedPropertyEC.cs" />
     <None Include="Algorithm\Graphs\TarjanSccAlgorithm.cs" />

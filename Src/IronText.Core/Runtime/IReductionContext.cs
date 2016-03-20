@@ -1,18 +1,19 @@
 ﻿
 namespace IronText.Runtime
 {
-    public delegate void ReductionAction(object dataContext);
 
-#if ENABLE_SEM0
+#if !ENABLE_SEM0
+    public delegate void ReductionAction(object dataContext);
+#else
     public delegate void ReductionAction(IReductionContext dataContext);
     public interface IReductionContext
     {
-        object GetSynthesized(string name);
-        void SetSynthesized(string name, object value);
+        object GetSynthesized(int synthIndex);
+        void SetSynthesized(int synthIndex, object value);
 
-        object GetSynthesized(int position, string name);
+        object GetSynthesized(int position, int synthIndex);
 
-        object GetInherited(string name);
+        object GetInherited(int inhIndex);
     }
 #endif
 }

@@ -332,16 +332,10 @@ namespace IronText.Runtime
         {
             stateStack.Push(state, value);
 
-            // Note: There are two approaches:
-            // 1) Ineffective one when we deal with items in state:
-            //    foreach item in state S
-            //      let B = following-non-term(item)
-            //      foreach rule : (I = F(IDataContext c)) in sem-rules(item) where I in IN(B)
-            //          apply rule(IDataContext c based on production rule of item)
-            // 2) Effective, based on rules which act upon offsets.
-            //    foreach offsetBasedRule in state S
-            //      apply offsetBasedRule(IDataContext c based on state S and stack state)
-            producer.Shifted(stateStack);
+            if (state >= 0)
+            {
+                producer.Shifted(stateStack);
+            }
         }
     }
 }

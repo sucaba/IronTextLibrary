@@ -114,12 +114,22 @@ namespace IronText.Runtime
 
         public int GetState(int backoffset)
         {
+            if (backoffset <= 0)
+            {
+                throw new ArgumentException(nameof(backoffset));
+            }
+
             return tags[Count - backoffset];
         }
 
-        public T GetNodeAt(int backOffset)
+        public T GetNodeAt(int backoffset)
         {
-            return data[Count - backOffset];
+            if (backoffset <= 0)
+            {
+                throw new ArgumentException(nameof(backoffset));
+            }
+
+            return data[Count - backoffset];
         }
 
         public void BeginEdit()

@@ -22,5 +22,10 @@ namespace IronText.Reflection
         public Symbol Symbol { get; private set; }
 
         public string Name   { get; private set; }
+
+        public override string ToString()
+        {
+            return Symbol.Name + "." + Name;
+        }
     }
 }

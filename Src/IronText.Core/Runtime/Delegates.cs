@@ -7,6 +7,30 @@ namespace IronText.Runtime
 
     public delegate object TermFactoryDelegate(object context, int action, string text);
 
+    /// <summary>
+    /// Called on each shift to update inherited attributes
+    /// </summary>
+    public delegate void ShiftActionDelegate(
+        IStackLookback<ActionNode> lookback);
+
+    /// <summary>
+    /// Called on each reduce to create synthesized attribute values
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="oldValue"></param>
+    /// <param name="newValue"></param>
+    /// <param name="context">user provided context</param>
+    /// <param name="lookback">access to the prior stack states and values</param>
+    /// <returns></returns>
+    public delegate object MergeDelegate(
+        int     token,
+        object  oldValue,
+        object  newValue,
+        object  context,
+        IStackLookback<ActionNode> lookback);
+
+    public delegate object ProductionActionDelegate(ProductionActionArgs args);
+
     public class ProductionActionArgs
 #if ENABLE_SEM0
         : IReductionContext
@@ -46,48 +70,30 @@ namespace IronText.Runtime
         public ActionNode GetSyntaxArg(int index) { return parts[firstIndex + index]; }
 
 #if ENABLE_SEM0
-        public object GetSynthesized(string name)
+        public object GetSynthesized(int synthIndex)
         {
-            return resultNode.GetSynthesizedProperty(name);
+            return resultNode.GetSynthesizedProperty(synthIndex);
         }
 
-        public void SetSynthesized(string name, object value)
+        public void SetSynthesized(int synthIndex, object value)
         {
-            this.resultNode.SetSynthesizedProperty(name, value);
+            this.resultNode.SetSynthesizedProperty(synthIndex, value);
         }
 
-        public object GetInherited(string name)
+        public object GetInherited(int inhIndex)
         {
             ActionNode priorNode = Lookback.GetNodeAt(1);
 
-            object result = priorNode.GetInheritedStateProperty(name);
+            object result = priorNode.GetInheritedStateProperty(inhIndex);
             return result;
         }
 
-        public object GetSynthesized(int position, string name)
+        public object GetSynthesized(int position, int synthIndex)
         {
             var node = GetSyntaxArg(position);
-            var result = node.GetSynthesizedProperty(name);
+            var result = node.GetSynthesizedProperty(synthIndex);
             return result;
         }
 #endif
     }
-
-    public delegate object ProductionActionDelegate(ProductionActionArgs args);
-
-    public delegate object MergeDelegate(
-        int     token,
-        object  oldValue,
-        object  newValue,
-        object  context,        // user provided context
-        IStackLookback<ActionNode> lookback   // access to the prior stack states and values
-        );
-
-    /// <summary>
-    /// Called on each shift to update inherited attributes
-    /// </summary>
-    /// <param name="lookback"></param>
-    /// <returns></returns>
-    public delegate void ShiftActionDelegate(
-        IStackLookback<ActionNode> lookback);
 }
