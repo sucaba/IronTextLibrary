@@ -77,11 +77,12 @@ namespace IronText.Tests.Semantics
             grammar.BuildIndexes();
 
             int fromPropIdx = grammar.InheritedProperties.Find(StartName, InhFromAttrName).Index;
+            int toPropIdx = grammar.InheritedProperties.Find(CheckName, InhToAttrName).Index;
 
             var sut = new ParserSut(grammar);
             sut.ProductionHooks.Add(
-                formulaProductionText,
-                ctx => got = ctx.GetInherited(fromPropIdx));
+                CheckProduction,
+                ctx => got = ctx.GetInherited(toPropIdx));
             sut.Parse(
                 input + "e",
                 new Dictionary<int,object>
