@@ -52,13 +52,13 @@ namespace IronText.MetadataCompiler
                 if (inhProperty.Symbol == A)
                 {
                     var formula = GetDefiningFormula(inhProperty, item);
-                    RuntimeFormula rf = ToRuntimeFormulaWithStackInput(formula, inhProperty.Index, item);
+                    RuntimeFormula rf = ToRuntimeFormula(formula, inhProperty.Index, item);
                     es.Add(rf);
                 }
             }
         }
 
-        private RuntimeFormula ToRuntimeFormulaWithStackInput(SemanticFormula formula, int inhIndex, DotItem item)
+        private RuntimeFormula ToRuntimeFormula(SemanticFormula formula, int inhIndex, DotItem item)
         {
             if (!formula.IsCopy || formula.IsCalledOnReduce)
             {
@@ -66,35 +66,51 @@ namespace IronText.MetadataCompiler
             }
 
             var lhe = new InheritedRuntimeProperty(1, inhIndex);
-            int lheProductionPosition = item.Position;
 
-            var arguments = new IRuntimeValue[formula.ActualRefs.Length];
-            arguments[0] = GetRuntimeReference(
-                            formula.ActualRefs[0],
-                            item,
-                            lheProductionPosition);
+            var arguments = new IRuntimeValue[formula.Arguments.Length];
+            arguments[0] = ToRuntimeValue(
+                            formula.Arguments[0],
+                            grammar.Productions[item.ProductionId],
+                            item.Position);
 
             return new RuntimeFormula(lhe, arguments, args => args[0]);
         }
 
-        private InheritedRuntimeProperty GetRuntimeReference(
-            SemanticReference rheArg,
-            DotItem item,
-            int lheProductionPosition)
+        private IRuntimeValue ToRuntimeValue(
+            ISemanticValue value,
+            Production     prod,
+            int            lhePosition)
         {
-            var rhePropertyName = rheArg.Name;
-            var prod = grammar.Productions[item.ProductionId];
-            Symbol rheSymbol;
-            int rheOffset;
-            if (rheArg.Position < 0)
+            var asReference = value as SemanticReference;
+            if (asReference != null)
             {
-                rheOffset = lheProductionPosition - rheArg.Position;
-                rheSymbol = prod.Outcome;
+                return ToRuntimeValue(asReference, prod, lhePosition);
+            }
+
+            var asConstant = value as SemanticConstant;
+            if (asConstant != null)
+            {
+                return new RuntimeConstant(asConstant.Value);
+            }
+
+            throw new NotImplementedException($"{value.GetType().Name} is not supported on runtime.");
+        }
+
+        private IRuntimeValue ToRuntimeValue(
+            SemanticReference reference,
+            Production        production,
+            int               shiftedPosition)
+        {
+            var rhePropertyName = reference.Name;
+            Symbol rheSymbol = reference.ResolveSymbol();
+            int rheOffset;
+            if (reference.Position < 0)
+            {
+                rheOffset = shiftedPosition - reference.Position;
             }
             else
             {
-                rheSymbol = prod.Input[rheArg.Position];
-                rheOffset = lheProductionPosition - rheArg.Position;
+                rheOffset = shiftedPosition - reference.Position;
             }
 
             var rheProperty = grammar.InheritedProperties.Find(rheSymbol, rhePropertyName);

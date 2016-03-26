@@ -64,9 +64,12 @@ namespace IronText.Semantics
                 {
                     if (formula.IsCopy)
                     {
-                        result.Add(new Edge(
-                            Scope.InheritedProperties.Resolve(prod, formula.ActualRefs[0]).Index,
-                            Scope.InheritedProperties.Resolve(prod, formula.Lhe).Index));
+                        var inheritedFrom = Scope.InheritedProperties.ResolveInherited(prod, formula.Arguments[0]);
+                        var inheritedTo = Scope.InheritedProperties.ResolveInherited(prod, formula.Lhe);
+                        if (inheritedFrom != null && inheritedTo != null)
+                        {
+                            result.Add(new Edge(inheritedFrom.Index, inheritedTo.Index));
+                        }
                     }
                 }
             }

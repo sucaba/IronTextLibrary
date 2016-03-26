@@ -2,9 +2,11 @@
 
 namespace IronText.Reflection
 {
-    public class SemanticVariable
+    [Serializable]
+    public class SemanticVariable : IProductionSemanticElement
     {
         public const int OutcomePosition = -1;
+        private IProductionSemanticScope scope;
 
         /// <summary>
         /// </summary>
@@ -25,12 +27,28 @@ namespace IronText.Reflection
         /// </summary>
         /// <param name="type"></param>
         public SemanticVariable()
-            : this(SynthesizedAttributeNames.Main, OutcomePosition)
+            : this(SynthesizedPropertyNames.Main, OutcomePosition)
         {
         }
 
         public string Name     { get; private set; }
 
         public int    Position { get; private set; }
+
+        public Symbol ResolveSymbol()
+        {
+            if (scope == null)
+            {
+                throw new InvalidOperationException("Semantic element is not attached to production.");
+            }
+
+            var result = (Position < 0) ? scope.Outcome : scope.Input[Position];
+            return result;
+        }
+
+        void IProductionSemanticElement.Attach(IProductionSemanticScope scope)
+        {
+            this.scope = scope;
+        }
     }
 }

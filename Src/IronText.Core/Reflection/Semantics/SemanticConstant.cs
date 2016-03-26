@@ -3,9 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace IronText.Reflection.Semantics
+namespace IronText.Reflection
 {
-    public class SemanticConstant
+    [Serializable]
+    public class SemanticConstant : ISemanticValue
     {
+        public SemanticConstant(object value)
+        {
+            this.Value = value;
+        }
+
+        public object Value { get; set; }
     }
 }

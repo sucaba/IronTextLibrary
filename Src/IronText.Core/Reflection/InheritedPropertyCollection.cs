@@ -47,8 +47,14 @@ namespace IronText.Reflection
             return result;
         }
 
-        internal InheritedProperty Resolve(Production prod, SemanticReference semanticReference)
+        internal InheritedProperty ResolveInherited(Production prod, ISemanticValue semanticValue)
         {
+            var semanticReference = semanticValue as SemanticReference;
+            if (semanticReference == null)
+            {
+                return null;
+            }
+
             if (semanticReference.Position >= 0)
             {
                 throw new InvalidOperationException("INH SemanticReferecene should refer left side only.");
@@ -60,7 +66,7 @@ namespace IronText.Reflection
             return Find(symbol, name);
         }
 
-        internal InheritedProperty Resolve(Production prod, SemanticVariable var)
+        internal InheritedProperty ResolveInherited(Production prod, SemanticVariable var)
         {
             if (var.Position < 0)
             {

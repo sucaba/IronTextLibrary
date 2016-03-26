@@ -10,7 +10,10 @@ namespace IronText.Reflection
 {
     [Serializable]
     [DebuggerDisplay("{DebugProductionText}")]
-    public sealed class Production : IndexableObject<IGrammarScope>, IProductionComponent
+    public sealed class Production 
+        : IndexableObject<IGrammarScope>
+        , IProductionComponent
+        , IProductionSemanticScope
     {
         private readonly object _identity;
 

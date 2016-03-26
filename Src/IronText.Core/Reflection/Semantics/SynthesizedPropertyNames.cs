@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IronText.Reflection
 {
-    public static class SynthesizedAttributeNames
+    public static class SynthesizedPropertyNames
     {
         public const string Main = "$main";  
     }

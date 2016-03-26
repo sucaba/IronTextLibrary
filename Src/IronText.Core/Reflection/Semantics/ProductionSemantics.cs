@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace IronText.Reflection
 {
@@ -20,24 +18,27 @@ namespace IronText.Reflection
 
         private void Add(SemanticFormula formula)
         {
-            AddLhePropertyToGrammar(formula);
-
             formulas.Add(formula);
+            ((IProductionSemanticElement)formula).Attach((IProductionSemanticScope)prod);
+
+            Resolve(formula.Lhe);
         }
 
-        private void AddLhePropertyToGrammar(SemanticFormula formula)
+        private ISymbolProperty Resolve(SemanticVariable lhe)
         {
-            var lhe = formula.Lhe;
+            ISymbolProperty result;
+
+            Symbol symbol = lhe.ResolveSymbol();
             if (lhe.Position < 0)
             {
-                var symbol = prod.Outcome;
-                prod.Scope.SymbolProperties.FindOrAdd(symbol, lhe.Name);
+                result = prod.Scope.SymbolProperties.FindOrAdd(symbol, lhe.Name);
             }
             else
             {
-                var symbol = prod.Input[lhe.Position];
-                prod.Scope.InheritedProperties.FindOrAdd(symbol, lhe.Name);
+                result = prod.Scope.InheritedProperties.FindOrAdd(symbol, lhe.Name);
             }
+
+            return result;
         }
 
         public void Add(

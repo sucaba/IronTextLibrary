@@ -1,8 +1,9 @@
-﻿
-namespace IronText.Reflection
+﻿namespace IronText.Reflection
 {
     public interface ISymbolProperty
     {
-        string Name { get; }
+        Symbol Symbol { get; }
+
+        string Name   { get; }
     }
 }
