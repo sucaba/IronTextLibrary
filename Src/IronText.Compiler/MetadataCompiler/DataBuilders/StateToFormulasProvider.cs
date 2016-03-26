@@ -65,11 +65,23 @@ namespace IronText.MetadataCompiler
                 throw new NotImplementedException("TODO");
             }
 
-            var lhe = RuntimeReference.Inh(1, inhIndex);
+            var lhe = new InheritedRuntimeProperty(1, inhIndex);
             int lheProductionPosition = item.Position;
 
-            var arguments = new RuntimeReference[formula.ActualRefs.Length];
-            var rheArg = formula.ActualRefs[0];
+            var arguments = new IRuntimeValue[formula.ActualRefs.Length];
+            arguments[0] = GetRuntimeReference(
+                            formula.ActualRefs[0],
+                            item,
+                            lheProductionPosition);
+
+            return new RuntimeFormula(lhe, arguments, args => args[0]);
+        }
+
+        private InheritedRuntimeProperty GetRuntimeReference(
+            SemanticReference rheArg,
+            DotItem item,
+            int lheProductionPosition)
+        {
             var rhePropertyName = rheArg.Name;
             var prod = grammar.Productions[item.ProductionId];
             Symbol rheSymbol;
@@ -86,9 +98,8 @@ namespace IronText.MetadataCompiler
             }
 
             var rheProperty = grammar.InheritedProperties.Find(rheSymbol, rhePropertyName);
-            arguments[0] = RuntimeReference.Inh(rheOffset, rheProperty.Index);
-
-            return new RuntimeFormula(lhe, arguments, args => args[0]);
+            var result = new InheritedRuntimeProperty(rheOffset, rheProperty.Index);
+            return result;
         }
 
         private SemanticFormula GetDefiningFormula(InheritedProperty inhProperty, DotItem item)

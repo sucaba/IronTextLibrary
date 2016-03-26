@@ -5,9 +5,8 @@ using System.Text;
 
 namespace IronText.Runtime.Semantics
 {
-    public enum RuntimePropertyKind
+    public interface IRuntimeVariable
     {
-        Synthesized = 0,
-        Inherited   = 1
+        void Assign(IStackLookback<ActionNode> lookback, object value);
     }
 }

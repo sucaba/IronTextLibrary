@@ -180,7 +180,7 @@ namespace IronText.Runtime
             RuntimeFormula[] formulas = grammar.GetFormulas(shiftedState);
             foreach (var formula in formulas)
             {
-                formula.Excecute(lookback);
+                formula.Execute(lookback);
             }
 
             shiftAction(lookback);
