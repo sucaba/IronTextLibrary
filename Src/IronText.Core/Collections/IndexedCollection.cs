@@ -75,7 +75,7 @@ namespace IronText.Collections
         {
         }
 
-        protected void RequireIndexed()
+        public void RequireIndexed()
         {
             if (!indexed)
             {
@@ -83,7 +83,7 @@ namespace IronText.Collections
             }
         }
 
-        protected void RequireModifiable()
+        public void RequireModifiable()
         {
             if (!canModify)
             {

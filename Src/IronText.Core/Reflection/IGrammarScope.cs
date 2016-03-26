@@ -16,5 +16,13 @@ namespace IronText.Reflection
         SymbolPropertyCollection      SymbolProperties { get; }
 
         InheritedPropertyCollection   InheritedProperties { get;  }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="System.InvalidOperationException">
+        /// when grammar is still being edited.
+        /// </exception>
+        void RequireImmutable();
     }
 }

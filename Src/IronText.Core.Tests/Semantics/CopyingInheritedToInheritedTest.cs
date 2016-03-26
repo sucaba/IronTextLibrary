@@ -13,7 +13,7 @@ using System.Text;
 namespace IronText.Tests.Semantics
 {
     [TestFixture]
-    public class CopyingInheritedAttributeTest
+    public class CopyingInheritedToInheritedTest
     {
         private const string StartName = "S";
         private const string CheckName = "E";

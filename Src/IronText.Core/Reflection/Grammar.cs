@@ -387,5 +387,10 @@ namespace IronText.Reflection
 
             return null;
         }
+
+        public void RequireImmutable()
+        {
+            Symbols.RequireIndexed();
+        }
     }
 }

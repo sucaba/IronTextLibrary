@@ -79,12 +79,12 @@ namespace IronText.MetadataCompiler
         private IRuntimeValue ToRuntimeValue(
             ISemanticValue value,
             Production     prod,
-            int            lhePosition)
+            int            currentPosition)
         {
             var asReference = value as SemanticReference;
             if (asReference != null)
             {
-                return ToRuntimeValue(asReference, prod, lhePosition);
+                return asReference.ToRuntime(currentPosition);
             }
 
             var asConstant = value as SemanticConstant;
@@ -94,28 +94,6 @@ namespace IronText.MetadataCompiler
             }
 
             throw new NotImplementedException($"{value.GetType().Name} is not supported on runtime.");
-        }
-
-        private IRuntimeValue ToRuntimeValue(
-            SemanticReference reference,
-            Production        production,
-            int               shiftedPosition)
-        {
-            var rhePropertyName = reference.Name;
-            Symbol rheSymbol = reference.ResolveSymbol();
-            int rheOffset;
-            if (reference.Position < 0)
-            {
-                rheOffset = shiftedPosition - reference.Position;
-            }
-            else
-            {
-                rheOffset = shiftedPosition - reference.Position;
-            }
-
-            var rheProperty = grammar.InheritedProperties.Find(rheSymbol, rhePropertyName);
-            var result = new InheritedRuntimeProperty(rheOffset, rheProperty.Index);
-            return result;
         }
 
         private SemanticFormula GetDefiningFormula(InheritedProperty inhProperty, DotItem item)

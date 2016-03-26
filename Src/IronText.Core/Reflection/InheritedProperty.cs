@@ -1,4 +1,5 @@
 ﻿using IronText.Collections;
+using IronText.Runtime.Semantics;
 using System;
 
 namespace IronText.Reflection
@@ -26,6 +27,12 @@ namespace IronText.Reflection
         public override string ToString()
         {
             return Symbol.Name + "." + Name;
+        }
+
+        public IRuntimeValue ToRuntime(int offset)
+        {
+            var result = new InheritedRuntimeProperty(offset, Index);
+            return result;
         }
     }
 }

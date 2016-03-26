@@ -13,7 +13,6 @@ namespace IronText.Reflection
     public sealed class Production 
         : IndexableObject<IGrammarScope>
         , IProductionComponent
-        , IProductionSemanticScope
     {
         private readonly object _identity;
 

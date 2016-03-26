@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using IronText.Runtime.Semantics;
 
 namespace IronText.Reflection
 {
@@ -13,6 +14,11 @@ namespace IronText.Reflection
             this.Value = value;
         }
 
-        public object Value { get; set; }
+        public object Value { get; private set; }
+
+        public IRuntimeValue ToRuntime(int _)
+        {
+            return new RuntimeConstant(Value);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using IronText.Collections;
 using System;
+using IronText.Runtime.Semantics;
 
 namespace IronText.Reflection
 {
@@ -18,5 +19,11 @@ namespace IronText.Reflection
         public Symbol Symbol { get; private set; }
 
         public string Name   { get; private set; }
+
+        public IRuntimeValue ToRuntime(int offset)
+        {
+            var result = new SynthesizedRuntimeProperty(offset, Index);
+            return result;
+        }
     }
 }

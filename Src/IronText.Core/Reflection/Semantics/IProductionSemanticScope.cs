@@ -5,5 +5,7 @@
         Symbol Outcome { get; }
 
         Symbol[] Input { get; }
+
+        ISymbolProperty ResolveProperty(Symbol symbol, string name, bool isInherited);
     }
 }

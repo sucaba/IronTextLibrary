@@ -6,11 +6,12 @@ using System.Linq.Expressions;
 namespace IronText.Reflection
 {
     [Serializable]
-    public class ProductionSemantics : IEnumerable<SemanticFormula>
+    public class ProductionSemantics
+        : IEnumerable<SemanticFormula>
+        , IProductionSemanticScope
     {
         private readonly Production prod;
         private List<SemanticFormula> formulas = new List<SemanticFormula>();
-
         public ProductionSemantics(Production prod)
         {
             this.prod = prod;
@@ -19,12 +20,12 @@ namespace IronText.Reflection
         private void Add(SemanticFormula formula)
         {
             formulas.Add(formula);
-            ((IProductionSemanticElement)formula).Attach((IProductionSemanticScope)prod);
+            ((IProductionSemanticElement)formula).Attach(this);
 
-            Resolve(formula.Lhe);
+            ResolveVariable(formula.Lhe);
         }
 
-        private ISymbolProperty Resolve(SemanticVariable lhe)
+        private ISymbolProperty ResolveVariable(SemanticVariable lhe)
         {
             ISymbolProperty result;
 
@@ -44,6 +45,13 @@ namespace IronText.Reflection
         public void Add(
             SemanticVariable      lhe,
             SemanticReference     rhe)
+        {
+            Add(new SemanticFormula(lhe, rhe));
+        }
+
+        public void Add(
+            SemanticVariable lhe,
+            SemanticConstant rhe)
         {
             Add(new SemanticFormula(lhe, rhe));
         }
@@ -73,5 +81,28 @@ namespace IronText.Reflection
         {
             return formulas.GetEnumerator();
         }
+
+        ISymbolProperty IProductionSemanticScope.ResolveProperty(Symbol symbol, string name, bool isInherited)
+        {
+            var scope = prod.Scope;
+            scope.RequireImmutable();
+
+            ISymbolProperty result;
+            if (isInherited)
+            {
+                result = scope.InheritedProperties.FindOrAdd(symbol, name);
+            }
+            else
+            {
+                result = scope.SymbolProperties.FindOrAdd(symbol, name);
+            }
+
+            return result;
+        }
+
+        Symbol IProductionSemanticScope.Outcome { get { return prod.Outcome; } }
+
+        Symbol[] IProductionSemanticScope.Input { get { return prod.Input; } }
+
     }
 }

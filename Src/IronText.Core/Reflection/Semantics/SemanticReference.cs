@@ -1,4 +1,5 @@
 ﻿using System;
+using IronText.Runtime.Semantics;
 
 namespace IronText.Reflection
 {
@@ -34,6 +35,8 @@ namespace IronText.Reflection
 
         public int    Position { get; private set; }
 
+        private bool   IsInherited { get { return Position < 0; } }
+
         public Symbol ResolveSymbol()
         {
             if (scope == null)
@@ -41,13 +44,22 @@ namespace IronText.Reflection
                 throw new InvalidOperationException("Semantic element is not attached to production.");
             }
 
-            var result = (Position < 0) ? scope.Outcome : scope.Input[Position];
+            var result = IsInherited ? scope.Outcome : scope.Input[Position];
             return result;
         }
 
         void IProductionSemanticElement.Attach(IProductionSemanticScope scope)
         {
             this.scope = scope;
+        }
+
+        public IRuntimeValue ToRuntime(int currentPosition)
+        {
+            Symbol symbol = ResolveSymbol();
+            ISymbolProperty property = scope.ResolveProperty(symbol, Name, IsInherited);
+
+            int offset = currentPosition - Position;
+            return property.ToRuntime(offset);
         }
     }
 }
