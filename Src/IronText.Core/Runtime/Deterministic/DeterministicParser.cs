@@ -141,7 +141,7 @@ namespace IronText.Runtime
                             value = producer.CreateBranch(
                                 currentRule,
                                 stateStack.PeekTail(currentRule.InputLength),
-                                stateStack.ShiftedLookback(currentRule.InputLength));
+                                stateStack);
                             stateStack.Pop(currentRule.InputLength);
                             action = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));
                         }
@@ -300,7 +300,7 @@ namespace IronText.Runtime
                 value = producer.CreateBranch(
                             currentRule,
                             stateStack.PeekTail(currentRule.InputLength),
-                            stateStack.ShiftedLookback(currentRule.InputLength));
+                            stateStack);
 
                 stateStack.Pop(currentRule.InputLength);
                 act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));
@@ -313,7 +313,7 @@ namespace IronText.Runtime
                     value = producer.CreateBranch(
                             currentRule,
                             stateStack.PeekTail(currentRule.InputLength),
-                            stateStack.ShiftedLookback(currentRule.InputLength));
+                            stateStack);
 
                     stateStack.Pop(currentRule.InputLength);
                     act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentRule.Outcome));

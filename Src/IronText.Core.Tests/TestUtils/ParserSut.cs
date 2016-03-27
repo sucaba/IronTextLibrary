@@ -47,7 +47,7 @@ namespace IronText.Tests.TestUtils
         public void Parse(StringReader input, string document, Dictionary<int, object> inhIndexToValue = null)
         {
             var logging = ExceptionLogging.Instance;
-            var rtGrammar = grammar.ToRuntime(data.StateToFormulas);
+            var rtGrammar = grammar.ToRuntime(data.StateToFormulas, data.ProductionToFormulas);
 
             var producer = new ActionProducer(
                                     rtGrammar,

@@ -304,7 +304,7 @@ namespace IronText.Runtime
 
                 int X = path.Production.Outcome;
                 int m = path.Size;
-                var stackLookback = path.GetStackLookback();
+                var stackLookback = path.GetStackLookback().ShiftedLookback(-path.Size);
 
                 GssNode<T> u = path.LeftNode;
                 State k = u.State;

@@ -144,6 +144,13 @@ namespace IronText.Runtime
                 throw new NotSupportedException();
             }
 
+
+            RuntimeFormula[] formulas = grammar.GetReduceFormulas(prod.Index);
+            foreach (var formula in formulas)
+            {
+                formula.Execute(stackLookback);
+            }
+
             var result = new ActionNode(prod.Outcome, null, location, hLocation);
 
             var pargs = new ProductionActionArgs(prod.Index, prefix.Array, prefix.Offset, prefix.Count, context, stackLookback, result);
@@ -177,7 +184,7 @@ namespace IronText.Runtime
         public void Shifted(IStackLookback<ActionNode> lookback)
         {
             int shiftedState = lookback.GetParentState();
-            RuntimeFormula[] formulas = grammar.GetFormulas(shiftedState);
+            RuntimeFormula[] formulas = grammar.GetShiftedFormulas(shiftedState);
             foreach (var formula in formulas)
             {
                 formula.Execute(lookback);

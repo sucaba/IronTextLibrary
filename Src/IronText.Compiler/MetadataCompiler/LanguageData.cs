@@ -30,6 +30,8 @@ namespace IronText.MetadataCompiler
 
         public RuntimeFormula[][] StateToFormulas { get; set; }
 
+        public RuntimeFormula[][] ProductionToFormulas { get; set; }
+
         public int[]            TokenComplexity     { get; set; }
 
         public StackSemanticBinding[]  SemanticBindings  { get; set; }

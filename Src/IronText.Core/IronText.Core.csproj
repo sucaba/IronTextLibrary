@@ -155,6 +155,7 @@
     <Compile Include="Reflection\Semantics\IProductionSemanticScope.cs" />
     <Compile Include="Reflection\Semantics\IProductionSemanticElement.cs" />
     <Compile Include="Reflection\Semantics\ISemanticValue.cs" />
+    <Compile Include="Reflection\Semantics\ISemanticVariable.cs" />
     <Compile Include="Reflection\Semantics\ProductionSemantics.cs" />
     <Compile Include="Reflection\Semantics\SemanticConstant.cs" />
     <Compile Include="Reflection\Semantics\SemanticFormula.cs" />

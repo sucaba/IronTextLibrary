@@ -20,12 +20,14 @@ namespace IronText.MetadataCompiler
         private readonly Pipe<EmitSyntax>       ldLookback;
         private readonly StackSemanticBinding[] localSemanticBindings;
         private readonly ISemanticLoader        globals;
+        private readonly int                    stackShift;
 
         public StackSemanticLoader(
                 ISemanticLoader        globals,
                 EmitSyntax             emit,
                 Pipe<EmitSyntax>       ldLookback,
-                StackSemanticBinding[] localSemanticBindings = null)
+                StackSemanticBinding[] localSemanticBindings = null,
+                int                    stackShift = 0)
         {
             this.globals               = globals;
             this.emit                  = emit;
@@ -35,6 +37,7 @@ namespace IronText.MetadataCompiler
                                        : localSemanticBindings
                                             .OfType<StackSemanticBinding>()
                                             .ToArray();
+            this.stackShift            = stackShift;
         }
 
         public bool LdSemantic(SemanticRef reference)
@@ -76,7 +79,8 @@ namespace IronText.MetadataCompiler
                         emit,
                         il => il
                                 .Do(ldLookback)
-                                .Call((IStackLookback<ActionNode> lb) => lb.GetParentState()),
+                                .Ldc_I4(1 + stackShift)
+                                .Call((IStackLookback<ActionNode> lb, int backOffset) => lb.GetState(backOffset)),
                         (il, value) =>
                         {
                             il.Label(labels[value].Def);
@@ -106,7 +110,7 @@ namespace IronText.MetadataCompiler
                                     il2 => il2
                                         // Lookback for getting parent instance
                                         .Do(ldLookback)
-                                        .Ldc_I4(lc.StackLookback)
+                                        .Ldc_I4(lc.StackLookback + stackShift)
                                         .Call((IStackLookback<ActionNode> lb, int backOffset)
                                                 => lb.GetNodeAt(backOffset))
                                         .Ldfld((ActionNode msg) => msg.Value));

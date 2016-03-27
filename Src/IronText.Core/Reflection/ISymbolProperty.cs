@@ -8,6 +8,8 @@ namespace IronText.Reflection
 
         string Name   { get; }
 
-        IRuntimeValue ToRuntime(int offset);
+        IRuntimeValue    ToRuntimeValue(int offset);
+
+        IRuntimeVariable ToRuntimeVariable(int offset);
     }
 }

@@ -13,6 +13,7 @@ using IronText.Reflection.Reporting;
 using IronText.Reflection.Transformations;
 using IronText.Misc;
 using IronText.Runtime;
+using IronText.Runtime.Semantics;
 
 namespace IronText.MetadataCompiler
 {
@@ -104,14 +105,17 @@ namespace IronText.MetadataCompiler
             var semanticBindings = new List<StackSemanticBinding>();
             CollectStackSemanticBindings(grammar, parserDfa, semanticBindings);
 
-            IStateToFormulasProvider stateToFormulasProvider = new StateToFormulasProvider(grammar, parserDfa);
-            var stateToFormuals = stateToFormulasProvider.GetData();
+            ISemanticFormulasProvider stateToFormulasProvider = new SemanticFormulasProvider(grammar, parserDfa);
+            RuntimeFormula[][] stateToFormulas;
+            RuntimeFormula[][] productionToFormulas;
+            stateToFormulasProvider.GetData(out stateToFormulas, out productionToFormulas);
 
             // Prepare language data for the language assembly generation
             result.IsDeterministic     = !lrTable.RequiresGlr;
             result.Grammar             = grammar;
-            result.StateToFormulas     = stateToFormuals;
-            result.RuntimeGrammar      = grammar.ToRuntime(stateToFormuals);
+            result.StateToFormulas     = stateToFormulas;
+            result.ProductionToFormulas= productionToFormulas;
+            result.RuntimeGrammar      = grammar.ToRuntime(stateToFormulas, productionToFormulas);
             result.Analysis            = analysis;               
             result.TokenComplexity     = analysis.GetTokenComplexity();
             result.StateToToken        = parserDfa.GetStateToSymbolTable();

@@ -39,7 +39,6 @@ namespace IronText.Runtime
         private readonly ActionNode[] parts;
         private readonly int firstIndex;
         private readonly int partCount;
-        private int      _syntaxArgCount;
         private readonly ActionNode resultNode;
 
         public ProductionActionArgs(
@@ -55,7 +54,6 @@ namespace IronText.Runtime
             this.parts           = parts;
             this.firstIndex      = firstIndex;
             this.partCount       = count;
-            this._syntaxArgCount = parts.Length - firstIndex;
             this.Context         = context;
             this.Lookback        = lookback;
             this.resultNode      = resultNode;
@@ -82,7 +80,7 @@ namespace IronText.Runtime
 
         public object GetInherited(int inhIndex)
         {
-            ActionNode priorNode = Lookback.GetNodeAt(1);
+            ActionNode priorNode = Lookback.GetNodeAt(1 + partCount);
 
             object result = priorNode.GetInheritedStateProperty(inhIndex);
             return result;

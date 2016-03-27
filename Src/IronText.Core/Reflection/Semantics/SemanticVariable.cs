@@ -1,9 +1,10 @@
 ﻿using System;
+using IronText.Runtime.Semantics;
 
 namespace IronText.Reflection
 {
     [Serializable]
-    public class SemanticVariable : IProductionSemanticElement
+    public class SemanticVariable : IProductionSemanticElement, ISemanticVariable
     {
         public const int OutcomePosition = -1;
         private IProductionSemanticScope scope;
@@ -35,6 +36,8 @@ namespace IronText.Reflection
 
         public int    Position { get; private set; }
 
+        private bool IsInherited => Position >= 0;
+
         public Symbol ResolveSymbol()
         {
             if (scope == null)
@@ -49,6 +52,15 @@ namespace IronText.Reflection
         void IProductionSemanticElement.Attach(IProductionSemanticScope scope)
         {
             this.scope = scope;
+        }
+
+        public IRuntimeVariable ToRuntime(int currentPosition)
+        {
+            Symbol symbol = ResolveSymbol();
+            ISymbolProperty property = scope.ResolveProperty(symbol, Name, IsInherited);
+
+            int offset = currentPosition - Position;
+            return property.ToRuntimeVariable(offset);
         }
     }
 }

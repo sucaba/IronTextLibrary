@@ -14,6 +14,7 @@ namespace IronText.Runtime
         private readonly string[]            tokenNames;
         private readonly int[]               nonPredefinedTokens;
         private readonly RuntimeFormula[][]  stateToFormulas;
+        private readonly RuntimeFormula[][]  productionToFormulas;
 
         public RuntimeGrammar(
             string[]            tokenNames,
@@ -21,7 +22,8 @@ namespace IronText.Runtime
             bool[]              tokenIsNullable,
             bool[]              tokenIsTerminal,
             RuntimeProduction[] productions,
-            RuntimeFormula[][]  stateToFormulas)
+            RuntimeFormula[][]  stateToFormulas,
+            RuntimeFormula[][]  productionToFormulas)
         {
             this.TokenCount           = tokenNames.Length;
             this.tokenIsNullable      = tokenIsNullable;
@@ -32,6 +34,7 @@ namespace IronText.Runtime
 
             this.Productions          = productions;
             this.stateToFormulas      = stateToFormulas;
+            this.productionToFormulas = productionToFormulas;
             this.MaxProductionLength  = productions.Select(r => r.InputLength).Max();
         }
 
@@ -90,9 +93,14 @@ namespace IronText.Runtime
             return this.tokenCategories[token];
         }
 
-        public RuntimeFormula[] GetFormulas(int shiftedState)
+        public RuntimeFormula[] GetShiftedFormulas(int shiftedState)
         {
             return this.stateToFormulas[shiftedState];
+        }
+
+        public RuntimeFormula[] GetReduceFormulas(int shiftedState)
+        {
+            return this.productionToFormulas[shiftedState];
         }
     }
 }

@@ -117,7 +117,8 @@ namespace IronText.MetadataCompiler
                 globals,
                 emit,
                 ldLookback,
-                data.SemanticBindings);
+                data.SemanticBindings,
+                stackShift: prod.InputLength);
 
             Func<int,Pipe<EmitSyntax>> ldSyntaxArg = i => il => il
                                         .Ldarg(pargs)

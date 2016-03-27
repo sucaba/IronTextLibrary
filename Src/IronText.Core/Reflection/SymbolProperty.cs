@@ -20,7 +20,13 @@ namespace IronText.Reflection
 
         public string Name   { get; private set; }
 
-        public IRuntimeValue ToRuntime(int offset)
+        public IRuntimeValue ToRuntimeValue(int offset)
+        {
+            var result = new SynthesizedRuntimeProperty(offset, Index);
+            return result;
+        }
+
+        public IRuntimeVariable ToRuntimeVariable(int offset)
         {
             var result = new SynthesizedRuntimeProperty(offset, Index);
             return result;

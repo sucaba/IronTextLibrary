@@ -12,14 +12,12 @@ using System.Text;
 
 namespace IronText.Tests.Semantics
 {
-#if false
     [TestFixture]
     public class CopyingSynthesizedToInheritedAttributeTest
     {
         private const string StartName = "S";
         private const string CheckName = "E";
         private const string SynthName = "Synth";
-        private const string GlobalInhName = "GlobalInh";
         private const string InhName = "Inh";
         private const string CheckProduction = CheckName + ": 'e'";
         private static readonly object expected = "foo-bar";
@@ -29,11 +27,11 @@ namespace IronText.Tests.Semantics
         public Grammar grammar;
 
         [Test]
-        public void between_different_states()
+        public void between_different_parse_nodes()
         {
             GivenFormulaProduction(StartName + " = F 'x' 'x' 'x'");
             GivenSynthesizedProduction("F = 'f'");
-            GivenParserInput("xxx");
+            GivenParserInput("fxxx");
 
             WhenParsed();
 
@@ -47,27 +45,14 @@ namespace IronText.Tests.Semantics
             {
                 StartName = StartName,
                 Productions = { CheckName + " = 'e'" },
-                Matchers = { "e", "x" },
-                InheritedProperties =
-                {
-                    { StartName, GlobalInhName }
-                }
+                Matchers = { "f", "e", "x" }
             };
         }
         
         private void GivenFormulaProduction(string text)
         {
             this.formulaProductionText = text + " " + CheckName;
-            var formulaProd = grammar.Productions.Add(formulaProductionText);
-
-            ProvideInheritedValueToBeUsedInSynthProductionFormula(formulaProd);
-        }
-
-        private static void ProvideInheritedValueToBeUsedInSynthProductionFormula(Production formulaProd)
-        {
-            formulaProd.Semantics.Add(
-                new SemanticVariable(InhName, 0),
-                new SemanticReference(GlobalInhName));
+            grammar.Productions.Add(formulaProductionText);
         }
 
         private void GivenSynthesizedProduction(string prodText)
@@ -76,46 +61,38 @@ namespace IronText.Tests.Semantics
 
             prod.Semantics.Add(
                 new SemanticVariable(SynthName),
-                new SemanticReference(InhName));
+                new SemanticConstant(expected));
         }
 
         private void WhenParsed()
         {
-            GivenInhCopyFormula();
+            GivenSynthToInhCopyFormula();
             
             grammar.BuildIndexes();
 
-            int globalPropIdx = grammar.InheritedProperties.Find(StartName, GlobalInhName).Index;
-            int inhPropIdx = grammar.InheritedProperties.Find(StartName, InhName).Index;
+            int inhPropIdx = grammar.InheritedProperties.Find(CheckName, InhName).Index;
 
             var sut = new ParserSut(grammar);
             sut.ProductionHooks.Add(
                 CheckProduction,
                 ctx => got = ctx.GetInherited(inhPropIdx));
-            sut.Parse(
-                input + "e",
-                new Dictionary<int,object>
-                {
-                    { globalPropIdx, expected }
-                });
+            sut.Parse(input + "e");
         }
 
-        private void GivenInhCopyFormula()
+        private void GivenSynthToInhCopyFormula()
         {
             var prod = grammar.Productions
                 .Find(formulaProductionText);
             prod.Semantics
                 .Add(
-                    new SemanticVariable(InhToAttrName, prod.Input.Length - 1),
-                    new SemanticReference(InhFromAttrName));
+                    new SemanticVariable(InhName, prod.Input.Length - 1),
+                    new SemanticReference(SynthName, 0));
         }
 
         private void GivenParserInput(string text)
         {
             this.input = text;
         }
-
     }
-#endif
 }
 

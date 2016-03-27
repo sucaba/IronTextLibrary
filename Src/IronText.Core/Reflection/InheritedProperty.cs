@@ -29,7 +29,13 @@ namespace IronText.Reflection
             return Symbol.Name + "." + Name;
         }
 
-        public IRuntimeValue ToRuntime(int offset)
+        public IRuntimeValue ToRuntimeValue(int offset)
+        {
+            var result = new InheritedRuntimeProperty(offset, Index);
+            return result;
+        }
+
+        public IRuntimeVariable ToRuntimeVariable(int offset)
         {
             var result = new InheritedRuntimeProperty(offset, Index);
             return result;

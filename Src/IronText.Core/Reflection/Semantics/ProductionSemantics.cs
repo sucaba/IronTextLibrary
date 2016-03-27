@@ -90,11 +90,16 @@ namespace IronText.Reflection
             ISymbolProperty result;
             if (isInherited)
             {
-                result = scope.InheritedProperties.FindOrAdd(symbol, name);
+                result = scope.InheritedProperties.Find(symbol, name);
             }
             else
             {
-                result = scope.SymbolProperties.FindOrAdd(symbol, name);
+                result = scope.SymbolProperties.Find(symbol, name);
+            }
+
+            if (result == null)
+            {
+                throw new ArgumentException($"Property {name} does not exist", nameof(name));
             }
 
             return result;

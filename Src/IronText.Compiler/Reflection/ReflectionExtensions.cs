@@ -12,10 +12,13 @@ namespace IronText.Reflection
     {
         public static RuntimeGrammar ToRuntime(this Grammar grammar)
         {
-            return ToRuntime(grammar, null);
+            return ToRuntime(grammar, null, null);
         }
 
-        public static RuntimeGrammar ToRuntime(this Grammar grammar, RuntimeFormula[][] stateToFormulas)
+        public static RuntimeGrammar ToRuntime(
+            this Grammar grammar,
+            RuntimeFormula[][] stateToFormulas,
+            RuntimeFormula[][] productionToFormulas)
         {
             IRuntimeNullableFirstTables tables = new NullableFirstTables(grammar);
             var tokenIsNullable     = tables.TokenToNullable;
@@ -31,7 +34,8 @@ namespace IronText.Reflection
                         tokenIsNullable,
                         tokenIsTerminal,
                         runtimeProductions,
-                        stateToFormulas);
+                        stateToFormulas,
+                        productionToFormulas);
         }
 
         public static RuntimeProduction ToRuntime(this Production prod)

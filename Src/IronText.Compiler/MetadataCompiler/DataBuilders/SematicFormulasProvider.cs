@@ -9,34 +9,64 @@ using IronText.Compiler.Analysis;
 
 namespace IronText.MetadataCompiler
 {
-    internal interface IStateToFormulasProvider
+    internal interface ISemanticFormulasProvider
     {
-        RuntimeFormula[][] GetData();
+        void GetData(
+            out RuntimeFormula[][] stateToFormulas,
+            out RuntimeFormula[][] productionToFormulas);
     }
 
-    internal class StateToFormulasProvider : IStateToFormulasProvider
+    internal class SemanticFormulasProvider : ISemanticFormulasProvider
     {
-        private readonly RuntimeFormula[][] data;
+        private RuntimeFormula[][] stateToFormulas;
+        private RuntimeFormula[][] productionToFormulas;
         private readonly Grammar grammar;
 
-        public StateToFormulasProvider(Grammar grammar, ILrDfa dfa)
+        public SemanticFormulasProvider(Grammar grammar, ILrDfa dfa)
         {
             this.grammar = grammar;
-            var data = new List<RuntimeFormula>[dfa.States.Length];
+
+            this.stateToFormulas      = BuildShiftFormulas(dfa);
+            this.productionToFormulas = BuildProductionFormulas();
+        }
+
+        private RuntimeFormula[][] BuildProductionFormulas()
+        {
+            var result = new List<RuntimeFormula>[grammar.Productions.Count];
+            for (int i = grammar.Productions.Count; i != 0;)
+            {
+                result[--i] = new List<RuntimeFormula>();
+            }
+
+            foreach (var production in grammar.Productions)
+            {
+                var formulas = production.Semantics
+                                    .Where(f => f.IsCalledOnReduce)
+                                    .Select(f => ToRuntimeFormula(f, production));
+
+                result[production.Index].AddRange(formulas);
+            }
+
+            return Array.ConvertAll(result, fs => fs.ToArray());
+        }
+
+        private RuntimeFormula[][] BuildShiftFormulas(ILrDfa dfa)
+        {
+            var result = new List<RuntimeFormula>[dfa.States.Length];
             for (int i = dfa.States.Length; i != 0;)
             {
-                data[--i] = new List<RuntimeFormula>();
+                result[--i] = new List<RuntimeFormula>();
             }
 
             foreach (var state in dfa.States)
             {
                 foreach (var item in state.Items)
                 {
-                    Check(state, item, data[state.Index]);
+                    Check(state, item, result[state.Index]);
                 }
             }
 
-            this.data = Array.ConvertAll(data, fs => fs.ToArray());
+            return Array.ConvertAll(result, fs => fs.ToArray());
         }
 
         private void Check(DotState state, DotItem item, List<RuntimeFormula> es)
@@ -58,9 +88,22 @@ namespace IronText.MetadataCompiler
             }
         }
 
+        private RuntimeFormula ToRuntimeFormula(SemanticFormula formula, Production prod)
+        {
+            if (!formula.IsCopy)
+            {
+                throw new NotImplementedException("TODO");
+            }
+
+            var lhe = formula.Lhe.ToRuntime(prod.InputLength);
+            var rhe = formula.Arguments[0].ToRuntime(prod.InputLength);
+            var result = new RuntimeFormula(lhe, new[] { rhe }, x => x);
+            return result;
+        }
+
         private RuntimeFormula ToRuntimeFormula(SemanticFormula formula, int inhIndex, DotItem item)
         {
-            if (!formula.IsCopy || formula.IsCalledOnReduce)
+            if (!formula.IsCopy)
             {
                 throw new NotImplementedException("TODO");
             }
@@ -99,7 +142,9 @@ namespace IronText.MetadataCompiler
         private SemanticFormula GetDefiningFormula(InheritedProperty inhProperty, DotItem item)
         {
             var production = grammar.Productions[item.ProductionId];
-            var result = production.Semantics.SingleOrDefault(f => f.Lhe.Position == item.Position);
+            var result = production.Semantics
+                            .SingleOrDefault(f => f.Lhe.Position == item.Position
+                                               && f.Lhe.Name == inhProperty.Name);
             if (result == null)
             {
                 var msg = string.Format(
@@ -113,9 +158,12 @@ namespace IronText.MetadataCompiler
             return result;
         }
 
-        public RuntimeFormula[][] GetData()
+        public void GetData(
+            out RuntimeFormula[][] stateToFormulas,
+            out RuntimeFormula[][] productionToFormulas)
         {
-            return this.data;
+            stateToFormulas      = this.stateToFormulas;
+            productionToFormulas = this.productionToFormulas;
         }
     }
 }

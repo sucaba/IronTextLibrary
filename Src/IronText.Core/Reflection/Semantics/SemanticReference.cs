@@ -59,7 +59,7 @@ namespace IronText.Reflection
             ISymbolProperty property = scope.ResolveProperty(symbol, Name, IsInherited);
 
             int offset = currentPosition - Position;
-            return property.ToRuntime(offset);
+            return property.ToRuntimeValue(offset);
         }
     }
 }
