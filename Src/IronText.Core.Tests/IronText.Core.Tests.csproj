@@ -212,6 +212,7 @@
     <Compile Include="Semantics\CopyingConstantToSynthesizedTest.cs" />
     <Compile Include="Semantics\CopyingSynthesizedToInheritedTest.cs" />
     <Compile Include="Semantics\CopyingConstantToInheritedTest.cs" />
+    <Compile Include="Semantics\CopyingSynthesizedToSynthesizedTest.cs" />
     <Compile Include="Semantics\PassingGlobalInheritedTest.cs" />
     <Compile Include="Semantics\CopyingInheritedToInheritedTest.cs" />
     <Compile Include="Semantics\InheritedAttributeECPartitionTest.cs" />

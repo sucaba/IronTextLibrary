@@ -36,9 +36,8 @@ namespace IronText.Build
             {
                 return (IDerivedBuilder<TContext>)Activator.CreateInstance(type, attributeDefiningType);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-#if false
                 Console.WriteLine("**Unable to create instance of {0} with arg {1}", type, attributeDefiningType);
                 Exception error = e;
                 while (error.InnerException != null)
@@ -47,7 +46,6 @@ namespace IronText.Build
                 }
 
                 Console.WriteLine("Exception {0}", error);
-#endif
                 throw;
             }
         }

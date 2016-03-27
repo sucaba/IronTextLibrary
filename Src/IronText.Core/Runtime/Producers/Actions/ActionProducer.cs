@@ -153,7 +153,6 @@ namespace IronText.Runtime
                 formula.Execute(stackLookback, result);
             }
 
-
             var pargs = new ProductionActionArgs(prod.Index, prefix.Array, prefix.Offset, prefix.Count, context, stackLookback, result);
             result.Value = productionAction(pargs);
             return result;
