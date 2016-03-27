@@ -64,7 +64,7 @@ namespace IronText.Logging
 
             if (y.IsUnknown)
             {
-                return y;
+                return x;
             }
 
             return new Loc(x.FirstLine, x.FirstColumn, y.LastLine, y.LastColumn);
