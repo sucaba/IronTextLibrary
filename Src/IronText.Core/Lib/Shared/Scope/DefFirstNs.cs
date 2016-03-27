@@ -17,7 +17,7 @@ namespace IronText.Lib.Shared
             Def<TNs> result = Get(var);
             if (result == null)
             {
-                throw new SyntaxException(Parsing.HLocation, "Undefined identifier.");
+                throw new SyntaxException(Parsing.Location, "Undefined identifier.");
             }
 
             return result.GetRef();
@@ -28,7 +28,7 @@ namespace IronText.Lib.Shared
         {
             if (Frame.Get(var) != null)
             {
-                throw new SyntaxException(Parsing.HLocation, "Unable to redefine '" + var + "'");
+                throw new SyntaxException(Parsing.Location, "Unable to redefine '" + var + "'");
             }
             
             var result = Frame.Define(var);

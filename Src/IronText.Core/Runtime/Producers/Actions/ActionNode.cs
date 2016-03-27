@@ -6,8 +6,8 @@ namespace IronText.Runtime
     public class ActionNode
     {
         public readonly int    Token;
-        public object Value;
-        public readonly HLoc   HLocation;
+        public readonly Loc    Location;
+        public object          Value;
 
         /// <summary>
         /// Inherited properties of a state (union of inherited properties of all tokens following this state).
@@ -19,11 +19,11 @@ namespace IronText.Runtime
         /// </summary>
         public PropertyValueNode TokenProperties { get; private set; }
 
-        public ActionNode(int token, object value, HLoc hLoc, PropertyValueNode stateProperties = null)
+        public ActionNode(int token, object value, Loc hLoc, PropertyValueNode stateProperties = null)
         {
             this.Token           = token;
             this.Value           = value;
-            this.HLocation       = hLoc;
+            this.Location       = hLoc;
             this.InheritedStateProperties = stateProperties;
         }
 

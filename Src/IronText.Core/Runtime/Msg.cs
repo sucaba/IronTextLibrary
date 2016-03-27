@@ -41,27 +41,27 @@ namespace IronText.Runtime
         /// <summary>
         /// Line, column based location for a human
         /// </summary>
-        public readonly HLoc   HLocation;
+        public readonly Loc    Location;
 
-        public Msg(int token, string text, object value, HLoc hLocation)
+        public Msg(int token, string text, object value, Loc location)
             : base(token, text, value)
         {
             this.AmbToken = token;
-            this.HLocation = hLocation;
+            this.Location = location;
         }
 
-        public Msg(int token, string text, int action, HLoc hLocation)
+        public Msg(int token, string text, int action, Loc location)
             : base(token, text, action)
         {
             this.AmbToken = token;
-            this.HLocation = hLocation;
+            this.Location = location;
         }
 
-        internal Msg(int ambToken, int token, int action, string text, HLoc hLocation)
+        internal Msg(int ambToken, int token, int action, string text, Loc location)
             : base(token, text, action)
         {
             this.AmbToken = ambToken;
-            this.HLocation = hLocation;
+            this.Location = location;
         }
 
         public MsgData FirstData { get { return this; } }
@@ -76,7 +76,7 @@ namespace IronText.Runtime
         {
             return AmbToken == other.AmbToken
                 && Text == other.Text
-                && HLocation == other.HLocation
+                && Location == other.Location
                 ;
         }
 
@@ -84,13 +84,13 @@ namespace IronText.Runtime
         {
             unchecked
             {
-                return AmbToken ^ HLocation.FirstColumn ^ HLocation.LastLine;
+                return AmbToken ^ Location.FirstColumn ^ Location.LastLine;
             }
         }
 
         public override string ToString()
         {
-            return string.Format("<Msg Id={0}, Text={1}, Loc={2}>", AmbToken, Text, HLocation);
+            return string.Format("<Msg Id={0}, Text={1}, Loc={2}>", AmbToken, Text, Location);
         }
     }
 }

@@ -4,6 +4,6 @@ namespace IronText.Framework
 {
     public interface IParsing
     {
-        HLoc HLocation { get; }
+        Loc Location { get; }
     }
 }

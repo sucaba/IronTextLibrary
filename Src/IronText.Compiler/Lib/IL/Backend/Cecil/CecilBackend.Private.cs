@@ -48,7 +48,7 @@ namespace IronText.Lib.IL.Backend.Cecil
             return instruction.OpCode.OperandType == OperandType.InlineSwitch;
         }
 
-        private SequencePoint CreateSequencePoint(HLoc location)
+        private SequencePoint CreateSequencePoint(Loc location)
         {
             var result = new SequencePoint(this.document)
             {

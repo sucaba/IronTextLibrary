@@ -21,7 +21,7 @@ namespace IronText.Runtime
 
         public SppfNode CreateLeaf(Msg envelope, MsgData data)
         { 
-            return new SppfNode(data.Action, data.Text, envelope.HLocation);
+            return new SppfNode(data.Action, data.Text, envelope.Location);
         }
 
         public SppfNode CreateBranch(
@@ -44,12 +44,12 @@ namespace IronText.Runtime
                 // FillEpsilonSuffix(prod.Index, parts.Count, children, parts.Count, stackLookback);
             }
 
-            HLoc location;
+            Loc location;
             int partsCount = parts.Count;
             switch (partsCount)
             {
                 case 0:
-                    location = HLoc.Unknown;
+                    location = Loc.Unknown;
                     break;
                 case 1:
                     location = children[0].Location;

@@ -222,7 +222,7 @@ namespace IronText.Runtime
                         new LogEntry
                         {
                             Severity = Severity.Error,
-                            HLocation = model.GetHiglightHLocation(failedInput),
+                            Location = model.GetHiglightLocation(failedInput),
                             Message  = model.FormatMessage(grammar, failedInput, correction)
                         });
                     return true;
@@ -290,7 +290,7 @@ namespace IronText.Runtime
                         var categories = grammar.GetTokenCategories(term);
                         if ((categories & SymbolCategory.DoNotInsert) == 0)
                         {
-                            yield return new Msg(term, null, null, HLoc.Unknown);
+                            yield return new Msg(term, null, null, Loc.Unknown);
                         }
                     }
                 }
@@ -301,7 +301,7 @@ namespace IronText.Runtime
                         var categories = grammar.GetTokenCategories(term);
                         if ((categories & SymbolCategory.DoNotInsert) != 0)
                         {
-                            yield return new Msg(term, null, null, HLoc.Unknown); // TODO: Location and value
+                            yield return new Msg(term, null, null, Loc.Unknown); // TODO: Location and value
                         }
                     }
                 }

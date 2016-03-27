@@ -9,11 +9,11 @@ namespace IronText.Runtime
     public class SyntaxException : ApplicationException
     {
         private readonly string message;
-        private readonly HLoc hLocation;
+        private readonly Loc location;
 
-        public SyntaxException(HLoc hLocation, string message)
+        public SyntaxException(Loc location, string message)
         {
-            this.hLocation = hLocation;
+            this.location = location;
             this.message = message;
         }
 
@@ -25,13 +25,13 @@ namespace IronText.Runtime
             get
             {
                 string locationText;
-                if (hLocation.IsUnknown)
+                if (location.IsUnknown)
                 {
                     locationText = "";
                 }
                 else
                 {
-                    locationText = hLocation.ToString() + ": ";
+                    locationText = location.ToString() + ": ";
                 }
 
                 return string.Format("{0}{1}", locationText, message);

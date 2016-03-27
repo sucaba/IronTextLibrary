@@ -59,18 +59,18 @@ namespace IronText.Runtime
 
         public IReceiver<Msg> Done()
         {
-            HLoc hLocation;
+            Loc location;
 
             if (!object.Equals(priorInput, default(Msg)))
             {
-                hLocation = priorInput.HLocation.GetEndLocation();
+                location = priorInput.Location.GetEndLocation();
             }
             else
             {
-                hLocation = new HLoc(1, 1, 1, 1);
+                location = new Loc(1, 1, 1, 1);
             }
 
-            var eoi = new Msg(PredefinedTokens.Eoi, null, null, hLocation);
+            var eoi = new Msg(PredefinedTokens.Eoi, null, null, location);
             return Next(eoi);
         }
 
@@ -116,7 +116,7 @@ namespace IronText.Runtime
                         new LogEntry
                         {
                             Severity = Severity.Error,
-                            HLocation = envelope.HLocation,
+                            Location = envelope.Location,
                             Message = "Hit parser conflict on token " + grammar.SymbolName(envelope.AmbToken)
                         });
                     return null;
@@ -176,7 +176,7 @@ namespace IronText.Runtime
                         {
                             Severity = Severity.Error,
                             Message = "Unexpected end of file.",
-                            HLocation = currentInput.HLocation,
+                            Location = currentInput.Location,
                         });
                 }
 
@@ -223,7 +223,7 @@ namespace IronText.Runtime
                 new LogEntry
                 {
                     Severity = Severity.Error,
-                    HLocation = msg.HLocation,
+                    Location = msg.Location,
                     Message = message.ToString()
                 });
         }

@@ -27,7 +27,7 @@ namespace IronText.Lib.IL.Backend.ReflectionEmit
             get {  throw new NotImplementedException(); }
         }
 
-        public HLoc Location { get; set; }
+        public Loc Location { get; set; }
 
         public DefFirstNs<Locals> Locals { get; private set; }
 

@@ -104,7 +104,7 @@ namespace IronText.Tests.Framework
             using (var interpreter = new Interpreter<T>(context) { LoggingKind = LoggingKind.Collect })
             using (var reader = new StringReader(input))
             {
-                return interpreter.Parse(reader, HLoc.MemoryString);
+                return interpreter.Parse(reader, Loc.MemoryString);
             }
         }
 

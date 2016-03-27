@@ -41,7 +41,7 @@ namespace IronText.Tests.TestUtils
 
         public void Parse(string text, Dictionary<int, object> inhIndexToValue = null)
         {
-            Parse(new StringReader(text), HLoc.MemoryString, inhIndexToValue);
+            Parse(new StringReader(text), Loc.MemoryString, inhIndexToValue);
         }
 
         public void Parse(StringReader input, string document, Dictionary<int, object> inhIndexToValue = null)
@@ -192,7 +192,7 @@ namespace IronText.Tests.TestUtils
                                     token,
                                     new string(input, start, (marker - start)),
                                     null,
-                                    new HLoc(1, start + 1, 1, marker + 1));
+                                    new Loc(1, start + 1, 1, marker + 1));
                         }
                     }
 

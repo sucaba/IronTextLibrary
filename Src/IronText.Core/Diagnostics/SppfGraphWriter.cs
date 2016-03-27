@@ -60,7 +60,7 @@ namespace IronText.Diagnostics
             node.Accept(this, false);
         }
 
-        void ISppfNodeVisitor.VisitLeaf(int matcherIndex, string text, HLoc location)
+        void ISppfNodeVisitor.VisitLeaf(int matcherIndex, string text, Loc location)
         {
             var matcher = grammar.Matchers[matcherIndex];
             string label = matcher.Outcome.Name + " pos: " + location
@@ -71,7 +71,7 @@ namespace IronText.Diagnostics
             graph.AddNode(currentNodeIdentity, label: label, shape: Shape.Circle);
         }
 
-        void ISppfNodeVisitor.VisitBranch(int prodIndex, SppfNode[] children, HLoc location)
+        void ISppfNodeVisitor.VisitBranch(int prodIndex, SppfNode[] children, Loc location)
         {
             var rule = grammar.Productions[prodIndex];
 

@@ -6,6 +6,6 @@ namespace IronText.Framework
     {
         public static IParsing Instance { get {  return new NullParsing(); } }
 
-        HLoc IParsing.HLocation { get { return HLoc.Unknown; } }
+        Loc IParsing.Location { get { return Loc.Unknown; } }
     }
 }

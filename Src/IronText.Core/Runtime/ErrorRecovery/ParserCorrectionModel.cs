@@ -21,52 +21,28 @@ namespace IronText.Runtime
             this.requiredInputSize = requiredInputSize;
         }
 
-        public HLoc GetHiglightLocation(List<Msg> source)
+        public Loc GetHiglightLocation(List<Msg> source)
         {
             for (int i = 0; i != Count; ++i)
             {
                 if (this[i] != i)
                 {
-                    if (source[i].HLocation.IsUnknown)
+                    if (source[i].Location.IsUnknown)
                     {
                         break;
                     }
 
-                    return source[i].HLocation;
+                    return source[i].Location;
                 }
             }
 
-            var errorItems = source.Select(s => s.HLocation);
+            var errorItems = source.Select(s => s.Location);
             if (source.Count > 1)
             {
                 errorItems = errorItems.Skip(1);
             }
 
-            return HLoc.Sum(errorItems);
-        }
-
-        public HLoc GetHiglightHLocation(List<Msg> source)
-        {
-            for (int i = 0; i != Count; ++i)
-            {
-                if (this[i] != i)
-                {
-                    if (source[i].HLocation.IsUnknown)
-                    {
-                        break;
-                    }
-
-                    return source[i].HLocation;
-                }
-            }
-
-            var errorItems = source.Select(s => s.HLocation);
-            if (source.Count > 1)
-            {
-                errorItems = errorItems.Skip(1);
-            }
-
-            return HLoc.Sum(errorItems);
+            return Loc.Sum(errorItems);
         }
 
         public string FormatMessage(RuntimeGrammar grammar, List<Msg> source, List<Msg> corrected)

@@ -19,7 +19,7 @@ namespace IronText.Tests.IO
         {
             string filePath = @"c:\myFile.w";
             int character = 20;
-            var target = new HLoc(filePath, character, character);
+            var target = new Loc(filePath, character, character);
             Assert.AreEqual(filePath, target.FilePath);
             Assert.AreEqual(1, target.FirstLine);
             Assert.AreEqual(1, target.LastLine);
@@ -32,8 +32,8 @@ namespace IronText.Tests.IO
         {
             string fileName = "myFile.wasp";
             int characterNumber = 893892;
-            var target = new HLoc(fileName, characterNumber, characterNumber);
-            var copy = new HLoc(fileName, characterNumber, characterNumber);
+            var target = new Loc(fileName, characterNumber, characterNumber);
+            var copy = new Loc(fileName, characterNumber, characterNumber);
 
             Assert.AreEqual(target.GetHashCode(), copy.GetHashCode());
         }

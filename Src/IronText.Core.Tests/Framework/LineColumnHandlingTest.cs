@@ -30,13 +30,13 @@ namespace IronText.Tests.Framework
                 //         07:                                              xxxxx   
                 //         08:                                                       xxxx   
                 
-                var hlocs = interp.Scan(text).Select(msg => msg.HLocation).ToArray();
-                Assert.AreEqual(new HLoc(1,1,1,4), hlocs[0]);
-                Assert.AreEqual(new HLoc(2,1,2,7), hlocs[1]);
-                Assert.AreEqual(new HLoc(3,1,3,4), hlocs[2]);
-                Assert.AreEqual(new HLoc(4,1,4,4), hlocs[3]);
-                Assert.AreEqual(new HLoc(5,1,8,5), hlocs[4]);
-                Assert.AreEqual(new HLoc(9,1,9,4), hlocs[5]);
+                var hlocs = interp.Scan(text).Select(msg => msg.Location).ToArray();
+                Assert.AreEqual(new Loc(1,1,1,4), hlocs[0]);
+                Assert.AreEqual(new Loc(2,1,2,7), hlocs[1]);
+                Assert.AreEqual(new Loc(3,1,3,4), hlocs[2]);
+                Assert.AreEqual(new Loc(4,1,4,4), hlocs[3]);
+                Assert.AreEqual(new Loc(5,1,8,5), hlocs[4]);
+                Assert.AreEqual(new Loc(9,1,9,4), hlocs[5]);
             }
         }
 

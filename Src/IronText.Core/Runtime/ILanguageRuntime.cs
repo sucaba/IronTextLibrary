@@ -33,7 +33,7 @@ namespace IronText.Runtime
         public static Msg Literal(this ILanguageRuntime @this, string literal)
         {
             var id = @this.Identify(literal);
-            return new Msg(id, literal, null, HLoc.Unknown);
+            return new Msg(id, literal, null, Loc.Unknown);
         }
 
         public static Msg Symbol<T>(this ILanguageRuntime @this, T value, string text = UnknownText)
@@ -43,7 +43,7 @@ namespace IronText.Runtime
 
         public static Msg Symbol(this ILanguageRuntime @this, Type type, object value, string text = UnknownText)
         {
-            return new Msg(@this.Identify(type), text, value, HLoc.Unknown);
+            return new Msg(@this.Identify(type), text, value, Loc.Unknown);
         }
 
         private static int IdentifySymbolValue(this ILanguageRuntime @this, object value)

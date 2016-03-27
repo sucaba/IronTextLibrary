@@ -17,16 +17,16 @@ namespace IronText.Tests.Framework.Attributes
             Assert.IsTrue(context.HasParsing,  "Missing parsing service");
             Assert.IsTrue(context.HasLanguage, "Missing language service");
 
-            Assert.AreEqual(HLoc.FromPos(0, 3), context.LastNonTermLocation);
-            Assert.AreEqual(HLoc.FromPos(0, 3), context.LastTermLocation);
+            Assert.AreEqual(Loc.FromPos(0, 3), context.LastNonTermLocation);
+            Assert.AreEqual(Loc.FromPos(0, 3), context.LastTermLocation);
 
             Language.Parse(context, "barr");
             Assert.IsTrue(context.Nested.HasScanning, "Missing nested scanning service");
             Assert.IsTrue(context.Nested.HasParsing, "Missing nested parsing service");
             Assert.IsTrue(context.Nested.HasLanguage, "Missing language service");
 
-            Assert.AreEqual(HLoc.FromPos(0, 4), context.Nested.LastNonTermLocation);
-            Assert.AreEqual(HLoc.FromPos(0, 4), context.Nested.LastTermLocation);
+            Assert.AreEqual(Loc.FromPos(0, 4), context.Nested.LastNonTermLocation);
+            Assert.AreEqual(Loc.FromPos(0, 4), context.Nested.LastTermLocation);
         }
 
         [Language]
@@ -38,8 +38,8 @@ namespace IronText.Tests.Framework.Attributes
             public bool HasScanning;
             public bool HasParsing;
             public bool HasLanguage;
-            public HLoc LastNonTermLocation;
-            public HLoc LastTermLocation;
+            public Loc LastNonTermLocation;
+            public Loc LastTermLocation;
 
             public MyServiceConsumer()
             {
@@ -66,7 +66,7 @@ namespace IronText.Tests.Framework.Attributes
                 HasParsing = Parsing != null;
                 if (HasParsing)
                 {
-                    LastNonTermLocation = Parsing.HLocation;
+                    LastNonTermLocation = Parsing.Location;
                 }
 
                 return null;
@@ -79,7 +79,7 @@ namespace IronText.Tests.Framework.Attributes
                 HasLanguage = Language != null;
                 if (HasScanning)
                 {
-                    LastTermLocation = Scanning.HLocation;
+                    LastTermLocation = Scanning.Location;
                 }
 
                 return null; 
@@ -92,8 +92,8 @@ namespace IronText.Tests.Framework.Attributes
             public bool HasParsing;
             public bool HasScanning;
             public bool HasLanguage;
-            public HLoc LastNonTermLocation;
-            public HLoc LastTermLocation;
+            public Loc LastNonTermLocation;
+            public Loc LastTermLocation;
 
             [LanguageService]
             public IScanning Scanning { get; set; }
@@ -113,7 +113,7 @@ namespace IronText.Tests.Framework.Attributes
                 HasParsing = Parsing != null;
                 if (HasParsing)
                 {
-                    LastNonTermLocation = Parsing.HLocation;
+                    LastNonTermLocation = Parsing.Location;
                 }
 
                 return null;
@@ -126,7 +126,7 @@ namespace IronText.Tests.Framework.Attributes
                 HasLanguage = Language != null;
                 if (HasScanning)
                 {
-                    LastTermLocation = Scanning.HLocation;
+                    LastTermLocation = Scanning.Location;
                 }
 
                 return null; 

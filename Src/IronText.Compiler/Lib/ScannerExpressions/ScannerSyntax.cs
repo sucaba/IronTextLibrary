@@ -209,7 +209,7 @@ namespace IronText.Lib.ScannerExpressions
                         Severity  = Severity.Error,
                         Message   = string.Format("Invalid unicode category '{0}'.", name),
                     };
-                entry.HLocation = Parsing.HLocation;
+                entry.Location = Parsing.Location;
 
                 Logging.Write(entry);
                 return IntSet.Empty;

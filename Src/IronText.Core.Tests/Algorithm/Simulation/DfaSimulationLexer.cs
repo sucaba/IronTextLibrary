@@ -79,7 +79,7 @@ namespace IronText.Tests.Algorithm
 
                     // Emit next token
                     visitor = visitor.Next(
-                        new Msg(detOutcome.Index, text.Substring(start, tokenLength), null, HLoc.FromPos(start, tokenLength)));
+                        new Msg(detOutcome.Index, text.Substring(start, tokenLength), null, Loc.FromPos(start, tokenLength)));
                 }
 
                 start = pos;

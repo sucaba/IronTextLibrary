@@ -100,7 +100,7 @@ namespace IronText.Runtime
             // Note: StringReader is not disposed because resulting
             //       enumerable will use text reader after return
             //       from this method.
-            return Scan(new StringReader(input), HLoc.MemoryString);
+            return Scan(new StringReader(input), Loc.MemoryString);
         }
 
         public IEnumerable<Msg> Scan(TextReader input, string document)
@@ -137,7 +137,7 @@ namespace IronText.Runtime
 
             if (document == null)
             {
-                document = HLoc.MemoryString;
+                document = Loc.MemoryString;
             }
 
             Clear();
@@ -179,7 +179,7 @@ namespace IronText.Runtime
         {
             using (var reader = new StringReader(input))
             {
-                return BuildTree(reader, HLoc.MemoryString);
+                return BuildTree(reader, Loc.MemoryString);
             }
         }
 
@@ -192,7 +192,7 @@ namespace IronText.Runtime
 
             if (document == null)
             {
-                document = HLoc.MemoryString;
+                document = Loc.MemoryString;
             }
 
             Clear();

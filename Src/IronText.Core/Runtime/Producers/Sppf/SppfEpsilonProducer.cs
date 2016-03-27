@@ -46,7 +46,7 @@ namespace IronText.Runtime
                     args[i] = InternalGetNullable(input[i]);
                 }
 
-                result = tokenCache[nonTerm] = new SppfNode(production.Index, HLoc.Unknown, args);
+                result = tokenCache[nonTerm] = new SppfNode(production.Index, Loc.Unknown, args);
             }
 
             return result;

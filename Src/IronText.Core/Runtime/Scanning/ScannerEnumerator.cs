@@ -97,7 +97,7 @@ namespace IronText.Runtime
                             new LogEntry
                             {
                                 Severity = Severity.Error,
-                                HLocation = new HLoc(
+                                Location = new Loc(
                                                 cursor.CursorLine,
                                                 cursor.CursorColumn - 1,
                                                 cursor.CursorLine,
@@ -124,7 +124,7 @@ namespace IronText.Runtime
                         new LogEntry
                         {
                             Severity  = Severity.Error,
-                            HLocation = new HLoc(
+                            Location = new Loc(
                                             cursor.CursorLine,
                                             cursor.CursorColumn,
                                             cursor.CursorLine,
@@ -210,9 +210,9 @@ namespace IronText.Runtime
             return actionToToken[action];
         }
 
-        private HLoc MakeHLoc()
+        private Loc MakeHLoc()
         {
-            var result = new HLoc(
+            var result = new Loc(
                                 priorLine,
                                 priorColumn,
                                 cursor.MarkerLine,

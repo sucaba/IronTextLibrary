@@ -3,21 +3,21 @@ using static System.Math;
 
 namespace IronText.Logging
 {
-    public struct HLoc
+    public struct Loc
     {
         public const string MemoryString = "<string>";
         public const string UnknownFile = "<unknown>";
 
-        public readonly static HLoc Unknown = default(HLoc);
+        public readonly static Loc Unknown = default(Loc);
 
-        public static HLoc FromPos(int position, int count)
+        public static Loc FromPos(int position, int count)
         {
             return FromPos(UnknownFile, position, count);
         }
 
-        public static HLoc FromPos(string filePath, int position, int count)
+        public static Loc FromPos(string filePath, int position, int count)
         {
-            return new HLoc(filePath, 1, position + 1, 1, position + Max(count, 1));
+            return new Loc(filePath, 1, position + 1, 1, position + Max(count, 1));
         }
 
         public readonly string FilePath;
@@ -26,22 +26,22 @@ namespace IronText.Logging
         public readonly int LastLine;
         public readonly int LastColumn;
 
-        public HLoc(int firstColumn, int lastColumn)
+        public Loc(int firstColumn, int lastColumn)
             : this(1, firstColumn, 1, lastColumn)
         {
         }
 
-        public HLoc(string filePath, int firstColumn, int lastColumn)
+        public Loc(string filePath, int firstColumn, int lastColumn)
             : this(filePath, 1, firstColumn, 1, lastColumn)
         {
         }
 
-        public HLoc(int firstLine, int firstColumn, int lastLine, int lastColumn)
+        public Loc(int firstLine, int firstColumn, int lastLine, int lastColumn)
             : this(UnknownFile, firstLine, firstColumn, lastLine, lastColumn)
         {
         }
 
-        public HLoc(string filePath, int firstLine, int firstColumn, int lastLine, int lastColumn)
+        public Loc(string filePath, int firstLine, int firstColumn, int lastLine, int lastColumn)
         {
             FilePath    = filePath;
             FirstLine   = firstLine;
@@ -50,12 +50,12 @@ namespace IronText.Logging
             LastColumn  = lastColumn;
         }
 
-        public HLoc GetEndLocation()
+        public Loc GetEndLocation()
         {
-            return new HLoc(LastLine, LastColumn, LastLine, LastColumn);
+            return new Loc(LastLine, LastColumn, LastLine, LastColumn);
         }
 
-        public static HLoc operator +(HLoc x, HLoc y)
+        public static Loc operator +(Loc x, Loc y)
         {
             if (x.IsUnknown)
             {
@@ -67,15 +67,15 @@ namespace IronText.Logging
                 return y;
             }
 
-            return new HLoc(x.FirstLine, x.FirstColumn, y.LastLine, y.LastColumn);
+            return new Loc(x.FirstLine, x.FirstColumn, y.LastLine, y.LastColumn);
         }
 
-        public static bool operator ==(HLoc x, HLoc y)
+        public static bool operator ==(Loc x, Loc y)
         {
             return x.Equals(y);
         }
 
-        public static bool operator !=(HLoc x, HLoc y)
+        public static bool operator !=(Loc x, Loc y)
         {
             return !(x == y);
         }
@@ -85,9 +85,9 @@ namespace IronText.Logging
             get { return FirstLine == 0 || FirstColumn == 0; }
         }
 
-        public static HLoc Sum(IEnumerable<HLoc> locations)
+        public static Loc Sum(IEnumerable<Loc> locations)
         {
-            HLoc result = HLoc.Unknown;
+            Loc result = Loc.Unknown;
             foreach (var loc in locations)
             {
                 result = result + loc;

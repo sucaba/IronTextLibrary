@@ -308,7 +308,7 @@
     <Compile Include="Lib\IL\Grammar\Scopes\TypeSpec.cs" />
     <Compile Include="Lib\IL\Grammar\SignatureUtils.cs" />
     <Compile Include="Logging\ILogging.cs" />
-    <Compile Include="Logging\HLoc.cs" />
+    <Compile Include="Logging\Loc.cs" />
     <Compile Include="Framework\IParsing.cs" />
     <Compile Include="Framework\IScanning.cs" />
     <Compile Include="Logging\LogEntry.cs" />

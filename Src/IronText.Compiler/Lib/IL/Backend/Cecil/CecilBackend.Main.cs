@@ -945,7 +945,7 @@ namespace IronText.Lib.IL.Backend.Cecil
         private void Labelize(Instruction instruction)
         {
             instruction.SequencePoint = this.CreateSequencePoint(
-                Parsing != null ? Parsing.HLocation : HLoc.Unknown);
+                Parsing != null ? Parsing.Location : Loc.Unknown);
 
             foreach (var label in pendingLabelMarks)
             {

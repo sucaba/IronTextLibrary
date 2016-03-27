@@ -12,7 +12,7 @@ namespace IronText.Lib.Stem
     /// </remarks>
     public abstract class Stx
     {
-        public HLoc Location { get; set; }
+        public Loc Location { get; set; }
 
         #region Object overrides 
 

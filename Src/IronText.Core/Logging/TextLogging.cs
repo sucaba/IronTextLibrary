@@ -29,9 +29,9 @@ namespace IronText.Logging
 
             output.WriteLine(
                 "{0}({1},{2}): {3} {4}: {5}",
-                entry.HLocation.FilePath,
-                entry.HLocation.FirstLine,
-                entry.HLocation.FirstColumn,
+                entry.Location.FilePath,
+                entry.Location.FirstLine,
+                entry.Location.FirstColumn,
                 GetSeverityName(entry.Severity),
                 entry.Code,
                 entry.Message);
