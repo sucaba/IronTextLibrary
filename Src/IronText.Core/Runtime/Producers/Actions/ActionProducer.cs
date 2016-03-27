@@ -145,13 +145,14 @@ namespace IronText.Runtime
             }
 
 
+            var result = new ActionNode(prod.Outcome, null, location, hLocation);
+
             RuntimeFormula[] formulas = grammar.GetReduceFormulas(prod.Index);
             foreach (var formula in formulas)
             {
-                formula.Execute(stackLookback);
+                formula.Execute(stackLookback, result);
             }
 
-            var result = new ActionNode(prod.Outcome, null, location, hLocation);
 
             var pargs = new ProductionActionArgs(prod.Index, prefix.Array, prefix.Offset, prefix.Count, context, stackLookback, result);
             result.Value = productionAction(pargs);

@@ -25,6 +25,11 @@ namespace IronText.Runtime.Semantics
         public void Assign(IStackLookback<ActionNode> lookback, object value)
         {
             var node = lookback.GetNodeAt(Offset);
+            Assign(node, value);
+        }
+
+        public void Assign(ActionNode node, object value)
+        {
             node.SetSynthesizedProperty(Index, value);
         }
     }

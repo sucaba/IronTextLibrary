@@ -1,4 +1,5 @@
 ﻿using IronText.Logging;
+using IronText.Runtime.Semantics;
 using System.Diagnostics;
 using System.Linq;
 
@@ -37,6 +38,13 @@ namespace IronText.Runtime
             }
 
             var resultNode = new ActionNode(nonTerm, null, Loc.Unknown, HLoc.Unknown);
+
+            RuntimeFormula[] formulas = grammar.GetReduceFormulas(production.Index);
+            foreach (var formula in formulas)
+            {
+                formula.Execute(stackLookback, resultNode);
+            }
+
             var pargs = new ProductionActionArgs(production.Index, args, 0, production.InputLength, context, stackLookback, resultNode);
             resultNode.Value = productionAction(pargs);
             return resultNode;

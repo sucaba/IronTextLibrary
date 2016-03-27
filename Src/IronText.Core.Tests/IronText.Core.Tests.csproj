@@ -209,6 +209,7 @@
     <Compile Include="Framework\ParserAbstractionTest.cs" />
     <Compile Include="Samples\KeywordScannerTest.cs" />
     <Compile Include="Samples\Re2cSampleTest.cs" />
+    <Compile Include="Semantics\CopyingConstantToSynthesizedTest.cs" />
     <Compile Include="Semantics\CopyingSynthesizedToInheritedTest.cs" />
     <Compile Include="Semantics\CopyingConstantToInheritedTest.cs" />
     <Compile Include="Semantics\PassingGlobalInheritedTest.cs" />

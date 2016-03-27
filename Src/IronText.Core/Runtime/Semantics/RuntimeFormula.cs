@@ -24,7 +24,19 @@ namespace IronText.Runtime.Semantics
             this.body      = body;
         }
 
+        public void Execute(IStackLookback<ActionNode> lookback, ActionNode outcomeNode)
+        {
+            object result = EvaluateRhs(lookback);
+            lhe.Assign(outcomeNode, result);
+        }
+
         public void Execute(IStackLookback<ActionNode> lookback)
+        {
+            object result = EvaluateRhs(lookback);
+            lhe.Assign(lookback, result);
+        }
+
+        private object EvaluateRhs(IStackLookback<ActionNode> lookback)
         {
             int count = arguments.Length;
             var args = new object[count];
@@ -32,8 +44,8 @@ namespace IronText.Runtime.Semantics
             {
                 args[i] = arguments[i].Eval(lookback);
             }
-
-            lhe.Assign(lookback, body(args));
+            var result = body(args);
+            return result;
         }
     }
 }

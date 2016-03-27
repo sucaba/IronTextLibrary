@@ -97,7 +97,7 @@ namespace IronText.MetadataCompiler
 
             var lhe = formula.Lhe.ToRuntime(prod.InputLength);
             var rhe = formula.Arguments[0].ToRuntime(prod.InputLength);
-            var result = new RuntimeFormula(lhe, new[] { rhe }, x => x);
+            var result = new RuntimeFormula(lhe, new[] { rhe }, args => args[0]);
             return result;
         }
 
