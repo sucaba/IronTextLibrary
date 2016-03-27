@@ -97,10 +97,6 @@ namespace IronText.Runtime
                             new LogEntry
                             {
                                 Severity = Severity.Error,
-                                Location = new Loc(
-                                                document,
-                                                cursor.Cursor,
-                                                cursor.Cursor),
                                 HLocation = new HLoc(
                                                 cursor.CursorLine,
                                                 cursor.CursorColumn - 1,
@@ -128,7 +124,6 @@ namespace IronText.Runtime
                         new LogEntry
                         {
                             Severity  = Severity.Error,
-                            Location  = new Loc(document, currentPosition, currentPosition + 1),
                             HLocation = new HLoc(
                                             cursor.CursorLine,
                                             cursor.CursorColumn,
@@ -186,7 +181,7 @@ namespace IronText.Runtime
             {
                 int id = cursor.EnvelopeId;
                 // TODO: Amb & Main tokens for envelope.Id
-                Current = new Msg(id, token, action, text, new Loc(document, priorPosition, currentPosition), MakeHLoc());
+                Current = new Msg(id, token, action, text, MakeHLoc());
 
                 // Shrodinger's token
                 if (cursor.ActionCount > 1)

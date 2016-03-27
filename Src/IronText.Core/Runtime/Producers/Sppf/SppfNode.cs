@@ -13,7 +13,7 @@ namespace IronText.Runtime
         /// Positive value for token and negative value for production index
         /// </summary>
         public string     Text     { get; private set; }
-        public Loc        Location { get; private set; }
+        public HLoc       Location { get; private set; }
         public SppfNode[] Children { get; private set; }
 
         public SppfNode   NextAlternative { get; set; }
@@ -26,7 +26,7 @@ namespace IronText.Runtime
 #endif
 
         // Leaf
-        public SppfNode(int matcherIndex, string text, Loc location, HLoc hLocation)
+        public SppfNode(int matcherIndex, string text, HLoc location)
         {
             this.id       = matcherIndex;
             this.Text     = text;
@@ -38,7 +38,7 @@ namespace IronText.Runtime
         }
 
         // Branch
-        public SppfNode(int productionIndex, Loc location, SppfNode[] children)
+        public SppfNode(int productionIndex, HLoc location, SppfNode[] children)
         {
             this.id       = -productionIndex;
             this.Location = location;

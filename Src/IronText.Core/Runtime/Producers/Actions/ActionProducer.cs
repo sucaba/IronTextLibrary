@@ -19,9 +19,7 @@ namespace IronText.Runtime
         private readonly MergeDelegate merge;
         private readonly ShiftActionDelegate shiftAction;
         private readonly object context;
-        private Loc  _parsingLocation;
         private HLoc _parsingHLocation;
-        private Loc  _scanningLocation;
         private HLoc _scanningHLocation;
         private readonly object[] ruleArgBuffer;
         private Dictionary<int, object> inhIndexToValue;
@@ -81,7 +79,7 @@ namespace IronText.Runtime
                 inh = new PropertyValueNode(pair.Key, pair.Value).SetNext(inh);
             }
 
-            return new ActionNode(0, null, Loc.Unknown, HLoc.Unknown, inh);
+            return new ActionNode(0, null, HLoc.Unknown, inh);
         }
 
         public ActionNode CreateLeaf(Msg envelope, MsgData data)
@@ -93,7 +91,6 @@ namespace IronText.Runtime
             }
             else
             {
-                _scanningLocation  = envelope.Location;
                 _scanningHLocation = envelope.HLocation;
 
                 value = termFactory(context, data.Action, data.Text);
@@ -102,7 +99,6 @@ namespace IronText.Runtime
             return new ActionNode(
                 data.Token,
                 value,
-                envelope.Location,
                 envelope.HLocation);
         }
 
@@ -113,30 +109,24 @@ namespace IronText.Runtime
                 return GetDefault(prod.Outcome, stackLookback);
             }
 
-            Loc location;
             HLoc hLocation;
 
             var array = prefix.Array;
             switch (prefix.Count)
             {
                 case 0: 
-                    location = Loc.Unknown;
                     hLocation = HLoc.Unknown;
                     break;
                 case 1: 
-                    location = prefix.Array[prefix.Offset].Location;
                     hLocation = prefix.Array[prefix.Offset].HLocation;
                     break;
                 default: 
-                    location = prefix.Array[prefix.Offset].Location
-                             + prefix.Array[prefix.Offset + prefix.Count - 1].Location; 
                     hLocation = prefix.Array[prefix.Offset].HLocation
                              + prefix.Array[prefix.Offset + prefix.Count - 1].HLocation; 
                     break;
             }
 
             // Location for IParsing service
-            this._parsingLocation = location;
             this._parsingHLocation = hLocation;
 
             if (prod.InputLength > prefix.Count)
@@ -145,7 +135,7 @@ namespace IronText.Runtime
             }
 
 
-            var result = new ActionNode(prod.Outcome, null, location, hLocation);
+            var result = new ActionNode(prod.Outcome, null, hLocation);
 
             RuntimeFormula[] formulas = grammar.GetReduceFormulas(prod.Index);
             foreach (var formula in formulas)
@@ -163,16 +153,11 @@ namespace IronText.Runtime
             var result = new ActionNode(
                     alt1.Token,
                     this.merge(alt1.Token, alt1.Value, alt2.Value, context, stackLookback),
-                    alt1.Location,
                     alt1.HLocation);
             return result;
         }
 
-        Loc IParsing.Location { get { return this._parsingLocation; } }
-
         HLoc IParsing.HLocation { get { return this._parsingHLocation; } }
-
-        Loc IScanning.Location { get { return this._scanningLocation; } }
 
         HLoc IScanning.HLocation { get { return this._scanningHLocation; } }
 

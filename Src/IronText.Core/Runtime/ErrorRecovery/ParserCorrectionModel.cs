@@ -21,28 +21,28 @@ namespace IronText.Runtime
             this.requiredInputSize = requiredInputSize;
         }
 
-        public Loc GetHiglightLocation(List<Msg> source)
+        public HLoc GetHiglightLocation(List<Msg> source)
         {
             for (int i = 0; i != Count; ++i)
             {
                 if (this[i] != i)
                 {
-                    if (source[i].Location.IsUnknown)
+                    if (source[i].HLocation.IsUnknown)
                     {
                         break;
                     }
 
-                    return source[i].Location;
+                    return source[i].HLocation;
                 }
             }
 
-            var errorItems = source.Select(s => s.Location);
+            var errorItems = source.Select(s => s.HLocation);
             if (source.Count > 1)
             {
                 errorItems = errorItems.Skip(1);
             }
 
-            return Loc.Sum(errorItems);
+            return HLoc.Sum(errorItems);
         }
 
         public HLoc GetHiglightHLocation(List<Msg> source)

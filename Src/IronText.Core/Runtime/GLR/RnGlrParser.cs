@@ -228,7 +228,6 @@ namespace IronText.Runtime
                         new LogEntry
                         {
                             Severity = Severity.Verbose,
-                            Location = envelope.Location,
                             HLocation = envelope.HLocation,
                             Message = message.ToString()
                         });
@@ -244,21 +243,18 @@ namespace IronText.Runtime
 
         public IReceiver<Msg> Done()
         {
-            Loc location;
             HLoc hLocation;
 
             if (!object.Equals(priorInput, default(Msg)))
             {
-                location = priorInput.Location.GetEndLocation();
                 hLocation = priorInput.HLocation.GetEndLocation();
             }
             else
             {
-                location = Loc.Unknown;
                 hLocation = new HLoc(1, 1, 1, 1);
             }
 
-            var eoi = new Msg(PredefinedTokens.Eoi, null, null, location, hLocation);
+            var eoi = new Msg(PredefinedTokens.Eoi, null, null, hLocation);
             return Next(eoi);
         }
 
@@ -598,7 +594,6 @@ namespace IronText.Runtime
                         {
                             Severity  = Severity.Error,
                             Message   = "Unexpected end of file.",
-                            Location  = currentInput.Location,
                             HLocation = currentInput.HLocation,
                         });
                 }

@@ -4,18 +4,18 @@ namespace IronText.Runtime
 {
     public interface ISppfNodeVisitor
     {
-        void VisitLeaf(int matcherIndex, string text, Loc location);
+        void VisitLeaf(int matcherIndex, string text, HLoc location);
 
-        void VisitBranch(int productionIndex, SppfNode[] children, Loc location);
+        void VisitBranch(int productionIndex, SppfNode[] children, HLoc location);
 
         void VisitAlternatives(SppfNode alternatives);
     }
 
     public interface ISppfNodeVisitor<T>
     {
-        T VisitLeaf(int matcherIndex, string text, Loc location);
+        T VisitLeaf(int matcherIndex, string text, HLoc location);
 
-        T VisitBranch(int productionIndex, SppfNode[] children, Loc location);
+        T VisitBranch(int productionIndex, SppfNode[] children, HLoc location);
 
         T VisitAlternatives(SppfNode alternatives);
     }

@@ -28,7 +28,7 @@ namespace IronText.MetadataCompiler
                 ScannerDescriptor descriptor,
                 object rootContext,
                 ILogging logging)
-            : this(new StringReader(input), Loc.MemoryString, descriptor, rootContext, logging)
+            : this(new StringReader(input), HLoc.MemoryString, descriptor, rootContext, logging)
         { }
 
         public BootstrapScanner(
@@ -81,7 +81,7 @@ namespace IronText.MetadataCompiler
                     int token = detOutcome.Index;
 
                     yield return
-                        new Msg(token, match.Value, action, new Loc(Loc.MemoryString, match.Index, match.Length));
+                        new Msg(token, match.Value, action, HLoc.FromPos(match.Index, match.Length));
 
                     if (currentPos == text.Length)
                     {

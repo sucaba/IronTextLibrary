@@ -39,36 +39,28 @@ namespace IronText.Runtime
         public readonly int    AmbToken;
 
         /// <summary>
-        /// Location for an automatic processing
-        /// </summary>
-        public readonly Loc    Location;
-
-        /// <summary>
         /// Line, column based location for a human
         /// </summary>
         public readonly HLoc   HLocation;
 
-        public Msg(int token, string text, object value, Loc location, HLoc hLocation = default(HLoc))
+        public Msg(int token, string text, object value, HLoc hLocation)
             : base(token, text, value)
         {
             this.AmbToken = token;
-            this.Location = location;
             this.HLocation = hLocation;
         }
 
-        public Msg(int token, string text, int action, Loc location, HLoc hLocation = default(HLoc))
+        public Msg(int token, string text, int action, HLoc hLocation)
             : base(token, text, action)
         {
             this.AmbToken = token;
-            this.Location = location;
             this.HLocation = hLocation;
         }
 
-        internal Msg(int ambToken, int token, int action, string text, Loc location, HLoc hLocation = default(HLoc))
+        internal Msg(int ambToken, int token, int action, string text, HLoc hLocation)
             : base(token, text, action)
         {
             this.AmbToken = ambToken;
-            this.Location = location;
             this.HLocation = hLocation;
         }
 
@@ -84,7 +76,7 @@ namespace IronText.Runtime
         {
             return AmbToken == other.AmbToken
                 && Text == other.Text
-                && Location == other.Location
+                && HLocation == other.HLocation
                 ;
         }
 
@@ -92,13 +84,13 @@ namespace IronText.Runtime
         {
             unchecked
             {
-                return AmbToken + Location.Position;
+                return AmbToken ^ HLocation.FirstColumn ^ HLocation.LastLine;
             }
         }
 
         public override string ToString()
         {
-            return string.Format("<Msg Id={0}, Text={1}, Loc={2}>", AmbToken, Text, Location);
+            return string.Format("<Msg Id={0}, Text={1}, Loc={2}>", AmbToken, Text, HLocation);
         }
     }
 }

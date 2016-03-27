@@ -55,7 +55,7 @@ namespace IronText.Lib.IL.Backend.Cecil
         {
             if (isModule)
             {
-                throw new SyntaxException(Parsing.Location, Parsing.HLocation, "Module scope resolution is not supported by now.");
+                throw new SyntaxException(Parsing.HLocation, "Module scope resolution is not supported by now.");
             }
 
             string name = name1.FullName;
@@ -65,7 +65,7 @@ namespace IronText.Lib.IL.Backend.Cecil
             if (result == null)
             {
                 var msg = string.Format("Missing assembly reference '{0}'.", name);
-                throw new SyntaxException(Parsing.Location, Parsing.HLocation, msg);
+                throw new SyntaxException(Parsing.HLocation, msg);
             }
 
             return result;

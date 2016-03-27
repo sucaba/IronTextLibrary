@@ -178,7 +178,7 @@
     <Compile Include="Performance\ExperimentsTest.cs" />
     <Compile Include="Performance\PublicPerformance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IO\LocTest.cs" />
+    <Compile Include="IO\HLocTest.cs" />
     <Compile Include="Reflection\Transformations\DecomposeTransformation.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

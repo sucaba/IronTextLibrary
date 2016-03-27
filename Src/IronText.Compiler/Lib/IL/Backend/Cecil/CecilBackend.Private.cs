@@ -48,14 +48,15 @@ namespace IronText.Lib.IL.Backend.Cecil
             return instruction.OpCode.OperandType == OperandType.InlineSwitch;
         }
 
-        private SequencePoint CreateSequencePoint(Loc location)
+        private SequencePoint CreateSequencePoint(HLoc location)
         {
-            var result = new SequencePoint(this.document);
-            result.StartLine = 0;
-            result.StartColumn = location.Position;
-            // TODO: End location
-            result.EndLine = 0;
-            result.EndColumn = location.End;
+            var result = new SequencePoint(this.document)
+            {
+                StartLine   = location.FirstLine   - 1,
+                StartColumn = location.FirstColumn - 1,
+                EndLine     = location.LastLine    - 1,
+                EndColumn   = location.LastColumn  - 1
+            };
             return result;
         }
 

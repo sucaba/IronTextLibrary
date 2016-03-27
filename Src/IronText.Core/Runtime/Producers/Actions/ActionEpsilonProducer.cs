@@ -37,7 +37,7 @@ namespace IronText.Runtime
                 args[i] = InternalGetNullable(production.Input[i], stackLookback);
             }
 
-            var resultNode = new ActionNode(nonTerm, null, Loc.Unknown, HLoc.Unknown);
+            var resultNode = new ActionNode(nonTerm, null, HLoc.Unknown);
 
             RuntimeFormula[] formulas = grammar.GetReduceFormulas(production.Index);
             foreach (var formula in formulas)

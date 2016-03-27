@@ -389,7 +389,6 @@
     <Compile Include="Reflection\Grammar.cs" />
     <Compile Include="Runtime\Language.cs" />
     <Compile Include="Runtime\Deterministic\DeterministicParser.cs" />
-    <Compile Include="Logging\Loc.cs" />
     <Compile Include="Runtime\SyntaxException.cs" />
     <Compile Include="Reflection\Cil\CilSymbolRef.cs" />
     <Compile Include="Runtime\Scanning\ScannerEnumerator.cs" />

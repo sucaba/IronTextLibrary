@@ -60,10 +60,10 @@ namespace IronText.Diagnostics
             node.Accept(this, false);
         }
 
-        void ISppfNodeVisitor.VisitLeaf(int matcherIndex, string text, Loc location)
+        void ISppfNodeVisitor.VisitLeaf(int matcherIndex, string text, HLoc location)
         {
             var matcher = grammar.Matchers[matcherIndex];
-            string label = matcher.Outcome.Name + " pos: " + location.Position 
+            string label = matcher.Outcome.Name + " pos: " + location
 #if DEBUG
                 + " t: " + currentNode.timestamp
 #endif
@@ -71,7 +71,7 @@ namespace IronText.Diagnostics
             graph.AddNode(currentNodeIdentity, label: label, shape: Shape.Circle);
         }
 
-        void ISppfNodeVisitor.VisitBranch(int prodIndex, SppfNode[] children, Loc location)
+        void ISppfNodeVisitor.VisitBranch(int prodIndex, SppfNode[] children, HLoc location)
         {
             var rule = grammar.Productions[prodIndex];
 
@@ -115,7 +115,7 @@ namespace IronText.Diagnostics
         {
             var token = alternatives.GetTokenId(grammar);
             var symbol = grammar.Symbols[token];
-            string label = symbol.Name + " pos: " + alternatives.Location.Position 
+            string label = symbol.Name + " pos: " + alternatives.Location
 #if DEBUG
                 + " t: " + currentNode.timestamp
 #endif
@@ -151,7 +151,7 @@ namespace IronText.Diagnostics
         {
             if (node.IsTerminal)
             {
-                return grammar.Matchers[node.MatcherIndex].Outcome.Name + " pos: " + node.Location.Position;
+                return grammar.Matchers[node.MatcherIndex].Outcome.Name + " pos: " + node.Location;
             }
 
             if (node.NextAlternative != null)

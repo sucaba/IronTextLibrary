@@ -8,7 +8,7 @@ namespace IronText.Logging
 
         public void Write(LogEntry entry)
         {
-            throw new SyntaxException(entry.Location, entry.HLocation, entry.Message);
+            throw new SyntaxException(entry.HLocation, entry.Message);
         }
 
         public int ErrorCount { get { return 0; } }

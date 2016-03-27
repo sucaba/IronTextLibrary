@@ -8,7 +8,6 @@ namespace IronText.Runtime
         private readonly RuntimeGrammar grammar;
         private readonly IPushParser exit;
         private readonly ILogging logging;
-        private Loc errorLocation = Loc.Unknown;
         private HLoc errorHLocation = HLoc.Unknown;
         private readonly List<Msg> collectedInput = new List<Msg>();
         private IReceiver<Msg> validPrefixVerifier;
@@ -33,7 +32,7 @@ namespace IronText.Runtime
                 }
             }
 
-            var error = new Msg(PredefinedTokens.Error, null, null, errorLocation); // TODO: Location?
+            var error = new Msg(PredefinedTokens.Error, null, null, errorHLocation); // TODO: Location?
             if (null != exit.CloneVerifier().ForceNext(error, item))
             {
                 ReportError();
@@ -46,7 +45,6 @@ namespace IronText.Runtime
                 return exit.ForceNext(item);
             }
 
-            errorLocation += item.Location;
             errorHLocation += item.HLocation;
             collectedInput.Add(item);
             return this;
@@ -58,7 +56,6 @@ namespace IronText.Runtime
                 new LogEntry
                 {
                     Severity = Severity.Error,
-                    Location = errorLocation,
                     HLocation = errorHLocation,
                     Message = "Unexpected input"
                 });

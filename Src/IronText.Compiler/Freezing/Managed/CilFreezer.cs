@@ -115,7 +115,7 @@ namespace IronText.Freezing.Managed
                 node.Accept(this, false);
             }
 
-            void ISppfNodeVisitor.VisitLeaf(int matcherIndex, string text, Loc location)
+            void ISppfNodeVisitor.VisitLeaf(int matcherIndex, string text, HLoc location)
             {
                 this.currentTerminalText = text;
                 var matcher = grammar.Matchers[matcherIndex];
@@ -132,7 +132,7 @@ namespace IronText.Freezing.Managed
                 localsStack.Push();
             }
 
-            void ISppfNodeVisitor.VisitBranch(int productionIndex, SppfNode[] children, Loc location)
+            void ISppfNodeVisitor.VisitBranch(int productionIndex, SppfNode[] children, HLoc location)
             {
                 var size = children.Length;
                 int varStackStart = localsStack.Count;

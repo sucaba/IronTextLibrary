@@ -9,12 +9,10 @@ namespace IronText.Runtime
     public class SyntaxException : ApplicationException
     {
         private readonly string message;
-        private readonly Loc location;
         private readonly HLoc hLocation;
 
-        public SyntaxException(Loc location, HLoc hLocation, string message)
+        public SyntaxException(HLoc hLocation, string message)
         {
-            this.location = location;
             this.hLocation = hLocation;
             this.message = message;
         }
