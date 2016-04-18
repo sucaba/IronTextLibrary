@@ -11,7 +11,7 @@ namespace IronText.Semantics
     internal class InheritedPropertyEC
         : List<int>
         , IIndexable<IGrammarScope>
-        , IIndexableBackend<IGrammarScope>
+        , IIndexableImpl<IGrammarScope>
         , IHasIdentity
     {
         private IGrammarScope scope;

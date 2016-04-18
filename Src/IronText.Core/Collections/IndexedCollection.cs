@@ -320,9 +320,9 @@ namespace IronText.Collections
             return !item.IsSoftRemoved;
         }
 
-        private static IIndexableBackend<TScope> Impl(T item)
+        private static IIndexableImpl<TScope> Impl(T item)
         {
-            return (IIndexableBackend<TScope>)item;
+            return (IIndexableImpl<TScope>)item;
         }
     }
 }

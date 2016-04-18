@@ -245,7 +245,7 @@ namespace IronText.Tests.Collections
 
         class TestIndexableObject
             : IIndexable<TestScope>
-            , IIndexableBackend<TestScope>
+            , IIndexableImpl<TestScope>
             , IHasIdentity
         {
             private readonly string Name;

@@ -6,7 +6,7 @@ namespace IronText.Collections
     [Serializable]
     public abstract class IndexableObject<TScope> 
         : IIndexable<TScope>
-        , IIndexableBackend<TScope>
+        , IIndexableImpl<TScope>
         , IHasIdentity
         where TScope : class
     {
@@ -52,7 +52,7 @@ namespace IronText.Collections
 
         protected virtual void OnDetaching() { }
 
-        void IIndexableBackend<TScope>.Attached(TScope context)
+        void IIndexableImpl<TScope>.Attached(TScope context)
         {
             if (!IsDetached)
             {
@@ -64,12 +64,12 @@ namespace IronText.Collections
             OnAttached();
         }
 
-        void IIndexableBackend<TScope>.AssignIndex(int index)
+        void IIndexableImpl<TScope>.AssignIndex(int index)
         {
             this.Index = index;
         }
 
-        void IIndexableBackend<TScope>.Detaching(TScope context)
+        void IIndexableImpl<TScope>.Detaching(TScope context)
         {
             OnDetaching();
 

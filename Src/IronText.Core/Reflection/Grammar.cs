@@ -267,7 +267,7 @@ namespace IronText.Reflection
 
             var symbol = source.Input[position];
 
-            SoftRemove(source);
+            Productions.SoftRemove(source);
 
             var producitonsToInline = symbol.Productions.ToArray();
             foreach (var inlinedProd in producitonsToInline)
@@ -278,16 +278,11 @@ namespace IronText.Reflection
 
                 if (!inlinedProd.IsUsed)
                 {
-                    SoftRemove(inlinedProd);
+                    Productions.SoftRemove(inlinedProd);
                 }
             }
 
             return result;
-        }
-
-        private void SoftRemove(Production inlinedProd)
-        {
-            Productions.SoftRemove(inlinedProd);
         }
 
         public Symbol Decompose(Symbol nonTerm, Func<Production,bool> criteria, string newSymbolName)
@@ -309,7 +304,7 @@ namespace IronText.Reflection
 
                     newProd.Joint.AddAll(prod.Joint);
 
-                    SoftRemove(prod);
+                    Productions.SoftRemove(prod);
                 }
             }
 
