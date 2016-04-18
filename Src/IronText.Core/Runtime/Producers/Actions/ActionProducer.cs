@@ -114,15 +114,15 @@ namespace IronText.Runtime
             var array = prefix.Array;
             switch (prefix.Count)
             {
-                case 0: 
+                case 0:
                     location = Loc.Unknown;
                     break;
-                case 1: 
+                case 1:
                     location = prefix.Array[prefix.Offset].Location;
                     break;
-                default: 
+                default:
                     location = prefix.Array[prefix.Offset].Location
-                             + prefix.Array[prefix.Offset + prefix.Count - 1].Location; 
+                             + prefix.Array[prefix.Offset + prefix.Count - 1].Location;
                     break;
             }
 
@@ -134,16 +134,19 @@ namespace IronText.Runtime
                 throw new NotSupportedException();
             }
 
-
             var result = new ActionNode(prod.Outcome, null, location);
 
-            RuntimeFormula[] formulas = grammar.GetReduceFormulas(prod.Index);
-            foreach (var formula in formulas)
-            {
-                formula.Execute(stackLookback, result);
-            }
+            new RuntimeReduceSemantics(grammar)
+                .Execute(prod.Index, stackLookback, result);
 
-            var pargs = new ProductionActionArgs(prod.Index, prefix.Array, prefix.Offset, prefix.Count, context, stackLookback, result);
+            var pargs = new ProductionActionArgs(
+                            prod.Index,
+                            prefix.Array,
+                            prefix.Offset,
+                            prefix.Count,
+                            context,
+                            stackLookback,
+                            result);
             result.Value = productionAction(pargs);
             return result;
         }
@@ -157,6 +160,14 @@ namespace IronText.Runtime
             return result;
         }
 
+        public void Shifted(IStackLookback<ActionNode> lookback)
+        {
+            new RuntimeShiftSemantics(grammar)
+                .Execute(lookback);
+
+            shiftAction(lookback);
+        }
+
         Loc IParsing.Location { get { return this._parsingLocation; } }
 
         Loc IScanning.Location { get { return this._scanningLocation; } }
@@ -164,18 +175,6 @@ namespace IronText.Runtime
         public IProducer<ActionNode> GetRecoveryProducer()
         {
             return NullProducer<ActionNode>.Instance;
-        }
-
-        public void Shifted(IStackLookback<ActionNode> lookback)
-        {
-            int shiftedState = lookback.GetParentState();
-            RuntimeFormula[] formulas = grammar.GetShiftedFormulas(shiftedState);
-            foreach (var formula in formulas)
-            {
-                formula.Execute(lookback);
-            }
-
-            shiftAction(lookback);
         }
     }
 }

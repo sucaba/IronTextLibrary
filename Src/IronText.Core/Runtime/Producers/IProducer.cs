@@ -19,7 +19,7 @@ namespace IronText.Runtime
     {
         ReductionOrder ReductionOrder { get; }
 
-        T  Result         { get; set; }
+        T Result { get; set; }
 
         T CreateStart();
 

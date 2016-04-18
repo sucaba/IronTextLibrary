@@ -11,6 +11,7 @@ namespace IronText.Semantics
     internal class InheritedPropertyEC
         : List<int>
         , IIndexable<IGrammarScope>
+        , IIndexableBackend<IGrammarScope>
         , IHasIdentity
     {
         private IGrammarScope scope;
@@ -39,7 +40,7 @@ namespace IronText.Semantics
             this.scope = null;
         }
 
-        public void SoftRemove()
+        public void MarkSoftRemoved()
         {
             IsSoftRemoved = true;
         }

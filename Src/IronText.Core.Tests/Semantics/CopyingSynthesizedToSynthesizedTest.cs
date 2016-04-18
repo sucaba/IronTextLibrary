@@ -29,6 +29,21 @@ namespace IronText.Tests.Semantics
             Assert.AreEqual(expected, got);
         }
 
+        [Test]
+        public void in_empty_production()
+        {
+             // Hint: X is expanded after 'eliminate right-nullable productions' grammar transform.
+            GivenFormulaProduction(StartName + " = X");
+
+            // Hint: production is inlined after the grammar transform
+            GivenSythesizedSourceProduction("X = ");
+            GivenParserInput("");
+
+            WhenParsed();
+
+            Assert.AreEqual(expected, got);
+        }
+
         [SetUp]
         public void SetUp()
         {

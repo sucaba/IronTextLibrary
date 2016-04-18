@@ -12,6 +12,7 @@ namespace IronText.Collections
     {
         private const int InitialCapacity = 8;
 
+        private int publicCount;
         private readonly List<T> items;
 
         [NonSerialized]
@@ -35,31 +36,45 @@ namespace IronText.Collections
             this.canModify = false;
 
             int lastForcedIndex = forcedIndexes.Count == 0 ? 0 : forcedIndexes.Keys.Max() + 1;
-            int lastIndex = Math.Max(items.Count(IsPublicItem), lastForcedIndex);
+            int lastIndex = Math.Max(items.Count, lastForcedIndex);
             this.indexes = new T[lastIndex];
 
             foreach (var pair in forcedIndexes)
             {
                 indexes[pair.Key] = pair.Value;
-                pair.Value.AssignIndex(pair.Key);
+                Impl(pair.Value).AssignIndex(pair.Key);
             }
 
-            var itemsToIndex = items.Except(forcedIndexes.Values, ReferenceComparer<T>.Default);
+            var itemsToIndex = items.Except(forcedIndexes.Values, ReferenceComparer<T>.Default).ToArray();
+            var publicItems = itemsToIndex.Where(IsPublicItem);
+            var privateItems = itemsToIndex.Where(item => !IsPublicItem(item));
+
             int count = indexes.Length;
             int i = 0;
-            foreach (var item in itemsToIndex)
+            foreach (var item in publicItems)
             {
-                if (IsPublicItem(item))
+                while (indexes[i] != null)
                 {
-                    while (indexes[i] != null)
-                    {
-                        ++i;
-                    }
-
-                    indexes[i] = item;
-                    item.AssignIndex(i);
                     ++i;
                 }
+
+                indexes[i] = item;
+                Impl(item).AssignIndex(i);
+                ++i;
+            }
+
+            this.publicCount = i;
+            
+            foreach (var item in privateItems)
+            {
+                while (indexes[i] != null)
+                {
+                    ++i;
+                }
+
+                indexes[i] = item;
+                Impl(item).AssignIndex(i);
+                ++i;
             }
 
             int firstEmptyIndex = Array.IndexOf(indexes, null);
@@ -101,9 +116,11 @@ namespace IronText.Collections
         /// <summary>
         /// Index of element following the last one
         /// </summary>
-        public int     Count       { get { RequireIndexed(); return indexes.Length; } }
+        public int     Count       { get { RequireIndexed(); return publicCount; } }
 
-        public int     PublicCount { get { return items.Count(IsPublicItem); } }
+        public int     AllCount       { get { RequireIndexed(); return indexes.Length; } }
+
+        public int     PrivateCount   { get { RequireIndexed(); return AllCount - Count; } }
 
         /// <summary>
         /// Hidden items
@@ -177,7 +194,7 @@ namespace IronText.Collections
                     return false;
                 }
                 
-                DetachingItem(existing);
+                DetachingItem(existing, false);
                 newItem = resolved;
             }
 
@@ -198,7 +215,9 @@ namespace IronText.Collections
         {
             RequireModifiable();
 
-            item.SoftRemove();
+            DetachingItem(item, true);
+
+            Impl(item).MarkSoftRemoved();
         }
 
         public bool Remove(T item)
@@ -210,7 +229,7 @@ namespace IronText.Collections
                 return false;
             }
 
-            return DetachingItem(item);
+            return DetachingItem(item, false);
         }
 
         public T[] ToArray()
@@ -270,7 +289,7 @@ namespace IronText.Collections
             Remove(item);
         }
 
-        private bool DetachingItem(T item)
+        private bool DetachingItem(T item, bool softRemove)
         {
             int pos = items.FindIndex(it => object.ReferenceEquals(it, item));
             if (pos < 0)
@@ -278,10 +297,14 @@ namespace IronText.Collections
                 return false;
             }
 
-            item.Detaching(Scope);
+            Impl(item).Detaching(Scope);
             identityToItem.Remove(item.Identity);
 
-            items.RemoveAt(pos);
+            if (!softRemove)
+            {
+                items.RemoveAt(pos);
+            }
+
             return true;
         }
 
@@ -289,12 +312,17 @@ namespace IronText.Collections
         {
             identityToItem.Add(item.Identity, item);
             items.Add(item);
-            item.Attached(Scope);
+            Impl(item).Attached(Scope);
         }
 
         private static bool IsPublicItem(T item)
         {
             return !item.IsSoftRemoved;
+        }
+
+        private static IIndexableBackend<TScope> Impl(T item)
+        {
+            return (IIndexableBackend<TScope>)item;
         }
     }
 }

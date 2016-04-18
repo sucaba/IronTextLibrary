@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using static System.Math;
 
 namespace IronText.Logging
 {
-    public struct Loc
+    public struct Loc : IEquatable<Loc>
     {
         public const string MemoryString = "<string>";
-        public const string UnknownFile = "<unknown>";
+
+        public const string UnknownFile  = "<unknown>";
 
         public readonly static Loc Unknown = default(Loc);
 
@@ -78,6 +80,26 @@ namespace IronText.Logging
         public static bool operator !=(Loc x, Loc y)
         {
             return !(x == y);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals((Loc)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            var result = FirstLine ^ FirstColumn;
+            return result;
+        }
+
+        public bool Equals(Loc other)
+        {
+            return FirstLine == other.FirstLine
+                && FirstColumn == other.FirstColumn
+                && LastLine == other.LastLine
+                && LastColumn == other.LastColumn
+                && FilePath == other.FilePath;
         }
 
         public bool IsUnknown

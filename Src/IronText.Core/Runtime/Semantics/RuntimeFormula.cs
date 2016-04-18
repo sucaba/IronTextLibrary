@@ -3,7 +3,7 @@
 namespace IronText.Runtime.Semantics
 {
     [Serializable]
-    public class RuntimeFormula
+    public class RuntimeFormula : IRuntimeFormula
     {
         private readonly IRuntimeVariable       lhe;
         private readonly IRuntimeValue[]        arguments;
@@ -44,6 +44,7 @@ namespace IronText.Runtime.Semantics
             {
                 args[i] = arguments[i].Eval(lookback);
             }
+
             var result = body(args);
             return result;
         }

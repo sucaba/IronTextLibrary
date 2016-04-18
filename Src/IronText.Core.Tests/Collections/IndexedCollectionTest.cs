@@ -80,6 +80,56 @@ namespace IronText.Tests.Collections
         }
 
         [Test]
+        public void AddedInstanceIsNotMarkedAsSoftRemove()
+        {
+            target.Add(x);
+
+            Assert.IsFalse(x.IsSoftRemoved);
+        }
+
+        [Test]
+        public void SoftRemoveMarksInstance()
+        {
+            target.Add(x);
+
+            target.SoftRemove(x);
+
+            Assert.IsTrue(x.IsSoftRemoved);
+        }
+
+        [Test]
+        public void SoftRemoveDetachesInstance()
+        {
+            target.Add(x);
+
+            target.SoftRemove(x);
+
+            Assert.IsTrue(x.IsDetached);
+        }
+
+
+        [Test]
+        public void SoftRemovedIsIndexed()
+        {
+            target.Add(x);
+            target.SoftRemove(x);
+
+            target.BuildIndexes();
+
+            Assert.AreEqual(0, x.AssignedIndex);
+        }
+
+        [Test]
+        public void SoftRemoveMakesInstanceNonEnumerable()
+        {
+            target.Add(x);
+
+            target.SoftRemove(x);
+
+            Assert.IsEmpty(AsEnumerable(target));
+        }
+
+        [Test]
         public void BuildIndexAssignesIndexesToObjects()
         {
             target.Add(x);
@@ -188,7 +238,15 @@ namespace IronText.Tests.Collections
         {
         }
 
-        class TestIndexableObject : IIndexable<TestScope>, IHasIdentity
+        private static IEnumerable<T> AsEnumerable<T>(IEnumerable<T> result)
+        {
+            return result;
+        }
+
+        class TestIndexableObject
+            : IIndexable<TestScope>
+            , IIndexableBackend<TestScope>
+            , IHasIdentity
         {
             private readonly string Name;
 
@@ -203,17 +261,14 @@ namespace IronText.Tests.Collections
 
             public object Identity { get { return Name; } }
 
-            public bool IsDetached
-            {
-                get { throw new NotImplementedException(); }
-            }
+            public bool IsDetached { get; private set; }
 
-            public bool IsSoftRemoved
-            {
-                get { return false; }
-            }
+            public bool IsSoftRemoved { get; private set; }
 
-            public void SoftRemove() { }
+            public void MarkSoftRemoved()
+            {
+                IsSoftRemoved = true;
+            }
 
             public void Attached(TestScope scope)
             {
@@ -229,6 +284,7 @@ namespace IronText.Tests.Collections
             public void Detaching(TestScope scope)
             {
                 this.DetachingScope = scope;
+                this.IsDetached = true;
             }
 
             public override bool Equals(object obj)

@@ -73,7 +73,7 @@ namespace IronText.MetadataCompiler
         {
             var mergers = data.Grammar.Mergers;
 
-            if (mergers.PublicCount == 0)
+            if (mergers.Count == 0)
             {
                 emit
                     .Ldarg(oldValue)

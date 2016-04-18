@@ -5,7 +5,9 @@ namespace IronText.Collections
 {
     [Serializable]
     public abstract class IndexableObject<TScope> 
-        : IIndexable<TScope>, IHasIdentity
+        : IIndexable<TScope>
+        , IIndexableBackend<TScope>
+        , IHasIdentity
         where TScope : class
     {
         private const int NoId = -1;
@@ -41,9 +43,8 @@ namespace IronText.Collections
 
         protected internal TScope Scope { get; private set; }
 
-        public void SoftRemove()
+        public void MarkSoftRemoved()
         {
-            OnDetaching();
             this.IsSoftRemoved = true;
         }
 
@@ -51,7 +52,7 @@ namespace IronText.Collections
 
         protected virtual void OnDetaching() { }
 
-        void IIndexable<TScope>.Attached(TScope context)
+        void IIndexableBackend<TScope>.Attached(TScope context)
         {
             if (!IsDetached)
             {
@@ -63,12 +64,12 @@ namespace IronText.Collections
             OnAttached();
         }
 
-        void IIndexable<TScope>.AssignIndex(int index)
+        void IIndexableBackend<TScope>.AssignIndex(int index)
         {
             this.Index = index;
         }
 
-        void IIndexable<TScope>.Detaching(TScope context)
+        void IIndexableBackend<TScope>.Detaching(TScope context)
         {
             OnDetaching();
 

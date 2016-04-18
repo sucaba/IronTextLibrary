@@ -16,13 +16,13 @@ namespace IronText.MetadataCompiler
             out RuntimeFormula[][] productionToFormulas);
     }
 
-    internal class SemanticFormulasProvider : ISemanticFormulasProvider
+    internal class RuntimeSemanticsProvider : ISemanticFormulasProvider
     {
         private RuntimeFormula[][] stateToFormulas;
         private RuntimeFormula[][] productionToFormulas;
         private readonly Grammar grammar;
 
-        public SemanticFormulasProvider(Grammar grammar, ILrDfa dfa)
+        public RuntimeSemanticsProvider(Grammar grammar, ILrDfa dfa)
         {
             this.grammar = grammar;
 
@@ -65,6 +65,8 @@ namespace IronText.MetadataCompiler
                     Check(state, item, result[state.Index]);
                 }
             }
+
+            // What about inlined states (inl-prod-index, pos-in-prod) ?
 
             return Array.ConvertAll(result, fs => fs.ToArray());
         }

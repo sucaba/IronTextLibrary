@@ -105,7 +105,7 @@ namespace IronText.MetadataCompiler
             var semanticBindings = new List<StackSemanticBinding>();
             CollectStackSemanticBindings(grammar, parserDfa, semanticBindings);
 
-            ISemanticFormulasProvider stateToFormulasProvider = new SemanticFormulasProvider(grammar, parserDfa);
+            ISemanticFormulasProvider stateToFormulasProvider = new RuntimeSemanticsProvider(grammar, parserDfa);
             RuntimeFormula[][] stateToFormulas;
             RuntimeFormula[][] productionToFormulas;
             stateToFormulasProvider.GetData(out stateToFormulas, out productionToFormulas);
@@ -113,8 +113,6 @@ namespace IronText.MetadataCompiler
             // Prepare language data for the language assembly generation
             result.IsDeterministic     = !lrTable.RequiresGlr;
             result.Grammar             = grammar;
-            result.StateToFormulas     = stateToFormulas;
-            result.ProductionToFormulas= productionToFormulas;
             result.RuntimeGrammar      = grammar.ToRuntime(stateToFormulas, productionToFormulas);
             result.Analysis            = analysis;               
             result.TokenComplexity     = analysis.GetTokenComplexity();

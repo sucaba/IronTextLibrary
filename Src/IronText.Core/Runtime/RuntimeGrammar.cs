@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IronText.Runtime.Semantics;
+using IronText.Runtime.Inlining;
 
 namespace IronText.Runtime
 {
@@ -54,6 +55,16 @@ namespace IronText.Runtime
                    select prod;
         }
 
+        public InlinedAction[] GetReducePlan(int complexProductionIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsInlinedState(int state)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Enumerates all tokens except predefined
         /// </summary>
@@ -98,9 +109,9 @@ namespace IronText.Runtime
             return this.stateToFormulas[shiftedState];
         }
 
-        public RuntimeFormula[] GetReduceFormulas(int shiftedState)
+        public RuntimeFormula[] GetReduceFormulas(int productionIndex)
         {
-            return this.productionToFormulas[shiftedState];
+            return this.productionToFormulas[productionIndex];
         }
     }
 }
