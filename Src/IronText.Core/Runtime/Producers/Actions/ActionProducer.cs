@@ -141,12 +141,10 @@ namespace IronText.Runtime
 
             var pargs = new ProductionActionArgs(
                             prod.Index,
-                            prefix.Array,
-                            prefix.Offset,
-                            prefix.Count,
-                            context,
-                            stackLookback,
-                            result);
+                prefix.Count,
+                context,
+                stackLookback,
+                result);
             result.Value = productionAction(pargs);
             return result;
         }
@@ -160,7 +158,7 @@ namespace IronText.Runtime
             return result;
         }
 
-        public void Shifted(IStackLookback<ActionNode> lookback)
+        public void Shifted(int topState, IStackLookback<ActionNode> lookback)
         {
             new RuntimeShiftSemantics(grammar)
                 .Execute(lookback);

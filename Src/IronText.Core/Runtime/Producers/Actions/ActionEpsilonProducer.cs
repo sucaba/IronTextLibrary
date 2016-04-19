@@ -45,7 +45,12 @@ namespace IronText.Runtime
                 formula.Execute(stackLookback, resultNode);
             }
 
-            var pargs = new ProductionActionArgs(production.Index, args, 0, production.InputLength, context, stackLookback, resultNode);
+            var pargs = new ProductionActionArgs(
+                                production.Index,
+                                production.InputLength,
+                                context,
+                                stackLookback,
+                                resultNode);
             resultNode.Value = productionAction(pargs);
             return resultNode;
         }

@@ -53,13 +53,13 @@ namespace IronText.Runtime.Inlining
                         var outcome = producer.CreateBranch(
                                 inlined,
                                 stack.GetArraySlice(inlined.InputLength),
-                                stack.GetLookback(instruction.ShiftedState));
+                                stack.GetLookback());
 
                         stack.Pop(inlined.InputLength);
                         stack.Push(outcome);
                         break;
                     case InlinedActionOp.Shifted:
-                        producer.Shifted(stack.GetLookback(instruction.ShiftedState));
+                        producer.Shifted(instruction.ShiftedState, stack.GetLookback());
                         break;
                     default:
                         throw new InvalidOperationException($"Not supported instruction {instruction.Op}");
@@ -96,11 +96,11 @@ namespace IronText.Runtime.Inlining
                     producer.GetRecoveryProducer());
         }
 
-        public void Shifted(IStackLookback<T> lookback)
+        public void Shifted(int topState, IStackLookback<T> lookback)
         {
-            if (!grammar.IsInlinedState(lookback.GetParentState()))
+            if (!grammar.IsInlinedState(topState))
             {
-                producer.Shifted(lookback);
+                producer.Shifted(topState, lookback);
             }
         }
     }

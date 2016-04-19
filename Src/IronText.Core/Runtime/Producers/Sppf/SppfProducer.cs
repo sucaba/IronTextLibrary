@@ -29,24 +29,19 @@ namespace IronText.Runtime
                             ArraySlice<SppfNode>     parts,
                             IStackLookback<SppfNode> stackLookback)
         {
+            int len = prod.InputLength;
+
             // Produce more dense tree
-            if (parts.Count == 0)
+            if (len == 0)
             {
                 return GetDefault(prod.Outcome, stackLookback);
             }
 
-            SppfNode[] children = new SppfNode[prod.InputLength];
-            parts.CopyTo(children, 0);
-
-            if (prod.InputLength > parts.Count)
-            {
-                throw new NotSupportedException();
-                // FillEpsilonSuffix(prod.Index, parts.Count, children, parts.Count, stackLookback);
-            }
+            var children = new SppfNode[len];
+            stackLookback.CopyTo(children, len);
 
             Loc location;
-            int partsCount = parts.Count;
-            switch (partsCount)
+            switch (len)
             {
                 case 0:
                     location = Loc.Unknown;
@@ -55,7 +50,7 @@ namespace IronText.Runtime
                     location = children[0].Location;
                     break;
                 default:
-                    location = children[0].Location + children[partsCount - 1].Location;
+                    location = children[0].Location + children[len - 1].Location;
                     break;
             }
 
@@ -82,7 +77,7 @@ namespace IronText.Runtime
         public IProducer<SppfNode> GetRecoveryProducer() { return this; }
 
 
-        public void Shifted(IStackLookback<SppfNode> lookback)
+        public void Shifted(int topState, IStackLookback<SppfNode> lookback)
         {
         }
     }

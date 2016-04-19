@@ -36,23 +36,17 @@ namespace IronText.Runtime
         : IReductionContext
 #endif
     {
-        private readonly ActionNode[] parts;
-        private readonly int firstIndex;
         private readonly int partCount;
         private readonly ActionNode resultNode;
 
         public ProductionActionArgs(
-            int          productionIndex,
-            ActionNode[] parts,
-            int          firstIndex,
-            int          count,
-            object       context,
+            int productionIndex,
+            int count,
+            object context,
             IStackLookback<ActionNode> lookback,
-            ActionNode   resultNode)
+            ActionNode resultNode)
         {
             this.ProductionIndex = productionIndex;
-            this.parts           = parts;
-            this.firstIndex      = firstIndex;
             this.partCount       = count;
             this.Context         = context;
             this.Lookback        = lookback;
@@ -65,7 +59,10 @@ namespace IronText.Runtime
 
         public IStackLookback<ActionNode> Lookback { get; private set; }
 
-        public ActionNode GetSyntaxArg(int index) { return parts[firstIndex + index]; }
+        public ActionNode GetSyntaxArgByBackOffset(int backoffset)
+        {
+            return Lookback.GetNodeAt(backoffset);
+        }
 
 #if ENABLE_SEM0
         public object GetSynthesized(int synthIndex)
@@ -86,9 +83,9 @@ namespace IronText.Runtime
             return result;
         }
 
-        public object GetSynthesized(int position, int synthIndex)
+        public object GetSynthesized(int backoffset, int synthIndex)
         {
-            var node = GetSyntaxArg(position);
+            var node = GetSyntaxArgByBackOffset(backoffset);
             var result = node.GetSynthesizedProperty(synthIndex);
             return result;
         }

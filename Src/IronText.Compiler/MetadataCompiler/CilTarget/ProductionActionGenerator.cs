@@ -120,23 +120,24 @@ namespace IronText.MetadataCompiler
                 data.SemanticBindings,
                 stackShift: prod.InputLength);
 
-            Func<int,Pipe<EmitSyntax>> ldSyntaxArg = i => il => il
+            Func<int,Pipe<EmitSyntax>> ldSyntaxArg = bo => il => il
                                         .Ldarg(pargs)
-                                        .Ldc_I4(i)
-                                        .Call((ProductionActionArgs _0, int _1) => _0.GetSyntaxArg(_1));
+                                        .Ldc_I4(bo)
+                                        .Call((ProductionActionArgs _0, int _1) 
+                                        => _0.GetSyntaxArgByBackOffset(_1));
 
             int varsStackStart = varsStack.Count;
-            int index = 0;
+            int backOffset = prod.InputLength;
             foreach (var arg in prod.Input)
             {
                 emit = emit
-                    .Do(ldSyntaxArg(index))
+                    .Do(ldSyntaxArg(backOffset))
                     .Ldfld((ActionNode msg) => msg.Value)
                     ;
 
                 varsStack.Push();
 
-                ++index;
+                --backOffset;
             }
 
             var emitCoder = Fluent.Create(emit);

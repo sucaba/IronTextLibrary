@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace IronText.Runtime
 {
-    sealed class GssReducePath<T>
+    sealed class GssReducePath<T> : IStackLookback<T>
     {
         public readonly GssNode<T>   LeftNode;
         public readonly GssLink<T>[] Links;    // Left-to-right reduction path labels
@@ -17,11 +17,6 @@ namespace IronText.Runtime
             this.Production = prod;
             this.Size       = size;
         }
-
-        public IStackLookback<T> GetStackLookback()
-        {
-            return LeftNode;
-        } 
 
         public static void GetAll(
             GssNode<T> rightNode,
@@ -124,6 +119,44 @@ namespace IronText.Runtime
             {
                 buffer[count++] = link.Label;
             }
+        }
+
+        int IStackLookback<T>.GetParentState()
+        {
+            return ((IStackLookback<T>)this).GetState(Links.Length);
+        }
+
+        int IStackLookback<T>.GetState(int backOffset)
+        {
+            int result;
+
+            int index = Links.Length - backOffset;
+            if (index >= 0)
+            {
+                result = Links[index].LeftNode.State;
+            }
+            else
+            {
+                result = ((IStackLookback<T>)LeftNode).GetState(-index);
+            }
+
+            return result;
+        }
+
+        T IStackLookback<T>.GetNodeAt(int backOffset)
+        {
+            T result;
+            int index = Links.Length - backOffset;
+            if (index >= 0)
+            {
+                result = Links[index].Label;
+            }
+            else
+            {
+                result = ((IStackLookback<T>)LeftNode).GetNodeAt(-index);
+            }
+
+            return result;
         }
     }
 }

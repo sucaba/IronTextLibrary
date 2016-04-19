@@ -27,7 +27,6 @@ namespace IronText.Runtime
         T CreateLeaf(Msg envelope, MsgData data);
 
         // Branch for production rule
-        // TODO: All Grammar-level entities should be removed from the runtime layer.
         T CreateBranch(RuntimeProduction rule, ArraySlice<T> parts, IStackLookback<T> lookback);
 
         // Merge derivation alternatives
@@ -39,6 +38,6 @@ namespace IronText.Runtime
         // Producer used just before error recovery start
         IProducer<T> GetRecoveryProducer();
 
-        void Shifted(IStackLookback<T> lookback);
+        void Shifted(int topState, IStackLookback<T> lookback);
     }
 }

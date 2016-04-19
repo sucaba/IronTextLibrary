@@ -32,7 +32,7 @@ namespace IronText.Runtime.Inlining
         public ArraySlice<T> GetArraySlice(int count)
             => new ArraySlice<T>(items, this.count - count, count);
 
-        public IStackLookback<T> GetLookback(int parentState)
-            => items.ToLookback(count, parentState);
+        public IStackLookback<T> GetLookback()
+            => items.ToLookback(count);
     }
 }

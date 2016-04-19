@@ -4,32 +4,52 @@ namespace IronText.Runtime
 {
     static class StackLookbackExtensions
     {
-        public static IStackLookback<T> ShiftedLookback<T>(this IStackLookback<T> @this, int shift)
+        public static IStackLookback<T> Pushed<T>(this IStackLookback<T> @this, T[] items)
         {
-            return new ShiftedStackLookbackDecorator<T>(@this, shift);
+            return new PushedStackLookback<T>(@this, items);
         }
 
-        public static IStackLookback<T> ToLookback<T>(this T[] items, int index, int parentState)
+        public static IStackLookback<T> ToLookback<T>(this T[] items, int index)
         {
-            return new ArrayLookback<T>(items, index, parentState);
+            return new ArrayLookback<T>(items, index);
         }
 
-        class ShiftedStackLookbackDecorator<T> : IStackLookback<T>
+        public static void CopyTo<T>(this IStackLookback<T> @this, T[] array, int count)
+        {
+            for (int i = 0; i != count; ++i)
+            {
+                array[i] = @this.GetNodeAt(count - i);
+            }
+        }
+
+        class PushedStackLookback<T> : IStackLookback<T>
         {
             private readonly IStackLookback<T> original;
-            private readonly int               shiftCount;
+            private readonly T[]               items;
 
-            public ShiftedStackLookbackDecorator(
+            public PushedStackLookback(
                 IStackLookback<T> original,
-                int               shiftCount)
+                T[]               items)
             {
-                this.original   = original;
-                this.shiftCount = shiftCount;
+                this.original = original;
+                this.items    = items;
             }
 
             public T GetNodeAt(int backOffset)
             {
-                return original.GetNodeAt(backOffset + shiftCount);
+                T result;
+
+                int index = items.Length - backOffset;
+                if (index >= 0)
+                {
+                    result = items[index];
+                }
+                else
+                {
+                    result = original.GetNodeAt(-index);
+                }
+
+                return result;
             }
 
             public int GetParentState()
@@ -39,7 +59,14 @@ namespace IronText.Runtime
 
             public int GetState(int backOffset)
             {
-                return original.GetState(shiftCount + backOffset);
+                int index = items.Length - backOffset;
+                if (index >= 0)
+                {
+                    throw new ArgumentException(nameof(backOffset));
+                }
+
+                int result = original.GetState(-index);
+                return result;
             }
         }
 
@@ -47,18 +74,19 @@ namespace IronText.Runtime
         {
             private readonly int index;
             private readonly T[] items;
-            private readonly int parentState;
 
-            public ArrayLookback(T[] items, int index, int parentState)
+            public ArrayLookback(T[] items, int index)
             {
                 this.items = items;
                 this.index = index;
-                this.parentState = parentState;
             }
 
-            public T GetNodeAt(int backOffset) => items[index - backOffset]; 
+            public T GetNodeAt(int backOffset) => items[index - backOffset];
 
-            public int GetParentState() => parentState;
+            public int GetParentState()
+            {
+                throw new NotSupportedException();
+            }
 
             public int GetState(int backOffset)
             {

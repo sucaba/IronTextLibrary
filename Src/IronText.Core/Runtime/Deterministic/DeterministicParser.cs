@@ -328,7 +328,7 @@ namespace IronText.Runtime
 
             if (state >= 0)
             {
-                producer.Shifted(stateStack);
+                producer.Shifted(state, stateStack);
             }
         }
     }

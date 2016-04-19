@@ -28,7 +28,7 @@ namespace IronText.Runtime
 
         public IProducer<T> GetRecoveryProducer() { return this; }
 
-        public void Shifted(IStackLookback<T> lookback)
+        public void Shifted(int topState, IStackLookback<T> lookback)
         {
         }
     }
