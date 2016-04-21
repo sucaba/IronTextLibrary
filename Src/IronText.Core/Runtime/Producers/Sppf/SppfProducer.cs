@@ -25,20 +25,19 @@ namespace IronText.Runtime
         }
 
         public SppfNode CreateBranch(
-                            RuntimeProduction        prod,
-                            ArraySlice<SppfNode>     parts,
-                            IStackLookback<SppfNode> stackLookback)
+            RuntimeProduction production,
+            IStackLookback<SppfNode> lookback)
         {
-            int len = prod.InputLength;
+            int len = production.InputLength;
 
             // Produce more dense tree
             if (len == 0)
             {
-                return GetDefault(prod.Outcome, stackLookback);
+                return GetDefault(production.Outcome, lookback);
             }
 
             var children = new SppfNode[len];
-            stackLookback.CopyTo(children, len);
+            lookback.CopyTo(children, len);
 
             Loc location;
             switch (len)
@@ -54,7 +53,7 @@ namespace IronText.Runtime
                     break;
             }
 
-            return new SppfNode(prod.Index, location, children);
+            return new SppfNode(production.Index, location, children);
         }
 
         public SppfNode Merge(SppfNode alt1, SppfNode alt2, IStackLookback<SppfNode> stackLookback)

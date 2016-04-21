@@ -104,7 +104,6 @@ namespace IronText.Runtime
 
         public ActionNode CreateBranch(
             RuntimeProduction prod,
-            ArraySlice<ActionNode> prefix,
             IStackLookback<ActionNode> stackLookback)
         {
             int len = prod.InputLength;

@@ -22,7 +22,6 @@ namespace IronText.Runtime
         private readonly Queue<PendingShift>  Q = new Queue<PendingShift>(4);
         private readonly IReductionQueue<T>   R;
         private readonly Dictionary<long,T> N = new Dictionary<long,T>();
-        private readonly T[]                  nodeBuffer;
         private readonly int[]                tokenComplexity;
         private readonly RuntimeProduction[]  pendingReductions;
         private int pendingReductionsCount = 0;
@@ -67,7 +66,6 @@ namespace IronText.Runtime
             this.stateToPriorToken    = stateToPriorToken;
             this.conflictActionsTable = conflictActionsTable;
             this.gss                  = gss;
-            this.nodeBuffer           = new T[grammar.MaxProductionLength];
             this.producer             = producer;
             this.logging              = logging;
 
@@ -311,11 +309,7 @@ namespace IronText.Runtime
                 }
                 else
                 {
-                    path.CopyDataTo(nodeBuffer);
-                    T Λ = producer.CreateBranch(
-                            path.Production,
-                            new ArraySlice<T>(nodeBuffer, 0, path.Size),
-                            stackLookback);
+                    T Λ = producer.CreateBranch(path.Production, stackLookback);
 
                     int c = u.Layer;
                     T currentValue;

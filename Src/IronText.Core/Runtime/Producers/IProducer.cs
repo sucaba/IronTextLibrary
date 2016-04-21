@@ -27,7 +27,7 @@ namespace IronText.Runtime
         T CreateLeaf(Msg envelope, MsgData data);
 
         // Branch for production rule
-        T CreateBranch(RuntimeProduction rule, ArraySlice<T> parts, IStackLookback<T> lookback);
+        T CreateBranch(RuntimeProduction production, IStackLookback<T> lookback);
 
         // Merge derivation alternatives
         T Merge(T alt1, T alt2, IStackLookback<T> lookback);

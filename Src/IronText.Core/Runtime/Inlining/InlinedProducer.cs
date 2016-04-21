@@ -28,7 +28,6 @@ namespace IronText.Runtime.Inlining
         
         public T CreateBranch(
             RuntimeProduction production,
-            ArraySlice<T> args,
             IStackLookback<T> input)
         {
             InlinedAction[] plan = grammar.GetReducePlan(production.Index);
@@ -39,7 +38,7 @@ namespace IronText.Runtime.Inlining
                 switch (instruction.Op)
                 {
                     case InlinedActionOp.RetDirect:
-                        return producer.CreateBranch(production, args, input);
+                        return producer.CreateBranch(production, input);
                     case InlinedActionOp.Ret:
                         return stack.Peek();
                     case InlinedActionOp.Init:
@@ -52,8 +51,7 @@ namespace IronText.Runtime.Inlining
                         var inlined = grammar.Productions[instruction.ProductionIndex];
                         var outcome = producer.CreateBranch(
                                 inlined,
-                                stack.GetArraySlice(inlined.InputLength),
-                                stack.GetLookback());
+                            stack.GetLookback());
 
                         stack.Pop(inlined.InputLength);
                         stack.Push(outcome);

@@ -105,11 +105,6 @@ namespace IronText.Runtime
             Capacity = newSize;
         }
 
-        public ArraySlice<T> PeekTail(int size)
-        {
-            return new ArraySlice<T>(data, Count - size, size);
-        }
-
         public int GetParentState() { return GetState(1); }
 
         public int GetState(int backoffset)

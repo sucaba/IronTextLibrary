@@ -111,16 +111,6 @@ namespace IronText.Runtime
             }
         }
 
-        public void CopyDataTo(T[] buffer)
-        {
-            int count = 0;
-
-            foreach (var link in this.Links)
-            {
-                buffer[count++] = link.Label;
-            }
-        }
-
         int IStackLookback<T>.GetParentState()
         {
             return ((IStackLookback<T>)this).GetState(Links.Length);

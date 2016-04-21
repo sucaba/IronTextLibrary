@@ -8,8 +8,6 @@ namespace IronText.Runtime
 
         T Peek();
 
-        ArraySlice<T> PeekTail(int size);
-
         void Pop(int count);
 
         void Push(int tag, T value);
