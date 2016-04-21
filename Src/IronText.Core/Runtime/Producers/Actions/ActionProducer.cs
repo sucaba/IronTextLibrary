@@ -102,37 +102,40 @@ namespace IronText.Runtime
                 envelope.Location);
         }
 
-        public ActionNode CreateBranch(RuntimeProduction prod, ArraySlice<ActionNode> prefix, IStackLookback<ActionNode> stackLookback)
+        public ActionNode CreateBranch(
+            RuntimeProduction prod,
+            ArraySlice<ActionNode> prefix,
+            IStackLookback<ActionNode> stackLookback)
         {
-            if (prefix.Count == 0)
+            int len = prod.InputLength;
+
+            // Produce more dense tree
+            if (len == 0)
             {
                 return GetDefault(prod.Outcome, stackLookback);
             }
 
+            var children = new ActionNode[len];
+            stackLookback.CopyTo(children, len);
+
             Loc location;
 
-            var array = prefix.Array;
-            switch (prefix.Count)
+            switch (len)
             {
                 case 0:
                     location = Loc.Unknown;
                     break;
                 case 1:
-                    location = prefix.Array[prefix.Offset].Location;
+                    location = children[0].Location;
                     break;
                 default:
-                    location = prefix.Array[prefix.Offset].Location
-                             + prefix.Array[prefix.Offset + prefix.Count - 1].Location;
+                    location = children[0].Location
+                             + children[len - 1].Location;
                     break;
             }
 
             // Location for IParsing service
             this._parsingLocation = location;
-
-            if (prod.InputLength > prefix.Count)
-            {
-                throw new NotSupportedException();
-            }
 
             var result = new ActionNode(prod.Outcome, null, location);
 
@@ -141,10 +144,10 @@ namespace IronText.Runtime
 
             var pargs = new ProductionActionArgs(
                             prod.Index,
-                prefix.Count,
-                context,
-                stackLookback,
-                result);
+                            len,
+                            context,
+                            stackLookback,
+                            result);
             result.Value = productionAction(pargs);
             return result;
         }
