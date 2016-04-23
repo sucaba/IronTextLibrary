@@ -50,8 +50,8 @@ namespace IronText.Runtime.Inlining
                     case InlinedActionOp.Reduce:
                         var inlined = grammar.Productions[instruction.ProductionIndex];
                         var outcome = producer.CreateBranch(
-                                inlined,
-                            stack.GetLookback());
+                                        inlined,
+                                        stack.GetLookback());
 
                         stack.Pop(inlined.InputLength);
                         stack.Push(outcome);
