@@ -16,7 +16,7 @@ namespace IronText.Reflection
         {
             var sketch = ProductionSketch.Parse(text);
 
-            var resolver = DR.Resolve<IProductionResolver>();
+            var resolver = DR.Get<IProductionResolver>();
             var result = resolver.Create(sketch);
 
             return result;
@@ -26,7 +26,7 @@ namespace IronText.Reflection
         {
             var sketch = new ProductionSketch(outcome, pattern);
 
-            var resolver = DR.Resolve<IProductionResolver>();
+            var resolver = DR.Get<IProductionResolver>();
             var result = resolver.Create(sketch);
             return result;
         }
@@ -51,7 +51,7 @@ namespace IronText.Reflection
         
         private Production Find(ProductionSketch sketch)
         {
-            var resolver = DR.Resolve<IProductionResolver>();
+            var resolver = DR.Get<IProductionResolver>();
 
             var result = resolver.Find(sketch);
             return result;

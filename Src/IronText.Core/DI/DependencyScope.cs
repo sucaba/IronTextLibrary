@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace IronText.DI
 {
-    internal class DependencyScope : IDependencyResolver, IDisposable
+    internal class DependencyScope 
+        : IDependencyResolver
+        , IDisposable
+        , IEnumerable<Type>
     {
         private readonly Dictionary<Type, Func<object>> typeToGetter 
             = new Dictionary<Type, Func<object>>();
@@ -18,35 +22,42 @@ namespace IronText.DI
             this.parent = parent;
         }
 
-        public object Resolve(Type type)
+        public bool Has<T>(Func<T,bool> predicate)
+            where T : class
+        {
+            T contract = this.Get<T>();
+            return predicate(contract);
+        }
+
+        public object Get(Type type)
         {
             var getter = ResolveGetter(type);
             return getter();
         }
 
-        public void Register<TImpl>()
+        public void Add<TImpl>()
         {
-            Register(typeof(TImpl));
+            Add(typeof(TImpl));
         }
 
-        public void Register(Type impl)
+        public void Add(Type impl)
         {
             var interfaces = impl.GetInterfaces();
       
-            Register(impl, impl);
+            Add(impl, impl);
 
             foreach (var intf in interfaces)
             {
-                Register(intf, impl);
+                Add(intf, impl);
             }
         }
 
-        public void Register<TContract, TImpl>()
+        public void Add<TContract, TImpl>()
         {
-            Register(typeof(TContract), typeof(TImpl));
+            Add(typeof(TContract), typeof(TImpl));
         }
 
-        public void Register(Type contract, Type impl)
+        public void Add(Type contract, Type impl)
         {
             var cs = impl.GetConstructors(); 
             if (cs.Length != 1)
@@ -58,16 +69,16 @@ namespace IronText.DI
             var c = cs[0];
             var ps = Array.ConvertAll(c.GetParameters(), p => p.ParameterType);
 
-            Register(
+            Add(
                 contract,
-                () => c.Invoke(Array.ConvertAll(ps, Resolve)));
+                () => c.Invoke(Array.ConvertAll(ps, Get)));
         }
 
-        public void Register<T>(T instance)
+        public void Add<T>(T instance)
         {
             if (typeof(T).IsInterface)
             {
-                Register(typeof(T), () => instance);
+                Add(typeof(T), () => instance);
             }
             else
             {
@@ -83,15 +94,15 @@ namespace IronText.DI
             }
 
             var interfaces = instance.GetType().GetInterfaces();
-            Register(instance.GetType(), () => instance);
+            Add(instance.GetType(), () => instance);
             
             foreach (var intf in interfaces)
             {
-                Register(intf, () => instance);
+                Add(intf, () => instance);
             }
         }
 
-        public void Register<TContract,T1>(Func<T1,TContract> getter)
+        public void Add<TContract,T1>(Func<T1,TContract> getter)
         {
             Register(typeof(TContract), (Delegate)getter);
         }
@@ -110,10 +121,10 @@ namespace IronText.DI
         {
             var invoke = parameterizedGetter.GetType().GetMethod("Invoke");
             var ps = Array.ConvertAll(invoke.GetParameters(), p => p.ParameterType);
-            Register(
+            Add(
                 contract,
                 () => parameterizedGetter.DynamicInvoke(
-                        Array.ConvertAll(ps, Resolve)));
+                        Array.ConvertAll(ps, Get)));
         }
 
         public DependencyScope Nest()
@@ -121,7 +132,7 @@ namespace IronText.DI
             return new DependencyScope(this);
         }
 
-        public void Register(Type contract, Func<object> getter)
+        public void Add(Type contract, Func<object> getter)
         {
             if (typeToGetter.ContainsKey(contract))
             {
@@ -154,8 +165,8 @@ namespace IronText.DI
         {
             Func<object> result;
             if (!typeToGetter.TryGetValue(type, out result)
-                && !TryGetFromParent(type, out result)
-                && !AutoRegister(type, out result))
+                && !TryResolveFromParent(type, out result)
+                && !AutoAdd(type, out result))
             {
                 throw new InvalidOperationException(
                     $"Unable to resolve dependency for type {type.FullName}.");
@@ -167,11 +178,11 @@ namespace IronText.DI
         private bool TryResolveNoAuto(Type type, out Func<object> getter)
         {
             bool result = typeToGetter.TryGetValue(type, out getter)
-                        || TryGetFromParent(type, out getter);
+                        || TryResolveFromParent(type, out getter);
             return result;
         }
 
-        private bool TryGetFromParent(Type type, out Func<object> getter)
+        private bool TryResolveFromParent(Type type, out Func<object> getter)
         {
             if (parent == null)
             {
@@ -182,7 +193,7 @@ namespace IronText.DI
             return parent.TryResolveNoAuto(type, out getter);
         }
 
-        private bool AutoRegister(Type typeToResolve, out Func<object> getter)
+        private bool AutoAdd(Type typeToResolve, out Func<object> getter)
         {
             var cs = typeToResolve.GetConstructors(); 
             if (cs.Length != 1)
@@ -191,7 +202,7 @@ namespace IronText.DI
                 return false;
             }
 
-            Register(typeToResolve, typeToResolve);
+            Add(typeToResolve, typeToResolve);
             getter = typeToGetter[typeToResolve];
             return true;
         }
@@ -209,6 +220,16 @@ namespace IronText.DI
 
         private void Dispose(bool disposing)
         {
+        }
+
+        IEnumerator<Type> IEnumerable<Type>.GetEnumerator()
+        {
+            return typeToGetter.Keys.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return typeToGetter.Keys.GetEnumerator();
         }
     }
 }

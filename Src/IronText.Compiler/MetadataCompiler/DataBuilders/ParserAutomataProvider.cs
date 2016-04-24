@@ -5,9 +5,9 @@ using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    class ParserDfaProvider
+    class ParserAutomataProvider
     {
-        public ParserDfaProvider(
+        public ParserAutomataProvider(
             ILogging        logging,
             ILanguageSource source,
             GrammarAnalysis analysis)

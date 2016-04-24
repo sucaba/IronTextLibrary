@@ -10,12 +10,12 @@ using System.Text;
 
 namespace IronText.MetadataCompiler
 {
-    class ScannerTdfaProvider
+    class ScannerAutomataProvider
     {
         private readonly Grammar grammar;
         private readonly ILogging logging;
 
-        public ScannerTdfaProvider(
+        public ScannerAutomataProvider(
             Grammar             grammar,
             ILogging            logging,
             ILanguageSource     source,

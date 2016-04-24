@@ -121,7 +121,7 @@ namespace IronText.Reflection
 
         public override string ToString()
         {
-            var writer = DR.Resolve<IGrammarTextWriter>();
+            var writer = DR.Get<IGrammarTextWriter>();
 
             using (var output = new StringWriter())
             {
@@ -352,11 +352,11 @@ namespace IronText.Reflection
             return result.ToArray();
         }
 
-        object IDependencyResolver.Resolve(Type type)
+        object IDependencyResolver.Get(Type type)
         {
             if (type == typeof(IProductionResolver))
             {
-                return new ProductionResolver(Symbols, Productions, DR.Resolve<IProductionTextMatcher>());
+                return new ProductionResolver(Symbols, Productions, DR.Get<IProductionTextMatcher>());
             }
 
             if (type == typeof(ISymbolTextMatcher) || type == typeof(IProductionTextMatcher) || type == typeof(IInjectedActionParameterTextMatcher))

@@ -36,7 +36,7 @@ namespace IronText.Reflection
                 return null;
             }
 
-            var matcher = DR.Resolve<ISymbolTextMatcher>();
+            var matcher = DR.Get<ISymbolTextMatcher>();
 
             var found = this.FirstOrDefault(s => matcher.Match(s, symbolName));
             if (found == null)
