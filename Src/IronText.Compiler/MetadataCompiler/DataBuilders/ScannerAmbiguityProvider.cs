@@ -8,12 +8,7 @@ using IronText.Compiler.Analysis;
 
 namespace IronText.MetadataCompiler
 {
-    interface ILexicalAmbiguityCollector
-    {
-        IEnumerable<AmbTokenInfo> CollectAmbiguities();
-    }
-
-    class LexicalAmbiguityCollector : ILexicalAmbiguityCollector
+    class ScannerAmbiguityProvider
     {
         private readonly TokenProducerInfo[] actionToTokenProducer;
         private readonly Dictionary<object, TokenProducerInfo> stateToTokenProducer;
@@ -21,16 +16,20 @@ namespace IronText.MetadataCompiler
         private readonly Grammar    grammar;
         private readonly ITdfaData  tdfa;
 
-        public LexicalAmbiguityCollector(Grammar grammar, ITdfaData tdfa)
+        public ScannerAmbiguityProvider(Grammar grammar, ITdfaData tdfa)
         {
             this.grammar               = grammar;
             this.tdfa                  = tdfa;
             this.actionToTokenProducer = grammar.Matchers.CreateCompatibleArray<TokenProducerInfo>();
             this.stateToTokenProducer  = new Dictionary<object, TokenProducerInfo>();
             this.tokenSetType          = new BitSetType(grammar.Symbols.Count);
+
+            this.Ambiguities = CollectAmbiguities().ToArray();
         }
 
-        public IEnumerable<AmbTokenInfo> CollectAmbiguities()
+        public AmbTokenInfo[] Ambiguities { get; }
+
+        private IEnumerable<AmbTokenInfo> CollectAmbiguities()
         {
             // For each action store information about produced tokens
             foreach (var matcher in grammar.Matchers)

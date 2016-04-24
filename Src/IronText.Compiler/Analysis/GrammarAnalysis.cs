@@ -20,10 +20,10 @@ namespace IronText.Compiler.Analysis
         private int[]    tokenComplexity;
         private AmbTokenInfo[] ambiguities;
 
-        public GrammarAnalysis(Grammar grammar, IEnumerable<AmbTokenInfo> ambiguities)
+        public GrammarAnalysis(Grammar grammar, AmbTokenInfo[] ambiguities)
         {
             this.grammar         = grammar;
-            this.ambiguities     = ambiguities.ToArray();
+            this.ambiguities     = ambiguities;
             this.tables          = new NullableFirstTables(grammar);
             this.tokenComplexity = BuildTokenComplexity(grammar);
         }

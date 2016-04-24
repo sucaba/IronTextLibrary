@@ -5,6 +5,8 @@ namespace IronText.Automata.Regular
 {
     class RegularAlphabet : IRegularAlphabet
     {
+        public static readonly IRegularAlphabet Null = new RegularAlphabet(new IntSet[0]);
+
         private IntSet symbols;
 
         public RegularAlphabet(IEnumerable<IntSet> csets)

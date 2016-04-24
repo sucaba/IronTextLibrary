@@ -127,11 +127,6 @@ namespace IronText.DI
                         Array.ConvertAll(ps, Get)));
         }
 
-        public DependencyScope Nest()
-        {
-            return new DependencyScope(this);
-        }
-
         public void Add(Type contract, Func<object> getter)
         {
             if (typeToGetter.ContainsKey(contract))

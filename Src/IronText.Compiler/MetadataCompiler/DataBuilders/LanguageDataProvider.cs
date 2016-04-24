@@ -1,12 +1,11 @@
-﻿using System;
-using IronText.Automata.Lalr1;
+﻿using IronText.Automata.Lalr1;
 using IronText.Build;
-using IronText.Compiler.Analysis;
 using IronText.Logging;
 using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Runtime;
 using IronText.DI;
+using IronText.Automata.Regular;
 
 namespace IronText.MetadataCompiler
 {
@@ -24,36 +23,38 @@ namespace IronText.MetadataCompiler
 
         private bool Build(ILogging logging, out LanguageData result)
         {
-            using (var di = new DependencyScope
-                            {
-                                logging,
-                                source,
-                                config,
-                                (GrammarReaderProvider p) => p.Reader,
-                                (GrammarProvider p) => p.Grammar,
-                                (Grammar p) => p.Options,
-                                (ScannerAutomataProvider p) => p.Ambiguities,
-                                (ScannerAutomataProvider p) => p.Tdfa,
-                                (ParserAutomataProvider p) => p.Dfa,
-                                (ParserTableProvider p) => p.LrParserTable,
-                                (RuntimeGrammarProvider p) => p.Outcome,
-                                (LanguageDataInstanceProvider p) => p.Data
-                            })
+            using (var building = new DependencyScope
             {
-                if (di.Has((IGrammarReader r) => r == null)
-                    || di.Has((ScannerAutomataProvider p) => !p.Success)
-                    || di.Has((ILrDfa lrDfa) => lrDfa == null))
+                logging,
+                source,
+                config,
+                (GrammarReaderProvider p) => p.Reader,
+                (GrammarProvider p) => p.Grammar,
+                (Grammar p) => p.Options,
+                (ScannerAutomataProvider p) => p.Tdfa,
+                (ScannerAmbiguityProvider p) => p.Ambiguities,
+                (ParserAutomataProvider p) => p.Dfa,
+                (ParserTableProvider p) => p.LrParserTable,
+                (RuntimeGrammarProvider p) => p.Outcome,
+                (LanguageDataInstanceProvider p) => p.Data
+            })
+            {
+                if (   building.Has((IGrammarReader r) => r == null)
+                    || building.Has((ITdfaData d) => d == null )
+                    || building.Has((ILrDfa lrDfa) => lrDfa == null))
                 {
                     result = null;
                     return false;
                 }
 
-                result = di.Get<LanguageData>();
+                result = building.Get<LanguageData>();
 
-                using (var nestedDi = di.Nest())
+                using (var reporting = new DependencyScope(parent: building)
                 {
-                    nestedDi.Add<ReportData>();
-                    nestedDi.Get<LanguageBuildReports>();
+                    { typeof(IReportData), typeof(ReportData) }
+                })
+                {
+                    reporting.Ensure<LanguageBuildReports>();
                 }
             }
 

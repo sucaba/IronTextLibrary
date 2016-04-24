@@ -13,5 +13,10 @@ namespace IronText
         {
             return (T)self.Get(typeof(T));
         }
+
+        public static void Ensure<T>(this IDependencyResolver self)
+        {
+            self.Get(typeof(T));
+        }
     }
 }

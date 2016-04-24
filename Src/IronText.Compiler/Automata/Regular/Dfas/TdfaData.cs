@@ -10,6 +10,8 @@ namespace IronText.Automata.Regular
 {
     public sealed class TdfaData : ITdfaData , IScannerAutomata
     {
+        public static readonly ITdfaData Null = new TdfaData(RegularAlphabet.Null);
+
         public static readonly SparseIntSetType StateSetType = SparseIntSetType.Instance;
         public static readonly SparseIntSetType PositionSetType = SparseIntSetType.Instance;
 

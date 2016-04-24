@@ -12,7 +12,7 @@ namespace IronText.MetadataCompiler
     {
         public MatchActionToTokenTableProvider(
             Grammar grammar,
-            IEnumerable<AmbTokenInfo> ambiguities)
+            AmbTokenInfo[] ambiguities)
         {
             var actionToToken = grammar.Matchers.CreateCompatibleArray<int>(IndexingConstants.NoIndex);
 

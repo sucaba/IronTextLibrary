@@ -28,9 +28,8 @@ namespace IronText.MetadataCompiler
 
             if (config.IsBootstrap)
             {
-                // Bootstrap scanner uses its own scanner without TDFA
-                Ambiguities = new AmbTokenInfo[0];
-                Success = true;
+                // Bootstrap uses ad-hoc scanner
+                Tdfa        = TdfaData.Null;
             }
             else if (!CompileTdfa(out tdfa))
             {
@@ -44,23 +43,15 @@ namespace IronText.MetadataCompiler
                                     source.LanguageName)
                     });
 
-                Success = false;
+                Tdfa        = null;
             }
             else
             {
-                var resolver = new LexicalAmbiguityCollector(grammar, tdfa);
-
-                Tdfa = tdfa;
-                Ambiguities = resolver.CollectAmbiguities();
-                Success = true;
+                Tdfa        = tdfa;
             }
         }
 
-        public bool Success { get; }
-
         public ITdfaData                Tdfa         { get; }
-
-        public IEnumerable<AmbTokenInfo> Ambiguities { get; }
 
         private bool CompileTdfa(out ITdfaData outcome)
         {
