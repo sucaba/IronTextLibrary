@@ -22,6 +22,12 @@ namespace IronText.DI
             this.parent = parent;
         }
 
+        public bool HasNo<T>()
+            where T : class
+        {
+            return Has<T>((T x) => x == null);
+        }
+
         public bool Has<T>(Func<T,bool> predicate)
             where T : class
         {

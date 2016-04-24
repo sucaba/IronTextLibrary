@@ -39,9 +39,9 @@ namespace IronText.MetadataCompiler
                 (LanguageDataInstanceProvider p) => p.Data
             })
             {
-                if (   building.Has((IGrammarReader r) => r == null)
-                    || building.Has((ITdfaData d) => d == null )
-                    || building.Has((ILrDfa lrDfa) => lrDfa == null))
+                if (building.HasNo<IGrammarReader>()
+                 || building.HasNo<ITdfaData>()
+                 || building.HasNo<ILrDfa>())
                 {
                     result = null;
                     return false;
