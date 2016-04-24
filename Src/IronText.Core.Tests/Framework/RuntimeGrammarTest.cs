@@ -1,4 +1,5 @@
 ﻿using IronText.Framework;
+using IronText.MetadataCompiler;
 using IronText.Reflection;
 using IronText.Runtime;
 using NUnit.Framework;
@@ -27,7 +28,8 @@ namespace IronText.Tests.Framework
 
             grammar.BuildIndexes();
 
-            var target = grammar.ToRuntime();;
+            var provider = new RuntimeGrammarProvider(grammar, null, null);
+            var target = provider.Outcome;
 
             Assert.IsTrue(target.IsNullable(A.Index));
             Assert.IsTrue(target.IsNullable(B.Index));

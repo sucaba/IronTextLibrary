@@ -14,16 +14,17 @@ namespace IronText.Reflection.Reporting
         internal readonly ParserConflictInfo[] parserConflicts;
         internal readonly DotState[] parserStates;
 
-        internal ReportData(
-            ILanguageSource       source,
-            LanguageData         data,
-            ParserConflictInfo[] parserConflicts,
-            DotState[]           parserStates)
+        public ReportData(
+            ILanguageSource source,
+            LanguageData    data,
+            ILrParserTable  lrTable,
+            ILrDfa          parserDfa)
         {
-            this.source = source;
-            this.data = data;
-            this.parserConflicts = parserConflicts;
-            this.parserStates = parserStates;
+
+            this.source          = source;
+            this.data            = data;
+            this.parserConflicts = lrTable.Conflicts;
+            this.parserStates    = parserDfa.States;
         }
 
         public string DestinationDirectory

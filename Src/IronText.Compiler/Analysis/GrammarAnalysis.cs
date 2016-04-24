@@ -6,6 +6,7 @@ using IronText.Runtime;
 using System;
 using IronText.Misc;
 using IronText.MetadataCompiler;
+using IronText.Compiler.Analysis;
 
 namespace IronText.Compiler.Analysis
 {

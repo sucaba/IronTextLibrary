@@ -24,7 +24,8 @@ namespace IronText.Runtime
 
         public const int Value1Max          = ((1 << Value1Bits) - 1);
         private const int Value2Mask        = ((1 << Value2Bits) - 1) << Value2StartBit; 
-        public const int FailActionCell = 0;
+
+        public const int FailActionCell     = 0;
 
         [FieldOffset(0)]
         public ParserActionKind Kind;

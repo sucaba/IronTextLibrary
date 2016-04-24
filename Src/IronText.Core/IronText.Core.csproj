@@ -118,6 +118,7 @@
     <Compile Include="Collections\IIndexableImpl.cs" />
     <Compile Include="Collections\SListNode.cs" />
     <Compile Include="Diagnostics\DiagnosticExtensions.cs" />
+    <Compile Include="DI\DependencyScope.cs" />
     <Compile Include="DI\IDependencyResolver.cs" />
     <Compile Include="Framework\Attributes\ReportAttribute.cs" />
     <Compile Include="Framework\NullParsing.cs" />
@@ -196,6 +197,7 @@
     <Compile Include="Runtime\Inlining\InlinedActionOp.cs" />
     <Compile Include="Runtime\Inlining\InlinedProducer.cs" />
     <Compile Include="Runtime\IReportDestinationHint.cs" />
+    <Compile Include="Runtime\Parsing\ParserBytecode.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeFormula.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeValue.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeVariable.cs" />

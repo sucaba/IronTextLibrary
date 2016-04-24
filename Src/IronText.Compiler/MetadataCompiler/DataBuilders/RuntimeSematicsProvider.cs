@@ -9,26 +9,21 @@ using IronText.Compiler.Analysis;
 
 namespace IronText.MetadataCompiler
 {
-    internal interface ISemanticFormulasProvider
+    internal class RuntimeSemanticsProvider
     {
-        void GetData(
-            out RuntimeFormula[][] stateToFormulas,
-            out RuntimeFormula[][] productionToFormulas);
-    }
-
-    internal class RuntimeSemanticsProvider : ISemanticFormulasProvider
-    {
-        private RuntimeFormula[][] stateToFormulas;
-        private RuntimeFormula[][] productionToFormulas;
         private readonly Grammar grammar;
 
         public RuntimeSemanticsProvider(Grammar grammar, ILrDfa dfa)
         {
             this.grammar = grammar;
 
-            this.stateToFormulas      = BuildShiftFormulas(dfa);
-            this.productionToFormulas = BuildProductionFormulas();
+            this.StateToFormulas      = BuildShiftFormulas(dfa);
+            this.ProductionToFormulas = BuildProductionFormulas();
         }
+
+        public RuntimeFormula[][] StateToFormulas { get; }
+
+        public RuntimeFormula[][] ProductionToFormulas { get; }
 
         private RuntimeFormula[][] BuildProductionFormulas()
         {
@@ -158,14 +153,6 @@ namespace IronText.MetadataCompiler
                 throw new InvalidOperationException(msg);
             }
             return result;
-        }
-
-        public void GetData(
-            out RuntimeFormula[][] stateToFormulas,
-            out RuntimeFormula[][] productionToFormulas)
-        {
-            stateToFormulas      = this.stateToFormulas;
-            productionToFormulas = this.productionToFormulas;
         }
     }
 }

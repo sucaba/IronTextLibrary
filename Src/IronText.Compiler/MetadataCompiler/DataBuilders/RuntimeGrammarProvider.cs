@@ -1,24 +1,16 @@
-﻿using IronText.MetadataCompiler;
+﻿using IronText.Reflection;
 using IronText.Runtime;
 using IronText.Runtime.Semantics;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace IronText.Reflection
+namespace IronText.MetadataCompiler
 {
-    public static class ReflectionExtensions
+    internal class RuntimeGrammarProvider
     {
-        public static RuntimeGrammar ToRuntime(this Grammar grammar)
-        {
-            return ToRuntime(grammar, null, null);
-        }
-
-        public static RuntimeGrammar ToRuntime(
-            this Grammar grammar,
-            RuntimeFormula[][] stateToFormulas,
-            RuntimeFormula[][] productionToFormulas)
+        public RuntimeGrammarProvider(
+            Grammar                  grammar,
+            RuntimeSemanticsProvider semanticsProvider,
+            ParserBytecodeProvider   bytecodeProvider)
         {
             IRuntimeNullableFirstTables tables = new NullableFirstTables(grammar);
             var tokenIsNullable     = tables.TokenToNullable;
@@ -28,17 +20,20 @@ namespace IronText.Reflection
             var tokenNames         = grammar.Symbols.CreateCompatibleArray(s => s.Name);
             var runtimeProductions = grammar.Productions.CreateCompatibleArray(ToRuntime);
 
-            return new RuntimeGrammar(
+            this.Outcome = new RuntimeGrammar(
                         tokenNames,
                         tokenCategories,
                         tokenIsNullable,
                         tokenIsTerminal,
                         runtimeProductions,
-                        stateToFormulas,
-                        productionToFormulas);
+                        semanticsProvider?.StateToFormulas,
+                        semanticsProvider?.ProductionToFormulas,
+                        bytecodeProvider?.Instructions);
         }
 
-        public static RuntimeProduction ToRuntime(this Production prod)
+        public RuntimeGrammar Outcome { get; private set; }
+
+        private static RuntimeProduction ToRuntime(Production prod)
         {
             return new RuntimeProduction(
                     prod.Index,

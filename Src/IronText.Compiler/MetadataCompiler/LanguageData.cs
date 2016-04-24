@@ -18,8 +18,6 @@ namespace IronText.MetadataCompiler
 
         public RuntimeGrammar   RuntimeGrammar      { get; set; }
 
-        public GrammarAnalysis  Analysis            { get; set; }
-
         public bool             IsDeterministic     { get; set; }
 
         public ITable<int>      ParserActionTable   { get; set; }

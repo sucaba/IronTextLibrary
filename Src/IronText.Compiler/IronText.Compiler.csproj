@@ -62,7 +62,17 @@
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalBranchDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalOperator.cs" />
     <Compile Include="Algorithm\Functions.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\GrammarProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\LanguageBuildConfig.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\LanguageDataInstanceProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\MatchActionToTokenTableProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\ParserBytecodeProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\ParserDfaProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\ParserTableProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\LanguageBuildReports.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\RuntimeSematicsProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\ScannerTdfaProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\SemanticBindingProvider.cs" />
     <Compile Include="Semantics\InheritedPropertyECCollection.cs" />
     <Compile Include="Semantics\InheritedPropertyEC.cs" />
     <None Include="Algorithm\Graphs\TarjanSccAlgorithm.cs" />
@@ -149,7 +159,7 @@
     <Compile Include="MetadataCompiler\CilTarget\ProductionCompiler.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\NullableFirstTables.cs" />
     <Compile Include="Misc\IndexingConstants.cs" />
-    <Compile Include="Reflection\ReflectionExtensions.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\RuntimeGrammarProvider.cs" />
     <Compile Include="Reflection\Serialization\Managed\CilGrammarReader.cs" />
     <Compile Include="Reflection\Reporting\ReportData.cs" />
     <Compile Include="Reflection\Managed\CilSymbolRefResolver.cs" />

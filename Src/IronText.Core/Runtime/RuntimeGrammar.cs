@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using IronText.Runtime.Semantics;
 using IronText.Runtime.Inlining;
+using IronText.Runtime.Parsing;
 
 namespace IronText.Runtime
 {
@@ -24,7 +25,8 @@ namespace IronText.Runtime
             bool[]              tokenIsTerminal,
             RuntimeProduction[] productions,
             RuntimeFormula[][]  stateToFormulas,
-            RuntimeFormula[][]  productionToFormulas)
+            RuntimeFormula[][]  productionToFormulas,
+            ParserAction[]      parserBytecode)
         {
             this.TokenCount           = tokenNames.Length;
             this.tokenIsNullable      = tokenIsNullable;
@@ -37,6 +39,8 @@ namespace IronText.Runtime
             this.stateToFormulas      = stateToFormulas;
             this.productionToFormulas = productionToFormulas;
             this.MaxProductionLength  = productions.Select(r => r.InputLength).Max();
+
+            this.ParserBytecode       = parserBytecode;
         }
 
         public int TokenCount { get; private set; }
@@ -113,5 +117,7 @@ namespace IronText.Runtime
         {
             return this.productionToFormulas[productionIndex];
         }
+
+        public ParserAction[] ParserBytecode { get; }
     }
 }
