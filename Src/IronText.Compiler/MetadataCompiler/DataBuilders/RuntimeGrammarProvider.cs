@@ -1,6 +1,5 @@
 ﻿using IronText.Reflection;
 using IronText.Runtime;
-using IronText.Runtime.Semantics;
 using System.Linq;
 
 namespace IronText.MetadataCompiler
@@ -31,7 +30,7 @@ namespace IronText.MetadataCompiler
                         bytecodeProvider?.Instructions);
         }
 
-        public RuntimeGrammar Outcome { get; private set; }
+        public RuntimeGrammar Outcome { get; }
 
         private static RuntimeProduction ToRuntime(Production prod)
         {

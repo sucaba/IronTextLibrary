@@ -7,6 +7,16 @@ namespace IronText.DI
     {
         private readonly Dictionary<Type, Func<object>> typeToGetter 
             = new Dictionary<Type, Func<object>>();
+        private DependencyScope parent;
+
+        public DependencyScope()
+            : this(null)
+        { }
+
+        public DependencyScope(DependencyScope parent)
+        {
+            this.parent = parent;
+        }
 
         public object Resolve(Type type)
         {
@@ -106,6 +116,11 @@ namespace IronText.DI
                         Array.ConvertAll(ps, Resolve)));
         }
 
+        public DependencyScope Nest()
+        {
+            return new DependencyScope(this);
+        }
+
         public void Register(Type contract, Func<object> getter)
         {
             if (typeToGetter.ContainsKey(contract))
@@ -114,30 +129,71 @@ namespace IronText.DI
                     $"Dependency {contract.FullName} is already defined");
             }
 
-            bool isMemoized = false;
-            object memoized = null;
-            typeToGetter[contract] = () =>
+            if (contract is IHasSideEffects)
             {
-                if (!isMemoized)
+                typeToGetter[contract] = getter;
+            }
+            else
+            {
+                bool isMemoized = false;
+                object memoized = null;
+                typeToGetter[contract] = () =>
                 {
-                    isMemoized = true;
-                    memoized = getter();
-                }
+                    if (!isMemoized)
+                    {
+                        isMemoized = true;
+                        memoized = getter();
+                    }
 
-                return memoized;
-            };
+                    return memoized;
+                };
+            }
         }
 
         private Func<object> ResolveGetter(Type type)
         {
-            Func<object> getter;
-            if (!typeToGetter.TryGetValue(type, out getter))
+            Func<object> result;
+            if (!typeToGetter.TryGetValue(type, out result)
+                && !TryGetFromParent(type, out result)
+                && !AutoRegister(type, out result))
             {
                 throw new InvalidOperationException(
                     $"Unable to resolve dependency for type {type.FullName}.");
             }
 
-            return typeToGetter[type];
+            return result;
+        }
+
+        private bool TryResolveNoAuto(Type type, out Func<object> getter)
+        {
+            bool result = typeToGetter.TryGetValue(type, out getter)
+                        || TryGetFromParent(type, out getter);
+            return result;
+        }
+
+        private bool TryGetFromParent(Type type, out Func<object> getter)
+        {
+            if (parent == null)
+            {
+                getter = null;
+                return false;
+            }
+
+            return parent.TryResolveNoAuto(type, out getter);
+        }
+
+        private bool AutoRegister(Type typeToResolve, out Func<object> getter)
+        {
+            var cs = typeToResolve.GetConstructors(); 
+            if (cs.Length != 1)
+            {
+                getter = null;
+                return false;
+            }
+
+            Register(typeToResolve, typeToResolve);
+            getter = typeToGetter[typeToResolve];
+            return true;
         }
 
         void IDisposable.Dispose()

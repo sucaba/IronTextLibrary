@@ -44,50 +44,43 @@ namespace IronText.MetadataCompiler
                 return false;
             }
 
-            var di = new DependencyScope();
-            di.Register(logging);
-            di.Register(new LanguageBuildConfig(bootstrap));
-            di.Register(readerType);
-            di.Register(source);
-            di.Register<GrammarProvider>();
-            di.Register((GrammarProvider p) => p.Grammar);
-            di.Register((Grammar p) => p.Options);
-            di.Register<ScannerTdfaProvider>();
-            di.Register((ScannerTdfaProvider p) => p.Ambiguities);
-            di.Register((ScannerTdfaProvider p) => p.Tdfa);
-            di.Register<GrammarAnalysis>();
-            di.Register<MatchActionToTokenTableProvider>();
-            di.Register<ParserDfaProvider>();
-            di.Register((ParserDfaProvider p) => p.Dfa);
-            di.Register<ParserTableProvider>();
-            di.Register((ParserTableProvider p) => p.LrParserTable);
-            di.Register<SemanticBindingProvider>();
-            di.Register<RuntimeSemanticsProvider>();
-            di.Register<ParserBytecodeProvider>();
-            di.Register<RuntimeGrammarProvider>();
-            di.Register((RuntimeGrammarProvider p) => p.Outcome);
-            di.Register<LanguageDataInstanceProvider>();
-            di.Register((LanguageDataInstanceProvider p) => p.Data);
-            di.Register<ReportData>();
-            di.Register<LanguageBuildReports>();
-
-            var scannerTdfaProvider = di.Resolve<ScannerTdfaProvider>();
-            if (!scannerTdfaProvider.Success)
+            using (var di = new DependencyScope())
             {
-                result = null;
-                return false;
+                di.Register(logging);
+                di.Register(readerType);
+                di.Register(source);
+                di.Register(new LanguageBuildConfig(bootstrap));
+                di.Register((GrammarProvider p) => p.Grammar);
+                di.Register((Grammar p) => p.Options);
+                di.Register((ScannerTdfaProvider p) => p.Ambiguities);
+                di.Register((ScannerTdfaProvider p) => p.Tdfa);
+                di.Register((ParserDfaProvider p) => p.Dfa);
+                di.Register((ParserTableProvider p) => p.LrParserTable);
+                di.Register((RuntimeGrammarProvider p) => p.Outcome);
+                di.Register((LanguageDataInstanceProvider p) => p.Data);
+
+                var scannerTdfaProvider = di.Resolve<ScannerTdfaProvider>();
+                if (!scannerTdfaProvider.Success)
+                {
+                    result = null;
+                    return false;
+                }
+
+                ILrDfa parserDfa = di.Resolve<ILrDfa>();
+                if (parserDfa == null)
+                {
+                    result = null;
+                    return false;
+                }
+
+                result = di.Resolve<LanguageData>();
+
+                using (var nestedDi = di.Nest())
+                {
+                    nestedDi.Register<IReportData,ReportData>();
+                    nestedDi.Resolve<LanguageBuildReports>();
+                }
             }
-
-            ILrDfa parserDfa = di.Resolve<ParserDfaProvider>().Dfa;
-            if (parserDfa == null)
-            {
-                result = null;
-                return false;
-            }
-
-            result = di.Resolve<LanguageDataInstanceProvider>().Data;
-
-            di.Resolve<LanguageBuildReports>();
 
             return true;
         }

@@ -119,6 +119,7 @@
     <Compile Include="Collections\SListNode.cs" />
     <Compile Include="Diagnostics\DiagnosticExtensions.cs" />
     <Compile Include="DI\DependencyScope.cs" />
+    <Compile Include="DI\IHasSideEffects.cs" />
     <Compile Include="DI\IDependencyResolver.cs" />
     <Compile Include="Framework\Attributes\ReportAttribute.cs" />
     <Compile Include="Framework\NullParsing.cs" />

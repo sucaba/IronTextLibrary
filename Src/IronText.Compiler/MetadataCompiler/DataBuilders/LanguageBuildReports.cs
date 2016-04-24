@@ -1,11 +1,11 @@
-﻿using IronText.Automata.Lalr1;
+﻿using IronText.DI;
 using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
 {
-    class LanguageBuildReports
+    class LanguageBuildReports : IHasSideEffects
     {
         public LanguageBuildReports(
             LanguageBuildConfig config,
