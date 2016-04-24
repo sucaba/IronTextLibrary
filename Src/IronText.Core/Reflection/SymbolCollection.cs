@@ -1,4 +1,5 @@
-﻿using IronText.Runtime;
+﻿using IronText.DI;
+using IronText.Runtime;
 using System;
 using System.Linq;
 

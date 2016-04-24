@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IronText
+namespace IronText.DI
 {
     internal interface IDependencyResolver
     {
@@ -15,6 +15,7 @@ namespace IronText
         }
 
         public static void Ensure<T>(this IDependencyResolver self)
+            where T : IHasSideEffects
         {
             self.Get(typeof(T));
         }

@@ -1,5 +1,6 @@
 ﻿using IronText.Algorithm;
 using IronText.Collections;
+using IronText.DI;
 using IronText.Misc;
 using System;
 
