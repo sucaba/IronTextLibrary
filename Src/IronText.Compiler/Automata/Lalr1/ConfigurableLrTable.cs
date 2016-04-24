@@ -11,15 +11,15 @@ namespace IronText.Automata.Lalr1
 {
     class ConfigurableLrTable : ILrParserTable
     {
-        private readonly IMutableTable<int>   data;
-        private readonly GrammarAnalysis   grammar;
-        private readonly ILrParserTable       underlyingTable;
+        private readonly IMutableTable<ParserAction> data;
+        private readonly GrammarAnalysis grammar;
+        private readonly ILrParserTable  underlyingTable;
 
         public ConfigurableLrTable(ILrDfa dfa, RuntimeOptions flags)
         {
             this.grammar = dfa.GrammarAnalysis;
 
-            this.data = new MutableTable<int>(dfa.States.Length, grammar.TotalSymbolCount);
+            this.data = new MutableTable<ParserAction>(dfa.States.Length, grammar.TotalSymbolCount);
 
             Configure(dfa, flags, out underlyingTable); 
         }
@@ -28,9 +28,9 @@ namespace IronText.Automata.Lalr1
 
         public bool RequiresGlr { get; private set; }
 
-        public ITable<int> GetParserActionTable() { return data; }
+        public ITable<ParserAction> GetParserActionTable() { return data; }
 
-        public int[] GetConflictActionTable()
+        public ParserAction[] GetConflictActionTable()
         {
             return underlyingTable.GetConflictActionTable();
         }
@@ -113,23 +113,23 @@ namespace IronText.Automata.Lalr1
 
                 foreach (var ambToken in grammar.AmbiguousSymbols)
                 {
-                    var validTokenActions = new Dictionary<int,int>();
+                    var validTokenActions = new Dictionary<int,ParserAction>();
                     foreach (int token in ambToken.Alternatives)
                     {
-                        int cell = data.Get(i, token);
-                        if (cell == 0)
+                        var action = data.Get(i, token);
+                        if (action == default(ParserAction))
                         {
                             continue;
                         }
 
-                        validTokenActions.Add(token, cell);
+                        validTokenActions.Add(token, action);
                     }
 
                     switch (validTokenActions.Count)
                     {
                         case 0:
                             // AmbToken is entirely non-acceptable for this state
-                            data.Set(i, ambToken.EnvelopeIndex, 0);
+                            data.Set(i, ambToken.EnvelopeIndex, ParserAction.FailAction);
                             break;
                         case 1:
                             {
@@ -146,7 +146,7 @@ namespace IronText.Automata.Lalr1
                                     // is in Msg and non-acceptable when this particular token
                                     // is not in Msg.
                                     var action = new ParserAction { Kind = ParserActionKind.Resolve, Value1 = pair.Key };
-                                    data.Set(i, ambToken.EnvelopeIndex, ParserAction.Encode(action));
+                                    data.Set(i, ambToken.EnvelopeIndex, action);
                                 }
                             }
 
@@ -167,7 +167,7 @@ namespace IronText.Automata.Lalr1
                             {
                                 var pair = validTokenActions.First();
                                 var forkAction = new ParserAction { Kind = ParserActionKind.Fork, Value1 = pair.Key };
-                                data.Set(i, ambToken.EnvelopeIndex, ParserAction.Encode(forkAction));
+                                data.Set(i, ambToken.EnvelopeIndex, forkAction);
                             }
 
                             break;

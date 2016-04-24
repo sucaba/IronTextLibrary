@@ -1,5 +1,6 @@
 ﻿using IronText.Algorithm;
 using IronText.Reflection.Reporting;
+using IronText.Runtime;
 
 namespace IronText.Automata.Lalr1
 {
@@ -7,9 +8,9 @@ namespace IronText.Automata.Lalr1
     {
         bool RequiresGlr { get; }
 
-        ITable<int> GetParserActionTable();
+        ITable<ParserAction> GetParserActionTable();
 
-        int[] GetConflictActionTable();
+        ParserAction[] GetConflictActionTable();
 
         ParserConflictInfo[] Conflicts { get; }
     }

@@ -84,7 +84,9 @@ namespace IronText.MetadataCompiler
 
         private int GetParserAction(int state, int token)
         {
-            return data.ParserActionTable.Get(state, token);
+            var action = data.ParserActionTable.Get(state, token);
+            int result = ParserAction.Encode(action);
+            return result;
         }
 
         public int Identify(Type type)

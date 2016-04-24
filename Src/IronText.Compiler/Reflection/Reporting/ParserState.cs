@@ -71,8 +71,7 @@ namespace IronText.Reflection.Reporting
 
         private IEnumerable<ParserAction> GetAllParserActions(int state, int token)
         {
-            var cell = data.ParserActionTable.Get(state, token);
-            var action = ParserAction.Decode(cell);
+            var action = data.ParserActionTable.Get(state, token);
             if (action == null || action.Kind == ParserActionKind.Fail)
             {
             }
@@ -81,8 +80,7 @@ namespace IronText.Reflection.Reporting
                 for (int i = 0; i != action.ConflictCount; ++i)
                 {
                     yield return
-                        ParserAction.Decode(
-                            data.ParserConflictActionTable[action.Value1 + i]);
+                            data.ParserConflictActionTable[action.Value1 + i];
                 }
             }
             else

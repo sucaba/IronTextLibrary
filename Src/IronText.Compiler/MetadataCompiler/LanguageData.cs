@@ -20,9 +20,9 @@ namespace IronText.MetadataCompiler
 
         public bool             IsDeterministic     { get; set; }
 
-        public ITable<int>      ParserActionTable   { get; set; }
+        public ITable<ParserAction> ParserActionTable   { get; set; }
 
-        public int[]            ParserConflictActionTable { get; set; }
+        public ParserAction[]   ParserConflictActionTable { get; set; }
 
         public int[]            StateToToken        { get; set; }
 

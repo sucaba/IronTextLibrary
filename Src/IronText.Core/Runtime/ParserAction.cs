@@ -5,7 +5,7 @@ namespace IronText.Runtime
 {
     [Serializable]
     [StructLayout(LayoutKind.Explicit)]
-    public struct ParserAction
+    public struct ParserAction : IEquatable<ParserAction>
     {
         public static readonly ParserAction FailAction = new ParserAction();
 
@@ -51,6 +51,18 @@ namespace IronText.Runtime
         [FieldOffset(sizeof(ParserActionKind) + sizeof(int))]
         public short ConflictCount;
 
+        public ParserAction(ParserActionKind kind, int value1, short value2 = 0)
+        {
+            this.ResolvedToken = 0;
+            this.State = 0;
+            this.ProductionId = 0;
+            this.ConflictCount = 0;
+
+            this.Kind   = kind;
+            this.Value1 = value1;
+            this.Value2 = value2;
+        }
+
 
         public static bool operator==(ParserAction x, ParserAction y)
         {
@@ -62,6 +74,11 @@ namespace IronText.Runtime
         public static bool operator!=(ParserAction x, ParserAction y)
         {
             return !(x == y);
+        }
+
+        public bool Equals(ParserAction other)
+        {
+            return this == other;
         }
 
         public override bool Equals(object obj)
@@ -145,7 +162,13 @@ namespace IronText.Runtime
 
         public static bool IsShift(int cell)
         {
-            var kind = (ParserActionKind)(cell & KindMask);
+            return IsShift((ParserActionKind)(cell & KindMask));
+        }
+
+        public bool IsShiftAction => IsShift(Kind);
+
+        public static bool IsShift(ParserActionKind kind)
+        {
             switch (kind)
             {
                 case ParserActionKind.Shift:

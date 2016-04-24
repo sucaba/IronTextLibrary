@@ -15,18 +15,20 @@ namespace IronText.Automata.Lalr1
         private readonly GrammarAnalysis grammar;
         private readonly Dictionary<TransitionKey, ParserConflictInfo> transitionToConflict 
             = new Dictionary<TransitionKey, ParserConflictInfo>();
-        private readonly IMutableTable<int> actionTable;
-        private int[]  conflictActionTable;
+        private readonly IMutableTable<ParserAction> actionTable;
+        private ParserAction[]  conflictActionTable;
         private readonly bool canOptimizeReduceStates;
 
-        public ReductionModifiedLrDfaTable(ILrDfa dfa, IMutableTable<int> actionTable = null)
+        public ReductionModifiedLrDfaTable(ILrDfa dfa, IMutableTable<ParserAction> actionTable = null)
         {
             var flag = LrTableOptimizations.EliminateLr0ReduceStates;
             this.canOptimizeReduceStates = (dfa.Optimizations & flag) == flag;
 
             this.grammar = dfa.GrammarAnalysis;
 
-            this.actionTable = actionTable ?? new MutableTable<int>(dfa.States.Length, grammar.TotalSymbolCount);
+            this.actionTable = actionTable ?? new MutableTable<ParserAction>(
+                                                dfa.States.Length,
+                                                grammar.TotalSymbolCount);
             FillDfaTable(dfa.States);
             BuildConflictTable();
         }
@@ -38,26 +40,26 @@ namespace IronText.Automata.Lalr1
             get { return transitionToConflict.Values.ToArray(); }
         }
 
-        public int[] GetConflictActionTable() { return conflictActionTable; }
+        public ParserAction[] GetConflictActionTable() { return conflictActionTable; }
 
-        public ITable<int> GetParserActionTable() { return actionTable; }
+        public ITable<ParserAction> GetParserActionTable() { return actionTable; }
 
         private void BuildConflictTable()
         {
-            var conflictList = new List<int>();
+            var conflictList = new List<ParserAction>();
             foreach (var conflict in transitionToConflict.Values)
             {
                 var refAction = new ParserAction
-                            {
-                                Kind          = ParserActionKind.Conflict,
-                                Value1        = conflictList.Count,
-                                ConflictCount = (short)conflict.Actions.Count
-                            };
+                                {
+                                    Kind          = ParserActionKind.Conflict,
+                                    Value1        = conflictList.Count,
+                                    ConflictCount = (short)conflict.Actions.Count
+                                };
                              
-                actionTable.Set(conflict.State, conflict.Token, ParserAction.Encode(refAction));
+                actionTable.Set(conflict.State, conflict.Token, refAction);
                 foreach (var action in conflict.Actions)
                 {
-                    conflictList.Add(ParserAction.Encode(action)); 
+                    conflictList.Add(action); 
                 }
             }
 
@@ -187,16 +189,15 @@ namespace IronText.Automata.Lalr1
 
         private void AddAction(int state, int token, ParserAction action)
         {
-            int cell = ParserAction.Encode(action);
-            int currentCell = actionTable.Get(state, token);
-            if (currentCell == 0)
+            var currentCell = actionTable.Get(state, token);
+            if (currentCell == default(ParserAction))
             {
-                actionTable.Set(state, token, cell);
+                actionTable.Set(state, token, action);
             }
-            else if (currentCell != cell)
+            else if (currentCell != action)
             {
-                int resolvedCell;
-                if (!TryResolveShiftReduce(currentCell, cell, token, out resolvedCell))
+                ParserAction resolvedCell;
+                if (!TryResolveShiftReduce(currentCell, action, token, out resolvedCell))
                 {
                     ParserConflictInfo conflict;
                     var key = new TransitionKey(state, token);
@@ -217,35 +218,39 @@ namespace IronText.Automata.Lalr1
             }
         }
 
-        private bool TryResolveShiftReduce(int actionX, int actionY, int incomingToken, out int output)
+        private bool TryResolveShiftReduce(
+            ParserAction actionX,
+            ParserAction actionY,
+            int incomingToken,
+            out ParserAction output)
         {
-            output = 0;
+            output = ParserAction.FailAction;
 
-            int shiftAction, reduceAction;
-            if (ParserAction.GetKind(actionX) == ParserActionKind.Shift
-                && ParserAction.GetKind(actionY) == ParserActionKind.Reduce)
+            ParserAction shiftAction, reduceAction;
+            if (actionX.IsShiftAction
+                && actionY.Kind == ParserActionKind.Reduce)
             {
                 shiftAction = actionX;
                 reduceAction = actionY;
             }
-            else if (ParserAction.GetKind(actionY) == ParserActionKind.Shift
-                && ParserAction.GetKind(actionX) == ParserActionKind.Reduce)
+            else if (actionY.IsShiftAction
+                && actionX.Kind == ParserActionKind.Reduce)
             {
                 shiftAction = actionY;
                 reduceAction = actionX;
             }
             else
             {
-                output = ParserAction.Encode(ParserActionKind.Conflict, 0);
+                output = new ParserAction(ParserActionKind.Conflict, 0);
                 return false;
             }
 
             var shiftTokenPrecedence = grammar.GetTermPrecedence(incomingToken);
-            var reduceRulePrecedence = grammar.GetProductionPrecedence(ParserAction.GetId(reduceAction));
+            var reduceRulePrecedence = grammar.GetProductionPrecedence(reduceAction.ProductionId);
 
             if (shiftTokenPrecedence == null && reduceRulePrecedence == null)
             {
-                output = ParserAction.Encode(ParserActionKind.Conflict, 0);
+                output = new ParserAction(ParserActionKind.Conflict, 0);
                 return false;
             }
             else if (shiftTokenPrecedence == null)

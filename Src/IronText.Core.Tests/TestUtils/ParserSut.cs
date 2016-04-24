@@ -73,7 +73,7 @@ namespace IronText.Tests.TestUtils
                             data.TokenComplexity,
                             Transition,
                             data.StateToToken,
-                            data.ParserConflictActionTable,
+                            Array.ConvertAll(data.ParserConflictActionTable, ParserAction.Encode),
                             producer,
                             logging);
             }
@@ -141,7 +141,8 @@ namespace IronText.Tests.TestUtils
 
         private int Transition(int state, int token)
         {
-            return data.ParserActionTable.Get(state, token);
+            var action = data.ParserActionTable.Get(state, token);
+            return ParserAction.Encode(action);
         }
 
         private static bool TryNextWithTunnels(ITdfaSimulation automaton, int state, int item, out int nextState)

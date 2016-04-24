@@ -11,6 +11,7 @@ using IronText.Misc;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
 using IronText.Runtime;
+using IronText.Automata.Lalr1;
 
 namespace IronText.MetadataCompiler
 {
@@ -189,7 +190,7 @@ namespace IronText.MetadataCompiler
         private ClassSyntax BuildMethod_GetParserAction(ClassSyntax context)
         {
             var generator = new ReadOnlyTableGenerator(
-                                    data.ParserActionTable,
+                                    new EncodedParserActionTable(data.ParserActionTable),
                                     il => il.Ldarg(0),
                                     il => il.Ldarg(1));
 
@@ -274,7 +275,7 @@ namespace IronText.MetadataCompiler
                 emit = emit
                     .Ldloc(resultLoc)
                     .Ldc_I4(i)
-                    .Ldc_I4(conflicts[i])
+                    .Ldc_I4(ParserAction.Encode(conflicts[i]))
                     .Stelem_I4();
             }
 

@@ -158,7 +158,7 @@ namespace CSharpParser.Tests
                     int last = start + count;
                     for (; start != last; ++start)
                     {
-                        var cAction = ParserAction.Decode(data.ParserConflictActionTable[start]);
+                        var cAction = data.ParserConflictActionTable[start];
                         switch (cAction.Kind)
                         {
                             case ParserActionKind.Shift:
@@ -277,7 +277,7 @@ namespace CSharpParser.Tests
                     int last = start + count;
                     while (start != last)
                     {
-                        ParserAction cAction = ParserAction.Decode(data.ParserConflictActionTable[start++]);
+                        ParserAction cAction = data.ParserConflictActionTable[start++];
                         switch (cAction.Kind)
                         {
                             case ParserActionKind.Shift:
