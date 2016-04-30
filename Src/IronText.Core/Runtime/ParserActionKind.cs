@@ -15,15 +15,20 @@
         Resolve     = 3,
 
         // Fork on allowed alternatives of a Shrodinger's token
-        Fork        = 7,
+        Fork        = 4,
 
         // Multiple actions can happen in this state (0 or 1 shift + 0 or more reductions)
-        Conflict    = 4,
+        Conflict    = 5,
 
         // Success
-        Accept      = 5,
+        Accept      = 6,
 
         // Return control to the parser
-        Exit        = 8
+        Exit        = 7,
+
+        // Continue parser loop
+        Restart    = 8,
+
+        InternalError = 9
     }
 }

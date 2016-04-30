@@ -81,75 +81,96 @@ namespace IronText.Runtime
             int id = envelope.AmbToken;
             MsgData data = envelope.FirstData;
 
-        START:
-            var action = GetAction(id);
+        RESTART:
+            int start = actionTable(stateStack.PeekTag(), id);
 
-            switch (action.Kind)
+            while (true)
             {
-                case ParserActionKind.Exit:
-                    break;
-                case ParserActionKind.Reduce:
-                    {
-                        var value = ReduceNoPush(ref action);
+                var action = grammar.Instructions[start];
 
-                        PushNode(action.State, value);
+                switch (action.Kind)
+                {
+                    case ParserActionKind.Restart:
+                        goto RESTART;
 
-                        action = GetAction(action.State, id);
-                        goto START;
-                    }
-                case ParserActionKind.Fail:
-                    if (isVerifier)
-                    {
-                        return null;
-                    }
+                    case ParserActionKind.Exit:
+                        stateStack.EndEdit();
+                        this.priorInput = envelope;
+                        return this;
 
-                    // ReportUnexpectedToken(msg, stateStack.PeekTag());
-                    return RecoverFromError(envelope);
-                case ParserActionKind.Resolve:
-                    id = action.ResolvedToken;
-                    while (true)
-                    {
-                        if (data.Token == id)
+                    case ParserActionKind.Reduce:
                         {
-                            // Successfully resolved to a particular token 
-                            goto START;
+                            var value = ReduceNoPush(ref action);
+                            PushNode(action.State, value);
+                            break;
                         }
 
-                        data = data.NextAlternative;
+                    case ParserActionKind.Fail:
+                        if (isVerifier)
+                        {
+                            return null;
+                        }
+
+                        // ReportUnexpectedToken(msg, stateStack.PeekTag());
+                        return RecoverFromError(envelope);
+
+                    case ParserActionKind.Resolve:
+                        id = action.ResolvedToken;
+                        data = FindInputAlternative(data, id);
+
                         if (data == null)
                         {
                             // Desired token was not present in Msg
                             goto case ParserActionKind.Fail;
                         }
-                    }
-                case ParserActionKind.Fork:
-                case ParserActionKind.Conflict:
-                    logging.Write(
-                        new LogEntry
-                        {
-                            Severity = Severity.Error,
-                            Location = envelope.Location,
-                            Message = "Hit parser conflict on token " + grammar.SymbolName(envelope.AmbToken)
-                        });
-                    return null;
 
-                case ParserActionKind.Shift:
-                    {
-                        var node = producer.CreateLeaf(envelope, data);
-                        PushNode(action.State, node);
                         break;
-                    }
 
-                case ParserActionKind.Accept:
-                    producer.Result = stateStack.Peek();
-                    return FinalReceiver<Msg>.Instance;
-                default:
-                    throw new InvalidOperationException("Internal error: Unsupported parser action");
+                    case ParserActionKind.Fork:
+                    case ParserActionKind.Conflict:
+                        logging.Write(
+                            new LogEntry
+                            {
+                                Severity = Severity.Error,
+                                Location = envelope.Location,
+                                Message = "Hit parser conflict on token " + grammar.SymbolName(envelope.AmbToken)
+                            });
+                        return null;
+
+                    case ParserActionKind.Shift:
+                        {
+                            var node = producer.CreateLeaf(envelope, data);
+                            PushNode(action.State, node);
+                            break;
+                        }
+
+                    case ParserActionKind.Accept:
+                        producer.Result = stateStack.Peek();
+                        return FinalReceiver<Msg>.Instance;
+
+                    default:
+                        throw new InvalidOperationException("Internal error: Unsupported parser action");
+                }
+
+                ++start;
             }
+        }
 
-            stateStack.EndEdit();
-            this.priorInput = envelope;
-            return this;
+        private static MsgData FindInputAlternative(MsgData data, int token)
+        {
+            do
+            {
+                if (data.Token == token)
+                {
+                    // Successfully resolved to a particular token 
+                    break;
+                }
+
+                data = data.NextAlternative;
+            }
+            while (data != null);
+
+            return data;
         }
 
         private IReceiver<Msg> RecoverFromError(Msg currentInput)

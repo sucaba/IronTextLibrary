@@ -9,6 +9,8 @@ namespace IronText.Runtime
     {
         public static readonly ParserAction FailAction = new ParserAction();
         public static readonly ParserAction ExitAction = new ParserAction(ParserActionKind.Exit);
+        public static readonly ParserAction ContinueAction = new ParserAction(ParserActionKind.Restart);
+        public static readonly ParserAction InternalErrorAction = new ParserAction(ParserActionKind.InternalError);
 
         private const int KindStartBit      = 0;
         private const int KindBits          = 4;

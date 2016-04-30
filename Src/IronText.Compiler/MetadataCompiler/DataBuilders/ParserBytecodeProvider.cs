@@ -20,10 +20,25 @@ namespace IronText.MetadataCompiler
             for (int r = 0; r != rowCount; ++r)
                 for (int c = 0; c != columnCount; ++c)
                 {
+                    var action = table.Get(r, c);
                     int start = instructions.Count;
+
                     startTable.Set(r, c, start);
-                    instructions.Add(table.Get(r, c));
-                    //instructions.Add(ParserAction.ExitAction);
+                    instructions.Add(action);
+                    switch (action.Kind)
+                    {
+                        case ParserActionKind.Resolve:
+                        case ParserActionKind.Reduce:
+                            instructions.Add(ParserAction.ContinueAction);
+                            break;
+                        case ParserActionKind.Shift:
+                            instructions.Add(ParserAction.ExitAction);
+                            break;
+                        default:
+                            // safety instruction to avoid invalid instruction access
+                            instructions.Add(ParserAction.InternalErrorAction);
+                            break;
+                    }
                 }
 
             this.Instructions = instructions.ToArray();
