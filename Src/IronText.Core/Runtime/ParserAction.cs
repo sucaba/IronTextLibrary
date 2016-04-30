@@ -8,7 +8,7 @@ namespace IronText.Runtime
     public struct ParserAction : IEquatable<ParserAction>
     {
         public static readonly ParserAction FailAction = new ParserAction();
-        public static readonly ParserAction RetAction = new ParserAction(ParserActionKind.Ret);
+        public static readonly ParserAction ExitAction = new ParserAction(ParserActionKind.Exit);
 
         private const int KindStartBit      = 0;
         private const int KindBits          = 4;
@@ -170,14 +170,7 @@ namespace IronText.Runtime
 
         public static bool IsShift(ParserActionKind kind)
         {
-            switch (kind)
-            {
-                case ParserActionKind.Shift:
-                case ParserActionKind.ShiftReduce:
-                    return true;
-                default:
-                    return false;
-            }
+            return kind == ParserActionKind.Shift;
         }
 
         public static int GetId(int cell)

@@ -39,7 +39,12 @@ namespace IronText.Tests.Framework.Performance
 
             grammar.Start = symbols[0];
             grammar.BuildIndexes();
-            var target = new Lalr1Dfa(new GrammarAnalysis(grammar, new AmbTokenInfo[0]), LrTableOptimizations.Default);
+
+            var target = new Lalr1Dfa(
+                new GrammarAnalysis(
+                    grammar,
+                    new AmbTokenInfo[0]),
+                LrTableOptimizations.Default);
         }
     }
 }

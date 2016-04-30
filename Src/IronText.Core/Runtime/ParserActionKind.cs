@@ -23,9 +23,7 @@
         // Success
         Accept      = 5,
 
-        // Tail shift merged with reduce
-        ShiftReduce = 6,
-
-        Ret         = 8
+        // Return control to the parser
+        Exit        = 8
     }
 }

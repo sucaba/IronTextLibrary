@@ -150,7 +150,6 @@ namespace CSharpParser.Tests
             switch (x.Kind)
             {
                 case ParserActionKind.Shift:
-                case ParserActionKind.ShiftReduce:
                     return x;
                 case ParserActionKind.Conflict:
                     int start = x.Value1;
@@ -162,7 +161,6 @@ namespace CSharpParser.Tests
                         switch (cAction.Kind)
                         {
                             case ParserActionKind.Shift:
-                            case ParserActionKind.ShiftReduce:
                                 return cAction;
                         }
                     }
@@ -268,7 +266,6 @@ namespace CSharpParser.Tests
             switch (kind)
             {
                 case ParserActionKind.Shift:
-                case ParserActionKind.ShiftReduce:
                     return true;
                 case ParserActionKind.Conflict:
                     var action = ParserAction.Decode(cell);
@@ -281,7 +278,6 @@ namespace CSharpParser.Tests
                         switch (cAction.Kind)
                         {
                             case ParserActionKind.Shift:
-                            case ParserActionKind.ShiftReduce:
                                 return true;
                             default:
                                 return false;

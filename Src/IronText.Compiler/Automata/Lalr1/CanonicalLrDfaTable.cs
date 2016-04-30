@@ -17,13 +17,9 @@ namespace IronText.Automata.Lalr1
             = new Dictionary<TransitionKey, ParserConflictInfo>();
         private readonly IMutableTable<ParserAction> actionTable;
         private ParserAction[]  conflictActionTable;
-        private readonly bool canOptimizeReduceStates;
 
         public CanonicalLrDfaTable(ILrDfa dfa, IMutableTable<ParserAction> actionTable)
         {
-            var flag = LrTableOptimizations.EliminateLr0ReduceStates;
-            this.canOptimizeReduceStates = (dfa.Optimizations & flag) == flag;
-
             this.grammar = dfa.GrammarAnalysis;
 
             this.actionTable = actionTable ?? new MutableTable<ParserAction>(
@@ -79,28 +75,13 @@ namespace IronText.Automata.Lalr1
                     {
                         int nextToken = item.NextToken;
 
-                        if (canOptimizeReduceStates
-                            && item.IsShiftReduce
-                            && !state.Transitions.Exists(t => t.Tokens.Contains(nextToken)))
+                        var action = new Runtime.ParserAction
                         {
-                            var action = new Runtime.ParserAction
-                            {
-                                Kind         = ParserActionKind.ShiftReduce,
-                                ProductionId = item.ProductionId
-                            };
+                            Kind = ParserActionKind.Shift,
+                            State = state.GetNextIndex(nextToken)
+                        };
 
-                            AssignAction(i, nextToken, action);
-                        }
-                        else
-                        {
-                            var action = new Runtime.ParserAction
-                            {
-                                Kind = ParserActionKind.Shift,
-                                State = state.GetNextIndex(nextToken)
-                            };
-
-                            AssignAction(i, nextToken, action);
-                        }
+                        AssignAction(i, nextToken, action);
                     }
                     else if (item.IsAugmented)
                     {

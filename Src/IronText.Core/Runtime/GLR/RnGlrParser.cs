@@ -128,13 +128,6 @@ namespace IronText.Runtime
                     {
                         Q.Enqueue(new PendingShift(frontNode, shift, lookahead));
                     }
-
-                    // Shift and plan reduce
-                    var action = GetShiftReduce(frontNode.State, lookahead);
-                    if (action.Kind == ParserActionKind.ShiftReduce)
-                    {
-                        PlanShiftReduce(frontNode, lookahead, termValue, action.ProductionId);
-                    }
                 }
 
                 data = data.NextAlternative;
@@ -346,9 +339,6 @@ namespace IronText.Runtime
                     case ParserActionKind.Shift:
                         l = action.State;
                         break;
-                    case ParserActionKind.ShiftReduce: // Goto-Reduce action
-                        PlanShiftReduce(u, X, z, action.ProductionId);
-                        continue;
                     default:
                         throw new InvalidOperationException(
                             "Internal error: Non-term action should be shift or shift-reduce, but got "
@@ -420,17 +410,6 @@ namespace IronText.Runtime
             }
         }
 
-        private void PlanShiftReduce(GssNode<T> frontNode, int shiftToken, T shiftValue, int rule)
-        {
-            int fakeState = MakeFakeDestState(frontNode.State, shiftToken);
-
-            var newLink = gss.Push(frontNode, fakeState, shiftValue);
-            if (newLink != null)
-            {
-                R.Enqueue(newLink, grammar.Productions[rule]);
-            }
-        }
-
         private int GetShift(State state, int token)
         {
             int shift = -1;
@@ -457,31 +436,6 @@ namespace IronText.Runtime
             }
 
             return shift;
-        }
-
-        private ParserAction GetShiftReduce(State state, int token)
-        {
-            ParserAction action = GetAction(state, token);
-            switch (action.Kind)
-            {
-                case ParserActionKind.ShiftReduce:
-                    return action;
-                case ParserActionKind.Conflict:
-                    int start = action.Value1;
-                    int last = action.Value1 + action.ConflictCount;
-                    while (start != last)
-                    {
-                        var conflictAction = ParserAction.Decode(conflictActionsTable[start++]);
-                        if (conflictAction.Kind == ParserActionKind.ShiftReduce)
-                        {
-                            return conflictAction;
-                        }
-                    }
-
-                    break;
-            }
-
-            return ParserAction.FailAction;
         }
 
         private void GetReductions(State state, int token)

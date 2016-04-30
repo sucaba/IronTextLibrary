@@ -82,9 +82,21 @@ namespace IronText.Runtime
             MsgData data = envelope.FirstData;
 
         START:
-            ParserAction action = LookaheadAction(id);
+            var action = GetAction(id);
+
             switch (action.Kind)
             {
+                case ParserActionKind.Exit:
+                    break;
+                case ParserActionKind.Reduce:
+                    {
+                        var value = ReduceNoPush(ref action);
+
+                        PushNode(action.State, value);
+
+                        action = GetAction(action.State, id);
+                        goto START;
+                    }
                 case ParserActionKind.Fail:
                     if (isVerifier)
                     {
@@ -125,26 +137,6 @@ namespace IronText.Runtime
                     {
                         var node = producer.CreateLeaf(envelope, data);
                         PushNode(action.State, node);
-                        break;
-                    }
-                case ParserActionKind.ShiftReduce:
-                    {
-                        TNode value = producer.CreateLeaf(envelope, data);
-                        do
-                        {
-                            PushNode(-1, value);
-
-                            value = ReduceNoPush(ref action);
-                        }
-                        while (action.Kind == ParserActionKind.ShiftReduce);
-
-                        if (action.Kind == ParserActionKind.Fail)
-                        {
-                            return null;
-                        }
-
-                        Debug.Assert(action.Kind == ParserActionKind.Shift);
-                        PushNode(action.State, value);
                         break;
                     }
 
@@ -276,30 +268,6 @@ namespace IronText.Runtime
             this.Feed(input);
 
             return this;
-        }
-
-        private ParserAction LookaheadAction(int token)
-        {
-            var act = GetAction(token);
-            TNode value;
-
-            while (act.Kind == ParserActionKind.Reduce)
-            {
-                value = ReduceNoPush(ref act);
-
-                while (act.Kind == ParserActionKind.ShiftReduce) // == GotoReduce
-                {
-                    PushNode(-1, value);
-                    value = ReduceNoPush(ref act);
-                }
-
-                PushNode(act.State, value);
-
-                // reduce or final shift
-                act = GetAction(act.State, token);
-            }
-
-            return act;
         }
 
         private ParserAction GetAction(int state, int token)

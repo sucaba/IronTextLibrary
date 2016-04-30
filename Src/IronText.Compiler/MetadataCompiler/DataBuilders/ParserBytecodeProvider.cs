@@ -23,6 +23,7 @@ namespace IronText.MetadataCompiler
                     int start = instructions.Count;
                     startTable.Set(r, c, start);
                     instructions.Add(table.Get(r, c));
+                    //instructions.Add(ParserAction.ExitAction);
                 }
 
             this.Instructions = instructions.ToArray();
