@@ -62,7 +62,6 @@
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalBranchDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalOperator.cs" />
     <Compile Include="Algorithm\Functions.cs" />
-    <Compile Include="MetadataCompiler\CilTarget\EncodedParserActionTable.cs" />
     <Compile Include="Automata\Lalr1\EncodedLrParserTable.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\GrammarProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\GrammarReaderProvider.cs" />

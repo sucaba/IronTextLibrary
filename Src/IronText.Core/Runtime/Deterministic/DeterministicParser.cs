@@ -133,13 +133,8 @@ namespace IronText.Runtime
                         do
                         {
                             PushNode(-1, value);
-                            this.currentProd = grammar.Productions[action.ProductionId];
 
-                            value = producer.CreateBranch(currentProd, stateStack);
-
-                            stateStack.Pop(currentProd.InputLength);
-
-                            action = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentProd.Outcome));
+                            value = ReduceNoPush(ref action);
                         }
                         while (action.Kind == ParserActionKind.ShiftReduce);
 
@@ -285,37 +280,50 @@ namespace IronText.Runtime
 
         private ParserAction LookaheadAction(int token)
         {
-            var act = ParserAction.Decode(actionTable(stateStack.PeekTag(), token));
+            var act = GetAction(token);
             TNode value;
 
             while (act.Kind == ParserActionKind.Reduce)
             {
-                this.currentProd = grammar.Productions[act.ProductionId];
-
-                value = producer.CreateBranch(currentProd, stateStack);
-
-                stateStack.Pop(currentProd.InputLength);
-                act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentProd.Outcome));
+                value = ReduceNoPush(ref act);
 
                 while (act.Kind == ParserActionKind.ShiftReduce) // == GotoReduce
                 {
                     PushNode(-1, value);
-
-                    this.currentProd = grammar.Productions[act.ProductionId];
-
-                    value = producer.CreateBranch(currentProd, stateStack);
-
-                    stateStack.Pop(currentProd.InputLength);
-                    act = ParserAction.Decode(actionTable(stateStack.PeekTag(), currentProd.Outcome));
+                    value = ReduceNoPush(ref act);
                 }
 
                 PushNode(act.State, value);
 
                 // reduce or final shift
-                act = ParserAction.Decode(actionTable(act.State, token));
+                act = GetAction(act.State, token);
             }
 
             return act;
+        }
+
+        private ParserAction GetAction(int state, int token)
+        {
+            int start = actionTable(state, token);
+            var result = grammar.Instructions[start];
+            return result;
+        }
+
+        private TNode ReduceNoPush(ref ParserAction action)
+        {
+            this.currentProd = grammar.Productions[action.ProductionId];
+
+            var result = producer.CreateBranch(currentProd, stateStack);
+
+            stateStack.Pop(currentProd.InputLength);
+            action = GetAction(currentProd.Outcome);
+
+            return result;
+        }
+
+        private ParserAction GetAction(int token)
+        {
+            return GetAction(stateStack.PeekTag(), token);
         }
 
         private void PushNode(int state, TNode value)

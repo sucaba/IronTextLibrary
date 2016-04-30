@@ -31,7 +31,7 @@ namespace IronText.Runtime
         private bool isVerifier;
 
         public RnGlrParser(
-            RuntimeGrammar   grammar,
+            RuntimeGrammar      grammar,
             int[]               tokenComplexity,
             TransitionDelegate  transition,
             int[]               stateToPriorToken,
@@ -258,8 +258,20 @@ namespace IronText.Runtime
 
         private bool IsAccepting(State s)
         {
-            int cell = transition(s, PredefinedTokens.Eoi);
-            return ParserAction.GetKind(cell) == ParserActionKind.Accept;
+            var action = GetAction(s, PredefinedTokens.Eoi);
+            return action.Kind == ParserActionKind.Accept;
+        }
+
+        private ParserAction GetAction(State state, int token)
+        {
+            int start = transition(state, token);
+            if (start < 0)
+            {
+                return ParserAction.FailAction;
+            }
+
+            var result = grammar.Instructions[start];
+            return result;
         }
 
         private void Actor(int lookahead)
@@ -328,7 +340,7 @@ namespace IronText.Runtime
 
                 State l;
 
-                var action = ParserAction.Decode(transition(k, X));
+                var action = GetAction(k, X);
                 switch (action.Kind)
                 {
                     case ParserActionKind.Shift:
@@ -423,7 +435,7 @@ namespace IronText.Runtime
         {
             int shift = -1;
 
-            ParserAction action = GetDfaCell(state, token);
+            ParserAction action = GetAction(state, token);
             switch (action.Kind)
             {
                 case ParserActionKind.Shift:
@@ -449,7 +461,7 @@ namespace IronText.Runtime
 
         private ParserAction GetShiftReduce(State state, int token)
         {
-            ParserAction action = GetDfaCell(state, token);
+            ParserAction action = GetAction(state, token);
             switch (action.Kind)
             {
                 case ParserActionKind.ShiftReduce:
@@ -476,7 +488,7 @@ namespace IronText.Runtime
         {
             pendingReductionsCount = 0;
 
-            ParserAction action = GetDfaCell(state, token);
+            ParserAction action = GetAction(state, token);
             RuntimeProduction rule;
             switch (action.Kind)
             {
@@ -514,11 +526,6 @@ namespace IronText.Runtime
             {
                 yield return ParserAction.Decode(conflictActionsTable[start++]);
             }
-        }
-
-        private ParserAction GetDfaCell(State state, int token)
-        {
-            return ParserAction.Decode(transition(state, token));
         }
 
         struct PendingShift

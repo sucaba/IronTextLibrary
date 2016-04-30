@@ -20,7 +20,8 @@ namespace IronText.MetadataCompiler
             ILrDfa parserDfa,
             ILrParserTable lrTable,
             RuntimeGrammar runtimeGrammar,
-            SemanticBindingProvider semanticBindingsProvider)
+            SemanticBindingProvider semanticBindingsProvider,
+            ParserBytecodeProvider instructionProvider)
         {
             this.Data = new LanguageData
             {
@@ -30,6 +31,7 @@ namespace IronText.MetadataCompiler
                 TokenComplexity           = analysis.GetTokenComplexity(),
                 StateToToken              = parserDfa.GetStateToSymbolTable(),
                 ParserActionTable         = lrTable.GetParserActionTable(),
+                ParserActionStartTable    = instructionProvider.StartTable,
                 ParserConflictActionTable = lrTable.GetConflictActionTable(),
                 MatchActionToToken        = actionToTokenProvider.ActionToToken,
                 ScannerTdfa               = scannerTdfa,

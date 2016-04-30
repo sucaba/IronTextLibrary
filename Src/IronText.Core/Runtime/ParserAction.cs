@@ -8,12 +8,13 @@ namespace IronText.Runtime
     public struct ParserAction : IEquatable<ParserAction>
     {
         public static readonly ParserAction FailAction = new ParserAction();
+        public static readonly ParserAction RetAction = new ParserAction(ParserActionKind.Ret);
 
         private const int KindStartBit      = 0;
-        private const int KindBits          = 3;
+        private const int KindBits          = 4;
 
         private const int Value1StartBit    = KindStartBit + KindBits;
-        private const int Value1Bits        = 19;
+        private const int Value1Bits        = 18;
 
         private const int Value2StartBit    = Value1StartBit + Value1Bits;
         private const int Value2Bits        = 9;
@@ -51,7 +52,7 @@ namespace IronText.Runtime
         [FieldOffset(sizeof(ParserActionKind) + sizeof(int))]
         public short ConflictCount;
 
-        public ParserAction(ParserActionKind kind, int value1, short value2 = 0)
+        public ParserAction(ParserActionKind kind, int value1 = 0, short value2 = 0)
         {
             this.ResolvedToken = 0;
             this.State = 0;

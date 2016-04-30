@@ -25,5 +25,7 @@
 
         // Tail shift merged with reduce
         ShiftReduce = 6,
+
+        Ret         = 8
     }
 }

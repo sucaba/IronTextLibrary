@@ -22,6 +22,8 @@ namespace IronText.MetadataCompiler
 
         public ITable<ParserAction> ParserActionTable   { get; set; }
 
+        public ITable<int>      ParserActionStartTable   { get; set; }
+
         public ParserAction[]   ParserConflictActionTable { get; set; }
 
         public int[]            StateToToken        { get; set; }

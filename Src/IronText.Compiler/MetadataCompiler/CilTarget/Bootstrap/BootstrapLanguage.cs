@@ -2,16 +2,16 @@
 using System.IO;
 using IronText.Lib.IL;
 using IronText.Logging;
-using IronText.Reflection;
-using IronText.Reflection.Managed;
 using IronText.Runtime;
-using System.Reflection.Emit;
-using System.Reflection;
 using System.Collections.Generic;
 
 namespace IronText.MetadataCompiler
 {
-    class BootstrapLanguage : ILanguageRuntime, IInternalInitializable, IBootstrapLanguage, ISourceGrammarProvider
+    class BootstrapLanguage
+        : ILanguageRuntime
+        , IInternalInitializable
+        , IBootstrapLanguage
+        , ISourceGrammarProvider
     {
         private delegate object TokenFactoryDelegate1(string text, object rootContext);
 
@@ -84,9 +84,8 @@ namespace IronText.MetadataCompiler
 
         private int GetParserAction(int state, int token)
         {
-            var action = data.ParserActionTable.Get(state, token);
-            int result = ParserAction.Encode(action);
-            return result;
+            int start = data.ParserActionStartTable.Get(state, token);
+            return start;
         }
 
         public int Identify(Type type)

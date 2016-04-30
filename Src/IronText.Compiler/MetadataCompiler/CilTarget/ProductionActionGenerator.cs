@@ -31,7 +31,7 @@ namespace IronText.MetadataCompiler
             Def<Args> ruleArgs      = args.Args.Generate("ruleArgs");
             Def<Args> argsStart     = args.Args.Generate("argsStart");
             Def<Args> ctx           = args.Args.Generate("rootContext");
-            Def<Args> stackLookback = args.Args.Generate("startLookback");
+            Def<Args> stackLookback = args.Args.Generate("stackLookback");
 
             var emit = args
                     .Argument(context.Types.Import(typeof(ProductionActionArgs)), pargs)

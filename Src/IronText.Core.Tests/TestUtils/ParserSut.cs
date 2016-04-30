@@ -141,8 +141,8 @@ namespace IronText.Tests.TestUtils
 
         private int Transition(int state, int token)
         {
-            var action = data.ParserActionTable.Get(state, token);
-            return ParserAction.Encode(action);
+            int result = data.ParserActionStartTable.Get(state, token);
+            return result;
         }
 
         private static bool TryNextWithTunnels(ITdfaSimulation automaton, int state, int item, out int nextState)

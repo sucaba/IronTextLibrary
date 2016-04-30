@@ -25,10 +25,5 @@ namespace IronText.Reflection.Reporting
         {
             actions.Add(action);
         }
-
-        internal void AddAction(int actionCell)
-        {
-            actions.Add(ParserAction.Decode(actionCell));
-        }
     }
 }
