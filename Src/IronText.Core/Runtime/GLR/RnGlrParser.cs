@@ -1,6 +1,4 @@
-﻿using IronText.Algorithm;
-using IronText.Diagnostics;
-using System;
+﻿using IronText.Diagnostics;
 using System.Collections.Generic;
 using System.Text;
 
@@ -138,10 +136,6 @@ namespace IronText.Runtime
             gss.PushLayer();
             Shifter();
 
-            // Run reducer again to complete 
-            // shift-reduce and goto-reduce actions.
-            Reducer();
-
 #if DIAGNOSTICS
             if (!isVerifier)
             {
@@ -277,7 +271,7 @@ namespace IronText.Runtime
             }
         }
 
-        private void Reducer(int lookahead = -1)
+        private void Reducer(int lookahead)
         {
             while (!R.IsEmpty)
             {
@@ -298,11 +292,6 @@ namespace IronText.Runtime
 
                 // Goto on non-term produced by the production.
                 var newLink = gss.Push(nodeOnTheLeft, nextState, value, lookahead);
-
-                if (lookahead < 0)
-                {
-                    continue;
-                }
 
                 QueueReductionPathsAfterReduction(
                     existingNextStateNode ?? gss.GetFrontNode(nextState, lookahead),
@@ -333,39 +322,6 @@ namespace IronText.Runtime
             return result;
         }
 
-        private void QueueReductionPathsAfterReduction(
-            GssNode<T> nextState,
-            GssLink<T> newLink,
-            int token,
-            bool includeNonZeroPaths,
-            bool includeZeroPaths)
-        {
-            GetReductions(nextState.State, token);
-            if (includeZeroPaths)
-            {
-                for (int i = 0; i != pendingReductionsCount; ++i)
-                {
-                    var prod = pendingReductions[i];
-                    if (prod.InputLength == 0)
-                    {
-                        R.Enqueue(nextState, prod);
-                    }
-                }
-            }
-
-            if (includeNonZeroPaths && newLink != null)
-            {
-                for (int i = 0; i != pendingReductionsCount; ++i)
-                {
-                    var prod = pendingReductions[i];
-                    if (prod.InputLength != 0)
-                    {
-                        R.Enqueue(newLink, prod);
-                    }
-                }
-            }
-        }
-
         private void QueuReductionPaths(GssNode<T> frontNode, int token)
         {
             GetReductions(frontNode.State, token);
@@ -385,6 +341,39 @@ namespace IronText.Runtime
                 if (prod.InputLength == 0)
                 {
                     R.Enqueue(frontNode, prod);
+                }
+            }
+        }
+
+        private void QueueReductionPathsAfterReduction(
+            GssNode<T> frontNode,
+            GssLink<T> newLink,
+            int token,
+            bool includeNonZeroPaths,
+            bool includeZeroPaths)
+        {
+            GetReductions(frontNode.State, token);
+            if (includeZeroPaths)
+            {
+                for (int i = 0; i != pendingReductionsCount; ++i)
+                {
+                    var prod = pendingReductions[i];
+                    if (prod.InputLength == 0)
+                    {
+                        R.Enqueue(frontNode, prod);
+                    }
+                }
+            }
+
+            if (includeNonZeroPaths && newLink != null)
+            {
+                for (int i = 0; i != pendingReductionsCount; ++i)
+                {
+                    var prod = pendingReductions[i];
+                    if (prod.InputLength != 0)
+                    {
+                        R.Enqueue(newLink, prod);
+                    }
                 }
             }
         }

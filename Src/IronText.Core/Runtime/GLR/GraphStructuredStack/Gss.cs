@@ -129,7 +129,8 @@ namespace IronText.Runtime
 
         public GssLink<T> Push(GssNode<T> leftNode, int rightState, T label, int lookahead = -1)
         {
-            GssNode<T> rightmostNode = GetFrontNode(rightState, lookahead) ?? AddTopmost(rightState, lookahead);
+            GssNode<T> rightmostNode = GetFrontNode(rightState, lookahead)
+                                     ?? AddTopmost(rightState, lookahead);
 
             var link = GetLink(rightmostNode, leftNode);
             if (link != null)
