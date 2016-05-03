@@ -20,7 +20,7 @@ namespace IronText.Runtime
         private readonly Gss<T>               gss;
         private readonly Queue<PendingShift>  Q = new Queue<PendingShift>(4);
         private readonly IReductionQueue<T>   R;
-        private readonly Dictionary<long,T>   N = new Dictionary<long,T>();
+        private readonly GssReductionIndex<T> reductionIndex = new GssReductionIndex<T>();
         private readonly int[]                tokenComplexity;
         private readonly RuntimeProduction[]  pendingReductions;
         private int                           pendingReductionsCount = 0;
@@ -89,49 +89,16 @@ namespace IronText.Runtime
         {
             gss.BeginEdit();
 
-            N.Clear();
+            reductionIndex.Clear();
 
-            var front = gss.FrontArray;
-            MsgData data = envelope.FirstData;
+            MsgData alternateInput = envelope.FirstData;
             do
             {
-                int lookahead = data.Token;
+                ProcessTerm(envelope, alternateInput);
 
-                Actor(lookahead);
-                Reducer(lookahead);
-
-                if (accepted)
-                {
-                    int count = gss.Count;
-                    for (int i = 0; i != count; ++i)
-                    {
-                        var node = front[i];
-                        if (IsAccepting(node.State))
-                        {
-                            producer.Result = node.FirstLink.Label;
-                            break;
-                        }
-                    }
-                }
-
-                var termValue = producer.CreateLeaf(envelope, data);
-                N[GetNKey(lookahead, gss.CurrentLayer + 1)] = termValue;
-
-                for (int i = 0; i != gss.Count; ++i)
-                {
-                    var frontNode = front[i];
-
-                    // Plan shift
-                    var shift = GetShift(frontNode.State, lookahead);
-                    if (shift >= 0)
-                    {
-                        Q.Enqueue(new PendingShift(frontNode, shift, lookahead));
-                    }
-                }
-
-                data = data.NextAlternative;
+                alternateInput = alternateInput.NextAlternative;
             }
-            while (data != null);
+            while (alternateInput != null);
 
             gss.PushLayer();
             Shifter();
@@ -160,64 +127,7 @@ namespace IronText.Runtime
 
                 gss.Undo(0); // restore state before the current input token
 
-                {
-                    var message = new StringBuilder();
-                    message
-                        .Append("Unexpected token ")
-                        .Append(grammar.SymbolName(envelope.AmbToken))
-                        .Append(" in state stacks: {");
-                    bool firstStack = true;
-                    for (int i = 0; i != gss.Count; ++i)
-                    {
-                        var node = gss.FrontArray[i];
-
-                        if (firstStack)
-                        {
-                            firstStack = false;
-                        }
-                        else
-                        {
-                            message.Append(", ");
-                        }
-
-
-
-                        message.Append("[");
-                        var n = node;
-                        bool firstState = true;
-                        while (true)
-                        {
-                            if (firstState)
-                            {
-                                firstState = false;
-                            }
-                            else
-                            {
-                                message.Append(", ");
-                            }
-
-                            message.Append(n.State);
-                            if (n.State == 0)
-                            {
-                                break;
-                            }
-
-                            n = n.FirstLink.LeftNode;
-                        }
-
-                        message.Append("]");
-                    }
-
-                    message.Append("}");
-
-                    logging.Write(
-                        new LogEntry
-                        {
-                            Severity = Severity.Verbose,
-                            Location = envelope.Location,
-                            Message = message.ToString()
-                        });
-                }
+                LogError(envelope);
 
                 return RecoverFromError(envelope);
             }
@@ -225,6 +135,44 @@ namespace IronText.Runtime
             gss.EndEdit();
             this.priorInput = envelope;
             return this;
+        }
+
+        private void ProcessTerm(Msg envelope, MsgData alternateInput)
+        {
+            var front = gss.FrontArray;
+            int lookahead = alternateInput.Token;
+
+            Actor(lookahead);
+            Reducer(lookahead);
+
+            if (accepted)
+            {
+                int count = gss.Count;
+                for (int i = 0; i != count; ++i)
+                {
+                    var node = front[i];
+                    if (IsAccepting(node.State))
+                    {
+                        producer.Result = node.FirstLink.Label;
+                        break;
+                    }
+                }
+            }
+
+            var termValue = producer.CreateLeaf(envelope, alternateInput);
+            reductionIndex[lookahead, gss.CurrentLayer + 1] = termValue;
+
+            for (int i = 0; i != gss.Count; ++i)
+            {
+                var frontNode = front[i];
+
+                // Plan shift
+                var shift = GetShift(frontNode.State, lookahead);
+                if (shift >= 0)
+                {
+                    Q.Enqueue(new PendingShift(frontNode, shift, lookahead));
+                }
+            }
         }
 
         public IReceiver<Msg> Done()
@@ -266,8 +214,8 @@ namespace IronText.Runtime
         {
             for (int j = 0; j != gss.Count; ++j)
             {
-                var fronNode = gss.FrontArray[j];
-                QueuReductionPaths(fronNode, lookahead);
+                var fromNode = gss.FrontArray[j];
+                QueueReductionPaths(fromNode, lookahead);
             }
         }
 
@@ -277,28 +225,25 @@ namespace IronText.Runtime
             {
                 GssReducePath<T> path = R.Dequeue();
 
-                int X = path.Production.Outcome;
-                int m = path.Size;
-
-                GssNode<T> nodeOnTheLeft = path.LeftNode;
+                GssNode<T> fromNode = path.LeftNode;
                 T newValue = producer.CreateBranch(path.Production, (IStackLookback<T>)path);
                 T value    = MergeReductionAlternatives(path, newValue);
 
-                var goToAction = GetAction(nodeOnTheLeft.State, X);
+                var goToAction = GetAction(fromNode.State, path.Production.Outcome);
                 Debug.Assert(goToAction.Kind == ParserActionKind.Shift);
 
-                State nextState = goToAction.State;
-                GssNode<T> existingNextStateNode = gss.GetFrontNode(nextState, lookahead);
+                State toState = goToAction.State;
+                GssNode<T> existingToNode = gss.GetFrontNode(toState, lookahead);
 
                 // Goto on non-term produced by the production.
-                var newLink = gss.Push(nodeOnTheLeft, nextState, value, lookahead);
+                var newLink = gss.Push(fromNode, toState, value, lookahead);
 
                 QueueReductionPathsAfterReduction(
-                    existingNextStateNode ?? gss.GetFrontNode(nextState, lookahead),
+                    existingToNode ?? gss.GetFrontNode(toState, lookahead),
                     newLink,
                     lookahead,
-                    includeNonZeroPaths: m != 0,
-                    includeZeroPaths: existingNextStateNode == null);
+                    includeNonZeroPaths: path.Size != 0,
+                    includeZeroPaths: existingToNode == null);
             }
         }
 
@@ -306,10 +251,11 @@ namespace IronText.Runtime
         {
             T result;
 
-            var Nkey = GetNKey(path.Production.Outcome, path.LeftNode.Layer);
+            int token = path.Production.Outcome;
+            int startLayer = path.LeftNode.Layer;
 
             T currentValue;
-            if (N.TryGetValue(Nkey, out currentValue))
+            if (reductionIndex.TryGet(token, startLayer, out currentValue))
             {
                 result = producer.Merge(currentValue, newValue, (IStackLookback<T>)path);
             }
@@ -318,11 +264,11 @@ namespace IronText.Runtime
                 result = newValue;
             }
 
-            N[Nkey] = result;
+            reductionIndex[token, startLayer] = result;
             return result;
         }
 
-        private void QueuReductionPaths(GssNode<T> frontNode, int token)
+        private void QueueReductionPaths(GssNode<T> frontNode, int token)
         {
             GetReductions(frontNode.State, token);
 
@@ -383,7 +329,7 @@ namespace IronText.Runtime
             while (Q.Count != 0)
             {
                 var shift = Q.Dequeue();
-                var val = N[GetNKey(shift.Token, gss.CurrentLayer)];
+                var val = reductionIndex[shift.Token, gss.CurrentLayer];
 
                 gss.Push(shift.FrontNode, shift.ToState, val);
             }
@@ -547,14 +493,62 @@ namespace IronText.Runtime
             return result.Next(currentInput);
         }
 
-        private static long GetNKey(long X, int c)
+        private void LogError(Msg envelope)
         {
-            return (X << 32) + c;
-        }
+            var message = new StringBuilder();
+            message
+                .Append("Unexpected token ")
+                .Append(grammar.SymbolName(envelope.AmbToken))
+                .Append(" in state stacks: {");
+            bool firstStack = true;
+            for (int i = 0; i != gss.Count; ++i)
+            {
+                var node = gss.FrontArray[i];
 
-        private static int MakeFakeDestState(int state, int token)
-        {
-            return -((state << 16) + token);
-        }        
+                if (firstStack)
+                {
+                    firstStack = false;
+                }
+                else
+                {
+                    message.Append(", ");
+                }
+
+                message.Append("[");
+                var n = node;
+                bool firstState = true;
+                while (true)
+                {
+                    if (firstState)
+                    {
+                        firstState = false;
+                    }
+                    else
+                    {
+                        message.Append(", ");
+                    }
+
+                    message.Append(n.State);
+                    if (n.State == 0)
+                    {
+                        break;
+                    }
+
+                    n = n.FirstLink.LeftNode;
+                }
+
+                message.Append("]");
+            }
+
+            message.Append("}");
+
+            logging.Write(
+                new LogEntry
+                {
+                    Severity = Severity.Verbose,
+                    Location = envelope.Location,
+                    Message  = message.ToString()
+                });
+        }
     }
 }
