@@ -30,36 +30,40 @@ namespace IronText.Runtime
 
         public bool IsEmpty { get { return paths.Count == 0; } }
 
-        public void Enqueue(GssLink<T> rightLink, RuntimeProduction prod)
+        public void Enqueue(
+            GssLink<T>        rightLink,
+            RuntimeProduction production)
         {
             Debug.Assert(rightLink != null);
 
-            int size = prod.InputLength;
-            int tail = size == 0 ? 0 : 1;
-            GssReducePath<T>.GetAll(
+            GssReducePath<T>.ForEach(
+                production,
                 rightLink.LeftNode,
-                size - tail,
-                tail,
-                prod,
                 rightLink,
                 InternalEnqueue);
         }
 
-        public void Enqueue(GssNode<T> rightNode, RuntimeProduction prod)
+        public void Enqueue(
+            GssNode<T>        rightNode,
+            RuntimeProduction production)
         {
-            if (prod.InputLength == 0)
+            if (production.InputLength == 0)
             {
-                GssReducePath<T>.GetAll(rightNode, 0, 0, prod, null, InternalEnqueue);
+                GssReducePath<T>.ForEach(
+                    production,
+                    rightNode,
+                    null,
+                    InternalEnqueue);
             }
             else
             {
-                var link = rightNode.FirstLink;
+                var linkAlternative = rightNode.FirstLink;
                 
-                while (link != null)
+                while (linkAlternative != null)
                 {
-                    Enqueue(link, prod);
+                    Enqueue(linkAlternative, production);
 
-                    link = link.NextLink;
+                    linkAlternative = linkAlternative.NextLink;
                 }
             }
         }

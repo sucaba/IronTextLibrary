@@ -32,9 +32,6 @@ namespace IronText.Runtime
         // Merge derivation alternatives
         T Merge(T alt1, T alt2, IStackLookback<T> lookback);
 
-        // Get epsilon node corresponding to the non-term
-        T GetDefault(int token, IStackLookback<T> lookback);
-
         // Producer used just before error recovery start
         IProducer<T> GetRecoveryProducer();
 

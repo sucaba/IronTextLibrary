@@ -75,9 +75,9 @@ namespace IronText.Automata.Lalr1
                     {
                         int nextToken = item.NextToken;
 
-                        var action = new Runtime.ParserAction
+                        var action = new ParserAction
                         {
-                            Kind = ParserActionKind.Shift,
+                            Kind  = ParserActionKind.Shift,
                             State = state.GetNextIndex(nextToken)
                         };
 
@@ -85,12 +85,12 @@ namespace IronText.Automata.Lalr1
                     }
                     else if (item.IsAugmented)
                     {
-                        var action = new Runtime.ParserAction { Kind = ParserActionKind.Accept };
+                        var action = new ParserAction { Kind = ParserActionKind.Accept };
                         AssignAction(i, PredefinedTokens.Eoi, action);
                     }
                     else
                     {
-                        var action = new Runtime.ParserAction { Kind = ParserActionKind.Reduce, ProductionId = item.ProductionId };
+                        var action = new ParserAction { Kind = ParserActionKind.Reduce, ProductionId = item.ProductionId };
                         foreach (var lookahead in item.LA)
                         {
                             AssignAction(i, lookahead, action);

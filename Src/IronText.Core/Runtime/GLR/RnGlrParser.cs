@@ -7,11 +7,12 @@ using System.Text;
 namespace IronText.Runtime
 {
     using IronText.Logging;
+    using System.Diagnostics;
     using State = System.Int32;
 
     sealed class RnGlrParser<T> : IPushParser
     {
-        private readonly RuntimeGrammar    grammar;
+        private readonly RuntimeGrammar       grammar;
         private readonly int[]                conflictActionsTable;
         private readonly int[]                stateToPriorToken;
         private readonly TransitionDelegate   transition;
@@ -21,10 +22,10 @@ namespace IronText.Runtime
         private readonly Gss<T>               gss;
         private readonly Queue<PendingShift>  Q = new Queue<PendingShift>(4);
         private readonly IReductionQueue<T>   R;
-        private readonly Dictionary<long,T> N = new Dictionary<long,T>();
+        private readonly Dictionary<long,T>   N = new Dictionary<long,T>();
         private readonly int[]                tokenComplexity;
         private readonly RuntimeProduction[]  pendingReductions;
-        private int pendingReductionsCount = 0;
+        private int                           pendingReductionsCount = 0;
 
         private bool                          accepted = false;
         private readonly ILogging             logging;
@@ -271,27 +272,8 @@ namespace IronText.Runtime
         {
             for (int j = 0; j != gss.Count; ++j)
             {
-                var w = gss.FrontArray[j];
-
-                GetReductions(w.State, lookahead);
-
-                for (int i = 0; i != pendingReductionsCount; ++i)
-                {
-                    var prod = pendingReductions[i];
-                    if (prod.InputLength != 0)
-                    {
-                        R.Enqueue(w, prod);
-                    }
-                }
-
-                for (int i = 0; i != pendingReductionsCount; ++i)
-                {
-                    var prod = pendingReductions[i];
-                    if (prod.InputLength == 0)
-                    {
-                        R.Enqueue(w, prod);
-                    }
-                }
+                var fronNode = gss.FrontArray[j];
+                QueuReductionPaths(fronNode, lookahead);
             }
         }
 
@@ -303,98 +285,106 @@ namespace IronText.Runtime
 
                 int X = path.Production.Outcome;
                 int m = path.Size;
-                IStackLookback<T> stackLookback = path;
 
-                GssNode<T> u = path.LeftNode;
-                State k = u.State;
-                T z;
-                if (m == 0)
-                {
-                    z = producer.GetDefault(X, stackLookback);
-                }
-                else
-                {
-                    T Λ = producer.CreateBranch(path.Production, stackLookback);
+                GssNode<T> nodeOnTheLeft = path.LeftNode;
+                T newValue = producer.CreateBranch(path.Production, (IStackLookback<T>)path);
+                T value    = MergeReductionAlternatives(path, newValue);
 
-                    int c = u.Layer;
-                    T currentValue;
-                    var Nkey = GetNKey(X, c);
-                    if (N.TryGetValue(Nkey, out currentValue))
-                    {
-                        z = producer.Merge(currentValue, Λ, stackLookback);
-                    }
-                    else
-                    {
-                        z = Λ;
-                    }
+                var goToAction = GetAction(nodeOnTheLeft.State, X);
+                Debug.Assert(goToAction.Kind == ParserActionKind.Shift);
 
-                    N[Nkey] = z;
-                }
+                State nextState = goToAction.State;
+                GssNode<T> existingNextStateNode = gss.GetFrontNode(nextState, lookahead);
 
-                State l;
-
-                var action = GetAction(k, X);
-                switch (action.Kind)
-                {
-                    case ParserActionKind.Shift:
-                        l = action.State;
-                        break;
-                    default:
-                        throw new InvalidOperationException(
-                            "Internal error: Non-term action should be shift or shift-reduce, but got "
-                            + Enum.GetName(typeof(ParserActionKind), action.Kind));
-                }
-
-                bool stateAlreadyExists = gss.GetFrontNode(l, lookahead) != null;
-
-                // Goto on non-term produced by rule.
-                var newLink = gss.Push(u, l, z, lookahead);
+                // Goto on non-term produced by the production.
+                var newLink = gss.Push(nodeOnTheLeft, nextState, value, lookahead);
 
                 if (lookahead < 0)
                 {
                     continue;
                 }
 
-                if (stateAlreadyExists)
+                QueueReductionPathsAfterReduction(
+                    existingNextStateNode ?? gss.GetFrontNode(nextState, lookahead),
+                    newLink,
+                    lookahead,
+                    includeNonZeroPaths: m != 0,
+                    includeZeroPaths: existingNextStateNode == null);
+            }
+        }
+
+        private T MergeReductionAlternatives(GssReducePath<T> path, T newValue)
+        {
+            T result;
+
+            var Nkey = GetNKey(path.Production.Outcome, path.LeftNode.Layer);
+
+            T currentValue;
+            if (N.TryGetValue(Nkey, out currentValue))
+            {
+                result = producer.Merge(currentValue, newValue, (IStackLookback<T>)path);
+            }
+            else
+            {
+                result = newValue;
+            }
+
+            N[Nkey] = result;
+            return result;
+        }
+
+        private void QueueReductionPathsAfterReduction(
+            GssNode<T> nextState,
+            GssLink<T> newLink,
+            int token,
+            bool includeNonZeroPaths,
+            bool includeZeroPaths)
+        {
+            GetReductions(nextState.State, token);
+            if (includeZeroPaths)
+            {
+                for (int i = 0; i != pendingReductionsCount; ++i)
                 {
-                    if (newLink != null && m != 0)
+                    var prod = pendingReductions[i];
+                    if (prod.InputLength == 0)
                     {
-                        GetReductions(l, lookahead);
-                        for (int i = 0; i != pendingReductionsCount; ++i)
-                        {
-                            var prod = pendingReductions[i];
-                            if (prod.InputLength != 0)
-                            {
-                                R.Enqueue(newLink, prod);
-                            }
-                        }
+                        R.Enqueue(nextState, prod);
                     }
                 }
-                else
+            }
+
+            if (includeNonZeroPaths && newLink != null)
+            {
+                for (int i = 0; i != pendingReductionsCount; ++i)
                 {
-                    var w = gss.GetFrontNode(l, lookahead);
-
-                    GetReductions(l, lookahead);
-                    for (int i = 0; i != pendingReductionsCount; ++i)
+                    var prod = pendingReductions[i];
+                    if (prod.InputLength != 0)
                     {
-                        var prod = pendingReductions[i];
-                        if (prod.InputLength == 0)
-                        {
-                            R.Enqueue(w, prod);
-                        }
+                        R.Enqueue(newLink, prod);
                     }
+                }
+            }
+        }
 
-                    if (m != 0)
-                    {
-                        for (int i = 0; i != pendingReductionsCount; ++i)
-                        {
-                            var prod = pendingReductions[i];
-                            if (prod.InputLength != 0)
-                            {
-                                R.Enqueue(newLink, prod);
-                            }
-                        }
-                    }
+        private void QueuReductionPaths(GssNode<T> frontNode, int token)
+        {
+            GetReductions(frontNode.State, token);
+
+            for (int i = 0; i != pendingReductionsCount; ++i)
+            {
+                var prod = pendingReductions[i];
+                if (prod.InputLength != 0)
+                {
+                    R.Enqueue(frontNode, prod);
+                }
+            }
+
+            for (int i = 0; i != pendingReductionsCount; ++i)
+            {
+                var prod = pendingReductions[i];
+                if (prod.InputLength == 0)
+                {
+                    R.Enqueue(frontNode, prod);
                 }
             }
         }

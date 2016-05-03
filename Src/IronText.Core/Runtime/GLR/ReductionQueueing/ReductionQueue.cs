@@ -2,30 +2,36 @@
 
 namespace IronText.Runtime
 {
-
     sealed class ReductionQueue<T> : IReductionQueue<T>
     {
-        private readonly Queue<Reduction<T>> reductions = new Queue<Reduction<T>>(10);
-        private readonly Queue<GssReducePath<T>> pendingPaths = new Queue<GssReducePath<T>>(10);
+        private readonly Queue<Reduction<T>>     reductions    = new Queue<Reduction<T>>(10);
+        private readonly Queue<GssReducePath<T>> dequeueBuffer = new Queue<GssReducePath<T>>(10);
 
         public ReductionQueue()
         {
         }
 
-        public bool IsEmpty { get { return reductions.Count == 0 && pendingPaths.Count == 0; } }
+        public bool IsEmpty => reductions.Count == 0 && dequeueBuffer.Count == 0;
 
-        public void Enqueue(GssLink<T> rightLink, RuntimeProduction prod)
+        public void Enqueue(
+            GssLink<T>        rightLink,
+            RuntimeProduction production)
         {
             reductions.Enqueue(
-                new Reduction<T>(rightLink.LeftNode, prod, rightLink));
+                new Reduction<T>(
+                    rightLink.LeftNode,
+                    production,
+                    rightLink));
         }
 
-        public void Enqueue(GssNode<T> rightNode, RuntimeProduction prod)
+        public void Enqueue(
+            GssNode<T>        rightNode,
+            RuntimeProduction production)
         {
-            if (prod.InputLength == 0)
+            if (production.InputLength == 0)
             {
                 reductions.Enqueue(
-                    new Reduction<T>(rightNode, prod, null));
+                    new Reduction<T>(rightNode, production, null));
             }
             else
             {
@@ -33,7 +39,7 @@ namespace IronText.Runtime
                 while (link != null)
                 {
                     reductions.Enqueue(
-                        new Reduction<T>(link.LeftNode, prod, link));
+                        new Reduction<T>(link.LeftNode, production, link));
 
                     link = link.NextLink;
                 }
@@ -42,22 +48,18 @@ namespace IronText.Runtime
 
         public GssReducePath<T> Dequeue()
         {
-            if (pendingPaths.Count == 0)
+            if (dequeueBuffer.Count == 0)
             {
-                var r = reductions.Dequeue();
-                var size = r.Size;
+                Reduction<T> r = reductions.Dequeue();
 
-                int tail = (r.Size != 0 && r.RightLink != null) ? 1 : 0;
-                GssReducePath<T>.GetAll(
+                GssReducePath<T>.ForEach(
+                    r.Production,
                     r.RightNode,
-                    size - tail,
-                    tail,
-                    r.Rule,
                     r.RightLink,
-                    pendingPaths.Enqueue);
+                    dequeueBuffer.Enqueue);
             }
 
-            return pendingPaths.Dequeue();
+            return dequeueBuffer.Dequeue();
         }
     }
 }

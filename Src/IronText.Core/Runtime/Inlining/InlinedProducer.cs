@@ -82,11 +82,6 @@ namespace IronText.Runtime.Inlining
             return producer.Merge(alt1, alt2, lookback);
         }
 
-        public T GetDefault(int token, IStackLookback<T> lookback)
-        {
-            return producer.GetDefault(token, lookback);
-        }
-
         public IProducer<T> GetRecoveryProducer()
         {
             return new InlinedProducer<T>(

@@ -5,46 +5,57 @@ namespace IronText.Runtime
 {
     sealed class GssReducePath<T> : IStackLookback<T>
     {
-        public readonly GssNode<T>   LeftNode;
-        public readonly GssLink<T>[] Links;    // Left-to-right reduction path labels
-        public readonly int          Size;
-        public readonly RuntimeProduction   Production;
+        public readonly RuntimeProduction Production;
+        public readonly GssNode<T>        LeftNode;
+    
+        /// <summary>
+        /// Left-to-right reduction path labels
+        /// </summary>
+        public readonly GssLink<T>[]      Links;
 
-        public GssReducePath(GssNode<T> leftNode, GssLink<T>[] links, RuntimeProduction prod, int size)
+        public int Size => Production.InputLength;
+
+        public GssReducePath(
+            GssNode<T>        leftNode,
+            GssLink<T>[]      links,
+            RuntimeProduction production)
         {
             this.LeftNode   = leftNode;
             this.Links      = links;
-            this.Production = prod;
-            this.Size       = size;
+            this.Production = production;
         }
 
-        public static void GetAll(
-            GssNode<T> rightNode,
-            int        size,
-            int        tail,
-            RuntimeProduction prod,
-            GssLink<T> rightLink,
-            Action<GssReducePath<T>> action0)
+        public static void ForEach(
+            RuntimeProduction production,
+            GssNode<T>        rightNode,
+            GssLink<T>        rightLink,
+            Action<GssReducePath<T>> action)
         {
-            Action<GssReducePath<T>> action;
+            int fullSize = production.InputLength;
+            int tail = (fullSize != 0 && rightLink != null) ? 1 : 0;
+            int size = fullSize - tail;
+
+            Action<GssReducePath<T>> action1;
             if (tail == 0)
             {
-                action = action0;
+                action1 = action;
             }
             else 
             {
-                action = path =>
+                action1 = path =>
                     {
                         path.Links[size] = rightLink;
-                        action0(path);
+                        action(path);
                     };
             }
 
-            int fullSize = size + tail;
-
             if (size == 0)
             {
-                action( new GssReducePath<T>(rightNode, new GssLink<T>[tail], prod, fullSize) );
+                action1(
+                    new GssReducePath<T>(
+                        rightNode,
+                        new GssLink<T>[tail],
+                        production));
             }
             else if (size <= rightNode.DeterministicDepth)
             {
@@ -60,7 +71,11 @@ namespace IronText.Runtime
                     node = link.LeftNode;
                 }
 
-                action( new GssReducePath<T>(node, links, prod, fullSize) );
+                action1(
+                    new GssReducePath<T>(
+                        node,
+                        links,
+                        production));
             }
             else
             {
@@ -106,7 +121,7 @@ namespace IronText.Runtime
                 int count = front.Count;
                 for (int i = 0; i != count; ++i)
                 {
-                    action( new GssReducePath<T>(front[i].LeftNode, frontPaths[i], prod, fullSize) );
+                    action1( new GssReducePath<T>(front[i].LeftNode, frontPaths[i], production));
                 }
             }
         }
