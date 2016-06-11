@@ -20,14 +20,12 @@ namespace IronText.Runtime
         /// <param name="state"></param>
         /// <param name="layer"></param>
         /// <param name="stage">
-        /// Each GSS layer is can be filled during shift 
-        /// which initially fills layer (stage #0) and 
-        /// during subsequent incoming tokens which can
-        /// cause reductions via lookahaead conditions.
-        /// For LALR(1) lookahead is only one character
-        /// hence there are only 2 stages #0 - for shifts (and for shift-reduces),
-        /// #1 - for reduces triggered by the next incoming
-        /// term.
+        /// Each GSS layer can be filled during shift which initially fills
+        /// layer (stage #0) and during subsequent incoming tokens which can
+        /// cause reductions via lookahaead conditions.  For LALR(1) lookahead
+        /// is only one character hence there are only 2 stages #0 - for shifts
+        /// (and for shift-reduces), #1 - for reduces triggered by the next
+        /// incoming term.
         /// </param>
         public GssNode(State state, int layer, byte stage, int lookahead = -1)
         {

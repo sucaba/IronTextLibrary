@@ -4,10 +4,21 @@ using System.Text;
 
 namespace IronText.Runtime
 {
-    using IronText.Logging;
+    using Logging;
     using System.Diagnostics;
     using State = System.Int32;
 
+    /// <summary>
+    /// Comparing to the Tomita's Algorithm 1, it also supports:
+    /// - epsilon productions
+    /// - hidden left recursion
+    /// - hidden right recursion
+    /// - right-nullable productions
+    /// - Merge values of reduction alternatives
+    ///   (like ones with math operators resolved by precedence rules)
+    /// - Handle input Shrodinger's tokens
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     sealed class RnGlrParser<T> : IPushParser
     {
         private readonly RuntimeGrammar       grammar;
@@ -225,15 +236,15 @@ namespace IronText.Runtime
             {
                 GssReducePath<T> path = R.Dequeue();
 
-                GssNode<T> fromNode = path.LeftNode;
+                var fromNode = path.LeftNode;
                 T newValue = producer.CreateBranch(path.Production, (IStackLookback<T>)path);
                 T value    = MergeReductionAlternatives(path, newValue);
 
                 var goToAction = GetAction(fromNode.State, path.Production.Outcome);
                 Debug.Assert(goToAction.Kind == ParserActionKind.Shift);
 
-                State toState = goToAction.State;
-                GssNode<T> existingToNode = gss.GetFrontNode(toState, lookahead);
+                var toState = goToAction.State;
+                var existingToNode = gss.GetFrontNode(toState, lookahead);
 
                 // Goto on non-term produced by the production.
                 var newLink = gss.Push(fromNode, toState, value, lookahead);
@@ -242,8 +253,15 @@ namespace IronText.Runtime
                     existingToNode ?? gss.GetFrontNode(toState, lookahead),
                     newLink,
                     lookahead,
-                    includeNonZeroPaths: path.Size != 0,
-                    includeZeroPaths: existingToNode == null);
+                    // Zero reductions should be made only when node is created
+                    // to avoid repetitions
+                    includeZeroPaths: existingToNode == null,
+                    includeNonZeroPaths: 
+                        // Avoid right-nullable reductions
+                        path.Size != 0 
+                        && 
+                        // TODO: Should we avoid reductions if label-value was merged?
+                        newLink != null);
             }
         }
 
@@ -295,10 +313,11 @@ namespace IronText.Runtime
             GssNode<T> frontNode,
             GssLink<T> newLink,
             int token,
-            bool includeNonZeroPaths,
-            bool includeZeroPaths)
+            bool includeZeroPaths,
+            bool includeNonZeroPaths)
         {
             GetReductions(frontNode.State, token);
+
             if (includeZeroPaths)
             {
                 for (int i = 0; i != pendingReductionsCount; ++i)
@@ -311,14 +330,28 @@ namespace IronText.Runtime
                 }
             }
 
-            if (includeNonZeroPaths && newLink != null)
+            if (includeNonZeroPaths)
             {
-                for (int i = 0; i != pendingReductionsCount; ++i)
+                if (newLink == null)
                 {
-                    var prod = pendingReductions[i];
-                    if (prod.InputLength != 0)
+                    for (int i = 0; i != pendingReductionsCount; ++i)
                     {
-                        R.Enqueue(newLink, prod);
+                        var prod = pendingReductions[i];
+                        if (prod.InputLength != 0)
+                        {
+                            R.Enqueue(frontNode, prod);
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i != pendingReductionsCount; ++i)
+                    {
+                        var prod = pendingReductions[i];
+                        if (prod.InputLength != 0)
+                        {
+                            R.Enqueue(newLink, prod);
+                        }
                     }
                 }
             }

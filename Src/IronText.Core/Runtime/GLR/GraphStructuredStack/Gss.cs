@@ -135,7 +135,7 @@ namespace IronText.Runtime
             var link = GetLink(rightmostNode, leftNode);
             if (link != null)
             {
-                // Side-effect! How to undo it before the error recovery?
+                // TODO: Side-effect! How to undo it before the error recovery?
                 link.AssignLabel(label);
                 return null;
             }
