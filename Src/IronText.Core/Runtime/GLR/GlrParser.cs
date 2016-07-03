@@ -20,7 +20,6 @@ namespace IronText.Runtime
         private readonly Gss<T>               gss;
         private readonly Queue<PendingShift>  Q = new Queue<PendingShift>(4);
         private readonly IReductionQueue<T>   R;
-        private readonly GssReductionIndex<T> reductionIndex = new GssReductionIndex<T>();
         private readonly int[]                tokenComplexity;
         private readonly RuntimeProduction[]  pendingReductions;
         private int                           pendingReductionsCount = 0;
@@ -88,8 +87,6 @@ namespace IronText.Runtime
         public IReceiver<Msg> Next(Msg envelope)
         {
             gss.BeginEdit();
-
-            reductionIndex.Clear();
 
             MsgData alternateInput = envelope.FirstData;
             do
@@ -160,7 +157,6 @@ namespace IronText.Runtime
             }
 
             var termValue = producer.CreateLeaf(envelope, alternateInput);
-            reductionIndex[lookahead, gss.CurrentLayer + 1] = termValue;
 
             for (int i = 0; i != gss.Count; ++i)
             {
@@ -170,7 +166,7 @@ namespace IronText.Runtime
                 var shift = GetShift(frontNode.State, lookahead);
                 if (shift >= 0)
                 {
-                    Q.Enqueue(new PendingShift(frontNode, shift, lookahead));
+                    Q.Enqueue(new PendingShift(frontNode, shift, lookahead, termValue));
                 }
             }
         }
@@ -226,17 +222,19 @@ namespace IronText.Runtime
                 GssReducePath<T> path = R.Dequeue();
 
                 var fromNode = path.LeftNode;
-                T newValue = producer.CreateBranch(path.Production, (IStackLookback<T>)path);
-                T value    = MergeReductionAlternatives(path, newValue);
 
-                var goToAction = GetAction(fromNode.State, path.Production.Outcome);
-                Debug.Assert(goToAction.Kind == ParserActionKind.Shift);
-
-                var toState = goToAction.State;
+                int toState = GoTo(fromNode.State, path.Production.Outcome);
                 var existingToNode = gss.GetFrontNode(toState, lookahead);
 
-                // Goto on non-term produced by the production.
-                var newLink = gss.Push(fromNode, toState, value, lookahead);
+                T branch = producer.CreateBranch(path.Production, (IStackLookback<T>)path);
+
+                var newLink = gss.Push(
+                                fromNode,
+                                toState,
+                                branch,
+                                lookahead,
+                                (currentValue, newValue) =>
+                                    producer.Merge(currentValue, newValue, path));
 
                 bool isNewNode = existingToNode == null;
                 bool isNewLinkToReduceAlong = newLink != null;
@@ -245,30 +243,9 @@ namespace IronText.Runtime
                     existingToNode ?? gss.GetFrontNode(toState, lookahead),
                     lookahead,
                     newLink,
-                    includeZeroPaths:    isNewNode,
+                    includeZeroPaths: isNewNode,
                     includeNonZeroPaths: isNewLinkToReduceAlong);
             }
-        }
-
-        private T MergeReductionAlternatives(GssReducePath<T> path, T newValue)
-        {
-            T result;
-
-            int token = path.Production.Outcome;
-            int startLayer = path.LeftNode.Layer;
-
-            T currentValue;
-            if (reductionIndex.TryGet(token, startLayer, out currentValue))
-            {
-                result = producer.Merge(currentValue, newValue, (IStackLookback<T>)path);
-            }
-            else
-            {
-                result = newValue;
-            }
-
-            reductionIndex[token, startLayer] = result;
-            return result;
         }
 
         private void QueueReductionPaths(
@@ -324,9 +301,10 @@ namespace IronText.Runtime
             while (Q.Count != 0)
             {
                 var shift = Q.Dequeue();
-                var val = reductionIndex[shift.Token, gss.CurrentLayer];
-
-                gss.Push(shift.FrontNode, shift.ToState, val);
+                gss.Push(
+                    shift.FrontNode,
+                    shift.ToState,
+                    shift.Value);
             }
         }
 
@@ -356,6 +334,15 @@ namespace IronText.Runtime
             }
 
             return shift;
+        }
+
+        private int GoTo(int fromState, int token)
+        {
+            var goToAction = GetAction(fromState, token);
+            Debug.Assert(goToAction.Kind == ParserActionKind.Shift);
+
+            var toState = goToAction.State;
+            return toState;
         }
 
         private void GetReductions(State state, int token)
@@ -404,16 +391,18 @@ namespace IronText.Runtime
 
         struct PendingShift
         {
-            public PendingShift(GssNode<T> frontNode, State toState, int token)
+            public PendingShift(GssNode<T> frontNode, State toState, int token, T value)
             {
                 this.FrontNode = frontNode;
                 this.ToState = toState;
                 this.Token = token;
+                this.Value = value;
             }
 
             public readonly GssNode<T> FrontNode;
             public readonly State ToState;
             public readonly int Token;
+            public readonly T Value;
         }
 
         public IPushParser CloneVerifier()

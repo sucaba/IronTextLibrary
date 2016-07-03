@@ -9,7 +9,7 @@ namespace IronText.Runtime
     using State = System.Int32;
 
     sealed class Gss<T>
-        : IGss<T>
+        : IGraphStructuredStack<T>
         , IUndoable
     {
         private int currentLayer = 0;
@@ -127,7 +127,12 @@ namespace IronText.Runtime
             return result;
         }
 
-        public GssLink<T> Push(GssNode<T> leftNode, int rightState, T label, int lookahead = -1)
+        public GssLink<T> Push(
+            GssNode<T> leftNode,
+            int rightState,
+            T label,
+            int lookahead = -1,
+            ValueMergeDelegate<T> merge = null)
         {
             GssNode<T> rightmostNode = GetFrontNode(rightState, lookahead)
                                      ?? AddTopmost(rightState, lookahead);
@@ -135,9 +140,13 @@ namespace IronText.Runtime
             var link = GetLink(rightmostNode, leftNode);
             if (link != null)
             {
-                // TODO: Side-effect! How to undo it before the error recovery?
-                // TODO: Should token-merging logic be here?
-                link.AssignLabel(label);
+                if (merge == null)
+                {
+                    throw new InvalidOperationException("Merger is not provided.");
+                }
+
+                var value = merge(link.Label, label);
+                link.AssignLabel(value);
                 return null;
             }
 

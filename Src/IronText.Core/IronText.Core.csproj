@@ -192,7 +192,7 @@
     <Compile Include="Reflection\Semantics\SemanticScope.cs" />
     <Compile Include="Reflection\Semantics\SemanticRef.cs" />
     <Compile Include="Reflection\Serialization\IGrammarReader.cs" />
-    <Compile Include="Runtime\GLR\GraphStructuredStack\GssReductionIndex.cs" />
+    <Compile Include="Runtime\GLR\GraphStructuredStack\IGraphStructuredStack.cs" />
     <Compile Include="Runtime\ILanguageSource.cs" />
     <Compile Include="Runtime\Inlining\FixedSizeStack.cs" />
     <Compile Include="Runtime\Inlining\InlinedAction.cs" />
@@ -383,7 +383,6 @@
     <Compile Include="Runtime\GLR\GraphStructuredStack\GssReducePath.cs" />
     <Compile Include="Runtime\GLR\GraphStructuredStack\GssNode.cs" />
     <Compile Include="Runtime\GLR\GraphStructuredStack\GssLink.cs" />
-    <Compile Include="Runtime\GLR\GraphStructuredStack\IGss.cs" />
     <Compile Include="Runtime\IPushParser.cs" />
     <Compile Include="Runtime\IScanner.cs" />
     <Compile Include="Reports\LrGraph.cs" />
