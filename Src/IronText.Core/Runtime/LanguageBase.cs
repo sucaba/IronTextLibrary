@@ -112,7 +112,7 @@ namespace IronText.Runtime
             }
             else
             {
-                return new RnGlrParser<TNode>(
+                return new GlrParser<TNode>(
                     _runtimeGrammar,
                     tokenComplexity,
                     getParserAction,

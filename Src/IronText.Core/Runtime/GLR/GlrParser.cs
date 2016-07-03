@@ -8,7 +8,7 @@ namespace IronText.Runtime
     using System.Diagnostics;
     using State = System.Int32;
 
-    sealed class RnGlrParser<T> : IPushParser
+    sealed class GlrParser<T> : IPushParser
     {
         private readonly RuntimeGrammar       grammar;
         private readonly int[]                conflictActionsTable;
@@ -29,7 +29,7 @@ namespace IronText.Runtime
         private readonly ILogging             logging;
         private bool isVerifier;
 
-        public RnGlrParser(
+        public GlrParser(
             RuntimeGrammar      grammar,
             int[]               tokenComplexity,
             TransitionDelegate  transition,
@@ -49,7 +49,7 @@ namespace IronText.Runtime
         {
         }
 
-        private RnGlrParser(
+        private GlrParser(
             RuntimeGrammar      grammar,
             int[]               tokenComplexity,
             TransitionDelegate  transition,
@@ -418,7 +418,7 @@ namespace IronText.Runtime
 
         public IPushParser CloneVerifier()
         {
-            var result = new RnGlrParser<T>(
+            var result = new GlrParser<T>(
                             grammar,
                             tokenComplexity,
                             transition,

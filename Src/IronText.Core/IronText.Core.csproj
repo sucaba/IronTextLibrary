@@ -394,7 +394,7 @@
     <Compile Include="Runtime\GLR\ReductionQueueing\ReductionPathQueue.cs" />
     <Compile Include="Runtime\Producers\IProducer.cs" />
     <Compile Include="Runtime\Deterministic\TaggedStack.cs" />
-    <Compile Include="Runtime\GLR\RnGlrParser.cs" />
+    <Compile Include="Runtime\GLR\GlrParser.cs" />
     <Compile Include="Runtime\RuntimeGrammar.cs" />
     <Compile Include="Runtime\Scanning\ScanCursor.cs" />
     <Compile Include="Runtime\Scanning\Scanner.cs" />

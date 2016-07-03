@@ -68,7 +68,7 @@ namespace IronText.Tests.TestUtils
             }
             else
             {
-                parser = new RnGlrParser<ActionNode>(
+                parser = new GlrParser<ActionNode>(
                             data.RuntimeGrammar,
                             data.TokenComplexity,
                             Transition,
