@@ -34,8 +34,6 @@ namespace IronText.Runtime
 
         public ImmutableArray<GssNode<T>> Front => front;
 
-        public bool IsFrontEmpty => front.Count == 0;
-
         public void PushLayer()
         {
             currentStage = 0;
@@ -105,13 +103,13 @@ namespace IronText.Runtime
 
         public GssLink<T> Push(
             GssNode<T> leftNode,
-            int rightState,
+            int state,
             T label,
             int lookahead = -1,
-            ValueMergeDelegate<T> merge = null)
+            Func<T,T,T> merge = null)
         {
-            GssNode<T> rightmostNode = GetFrontNode(rightState, lookahead)
-                                     ?? AddTopmost(rightState, lookahead);
+            GssNode<T> rightmostNode = GetFrontNode(state, lookahead)
+                                     ?? AddTopmost(state, lookahead);
 
             var link = GetLink(rightmostNode, leftNode);
             if (link != null)

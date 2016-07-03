@@ -26,6 +26,8 @@ namespace IronText.Runtime
 
         public int Capacity => items.Length;
 
+        public bool IsEmpty => count == 0;
+
         public int Count => count;
 
         public bool Contains(T item) =>

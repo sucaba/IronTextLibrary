@@ -111,7 +111,7 @@ namespace IronText.Runtime
             }
 #endif
 
-            if (gss.IsFrontEmpty)
+            if (gss.Front.IsEmpty)
             {
                 if (accepted)
                 {
@@ -222,7 +222,7 @@ namespace IronText.Runtime
 
                 T branch = producer.CreateBranch(path.Production, (IStackLookback<T>)path);
 
-                ValueMergeDelegate<T> merge =
+                Func<T,T,T> merge =
                     (currentValue, newValue) =>
                         producer.Merge(currentValue, newValue, path);
 
