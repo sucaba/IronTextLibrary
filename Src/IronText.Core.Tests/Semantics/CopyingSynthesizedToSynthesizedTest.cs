@@ -92,6 +92,5 @@ namespace IronText.Tests.Semantics
         {
             this.input = text;
         }
-
     }
 }

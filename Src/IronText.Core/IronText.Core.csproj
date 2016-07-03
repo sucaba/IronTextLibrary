@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DIAGNOSTICS;ENABLE_SEM0</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ENABLE_SEM0</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>default</LangVersion>
@@ -369,7 +369,7 @@
     <Compile Include="Runtime\Producers\NullProducer.cs" />
     <Compile Include="Runtime\Producers\ReductionOrder.cs" />
     <Compile Include="Runtime\ErrorRecovery\LocalCorrectionErrorRecovery.cs" />
-    <Compile Include="Runtime\GLR\ReductionQueueing\ReductionPathQueue.cs" />
+    <Compile Include="Runtime\GLR\ReductionQueueing\ReductionPathPriorityQueue.cs" />
     <Compile Include="Runtime\GLR\ReductionQueueing\Reduction.cs" />
     <Compile Include="Runtime\GLR\ReductionQueueing\IReductionQueue.cs" />
     <Compile Include="Runtime\IStackLookback.cs" />
@@ -391,7 +391,7 @@
     <Compile Include="Runtime\Producers\Sppf\SppfEpsilonProducer.cs" />
     <Compile Include="Diagnostics\SppfGraphWriter.cs" />
     <Compile Include="Runtime\Producers\Actions\ActionEpsilonProducer.cs" />
-    <Compile Include="Runtime\GLR\ReductionQueueing\ReductionQueue.cs" />
+    <Compile Include="Runtime\GLR\ReductionQueueing\ReductionPathQueue.cs" />
     <Compile Include="Runtime\Producers\IProducer.cs" />
     <Compile Include="Runtime\Deterministic\TaggedStack.cs" />
     <Compile Include="Runtime\GLR\RnGlrParser.cs" />

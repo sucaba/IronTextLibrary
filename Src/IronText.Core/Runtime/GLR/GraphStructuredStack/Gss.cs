@@ -136,6 +136,7 @@ namespace IronText.Runtime
             if (link != null)
             {
                 // TODO: Side-effect! How to undo it before the error recovery?
+                // TODO: Should token-merging logic be here?
                 link.AssignLabel(label);
                 return null;
             }

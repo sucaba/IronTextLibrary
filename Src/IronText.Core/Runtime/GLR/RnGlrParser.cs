@@ -8,17 +8,6 @@ namespace IronText.Runtime
     using System.Diagnostics;
     using State = System.Int32;
 
-    /// <summary>
-    /// Comparing to the Tomita's Algorithm 1, it also supports:
-    /// - epsilon productions
-    /// - hidden left recursion
-    /// - hidden right recursion
-    /// - right-nullable productions
-    /// - Merge values of reduction alternatives
-    ///   (like ones with math operators resolved by precedence rules)
-    /// - Handle input Shrodinger's tokens
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
     sealed class RnGlrParser<T> : IPushParser
     {
         private readonly RuntimeGrammar       grammar;
@@ -85,12 +74,12 @@ namespace IronText.Runtime
             {
                 case ReductionOrder.Unordered:
                     {
-                        this.R = new ReductionQueue<T>();
+                        this.R = new ReductionPathQueue<T>();
                         break;
                     }
                 case ReductionOrder.ByRuleDependency:
                     {
-                        this.R = new ReductionPathQueue<T>(tokenComplexity, grammar);
+                        this.R = new ReductionPathPriorityQueue<T>(tokenComplexity, grammar);
                         break;
                     }
             }
@@ -249,19 +238,15 @@ namespace IronText.Runtime
                 // Goto on non-term produced by the production.
                 var newLink = gss.Push(fromNode, toState, value, lookahead);
 
-                QueueReductionPathsAfterReduction(
+                bool isNewNode = existingToNode == null;
+                bool isNewLinkToReduceAlong = newLink != null;
+
+                QueueReductionPaths(
                     existingToNode ?? gss.GetFrontNode(toState, lookahead),
-                    newLink,
                     lookahead,
-                    // Zero reductions should be made only when node is created
-                    // to avoid repetitions
-                    includeZeroPaths: existingToNode == null,
-                    includeNonZeroPaths: 
-                        // Avoid right-nullable reductions
-                        path.Size != 0 
-                        && 
-                        // TODO: Should we avoid reductions if label-value was merged?
-                        newLink != null);
+                    newLink,
+                    includeZeroPaths:    isNewNode,
+                    includeNonZeroPaths: isNewLinkToReduceAlong);
             }
         }
 
@@ -286,35 +271,12 @@ namespace IronText.Runtime
             return result;
         }
 
-        private void QueueReductionPaths(GssNode<T> frontNode, int token)
-        {
-            GetReductions(frontNode.State, token);
-
-            for (int i = 0; i != pendingReductionsCount; ++i)
-            {
-                var prod = pendingReductions[i];
-                if (prod.InputLength != 0)
-                {
-                    R.Enqueue(frontNode, prod);
-                }
-            }
-
-            for (int i = 0; i != pendingReductionsCount; ++i)
-            {
-                var prod = pendingReductions[i];
-                if (prod.InputLength == 0)
-                {
-                    R.Enqueue(frontNode, prod);
-                }
-            }
-        }
-
-        private void QueueReductionPathsAfterReduction(
+        private void QueueReductionPaths(
             GssNode<T> frontNode,
-            GssLink<T> newLink,
             int token,
-            bool includeZeroPaths,
-            bool includeNonZeroPaths)
+            GssLink<T> newLink = null,
+            bool includeZeroPaths = true,
+            bool includeNonZeroPaths = true)
         {
             GetReductions(frontNode.State, token);
 
