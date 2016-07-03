@@ -7,12 +7,11 @@ namespace IronText.Runtime
     interface IGraphStructuredStack<T>
         : IUndoable
     {
-        int Count { get; }
-        bool IsEmpty { get; }
-        int CurrentLayer { get; }
-        GssNode<T>[] FrontArray { get; }
+        bool IsFrontEmpty { get; }
+        ImmutableArray<GssNode<T>> Front { get; }
+        GssNode<T> GetFrontNode(int state, int lookahead);
+
         Gss<T> CloneWithoutData();
-        GssNode<T> GetFrontNode(int state, int lookahead = -1);
 
         void PushLayer();
         void PopLayer();

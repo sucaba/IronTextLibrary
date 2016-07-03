@@ -5,6 +5,7 @@ using System.Text;
 namespace IronText.Runtime
 {
     using Logging;
+    using System;
     using System.Diagnostics;
     using State = System.Int32;
 
@@ -110,7 +111,7 @@ namespace IronText.Runtime
             }
 #endif
 
-            if (gss.IsEmpty)
+            if (gss.IsFrontEmpty)
             {
                 if (accepted)
                 {
@@ -136,7 +137,6 @@ namespace IronText.Runtime
 
         private void ProcessTerm(Msg envelope, MsgData alternateInput)
         {
-            var front = gss.FrontArray;
             int lookahead = alternateInput.Token;
 
             Actor(lookahead);
@@ -144,10 +144,8 @@ namespace IronText.Runtime
 
             if (accepted)
             {
-                int count = gss.Count;
-                for (int i = 0; i != count; ++i)
+                foreach (var node in gss.Front)
                 {
-                    var node = front[i];
                     if (IsAccepting(node.State))
                     {
                         producer.Result = node.FirstLink.Label;
@@ -158,11 +156,8 @@ namespace IronText.Runtime
 
             var termValue = producer.CreateLeaf(envelope, alternateInput);
 
-            for (int i = 0; i != gss.Count; ++i)
+            foreach (var frontNode in gss.Front)
             {
-                var frontNode = front[i];
-
-                // Plan shift
                 var shift = GetShift(frontNode.State, lookahead);
                 if (shift >= 0)
                 {
@@ -208,9 +203,8 @@ namespace IronText.Runtime
 
         private void Actor(int lookahead)
         {
-            for (int j = 0; j != gss.Count; ++j)
+            foreach (var fromNode in gss.Front)
             {
-                var fromNode = gss.FrontArray[j];
                 QueueReductionPaths(fromNode, lookahead);
             }
         }
@@ -228,13 +222,16 @@ namespace IronText.Runtime
 
                 T branch = producer.CreateBranch(path.Production, (IStackLookback<T>)path);
 
+                ValueMergeDelegate<T> merge =
+                    (currentValue, newValue) =>
+                        producer.Merge(currentValue, newValue, path);
+
                 var newLink = gss.Push(
                                 fromNode,
                                 toState,
                                 branch,
                                 lookahead,
-                                (currentValue, newValue) =>
-                                    producer.Merge(currentValue, newValue, path));
+                                merge);
 
                 bool isNewNode = existingToNode == null;
                 bool isNewLinkToReduceAlong = newLink != null;
@@ -427,9 +424,9 @@ namespace IronText.Runtime
             isVerifier = true;
             try
             {
-                while (this.CloneVerifier().Feed(input) == null)
+                while (!CanParse(input))
                 {
-                    if (gss.CurrentLayer == 0)
+                    if (!gss.HasLayers)
                     {
                         return null;
                     }
@@ -445,6 +442,11 @@ namespace IronText.Runtime
             this.Feed(input);
 
             return this;
+        }
+
+        private bool CanParse(Msg[] input)
+        {
+            return this.CloneVerifier().Feed(input) != null;
         }
 
         private IReceiver<Msg> RecoverFromError(Msg currentInput)
@@ -485,10 +487,8 @@ namespace IronText.Runtime
                 .Append(grammar.SymbolName(envelope.AmbToken))
                 .Append(" in state stacks: {");
             bool firstStack = true;
-            for (int i = 0; i != gss.Count; ++i)
+            foreach (var node in gss.Front)
             {
-                var node = gss.FrontArray[i];
-
                 if (firstStack)
                 {
                     firstStack = false;
