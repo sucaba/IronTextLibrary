@@ -71,15 +71,15 @@ namespace IronText.Runtime
 
                 if (node.Layer >= currentLayer)
                 {
-                    var link = node.FirstLink;
+                    var link = node.FirstBackLink;
                     while (link != null)
                     {
-                        if (!visited.Contains(link.LeftNode))
+                        if (!visited.Contains(link.PriorNode))
                         {
-                            visited.Add(link.LeftNode);
+                            visited.Add(link.PriorNode);
                         }
 
-                        link = link.NextLink;
+                        link = link.NextAlternative;
                     }
                 }
             }
@@ -94,7 +94,7 @@ namespace IronText.Runtime
             // parsing recovery sequences (TODO: prove!). However removing 
             // these nodes should simplify debugging and can slightly improve
             // performance.
-            front.RemoveAll(node => node.Stage != 0);
+            front.RemoveAll(node => node.Stage != GssStage.FinalShift);
         }
 
         public GssNode<T> GetFrontNode(State state, int lookahead)
@@ -117,17 +117,17 @@ namespace IronText.Runtime
             return result;
         }
 
-        public GssLink<T> Push(
-            GssNode<T> leftNode,
-            int state,
+        public GssBackLink<T> Push(
+            GssNode<T> fromNode,
+            int toState,
             T label,
             int lookahead = -1,
             Func<T,T,T> merge = null)
         {
-            GssNode<T> rightmostNode = GetFrontNode(state, lookahead)
-                                     ?? AddTopmost(state, lookahead);
+            GssNode<T> toNode = GetFrontNode(toState, lookahead)
+                                ?? AddTopmost(toState, lookahead);
 
-            var link = GetLink(rightmostNode, leftNode);
+            var link = GetLink(toNode, fromNode);
             if (link != null)
             {
                 if (merge == null)
@@ -140,15 +140,15 @@ namespace IronText.Runtime
                 return null;
             }
 
-            var result = rightmostNode.AddLink(leftNode, label);
-            if (result.NextLink != null)
+            var result = toNode.PushLinkAlternative(fromNode, label);
+            if (result.NextAlternative == null)
             {
-                rightmostNode.DeterministicDepth = 0;
-                UpdateDeterministicDepths();
+                toNode.DeterministicDepth = fromNode.DeterministicDepth + 1;
             }
             else
             {
-                rightmostNode.DeterministicDepth = leftNode.DeterministicDepth + 1;
+                toNode.DeterministicDepth = 0;
+                UpdateDeterministicDepths();
             }
 
             return result;
@@ -175,20 +175,20 @@ namespace IronText.Runtime
             while (changes != 0);
         }
 
-        private static GssLink<T> GetLink(GssNode<T> fromNode, GssNode<T> toNode)
+        private static GssBackLink<T> GetLink(GssNode<T> fromNode, GssNode<T> toNode)
         {
-            var link = fromNode.FirstLink;
+            var link = fromNode.FirstBackLink;
             while (link != null)
             {
-                if (link.LeftNode == toNode)
+                if (link.PriorNode == toNode)
                 {
                     return link;
                 }
 
-                link = link.NextLink;
+                link = link.NextAlternative;
             }
 
-            return default(GssLink<T>);
+            return default(GssBackLink<T>);
         }
 
         
@@ -248,10 +248,10 @@ namespace IronText.Runtime
                     }
 
                     int token = stateToSymbol[from.State];
-                    var link = from.FirstLink;
+                    var link = from.FirstBackLink;
                     while (link != null)
                     {
-                        var to = link.LeftNode;
+                        var to = link.PriorNode;
 
                         view.AddNode(Tuple.Create("t", linkIndex), grammar.SymbolName(token));
 
@@ -267,7 +267,7 @@ namespace IronText.Runtime
 
                         ++linkIndex;
 
-                        link = link.NextLink;
+                        link = link.NextAlternative;
                     }
                 }
             }
@@ -283,7 +283,7 @@ namespace IronText.Runtime
             for (int i = 0; i != result.Count; ++i)
             {
                 var item = result[i];
-                var f = item.Links.Select(l => l.LeftNode).Except(result);
+                var f = item.Links.Select(l => l.PriorNode).Except(result);
                 result.AddRange(f);
             }
 

@@ -384,7 +384,7 @@
     <Compile Include="Runtime\GLR\GraphStructuredStack\GssReduceNode.cs" />
     <Compile Include="Runtime\GLR\GraphStructuredStack\GssReducePath.cs" />
     <Compile Include="Runtime\GLR\GraphStructuredStack\GssNode.cs" />
-    <Compile Include="Runtime\GLR\GraphStructuredStack\GssLink.cs" />
+    <Compile Include="Runtime\GLR\GraphStructuredStack\GssBackLink.cs" />
     <Compile Include="Runtime\IPushParser.cs" />
     <Compile Include="Runtime\IScanner.cs" />
     <Compile Include="Reports\LrGraph.cs" />

@@ -31,14 +31,14 @@ namespace IronText.Runtime
         public bool IsEmpty { get { return paths.Count == 0; } }
 
         public void Enqueue(
-            GssLink<T>        rightLink,
+            GssBackLink<T>        rightLink,
             RuntimeProduction production)
         {
             Debug.Assert(rightLink != null);
 
             GssReducePath<T>.ForEach(
                 production,
-                rightLink.LeftNode,
+                rightLink.PriorNode,
                 rightLink,
                 InternalEnqueue);
         }
@@ -57,13 +57,13 @@ namespace IronText.Runtime
             }
             else
             {
-                var linkAlternative = rightNode.FirstLink;
+                var linkAlternative = rightNode.FirstBackLink;
                 
                 while (linkAlternative != null)
                 {
                     Enqueue(linkAlternative, production);
 
-                    linkAlternative = linkAlternative.NextLink;
+                    linkAlternative = linkAlternative.NextAlternative;
                 }
             }
         }

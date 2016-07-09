@@ -9,6 +9,6 @@ namespace IronText.Runtime
 
         void Enqueue(GssNode<TNode> tailNode, RuntimeProduction prod);
 
-        void Enqueue(GssLink<TNode> tailLink, RuntimeProduction prod);
+        void Enqueue(GssBackLink<TNode> tailLink, RuntimeProduction prod);
     }
 }

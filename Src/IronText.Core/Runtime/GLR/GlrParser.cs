@@ -148,7 +148,7 @@ namespace IronText.Runtime
                 {
                     if (IsAccepting(node.State))
                     {
-                        producer.Result = node.FirstLink.Label;
+                        producer.Result = node.FirstBackLink.Label;
                         break;
                     }
                 }
@@ -248,7 +248,7 @@ namespace IronText.Runtime
         private void QueueReductionPaths(
             GssNode<T> frontNode,
             int token,
-            GssLink<T> newLink = null,
+            GssBackLink<T> newLink = null,
             bool includeZeroPaths = true,
             bool includeNonZeroPaths = true)
         {
@@ -518,7 +518,7 @@ namespace IronText.Runtime
                         break;
                     }
 
-                    n = n.FirstLink.LeftNode;
+                    n = n.FirstBackLink.PriorNode;
                 }
 
                 message.Append("]");

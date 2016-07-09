@@ -4,14 +4,14 @@
     {
         public readonly RuntimeProduction Production;
         public readonly GssNode<T>        RightNode;
-        public readonly GssLink<T>        RightLink;
+        public readonly GssBackLink<T>        RightLink;
         public readonly int               Token;
         public readonly int               Size;
 
         public Reduction(
             GssNode<T>        rightNode,
             RuntimeProduction production,
-            GssLink<T>        rightLink)
+            GssBackLink<T>        rightLink)
         {
             this.Production = production;
             this.RightNode  = rightNode;

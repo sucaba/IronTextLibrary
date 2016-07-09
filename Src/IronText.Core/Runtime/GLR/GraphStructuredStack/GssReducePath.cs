@@ -11,13 +11,13 @@ namespace IronText.Runtime
         /// <summary>
         /// Left-to-right reduction path labels
         /// </summary>
-        public readonly GssLink<T>[]      Links;
+        public readonly GssBackLink<T>[]      Links;
 
         public int Size => Production.InputLength;
 
         public GssReducePath(
             GssNode<T>        leftNode,
-            GssLink<T>[]      links,
+            GssBackLink<T>[]      links,
             RuntimeProduction production)
         {
             this.LeftNode   = leftNode;
@@ -28,7 +28,7 @@ namespace IronText.Runtime
         public static void ForEach(
             RuntimeProduction production,
             GssNode<T>        rightNode,
-            GssLink<T>        rightLink,
+            GssBackLink<T>        rightLink,
             Action<GssReducePath<T>> action)
         {
             int fullSize = production.InputLength;
@@ -54,21 +54,21 @@ namespace IronText.Runtime
                 action1(
                     new GssReducePath<T>(
                         rightNode,
-                        new GssLink<T>[tail],
+                        new GssBackLink<T>[tail],
                         production));
             }
             else if (size <= rightNode.DeterministicDepth)
             {
-                var links = new GssLink<T>[fullSize];
+                var links = new GssBackLink<T>[fullSize];
 
                 GssNode<T> node = rightNode;
                 int i = size;
                 while (i-- != 0)
                 {
-                    var link = node.FirstLink;
+                    var link = node.FirstBackLink;
                     links[i] = link;
 
-                    node = link.LeftNode;
+                    node = link.PriorNode;
                 }
 
                 action1(
@@ -80,16 +80,16 @@ namespace IronText.Runtime
             else
             {
                 // TODO: Get rid of front. 'front link' is frontPaths[j][k]
-                var front      = new List<GssLink<T>>(2);
-                var frontPaths = new List<GssLink<T>[]>(rightNode.LinkCount);
+                var front      = new List<GssBackLink<T>>(2);
+                var frontPaths = new List<GssBackLink<T>[]>(rightNode.LinkCount);
 
-                var frontLink = rightNode.FirstLink;
+                var frontLink = rightNode.FirstBackLink;
                 while (frontLink != null)
                 {
                     front.Add(frontLink);
-                    frontPaths.Add(new GssLink<T>[fullSize]);
+                    frontPaths.Add(new GssBackLink<T>[fullSize]);
 
-                    frontLink = frontLink.NextLink;
+                    frontLink = frontLink.NextAlternative;
                 }
 
                 int k = size;
@@ -103,16 +103,16 @@ namespace IronText.Runtime
 
                         if (k != 0)
                         {
-                            front[j] = currLink.LeftNode.FirstLink;
-                            var link = front[j].NextLink;
+                            front[j] = currLink.PriorNode.FirstBackLink;
+                            var link = front[j].NextAlternative;
 
                             while (link != null)
                             {
                                 front.Add(link);
-                                var newPathLinks = (GssLink<T>[])frontPaths[j].Clone();
+                                var newPathLinks = (GssBackLink<T>[])frontPaths[j].Clone();
                                 frontPaths.Add(newPathLinks);
 
-                                link = link.NextLink;
+                                link = link.NextAlternative;
                             }
                         }
                     }
@@ -121,7 +121,7 @@ namespace IronText.Runtime
                 int count = front.Count;
                 for (int i = 0; i != count; ++i)
                 {
-                    action1( new GssReducePath<T>(front[i].LeftNode, frontPaths[i], production));
+                    action1( new GssReducePath<T>(front[i].PriorNode, frontPaths[i], production));
                 }
             }
         }
@@ -138,7 +138,7 @@ namespace IronText.Runtime
             int index = Links.Length - backOffset;
             if (index >= 0)
             {
-                result = Links[index].LeftNode.State;
+                result = Links[index].PriorNode.State;
             }
             else
             {

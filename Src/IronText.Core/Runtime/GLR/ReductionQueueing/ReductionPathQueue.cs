@@ -9,12 +9,12 @@ namespace IronText.Runtime
         public bool IsEmpty => paths.Count == 0;
 
         public void Enqueue(
-            GssLink<T>        rightLink,
+            GssBackLink<T>        rightLink,
             RuntimeProduction production)
         {
             GssReducePath<T>.ForEach(
                 production,
-                rightLink.LeftNode,
+                rightLink.PriorNode,
                 rightLink,
                 paths.Enqueue);
         }

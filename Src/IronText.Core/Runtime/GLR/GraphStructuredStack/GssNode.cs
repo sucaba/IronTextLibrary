@@ -7,15 +7,8 @@ namespace IronText.Runtime
 
     sealed class GssNode<T> : IStackLookback<T>
     {
-        public int DeterministicDepth = 1;
-        public readonly State State;
-        public readonly int Layer;
-        public readonly GssStage Stage;
-        public readonly int Lookahead;
-        private GssLink<T> firstLink;
-
         /// <summary>
-        /// 
+        /// GSS node which uniquely represents parser state within a GSS layer.
         /// </summary>
         /// <param name="state"></param>
         /// <param name="layer"></param>
@@ -35,61 +28,64 @@ namespace IronText.Runtime
             this.Lookahead = lookahead;
         }
 
+        public GssBackLink<T> FirstBackLink { get; private set; }
+
+        public int      DeterministicDepth { get; internal set; } = 1;
+
+        public State    State     { get; }
+
+        public int      Layer     { get; }
+
+        public GssStage Stage     { get; }
+
+        public int      Lookahead { get; }
+
         public int LinkCount 
         { 
             get 
             {
                 int count = 0;
-                var link = FirstLink;
+                var link = FirstBackLink;
                 while (link != null)
                 {
                     ++count;
-                    link = link.NextLink;
+                    link = link.NextAlternative;
                 }
 
                 return count;
             } 
         }
 
-        public IEnumerable<GssLink<T>> Links
+        public IEnumerable<GssBackLink<T>> Links
         {
             get
             {
-                var link = firstLink;
+                var link = FirstBackLink;
                 while (link != null)
                 {
                     yield return link;
-                    link = link.NextLink;
+                    link = link.NextAlternative;
                 }
             }
         }
 
-        public GssLink<T> AddLink(GssNode<T> leftNode, T label)
+        public GssBackLink<T> PushLinkAlternative(GssNode<T> leftNode, T label)
         {
-            var result = new GssLink<T>(leftNode, label, firstLink);
-            firstLink = result;
+            var result = new GssBackLink<T>(leftNode, label, FirstBackLink);
+            FirstBackLink = result;
             return result;
-        }
-
-        public GssLink<T> FirstLink
-        {
-            get
-            {
-                //Debug.Assert(DeterministicDepth > 0);
-                return firstLink;
-            }
         }
 
         public int ComputeDeterministicDepth()
         {
-            if (firstLink == null)
+            if (FirstBackLink == null)
             {
                 return 1;
             }
 
-            if (firstLink.NextLink == null)
+            if (FirstBackLink.NextAlternative == null)
             {
-                return firstLink.LeftNode.DeterministicDepth + 1;
+                return FirstBackLink.PriorNode.DeterministicDepth + 1;
             }
 
             return 0;
@@ -106,7 +102,7 @@ namespace IronText.Runtime
         T IStackLookback<T>.GetNodeAt(int backoffset)
         {
             var node = GetNodeAtDepth(backoffset);
-            return node.FirstLink.Label;
+            return node.FirstBackLink.Label;
         }
 
         private GssNode<T> GetNodeAtDepth(int depth)
@@ -118,7 +114,7 @@ namespace IronText.Runtime
 
             while (0 != --depth)
             {
-                node = node.FirstLink.LeftNode;
+                node = node.FirstBackLink.PriorNode;
             }
 
             return node;

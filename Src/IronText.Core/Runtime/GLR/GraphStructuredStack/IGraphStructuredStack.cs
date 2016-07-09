@@ -14,7 +14,7 @@ namespace IronText.Runtime
         void PushLayer();
         void PopLayer();
 
-        GssLink<T> Push(
+        GssBackLink<T> Push(
             GssNode<T> fromNode,
             int toState,
             T label,
