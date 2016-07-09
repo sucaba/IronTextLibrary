@@ -10,7 +10,7 @@ namespace IronText.Runtime
         public int DeterministicDepth = 1;
         public readonly State State;
         public readonly int Layer;
-        public readonly byte Stage;
+        public readonly GssStage Stage;
         public readonly int Lookahead;
         private GssLink<T> firstLink;
 
@@ -27,7 +27,7 @@ namespace IronText.Runtime
         /// (and for shift-reduces), #1 - for reduces triggered by the next
         /// incoming term.
         /// </param>
-        public GssNode(State state, int layer, byte stage, int lookahead = -1)
+        public GssNode(State state, int layer, GssStage stage, int lookahead = -1)
         {
             this.State = state;
             this.Layer = layer;

@@ -13,13 +13,15 @@ namespace IronText.Runtime
         , IUndoable
     {
         private int currentLayer = 0;
-        private byte currentStage = 0;
+        private GssStage currentStage = 0;
         private MutableArray<GssNode<T>> front;
+        private MutableArray<GssNode<T>> prior;
         private readonly CircularStack<GssNode<T>> history;
 
         public Gss(int stateCount)
         {
             front = new MutableArray<GssNode<T>>(stateCount);
+            prior = new MutableArray<GssNode<T>>(stateCount);
             history = new CircularStack<GssNode<T>>(2 * stateCount + 2);
             AddTopmost(0);
         }
@@ -28,15 +30,23 @@ namespace IronText.Runtime
         {
             this.currentLayer = currentLayer;
             this.front = front;
+            this.prior = new MutableArray<GssNode<T>>(front.Capacity);
         }
 
         public bool HasLayers => currentLayer != 0;
 
         public ImmutableArray<GssNode<T>> Front => front;
 
+        public ImmutableArray<GssNode<T>> Prior => prior;
+
         public void PushLayer()
         {
-            currentStage = 0;
+            currentStage = GssStage.FinalShift;
+
+            var temp = prior;
+            prior = front;
+            front = temp;
+
             front.Clear();
             ++currentLayer;
         }
@@ -44,7 +54,11 @@ namespace IronText.Runtime
         public void PopLayer()
         {
             var visited = front;
-            this.front = new MutableArray<GssNode<T>>(front.Capacity);
+
+            this.front = prior;
+            front.Clear();
+            this.prior = visited;
+            
 
             --currentLayer;
 
@@ -69,6 +83,8 @@ namespace IronText.Runtime
                     }
                 }
             }
+
+            prior.Clear();
 
             // Following line removes nodes created by the lookahead triggered 
             // reductions.
@@ -276,7 +292,7 @@ namespace IronText.Runtime
 
         public void BeginEdit()
         {
-            currentStage = 1;
+            currentStage = GssStage.InitialReduce;
 
             // Save front to history before editing
             if (history != null)
@@ -316,7 +332,7 @@ namespace IronText.Runtime
             }
 
             this.currentLayer -= inputCount;
-            this.currentStage = 0;
+            this.currentStage = GssStage.FinalShift;
 
             history.Push(null);
 

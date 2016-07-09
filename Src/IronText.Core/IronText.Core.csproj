@@ -193,6 +193,7 @@
     <Compile Include="Reflection\Semantics\SemanticRef.cs" />
     <Compile Include="Reflection\Serialization\IGrammarReader.cs" />
     <Compile Include="Runtime\GLR\GraphStructuredStack\GssFront.cs" />
+    <Compile Include="Runtime\GLR\GraphStructuredStack\GssStage.cs" />
     <Compile Include="Runtime\GLR\GraphStructuredStack\IGraphStructuredStack.cs" />
     <Compile Include="Runtime\ILanguageSource.cs" />
     <Compile Include="Runtime\Inlining\FixedSizeStack.cs" />
