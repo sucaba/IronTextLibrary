@@ -1,4 +1,5 @@
-﻿using IronText.Logging;
+﻿using IronText.Collections;
+using IronText.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,7 +20,7 @@ namespace IronText.Runtime
         private RuntimeProduction currentProd;
         private IProducer<TNode> producer;
         private ILogging logging;
-        private Msg priorInput;
+        private Message priorInput;
         private bool isVerifier;
 
         public DeterministicParser(
@@ -57,11 +58,11 @@ namespace IronText.Runtime
             PushNode(0, producer.CreateStart());
         }
 
-        public IReceiver<Msg> Done()
+        public IReceiver<Message> Done()
         {
             Loc location;
 
-            if (!object.Equals(priorInput, default(Msg)))
+            if (!object.Equals(priorInput, default(Message)))
             {
                 location = priorInput.Location.GetEndLocation();
             }
@@ -70,16 +71,16 @@ namespace IronText.Runtime
                 location = new Loc(1, 1, 1, 1);
             }
 
-            var eoi = new Msg(PredefinedTokens.Eoi, null, null, location);
+            var eoi = new Message(PredefinedTokens.Eoi, null, null, location);
             return Next(eoi);
         }
 
-        public IReceiver<Msg> Next(Msg envelope)
+        public IReceiver<Message> Next(Message envelope)
         {
             stateStack.BeginEdit();
 
-            int id = envelope.AmbToken;
-            MsgData data = envelope.FirstData;
+            int id = envelope.AmbiguousToken;
+            MessageData data = envelope.FirstData;
 
         RESTART:
             int start = actionTable(stateStack.PeekTag(), id);
@@ -116,7 +117,8 @@ namespace IronText.Runtime
 
                     case ParserActionKind.Resolve:
                         id = action.ResolvedToken;
-                        data = FindInputAlternative(data, id);
+                        data = data.Alternatives()
+                                   .ResolveFirst(x => x.Token == id);
 
                         if (data == null)
                         {
@@ -133,7 +135,7 @@ namespace IronText.Runtime
                             {
                                 Severity = Severity.Error,
                                 Location = envelope.Location,
-                                Message = "Hit parser conflict on token " + grammar.SymbolName(envelope.AmbToken)
+                                Message = "Hit parser conflict on token " + grammar.SymbolName(envelope.AmbiguousToken)
                             });
                         return null;
 
@@ -146,7 +148,7 @@ namespace IronText.Runtime
 
                     case ParserActionKind.Accept:
                         producer.Result = stateStack.Peek();
-                        return FinalReceiver<Msg>.Instance;
+                        return FinalReceiver<Message>.Instance;
 
                     default:
                         throw new InvalidOperationException("Internal error: Unsupported parser action");
@@ -156,26 +158,9 @@ namespace IronText.Runtime
             }
         }
 
-        private static MsgData FindInputAlternative(MsgData data, int token)
+        private IReceiver<Message> RecoverFromError(Message currentInput)
         {
-            do
-            {
-                if (data.Token == token)
-                {
-                    // Successfully resolved to a particular token 
-                    break;
-                }
-
-                data = data.NextAlternative;
-            }
-            while (data != null);
-
-            return data;
-        }
-
-        private IReceiver<Msg> RecoverFromError(Msg currentInput)
-        {
-            if (currentInput.AmbToken == PredefinedTokens.Eoi)
+            if (currentInput.AmbiguousToken == PredefinedTokens.Eoi)
             {
                 if (!isVerifier)
                 {
@@ -193,7 +178,7 @@ namespace IronText.Runtime
 
             this.producer = producer.GetRecoveryProducer();
 
-            IReceiver<Msg> result = new LocalCorrectionErrorRecovery(grammar, this, logging);
+            IReceiver<Message> result = new LocalCorrectionErrorRecovery(grammar, this, logging);
             if (priorInput != null)
             {
                 stateStack.Undo(1);
@@ -207,12 +192,12 @@ namespace IronText.Runtime
             return result.Next(currentInput);
         }
 
-        private void ReportUnexpectedToken(Msg msg, int state)
+        private void ReportUnexpectedToken(Message msg, int state)
         {
             var message = new StringBuilder();
 
             // TODO: Get rid of grammar usage. Properly formatted text should be sufficient.
-            message.Append("Got ").Append(msg.Text ?? grammar.SymbolName(msg.AmbToken));
+            message.Append("Got ").Append(msg.Text ?? grammar.SymbolName(msg.AmbiguousToken));
             message.Append("  but expected ");
 
             int[] expectedTokens = GetExpectedTokens(state);
@@ -266,7 +251,7 @@ namespace IronText.Runtime
             return result;
         }
 
-        public IReceiver<Msg> ForceNext(params Msg[] input)
+        public IReceiver<Message> ForceNext(params Message[] input)
         {
             isVerifier = true;
             try

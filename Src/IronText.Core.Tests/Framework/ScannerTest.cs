@@ -124,10 +124,10 @@ namespace IronText.Tests.Syntax.Re2IL
 
             Assert.AreEqual(
                 expectedTokens,
-                tokens.Select(msg => msg.AmbToken).ToArray());
+                tokens.Select(msg => msg.AmbiguousToken).ToArray());
         }
 
-        private static List<Msg> Scan(string input)
+        private static List<Message> Scan(string input)
         {
             var context = new MyMiniLexer();
             using (var interp = new Interpreter<MyMiniLexer>())

@@ -6,7 +6,7 @@ namespace IronText.Runtime
 {
     sealed class Scanner
         : IScanner
-        , IEnumerable<Msg>
+        , IEnumerable<Message>
     {
         public const char Sentinel = '\0';
         public const int BufferSize = 1024;
@@ -39,7 +39,7 @@ namespace IronText.Runtime
 
         public int MaxActionCount { get; private set; }
 
-        public IEnumerator<Msg> GetEnumerator()
+        public IEnumerator<Message> GetEnumerator()
         {
             return new ScannerEnumerator(this, logging);
         }
@@ -49,7 +49,7 @@ namespace IronText.Runtime
             return GetEnumerator();
         }
         
-        public IReceiver<Msg> Accept(IReceiver<Msg> visitor)
+        public IReceiver<Message> Accept(IReceiver<Message> visitor)
         {
             var enumerator = new ScannerEnumerator(this, logging);
             while (enumerator.MoveNext())

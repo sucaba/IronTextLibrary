@@ -30,20 +30,20 @@ namespace IronText.Runtime
     {
         private const string UnknownText = "?";
 
-        public static Msg Literal(this ILanguageRuntime @this, string literal)
+        public static Message Literal(this ILanguageRuntime @this, string literal)
         {
             var id = @this.Identify(literal);
-            return new Msg(id, literal, null, Loc.Unknown);
+            return new Message(id, literal, null, Loc.Unknown);
         }
 
-        public static Msg Symbol<T>(this ILanguageRuntime @this, T value, string text = UnknownText)
+        public static Message Symbol<T>(this ILanguageRuntime @this, T value, string text = UnknownText)
         {
             return @this.Symbol(typeof(T), value, text);
         }
 
-        public static Msg Symbol(this ILanguageRuntime @this, Type type, object value, string text = UnknownText)
+        public static Message Symbol(this ILanguageRuntime @this, Type type, object value, string text = UnknownText)
         {
-            return new Msg(@this.Identify(type), text, value, Loc.Unknown);
+            return new Message(@this.Identify(type), text, value, Loc.Unknown);
         }
 
         private static int IdentifySymbolValue(this ILanguageRuntime @this, object value)

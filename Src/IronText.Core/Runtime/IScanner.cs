@@ -3,8 +3,8 @@
 namespace IronText.Runtime
 {
     public interface IScanner 
-        : ISequence<Msg>
-        , IEnumerable<Msg>
+        : ISequence<Message>
+        , IEnumerable<Message>
     {
     }
 }

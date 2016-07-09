@@ -21,7 +21,7 @@ namespace IronText.Runtime
             this.requiredInputSize = requiredInputSize;
         }
 
-        public Loc GetHiglightLocation(List<Msg> source)
+        public Loc GetHiglightLocation(List<Message> source)
         {
             for (int i = 0; i != Count; ++i)
             {
@@ -45,7 +45,7 @@ namespace IronText.Runtime
             return Loc.Sum(errorItems);
         }
 
-        public string FormatMessage(RuntimeGrammar grammar, List<Msg> source, List<Msg> corrected)
+        public string FormatMessage(RuntimeGrammar grammar, List<Message> source, List<Message> corrected)
         {
             var output = new StringBuilder();
             ProcessMessageFormat(grammar, source, corrected, output);
@@ -54,8 +54,8 @@ namespace IronText.Runtime
 
         private void ProcessMessageFormat(
             RuntimeGrammar grammar,
-            List<Msg>          source,
-            List<Msg>          corrected,
+            List<Message>          source,
+            List<Message>          corrected,
             StringBuilder      output)
         {
             int i = 0;
@@ -92,9 +92,9 @@ namespace IronText.Runtime
             }
         }
 
-        private string FormatToken(RuntimeGrammar grammar, Msg msg)
+        private string FormatToken(RuntimeGrammar grammar, Message msg)
         {
-            if (msg.AmbToken == PredefinedTokens.Eoi)
+            if (msg.AmbiguousToken == PredefinedTokens.Eoi)
             {
                 return "end of file";
             }
@@ -108,7 +108,7 @@ namespace IronText.Runtime
             else
             {
                 // TODO: Get rid of grammar usage. Properly formatted text should be sufficient.
-                result = grammar.SymbolName(msg.AmbToken);
+                result = grammar.SymbolName(msg.AmbiguousToken);
             }
 
             return result;

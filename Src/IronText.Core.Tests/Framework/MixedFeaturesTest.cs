@@ -81,7 +81,7 @@ namespace IronText.Tests.Framework
             return value;
         }
 
-        private double Eval(Msg[] input)
+        private double Eval(Message[] input)
         {
             var parser = new MiniInterperter();
             var result = Language.Parse(parser, input).Result;
@@ -90,18 +90,18 @@ namespace IronText.Tests.Framework
 
         private static readonly ILanguageRuntime lang = Language.Get(typeof(MiniInterperter));
 
-        private static readonly Msg OPN   = lang.Literal("(");
-        private static readonly Msg CLS   = lang.Literal(")");
-        private static readonly Msg VAL0  = lang.Symbol(new Num("0"));
-        private static readonly Msg VAL1  = lang.Symbol(new Num("1"));
-        private static readonly Msg VAL2  = lang.Symbol(new Num("2"));
-        private static readonly Msg VAL3  = lang.Symbol(new Num("3"));
-        private static readonly Msg VAL10 = lang.Symbol(new Num("10"));
-        private static readonly Msg VAL20 = lang.Symbol(new Num("20"));
-        private static readonly Msg DESCR = lang.Symbol(new QStr("long description"));
-        private static readonly Msg IF    = lang.Literal("if");
-        private static readonly Msg POW   = lang.Literal("^");
-        private static readonly Msg SUM   = lang.Literal("sum");
+        private static readonly Message OPN   = lang.Literal("(");
+        private static readonly Message CLS   = lang.Literal(")");
+        private static readonly Message VAL0  = lang.Symbol(new Num("0"));
+        private static readonly Message VAL1  = lang.Symbol(new Num("1"));
+        private static readonly Message VAL2  = lang.Symbol(new Num("2"));
+        private static readonly Message VAL3  = lang.Symbol(new Num("3"));
+        private static readonly Message VAL10 = lang.Symbol(new Num("10"));
+        private static readonly Message VAL20 = lang.Symbol(new Num("20"));
+        private static readonly Message DESCR = lang.Symbol(new QStr("long description"));
+        private static readonly Message IF    = lang.Literal("if");
+        private static readonly Message POW   = lang.Literal("^");
+        private static readonly Message SUM   = lang.Literal("sum");
 
         public interface Locals { }
 
@@ -202,7 +202,7 @@ namespace IronText.Tests.Framework
             {
                 public IFrame<TNs> ClosedFrame;
                 public List<string> Formals;
-                public Msg[] Body;
+                public Message[] Body;
             }
         }
     }

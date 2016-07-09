@@ -75,12 +75,12 @@ namespace IronText.Tests.Algorithm
                 "b:=10Q \"foo\"",
                 ScannerDescriptor.FromScanRules(grammar.Matchers, ExceptionLogging.Instance));
 
-            var collector = new Collector<Msg>();
+            var collector = new Collector<Message>();
             target.Accept(collector);
 
             Assert.AreEqual(
                 new int[] { ident.Index, assign.Index, num.Index, qStr.Index },
-                collector.Select(msg => msg.AmbToken).ToArray());
+                collector.Select(msg => msg.AmbiguousToken).ToArray());
             Assert.AreEqual(
                 new object[] { "b", ":=", "10Q", "\"foo\"" },
                 collector.Select(msg => msg.Text).ToArray());

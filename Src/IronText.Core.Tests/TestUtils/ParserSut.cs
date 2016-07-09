@@ -57,7 +57,7 @@ namespace IronText.Tests.TestUtils
                                     null,
                                     inhIndexToValue);
 
-            IReceiver<Msg> parser;
+            IReceiver<Message> parser;
             if (data.IsDeterministic)
             {
                 parser = new DeterministicParser<ActionNode>(
@@ -161,7 +161,7 @@ namespace IronText.Tests.TestUtils
             return false;
         }
 
-        private IEnumerable<Msg> ScanAll(ITdfaSimulation automaton, char[] input)
+        private IEnumerable<Message> ScanAll(ITdfaSimulation automaton, char[] input)
         {
             int cursor = 0;
             int state = automaton.Start;
@@ -188,7 +188,7 @@ namespace IronText.Tests.TestUtils
                         int token = data.MatchActionToToken[action.Value];
                         if (token >= 0)
                         {
-                            yield return new Msg(
+                            yield return new Message(
                                     token,
                                     new string(input, start, (marker - start)),
                                     null,

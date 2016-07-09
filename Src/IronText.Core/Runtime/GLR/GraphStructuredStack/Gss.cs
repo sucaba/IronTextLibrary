@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using IronText.Collections;
 
 namespace IronText.Runtime
 {
@@ -71,15 +72,12 @@ namespace IronText.Runtime
 
                 if (node.Layer >= currentLayer)
                 {
-                    var link = node.FirstBackLink;
-                    while (link != null)
+                    foreach (var link in node.BackLink.Alternatives())
                     {
                         if (!visited.Contains(link.PriorNode))
                         {
                             visited.Add(link.PriorNode);
                         }
-
-                        link = link.NextAlternative;
                     }
                 }
             }
@@ -141,7 +139,7 @@ namespace IronText.Runtime
             }
 
             var result = toNode.PushLinkAlternative(fromNode, label);
-            if (result.NextAlternative == null)
+            if (result.Alternative == null)
             {
                 toNode.DeterministicDepth = fromNode.DeterministicDepth + 1;
             }
@@ -177,7 +175,7 @@ namespace IronText.Runtime
 
         private static GssBackLink<T> GetLink(GssNode<T> fromNode, GssNode<T> toNode)
         {
-            var link = fromNode.FirstBackLink;
+            var link = fromNode.BackLink;
             while (link != null)
             {
                 if (link.PriorNode == toNode)
@@ -185,7 +183,7 @@ namespace IronText.Runtime
                     return link;
                 }
 
-                link = link.NextAlternative;
+                link = link.Alternative;
             }
 
             return default(GssBackLink<T>);
@@ -248,7 +246,7 @@ namespace IronText.Runtime
                     }
 
                     int token = stateToSymbol[from.State];
-                    var link = from.FirstBackLink;
+                    var link = from.BackLink;
                     while (link != null)
                     {
                         var to = link.PriorNode;
@@ -267,7 +265,7 @@ namespace IronText.Runtime
 
                         ++linkIndex;
 
-                        link = link.NextAlternative;
+                        link = link.Alternative;
                     }
                 }
             }

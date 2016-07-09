@@ -27,7 +27,7 @@ namespace IronText.Tests.Samples
                         lang.Identify(typeof(Decimal)),
                         lang.Identify(typeof(HexDecimal))
                     },
-                    tokens.Select(msg => msg.AmbToken));
+                    tokens.Select(msg => msg.AmbiguousToken));
             }
         }
 

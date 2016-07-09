@@ -28,7 +28,7 @@ namespace IronText.Runtime
             this.Lookahead = lookahead;
         }
 
-        public GssBackLink<T> FirstBackLink { get; private set; }
+        public GssBackLink<T> BackLink { get; private set; }
 
         public int      DeterministicDepth { get; internal set; } = 1;
 
@@ -45,11 +45,11 @@ namespace IronText.Runtime
             get 
             {
                 int count = 0;
-                var link = FirstBackLink;
+                var link = BackLink;
                 while (link != null)
                 {
                     ++count;
-                    link = link.NextAlternative;
+                    link = link.Alternative;
                 }
 
                 return count;
@@ -60,32 +60,32 @@ namespace IronText.Runtime
         {
             get
             {
-                var link = FirstBackLink;
+                var link = BackLink;
                 while (link != null)
                 {
                     yield return link;
-                    link = link.NextAlternative;
+                    link = link.Alternative;
                 }
             }
         }
 
         public GssBackLink<T> PushLinkAlternative(GssNode<T> leftNode, T label)
         {
-            var result = new GssBackLink<T>(leftNode, label, FirstBackLink);
-            FirstBackLink = result;
+            var result = new GssBackLink<T>(leftNode, label, BackLink);
+            BackLink = result;
             return result;
         }
 
         public int ComputeDeterministicDepth()
         {
-            if (FirstBackLink == null)
+            if (BackLink == null)
             {
                 return 1;
             }
 
-            if (FirstBackLink.NextAlternative == null)
+            if (BackLink.Alternative == null)
             {
-                return FirstBackLink.PriorNode.DeterministicDepth + 1;
+                return BackLink.PriorNode.DeterministicDepth + 1;
             }
 
             return 0;
@@ -102,7 +102,7 @@ namespace IronText.Runtime
         T IStackLookback<T>.GetNodeAt(int backoffset)
         {
             var node = GetNodeAtDepth(backoffset);
-            return node.FirstBackLink.Label;
+            return node.BackLink.Label;
         }
 
         private GssNode<T> GetNodeAtDepth(int depth)
@@ -114,7 +114,7 @@ namespace IronText.Runtime
 
             while (0 != --depth)
             {
-                node = node.FirstBackLink.PriorNode;
+                node = node.BackLink.PriorNode;
             }
 
             return node;

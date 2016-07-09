@@ -15,7 +15,7 @@ namespace IronText.Tests.Algorithm
     /// <summary>
     /// Lexer class to test and debug DFA semantics.
     /// </summary>
-    public class DfaSimulationLexer : ISequence<Msg>
+    public class DfaSimulationLexer : ISequence<Message>
     {
         private IDfaSimulation dfa;
         private readonly string text;
@@ -36,7 +36,7 @@ namespace IronText.Tests.Algorithm
             this.dfa = new DfaSimulation(algorithm.Data);
         }
 
-        public IReceiver<Msg> Accept(IReceiver<Msg> visitor)
+        public IReceiver<Message> Accept(IReceiver<Message> visitor)
         {
             int start = 0, pos = 0;
 
@@ -79,7 +79,7 @@ namespace IronText.Tests.Algorithm
 
                     // Emit next token
                     visitor = visitor.Next(
-                        new Msg(detOutcome.Index, text.Substring(start, tokenLength), null, Loc.FromPos(start, tokenLength)));
+                        new Message(detOutcome.Index, text.Substring(start, tokenLength), null, Loc.FromPos(start, tokenLength)));
                 }
 
                 start = pos;

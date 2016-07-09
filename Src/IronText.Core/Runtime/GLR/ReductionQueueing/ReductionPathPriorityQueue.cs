@@ -57,13 +57,13 @@ namespace IronText.Runtime
             }
             else
             {
-                var linkAlternative = rightNode.FirstBackLink;
+                var linkAlternative = rightNode.BackLink;
                 
                 while (linkAlternative != null)
                 {
                     Enqueue(linkAlternative, production);
 
-                    linkAlternative = linkAlternative.NextAlternative;
+                    linkAlternative = linkAlternative.Alternative;
                 }
             }
         }

@@ -7,7 +7,7 @@ using System.IO;
 namespace IronText.Runtime
 {
     sealed class ScannerEnumerator
-        : IEnumerator<Msg>
+        : IEnumerator<Message>
     {
         private Scanner scanner;
         private int priorPosition;
@@ -51,7 +51,7 @@ namespace IronText.Runtime
             this.priorColumn = 1;
         }
 
-        public Msg Current { get; private set; }
+        public Message Current { get; private set; }
 
         public void Dispose()
         {
@@ -181,19 +181,19 @@ namespace IronText.Runtime
             {
                 int id = cursor.EnvelopeId;
                 // TODO: Amb & Main tokens for envelope.Id
-                Current = new Msg(id, token, action, text, MakeHLoc());
+                Current = new Message(id, token, action, text, MakeHLoc());
 
                 // Shrodinger's token
                 if (cursor.ActionCount > 1)
                 {
-                    MsgData data = Current;
+                    MessageData data = Current;
                     for (int i = 1; i != cursor.ActionCount; ++i)
                     {
                         action     = cursor.Actions[i];
                         token      = GetTokenFromAction(action);
 
-                        data.NextAlternative = new MsgData(token, text, action);
-                        data = data.NextAlternative;
+                        data.Alternative = new MessageData(token, text, action);
+                        data = data.Alternative;
                     }
                 }
             }

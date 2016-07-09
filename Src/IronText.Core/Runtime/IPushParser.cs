@@ -1,7 +1,7 @@
 ﻿
 namespace IronText.Runtime
 {
-    public interface IPushParser : IReceiver<Msg>
+    public interface IPushParser : IReceiver<Message>
     {
         /// <summary>
         /// Creates parser without side effects but with
@@ -12,6 +12,6 @@ namespace IronText.Runtime
         /// </returns>
         IPushParser CloneVerifier();
 
-        IReceiver<Msg> ForceNext(params Msg[] msg);
+        IReceiver<Message> ForceNext(params Message[] msg);
     }
 }

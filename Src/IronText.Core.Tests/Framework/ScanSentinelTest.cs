@@ -20,7 +20,7 @@ namespace IronText.Tests.Framework
                 var tokens = interp.Scan(input).ToArray();
 
                 Assert.AreEqual(
-                    new[] { new Msg(TOK1, input, null, new Loc(1, 3)) },
+                    new[] { new Message(TOK1, input, null, new Loc(1, 3)) },
                     tokens);
             }
         }
@@ -37,7 +37,7 @@ namespace IronText.Tests.Framework
                 var tokens = interp.Scan(input).ToArray();
 
                 Assert.AreEqual(
-                    new[] { new Msg(TOK1, "b", null, new Loc(1, 1)) },
+                    new[] { new Message(TOK1, "b", null, new Loc(1, 1)) },
                     tokens);
             }
         }

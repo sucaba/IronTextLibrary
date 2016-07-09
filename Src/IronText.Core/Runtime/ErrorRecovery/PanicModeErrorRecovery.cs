@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace IronText.Runtime
 {
-    class PanicModeErrorRecovery : IReceiver<Msg>
+    class PanicModeErrorRecovery : IReceiver<Message>
     {
         private readonly RuntimeGrammar grammar;
         private readonly IPushParser exit;
         private readonly ILogging logging;
         private Loc errorLocation = Loc.Unknown;
-        private readonly List<Msg> collectedInput = new List<Msg>();
-        private IReceiver<Msg> validPrefixVerifier;
+        private readonly List<Message> collectedInput = new List<Message>();
+        private IReceiver<Message> validPrefixVerifier;
 
         public PanicModeErrorRecovery(RuntimeGrammar grammar, IPushParser exit, ILogging logging)
         {
@@ -20,7 +20,7 @@ namespace IronText.Runtime
             this.validPrefixVerifier = exit.CloneVerifier();
         }
 
-        public IReceiver<Msg> Next(Msg item)
+        public IReceiver<Message> Next(Message item)
         {
             // Skip valid tokens before the error which were used for local error recovery.
             if (validPrefixVerifier != null)
@@ -32,13 +32,13 @@ namespace IronText.Runtime
                 }
             }
 
-            var error = new Msg(PredefinedTokens.Error, null, null, errorLocation); // TODO: Location?
+            var error = new Message(PredefinedTokens.Error, null, null, errorLocation); // TODO: Location?
             if (null != exit.CloneVerifier().ForceNext(error, item))
             {
                 ReportError();
                 return exit.ForceNext(error, item);
             }
-            else if (grammar.IsBeacon(item.AmbToken)
+            else if (grammar.IsBeacon(item.AmbiguousToken)
                     && null != exit.CloneVerifier().ForceNext(item))
             {
                 ReportError();
@@ -61,7 +61,7 @@ namespace IronText.Runtime
                 });
         }
 
-        public IReceiver<Msg> Done()
+        public IReceiver<Message> Done()
         {
             ReportError();
             return null;

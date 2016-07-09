@@ -1,23 +1,25 @@
-﻿
+﻿using IronText.Collections;
+
 namespace IronText.Runtime
 {
     sealed class GssBackLink<T>
+        : Ambiguous<GssBackLink<T>>
     {
-        public readonly GssNode<T>     PriorNode;
-        public readonly GssBackLink<T> NextAlternative;
-
-        public GssBackLink(GssNode<T> priorNode, T label, GssBackLink<T> nextAlternative = null)
+        public GssBackLink(
+            GssNode<T>     priorNode,
+            T              label,
+            GssBackLink<T> nextAlternative = null)
+            : base(nextAlternative)
         {
             this.PriorNode = priorNode;
             this.Label     = label;
-            this.NextAlternative = nextAlternative;
         }
 
-        public T Label { get; private set; }
+        public GssNode<T> PriorNode { get;  }
 
-        public void AssignLabel(T label)
-        {
-            this.Label = label;
-        }
+        public T          Label     { get; private set; }
+
+        public void AssignLabel(T label) =>
+            Label = label;
     }
 }

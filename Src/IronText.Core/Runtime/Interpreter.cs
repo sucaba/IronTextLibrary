@@ -95,7 +95,7 @@ namespace IronText.Runtime
             }
         }
 
-        public IEnumerable<Msg> Scan(string input)
+        public IEnumerable<Message> Scan(string input)
         {
             // Note: StringReader is not disposed because resulting
             //       enumerable will use text reader after return
@@ -103,7 +103,7 @@ namespace IronText.Runtime
             return Scan(new StringReader(input), Loc.MemoryString);
         }
 
-        public IEnumerable<Msg> Scan(TextReader input, string document)
+        public IEnumerable<Message> Scan(TextReader input, string document)
         {
             Clear();
 
@@ -159,7 +159,7 @@ namespace IronText.Runtime
             }
         }
 
-        public bool Parse(IEnumerable<Msg> input)
+        public bool Parse(IEnumerable<Message> input)
         {
             if (input == null)
             {

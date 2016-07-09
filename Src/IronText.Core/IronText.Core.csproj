@@ -115,6 +115,8 @@
     <Compile Include="Algorithm\IntegerSets\SetOrthohonator.cs" />
     <Compile Include="Algorithm\IntegerSets\SparseIntSetType.cs" />
     <Compile Include="Algorithm\IntInterval.cs" />
+    <Compile Include="Collections\Ambiguous.cs" />
+    <Compile Include="Collections\AmbiguousAlternatives.cs" />
     <Compile Include="Collections\IIndexableImpl.cs" />
     <Compile Include="Collections\SListNode.cs" />
     <Compile Include="Diagnostics\DiagnosticExtensions.cs" />
@@ -201,6 +203,7 @@
     <Compile Include="Runtime\Inlining\InlinedActionOp.cs" />
     <Compile Include="Runtime\Inlining\InlinedProducer.cs" />
     <Compile Include="Runtime\IReportDestinationHint.cs" />
+    <Compile Include="Runtime\MessageData.cs" />
     <Compile Include="Runtime\Parsing\ParserBytecode.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeFormula.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeValue.cs" />
@@ -375,7 +378,7 @@
     <Compile Include="Runtime\GLR\ReductionQueueing\Reduction.cs" />
     <Compile Include="Runtime\GLR\ReductionQueueing\IReductionQueue.cs" />
     <Compile Include="Runtime\IStackLookback.cs" />
-    <Compile Include="Runtime\Msg.cs" />
+    <Compile Include="Runtime\Message.cs" />
     <Compile Include="Runtime\ILanguageRuntime.cs" />
     <Compile Include="Runtime\LanguageBase.cs" />
     <Compile Include="Runtime\GLR\ElkhoundGlrParser.cs" />

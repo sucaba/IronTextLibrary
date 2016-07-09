@@ -84,7 +84,7 @@ namespace IronText.Tests.Bootstrap
                 null,
                 ExceptionLogging.Instance);
 
-            var collector = new Collector<Msg>();
+            var collector = new Collector<Message>();
             target.Accept(collector);
             Assert.AreEqual(
                 new[] { "(", "1", "(", "\"bar\"", "+", ")", ")" },

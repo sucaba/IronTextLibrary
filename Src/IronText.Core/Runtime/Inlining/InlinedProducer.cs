@@ -72,7 +72,7 @@ namespace IronText.Runtime.Inlining
             return producer.CreateStart();
         }
 
-        public T CreateLeaf(Msg envelope, MsgData data)
+        public T CreateLeaf(Message envelope, MessageData data)
         {
             return producer.CreateLeaf(envelope, data);
         }

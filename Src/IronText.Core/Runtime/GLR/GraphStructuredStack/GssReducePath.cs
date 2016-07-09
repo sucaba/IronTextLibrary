@@ -65,7 +65,7 @@ namespace IronText.Runtime
                 int i = size;
                 while (i-- != 0)
                 {
-                    var link = node.FirstBackLink;
+                    var link = node.BackLink;
                     links[i] = link;
 
                     node = link.PriorNode;
@@ -83,13 +83,13 @@ namespace IronText.Runtime
                 var front      = new List<GssBackLink<T>>(2);
                 var frontPaths = new List<GssBackLink<T>[]>(rightNode.LinkCount);
 
-                var frontLink = rightNode.FirstBackLink;
+                var frontLink = rightNode.BackLink;
                 while (frontLink != null)
                 {
                     front.Add(frontLink);
                     frontPaths.Add(new GssBackLink<T>[fullSize]);
 
-                    frontLink = frontLink.NextAlternative;
+                    frontLink = frontLink.Alternative;
                 }
 
                 int k = size;
@@ -103,8 +103,8 @@ namespace IronText.Runtime
 
                         if (k != 0)
                         {
-                            front[j] = currLink.PriorNode.FirstBackLink;
-                            var link = front[j].NextAlternative;
+                            front[j] = currLink.PriorNode.BackLink;
+                            var link = front[j].Alternative;
 
                             while (link != null)
                             {
@@ -112,7 +112,7 @@ namespace IronText.Runtime
                                 var newPathLinks = (GssBackLink<T>[])frontPaths[j].Clone();
                                 frontPaths.Add(newPathLinks);
 
-                                link = link.NextAlternative;
+                                link = link.Alternative;
                             }
                         }
                     }

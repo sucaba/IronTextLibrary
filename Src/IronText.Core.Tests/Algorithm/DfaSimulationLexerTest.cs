@@ -53,11 +53,11 @@ namespace IronText.Tests.Algorithm
                 " (1 (\"bar\" +))",
                 ScannerDescriptor.FromScanRules(grammar.Matchers, ExceptionLogging.Instance));
 
-            var collector = new Collector<Msg>();
+            var collector = new Collector<Message>();
             target.Accept(collector);
             Assert.AreEqual(
                 new int[] { lParen.Index, num.Index, lParen.Index, qStr.Index, ident.Index, rParen.Index, rParen.Index },
-                collector.Select(msg => msg.AmbToken).ToArray());
+                collector.Select(msg => msg.AmbiguousToken).ToArray());
             Assert.AreEqual(
                 new object[] { "(", "1", "(", "\"bar\"", "+", ")", ")" },
                 collector.Select(msg => msg.Text).ToArray());

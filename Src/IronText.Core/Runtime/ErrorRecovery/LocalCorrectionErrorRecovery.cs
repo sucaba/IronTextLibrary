@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace IronText.Runtime
 {
-    class LocalCorrectionErrorRecovery : IReceiver<Msg>
+    class LocalCorrectionErrorRecovery : IReceiver<Message>
     {
         /// <summary>
         /// Token count that mast be accepted by a parser after correction.
@@ -15,8 +15,8 @@ namespace IronText.Runtime
         private const int VerificationLength = 2;
         private static int FailurePatternSize = 5; // including preceding
 
-        private readonly List<Msg> failedInput = new List<Msg>();
-        private readonly List<Msg> correction = new List<Msg>();
+        private readonly List<Message> failedInput = new List<Message>();
+        private readonly List<Message> correction = new List<Message>();
         private readonly IPushParser exit;
         private ParserCorrectionModel currentModel;
         private bool useViolatingRules;
@@ -86,11 +86,11 @@ namespace IronText.Runtime
                             .ToArray();
         }
 
-        public IReceiver<Msg> Next(Msg item)
+        public IReceiver<Message> Next(Message item)
         {
             failedInput.Add(item);
 
-            if (failedInput.Count == FailurePatternSize || item.AmbToken == PredefinedTokens.Eoi)
+            if (failedInput.Count == FailurePatternSize || item.AmbiguousToken == PredefinedTokens.Eoi)
             {
                 return Recover(false);
             }
@@ -98,14 +98,14 @@ namespace IronText.Runtime
             return this;
         }
 
-        public IReceiver<Msg> Done()
+        public IReceiver<Message> Done()
         {
             return Recover(true);
         }
 
         private bool ValidateCorrection()
         {
-            IReceiver<Msg> r = exit.CloneVerifier();
+            IReceiver<Message> r = exit.CloneVerifier();
             int pos = 0;
             int minLength = currentModel.GetMinimalLength();
 
@@ -118,7 +118,7 @@ namespace IronText.Runtime
                     return false;
                 }
 
-                if (pos >= minLength && (PredefinedTokens.Eoi == msg.AmbToken || grammar.IsBeacon(msg.AmbToken)))
+                if (pos >= minLength && (PredefinedTokens.Eoi == msg.AmbiguousToken || grammar.IsBeacon(msg.AmbiguousToken)))
                 {
                     return true;
                 }
@@ -129,9 +129,9 @@ namespace IronText.Runtime
             return true;
         }
 
-        private IReceiver<Msg> Recover(bool done)
+        private IReceiver<Message> Recover(bool done)
         {
-            IReceiver<Msg> result;
+            IReceiver<Message> result;
 
             // Don't insert tokens in category "don't insert"
             // Don't delete tokens in category "don't delete" 
@@ -175,7 +175,7 @@ namespace IronText.Runtime
                     continue;
                 }
 
-                var deletedTokens = model.GetDeletedIndexes().Select(i => failedInput[i].AmbToken);
+                var deletedTokens = model.GetDeletedIndexes().Select(i => failedInput[i].AmbiguousToken);
                 bool violatesDontDelete = deletedTokens.Any(grammar.IsDontDelete);
                 if (!useViolatingRules && violatesDontDelete)
                 {
@@ -192,7 +192,7 @@ namespace IronText.Runtime
                 {
                     if (model[i] == Insertion)
                     {
-                        correction.Add(default(Msg));
+                        correction.Add(default(Message));
                     }
                     else if (model[i] == Spelling)
                     {
@@ -277,7 +277,7 @@ namespace IronText.Runtime
             return false;
         }
 
-        private IEnumerable<Msg> Following(ParserCorrectionModel m, int k)
+        private IEnumerable<Message> Following(ParserCorrectionModel m, int k)
         {
             Debug.Assert(k != m.Count);
 
@@ -290,7 +290,7 @@ namespace IronText.Runtime
                         var categories = grammar.GetTokenCategories(term);
                         if ((categories & SymbolCategory.DoNotInsert) == 0)
                         {
-                            yield return new Msg(term, null, null, Loc.Unknown);
+                            yield return new Message(term, null, null, Loc.Unknown);
                         }
                     }
                 }
@@ -301,7 +301,7 @@ namespace IronText.Runtime
                         var categories = grammar.GetTokenCategories(term);
                         if ((categories & SymbolCategory.DoNotInsert) != 0)
                         {
-                            yield return new Msg(term, null, null, Loc.Unknown); // TODO: Location and value
+                            yield return new Message(term, null, null, Loc.Unknown); // TODO: Location and value
                         }
                     }
                 }
@@ -316,7 +316,7 @@ namespace IronText.Runtime
             }
         }
 
-        private IReceiver<Msg> ParseTransite(IReceiver<Msg> parser, Msg candidate)
+        private IReceiver<Message> ParseTransite(IReceiver<Message> parser, Message candidate)
         {
             return parser.Next(candidate);
         }

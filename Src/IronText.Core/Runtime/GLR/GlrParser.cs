@@ -16,7 +16,7 @@ namespace IronText.Runtime
         private readonly int[]                stateToPriorToken;
         private readonly TransitionDelegate   transition;
         private          IProducer<T>         producer;
-        private Msg priorInput;
+        private Message priorInput;
 
         private readonly Gss<T>               gss;
         private readonly Queue<PendingShift>  Q = new Queue<PendingShift>(4);
@@ -85,16 +85,16 @@ namespace IronText.Runtime
             }
         }
 
-        public IReceiver<Msg> Next(Msg envelope)
+        public IReceiver<Message> Next(Message envelope)
         {
             gss.BeginEdit();
 
-            MsgData alternateInput = envelope.FirstData;
+            MessageData alternateInput = envelope.FirstData;
             do
             {
                 ProcessTerm(envelope, alternateInput);
 
-                alternateInput = alternateInput.NextAlternative;
+                alternateInput = alternateInput.Alternative;
             }
             while (alternateInput != null);
 
@@ -115,7 +115,7 @@ namespace IronText.Runtime
             {
                 if (accepted)
                 {
-                    return FinalReceiver<Msg>.Instance;
+                    return FinalReceiver<Message>.Instance;
                 }
 
                 if (isVerifier)
@@ -135,7 +135,7 @@ namespace IronText.Runtime
             return this;
         }
 
-        private void ProcessTerm(Msg envelope, MsgData alternateInput)
+        private void ProcessTerm(Message envelope, MessageData alternateInput)
         {
             int lookahead = alternateInput.Token;
 
@@ -148,7 +148,7 @@ namespace IronText.Runtime
                 {
                     if (IsAccepting(node.State))
                     {
-                        producer.Result = node.FirstBackLink.Label;
+                        producer.Result = node.BackLink.Label;
                         break;
                     }
                 }
@@ -166,11 +166,11 @@ namespace IronText.Runtime
             }
         }
 
-        public IReceiver<Msg> Done()
+        public IReceiver<Message> Done()
         {
             Loc location;
 
-            if (!object.Equals(priorInput, default(Msg)))
+            if (!object.Equals(priorInput, default(Message)))
             {
                 location = priorInput.Location.GetEndLocation();
             }
@@ -179,7 +179,7 @@ namespace IronText.Runtime
                 location = new Loc(1, 1, 1, 1);
             }
 
-            var eoi = new Msg(PredefinedTokens.Eoi, null, null, location);
+            var eoi = new Message(PredefinedTokens.Eoi, null, null, location);
             return Next(eoi);
         }
 
@@ -419,7 +419,7 @@ namespace IronText.Runtime
             return result;
         }
 
-        public IReceiver<Msg> ForceNext(params Msg[] input)
+        public IReceiver<Message> ForceNext(params Message[] input)
         {
             isVerifier = true;
             try
@@ -444,14 +444,14 @@ namespace IronText.Runtime
             return this;
         }
 
-        private bool CanParse(Msg[] input)
+        private bool CanParse(Message[] input)
         {
             return this.CloneVerifier().Feed(input) != null;
         }
 
-        private IReceiver<Msg> RecoverFromError(Msg currentInput)
+        private IReceiver<Message> RecoverFromError(Message currentInput)
         {
-            if (currentInput.AmbToken == PredefinedTokens.Eoi)
+            if (currentInput.AmbiguousToken == PredefinedTokens.Eoi)
             {
                 if (!isVerifier)
                 {
@@ -469,7 +469,7 @@ namespace IronText.Runtime
 
             this.producer = producer.GetRecoveryProducer();
 
-            IReceiver<Msg> result = new LocalCorrectionErrorRecovery(grammar, this, logging);
+            IReceiver<Message> result = new LocalCorrectionErrorRecovery(grammar, this, logging);
             if (priorInput != null)
             {
                 gss.Undo(1);
@@ -479,12 +479,12 @@ namespace IronText.Runtime
             return result.Next(currentInput);
         }
 
-        private void LogError(Msg envelope)
+        private void LogError(Message envelope)
         {
             var message = new StringBuilder();
             message
                 .Append("Unexpected token ")
-                .Append(grammar.SymbolName(envelope.AmbToken))
+                .Append(grammar.SymbolName(envelope.AmbiguousToken))
                 .Append(" in state stacks: {");
             bool firstStack = true;
             foreach (var node in gss.Front)
@@ -518,7 +518,7 @@ namespace IronText.Runtime
                         break;
                     }
 
-                    n = n.FirstBackLink.PriorNode;
+                    n = n.BackLink.PriorNode;
                 }
 
                 message.Append("]");

@@ -24,7 +24,7 @@ namespace IronText.Runtime
         T CreateStart();
 
         // Leaf corresponding to the input terminal
-        T CreateLeaf(Msg envelope, MsgData data);
+        T CreateLeaf(Message envelope, MessageData data);
 
         // Branch for production rule
         T CreateBranch(RuntimeProduction production, IStackLookback<T> lookback);

@@ -15,7 +15,7 @@ namespace IronText.Runtime
 
         public T CreateStart() { return default(T); }
 
-        public T CreateLeaf(Msg envelope, MsgData msg) { return default(T); }
+        public T CreateLeaf(Message envelope, MessageData msg) { return default(T); }
 
         public T CreateBranch(RuntimeProduction prod, IStackLookback<T> lookback)
         {

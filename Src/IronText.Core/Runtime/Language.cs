@@ -89,7 +89,7 @@ namespace IronText.Runtime
             }
         }
 
-        public static TC Parse<TC>(TC context, IEnumerable<Msg> input)
+        public static TC Parse<TC>(TC context, IEnumerable<Message> input)
             where TC : class
         {
             using (var interp = new Interpreter<TC>(context))

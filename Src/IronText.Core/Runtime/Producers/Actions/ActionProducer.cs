@@ -82,7 +82,7 @@ namespace IronText.Runtime
             return new ActionNode(0, null, Loc.Unknown, inh);
         }
 
-        public ActionNode CreateLeaf(Msg envelope, MsgData data)
+        public ActionNode CreateLeaf(Message envelope, MessageData data)
         {
             object value;
             if (data.Action < 0)

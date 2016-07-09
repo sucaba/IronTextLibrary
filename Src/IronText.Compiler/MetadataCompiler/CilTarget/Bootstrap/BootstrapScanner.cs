@@ -15,7 +15,7 @@ namespace IronText.MetadataCompiler
     /// <summary>
     /// Bootstrapping lexer based on the Regex class.
     /// </summary>
-    class BootstrapScanner : IScanner, IEnumerable<Msg>
+    class BootstrapScanner : IScanner, IEnumerable<Message>
     {
         private readonly Regex regex;
         private readonly string text;
@@ -52,12 +52,12 @@ namespace IronText.MetadataCompiler
             return production.Pattern.BootstrapPattern;
         }
 
-        public IReceiver<Msg> Accept(IReceiver<Msg> visitor)
+        public IReceiver<Message> Accept(IReceiver<Message> visitor)
         {
             return visitor.Feed(Tokenize()).Done();
         }
 
-        private IEnumerable<Msg> Tokenize()
+        private IEnumerable<Message> Tokenize()
         {
             int currentPos = 0;
 
@@ -81,7 +81,7 @@ namespace IronText.MetadataCompiler
                     int token = detOutcome.Index;
 
                     yield return
-                        new Msg(token, match.Value, action, Loc.FromPos(match.Index, match.Length));
+                        new Message(token, match.Value, action, Loc.FromPos(match.Index, match.Length));
 
                     if (currentPos == text.Length)
                     {
@@ -101,7 +101,7 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        public IEnumerator<Msg> GetEnumerator()
+        public IEnumerator<Message> GetEnumerator()
         {
             throw new NotImplementedException();
         }
