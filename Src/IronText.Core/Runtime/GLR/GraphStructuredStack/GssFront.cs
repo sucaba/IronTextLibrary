@@ -31,7 +31,7 @@ namespace IronText.Runtime
         public int Count => count;
 
         public bool Contains(T item) =>
-            Array.IndexOf(items, item) > 0;
+            Array.IndexOf(items, item) >= 0;
 
         public Enumerator GetEnumerator()
             => new Enumerator(items, count);
@@ -85,6 +85,14 @@ namespace IronText.Runtime
         private MutableArray(T[] items, int count)
             : base(items, count)
         {
+        }
+
+        public void AddDistinct(T item)
+        {
+            if (!Contains(item))
+            {
+                Add(item);
+            }
         }
 
         public void Add(T item) =>

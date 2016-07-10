@@ -1,5 +1,4 @@
-﻿using IronText.Diagnostics;
-using System;
+﻿using System;
 
 namespace IronText.Runtime
 {
@@ -9,16 +8,16 @@ namespace IronText.Runtime
         ImmutableArray<GssNode<T>> Front { get; }
         GssNode<T> GetFrontNode(int state, int lookahead);
 
-        bool HasLayers { get;  }
+        bool HasLayers { get; }
 
         void PushLayer();
         void PopLayer();
 
         GssBackLink<T> Push(
-            GssNode<T> fromNode,
-            int toState,
-            T label,
-            int lookahead = -1,
+            GssNode<T>  fromNode,
+            int         toState,
+            T           label,
+            int         lookahead = -1,
             Func<T,T,T> merge = null);
     }
 }

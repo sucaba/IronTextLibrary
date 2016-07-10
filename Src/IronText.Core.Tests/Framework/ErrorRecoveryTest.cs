@@ -13,17 +13,10 @@ namespace IronText.Tests.Framework
     public class ErrorRecoveryTest
     {
         [Datapoints]
-        public static Type[] LanguageDefs
-        {
-            get
-            {
-                return new[]
-                    {
-                        typeof(RecoveryLang),
-                        typeof(AmbRecoveryLang),
-                    };
-            }
-        }
+        public static Type[] LanguageDefs => new[] {
+            typeof(RecoveryLang),
+            typeof(AmbRecoveryLang),
+        };
 
         private RecoveryLang context;
         private int errorCount;

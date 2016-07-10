@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using IronText.Collections;
+using static IronText.Misc.ObjectUtils;
 
 namespace IronText.Runtime
 {
@@ -44,9 +45,7 @@ namespace IronText.Runtime
         {
             currentStage = GssStage.FinalShift;
 
-            var temp = prior;
-            prior = front;
-            front = temp;
+            Swap(ref front, ref prior);
 
             front.Clear();
             ++currentLayer;
@@ -54,45 +53,30 @@ namespace IronText.Runtime
 
         public void PopLayer()
         {
-            var visited = front;
-
-            this.front = prior;
-            front.Clear();
-            this.prior = visited;
-            
-
-            --currentLayer;
-
-            foreach (var node in visited)
-            {
-                if (node.Layer == currentLayer)
-                {
-                    front.Add(node);
-                }
-
-                if (node.Layer >= currentLayer)
-                {
-                    foreach (var link in node.BackLink.Alternatives())
-                    {
-                        if (!visited.Contains(link.PriorNode))
-                        {
-                            visited.Add(link.PriorNode);
-                        }
-                    }
-                }
-            }
+            Swap(ref front, ref prior);
 
             prior.Clear();
+            --currentLayer;
 
-            // Following line removes nodes created by the lookahead triggered 
-            // reductions.
-            //
-            // This line optional since PopLayer() is used in the panic-mode 
-            // error recovery only and such nodes should not cause incorrect
-            // parsing recovery sequences (TODO: prove!). However removing 
-            // these nodes should simplify debugging and can slightly improve
-            // performance.
-            front.RemoveAll(node => node.Stage != GssStage.FinalShift);
+            AddPriorLayerNodes(front, prior);
+            AddPriorLayerNodes(prior, prior);
+
+            // TODO: Decide if needed: outcome.RemoveAll(node => node.Stage != GssStage.FinalShift);
+        }
+
+        private void AddPriorLayerNodes(
+            ImmutableArray<GssNode<T>> followingNodes,
+            MutableArray<GssNode<T>>   outcome)
+        {
+            foreach (var followingNode in followingNodes)
+                foreach (var backLink in followingNode.BackLink.Alternatives())
+                {
+                    var priorNode = backLink.PriorNode;
+                    if (priorNode.Layer == (currentLayer - 1))
+                    {
+                        outcome.AddDistinct(priorNode);
+                    }
+                }
         }
 
         public GssNode<T> GetFrontNode(State state, int lookahead)
@@ -116,10 +100,10 @@ namespace IronText.Runtime
         }
 
         public GssBackLink<T> Push(
-            GssNode<T> fromNode,
-            int toState,
-            T label,
-            int lookahead = -1,
+            GssNode<T>  fromNode,
+            int         toState,
+            T           label,
+            int         lookahead = -1,
             Func<T,T,T> merge = null)
         {
             GssNode<T> toNode = GetFrontNode(toState, lookahead)
