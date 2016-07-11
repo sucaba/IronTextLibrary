@@ -2,6 +2,7 @@
 
 namespace IronText.Runtime
 {
+    using Collections;
     using System.Diagnostics;
     using State = System.Int32;
 
@@ -30,6 +31,9 @@ namespace IronText.Runtime
 
         public GssBackLink<T> BackLink { get; private set; }
 
+        /// <summary>
+        /// Depth of path until a first back link ambiguity
+        /// </summary>
         public int      DeterministicDepth { get; internal set; } = 1;
 
         public State    State     { get; }
@@ -56,39 +60,11 @@ namespace IronText.Runtime
             } 
         }
 
-        public IEnumerable<GssBackLink<T>> Links
-        {
-            get
-            {
-                var link = BackLink;
-                while (link != null)
-                {
-                    yield return link;
-                    link = link.Alternative;
-                }
-            }
-        }
-
         public GssBackLink<T> PushLinkAlternative(GssNode<T> leftNode, T label)
         {
             var result = new GssBackLink<T>(leftNode, label, BackLink);
             BackLink = result;
             return result;
-        }
-
-        public int ComputeDeterministicDepth()
-        {
-            if (BackLink == null)
-            {
-                return 1;
-            }
-
-            if (BackLink.Alternative == null)
-            {
-                return BackLink.PriorNode.DeterministicDepth + 1;
-            }
-
-            return 0;
         }
 
         State IStackLookback<T>.GetParentState() { return State; }
@@ -118,6 +94,13 @@ namespace IronText.Runtime
             }
 
             return node;
+        }
+
+        public GssBackLink<T> ResolveBackLink(GssNode<T> priorNode)
+        {
+            return BackLink
+                .Alternatives()
+                .ResolveFirst(l => l.PriorNode == priorNode);
         }
 
         public override string ToString()

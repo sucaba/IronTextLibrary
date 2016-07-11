@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace IronText.Collections
 {
-    public struct AmbiguousAlternatives<T>
+    public struct AmbiguousAlternatives<T> : IEnumerable<T>
         where T : Ambiguous<T>
     {
         private readonly T first;
@@ -28,7 +30,11 @@ namespace IronText.Collections
             return null;
         }
 
-        public class Enumerator
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+
+        public class Enumerator : IEnumerator<T>
         {
             private readonly T first;
             private T next;
@@ -41,6 +47,8 @@ namespace IronText.Collections
             }
 
             public T Current { get; private set; }
+
+            object IEnumerator.Current => Current;
 
             public bool MoveNext()
             {
@@ -58,6 +66,10 @@ namespace IronText.Collections
             {
                 Current = null;
                 next    = first;
+            }
+
+            public void Dispose()
+            {
             }
         } 
     }

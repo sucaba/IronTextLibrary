@@ -198,6 +198,7 @@
     <Compile Include="Reflection\Semantics\SemanticScope.cs" />
     <Compile Include="Reflection\Semantics\SemanticRef.cs" />
     <Compile Include="Reflection\Serialization\IGrammarReader.cs" />
+    <Compile Include="Runtime\GLR\GraphStructuredStack\DeterministicDepthUpdater.cs" />
     <Compile Include="Runtime\GLR\GraphStructuredStack\GssStage.cs" />
     <Compile Include="Runtime\GLR\GraphStructuredStack\IGraphStructuredStack.cs" />
     <Compile Include="Runtime\ILanguageSource.cs" />

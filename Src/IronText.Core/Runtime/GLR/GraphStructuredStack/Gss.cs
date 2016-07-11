@@ -8,6 +8,7 @@ using static IronText.Misc.ObjectUtils;
 
 namespace IronText.Runtime
 {
+    using GLR.GraphStructuredStack;
     using State = System.Int32;
 
     sealed class Gss<T>
@@ -100,7 +101,7 @@ namespace IronText.Runtime
         }
 
         public GssBackLink<T> Push(
-            GssNode<T>  fromNode,
+            GssNode<T>  priorNode,
             int         toState,
             T           label,
             int         lookahead = -1,
@@ -109,7 +110,7 @@ namespace IronText.Runtime
             GssNode<T> toNode = GetFrontNode(toState, lookahead)
                                 ?? AddTopmost(toState, lookahead);
 
-            var link = GetLink(toNode, fromNode);
+            var link = toNode.ResolveBackLink(priorNode);
             if (link != null)
             {
                 if (merge == null)
@@ -122,62 +123,15 @@ namespace IronText.Runtime
                 return null;
             }
 
-            var result = toNode.PushLinkAlternative(fromNode, label);
-            if (result.Alternative == null)
-            {
-                toNode.DeterministicDepth = fromNode.DeterministicDepth + 1;
-            }
-            else
-            {
-                toNode.DeterministicDepth = 0;
-                UpdateDeterministicDepths();
-            }
+            var result = toNode.PushLinkAlternative(priorNode, label);
+
+            DeterministicDepthUpdater.OnLinkAdded(front, toNode);
 
             return result;
         }
 
-        private void UpdateDeterministicDepths()
-        {
-            int changes;
-            do
-            {
-                changes = 0;
-                // Note: Just added link can affect deterministic 
-                //       depth only of the topmost state nodes.
-                foreach (var topNode in front)
-                {
-                    int newDepth = topNode.ComputeDeterministicDepth();
-                    if (newDepth != topNode.DeterministicDepth)
-                    {
-                        topNode.DeterministicDepth = newDepth;
-                        ++changes;
-                    }
-                }
-            }
-            while (changes != 0);
-        }
-
-        private static GssBackLink<T> GetLink(GssNode<T> fromNode, GssNode<T> toNode)
-        {
-            var link = fromNode.BackLink;
-            while (link != null)
-            {
-                if (link.PriorNode == toNode)
-                {
-                    return link;
-                }
-
-                link = link.Alternative;
-            }
-
-            return default(GssBackLink<T>);
-        }
-
-        
-        private static string StateName(GssNode<T> node)
-        {
-            return string.Format("{0}:{1}", node.State, node.Stage);
-        }
+        private static string StateName(GssNode<T> node) =>
+            $"{node.State}:{node.Stage}";
 
         public void WriteGraph(IGraphView view, RuntimeGrammar grammar, int[] stateToSymbol)
         {
@@ -257,7 +211,7 @@ namespace IronText.Runtime
             view.EndDigraph();
         }
 
-        // Note: peformance non-critical
+        // Note: peformance non-critical. Used for diagnostics.
         private List<GssNode<T>> GetAllNodes()
         {
             var result = new List<GssNode<T>>(front);
@@ -265,7 +219,11 @@ namespace IronText.Runtime
             for (int i = 0; i != result.Count; ++i)
             {
                 var item = result[i];
-                var f = item.Links.Select(l => l.PriorNode).Except(result);
+                var f = item
+                    .BackLink
+                    .Alternatives()
+                    .Select(l => l.PriorNode)
+                    .Except(result);
                 result.AddRange(f);
             }
 
@@ -318,7 +276,7 @@ namespace IronText.Runtime
 
             history.Push(null);
 
-            UpdateDeterministicDepths();
+            DeterministicDepthUpdater.Update(front);
         }
 
         public Gss<T> CloneWithoutData()
