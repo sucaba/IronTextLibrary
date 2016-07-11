@@ -1,6 +1,6 @@
 ﻿using IronText.Collections;
 
-namespace IronText.Runtime.GLR.GraphStructuredStack
+namespace IronText.Runtime
 {
     static class DeterministicDepthUpdater
     {

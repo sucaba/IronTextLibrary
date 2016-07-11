@@ -8,7 +8,6 @@ using static IronText.Misc.ObjectUtils;
 
 namespace IronText.Runtime
 {
-    using GLR.GraphStructuredStack;
     using State = System.Int32;
 
     sealed class Gss<T>
