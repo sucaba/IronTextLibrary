@@ -80,7 +80,7 @@ namespace IronText.Runtime
             stateStack.BeginEdit();
 
             int id = envelope.AmbiguousToken;
-            MessageData data = envelope.FirstData;
+            MessageData data = envelope.Data;
 
         RESTART:
             int start = actionTable(stateStack.PeekTag(), id);

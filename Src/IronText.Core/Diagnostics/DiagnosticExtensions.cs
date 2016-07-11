@@ -33,7 +33,6 @@ namespace IronText.Diagnostics
             return grammar.Productions[-node.id].Outcome.Index;
         }
 
-
         public static void WriteIndented(this SppfNode node, Grammar grammar, TextWriter output, int indentLevel)
         {
             const int IndentStep = 2;

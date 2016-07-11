@@ -51,7 +51,7 @@ namespace IronText.Runtime
             this.Location       = location;
         }
 
-        public MessageData FirstData { get { return this; } }
+        public MessageData Data => this;
 
         public override bool Equals(object obj)
         {

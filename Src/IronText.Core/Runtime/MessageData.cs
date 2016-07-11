@@ -4,24 +4,27 @@ namespace IronText.Runtime
 {
     public class MessageData : Ambiguous<MessageData>
     {
-        public readonly int    Token;
-        public readonly int    Action;
-        public readonly string Text;
-        public object          ExternalValue;
-
         public MessageData(int token, string text, int action)
         {
             Token  = token;
-            Action = action;
             Text   = text;
+            Action = action;
         }
 
         public MessageData(int token, string text, object externalValue)
         {
-            Token = token;
-            Action = -1;
-            Text = text;
+            Token   = token;
+            Text    = text;
+            Action  = -1;
             ExternalValue = externalValue;
         }
+
+        public int    Token         { get; }
+
+        public int    Action        { get; }
+
+        public string Text          { get;  }
+
+        public object ExternalValue { get; set; }
     }
 }

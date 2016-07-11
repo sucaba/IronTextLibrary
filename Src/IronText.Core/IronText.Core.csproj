@@ -117,7 +117,10 @@
     <Compile Include="Algorithm\IntInterval.cs" />
     <Compile Include="Collections\Ambiguous.cs" />
     <Compile Include="Collections\AmbiguousAlternatives.cs" />
+    <Compile Include="Collections\AmbiguousAlternativesExtensions.cs" />
     <Compile Include="Collections\IIndexableImpl.cs" />
+    <Compile Include="Collections\ImmutableArray.cs" />
+    <Compile Include="Collections\MutableArray.cs" />
     <Compile Include="Collections\SListNode.cs" />
     <Compile Include="Diagnostics\DiagnosticExtensions.cs" />
     <Compile Include="DI\DependencyScope.cs" />
@@ -195,7 +198,6 @@
     <Compile Include="Reflection\Semantics\SemanticScope.cs" />
     <Compile Include="Reflection\Semantics\SemanticRef.cs" />
     <Compile Include="Reflection\Serialization\IGrammarReader.cs" />
-    <Compile Include="Runtime\GLR\GraphStructuredStack\GssFront.cs" />
     <Compile Include="Runtime\GLR\GraphStructuredStack\GssStage.cs" />
     <Compile Include="Runtime\GLR\GraphStructuredStack\IGraphStructuredStack.cs" />
     <Compile Include="Runtime\ILanguageSource.cs" />

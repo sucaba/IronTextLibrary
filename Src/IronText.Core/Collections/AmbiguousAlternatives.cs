@@ -2,15 +2,6 @@
 
 namespace IronText.Collections
 {
-    public static class AmbiguousExtensions
-    {
-        public static AmbiguousAlternatives<T> Alternatives<T>(this T @this)
-            where T : Ambiguous<T>
-        {
-            return new AmbiguousAlternatives<T>(@this);
-        }
-    }
-
     public struct AmbiguousAlternatives<T>
         where T : Ambiguous<T>
     {
@@ -44,9 +35,9 @@ namespace IronText.Collections
 
             public Enumerator(T current)
             {
-                this.first = current;
+                this.first   = current;
                 this.Current = null;
-                this.next = current;
+                this.next    = current;
             }
 
             public T Current { get; private set; }
@@ -65,7 +56,8 @@ namespace IronText.Collections
 
             public void Reset()
             {
-                Current = first;
+                Current = null;
+                next    = first;
             }
         } 
     }

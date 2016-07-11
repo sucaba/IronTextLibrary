@@ -4,6 +4,7 @@ using System.Text;
 
 namespace IronText.Runtime
 {
+    using Collections;
     using Logging;
     using System;
     using System.Diagnostics;
@@ -19,7 +20,6 @@ namespace IronText.Runtime
         private Message priorInput;
 
         private readonly Gss<T>               gss;
-        private readonly Queue<PendingShift>  Q = new Queue<PendingShift>(4);
         private readonly IReductionQueue<T>   R;
         private readonly int[]                tokenComplexity;
         private readonly RuntimeProduction[]  pendingReductions;
@@ -85,21 +85,15 @@ namespace IronText.Runtime
             }
         }
 
-        public IReceiver<Message> Next(Message envelope)
+        public IReceiver<Message> Next(Message message)
         {
             gss.BeginEdit();
 
-            MessageData alternateInput = envelope.FirstData;
-            do
-            {
-                ProcessTerm(envelope, alternateInput);
-
-                alternateInput = alternateInput.Alternative;
-            }
-            while (alternateInput != null);
+            ProcessAsLookahead(message);
 
             gss.PushLayer();
-            Shifter();
+
+            ProcessAsShift(message);
 
 #if DIAGNOSTICS
             if (!isVerifier)
@@ -125,19 +119,55 @@ namespace IronText.Runtime
 
                 gss.Undo(0); // restore state before the current input token
 
-                LogError(envelope);
+                LogError(message);
 
-                return RecoverFromError(envelope);
+                return RecoverFromError(message);
             }
 
             gss.EndEdit();
-            this.priorInput = envelope;
+            this.priorInput = message;
             return this;
         }
 
-        private void ProcessTerm(Message envelope, MessageData alternateInput)
+        private void ProcessAsLookahead(Message message)
         {
-            int lookahead = alternateInput.Token;
+            foreach (var data in message.Data.Alternatives())
+            {
+                ProcessAsLookahead(message, data);
+            }
+        }
+
+        private void ProcessAsShift(Message message)
+        {
+            foreach (var termData in message.Data.Alternatives())
+            {
+                ProcessAsShift(message, termData);
+            }
+        }
+
+        private void ProcessAsShift(Message message, MessageData termData)
+        {
+            var termValue = producer.CreateLeaf(message, termData);
+
+            foreach (var priorNode in gss.Prior)
+            {
+                if (priorNode.Lookahead < 0 || priorNode.Lookahead == termData.Token)
+                {
+                    var toState = GetShift(priorNode.State, termData.Token);
+                    if (toState >= 0)
+                    {
+                        gss.Push(
+                            priorNode,
+                            toState,
+                            termValue);
+                    }
+                }
+            }
+        }
+
+        private void ProcessAsLookahead(Message message, MessageData data)
+        {
+            int lookahead = data.Token;
 
             Actor(lookahead);
             Reducer(lookahead);
@@ -151,17 +181,6 @@ namespace IronText.Runtime
                         producer.Result = node.BackLink.Label;
                         break;
                     }
-                }
-            }
-
-            var termValue = producer.CreateLeaf(envelope, alternateInput);
-
-            foreach (var frontNode in gss.Front)
-            {
-                var shift = GetShift(frontNode.State, lookahead);
-                if (shift >= 0)
-                {
-                    Q.Enqueue(new PendingShift(frontNode, shift, lookahead, termValue));
                 }
             }
         }
@@ -290,18 +309,6 @@ namespace IronText.Runtime
                         }
                     }
                 }
-            }
-        }
-
-        private void Shifter()
-        {
-            while (Q.Count != 0)
-            {
-                var shift = Q.Dequeue();
-                gss.Push(
-                    shift.FrontNode,
-                    shift.ToState,
-                    shift.Value);
             }
         }
 

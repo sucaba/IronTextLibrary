@@ -58,13 +58,13 @@ namespace IronText.Runtime
             prior.Clear();
             --currentLayer;
 
-            AddPriorLayerNodes(front, prior);
-            AddPriorLayerNodes(prior, prior);
+            AddDirectPriorLayerNodes(front, prior);
+            AddDirectPriorLayerNodes(prior, prior);
 
             // TODO: Decide if needed: outcome.RemoveAll(node => node.Stage != GssStage.FinalShift);
         }
 
-        private void AddPriorLayerNodes(
+        private void AddDirectPriorLayerNodes(
             ImmutableArray<GssNode<T>> followingNodes,
             MutableArray<GssNode<T>>   outcome)
         {
