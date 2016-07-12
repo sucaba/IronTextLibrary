@@ -1,13 +1,12 @@
-﻿using IronText.Diagnostics;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
+using System;
+using System.Diagnostics;
+using IronText.Logging;
+using IronText.Collections;
 
 namespace IronText.Runtime
 {
-    using Collections;
-    using Logging;
-    using System;
-    using System.Diagnostics;
     using State = System.Int32;
 
     sealed class GlrParser<T> : IPushParser
@@ -17,7 +16,7 @@ namespace IronText.Runtime
         private readonly int[]                stateToPriorToken;
         private readonly TransitionDelegate   transition;
         private          IProducer<T>         producer;
-        private Message priorInput;
+        private Message  priorInput;
 
         private readonly Gss<T>               gss;
         private readonly IReductionQueue<T>   R;

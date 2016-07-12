@@ -9,7 +9,7 @@ namespace IronText.Runtime
             var link      = toNode.BackLink;
             var priorNode = link.PriorNode;
 
-            if (link.Alternative == null)
+            if (link.IsDeterminisic)
             {
                 toNode.DeterministicDepth = priorNode.DeterministicDepth + 1;
             }
@@ -48,7 +48,7 @@ namespace IronText.Runtime
                 return 1;
             }
 
-            if (node.BackLink.Alternative == null)
+            if (node.BackLink.IsDeterminisic)
             {
                 return node.BackLink.PriorNode.DeterministicDepth + 1;
             }

@@ -9,5 +9,7 @@
         }
 
         public T Alternative { get; set; }
+
+        public bool IsDeterminisic => Alternative == null;
     }
 }
