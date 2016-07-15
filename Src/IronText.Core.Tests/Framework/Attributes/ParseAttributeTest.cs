@@ -12,7 +12,9 @@ namespace IronText.Tests.Framework.Attributes
         [Test]
         public void Test()
         {
-            Assert.IsTrue(Language.Get(typeof(ParseAttributeTestLang)).IsDeterministic);
+            Assert.AreEqual(
+                ParserRuntime.Deterministic,
+                Language.Get(typeof(ParseAttributeTestLang)).TargetParserRuntime);
 
             Language.Parse(
                 new ParseAttributeTestLang(),

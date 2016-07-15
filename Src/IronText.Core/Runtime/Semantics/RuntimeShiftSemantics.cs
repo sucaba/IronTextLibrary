@@ -16,7 +16,7 @@ namespace IronText.Runtime.Semantics
 
         public void Execute(IStackLookback<ActionNode> lookback)
         {
-            int shiftedState = lookback.GetParentState();
+            int shiftedState = lookback.GetState(1);
             RuntimeFormula[] formulas = grammar.GetShiftedFormulas(shiftedState);
             foreach (var formula in formulas)
             {

@@ -105,8 +105,6 @@ namespace IronText.Runtime
             Capacity = newSize;
         }
 
-        public int GetParentState() { return GetState(1); }
-
         public int GetState(int backoffset)
         {
             if (backoffset <= 0)

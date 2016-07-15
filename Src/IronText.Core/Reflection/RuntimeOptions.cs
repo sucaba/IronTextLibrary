@@ -23,6 +23,8 @@
         /// </remarks>
         ForceNonDeterministic = 0x02,
 
-        ParserAlgorithmMask   = 0x03,
+        ForceGeneric          = 0x04,
+
+        ParserAlgorithmMask   = 0x07,
     }
 }

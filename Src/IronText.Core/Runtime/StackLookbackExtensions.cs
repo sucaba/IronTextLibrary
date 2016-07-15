@@ -52,11 +52,6 @@ namespace IronText.Runtime
                 return result;
             }
 
-            public int GetParentState()
-            {
-                return GetState(1);
-            }
-
             public int GetState(int backOffset)
             {
                 int index = items.Length - backOffset;
@@ -82,11 +77,6 @@ namespace IronText.Runtime
             }
 
             public T GetNodeAt(int backOffset) => items[index - backOffset];
-
-            public int GetParentState()
-            {
-                throw new NotSupportedException();
-            }
 
             public int GetState(int backOffset)
             {

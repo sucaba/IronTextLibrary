@@ -67,8 +67,6 @@ namespace IronText.Runtime
             return result;
         }
 
-        State IStackLookback<T>.GetParentState() { return State; }
-
         State IStackLookback<T>.GetState(int backoffset)
         {
             var node = GetNodeAtDepth(backoffset);

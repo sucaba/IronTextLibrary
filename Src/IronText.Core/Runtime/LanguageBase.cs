@@ -12,7 +12,7 @@ namespace IronText.Runtime
     {
         public static class Fields
         {
-            public static readonly FieldInfo isDeterministic = ExpressionUtils.GetField((LanguageBase lang) => lang.isDeterministic);
+            public static readonly FieldInfo targetParserRuntime = ExpressionUtils.GetField((LanguageBase lang) => lang.targetParserRuntime);
 
             public static readonly FieldInfo grammarBytes = ExpressionUtils.GetField((LanguageBase lang) => lang.grammarBytes);
 
@@ -41,7 +41,7 @@ namespace IronText.Runtime
             public static readonly FieldInfo createDefaultContext = ExpressionUtils.GetField((LanguageBase lang) => lang.createDefaultContext);
         }
 
-        protected internal bool isDeterministic;
+        protected internal ParserRuntime targetParserRuntime;
         protected object sourceGrammar;
         private readonly object sourceGrammarLock = new object();
         protected byte[] grammarBytes;
@@ -67,7 +67,7 @@ namespace IronText.Runtime
 
         public RuntimeGrammar RuntimeGrammar { get { return _runtimeGrammar; } }
 
-        public bool IsDeterministic { get { return isDeterministic; } }
+        public ParserRuntime TargetParserRuntime => targetParserRuntime;
 
         public void Init()
         {
@@ -106,20 +106,28 @@ namespace IronText.Runtime
 
         public IPushParser CreateParser<TNode>(IProducer<TNode> producer, ILogging logging)
         {
-            if (isDeterministic)
+            switch (targetParserRuntime)
             {
-                return new DeterministicParser<TNode>(producer, _runtimeGrammar, getParserAction, logging);
-            }
-            else
-            {
-                return new GlrParser<TNode>(
-                    _runtimeGrammar,
-                    tokenComplexity,
-                    getParserAction,
-                    stateToSymbol,
-                    parserConflictActions,
-                    producer,
-                    logging);
+                case ParserRuntime.Deterministic:
+                    return new DeterministicParser<TNode>(producer, _runtimeGrammar, getParserAction, logging);
+                case ParserRuntime.Glr:
+                    return new GlrParser<TNode>(
+                        _runtimeGrammar,
+                        tokenComplexity,
+                        getParserAction,
+                        stateToSymbol,
+                        parserConflictActions,
+                        producer,
+                        logging);
+                case ParserRuntime.Generic:
+                    return new GenericParser<TNode>(
+                        producer,
+                        _runtimeGrammar,
+                        getParserAction,
+                        logging);
+                default:
+                    throw new InvalidOperationException(
+                        $"Unsupported parser runtime: {targetParserRuntime}");
             }
         }
 
@@ -172,7 +180,7 @@ namespace IronText.Runtime
             Debug.WriteLine(
                 "Default merging of token {0} values in state {1}:",
                 (object)_runtimeGrammar.SymbolName(token),
-                stackLookback.GetParentState());
+                stackLookback.GetState(1));
             Debug.WriteLine("  '{0}'", alt1);
             Debug.WriteLine(" and");
             Debug.WriteLine("  '{0}'", alt2);

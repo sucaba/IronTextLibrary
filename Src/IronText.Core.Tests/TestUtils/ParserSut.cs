@@ -58,24 +58,29 @@ namespace IronText.Tests.TestUtils
                                     inhIndexToValue);
 
             IReceiver<Message> parser;
-            if (data.IsDeterministic)
+            switch (data.TargetParserRuntime)
             {
-                parser = new DeterministicParser<ActionNode>(
-                            producer,
-                            data.RuntimeGrammar,
-                            Transition,
-                            logging);
-            }
-            else
-            {
-                parser = new GlrParser<ActionNode>(
-                            data.RuntimeGrammar,
-                            data.TokenComplexity,
-                            Transition,
-                            data.StateToToken,
-                            Array.ConvertAll(data.ParserConflictActionTable, ParserAction.Encode),
-                            producer,
-                            logging);
+                case ParserRuntime.Deterministic:
+                    parser = new DeterministicParser<ActionNode>(
+                                producer,
+                                data.RuntimeGrammar,
+                                Transition,
+                                logging);
+                    break;
+
+                case ParserRuntime.Glr:
+                    parser = new GlrParser<ActionNode>(
+                                data.RuntimeGrammar,
+                                data.TokenComplexity,
+                                Transition,
+                                data.StateToToken,
+                                Array.ConvertAll(data.ParserConflictActionTable, ParserAction.Encode),
+                                producer,
+                                logging);
+                    break;
+                default:
+                    throw new InvalidOperationException(
+                        $"Unsupported parser runtime: {data.TargetParserRuntime}");
             }
 
             var scanSimulation = new TdfaSimulation(data.ScannerTdfa);

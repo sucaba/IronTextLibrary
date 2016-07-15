@@ -22,8 +22,7 @@ namespace IronText.Runtime
 
         public Type     DefinitionType      { get; private set; }
 
-        public Assembly SourceAssembly      { get { return DefinitionType.Assembly; }
-        }
+        public Assembly SourceAssembly      { get { return DefinitionType.Assembly; } }
 
         public string   FullLanguageName    { get { return DefinitionType.FullName; }
         }
@@ -38,10 +37,8 @@ namespace IronText.Runtime
 
         public string   GrammarInfoFileName { get { return LanguageTypeName + ".info"; } }
 
-        public string   LanguageTypeName    
-        { 
-            get { return DefinitionType.Namespace + ".Derived." + DefinitionType.Name + "_Language"; } 
-        }
+        public string   LanguageTypeName =>
+            DefinitionType.FullName.Replace('+', '$') + "$_Language";
 
         public override string ToString()   { return FullLanguageName; }
 

@@ -25,7 +25,7 @@ namespace IronText.MetadataCompiler
         {
             this.Data = new LanguageData
             {
-                IsDeterministic           = !lrTable.RequiresGlr,
+                TargetParserRuntime       = lrTable.TargetRuntime,
                 Grammar                   = grammar,
                 RuntimeGrammar            = runtimeGrammar,
                 TokenComplexity           = analysis.GetTokenComplexity(),

@@ -8,10 +8,7 @@ namespace IronText.Runtime
     {
         RuntimeGrammar RuntimeGrammar { get; }
 
-        /// <summary>
-        /// Determines whether parsing algorithm being used is deterministic.
-        /// </summary>
-        bool IsDeterministic { get; }
+        ParserRuntime TargetParserRuntime { get; }
 
         object CreateDefaultContext();
 

@@ -102,13 +102,20 @@ namespace IronText.Build
             {
                 resource = Assembly.Load(AssemblyName);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 logging.Write(
                     new LogEntry
                     {
                         Severity = Severity.Error,
-                        Message = string.Format("Unable to load assembly '{0}'.", AssemblyName.FullName)
+                        Message  = $"Unable to load assembly '{AssemblyName.FullName}'."
+                    });
+
+                logging.Write(
+                    new LogEntry
+                    {
+                        Severity = Severity.Error,
+                        Message  = e.Message
                     });
 
                 return false;

@@ -45,6 +45,11 @@ namespace IronText.Runtime
 
         public int                 TokenCount           { get; }
 
+        /// <summary>
+        /// TODO: More precise max for thread count
+        /// </summary>
+        public int                 MaxParserThreadCount  => 2 * stateToFormulas.Length;
+
         public int                 MaxProductionLength  { get; }
 
         public RuntimeProduction[] Productions          { get; }

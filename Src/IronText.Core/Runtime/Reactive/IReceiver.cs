@@ -4,18 +4,18 @@ namespace IronText.Runtime
 {
     public interface IReceiver<T>
     {
-        IReceiver<T>    Next(T item);
+        IReceiver<T>    Next(T message);
 
         IReceiver<T>    Done();
     }
 
     public static class Reciever
     {
-        public static IReceiver<T> Feed<T>(this IReceiver<T> initial, params T[] items)
+        public static IReceiver<T> Feed<T>(this IReceiver<T> initial, params T[] messages)
         {
             IReceiver<T> current = initial;
 
-            foreach (var item in items)
+            foreach (var item in messages)
             {
                 if (current == null)
                 {

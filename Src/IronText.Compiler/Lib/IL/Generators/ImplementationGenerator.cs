@@ -310,7 +310,7 @@ namespace IronText.Lib.IL.Generators
 
         private static string MakeImplName(Type type)
         {
-            return type.Name + "_Impl";
+            return type.FullName.Replace('+', '$') + "$_Impl";
         }
 
         class PlannedClass

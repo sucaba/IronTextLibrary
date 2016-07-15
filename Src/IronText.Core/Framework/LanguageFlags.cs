@@ -22,5 +22,7 @@
         /// deterministic counterpart.
         /// </remarks>
         ForceNonDeterministic = 0x02,
+
+        ForceGeneric          = 0x04,
     }
 }

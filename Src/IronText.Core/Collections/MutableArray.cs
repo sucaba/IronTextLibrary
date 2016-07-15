@@ -1,4 +1,5 @@
 ﻿using System;
+using IronText.Runtime;
 
 namespace IronText.Collections
 {
@@ -44,6 +45,30 @@ namespace IronText.Collections
             }
 
             count = destIndex;
+        }
+
+        public void Remove(T item)
+        {
+            int index = Array.IndexOf(items, item, 0, count);
+            if (index < 0)
+            {
+                throw new InvalidOperationException("Internal error: broken invariant");
+            }
+
+            Array.Copy(items, index + 1, items, index, Count - index - 1);
+
+            --count;
+        }
+
+        public void Replace(T oldValue, T newValue)
+        {
+            int index = Array.IndexOf(items, oldValue, 0, count);
+            if (index < 0)
+            {
+                throw new InvalidOperationException();
+            }
+
+            items[index] = newValue;
         }
 
         public MutableArray<T> Clone()

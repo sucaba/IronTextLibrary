@@ -4,11 +4,6 @@ namespace IronText.Runtime
     public interface IStackLookback<T>
     {
         /// <summary>
-        /// Get state before a reduction path
-        /// </summary>
-        int GetParentState();
-
-        /// <summary>
         /// Get states before a reduction path
         /// </summary>
         /// <param name="backOffset"></param>

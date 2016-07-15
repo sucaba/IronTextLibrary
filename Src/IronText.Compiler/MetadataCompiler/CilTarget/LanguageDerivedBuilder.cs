@@ -398,8 +398,8 @@ namespace IronText.MetadataCompiler
 
             emit
                 .Ldarg(0)
-                .Ldc_I4(data.IsDeterministic ? 1 : 0)
-                .Stfld(LanguageBase.Fields.isDeterministic);
+                .Ldc_I4((int)data.TargetParserRuntime)
+                .Stfld(LanguageBase.Fields.targetParserRuntime);
 
             return emit
                 // Init grammar

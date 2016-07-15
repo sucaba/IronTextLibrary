@@ -53,7 +53,7 @@ namespace IronText.Collections
 
             object IEnumerator.Current => Current;
 
-            public bool MoveNext() => ++index != count;
+            public bool MoveNext() => ++index < count;
 
             public void Reset() => index = -1;
 

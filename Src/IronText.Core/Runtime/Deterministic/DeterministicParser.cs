@@ -79,82 +79,88 @@ namespace IronText.Runtime
         {
             stateStack.BeginEdit();
 
-            int id = envelope.AmbiguousToken;
-            MessageData data = envelope.Data;
-
-        RESTART:
-            int start = actionTable(stateStack.PeekTag(), id);
-
-            while (true)
+            try
             {
-                var action = grammar.Instructions[start];
+                int id = envelope.AmbiguousToken;
+                MessageData data = envelope.Data;
 
-                switch (action.Kind)
+            RESTART:
+                int start = actionTable(stateStack.PeekTag(), id);
+
+                while (true)
                 {
-                    case ParserActionKind.Restart:
-                        goto RESTART;
+                    var action = grammar.Instructions[start];
 
-                    case ParserActionKind.Exit:
-                        stateStack.EndEdit();
-                        this.priorInput = envelope;
-                        return this;
+                    switch (action.Kind)
+                    {
+                        case ParserActionKind.Restart:
+                            goto RESTART;
 
-                    case ParserActionKind.Reduce:
-                        {
-                            var value = ReduceNoPush(ref action);
-                            PushNode(action.State, value);
-                            break;
-                        }
+                        case ParserActionKind.Exit:
+                            return this;
 
-                    case ParserActionKind.Fail:
-                        if (isVerifier)
-                        {
-                            return null;
-                        }
-
-                        // ReportUnexpectedToken(msg, stateStack.PeekTag());
-                        return RecoverFromError(envelope);
-
-                    case ParserActionKind.Resolve:
-                        id = action.ResolvedToken;
-                        data = data.Alternatives()
-                                   .ResolveFirst(x => x.Token == id);
-
-                        if (data == null)
-                        {
-                            // Desired token was not present in Msg
-                            goto case ParserActionKind.Fail;
-                        }
-
-                        break;
-
-                    case ParserActionKind.Fork:
-                    case ParserActionKind.Conflict:
-                        logging.Write(
-                            new LogEntry
+                        case ParserActionKind.Reduce:
                             {
-                                Severity = Severity.Error,
-                                Location = envelope.Location,
-                                Message = "Hit parser conflict on token " + grammar.SymbolName(envelope.AmbiguousToken)
-                            });
-                        return null;
+                                var value = ReduceNoPush(ref action);
+                                PushNode(action.State, value);
+                                break;
+                            }
 
-                    case ParserActionKind.Shift:
-                        {
-                            var node = producer.CreateLeaf(envelope, data);
-                            PushNode(action.State, node);
+                        case ParserActionKind.Fail:
+                            if (isVerifier)
+                            {
+                                return null;
+                            }
+
+                            // ReportUnexpectedToken(msg, stateStack.PeekTag());
+                            return RecoverFromError(envelope);
+
+                        case ParserActionKind.Resolve:
+                            id = action.ResolvedToken;
+                            data = data.Alternatives()
+                                       .ResolveFirst(x => x.Token == id);
+
+                            if (data == null)
+                            {
+                                // Desired token was not present in Msg
+                                goto case ParserActionKind.Fail;
+                            }
+
                             break;
-                        }
 
-                    case ParserActionKind.Accept:
-                        producer.Result = stateStack.Peek();
-                        return FinalReceiver<Message>.Instance;
+                        case ParserActionKind.Fork:
+                        case ParserActionKind.Conflict:
+                            logging.Write(
+                                new LogEntry
+                                {
+                                    Severity = Severity.Error,
+                                    Location = envelope.Location,
+                                    Message = "Hit parser conflict on token " + grammar.SymbolName(envelope.AmbiguousToken)
+                                });
+                            return null;
 
-                    default:
-                        throw new InvalidOperationException("Internal error: Unsupported parser action");
+                        case ParserActionKind.Shift:
+                            {
+                                var node = producer.CreateLeaf(envelope, data);
+                                PushNode(action.State, node);
+                                break;
+                            }
+
+                        case ParserActionKind.Accept:
+                            producer.Result = stateStack.Peek();
+                            return FinalReceiver<Message>.Instance;
+
+                        default:
+                            throw new InvalidOperationException("Internal error: Unsupported parser action");
+                    }
+
+                    ++start;
                 }
-
-                ++start;
+            }
+            finally
+            {
+                stateStack.EndEdit();
+                priorInput = envelope;
             }
         }
 
@@ -228,8 +234,8 @@ namespace IronText.Runtime
 
             for (int i = 0; i != tokenCount; ++i)
             {
-                var action = actionTable(parserState, i);
-                if (action != ParserAction.FailActionCell && grammar.IsTerminal(i))
+                var action = grammar.Instructions[actionTable(parserState, i)];
+                if (action != ParserAction.FailAction && grammar.IsTerminal(i))
                 {
                     result.Add(i);
                 }

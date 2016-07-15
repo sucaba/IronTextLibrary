@@ -9,6 +9,9 @@ namespace IronText.MetadataCompiler
     {
         public ParserBytecodeProvider(ILrParserTable parserTable)
         {
+            bool forceGlr = parserTable.TargetRuntime == ParserRuntime.Glr;
+            var conflictActions = parserTable.GetConflictActionTable();
+
             var instructions = new List<ParserAction>();
 
             var table = parserTable.GetParserActionTable();
@@ -20,29 +23,72 @@ namespace IronText.MetadataCompiler
             for (int r = 0; r != rowCount; ++r)
                 for (int c = 0; c != columnCount; ++c)
                 {
-                    var action = table.Get(r, c);
-                    int start = instructions.Count;
+                    startTable.Set(r, c, instructions.Count);
 
-                    startTable.Set(r, c, start);
-                    instructions.Add(action);
-                    switch (action.Kind)
+                    var action = table.Get(r, c);
+                    if (!forceGlr && action.Kind == ParserActionKind.Conflict)
                     {
-                        case ParserActionKind.Resolve:
-                        case ParserActionKind.Reduce:
-                            instructions.Add(ParserAction.ContinueAction);
-                            break;
-                        case ParserActionKind.Shift:
-                            instructions.Add(ParserAction.ExitAction);
-                            break;
-                        default:
-                            // safety instruction to avoid invalid instruction access
-                            instructions.Add(ParserAction.InternalErrorAction);
-                            break;
+                        int first = action.Value1;
+                        int last = action.Value1 + action.ConflictCount;
+                        int forkPos = instructions.Count;
+
+                        int start = first + 1;
+                        while (start != last)
+                        {
+                            AddForkInstructionPlaceholder(instructions);
+                            ++start;
+                        }
+
+                        start = first;
+                        while (start != last)
+                        {
+                            var conflictAction = conflictActions[start];
+                            if (start != first)
+                            {
+                                instructions[forkPos++] = new ParserAction
+                                {
+                                    Kind = ParserActionKind.Fork,
+                                    Value1 = instructions.Count
+                                };
+                            }
+
+                            CompileTransition(instructions, conflictAction);
+
+                            ++start;
+                        }
+                    }
+                    else
+                    {
+                        CompileTransition(instructions, action);
                     }
                 }
 
             this.Instructions = instructions.ToArray();
             this.StartTable   = startTable;
+        }
+
+        private static void AddForkInstructionPlaceholder(List<ParserAction> instructions)
+        {
+            instructions.Add(ParserAction.InternalErrorAction);
+        }
+
+        private static void CompileTransition(List<ParserAction> instructions, ParserAction action)
+        {
+            instructions.Add(action);
+            switch (action.Kind)
+            {
+                case ParserActionKind.Resolve:
+                case ParserActionKind.Reduce:
+                    instructions.Add(ParserAction.ContinueAction);
+                    break;
+                case ParserActionKind.Shift:
+                    instructions.Add(ParserAction.ExitAction);
+                    break;
+                default:
+                    // safety instruction to avoid invalid instruction access
+                    instructions.Add(ParserAction.InternalErrorAction);
+                    break;
+            }
         }
 
         public ParserAction[] Instructions { get; }

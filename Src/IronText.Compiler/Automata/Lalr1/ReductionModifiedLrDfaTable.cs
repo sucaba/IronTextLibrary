@@ -29,7 +29,7 @@ namespace IronText.Automata.Lalr1
             BuildConflictTable();
         }
 
-        public bool RequiresGlr { get { return true; } }
+        public ParserRuntime TargetRuntime => ParserRuntime.Glr;
 
         public ParserConflictInfo[] Conflicts
         {

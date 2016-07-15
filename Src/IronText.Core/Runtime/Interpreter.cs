@@ -145,9 +145,9 @@ namespace IronText.Runtime
             var scanner  = LanguageRuntime.CreateScanner(context, input, document, GetCurrentLogging());
             var producer = LanguageRuntime.CreateProducer(context);
             var parser   = LanguageRuntime.CreateParser(producer, logging);
-            scanner.Accept(parser);
 
-            return ErrorCount == 0;
+            return scanner.Accept(parser) != null
+                && ErrorCount == 0;
         }
 
         public bool Parse(string text)

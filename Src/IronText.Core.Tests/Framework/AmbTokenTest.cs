@@ -15,7 +15,9 @@ namespace IronText.Tests.Framework
         [Test]
         public void DeterministicParserTest()
         {
-            Assert.IsTrue(Language.Get(typeof(AmbTokenDetermLang)).IsDeterministic);
+            Assert.AreEqual(
+                ParserRuntime.Deterministic,
+                Language.Get(typeof(AmbTokenDetermLang)).TargetParserRuntime);
 
             Assert.AreEqual(new [] { typeof(Identifier) }, Parse("$ident myvar"));
             Assert.AreEqual(new [] { typeof(Identifier) }, Parse("$ident while"));
@@ -25,7 +27,9 @@ namespace IronText.Tests.Framework
         [Test]
         public void AmbiguousParserTest()
         {
-            Assert.IsFalse(Language.Get(typeof(AmbTokenAmbLang)).IsDeterministic);
+            Assert.AreNotEqual(
+                ParserRuntime.Deterministic,
+                Language.Get(typeof(AmbTokenAmbLang)).TargetParserRuntime);
 
             Assert.AreEqual(new [] { typeof(Identifier) }, ParseAmb("myvar $ident"));
             Assert.AreEqual(new [] { typeof(Identifier) }, ParseAmb("while $ident"));

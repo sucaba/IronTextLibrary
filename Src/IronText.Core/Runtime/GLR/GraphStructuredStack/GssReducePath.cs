@@ -126,11 +126,6 @@ namespace IronText.Runtime
             }
         }
 
-        int IStackLookback<T>.GetParentState()
-        {
-            return ((IStackLookback<T>)this).GetState(Links.Length);
-        }
-
         int IStackLookback<T>.GetState(int backOffset)
         {
             int result;

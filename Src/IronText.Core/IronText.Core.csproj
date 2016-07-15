@@ -208,6 +208,10 @@
     <Compile Include="Runtime\Inlining\InlinedProducer.cs" />
     <Compile Include="Runtime\IReportDestinationHint.cs" />
     <Compile Include="Runtime\MessageData.cs" />
+    <Compile Include="Runtime\Parallel\GenericParser.cs" />
+    <Compile Include="Runtime\Parallel\GenericStack.cs" />
+    <Compile Include="Runtime\Parallel\ParserThread.cs" />
+    <Compile Include="Runtime\ParserRuntime.cs" />
     <Compile Include="Runtime\Parsing\ParserBytecode.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeFormula.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeValue.cs" />

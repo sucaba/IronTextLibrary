@@ -92,6 +92,7 @@
     <Compile Include="Algorithm\TopologicalSortTest.cs" />
     <Compile Include="Algorithm\UnicodeFrequencyTest.cs" />
     <Compile Include="Collections\IndexedCollectionTest.cs" />
+    <Compile Include="Framework\Generic\GenericParserTest.cs" />
     <Compile Include="Lib\IL\Plugins\DataStorageTest.cs" />
     <Compile Include="Reflection\ResolutionOfProductionDuplicates.feature.cs">
       <AutoGen>True</AutoGen>
@@ -140,7 +141,7 @@
     <Compile Include="Framework\AmbTokenTest.cs" />
     <Compile Include="Framework\BuildErrorTest.cs" />
     <Compile Include="Framework\ErrorRecoveryTest.cs" />
-    <Compile Include="Framework\GlrTest.cs" />
+    <Compile Include="Framework\Glr\GlrTest.cs" />
     <Compile Include="Algorithm\SetOrthohonatorTest.cs" />
     <Compile Include="Algorithm\UnicodeIntSetTypeTest.cs" />
     <Compile Include="Extensions\SymbolResolverTest.cs" />

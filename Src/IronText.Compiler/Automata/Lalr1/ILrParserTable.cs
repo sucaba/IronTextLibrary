@@ -6,7 +6,7 @@ namespace IronText.Automata.Lalr1
 {
     interface ILrParserTable
     {
-        bool RequiresGlr { get; }
+        ParserRuntime TargetRuntime { get; }
 
         ITable<ParserAction> GetParserActionTable();
 

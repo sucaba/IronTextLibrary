@@ -17,10 +17,15 @@ namespace IronText.Automata.Lalr1
             = new Dictionary<TransitionKey, ParserConflictInfo>();
         private readonly IMutableTable<ParserAction> actionTable;
         private ParserAction[]  conflictActionTable;
+        private readonly ParserRuntime requiredRuntime;
 
-        public CanonicalLrDfaTable(ILrDfa dfa, IMutableTable<ParserAction> actionTable)
+        public CanonicalLrDfaTable(
+            ILrDfa                      dfa,
+            IMutableTable<ParserAction> actionTable,
+            ParserRuntime               requiredRuntime = ParserRuntime.Deterministic)
         {
             this.grammar = dfa.GrammarAnalysis;
+            this.requiredRuntime = requiredRuntime;
 
             this.actionTable = actionTable ?? new MutableTable<ParserAction>(
                                                 dfa.States.Length,
@@ -29,7 +34,7 @@ namespace IronText.Automata.Lalr1
             BuildConflictTable();
         }
 
-        public bool RequiresGlr { get; private set; }
+        public ParserRuntime TargetRuntime { get; private set; }
 
         public ParserConflictInfo[] Conflicts
         {
@@ -112,7 +117,9 @@ namespace IronText.Automata.Lalr1
                 ParserAction resolvedCell;
                 if (!TryResolveShiftReduce(currentCell, action, token, out resolvedCell))
                 {
-                    RequiresGlr = true;
+                    TargetRuntime = requiredRuntime != ParserRuntime.Deterministic
+                        ? requiredRuntime
+                        : ParserRuntime.Glr;
 
                     ParserConflictInfo conflict;
                     var key = new TransitionKey(state, token);

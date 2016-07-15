@@ -48,7 +48,7 @@ namespace IronText.MetadataCompiler
             this.RuntimeGrammar = data.RuntimeGrammar;
         }
 
-        public bool IsDeterministic { get { return data.IsDeterministic; } }
+        public ParserRuntime TargetParserRuntime => data.TargetParserRuntime;
 
         public object CreateDefaultContext()
         {
