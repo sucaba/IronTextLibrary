@@ -95,11 +95,11 @@ namespace IronText.Logging
 
         public bool Equals(Loc other)
         {
-            return FirstLine == other.FirstLine
+            return FirstLine   == other.FirstLine
                 && FirstColumn == other.FirstColumn
-                && LastLine == other.LastLine
-                && LastColumn == other.LastColumn
-                && FilePath == other.FilePath;
+                && LastLine    == other.LastLine
+                && LastColumn  == other.LastColumn
+                && FilePath    == other.FilePath;
         }
 
         public bool IsUnknown
@@ -112,7 +112,7 @@ namespace IronText.Logging
             Loc result = Loc.Unknown;
             foreach (var loc in locations)
             {
-                result = result + loc;
+                result += loc;
             }
 
             return result;

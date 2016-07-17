@@ -14,33 +14,37 @@ namespace IronText.Runtime
         {
             if (definitionType == null)
             {
-                throw new ArgumentNullException("definitionType");
+                throw new ArgumentNullException(nameof(definitionType));
             }
 
-            this.DefinitionType = definitionType;
+            this.DefinitionType     = definitionType;
+            this.SourceAssembly     = DefinitionType.Assembly;
+            this.FullLanguageName   = DefinitionType.FullName;
+            this.LanguageName       = DefinitionType.Name;
+            this.GrammarOrigin      = ReflectionUtils.ToString(DefinitionType);
+            this.GrammarFileName    = LanguageTypeName + ".gram";
+            this.LanguageTypeName   = DefinitionType.FullName.Replace('+', '$') + "$_Language";
         }
 
-        public Type     DefinitionType      { get; private set; }
+        public Type     DefinitionType      { get; }
 
-        public Assembly SourceAssembly      { get { return DefinitionType.Assembly; } }
+        public Assembly SourceAssembly      { get; }
 
-        public string   FullLanguageName    { get { return DefinitionType.FullName; }
-        }
+        public string   FullLanguageName    { get; }
 
-        public string   LanguageName        { get { return DefinitionType.Name; } }
+        public string   LanguageName        { get; }
 
-        public string   GrammarOrigin       { get { return ReflectionUtils.ToString(DefinitionType); } }
+        public string   LanguageTypeName    { get; }
 
-        public string   GrammarFileName     { get { return LanguageTypeName + ".gram"; } }
+        public string   GrammarOrigin       { get; }
 
-        public string   ScannerInfoFileName { get { return LanguageTypeName + ".scan"; } }
+        public string   GrammarFileName     { get; }
 
-        public string   GrammarInfoFileName { get { return LanguageTypeName + ".info"; } }
+        public string   ScannerInfoFileName => LanguageTypeName + ".scan";
 
-        public string   LanguageTypeName =>
-            DefinitionType.FullName.Replace('+', '$') + "$_Language";
+        public string   GrammarInfoFileName => LanguageTypeName + ".info";
 
-        public override string ToString()   { return FullLanguageName; }
+        public override string ToString() => FullLanguageName;
 
         public override bool Equals(object obj)
         {
@@ -48,26 +52,17 @@ namespace IronText.Runtime
             return casted != null && casted.FullLanguageName == FullLanguageName;
         }
 
-        public override int GetHashCode() { return FullLanguageName.GetHashCode(); }
+        public override int GetHashCode() => FullLanguageName.GetHashCode();
 
-        public string GrammarReaderTypeName
-        {
-            get { return "IronText.Reflection.Managed.CilGrammarReader, IronText.Compiler"; }
-        }
+        public string GrammarReaderTypeName =>
+            "IronText.Reflection.Managed.CilGrammarReader, IronText.Compiler";
 
-        string IReportDestinationHint.OutputDirectory
-        {
-            get { return SourceAssemblyDirectory; }
-        }
+        string IReportDestinationHint.OutputDirectory => SourceAssemblyDirectory;
 
-        private string SourceAssemblyPath
-        {
-            get { return new Uri(SourceAssembly.CodeBase).LocalPath; }
-        }
+        private string SourceAssemblyPath =>
+            new Uri(SourceAssembly.CodeBase).LocalPath;
 
-        private string SourceAssemblyDirectory
-        {
-            get { return Path.GetDirectoryName(SourceAssemblyPath); }
-        }
+        private string SourceAssemblyDirectory =>
+            Path.GetDirectoryName(SourceAssemblyPath);
     }
 }
