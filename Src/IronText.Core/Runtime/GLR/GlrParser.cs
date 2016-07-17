@@ -88,11 +88,14 @@ namespace IronText.Runtime
         {
             gss.BeginEdit();
 
-            ProcessAsLookahead(message);
+            foreach (var data in message.Data.Alternatives())
+            {
+                ProcessAsLookahead(message, data);
+                ProcessAsShift(message, data);
+            }
 
             gss.PushLayer();
 
-            ProcessAsShift(message);
 
 #if DIAGNOSTICS
             if (!isVerifier)
@@ -128,34 +131,18 @@ namespace IronText.Runtime
             return this;
         }
 
-        private void ProcessAsLookahead(Message message)
-        {
-            foreach (var data in message.Data.Alternatives())
-            {
-                ProcessAsLookahead(message, data);
-            }
-        }
-
-        private void ProcessAsShift(Message message)
-        {
-            foreach (var termData in message.Data.Alternatives())
-            {
-                ProcessAsShift(message, termData);
-            }
-        }
-
         private void ProcessAsShift(Message message, MessageData termData)
         {
             var termValue = producer.CreateLeaf(message, termData);
 
-            foreach (var priorNode in gss.Prior)
+            foreach (var priorNode in gss.Front)
             {
                 if (priorNode.Lookahead < 0 || priorNode.Lookahead == termData.Token)
                 {
                     var toState = GetShift(priorNode.State, termData.Token);
                     if (toState >= 0)
                     {
-                        gss.Push(
+                        gss.PushShift(
                             priorNode,
                             toState,
                             termValue);
@@ -244,7 +231,7 @@ namespace IronText.Runtime
                     (currentValue, newValue) =>
                         producer.Merge(currentValue, newValue, path);
 
-                var newLink = gss.Push(
+                var newLink = gss.PushReduced(
                                 fromNode,
                                 toState,
                                 branch,

@@ -14,11 +14,16 @@ namespace IronText.Runtime
         void PushLayer();
         void PopLayer();
 
-        GssBackLink<T> Push(
-            GssNode<T>  fromNode,
+        GssBackLink<T> PushShift(
+            GssNode<T> priorNode,
+            int        toState,
+            T          label);
+
+        GssBackLink<T> PushReduced(
+            GssNode<T>  priorNode,
             int         toState,
             T           label,
-            int         lookahead = -1,
-            Func<T,T,T> merge = null);
+            int         lookahead,
+            Func<T,T,T> merge);
     }
 }

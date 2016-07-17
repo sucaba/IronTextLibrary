@@ -15,17 +15,18 @@ namespace IronText.Runtime
         , IUndoable
     {
         private int currentLayer = 0;
-        private GssStage currentStage = 0;
+        private MutableArray<GssNode<T>> next;
         private MutableArray<GssNode<T>> front;
         private MutableArray<GssNode<T>> prior;
         private readonly CircularStack<GssNode<T>> history;
 
         public Gss(int stateCount)
         {
+            next  = new MutableArray<GssNode<T>>(stateCount);
             front = new MutableArray<GssNode<T>>(stateCount);
             prior = new MutableArray<GssNode<T>>(stateCount);
             history = new CircularStack<GssNode<T>>(2 * stateCount + 2);
-            AddTopmost(0);
+            AddTopmost(0, -1);
         }
 
         private Gss(int currentLayer, MutableArray<GssNode<T>> front)
@@ -33,6 +34,7 @@ namespace IronText.Runtime
             this.currentLayer = currentLayer;
             this.front = front;
             this.prior = new MutableArray<GssNode<T>>(front.Capacity);
+            this.next  = new MutableArray<GssNode<T>>(front.Capacity);
         }
 
         public bool HasLayers => currentLayer != 0;
@@ -43,19 +45,17 @@ namespace IronText.Runtime
 
         public void PushLayer()
         {
-            currentStage = GssStage.FinalShift;
+            RotateLeft(ref prior, ref front, ref next);
+            next.Clear();
 
-            Swap(ref front, ref prior);
-
-            front.Clear();
             ++currentLayer;
         }
 
         public void PopLayer()
         {
-            Swap(ref front, ref prior);
-
+            RotateRight(ref prior, ref front, ref next);
             prior.Clear();
+
             --currentLayer;
 
             AddDirectPriorLayerNodes(front, prior);
@@ -92,19 +92,40 @@ namespace IronText.Runtime
             return default(GssNode<T>);
         }
 
-        private GssNode<T> AddTopmost(State state, int lookahead = -1)
+        private GssNode<T> AddTopmost(State state, int lookahead)
         {
-            var result = new GssNode<T>(state, currentLayer, currentStage, lookahead);
+            var result = new GssNode<T>(state, currentLayer, GssStage.InitialReduce, lookahead);
             front.Add(result);
             return result;
         }
 
-        public GssBackLink<T> Push(
+        private GssNode<T> AddToNextLayer(int state)
+        {
+            var result = new GssNode<T>(state, currentLayer + 1, GssStage.FinalShift);
+            next.Add(result);
+            return result;
+        }
+
+        public GssBackLink<T> PushShift(
+            GssNode<T> priorNode,
+            int        toState,
+            T          label)
+        {
+            GssNode<T> toNode = AddToNextLayer(toState);
+
+            var result = toNode.PushLinkAlternative(priorNode, label);
+
+            DeterministicDepthUpdater.OnLinkAdded(front, toNode);
+
+            return result;
+        }
+
+        public GssBackLink<T> PushReduced(
             GssNode<T>  priorNode,
             int         toState,
             T           label,
-            int         lookahead = -1,
-            Func<T,T,T> merge = null)
+            int         lookahead,
+            Func<T,T,T> merge)
         {
             GssNode<T> toNode = GetFrontNode(toState, lookahead)
                                 ?? AddTopmost(toState, lookahead);
@@ -112,11 +133,6 @@ namespace IronText.Runtime
             var link = toNode.ResolveBackLink(priorNode);
             if (link != null)
             {
-                if (merge == null)
-                {
-                    throw new InvalidOperationException("Merger is not provided.");
-                }
-
                 var value = merge(link.Label, label);
                 link.AssignLabel(value);
                 return null;
@@ -231,8 +247,6 @@ namespace IronText.Runtime
 
         public void BeginEdit()
         {
-            currentStage = GssStage.InitialReduce;
-
             // Save front to history before editing
             if (history != null)
             {
@@ -271,7 +285,6 @@ namespace IronText.Runtime
             }
 
             this.currentLayer -= inputCount;
-            this.currentStage = GssStage.FinalShift;
 
             history.Push(null);
 
