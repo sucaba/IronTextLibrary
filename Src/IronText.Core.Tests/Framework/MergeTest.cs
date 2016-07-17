@@ -115,8 +115,9 @@ namespace IronText.Tests.Framework
         public interface B { }
 
         [Language(LanguageFlags.AllowNonDeterministic)]
+        [ParserGraph(nameof(AmbiguousCalculator) + ".gv")]
+        [DescribeParserStateMachine(nameof(AmbiguousCalculator) + ".info")]
 #if false
-        [DescribeParserStateMachine("NondeterministicCalc3.info")]
         [ScannerDocument("NondeterministicCalc3.scan")]
         [ScannerGraph("NondeterministicCalc3_Scanner.gv")]
 #endif

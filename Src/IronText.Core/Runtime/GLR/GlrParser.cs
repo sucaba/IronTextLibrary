@@ -7,6 +7,7 @@ using IronText.Collections;
 
 namespace IronText.Runtime
 {
+    using Diagnostics;
     using State = System.Int32;
 
     sealed class GlrParser<T> : IPushParser
@@ -209,7 +210,7 @@ namespace IronText.Runtime
         {
             foreach (var fromNode in gss.Front)
             {
-                QueueReductionPaths(fromNode, lookahead);
+                OnNewNodedAdded(fromNode, lookahead);
             }
         }
 
@@ -237,62 +238,49 @@ namespace IronText.Runtime
                                 lookahead,
                                 merge);
 
-                bool isNewNode = existingToNode == null;
-                bool isNewLinkToReduceAlong = newLink != null;
-
-                QueueReductionPaths(
-                    existingToNode ?? gss.GetFrontNode(toState, lookahead),
-                    lookahead,
-                    newLink,
-                    includeZeroPaths: isNewNode,
-                    includeNonZeroPaths: isNewLinkToReduceAlong);
+                if (existingToNode == null)
+                {
+                    OnNewNodedAdded(gss.GetFrontNode(toState, lookahead), lookahead);
+                }
+                else if (newLink != null)
+                {
+                    OnNewLinkAdded(existingToNode, newLink, lookahead);
+                }
             }
         }
 
-        private void QueueReductionPaths(
-            GssNode<T> frontNode,
-            int token,
-            GssBackLink<T> newLink = null,
-            bool includeZeroPaths = true,
-            bool includeNonZeroPaths = true)
+        private void OnNewNodedAdded(GssNode<T> frontNode, int lookahead)
         {
-            GetReductions(frontNode.State, token);
+            Debug.Assert(frontNode == gss.GetFrontNode(frontNode.State, lookahead));
 
-            if (includeZeroPaths)
+            int toState = frontNode.State;
+            GetReductions(toState, lookahead);
+
+            for (int i = 0; i != pendingReductionsCount; ++i)
             {
-                for (int i = 0; i != pendingReductionsCount; ++i)
-                {
-                    var prod = pendingReductions[i];
-                    if (prod.InputLength == 0)
-                    {
-                        R.Enqueue(frontNode, prod);
-                    }
-                }
+                var prod = pendingReductions[i];
+                R.Enqueue(frontNode, prod);
             }
+        }
 
-            if (includeNonZeroPaths)
+        private void OnNewLinkAdded(GssNode<T> existingToNode, GssBackLink<T> newLink, int lookahead)
+        {
+            GetReductions(existingToNode.State, lookahead);
+            
+            for (int i = 0; i != pendingReductionsCount; ++i)
             {
-                if (newLink == null)
+                var prod = pendingReductions[i];
+                if (prod.InputLength != 0)
                 {
-                    for (int i = 0; i != pendingReductionsCount; ++i)
+                    if (newLink != null)
                     {
-                        var prod = pendingReductions[i];
-                        if (prod.InputLength != 0)
-                        {
-                            R.Enqueue(frontNode, prod);
-                        }
+                        R.Enqueue(newLink, prod);
                     }
-                }
-                else
-                {
-                    for (int i = 0; i != pendingReductionsCount; ++i)
+                    else
                     {
-                        var prod = pendingReductions[i];
-                        if (prod.InputLength != 0)
-                        {
-                            R.Enqueue(newLink, prod);
-                        }
+                        R.Enqueue(existingToNode, prod);
                     }
+
                 }
             }
         }

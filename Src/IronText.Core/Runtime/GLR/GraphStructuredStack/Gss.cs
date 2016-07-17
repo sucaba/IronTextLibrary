@@ -14,7 +14,6 @@ namespace IronText.Runtime
         : IGraphStructuredStack<T>
         , IUndoable
     {
-        private int currentLayer = 0;
         private MutableArray<GssNode<T>> next;
         private MutableArray<GssNode<T>> front;
         private readonly CircularStack<GssNode<T>> history;
@@ -29,12 +28,14 @@ namespace IronText.Runtime
 
         private Gss(int currentLayer, MutableArray<GssNode<T>> front)
         {
-            this.currentLayer = currentLayer;
+            this.CurrentLayer = currentLayer;
             this.front = front;
             this.next  = new MutableArray<GssNode<T>>(front.Capacity);
         }
 
-        public bool HasLayers => currentLayer != 0;
+        public int CurrentLayer { get; private set; } = 0;
+
+        public bool HasLayers => CurrentLayer != 0;
 
         public ImmutableArray<GssNode<T>> Front => front;
 
@@ -43,7 +44,7 @@ namespace IronText.Runtime
             Swap(ref front, ref next);
             next.Clear();
 
-            ++currentLayer;
+            ++CurrentLayer;
         }
 
         public void PopLayer()
@@ -51,12 +52,12 @@ namespace IronText.Runtime
             Swap(ref front, ref next);
             front.Clear();
 
-            --currentLayer;
+            --CurrentLayer;
 
             AddDirectPriorLayerNodes(next, front);
             AddDirectPriorLayerNodes(front, front);
 
-            // TODO: Decide if needed: outcome.RemoveAll(node => node.Stage != GssStage.FinalShift);
+            front.RemoveAll(node => node.Stage != GssStage.FinalShift);
         }
 
         private void AddDirectPriorLayerNodes(
@@ -67,7 +68,7 @@ namespace IronText.Runtime
                 foreach (var backLink in followingNode.BackLink.Alternatives())
                 {
                     var priorNode = backLink.PriorNode;
-                    if (priorNode.Layer == (currentLayer - 1))
+                    if (priorNode.Layer == (CurrentLayer - 1))
                     {
                         outcome.AddDistinct(priorNode);
                     }
@@ -89,24 +90,42 @@ namespace IronText.Runtime
 
         private GssNode<T> AddTopmost(State state, int lookahead)
         {
-            var result = new GssNode<T>(state, currentLayer, GssStage.InitialReduce, lookahead);
+            var result = new GssNode<T>(state, CurrentLayer, GssStage.InitialReduce, lookahead);
             front.Add(result);
             return result;
         }
 
-        private GssNode<T> AddToNextLayer(int state)
+        private GssNode<T> GetOrAddToNextLayer(int state)
         {
-            var result = new GssNode<T>(state, currentLayer + 1, GssStage.FinalShift);
-            next.Add(result);
+            var result = GetNextNode(state);
+            if (result == null)
+            {
+                result = new GssNode<T>(state, CurrentLayer + 1, GssStage.FinalShift);
+                next.Add(result);
+            }
             return result;
         }
+
+        private GssNode<T> GetNextNode(State state)
+        {
+            foreach (var node in next)
+            {
+                if (node.State == state)
+                {
+                    return node;
+                }
+            }
+
+            return default(GssNode<T>);
+        }
+
 
         public GssBackLink<T> PushShift(
             GssNode<T> priorNode,
             int        toState,
             T          label)
         {
-            GssNode<T> toNode = AddToNextLayer(toState);
+            GssNode<T> toNode = GetOrAddToNextLayer(toState);
 
             var result = toNode.PushLinkAlternative(priorNode, label);
 
@@ -148,7 +167,7 @@ namespace IronText.Runtime
             var allAccessibleByLayer = GetAllNodes().GroupBy(state => state.Layer);
 
             var layers = Enumerable
-                            .Range(0, currentLayer + 1)
+                            .Range(0, CurrentLayer + 1)
                             .Select(i => new List<GssNode<T>>(2))
                             .ToList();
 
@@ -279,7 +298,7 @@ namespace IronText.Runtime
                 front.Add(node);
             }
 
-            this.currentLayer -= inputCount;
+            this.CurrentLayer -= inputCount;
 
             history.Push(null);
 
@@ -288,7 +307,7 @@ namespace IronText.Runtime
 
         public Gss<T> CloneWithoutData()
         {
-            return new Gss<T>(currentLayer, front.Clone());
+            return new Gss<T>(CurrentLayer, front.Clone());
         }
     }
 }
