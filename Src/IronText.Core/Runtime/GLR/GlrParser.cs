@@ -210,7 +210,7 @@ namespace IronText.Runtime
         {
             foreach (var fromNode in gss.Front)
             {
-                OnNewNodedAdded(fromNode, lookahead);
+                OnNewNode(fromNode, lookahead);
             }
         }
 
@@ -227,29 +227,39 @@ namespace IronText.Runtime
 
                 T branch = producer.CreateBranch(path.Production, (IStackLookback<T>)path);
 
-                Func<T,T,T> merge =
-                    (currentValue, newValue) =>
-                        producer.Merge(currentValue, newValue, path);
-
                 var newLink = gss.PushReduced(
                                 fromNode,
                                 toState,
                                 branch,
-                                lookahead,
-                                merge);
+                                lookahead);
 
                 if (existingToNode == null)
                 {
-                    OnNewNodedAdded(gss.GetFrontNode(toState, lookahead), lookahead);
+                    OnNewNode(gss.GetFrontNode(toState, lookahead), lookahead);
                 }
                 else if (newLink != null)
                 {
-                    OnNewLinkAdded(existingToNode, newLink, lookahead);
+                    OnNewLink(existingToNode, newLink, lookahead);
+                }
+                else
+                {
+                    OnNewLabel(fromNode, existingToNode, branch, path);
                 }
             }
         }
 
-        private void OnNewNodedAdded(GssNode<T> frontNode, int lookahead)
+        private void OnNewLabel(
+            GssNode<T> priorNode,
+            GssNode<T> nextNode,
+            T          newLabel,
+            IStackLookback<T> lookback)
+        {
+            var link = nextNode.ResolveBackLink(priorNode);
+            var value = producer.Merge(link.Label, newLabel, lookback);
+            link.AssignLabel(value);
+        }
+
+        private void OnNewNode(GssNode<T> frontNode, int lookahead)
         {
             Debug.Assert(frontNode == gss.GetFrontNode(frontNode.State, lookahead));
 
@@ -263,7 +273,7 @@ namespace IronText.Runtime
             }
         }
 
-        private void OnNewLinkAdded(GssNode<T> existingToNode, GssBackLink<T> newLink, int lookahead)
+        private void OnNewLink(GssNode<T> existingToNode, GssBackLink<T> newLink, int lookahead)
         {
             GetReductions(existingToNode.State, lookahead);
             

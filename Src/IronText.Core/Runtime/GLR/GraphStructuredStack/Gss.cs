@@ -119,7 +119,6 @@ namespace IronText.Runtime
             return default(GssNode<T>);
         }
 
-
         public GssBackLink<T> PushShift(
             GssNode<T> priorNode,
             int        toState,
@@ -138,8 +137,7 @@ namespace IronText.Runtime
             GssNode<T>  priorNode,
             int         toState,
             T           label,
-            int         lookahead,
-            Func<T,T,T> merge)
+            int         lookahead)
         {
             GssNode<T> toNode = GetFrontNode(toState, lookahead)
                                 ?? AddTopmost(toState, lookahead);
@@ -147,8 +145,6 @@ namespace IronText.Runtime
             var link = toNode.ResolveBackLink(priorNode);
             if (link != null)
             {
-                var value = merge(link.Label, label);
-                link.AssignLabel(value);
                 return null;
             }
 

@@ -23,7 +23,6 @@ namespace IronText.Runtime
             GssNode<T>  priorNode,
             int         toState,
             T           label,
-            int         lookahead,
-            Func<T,T,T> merge);
+            int         lookahead);
     }
 }
