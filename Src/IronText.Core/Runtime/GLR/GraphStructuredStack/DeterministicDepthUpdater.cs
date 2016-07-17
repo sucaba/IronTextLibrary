@@ -27,7 +27,7 @@ namespace IronText.Runtime
             {
                 changes = 0;
                 // Note: Just added link can affect deterministic 
-                //       depth only of the topmost state nodes.
+                //       depth of the GSS front nodes only.
                 foreach (var topNode in front)
                 {
                     int newDepth = Compute(topNode);
