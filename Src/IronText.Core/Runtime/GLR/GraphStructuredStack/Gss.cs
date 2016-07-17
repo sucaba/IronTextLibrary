@@ -17,14 +17,12 @@ namespace IronText.Runtime
         private int currentLayer = 0;
         private MutableArray<GssNode<T>> next;
         private MutableArray<GssNode<T>> front;
-        private MutableArray<GssNode<T>> prior;
         private readonly CircularStack<GssNode<T>> history;
 
         public Gss(int stateCount)
         {
             next  = new MutableArray<GssNode<T>>(stateCount);
             front = new MutableArray<GssNode<T>>(stateCount);
-            prior = new MutableArray<GssNode<T>>(stateCount);
             history = new CircularStack<GssNode<T>>(2 * stateCount + 2);
             AddTopmost(0, -1);
         }
@@ -33,7 +31,6 @@ namespace IronText.Runtime
         {
             this.currentLayer = currentLayer;
             this.front = front;
-            this.prior = new MutableArray<GssNode<T>>(front.Capacity);
             this.next  = new MutableArray<GssNode<T>>(front.Capacity);
         }
 
@@ -41,11 +38,9 @@ namespace IronText.Runtime
 
         public ImmutableArray<GssNode<T>> Front => front;
 
-        public ImmutableArray<GssNode<T>> Prior => prior;
-
         public void PushLayer()
         {
-            RotateLeft(ref prior, ref front, ref next);
+            Swap(ref front, ref next);
             next.Clear();
 
             ++currentLayer;
@@ -53,13 +48,13 @@ namespace IronText.Runtime
 
         public void PopLayer()
         {
-            RotateRight(ref prior, ref front, ref next);
-            prior.Clear();
+            Swap(ref front, ref next);
+            front.Clear();
 
             --currentLayer;
 
-            AddDirectPriorLayerNodes(front, prior);
-            AddDirectPriorLayerNodes(prior, prior);
+            AddDirectPriorLayerNodes(next, front);
+            AddDirectPriorLayerNodes(front, front);
 
             // TODO: Decide if needed: outcome.RemoveAll(node => node.Stage != GssStage.FinalShift);
         }

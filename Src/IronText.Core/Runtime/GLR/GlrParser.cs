@@ -96,7 +96,6 @@ namespace IronText.Runtime
 
             gss.PushLayer();
 
-
 #if DIAGNOSTICS
             if (!isVerifier)
             {
