@@ -28,6 +28,7 @@ namespace IronText.Runtime
         private bool                          accepted = false;
         private readonly ILogging             logging;
         private bool isVerifier;
+        private T termValue;
 
         public GlrParser(
             RuntimeGrammar      grammar,
@@ -91,8 +92,8 @@ namespace IronText.Runtime
 
             foreach (var data in message.Data.Alternatives())
             {
-                ProcessAsLookahead(message, data);
-                ProcessAsShift(message, data);
+                ProcessTerm(message, data);
+                //ProcessAsShift(message, data);
             }
 
             gss.PushLayer();
@@ -131,32 +132,18 @@ namespace IronText.Runtime
             return this;
         }
 
-        private void ProcessAsShift(Message message, MessageData termData)
+        private void ProcessTerm(Message message, MessageData data)
         {
-            var termValue = producer.CreateLeaf(message, termData);
+            this.termValue = producer.CreateLeaf(message, data);
 
-            foreach (var priorNode in gss.Front)
-            {
-                if (priorNode.Lookahead < 0 || priorNode.Lookahead == termData.Token)
-                {
-                    var toState = GetShift(priorNode.State, termData.Token);
-                    if (toState >= 0)
-                    {
-                        gss.PushShift(
-                            priorNode,
-                            toState,
-                            termValue);
-                    }
-                }
-            }
-        }
-
-        private void ProcessAsLookahead(Message message, MessageData data)
-        {
             int lookahead = data.Token;
 
-            Actor(lookahead);
-            Reducer(lookahead);
+            foreach (var fromNode in gss.Front)
+            {
+                OnNewNode(fromNode, lookahead, message, data);
+            }
+
+            Reducer(lookahead, message, data);
 
             if (accepted)
             {
@@ -206,15 +193,7 @@ namespace IronText.Runtime
             return result;
         }
 
-        private void Actor(int lookahead)
-        {
-            foreach (var fromNode in gss.Front)
-            {
-                OnNewNode(fromNode, lookahead);
-            }
-        }
-
-        private void Reducer(int lookahead)
+        private void Reducer(int lookahead, Message message, MessageData data)
         {
             while (!R.IsEmpty)
             {
@@ -235,7 +214,7 @@ namespace IronText.Runtime
 
                 if (existingToNode == null)
                 {
-                    OnNewNode(gss.GetFrontNode(toState, lookahead), lookahead);
+                    OnNewNode(gss.GetFrontNode(toState, lookahead), lookahead, message, data);
                 }
                 else if (newLink != null)
                 {
@@ -259,7 +238,7 @@ namespace IronText.Runtime
             link.AssignLabel(value);
         }
 
-        private void OnNewNode(GssNode<T> frontNode, int lookahead)
+        private void OnNewNode(GssNode<T> frontNode, int lookahead, Message message, MessageData data)
         {
             Debug.Assert(frontNode == gss.GetFrontNode(frontNode.State, lookahead));
 
@@ -270,6 +249,15 @@ namespace IronText.Runtime
             {
                 var prod = pendingReductions[i];
                 R.Enqueue(frontNode, prod);
+            }
+
+            var nextState = GetShift(frontNode.State, lookahead);
+            if (nextState >= 0)
+            {
+                gss.PushShift(
+                    frontNode,
+                    nextState,
+                    termValue);
             }
         }
 
