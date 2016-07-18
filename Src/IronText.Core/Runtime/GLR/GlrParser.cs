@@ -27,8 +27,8 @@ namespace IronText.Runtime
 
         private bool                          accepted = false;
         private readonly ILogging             logging;
-        private bool isVerifier;
-        private T termValue;
+        private bool                          isVerifier;
+        private T                             currentTermValue;
 
         public GlrParser(
             RuntimeGrammar      grammar,
@@ -93,12 +93,11 @@ namespace IronText.Runtime
             foreach (var data in message.Data.Alternatives())
             {
                 ProcessTerm(message, data);
-                //ProcessAsShift(message, data);
             }
 
             gss.PushLayer();
 
-#if DIAGNOSTICS
+#if false
             if (!isVerifier)
             {
                 using (var graphView = new GvGraphView("GlrState" + gss.CurrentLayer + ".gv"))
@@ -134,16 +133,16 @@ namespace IronText.Runtime
 
         private void ProcessTerm(Message message, MessageData data)
         {
-            this.termValue = producer.CreateLeaf(message, data);
+            this.currentTermValue = producer.CreateLeaf(message, data);
 
-            int lookahead = data.Token;
+            int token = data.Token;
 
             foreach (var fromNode in gss.Front)
             {
-                OnNewNode(fromNode, lookahead, message, data);
+                OnNewNode(fromNode, token, message, data);
             }
 
-            Reducer(lookahead, message, data);
+            Reducer(token, message, data);
 
             if (accepted)
             {
@@ -175,24 +174,6 @@ namespace IronText.Runtime
             return Next(eoi);
         }
 
-        private bool IsAccepting(State s)
-        {
-            var action = GetAction(s, PredefinedTokens.Eoi);
-            return action.Kind == ParserActionKind.Accept;
-        }
-
-        private ParserAction GetAction(State state, int token)
-        {
-            int start = transition(state, token);
-            if (start < 0)
-            {
-                return ParserAction.FailAction;
-            }
-
-            var result = grammar.Instructions[start];
-            return result;
-        }
-
         private void Reducer(int lookahead, Message message, MessageData data)
         {
             while (!R.IsEmpty)
@@ -214,7 +195,9 @@ namespace IronText.Runtime
 
                 if (existingToNode == null)
                 {
-                    OnNewNode(gss.GetFrontNode(toState, lookahead), lookahead, message, data);
+                    var newNode = gss.GetFrontNode(toState, lookahead);
+
+                    OnNewNode(newNode, lookahead, message, data);
                 }
                 else if (newLink != null)
                 {
@@ -242,142 +225,81 @@ namespace IronText.Runtime
         {
             Debug.Assert(frontNode == gss.GetFrontNode(frontNode.State, lookahead));
 
-            int toState = frontNode.State;
-            GetReductions(toState, lookahead);
-
-            for (int i = 0; i != pendingReductionsCount; ++i)
-            {
-                var prod = pendingReductions[i];
-                R.Enqueue(frontNode, prod);
-            }
-
-            var nextState = GetShift(frontNode.State, lookahead);
-            if (nextState >= 0)
-            {
-                gss.PushShift(
-                    frontNode,
-                    nextState,
-                    termValue);
-            }
+            Process(frontNode, lookahead, newLinkOnly: false);
         }
 
         private void OnNewLink(GssNode<T> existingToNode, GssBackLink<T> newLink, int lookahead)
         {
-            GetReductions(existingToNode.State, lookahead);
-            
-            for (int i = 0; i != pendingReductionsCount; ++i)
-            {
-                var prod = pendingReductions[i];
-                if (prod.InputLength != 0)
-                {
-                    if (newLink != null)
-                    {
-                        R.Enqueue(newLink, prod);
-                    }
-                    else
-                    {
-                        R.Enqueue(existingToNode, prod);
-                    }
-
-                }
-            }
+            Process(existingToNode, lookahead, newLinkOnly: true);
         }
 
-        private int GetShift(State state, int token)
+        private void Process(GssNode<T> node, int token, bool newLinkOnly)
         {
-            int shift = -1;
+            int start = transition(node.State, token);
+            Process(node, token, newLinkOnly, start);
+        }
 
-            ParserAction action = GetAction(state, token);
-            switch (action.Kind)
+        private void Process(GssNode<T> node, int token, bool newLinkOnly, int start)
+        {
+            int pos = start;
+            while (true)
             {
-                case ParserActionKind.Shift:
-                    shift = action.State;
-                    break;
-                case ParserActionKind.Conflict:
-                    int start = action.Value1;
-                    int last = action.Value1 + action.ConflictCount;
-                    while (start != last)
-                    {
-                        var conflictAction = ParserAction.Decode(conflictActionsTable[start++]);
-                        if (conflictAction.Kind == ParserActionKind.Shift)
-                        {
-                            shift = conflictAction.State;
-                            break;
-                        }
-                    }
-                    break;
-            }
+                var action = grammar.Instructions[pos];
 
-            return shift;
+                switch (action.Kind)
+                {
+                    case ParserActionKind.Accept:
+                        accepted = true;
+                        return;
+                    case ParserActionKind.Fork:
+                        Process(node, token, newLinkOnly, action.Value1);
+                        break;
+                    case ParserActionKind.Reduce:
+                        var prod = grammar.Productions[action.ProductionId];
+                        if (!newLinkOnly || prod.InputLength != 0)
+                        {
+                            R.Enqueue(node, prod);
+                        }
+                        break;
+                    case ParserActionKind.Shift:
+                        if (!newLinkOnly)
+                        {
+                            gss.PushShift(
+                                node,
+                                action.State,
+                                currentTermValue);
+                        }
+                        break;
+                    case ParserActionKind.Fail:
+                    case ParserActionKind.Restart:
+                    case ParserActionKind.Exit:
+                        return;
+                    default:
+                        throw new NotSupportedException($"Instruction '{action.Kind}' is not supported by GLR parser.");
+                }
+
+                ++pos;
+            }
         }
 
         private int GoTo(int fromState, int token)
         {
-            var goToAction = GetAction(fromState, token);
-            Debug.Assert(goToAction.Kind == ParserActionKind.Shift);
+            var action = GetAction(fromState, token);
+            Debug.Assert(action.Kind == ParserActionKind.Shift);
 
-            var toState = goToAction.State;
-            return toState;
+            return action.State;
         }
 
-        private void GetReductions(State state, int token)
+        private bool IsAccepting(State s)
         {
-            pendingReductionsCount = 0;
-
-            ParserAction action = GetAction(state, token);
-            RuntimeProduction rule;
-            switch (action.Kind)
-            {
-                case ParserActionKind.Reduce:
-                    rule = grammar.Productions[action.ProductionId];
-                    pendingReductionsCount = 1;
-                    pendingReductions[0] = rule;
-                    break;
-                case ParserActionKind.Accept:
-                    accepted = true;
-                    break;
-                case ParserActionKind.Conflict:
-                    int start = action.Value1;
-                    int last = action.Value1 + action.ConflictCount;
-                    while (start != last)
-                    {
-                        var conflictAction = ParserAction.Decode(conflictActionsTable[start++]);
-                        switch (conflictAction.Kind)
-                        {
-                            case ParserActionKind.Reduce:
-                                var crule = grammar.Productions[conflictAction.ProductionId];
-                                pendingReductions[pendingReductionsCount++] = crule;
-                                break;
-                        }
-                    }
-
-                    break;
-            }
+            var action = GetAction(s, PredefinedTokens.Eoi);
+            return action.Kind == ParserActionKind.Accept;
         }
 
-        private IEnumerable<ParserAction> GetConflictActions(int start, short count)
+        private ParserAction GetAction(State state, int token)
         {
-            int last = start + count;
-            while (start != last)
-            {
-                yield return ParserAction.Decode(conflictActionsTable[start++]);
-            }
-        }
-
-        struct PendingShift
-        {
-            public PendingShift(GssNode<T> frontNode, State toState, int token, T value)
-            {
-                this.FrontNode = frontNode;
-                this.ToState = toState;
-                this.Token = token;
-                this.Value = value;
-            }
-
-            public readonly GssNode<T> FrontNode;
-            public readonly State ToState;
-            public readonly int Token;
-            public readonly T Value;
+            int start = transition(state, token);
+            return grammar.Instructions[start];
         }
 
         public IPushParser CloneVerifier()

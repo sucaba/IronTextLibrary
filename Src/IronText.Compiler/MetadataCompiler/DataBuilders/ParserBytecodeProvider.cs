@@ -9,7 +9,6 @@ namespace IronText.MetadataCompiler
     {
         public ParserBytecodeProvider(ILrParserTable parserTable)
         {
-            bool forceGlr = parserTable.TargetRuntime == ParserRuntime.Glr;
             var conflictActions = parserTable.GetConflictActionTable();
 
             var instructions = new List<ParserAction>();
@@ -26,7 +25,7 @@ namespace IronText.MetadataCompiler
                     startTable.Set(r, c, instructions.Count);
 
                     var action = table.Get(r, c);
-                    if (!forceGlr && action.Kind == ParserActionKind.Conflict)
+                    if (action.Kind == ParserActionKind.Conflict)
                     {
                         int first = action.Value1;
                         int last = action.Value1 + action.ConflictCount;
