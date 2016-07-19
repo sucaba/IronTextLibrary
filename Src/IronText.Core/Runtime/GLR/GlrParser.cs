@@ -22,9 +22,6 @@ namespace IronText.Runtime
         private readonly Gss<T>               gss;
         private readonly IReductionQueue<T>   R;
         private readonly int[]                tokenComplexity;
-        private readonly RuntimeProduction[]  pendingReductions;
-        private int                           pendingReductionsCount = 0;
-
         private bool                          accepted = false;
         private readonly ILogging             logging;
         private bool                          isVerifier;
@@ -68,8 +65,6 @@ namespace IronText.Runtime
             this.gss                  = gss;
             this.producer             = producer;
             this.logging              = logging;
-
-            this.pendingReductions = new RuntimeProduction[grammar.Productions.Length];
 
             switch (producer.ReductionOrder)
             {
@@ -269,6 +264,11 @@ namespace IronText.Runtime
                                 action.State,
                                 currentTermValue);
                         }
+                        break;
+                    case ParserActionKind.Resolve:
+                        // Instead of resolving Shrodinger's term, GLR has a more powerful approach.
+                        // It processes all possibilities by creating alternative GSS nodes for
+                        // each term alternative.
                         break;
                     case ParserActionKind.Fail:
                     case ParserActionKind.Restart:

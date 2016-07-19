@@ -1,6 +1,6 @@
 ﻿namespace IronText.Runtime
 {
-    public enum ParserActionKind : byte
+    public enum ParserActionKind : ushort
     {
         // Unexpected token
         Fail        = 0,
