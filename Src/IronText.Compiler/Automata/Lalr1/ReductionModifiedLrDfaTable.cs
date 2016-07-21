@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using IronText.Algorithm;
 using IronText.Compiler.Analysis;
@@ -17,10 +18,15 @@ namespace IronText.Automata.Lalr1
             = new Dictionary<TransitionKey, ParserConflictInfo>();
         private readonly IMutableTable<ParserAction> actionTable;
         private ParserAction[]  conflictActionTable;
+        private readonly ParserRuntime requiredRuntime;
 
-        public ReductionModifiedLrDfaTable(ILrDfa dfa, IMutableTable<ParserAction> actionTable = null)
+        public ReductionModifiedLrDfaTable(
+            ILrDfa                      dfa,
+            IMutableTable<ParserAction> actionTable,
+            ParserRuntime               requiredRuntime)
         {
             this.grammar = dfa.GrammarAnalysis;
+            this.requiredRuntime = requiredRuntime;
 
             this.actionTable = actionTable ?? new MutableTable<ParserAction>(
                                                 dfa.States.Length,
@@ -46,12 +52,12 @@ namespace IronText.Automata.Lalr1
             foreach (var conflict in transitionToConflict.Values)
             {
                 var refAction = new ParserAction
-                                {
-                                    Kind          = ParserActionKind.Conflict,
-                                    Value1        = conflictList.Count,
-                                    ConflictCount = (short)conflict.Actions.Count
-                                };
-                             
+                            {
+                                Kind          = ParserActionKind.Conflict,
+                                Value1        = conflictList.Count,
+                                ConflictCount = (short)conflict.Actions.Count
+                            };
+
                 actionTable.Set(conflict.State, conflict.Token, refAction);
                 foreach (var action in conflict.Actions)
                 {
@@ -81,94 +87,31 @@ namespace IronText.Automata.Lalr1
                             State = state.GetNextIndex(nextToken)
                         };
 
-                        AddAction(i, nextToken, action);
+                        AssignAction(i, nextToken, action);
                     }
-
-                    bool isStartRule = item.IsAugmented;
-
-                    bool isTailNullable = !isStartRule && !item.IsReduce && grammar.IsTailNullable(item);
-                    if (isTailNullable)
+                    else if (item.IsAugmented)
                     {
-                        // Ensure that tail-nullable productions where eliminated
-                        throw new InvalidOperationException("Tail nullable productions are not supported");
+                        var action = new ParserAction { Kind = ParserActionKind.Accept };
+                        AssignAction(i, PredefinedTokens.Eoi, action);
                     }
-
-                    if (item.IsReduce || isTailNullable)
+                    else
                     {
-                        ParserAction action;
-
-                        if (isStartRule)
+                        var action = new ParserAction
                         {
-                            if (item.Position == 0)
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                action = new ParserAction { Kind = ParserActionKind.Accept };
-                            }
-                        }
-                        else
-                        {
-                            action = new ParserAction
-                            {
-                                Kind         = ParserActionKind.Reduce,
-                                ProductionId = item.ProductionId,
-                            };
-                        }
+                            Kind         = ParserActionKind.Reduce,
+                            ProductionId = item.ProductionId,
+                        };
 
                         foreach (var lookahead in item.LA)
                         {
-                            if (!IsValueOnlyEpsilonReduceItem(item, state, lookahead))
-                            {
-                                AddAction(i, lookahead, action);
-                            }
+                            AssignAction(i, lookahead, action);
                         }
                     }
                 }
             }
         }
 
-        private bool IsValueOnlyEpsilonReduceItem(DotItem item, DotState state, int lookahead)
-        {
-            if (item.Position != 0 
-                || grammar.IsStartProduction(item.ProductionId)
-                || !grammar.IsTailNullable(item)
-                || !item.LA.Contains(lookahead))
-            {
-                return false;
-            }
-
-            int epsilonToken = item.Outcome;
-
-            foreach (var parentItem in state.Items)
-            {
-                if (parentItem == item)
-                {
-                    continue;
-                }
-
-                if (parentItem.NextToken == epsilonToken)
-                {
-                    if (!grammar.IsTailNullable(parentItem))
-                    {
-                        // there is at least one rule which needs shift on epsilonToken
-                        return false;
-                    }
-
-                    if (grammar.HasFirst(parentItem.CreateNextItem(), lookahead))
-                    {
-                        // One of the subseqent non-terms in parentItem can start parsing with current lookahead.
-                        // It means that we need tested epsilonToken production for continue parsing on parentItem.
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        private void AddAction(int state, int token, ParserAction action)
+        private void AssignAction(int state, int token, ParserAction action)
         {
             var currentCell = actionTable.Get(state, token);
             if (currentCell == default(ParserAction))

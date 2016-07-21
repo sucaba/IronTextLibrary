@@ -57,13 +57,13 @@ namespace IronText.Automata.Lalr1
                         data.Clear();
                         ComplyWithConfiguration = false;
                         TargetRuntime = ParserRuntime.Glr;
-                        outputTable = BuildReductionModifiedLRTable(dfa);
+                        outputTable = BuildGlrLRTable(dfa);
                     }
 
                     break;
                 case RuntimeOptions.ForceNonDeterministic:
                     TargetRuntime = ParserRuntime.Glr;
-                    outputTable = BuildReductionModifiedLRTable(dfa);
+                    outputTable = BuildGlrLRTable(dfa);
                     result = outputTable != null;
                     break;
                 case RuntimeOptions.AllowNonDeterministic:
@@ -89,16 +89,16 @@ namespace IronText.Automata.Lalr1
             }
         }
 
-        private ILrParserTable BuildReductionModifiedLRTable(ILrDfa dfa)
+        private ILrParserTable BuildGlrLRTable(ILrDfa dfa)
         {
-            ILrParserTable result = new ReductionModifiedLrDfaTable(dfa, this.data);
+            ILrParserTable result = new ReductionModifiedLrDfaTable(dfa, this.data, ParserRuntime.Glr);
             FillAmbiguousTokenActions(dfa.States, allowNonDetermism: true);
             return result;
         }
 
         private ILrParserTable BuildCanonicalLRTable(ILrDfa dfa)
         {
-            ILrParserTable result = new CanonicalLrDfaTable(dfa, this.data);
+            ILrParserTable result = new CanonicalLrDfaTable(dfa, this.data, ParserRuntime.Deterministic);
             if (result.TargetRuntime != ParserRuntime.Deterministic 
                 || !FillAmbiguousTokenActions(dfa.States, allowNonDetermism:false))
             {

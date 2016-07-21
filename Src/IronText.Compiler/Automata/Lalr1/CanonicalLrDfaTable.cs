@@ -6,6 +6,7 @@ using IronText.Compiler.Analysis;
 using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Runtime;
+using System.Diagnostics;
 using System;
 
 namespace IronText.Automata.Lalr1
@@ -22,7 +23,7 @@ namespace IronText.Automata.Lalr1
         public CanonicalLrDfaTable(
             ILrDfa                      dfa,
             IMutableTable<ParserAction> actionTable,
-            ParserRuntime               requiredRuntime = ParserRuntime.Deterministic)
+            ParserRuntime               requiredRuntime)
         {
             this.grammar = dfa.GrammarAnalysis;
             this.requiredRuntime = requiredRuntime;
@@ -50,7 +51,7 @@ namespace IronText.Automata.Lalr1
             var conflictList = new List<ParserAction>();
             foreach (var conflict in transitionToConflict.Values)
             {
-                var refAction = new Runtime.ParserAction
+                var refAction = new ParserAction
                             {
                                 Kind          = ParserActionKind.Conflict,
                                 Value1        = conflictList.Count,
@@ -95,7 +96,12 @@ namespace IronText.Automata.Lalr1
                     }
                     else
                     {
-                        var action = new ParserAction { Kind = ParserActionKind.Reduce, ProductionId = item.ProductionId };
+                        var action = new ParserAction
+                        {
+                            Kind         = ParserActionKind.Reduce,
+                            ProductionId = item.ProductionId,
+                        };
+
                         foreach (var lookahead in item.LA)
                         {
                             AssignAction(i, lookahead, action);
@@ -105,7 +111,7 @@ namespace IronText.Automata.Lalr1
             }
         }
 
-        private void AssignAction(int state, int token, Runtime.ParserAction action)
+        private void AssignAction(int state, int token, ParserAction action)
         {
             var currentCell = actionTable.Get(state, token);
             if (currentCell == default(ParserAction))
@@ -143,18 +149,20 @@ namespace IronText.Automata.Lalr1
         private bool TryResolveShiftReduce(
             ParserAction actionX,
             ParserAction actionY,
-            int incomingToken, 
+            int incomingToken,
             out ParserAction output)
         {
             output = ParserAction.FailAction;
 
             ParserAction shiftAction, reduceAction;
-            if (actionX.IsShiftAction && actionY.Kind == ParserActionKind.Reduce)
+            if (actionX.IsShiftAction
+                && actionY.Kind == ParserActionKind.Reduce)
             {
                 shiftAction = actionX;
                 reduceAction = actionY;
             }
-            else if (actionY.IsShiftAction && actionX.Kind == ParserActionKind.Reduce)
+            else if (actionY.IsShiftAction
+                && actionX.Kind == ParserActionKind.Reduce)
             {
                 shiftAction = actionY;
                 reduceAction = actionX;
