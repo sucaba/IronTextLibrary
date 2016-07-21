@@ -56,8 +56,8 @@ namespace IronText.MetadataCompiler
                     Message  = string.Format(
                         "Consider using [{0}({1}.{2})] or changing token and/or rule precedences to fix errors.",
                         typeof(LanguageAttribute).Name,
-                        typeof(LanguageFlags).Name,
-                        Enum.GetName(typeof(LanguageFlags), LanguageFlags.AllowNonDeterministic))
+                        typeof(RuntimeOptions).Name,
+                        Enum.GetName(typeof(RuntimeOptions), RuntimeOptions.AllowNonDeterministic))
                 });
         }
 

@@ -110,7 +110,7 @@ namespace IronText.Tests.Framework
             }
         }
 
-        [Language(LanguageFlags.ForceNonDeterministic)]
+        [Language(RuntimeOptions.ForceNonDeterministic)]
         [ParserGraph("NullableStart_Parser.gv")]
         [DescribeParserStateMachine("NullableStart.info")]
         public interface NullableStart
@@ -137,7 +137,7 @@ namespace IronText.Tests.Framework
         /// <summary>
         /// Simple ambiguous grammar from 4.2
         /// </summary>
-        [Language(LanguageFlags.ForceNonDeterministic)]
+        [Language(RuntimeOptions.ForceNonDeterministic)]
         [DescribeParserStateMachine("SimpleAmbiguousGrammar.info")]
         public interface SimpleAmbiguousGrammar
         {
@@ -157,7 +157,7 @@ namespace IronText.Tests.Framework
         /// <summary>
         /// An example with hidden left recursion
         /// </summary>
-        [Language(LanguageFlags.ForceNonDeterministic)]
+        [Language(RuntimeOptions.ForceNonDeterministic)]
         [ParserGraph("HiddenLeftRecursion.gv")]
         [DescribeParserStateMachine("HiddenLeftRecursion.info")]
         public interface HiddenLeftRecursion
@@ -175,7 +175,7 @@ namespace IronText.Tests.Framework
         /// <summary>
         /// An example with hidden right recursion
         /// </summary>
-        [Language(LanguageFlags.ForceNonDeterministic)]
+        [Language(RuntimeOptions.ForceNonDeterministic)]
         [DescribeParserStateMachine("LangForTomitaAlogirthm2.info")]
         public interface HiddenRightRecursion
         {
@@ -192,7 +192,7 @@ namespace IronText.Tests.Framework
             B B();
         }
 
-        [Language(LanguageFlags.ForceNonDeterministic)]
+        [Language(RuntimeOptions.ForceNonDeterministic)]
         [DescribeParserStateMachine("RightNullable.gram")]
         public interface RightNullable
         {
@@ -218,7 +218,7 @@ namespace IronText.Tests.Framework
         /// <summary>
         /// An example with hidden right recursion 
         /// </summary>
-        [Language(LanguageFlags.ForceNonDeterministic)]
+        [Language(RuntimeOptions.ForceNonDeterministic)]
         [ParserGraph("RightNullable0.gv")]
         [DescribeParserStateMachine("RightNullable0.gram")]
         public interface RightNullable0
@@ -236,14 +236,14 @@ namespace IronText.Tests.Framework
             A A();
         }
 
-        [Language(LanguageFlags.ForceNonDeterministic)]
+        [Language(RuntimeOptions.ForceNonDeterministic)]
         public interface NonAmbiguous
         {
             [Produce("foo", "bar")]
             void All();
         }
 
-        [Language(LanguageFlags.ForceNonDeterministic)]
+        [Language(RuntimeOptions.ForceNonDeterministic)]
         [DescribeParserStateMachine("Trivial.info")]
         public interface Trivial
         {
@@ -251,7 +251,7 @@ namespace IronText.Tests.Framework
             void All();
         }
 
-        [Language(LanguageFlags.ForceNonDeterministic)]
+        [Language(RuntimeOptions.ForceNonDeterministic)]
         public interface NondeterministicReduce
         {
             [Produce]
@@ -264,7 +264,7 @@ namespace IronText.Tests.Framework
             E B();
         }
 
-        [Language(LanguageFlags.ForceNonDeterministic)]
+        [Language(RuntimeOptions.ForceNonDeterministic)]
         [DescribeParserStateMachine("NondeterministicCalc.info")]
         public class NondeterministicCalc
         {

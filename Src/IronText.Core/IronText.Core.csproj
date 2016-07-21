@@ -147,7 +147,6 @@
     <Compile Include="Diagnostics\IGraphView.cs" />
     <Compile Include="Algorithm\Build\IDerivedBuilderMetadata.cs" />
     <Compile Include="Framework\Fluent.cs" />
-    <Compile Include="Framework\LanguageFlags.cs" />
     <Compile Include="Misc\Discriminatable.cs" />
     <Compile Include="Misc\IdentityFactory.cs" />
     <Compile Include="Reflection\Cil\CilSemanticRef.cs" />
@@ -238,7 +237,7 @@
     <Compile Include="Reflection\Reporting\IReportData.cs" />
     <Compile Include="Reflection\Cil\CilMerger.cs" />
     <Compile Include="Reflection\Cil\CilSymbolFeature.cs" />
-    <Compile Include="Reflection\RuntimeOptions.cs" />
+    <Compile Include="RuntimeOptions.cs" />
     <Compile Include="Reflection\Traits\ProductionTraits.cs" />
     <Compile Include="Reflection\Traits\SymbolTraits.cs" />
     <Compile Include="Reflection\Transformations\EliminateRightNulls.cs" />

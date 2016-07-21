@@ -1,8 +1,9 @@
-﻿using IronText.Framework;
+﻿using IronText;
+using IronText.Framework;
 
 namespace CSharpParser
 {
-    [Language(LanguageFlags.AllowNonDeterministic)]
+    [Language(RuntimeOptions.AllowNonDeterministic)]
     [StaticContext(typeof(CsCollections))]
     [StaticContext(typeof(CsPreprocessor))]
     [DescribeParserStateMachine("CSharp.info")]

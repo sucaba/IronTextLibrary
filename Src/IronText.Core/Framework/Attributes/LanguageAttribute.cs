@@ -23,12 +23,12 @@ namespace IronText.Framework
 
         public LanguageAttribute() { }
 
-        public LanguageAttribute(LanguageFlags flags) 
+        public LanguageAttribute(RuntimeOptions flags) 
         {
             this.Flags = flags;
         }
 
-        public LanguageFlags Flags { get; set; }
+        public RuntimeOptions Flags { get; set; }
 
         public virtual bool Validate(ILogging logging) { return true; }
 

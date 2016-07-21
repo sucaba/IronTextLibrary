@@ -31,7 +31,7 @@ namespace IronText.Tests.Framework
             public TestSyntax StartSyntax() { return new TestSyntax(); }
         }
 
-        [Language(LanguageFlags.AllowNonDeterministic)]
+        [Language(RuntimeOptions.AllowNonDeterministic)]
         [DescribeParserStateMachine("AmbiguousWithLocalState.info")]
         public class AmbiguousWithLocalScope
         {

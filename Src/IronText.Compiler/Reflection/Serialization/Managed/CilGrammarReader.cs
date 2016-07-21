@@ -44,7 +44,7 @@ namespace IronText.Reflection.Managed
 
             var grammar = BuildGrammar(definition);
 
-            grammar.Options = (IronText.Reflection.RuntimeOptions)Attributes.First<LanguageAttribute>(cilSource.DefinitionType).Flags;
+            grammar.Options = Attributes.First<LanguageAttribute>(cilSource.DefinitionType).Flags;
             return grammar;
         }
 

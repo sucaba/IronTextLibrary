@@ -71,7 +71,7 @@ namespace IronText.Tests.Framework
             public void WhiteSpace() { }
         }
 
-        [Language(LanguageFlags.AllowNonDeterministic)]
+        [Language(RuntimeOptions.AllowNonDeterministic)]
         [DescribeParserStateMachine("AmbTokenAmbLang.info")]
         [ScannerGraph("AmbTokenAmbLang_Scanner.gv")]
         public class AmbTokenAmbLang

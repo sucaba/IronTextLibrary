@@ -63,7 +63,7 @@ namespace IronText.Tests.Framework
             }
         }
 
-        [Language(LanguageFlags.AllowNonDeterministic)]
+        [Language(RuntimeOptions.AllowNonDeterministic)]
         [ParserGraph("SAdBLang.gv")]
         public class SAdBLang
         {
@@ -114,7 +114,7 @@ namespace IronText.Tests.Framework
         public interface A { }
         public interface B { }
 
-        [Language(LanguageFlags.AllowNonDeterministic)]
+        [Language(RuntimeOptions.AllowNonDeterministic)]
         [ParserGraph(nameof(AmbiguousCalculator) + ".gv")]
         [DescribeParserStateMachine(nameof(AmbiguousCalculator) + ".info")]
 #if false

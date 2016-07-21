@@ -34,7 +34,7 @@ namespace IronText.Automata.Lalr1
             BuildConflictTable();
         }
 
-        public ParserRuntime TargetRuntime { get; private set; }
+        public ParserRuntime TargetRuntime { get; private set; } = ParserRuntime.Deterministic;
 
         public ParserConflictInfo[] Conflicts
         {

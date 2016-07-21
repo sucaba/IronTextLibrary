@@ -2,8 +2,8 @@
 {
     public enum ParserRuntime
     {
-        Deterministic = 0,
-        Glr           = 1,
-        Generic       = 2
+        Deterministic = 1,
+        Glr           = 2,
+        Generic       = 3
     }
 }

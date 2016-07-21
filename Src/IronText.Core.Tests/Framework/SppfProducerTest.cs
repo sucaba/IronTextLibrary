@@ -110,7 +110,7 @@ namespace IronText.Tests.Framework
             }
         }
 
-        [Language(LanguageFlags.ForceNonDeterministic)]
+        [Language(RuntimeOptions.ForceNonDeterministic)]
         [ParserGraph("NondeterministicCalcForTree.gv")]
         public class NondeterministicCalcForTree
         {
@@ -126,7 +126,7 @@ namespace IronText.Tests.Framework
             public double Number() { return 3; }
         }
 
-        [Language(LanguageFlags.ForceNonDeterministic)]
+        [Language(RuntimeOptions.ForceNonDeterministic)]
         [ParserGraph("RightNullableWithTree.gv")]
         public interface RightNullableWithTree
         {
@@ -149,7 +149,7 @@ namespace IronText.Tests.Framework
             B B();
         }
 
-        [Language(LanguageFlags.AllowNonDeterministic)]
+        [Language(RuntimeOptions.AllowNonDeterministic)]
         [ParserGraph("RecursiveTree.gv")]
         public interface RecursiveTree
         {
@@ -166,7 +166,7 @@ namespace IronText.Tests.Framework
             S Sempty();
         }
 
-        [Language(LanguageFlags.AllowNonDeterministic)]
+        [Language(RuntimeOptions.AllowNonDeterministic)]
         [ParserGraph("ShareBranchNodesWithTree.gv")]
         [DescribeParserStateMachine("ShareBranchNodesWithTree.info")]
         public interface ShareBranchNodesWithTree
