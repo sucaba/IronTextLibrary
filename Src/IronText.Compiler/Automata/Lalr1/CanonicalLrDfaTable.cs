@@ -20,13 +20,12 @@ namespace IronText.Automata.Lalr1
 
         public CanonicalLrDfaTable(
             ILrDfa dfa,
-            IMutableTable<ParserAction> actionTable,
             GrammarAnalysis grammar)
         {
             this.grammar = grammar;
-            this.actionTable = actionTable ?? new MutableTable<ParserAction>(
-                                                dfa.States.Length,
-                                                grammar.TotalSymbolCount);
+            this.actionTable = new MutableTable<ParserAction>(
+                                dfa.States.Length,
+                                grammar.TotalSymbolCount);
 
             FillDfaTable(dfa.States);
             BuildConflictTable();
