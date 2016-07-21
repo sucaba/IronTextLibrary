@@ -16,18 +16,15 @@ namespace IronText.Automata.Lalr1
             = new Dictionary<TransitionKey, ParserConflictInfo>();
         private readonly IMutableTable<ParserAction> actionTable;
         private ParserAction[]  conflictActionTable;
-        private readonly bool forceDeterministic;
 
         public CanonicalLrDfaTable(
-            ILrDfa                      dfa,
-            IMutableTable<ParserAction> actionTable,
-            bool                        forceDeterministic)
+            ILrDfa dfa,
+            IMutableTable<ParserAction> actionTable)
         {
             this.grammar = dfa.GrammarAnalysis;
             this.actionTable = actionTable ?? new MutableTable<ParserAction>(
                                                 dfa.States.Length,
                                                 grammar.TotalSymbolCount);
-            this.forceDeterministic = forceDeterministic;
 
             FillDfaTable(dfa.States);
             BuildConflictTable();
@@ -114,15 +111,19 @@ namespace IronText.Automata.Lalr1
 
         private void AssignAction(int state, int token, ParserAction action)
         {
-            var currentCell = actionTable.Get(state, token);
-            if (currentCell == default(ParserAction))
+            var currentAction = actionTable.Get(state, token);
+            if (currentAction == default(ParserAction))
             {
                 actionTable.Set(state, token, action);
             }
-            else if (currentCell != action)
+            else if (currentAction != action)
             {
-                ParserAction resolvedCell;
-                if (!TryResolveShiftReduce(currentCell, action, token, out resolvedCell))
+                ParserAction resolvedAction;
+                if (TryResolveShiftReduce(currentAction, action, token, out resolvedAction))
+                {
+                    actionTable.Set(state, token, resolvedAction);
+                }
+                else
                 {
                     ParserConflictInfo conflict;
                     var key = new TransitionKey(state, token);
@@ -130,7 +131,7 @@ namespace IronText.Automata.Lalr1
                     {
                         conflict = new ParserConflictInfo(state, token);
                         transitionToConflict[key] = conflict;
-                        conflict.AddAction(currentCell);
+                        conflict.AddAction(currentAction);
                     }
 
                     if (!conflict.Actions.Contains(action))
@@ -138,8 +139,6 @@ namespace IronText.Automata.Lalr1
                         conflict.AddAction(action);
                     }
                 }
-
-                actionTable.Set(state, token, resolvedCell);
             }
         }
 
@@ -166,17 +165,7 @@ namespace IronText.Automata.Lalr1
             }
             else
             {
-                if (forceDeterministic)
-                {
-                    // Unsupported conflict type.
-                    // Use first action
-                    output = actionX;
-                }
-                else
-                {
-                    output = new ParserAction(ParserActionKind.Conflict, 0);
-                }
-
+                output = ParserAction.FailAction;
                 return false;
             }
 
@@ -185,17 +174,7 @@ namespace IronText.Automata.Lalr1
 
             if (shiftTokenPrecedence == null && reduceRulePrecedence == null)
             {
-                if (forceDeterministic)
-                {
-                    // In case of conflict prefer 
-                    // shift over the reduce
-                    output = shiftAction;
-                }
-                else
-                {
-                    output = new ParserAction(ParserActionKind.Conflict, 0);
-                }
-
+                output = ParserAction.FailAction;
                 return false;
             }
             else if (shiftTokenPrecedence == null)

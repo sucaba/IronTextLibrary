@@ -80,14 +80,9 @@ namespace IronText.Automata.Lalr1
             return outputTable;
         }
 
-        private ILrParserTable BuildGlrLRTable(ILrDfa dfa)
-        {
-            return BuildLRTable(dfa, forceDeterministic: false);
-        }
-
         private ILrParserTable BuildLRTable(ILrDfa dfa, bool forceDeterministic)
         {
-            ILrParserTable result = new CanonicalLrDfaTable(dfa, this.data, forceDeterministic);
+            ILrParserTable result = new CanonicalLrDfaTable(dfa, this.data);
             if ((forceDeterministic && result.TargetRuntime != ParserRuntime.Deterministic)
                 || !FillAmbiguousTokenActions(dfa.States, forceDeterministic))
             {
