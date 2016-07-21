@@ -1,26 +1,24 @@
 ﻿using IronText.Automata.Lalr1;
-using IronText.Logging;
-using IronText.Reflection;
+using IronText.DI;
+using IronText.Reflection.Reporting;
 
 namespace IronText.MetadataCompiler
 {
-    class ParserTableProvider
+    class ParserTableProvider : IHasSideEffects
     {
         public ParserTableProvider(
-            ILrDfa         dfa, 
-            RuntimeOptions flags,
-            Grammar        grammar,
-            ILogging       logging)
+            ReportCollection       reports,
+            ConfigurableLrTable    lrTable,
+            ConflictMessageBuilder conflictMessageBuilder)
         {
-            var lrTable = new ConfigurableLrTable(dfa, flags);
+            this.LrParserTable = lrTable;
+
             if (!lrTable.ComplyWithConfiguration)
             {
-                grammar.Reports.Add(new ConflictMessageBuilder(logging));
+                reports.Add(conflictMessageBuilder);
             }
-
-            this.LrParserTable = lrTable;
         }
 
-        public ILrParserTable LrParserTable { get; private set; }
+        public ILrParserTable LrParserTable { get; }
     }
 }

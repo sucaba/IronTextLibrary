@@ -50,11 +50,11 @@ namespace IronText.Automata.Lalr1
             foreach (var conflict in transitionToConflict.Values)
             {
                 var refAction = new ParserAction
-                            {
-                                Kind          = ParserActionKind.Conflict,
-                                Value1        = conflictList.Count,
-                                ConflictCount = (short)conflict.Actions.Count
-                            };
+                    {
+                        Kind          = ParserActionKind.Conflict,
+                        Value1        = conflictList.Count,
+                        ConflictCount = (short)conflict.Actions.Count
+                    };
 
                 actionTable.Set(conflict.State, conflict.Token, refAction);
                 foreach (var action in conflict.Actions)

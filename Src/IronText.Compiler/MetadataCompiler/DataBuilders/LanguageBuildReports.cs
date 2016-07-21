@@ -1,5 +1,4 @@
 ﻿using IronText.DI;
-using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Runtime;
 
@@ -10,12 +9,12 @@ namespace IronText.MetadataCompiler
         public LanguageBuildReports(
             LanguageBuildConfig config,
             ILanguageSource     source,
-            Grammar             grammar,
+            ReportCollection    reports,
             IReportData         reportData)
         {
             if (!config.IsBootstrap)
             {
-                foreach (var report in grammar.Reports)
+                foreach (var report in reports)
                 {
                     report.Build(reportData);
                 }
