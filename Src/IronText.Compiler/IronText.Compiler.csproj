@@ -112,7 +112,6 @@
     <Compile Include="Automata\Lalr1\Lalr1Dfa.Diagnostics.cs" />
     <Compile Include="Automata\Lalr1\LrTableOptimizations.cs" />
     <Compile Include="Automata\Lalr1\MutableDotItemSet.cs" />
-    <Compile Include="Automata\Lalr1\ReductionModifiedLrDfaTable.cs" />
     <Compile Include="Automata\Lalr1\TransitionKey.cs" />
     <Compile Include="Automata\Regular\Alphabets\EquivalenceClassesAlphabet.cs" />
     <Compile Include="Automata\Regular\Alphabets\RegularAlphabet.cs" />

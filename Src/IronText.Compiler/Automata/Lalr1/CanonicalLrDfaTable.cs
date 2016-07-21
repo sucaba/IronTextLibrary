@@ -6,8 +6,6 @@ using IronText.Compiler.Analysis;
 using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Runtime;
-using System.Diagnostics;
-using System;
 
 namespace IronText.Automata.Lalr1
 {
@@ -18,24 +16,27 @@ namespace IronText.Automata.Lalr1
             = new Dictionary<TransitionKey, ParserConflictInfo>();
         private readonly IMutableTable<ParserAction> actionTable;
         private ParserAction[]  conflictActionTable;
-        private readonly ParserRuntime requiredRuntime;
+        private readonly bool forceDeterministic;
 
         public CanonicalLrDfaTable(
             ILrDfa                      dfa,
             IMutableTable<ParserAction> actionTable,
-            ParserRuntime               requiredRuntime)
+            bool                        forceDeterministic)
         {
             this.grammar = dfa.GrammarAnalysis;
-            this.requiredRuntime = requiredRuntime;
-
             this.actionTable = actionTable ?? new MutableTable<ParserAction>(
                                                 dfa.States.Length,
                                                 grammar.TotalSymbolCount);
+            this.forceDeterministic = forceDeterministic;
+
             FillDfaTable(dfa.States);
             BuildConflictTable();
         }
 
-        public ParserRuntime TargetRuntime { get; private set; } = ParserRuntime.Deterministic;
+        public ParserRuntime TargetRuntime =>
+            transitionToConflict.Count != 0
+            ? ParserRuntime.Glr
+            : ParserRuntime.Deterministic;
 
         public ParserConflictInfo[] Conflicts
         {
@@ -123,10 +124,6 @@ namespace IronText.Automata.Lalr1
                 ParserAction resolvedCell;
                 if (!TryResolveShiftReduce(currentCell, action, token, out resolvedCell))
                 {
-                    TargetRuntime = requiredRuntime != ParserRuntime.Deterministic
-                        ? requiredRuntime
-                        : ParserRuntime.Glr;
-
                     ParserConflictInfo conflict;
                     var key = new TransitionKey(state, token);
                     if (!transitionToConflict.TryGetValue(key, out conflict))
@@ -169,8 +166,17 @@ namespace IronText.Automata.Lalr1
             }
             else
             {
-                // Unsupported conflict type. Use first action
-                output = actionX;
+                if (forceDeterministic)
+                {
+                    // Unsupported conflict type.
+                    // Use first action
+                    output = actionX;
+                }
+                else
+                {
+                    output = new ParserAction(ParserActionKind.Conflict, 0);
+                }
+
                 return false;
             }
 
@@ -179,8 +185,17 @@ namespace IronText.Automata.Lalr1
 
             if (shiftTokenPrecedence == null && reduceRulePrecedence == null)
             {
-                // In case of conflict prefer shift over reduce
-                output = shiftAction;
+                if (forceDeterministic)
+                {
+                    // In case of conflict prefer 
+                    // shift over the reduce
+                    output = shiftAction;
+                }
+                else
+                {
+                    output = new ParserAction(ParserActionKind.Conflict, 0);
+                }
+
                 return false;
             }
             else if (shiftTokenPrecedence == null)

@@ -39,68 +39,57 @@ namespace IronText.Automata.Lalr1
 
         private void Configure(ILrDfa dfa, RuntimeOptions flags, out ILrParserTable outputTable)
         {
-            bool result;
-
             ComplyWithConfiguration = true;
             switch (flags & RuntimeOptions.ParserAlgorithmMask)
             {
                 case RuntimeOptions.ForceGeneric:
-                    outputTable = BuildGenericLRTable(dfa);
                     TargetRuntime = ParserRuntime.Generic;
+                    outputTable = BuildLRTable(dfa, forceDeterministic: false);
                     break;
                 case RuntimeOptions.ForceDeterministic:
-                    outputTable = BuildCanonicalLRTable(dfa);
-                    TargetRuntime = ParserRuntime.Deterministic;
-                    result = outputTable != null && outputTable.TargetRuntime == ParserRuntime.Deterministic;
-                    if (!result)
-                    {
-                        data.Clear();
-                        ComplyWithConfiguration = false;
-                        TargetRuntime = ParserRuntime.Glr;
-                        outputTable = BuildGlrLRTable(dfa);
-                    }
-
+                    outputTable = BuildGlrTable(dfa);
+                    ComplyWithConfiguration = TargetRuntime == ParserRuntime.Deterministic;
                     break;
                 case RuntimeOptions.ForceNonDeterministic:
                     TargetRuntime = ParserRuntime.Glr;
-                    outputTable = BuildGlrLRTable(dfa);
-                    result = outputTable != null;
+                    outputTable = BuildLRTable(dfa, forceDeterministic: false);
                     break;
                 case RuntimeOptions.AllowNonDeterministic:
-                    outputTable = BuildCanonicalLRTable(dfa);
-                    result = outputTable != null && outputTable.TargetRuntime == ParserRuntime.Deterministic;
-                    if (!result)
-                    {
-                        data.Clear();
-                        goto case RuntimeOptions.ForceNonDeterministic;
-                    }
-
-                    TargetRuntime = ParserRuntime.Deterministic;
+                    outputTable = BuildGlrTable(dfa);
                     break;
                 default:
-#if DEBUG
                     throw new InvalidOperationException(
                         "Internal error: unsupported language flags: " + (int)flags);
-#else
-                    result = false;
-                    outputTable = null;
-                    break;
-#endif
             }
+        }
+
+        private ILrParserTable BuildGlrTable(ILrDfa dfa)
+        {
+            ILrParserTable outputTable = BuildLRTable(dfa, forceDeterministic: true);
+            if (outputTable == null || outputTable.TargetRuntime != ParserRuntime.Deterministic)
+            {
+                data.Clear();
+                TargetRuntime = ParserRuntime.Glr;
+                outputTable = BuildLRTable(dfa, forceDeterministic: false);
+            }
+            else
+            {
+                TargetRuntime = ParserRuntime.Deterministic;
+            }
+
+            return outputTable;
         }
 
         private ILrParserTable BuildGlrLRTable(ILrDfa dfa)
         {
-            ILrParserTable result = new ReductionModifiedLrDfaTable(dfa, this.data, ParserRuntime.Glr);
-            FillAmbiguousTokenActions(dfa.States, allowNonDetermism: true);
-            return result;
+            return BuildLRTable(dfa, forceDeterministic: false);
         }
 
-        private ILrParserTable BuildCanonicalLRTable(ILrDfa dfa)
+        private ILrParserTable BuildLRTable(ILrDfa dfa, bool forceDeterministic)
         {
-            ILrParserTable result = new CanonicalLrDfaTable(dfa, this.data, ParserRuntime.Deterministic);
-            if (result.TargetRuntime != ParserRuntime.Deterministic 
-                || !FillAmbiguousTokenActions(dfa.States, allowNonDetermism:false))
+            ILrParserTable result = new CanonicalLrDfaTable(dfa, this.data, forceDeterministic);
+            if ((forceDeterministic && result.TargetRuntime != ParserRuntime.Deterministic)
+                || !FillAmbiguousTokenActions(dfa.States, forceDeterministic))
             {
                 result = null;
             }
@@ -108,18 +97,7 @@ namespace IronText.Automata.Lalr1
             return result;
         }
 
-        private ILrParserTable BuildGenericLRTable(ILrDfa dfa)
-        {
-            ILrParserTable result = new CanonicalLrDfaTable(dfa, this.data, ParserRuntime.Generic);
-            if (!FillAmbiguousTokenActions(dfa.States, allowNonDetermism: true))
-            {
-                return null;
-            }
-
-            return result;
-        }
-
-        private bool FillAmbiguousTokenActions(DotState[] states, bool allowNonDetermism)
+        private bool FillAmbiguousTokenActions(DotState[] states, bool forceDeterministic)
         {
             for (int i = 0; i != states.Length; ++i)
             {
@@ -172,7 +150,7 @@ namespace IronText.Automata.Lalr1
                                 goto case 1;
                             }
 
-                            if (!allowNonDetermism)
+                            if (forceDeterministic)
                             {
                                 return false;
                             }
