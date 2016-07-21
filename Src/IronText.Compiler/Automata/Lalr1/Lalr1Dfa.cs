@@ -84,7 +84,6 @@ namespace IronText.Automata.Lalr1
             // 1. Construct the kernels of the sets of LR(0) items for G.
             var lr0states = BuildLr0ItemSets();
 
-
 #if VERBOSE
             PrintStates("LR(0) Kernels:", lr0states);
 #endif

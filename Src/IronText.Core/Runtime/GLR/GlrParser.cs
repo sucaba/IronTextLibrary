@@ -275,7 +275,8 @@ namespace IronText.Runtime
                     case ParserActionKind.Exit:
                         return;
                     default:
-                        throw new NotSupportedException($"Instruction '{action.Kind}' is not supported by GLR parser.");
+                        throw new NotSupportedException(
+                            $"Instruction '{action.Kind}' is not supported by GLR parser.");
                 }
 
                 ++pos;

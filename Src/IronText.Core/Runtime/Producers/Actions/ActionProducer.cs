@@ -1,8 +1,6 @@
-﻿using IronText.Algorithm;
-using IronText.Framework;
+﻿using IronText.Framework;
 using IronText.Logging;
 using IronText.Runtime.Semantics;
-using System;
 using System.Collections.Generic;
 
 namespace IronText.Runtime
@@ -21,7 +19,6 @@ namespace IronText.Runtime
         private readonly object context;
         private Loc _parsingLocation;
         private Loc _scanningLocation;
-        private readonly object[] ruleArgBuffer;
         private Dictionary<int, object> inhIndexToValue;
 
         public ActionProducer(
@@ -39,7 +36,6 @@ namespace IronText.Runtime
             this.productionAction  = productionAction;
             this.termFactory    = termFactory;
             this.merge          = merge;
-            this.ruleArgBuffer  = new object[grammar.MaxProductionLength];
             this.inhIndexToValue        = inhIndexToValue ?? new Dictionary<int,object>();
 
             if (context != null)

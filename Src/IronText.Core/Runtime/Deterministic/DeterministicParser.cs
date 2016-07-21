@@ -202,7 +202,6 @@ namespace IronText.Runtime
         {
             var message = new StringBuilder();
 
-            // TODO: Get rid of grammar usage. Properly formatted text should be sufficient.
             message.Append("Got ").Append(msg.Text ?? grammar.SymbolName(msg.AmbiguousToken));
             message.Append("  but expected ");
 
