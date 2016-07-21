@@ -1,10 +1,9 @@
 ﻿using IronText.Automata.Lalr1;
-using IronText.DI;
 using IronText.Reflection.Reporting;
 
 namespace IronText.MetadataCompiler
 {
-    class ParserTableProvider : IHasSideEffects
+    class ParserTableProvider
     {
         public ParserTableProvider(
             ReportCollection       reports,
