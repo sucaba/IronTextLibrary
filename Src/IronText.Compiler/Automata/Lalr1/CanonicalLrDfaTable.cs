@@ -16,6 +16,7 @@ namespace IronText.Automata.Lalr1
             = new Dictionary<TransitionKey, ParserConflictInfo>();
         private readonly IMutableTable<ParserAction> actionTable;
         private ParserAction[]  conflictActionTable;
+        private bool hasTerminalAmbiguities;
 
         public CanonicalLrDfaTable(
             ILrDfa dfa,
@@ -28,10 +29,11 @@ namespace IronText.Automata.Lalr1
 
             FillDfaTable(dfa.States);
             BuildConflictTable();
+            FillAmbiguousTokenActions(dfa.States);
         }
 
         public ParserRuntime TargetRuntime =>
-            transitionToConflict.Count != 0
+            (transitionToConflict.Count != 0 || hasTerminalAmbiguities)
             ? ParserRuntime.Glr
             : ParserRuntime.Deterministic;
 
@@ -195,6 +197,61 @@ namespace IronText.Automata.Lalr1
             }
 
             return true;
+        }
+
+        private void FillAmbiguousTokenActions(DotState[] states)
+        {
+            for (int i = 0; i != states.Length; ++i)
+            {
+                var state = states[i];
+
+                foreach (var ambToken in grammar.AmbiguousSymbols)
+                {
+                    var validTokenActions = new Dictionary<int,ParserAction>();
+                    foreach (int token in ambToken.Alternatives)
+                    {
+                        var action = actionTable.Get(i, token);
+                        if (action == default(ParserAction))
+                        {
+                            continue;
+                        }
+
+                        validTokenActions.Add(token, action);
+                    }
+
+                    switch (validTokenActions.Values.Distinct().Count())
+                    {
+                        case 0:
+                            // AmbToken is entirely non-acceptable for this state
+                            actionTable.Set(i, ambToken.EnvelopeIndex, ParserAction.FailAction);
+                            break;
+                        case 1:
+                            {
+                                var pair = validTokenActions.First();
+                                if (pair.Key == ambToken.MainToken)
+                                {
+                                    // ambToken action is the same as for the main token
+                                    actionTable.Set(i, ambToken.EnvelopeIndex, pair.Value);
+                                }
+                                else
+                                {
+                                    // Resolve ambToken to a one of the underlying tokens.
+                                    // In runtime transition will be acceptable when this token
+                                    // is in Msg and non-acceptable when this particular token
+                                    // is not in Msg.
+                                    var action = new ParserAction { Kind = ParserActionKind.Resolve, Value1 = pair.Key };
+                                    actionTable.Set(i, ambToken.EnvelopeIndex, action);
+                                }
+                            }
+
+                            break;
+                        default:
+                            // GLR parser is required to handle terminal token alternatives.
+                            this.hasTerminalAmbiguities = true;
+                            break;
+                    }
+                }
+            }
         }
     }
 }

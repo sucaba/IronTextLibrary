@@ -21,7 +21,8 @@ namespace IronText.Automata.Lalr1
 
             this.data = new MutableTable<ParserAction>(dfa.States.Length, grammar.TotalSymbolCount);
 
-            Configure(dfa, flags, out underlyingTable); 
+            underlyingTable = new CanonicalLrDfaTable(dfa, this.data);
+            Configure(flags, underlyingTable.TargetRuntime); 
         }
 
         public bool ComplyWithConfiguration { get; private set; }
@@ -37,136 +38,58 @@ namespace IronText.Automata.Lalr1
 
         public ParserConflictInfo[] Conflicts { get { return underlyingTable.Conflicts; } }
 
-        private void Configure(ILrDfa dfa, RuntimeOptions flags, out ILrParserTable outputTable)
+        private ParserRuntime GetRuntime(RuntimeOptions flags, ParserRuntime actualRuntime)
         {
-            ComplyWithConfiguration = true;
             switch (flags & RuntimeOptions.ParserAlgorithmMask)
             {
                 case RuntimeOptions.ForceGeneric:
-                    TargetRuntime = ParserRuntime.Generic;
-                    outputTable = BuildLRTable(dfa, forceDeterministic: false);
-                    break;
-                case RuntimeOptions.ForceDeterministic:
-                    outputTable = BuildGlrTable(dfa);
-                    ComplyWithConfiguration = TargetRuntime == ParserRuntime.Deterministic;
-                    break;
+                    return ParserRuntime.Generic;
                 case RuntimeOptions.ForceNonDeterministic:
-                    TargetRuntime = ParserRuntime.Glr;
-                    outputTable = BuildLRTable(dfa, forceDeterministic: false);
-                    break;
+                    return ParserRuntime.Glr;
                 case RuntimeOptions.AllowNonDeterministic:
-                    outputTable = BuildGlrTable(dfa);
-                    break;
+                case RuntimeOptions.ForceDeterministic:
+                    return actualRuntime;
                 default:
                     throw new InvalidOperationException(
                         "Internal error: unsupported language flags: " + (int)flags);
             }
         }
 
-        private ILrParserTable BuildGlrTable(ILrDfa dfa)
+        private void Configure(RuntimeOptions flags, ParserRuntime actualRuntime)
         {
-            ILrParserTable outputTable = BuildLRTable(dfa, forceDeterministic: true);
-            if (outputTable == null || outputTable.TargetRuntime != ParserRuntime.Deterministic)
+            TargetRuntime = GetRuntime(flags, actualRuntime);
+            if ((flags & RuntimeOptions.ParserAlgorithmMask) == RuntimeOptions.ForceDeterministic)
             {
-                data.Clear();
-                TargetRuntime = ParserRuntime.Glr;
-                outputTable = BuildLRTable(dfa, forceDeterministic: false);
+                ComplyWithConfiguration = TargetRuntime == actualRuntime;
             }
             else
             {
-                TargetRuntime = ParserRuntime.Deterministic;
+                ComplyWithConfiguration = true;
             }
-
-            return outputTable;
         }
 
-        private ILrParserTable BuildLRTable(ILrDfa dfa, bool forceDeterministic)
+        private void Configure(ILrDfa dfa, RuntimeOptions flags, ParserRuntime actualRuntime)
         {
-            ILrParserTable result = new CanonicalLrDfaTable(dfa, this.data);
-            if ((forceDeterministic && result.TargetRuntime != ParserRuntime.Deterministic)
-                || !FillAmbiguousTokenActions(dfa.States, forceDeterministic))
+            ComplyWithConfiguration = true;
+            switch (flags & RuntimeOptions.ParserAlgorithmMask)
             {
-                result = null;
+                case RuntimeOptions.ForceGeneric:
+                    TargetRuntime = ParserRuntime.Generic;
+                    break;
+                case RuntimeOptions.ForceNonDeterministic:
+                    TargetRuntime = ParserRuntime.Glr;
+                    break;
+                case RuntimeOptions.AllowNonDeterministic:
+                    TargetRuntime = actualRuntime;
+                    break;
+                case RuntimeOptions.ForceDeterministic:
+                    TargetRuntime = actualRuntime;
+                    ComplyWithConfiguration = TargetRuntime == ParserRuntime.Deterministic;
+                    break;
+                default:
+                    throw new InvalidOperationException(
+                        "Internal error: unsupported language flags: " + (int)flags);
             }
-
-            return result;
-        }
-
-        private bool FillAmbiguousTokenActions(DotState[] states, bool forceDeterministic)
-        {
-            for (int i = 0; i != states.Length; ++i)
-            {
-                var state = states[i];
-
-                foreach (var ambToken in grammar.AmbiguousSymbols)
-                {
-                    var validTokenActions = new Dictionary<int,ParserAction>();
-                    foreach (int token in ambToken.Alternatives)
-                    {
-                        var action = data.Get(i, token);
-                        if (action == default(ParserAction))
-                        {
-                            continue;
-                        }
-
-                        validTokenActions.Add(token, action);
-                    }
-
-                    switch (validTokenActions.Count)
-                    {
-                        case 0:
-                            // AmbToken is entirely non-acceptable for this state
-                            data.Set(i, ambToken.EnvelopeIndex, ParserAction.FailAction);
-                            break;
-                        case 1:
-                            {
-                                var pair = validTokenActions.First();
-                                if (pair.Key == ambToken.MainToken)
-                                {
-                                    // ambToken action is the same as for the main token
-                                    data.Set(i, ambToken.EnvelopeIndex, pair.Value);
-                                }
-                                else
-                                {
-                                    // Resolve ambToken to a one of the underlying tokens.
-                                    // In runtime transition will be acceptable when this token
-                                    // is in Msg and non-acceptable when this particular token
-                                    // is not in Msg.
-                                    var action = new ParserAction { Kind = ParserActionKind.Resolve, Value1 = pair.Key };
-                                    data.Set(i, ambToken.EnvelopeIndex, action);
-                                }
-                            }
-
-                            break;
-                        default:
-                            if (validTokenActions.Values.Distinct().Count() == 1)
-                            {
-                                // Multiple tokens but with the same action
-                                goto case 1;
-                            }
-
-                            if (forceDeterministic)
-                            {
-                                return false;
-                            }
-
-                            // This kind of ambiguity requires GLR to follow all alternate tokens
-                            {
-                                var pair = validTokenActions.First();
-                                var forkAction = new ParserAction
-                                {
-                                    Kind   = ParserActionKind.Fork,
-                                    Value1 = pair.Key
-                                };
-                                data.Set(i, ambToken.EnvelopeIndex, forkAction);
-                            }
-
-                            break;
-                    }
-                }
-            }
-
-            return true;
         }
     }
 }

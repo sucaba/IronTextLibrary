@@ -201,7 +201,7 @@
     <Compile Include="MetadataCompiler\CilTarget\Bootstrap\BootstrapLanguage.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Bootstrap\BootstrapScanner.cs" />
     <Compile Include="MetadataCompiler\CompiledLanguageProvider.cs" />
-    <Compile Include="MetadataCompiler\DataBuilders\ParserConflictLogging.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\ConflictMessageBuilder.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\LanguageDataProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ScannerAmbiguityProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ScannerDescriptor.cs" />
