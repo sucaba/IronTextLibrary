@@ -72,8 +72,6 @@ namespace IronText.Automata.Lalr1
             }
         }
 
-        public GrammarAnalysis GrammarAnalysis { get { return grammar; } }
-
         public DotState[] States { get { return this.states; } }
 
         /// <summary>

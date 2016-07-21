@@ -1,12 +1,9 @@
 ﻿using System;
-using IronText.Compiler.Analysis;
 
 namespace IronText.Automata.Lalr1
 {
     interface ILrDfa
     {
-        GrammarAnalysis GrammarAnalysis { get; }
-
         LrTableOptimizations Optimizations { get; }
 
         DotState[] States { get; }

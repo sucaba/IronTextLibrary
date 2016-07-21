@@ -15,13 +15,16 @@ namespace IronText.Automata.Lalr1
         private readonly GrammarAnalysis grammar;
         private readonly ILrParserTable  underlyingTable;
 
-        public ConfigurableLrTable(ILrDfa dfa, RuntimeOptions flags)
+        public ConfigurableLrTable(
+            ILrDfa dfa,
+            RuntimeOptions flags,
+            GrammarAnalysis grammar)
         {
-            this.grammar = dfa.GrammarAnalysis;
+            this.grammar = grammar;
 
             this.data = new MutableTable<ParserAction>(dfa.States.Length, grammar.TotalSymbolCount);
 
-            underlyingTable = new CanonicalLrDfaTable(dfa, this.data);
+            underlyingTable = new CanonicalLrDfaTable(dfa, this.data, grammar);
             Configure(flags, underlyingTable.TargetRuntime); 
         }
 
