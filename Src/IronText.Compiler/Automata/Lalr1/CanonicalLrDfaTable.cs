@@ -113,33 +113,35 @@ namespace IronText.Automata.Lalr1
 
         private void AssignAction(int state, int token, ParserAction action)
         {
-            var currentAction = actionTable.Get(state, token);
+            ParserAction currentAction = actionTable.Get(state, token);
+            ParserAction resolvedAction;
+
             if (currentAction == default(ParserAction))
             {
                 actionTable.Set(state, token, action);
             }
-            else if (currentAction != action)
+            else if (currentAction == action)
             {
-                ParserAction resolvedAction;
-                if (TryResolveShiftReduce(currentAction, action, token, out resolvedAction))
+                // Nothing to do
+            }
+            else if (TryResolveShiftReduce(currentAction, action, token, out resolvedAction))
+            {
+                actionTable.Set(state, token, resolvedAction);
+            }
+            else
+            {
+                ParserConflictInfo conflict;
+                var key = new TransitionKey(state, token);
+                if (!transitionToConflict.TryGetValue(key, out conflict))
                 {
-                    actionTable.Set(state, token, resolvedAction);
+                    conflict = new ParserConflictInfo(state, token);
+                    transitionToConflict[key] = conflict;
+                    conflict.AddAction(currentAction);
                 }
-                else
-                {
-                    ParserConflictInfo conflict;
-                    var key = new TransitionKey(state, token);
-                    if (!transitionToConflict.TryGetValue(key, out conflict))
-                    {
-                        conflict = new ParserConflictInfo(state, token);
-                        transitionToConflict[key] = conflict;
-                        conflict.AddAction(currentAction);
-                    }
 
-                    if (!conflict.Actions.Contains(action))
-                    {
-                        conflict.AddAction(action);
-                    }
+                if (!conflict.Actions.Contains(action))
+                {
+                    conflict.AddAction(action);
                 }
             }
         }
