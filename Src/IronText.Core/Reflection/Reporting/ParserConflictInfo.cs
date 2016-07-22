@@ -1,9 +1,11 @@
 ﻿using IronText.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace IronText.Reflection.Reporting
 {
+    [Serializable]
     public class ParserConflictInfo
     {
         private readonly List<ParserAction> actions = new List<ParserAction>();

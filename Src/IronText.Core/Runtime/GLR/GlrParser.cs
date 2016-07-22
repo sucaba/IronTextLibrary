@@ -13,7 +13,6 @@ namespace IronText.Runtime
     sealed class GlrParser<T> : IPushParser
     {
         private readonly RuntimeGrammar       grammar;
-        private readonly int[]                conflictActionsTable;
         private readonly int[]                stateToPriorToken;
         private readonly TransitionDelegate   transition;
         private          IProducer<T>         producer;
@@ -28,19 +27,17 @@ namespace IronText.Runtime
         private T                             currentTermValue;
 
         public GlrParser(
-            RuntimeGrammar      grammar,
-            int[]               tokenComplexity,
-            TransitionDelegate  transition,
-            int[]               stateToPriorToken,
-            int[]               conflictActionsTable,
-            IProducer<T>        producer,
-            ILogging            logging)
+            RuntimeGrammar grammar,
+            int[] tokenComplexity,
+            TransitionDelegate transition,
+            int[] stateToPriorToken,
+            IProducer<T> producer,
+            ILogging logging)
             : this(
                 grammar,
                 tokenComplexity,
                 transition,
                 stateToPriorToken,
-                conflictActionsTable,
                 producer,
                 logging,
                 new Gss<T>(stateToPriorToken.Length + grammar.Productions.Length))
@@ -48,20 +45,18 @@ namespace IronText.Runtime
         }
 
         private GlrParser(
-            RuntimeGrammar      grammar,
-            int[]               tokenComplexity,
-            TransitionDelegate  transition,
-            int[]               stateToPriorToken,
-            int[]               conflictActionsTable,
-            IProducer<T>        producer,
-            ILogging            logging,
-            Gss<T>              gss)
+            RuntimeGrammar     grammar,
+            int[]              tokenComplexity,
+            TransitionDelegate transition,
+            int[]              stateToPriorToken,
+            IProducer<T>       producer,
+            ILogging           logging,
+            Gss<T>             gss)
         {
             this.grammar              = grammar;
             this.tokenComplexity      = tokenComplexity;
             this.transition           = transition;
             this.stateToPriorToken    = stateToPriorToken;
-            this.conflictActionsTable = conflictActionsTable;
             this.gss                  = gss;
             this.producer             = producer;
             this.logging              = logging;
@@ -310,8 +305,7 @@ namespace IronText.Runtime
                             tokenComplexity,
                             transition,
                             stateToPriorToken,
-                            conflictActionsTable,
-                            NullProducer<T>.Instance,
+                            producer,
                             NullLogging.Instance,
                             gss.CloneWithoutData());
 

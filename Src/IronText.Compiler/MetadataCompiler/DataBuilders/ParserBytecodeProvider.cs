@@ -2,6 +2,7 @@
 using IronText.Automata.Lalr1;
 using IronText.Runtime;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IronText.MetadataCompiler
 {
@@ -9,11 +10,9 @@ namespace IronText.MetadataCompiler
     {
         public ParserBytecodeProvider(ILrParserTable parserTable)
         {
-            var conflictActions = parserTable.GetConflictActionTable();
-
             var instructions = new List<ParserAction>();
 
-            var table = parserTable.GetParserActionTable();
+            var table       = parserTable.ParserActionTable;
             int rowCount    = table.RowCount;
             int columnCount = table.ColumnCount;
 
@@ -27,33 +26,31 @@ namespace IronText.MetadataCompiler
                     var action = table.Get(r, c);
                     if (action.Kind == ParserActionKind.Conflict)
                     {
-                        int first = action.Value1;
-                        int last = action.Value1 + action.ConflictCount;
+                        var conflict = parserTable.Conflicts[action.Value1];
                         int forkPos = instructions.Count;
 
-                        int start = first + 1;
-                        while (start != last)
+                        foreach (var conflictAction in conflict.Actions.Skip(1))
                         {
                             AddForkInstructionPlaceholder(instructions);
-                            ++start;
                         }
 
-                        start = first;
-                        while (start != last)
+                        bool first = true;
+                        foreach (var conflictAction in conflict.Actions)
                         {
-                            var conflictAction = conflictActions[start];
-                            if (start != first)
+                            if (first)
+                            {
+                                first = false;
+                            }
+                            else
                             {
                                 instructions[forkPos++] = new ParserAction
                                 {
-                                    Kind = ParserActionKind.Fork,
+                                    Kind   = ParserActionKind.Fork,
                                     Value1 = instructions.Count
                                 };
                             }
 
                             CompileTransition(instructions, conflictAction);
-
-                            ++start;
                         }
                     }
                     else

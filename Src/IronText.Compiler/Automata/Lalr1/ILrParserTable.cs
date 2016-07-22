@@ -6,12 +6,10 @@ namespace IronText.Automata.Lalr1
 {
     interface ILrParserTable
     {
-        ParserRuntime TargetRuntime { get; }
+        ParserRuntime        TargetRuntime     { get; }
 
-        ITable<ParserAction> GetParserActionTable();
+        ITable<ParserAction> ParserActionTable { get; }
 
-        ParserAction[] GetConflictActionTable();
-
-        ParserConflictInfo[] Conflicts { get; }
+        ParserConflictInfo[] Conflicts         { get; }
     }
 }

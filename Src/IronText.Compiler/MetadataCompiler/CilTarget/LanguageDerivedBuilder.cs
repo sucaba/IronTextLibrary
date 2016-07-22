@@ -26,7 +26,6 @@ namespace IronText.MetadataCompiler
         private const string GetParserActionMethodName          = "GetParserAction";
         private const string ScanMethodName                     = "ScannerDfa";
         private const string CreateStateToSymbolMethodName      = "CreateStateToSymbol";
-        private const string CreateParserActionConflictsMethodName = "CreateParserActionConflicts";
         private const string CreateTokenComplexityTableMethodName = "CreateTokenComplexity";
         private const string CreateMatchActionToTokenTable      = "CreateMatchActionToTokenTable";
         private const string CreateDefaultContextMethodName     = "InternalCreateDefaultContext";
@@ -93,7 +92,6 @@ namespace IronText.MetadataCompiler
                     .Do(BuildMethod_ProductionAction)
                     .Do(BuildMethod_MergeAction)
                     .Do(BuildMethod_CreateStateToSymbol)
-                    .Do(BuildMethod_CreateParserActionConflicts)
                     .Do(BuildMethod_CreateTokenComplexityTable)
                     .Do(BuildMethod_CreateMatchActionToTokenTable)
                     .Do(BuildMethod_CreateDefaultContext)
@@ -253,38 +251,6 @@ namespace IronText.MetadataCompiler
                 .EndBody();
         }
 
-        private ClassSyntax BuildMethod_CreateParserActionConflicts(ClassSyntax context)
-        {
-            var emit = context
-                        .PrivateStaticMethod(CreateParserActionConflictsMethodName, typeof(Func<int[]>))
-                        .BeginBody();
-            
-            var resultLoc = emit.Locals.Generate().GetRef();
-            var itemLoc   = emit.Locals.Generate().GetRef();
-            var conflicts = data.ParserConflictActionTable;
-
-            emit = emit
-                .Local(resultLoc.Def, typeof(int[]))
-                .Ldc_I4(conflicts.Length)
-                .Newarr(typeof(int))
-                .Stloc(resultLoc)
-                ;
-
-            for (int i = 0; i != conflicts.Length; ++i)
-            {
-                emit = emit
-                    .Ldloc(resultLoc)
-                    .Ldc_I4(i)
-                    .Ldc_I4(ParserAction.Encode(conflicts[i]))
-                    .Stelem_I4();
-            }
-
-            return emit
-                    .Ldloc(resultLoc)
-                    .Ret()
-                .EndBody();
-        }
-
         private ClassSyntax BuildMethod_CreateMatchActionToTokenTable(ClassSyntax context)
         {
             var emit = context
@@ -440,19 +406,6 @@ namespace IronText.MetadataCompiler
                         .EndArgs()
                     ))
                 .Stfld(LanguageBase.Fields.stateToSymbol)
-
-                // Init parser action conflicts table
-                .Ldarg(0)
-                .Call(emit.Methods.Method(
-                    _=>_
-                        .StartSignature
-                        .Returning(emit.Types.Import(typeof(int[])))
-                        .DecaringType(declaringTypeRef)
-                        .Named(CreateParserActionConflictsMethodName)
-                        .BeginArgs()
-                        .EndArgs()
-                    ))
-                .Stfld(LanguageBase.Fields.parserConflictActions)
 
                 // Init token complexity table
                 .Ldarg(0)

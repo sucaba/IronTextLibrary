@@ -152,12 +152,9 @@ namespace CSharpParser.Tests
                 case ParserActionKind.Shift:
                     return x;
                 case ParserActionKind.Conflict:
-                    int start = x.Value1;
-                    int count = x.Value2;
-                    int last = start + count;
-                    for (; start != last; ++start)
+                    var conflict = data.ParserConflicts[x.Value1];
+                    foreach (var cAction in conflict.Actions)
                     {
-                        var cAction = data.ParserConflictActionTable[start];
                         switch (cAction.Kind)
                         {
                             case ParserActionKind.Shift:
@@ -269,12 +266,8 @@ namespace CSharpParser.Tests
                     return true;
                 case ParserActionKind.Conflict:
                     var action = ParserAction.Decode(cell);
-                    int start = action.Value1;
-                    int count = action.Value2;
-                    int last = start + count;
-                    while (start != last)
+                    foreach (var cAction in data.ParserConflicts[action.Value1].Actions)
                     {
-                        ParserAction cAction = data.ParserConflictActionTable[start++];
                         switch (cAction.Kind)
                         {
                             case ParserActionKind.Shift:

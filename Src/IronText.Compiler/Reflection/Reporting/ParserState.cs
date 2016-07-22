@@ -74,18 +74,15 @@ namespace IronText.Reflection.Reporting
             var action = data.ParserActionTable.Get(state, token);
             if (action == null || action.Kind == ParserActionKind.Fail)
             {
+                return Enumerable.Empty<ParserAction>();
             }
             else if (action.Kind == ParserActionKind.Conflict)
             {
-                for (int i = 0; i != action.ConflictCount; ++i)
-                {
-                    yield return
-                            data.ParserConflictActionTable[action.Value1 + i];
-                }
+                return data.ParserConflicts[action.Value1].Actions;
             }
             else
             {
-                yield return action;
+                return new[] { action };
             }
         }
     }

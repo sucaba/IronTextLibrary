@@ -32,8 +32,6 @@ namespace IronText.Runtime
 
             public static readonly FieldInfo stateToSymbol = ExpressionUtils.GetField((LanguageBase lang) => lang.stateToSymbol);
 
-            public static readonly FieldInfo parserConflictActions = ExpressionUtils.GetField((LanguageBase lang) => lang.parserConflictActions);
-
             public static readonly FieldInfo tokenComplexity = ExpressionUtils.GetField((LanguageBase lang) => lang.tokenComplexity);
 
             public static readonly FieldInfo matcherToToken = ExpressionUtils.GetField((LanguageBase lang) => lang.matcherToToken);
@@ -53,7 +51,6 @@ namespace IronText.Runtime
         protected ProductionActionDelegate grammarAction;
         protected MergeDelegate merge;
         protected int[] stateToSymbol;
-        protected int[] parserConflictActions;
         protected int[] tokenComplexity;
         protected int[] matcherToToken;
         protected Func<object> createDefaultContext;
@@ -116,7 +113,6 @@ namespace IronText.Runtime
                         tokenComplexity,
                         getParserAction,
                         stateToSymbol,
-                        parserConflictActions,
                         producer,
                         logging);
                 case ParserRuntime.Generic:

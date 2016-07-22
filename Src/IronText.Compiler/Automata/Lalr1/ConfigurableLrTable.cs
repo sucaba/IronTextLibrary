@@ -7,7 +7,7 @@ namespace IronText.Automata.Lalr1
 {
     class ConfigurableLrTable : ILrParserTable
     {
-        private readonly ILrParserTable  actualLrTable;
+        private readonly CanonicalLrDfaTable actualLrTable;
 
         public ConfigurableLrTable(
             RuntimeOptions      flags,
@@ -29,9 +29,7 @@ namespace IronText.Automata.Lalr1
 
         public ParserRuntime TargetRuntime { get; }
 
-        public ITable<ParserAction> GetParserActionTable() => actualLrTable.GetParserActionTable();
-
-        public ParserAction[] GetConflictActionTable() => actualLrTable.GetConflictActionTable();
+        public ITable<ParserAction> ParserActionTable => actualLrTable.ParserActionTable;
 
         public ParserConflictInfo[] Conflicts => actualLrTable.Conflicts;
 

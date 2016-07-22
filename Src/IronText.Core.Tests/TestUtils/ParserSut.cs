@@ -74,7 +74,6 @@ namespace IronText.Tests.TestUtils
                                 data.TokenComplexity,
                                 Transition,
                                 data.StateToToken,
-                                Array.ConvertAll(data.ParserConflictActionTable, ParserAction.Encode),
                                 producer,
                                 logging);
                     break;

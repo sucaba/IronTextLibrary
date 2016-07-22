@@ -6,6 +6,7 @@ using IronText.Compiler.Analysis;
 using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Runtime;
+using System;
 
 namespace IronText.Automata.Lalr1
 {
@@ -28,7 +29,7 @@ namespace IronText.Automata.Lalr1
                                 grammar.TotalSymbolCount);
 
             FillDfaTable(dfa.States);
-            BuildConflictTable();
+            FillConflictActions();
             FillAmbiguousTokenActions(dfa.States);
         }
 
@@ -42,30 +43,22 @@ namespace IronText.Automata.Lalr1
             get { return transitionToConflict.Values.ToArray(); }
         }
 
-        public ParserAction[] GetConflictActionTable() { return conflictActionTable; }
+        public ITable<ParserAction> ParserActionTable => actionTable;
 
-        public ITable<ParserAction> GetParserActionTable() { return actionTable; }
-
-        private void BuildConflictTable()
+        private void FillConflictActions()
         {
-            var conflictList = new List<ParserAction>();
+            int i = 0;
             foreach (var conflict in transitionToConflict.Values)
             {
-                var refAction = new ParserAction
+                actionTable.Set(
+                    conflict.State,
+                    conflict.Token,
+                    new ParserAction
                     {
-                        Kind          = ParserActionKind.Conflict,
-                        Value1        = conflictList.Count,
-                        ConflictCount = (short)conflict.Actions.Count
-                    };
-
-                actionTable.Set(conflict.State, conflict.Token, refAction);
-                foreach (var action in conflict.Actions)
-                {
-                    conflictList.Add(action); 
-                }
+                        Kind   = ParserActionKind.Conflict,
+                        Value1 = i++
+                    });
             }
-
-            this.conflictActionTable = conflictList.ToArray();
         }
 
         private void FillDfaTable(DotState[] states)
