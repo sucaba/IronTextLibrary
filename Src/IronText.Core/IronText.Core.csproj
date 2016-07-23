@@ -211,7 +211,6 @@
     <Compile Include="Runtime\Parallel\GenericStack.cs" />
     <Compile Include="Runtime\Parallel\ParserThread.cs" />
     <Compile Include="Runtime\ParserRuntime.cs" />
-    <Compile Include="Runtime\Parsing\ParserBytecode.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeFormula.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeValue.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeVariable.cs" />
@@ -247,8 +246,8 @@
     <Compile Include="Reflection\Validation\ProductionDuplicateResolver.cs" />
     <Compile Include="Runtime\IReductionContext.cs" />
     <Compile Include="Runtime\ISourceGrammarProvider.cs" />
-    <Compile Include="Runtime\ParserAction.cs" />
-    <Compile Include="Runtime\ParserActionKind.cs" />
+    <Compile Include="Runtime\ParserVM\ParserInstruction.cs" />
+    <Compile Include="Runtime\ParserVM\ParserOperation.cs" />
     <Compile Include="Reflection\Reporting\ParserConflictInfo.cs" />
     <Compile Include="Extensibility\CilMetadataAttribute.cs" />
     <Compile Include="Extensibility\ScannerUtils.cs" />

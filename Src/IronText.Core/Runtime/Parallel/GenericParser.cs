@@ -126,16 +126,16 @@ namespace IronText.Runtime
             {
                 var action = grammar.Instructions[pos];
 
-                switch (action.Kind)
+                switch (action.Operation)
                 {
-                    case ParserActionKind.Restart:
+                    case ParserOperation.Restart:
                         pos = actionTable(thread.State, id);
                         continue;
 
-                    case ParserActionKind.Exit:
+                    case ParserOperation.Exit:
                         return;
 
-                    case ParserActionKind.Reduce:
+                    case ParserOperation.Reduce:
                         {
                             int initialState = thread.State;
                             var value = ReduceNoPush(ref thread, ref action);
@@ -150,11 +150,11 @@ namespace IronText.Runtime
                             break;
                         }
 
-                    case ParserActionKind.Fail:
+                    case ParserOperation.Fail:
                         Die(thread, envelope.Location);
                         return;
 
-                    case ParserActionKind.Resolve:
+                    case ParserOperation.Resolve:
                         id = action.ResolvedToken;
                         data = data.Alternatives()
                                    .ResolveFirst(x => x.Token == id);
@@ -162,26 +162,26 @@ namespace IronText.Runtime
                         if (data == null)
                         {
                             // Desired token was not present in message
-                            goto case ParserActionKind.Fail;
+                            goto case ParserOperation.Fail;
                         }
 
                         break;
 
-                    case ParserActionKind.Fork:
-                        Fork(thread, envelope, data, action.Value1);
+                    case ParserOperation.Fork:
+                        Fork(thread, envelope, data, action.Argument);
                         break;
 
-                    case ParserActionKind.Conflict:
+                    case ParserOperation.Conflict:
                         throw new InvalidOperationException("Parser conflict error.");
 
-                    case ParserActionKind.Shift:
+                    case ParserOperation.Shift:
                         {
                             var node = producer.CreateLeaf(envelope, data);
                             PushNode(ref thread, action.State, node);
                             break;
                         }
 
-                    case ParserActionKind.Accept:
+                    case ParserOperation.Accept:
                         producer.Result = thread.Value;
                         next = FinalReceiver<Message>.Instance;
                         return;
@@ -293,8 +293,8 @@ namespace IronText.Runtime
 
             for (int i = 0; i != tokenCount; ++i)
             {
-                var action = actionTable(parserState, i);
-                if (action != ParserAction.FailActionCell && grammar.IsTerminal(i))
+                var action = grammar.Instructions[actionTable(parserState, i)];
+                if (action != ParserInstruction.FailAction && grammar.IsTerminal(i))
                 {
                     result.Add(i);
                 }
@@ -341,22 +341,22 @@ namespace IronText.Runtime
             return this;
         }
 
-        private ParserAction GetAction(int state, int token)
+        private ParserInstruction GetAction(int state, int token)
         {
             int start = actionTable(state, token);
             var result = grammar.Instructions[start];
             return result;
         }
 
-        private TNode ReduceNoPush(ref ParserThread<TNode> thread, ref ParserAction action)
+        private TNode ReduceNoPush(ref ParserThread<TNode> thread, ref ParserInstruction action)
         {
-            this.currentProd = grammar.Productions[action.ProductionId];
+            this.currentProd = grammar.Productions[action.Production];
 
             var result = producer.CreateBranch(currentProd, thread);
 
             var newThread = stack.Pop(thread, currentProd.InputLength);
             var newAction = GetAction(newThread.State, currentProd.Outcome);
-            if (newAction.Kind == ParserActionKind.Fail)
+            if (newAction.Operation == ParserOperation.Fail)
             {
                 throw new InvalidOperationException("Internal parser error: reduce goto caused failure.");
             }

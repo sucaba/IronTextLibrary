@@ -13,24 +13,26 @@ namespace IronText.Automata.Lalr1
     class CanonicalLrDfaTable : ILrParserTable
     {
         private readonly GrammarAnalysis grammar;
+        private readonly ParserConflictResolver conflictResolver;
         private readonly Dictionary<TransitionKey, ParserConflictInfo> transitionToConflict 
             = new Dictionary<TransitionKey, ParserConflictInfo>();
-        private readonly IMutableTable<ParserAction> actionTable;
-        private ParserAction[]  conflictActionTable;
+        private readonly IMutableTable<ParserInstruction> actionTable;
         private bool hasTerminalAmbiguities;
 
         public CanonicalLrDfaTable(
-            ILrDfa dfa,
-            GrammarAnalysis grammar)
+            ILrDfa          dfa,
+            GrammarAnalysis grammar,
+            ParserConflictResolver conflictResolver)
         {
             this.grammar = grammar;
-            this.actionTable = new MutableTable<ParserAction>(
+            this.conflictResolver = conflictResolver;
+            this.actionTable = new MutableTable<ParserInstruction>(
                                 dfa.States.Length,
                                 grammar.TotalSymbolCount);
 
             FillDfaTable(dfa.States);
             FillConflictActions();
-            FillAmbiguousTokenActions(dfa.States);
+            FillAmbiguousTerminalActions(dfa.States);
         }
 
         public ParserRuntime TargetRuntime =>
@@ -38,12 +40,9 @@ namespace IronText.Automata.Lalr1
             ? ParserRuntime.Glr
             : ParserRuntime.Deterministic;
 
-        public ParserConflictInfo[] Conflicts
-        {
-            get { return transitionToConflict.Values.ToArray(); }
-        }
+        public ParserConflictInfo[] Conflicts => transitionToConflict.Values.ToArray();
 
-        public ITable<ParserAction> ParserActionTable => actionTable;
+        public ITable<ParserInstruction> ParserActionTable => actionTable;
 
         private void FillConflictActions()
         {
@@ -53,71 +52,61 @@ namespace IronText.Automata.Lalr1
                 actionTable.Set(
                     conflict.State,
                     conflict.Token,
-                    new ParserAction
-                    {
-                        Kind   = ParserActionKind.Conflict,
-                        Value1 = i++
-                    });
+                    ParserInstruction.Conflict(i++));
             }
         }
 
         private void FillDfaTable(DotState[] states)
         {
-            for (int i = 0; i != states.Length; ++i)
+            foreach (var state in states)
             {
-                var state = states[i];
-                Debug.Assert(i == state.Index);
-
                 foreach (var item in state.Items)
                 {
                     if (!item.IsReduce)
                     {
-                        int nextToken = item.NextToken;
-
-                        var action = new ParserAction
-                        {
-                            Kind  = ParserActionKind.Shift,
-                            State = state.GetNextIndex(nextToken)
-                        };
-
-                        AssignAction(i, nextToken, action);
+                        AssignAction(
+                            state.Index,
+                            item.NextToken, 
+                            ParserInstruction.Shift(
+                                state.GetNextIndex(item.NextToken)));
                     }
                     else if (item.IsAugmented)
                     {
-                        var action = new ParserAction { Kind = ParserActionKind.Accept };
-                        AssignAction(i, PredefinedTokens.Eoi, action);
+                        AssignAction(
+                            state.Index,
+                            PredefinedTokens.Eoi,
+                            ParserInstruction.AcceptAction);
                     }
                     else
                     {
-                        var action = new ParserAction
-                        {
-                            Kind         = ParserActionKind.Reduce,
-                            ProductionId = item.ProductionId,
-                        };
+                        var action = ParserInstruction.Reduce(item.ProductionId);
 
                         foreach (var lookahead in item.LA)
                         {
-                            AssignAction(i, lookahead, action);
+                            AssignAction(
+                                state.Index,
+                                lookahead,
+                                action);
                         }
                     }
                 }
             }
         }
 
-        private void AssignAction(int state, int token, ParserAction action)
+        private void AssignAction(int state, int token, ParserInstruction action)
         {
-            ParserAction currentAction = actionTable.Get(state, token);
-            ParserAction resolvedAction;
+            ParserInstruction currentAction = actionTable.Get(state, token);
+            ParserInstruction resolvedAction;
 
-            if (currentAction == default(ParserAction))
+            if (currentAction == default(ParserInstruction))
             {
                 actionTable.Set(state, token, action);
             }
             else if (currentAction == action)
             {
-                // Nothing to do
+                // Nothing to resolve
             }
-            else if (TryResolveShiftReduce(currentAction, action, token, out resolvedAction))
+            else if (conflictResolver.TryResolve(currentAction, action, token, out resolvedAction))
             {
                 actionTable.Set(state, token, resolvedAction);
             }
@@ -139,62 +128,7 @@ namespace IronText.Automata.Lalr1
             }
         }
 
-        private bool TryResolveShiftReduce(
-            ParserAction actionX,
-            ParserAction actionY,
-            int incomingToken,
-            out ParserAction output)
-        {
-            output = ParserAction.FailAction;
-
-            ParserAction shiftAction, reduceAction;
-            if (actionX.IsShiftAction
-                && actionY.Kind == ParserActionKind.Reduce)
-            {
-                shiftAction = actionX;
-                reduceAction = actionY;
-            }
-            else if (actionY.IsShiftAction
-                && actionX.Kind == ParserActionKind.Reduce)
-            {
-                shiftAction = actionY;
-                reduceAction = actionX;
-            }
-            else
-            {
-                output = ParserAction.FailAction;
-                return false;
-            }
-
-            var shiftTokenPrecedence = grammar.GetTermPrecedence(incomingToken);
-            var reduceRulePrecedence = grammar.GetProductionPrecedence(reduceAction.ProductionId);
-
-            if (shiftTokenPrecedence == null && reduceRulePrecedence == null)
-            {
-                output = ParserAction.FailAction;
-                return false;
-            }
-            else if (shiftTokenPrecedence == null)
-            {
-                output = reduceAction;
-            }
-            else if (reduceRulePrecedence == null)
-            {
-                output = shiftAction;
-            }
-            else if (Precedence.IsReduce(reduceRulePrecedence, shiftTokenPrecedence))
-            {
-                output = reduceAction;
-            }
-            else
-            {
-                output = shiftAction;
-            }
-
-            return true;
-        }
-
-        private void FillAmbiguousTokenActions(DotState[] states)
+        private void FillAmbiguousTerminalActions(DotState[] states)
         {
             for (int i = 0; i != states.Length; ++i)
             {
@@ -202,11 +136,11 @@ namespace IronText.Automata.Lalr1
 
                 foreach (var ambToken in grammar.AmbiguousSymbols)
                 {
-                    var validTokenActions = new Dictionary<int,ParserAction>();
+                    var validTokenActions = new Dictionary<int,ParserInstruction>();
                     foreach (int token in ambToken.Alternatives)
                     {
                         var action = actionTable.Get(i, token);
-                        if (action == default(ParserAction))
+                        if (action == default(ParserInstruction))
                         {
                             continue;
                         }
@@ -218,7 +152,7 @@ namespace IronText.Automata.Lalr1
                     {
                         case 0:
                             // AmbToken is entirely non-acceptable for this state
-                            actionTable.Set(i, ambToken.EnvelopeIndex, ParserAction.FailAction);
+                            actionTable.Set(i, ambToken.EnvelopeIndex, ParserInstruction.FailAction);
                             break;
                         case 1:
                             {
@@ -234,7 +168,7 @@ namespace IronText.Automata.Lalr1
                                     // In runtime transition will be acceptable when this token
                                     // is in Msg and non-acceptable when this particular token
                                     // is not in Msg.
-                                    var action = new ParserAction { Kind = ParserActionKind.Resolve, Value1 = pair.Key };
+                                    var action = new ParserInstruction { Operation = ParserOperation.Resolve, Argument = pair.Key };
                                     actionTable.Set(i, ambToken.EnvelopeIndex, action);
                                 }
                             }

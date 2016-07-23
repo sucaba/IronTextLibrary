@@ -69,16 +69,16 @@ namespace IronText.Reflection.Reporting
             }
         }
 
-        private IEnumerable<ParserAction> GetAllParserActions(int state, int token)
+        private IEnumerable<ParserInstruction> GetAllParserActions(int state, int token)
         {
             var action = data.ParserActionTable.Get(state, token);
-            if (action == null || action.Kind == ParserActionKind.Fail)
+            if (action == null || action.Operation == ParserOperation.Fail)
             {
-                return Enumerable.Empty<ParserAction>();
+                return Enumerable.Empty<ParserInstruction>();
             }
-            else if (action.Kind == ParserActionKind.Conflict)
+            else if (action.Operation == ParserOperation.Conflict)
             {
-                return data.ParserConflicts[action.Value1].Actions;
+                return data.ParserConflicts[action.Argument].Actions;
             }
             else
             {

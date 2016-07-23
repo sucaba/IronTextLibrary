@@ -10,7 +10,7 @@ namespace IronText.MetadataCompiler
     {
         public ParserBytecodeProvider(ILrParserTable parserTable)
         {
-            var instructions = new List<ParserAction>();
+            var instructions = new List<ParserInstruction>();
 
             var table       = parserTable.ParserActionTable;
             int rowCount    = table.RowCount;
@@ -24,9 +24,9 @@ namespace IronText.MetadataCompiler
                     startTable.Set(r, c, instructions.Count);
 
                     var action = table.Get(r, c);
-                    if (action.Kind == ParserActionKind.Conflict)
+                    if (action.Operation == ParserOperation.Conflict)
                     {
-                        var conflict = parserTable.Conflicts[action.Value1];
+                        var conflict = parserTable.Conflicts[action.Argument];
                         int forkPos = instructions.Count;
 
                         foreach (var conflictAction in conflict.Actions.Skip(1))
@@ -43,10 +43,10 @@ namespace IronText.MetadataCompiler
                             }
                             else
                             {
-                                instructions[forkPos++] = new ParserAction
+                                instructions[forkPos++] = new ParserInstruction
                                 {
-                                    Kind   = ParserActionKind.Fork,
-                                    Value1 = instructions.Count
+                                    Operation   = ParserOperation.Fork,
+                                    Argument = instructions.Count
                                 };
                             }
 
@@ -63,31 +63,31 @@ namespace IronText.MetadataCompiler
             this.StartTable   = startTable;
         }
 
-        private static void AddForkInstructionPlaceholder(List<ParserAction> instructions)
+        private static void AddForkInstructionPlaceholder(List<ParserInstruction> instructions)
         {
-            instructions.Add(ParserAction.InternalErrorAction);
+            instructions.Add(ParserInstruction.InternalErrorAction);
         }
 
-        private static void CompileTransition(List<ParserAction> instructions, ParserAction action)
+        private static void CompileTransition(List<ParserInstruction> instructions, ParserInstruction action)
         {
             instructions.Add(action);
-            switch (action.Kind)
+            switch (action.Operation)
             {
-                case ParserActionKind.Resolve:
-                case ParserActionKind.Reduce:
-                    instructions.Add(ParserAction.ContinueAction);
+                case ParserOperation.Resolve:
+                case ParserOperation.Reduce:
+                    instructions.Add(ParserInstruction.RestartAction);
                     break;
-                case ParserActionKind.Shift:
-                    instructions.Add(ParserAction.ExitAction);
+                case ParserOperation.Shift:
+                    instructions.Add(ParserInstruction.ExitAction);
                     break;
                 default:
                     // safety instruction to avoid invalid instruction access
-                    instructions.Add(ParserAction.InternalErrorAction);
+                    instructions.Add(ParserInstruction.InternalErrorAction);
                     break;
             }
         }
 
-        public ParserAction[] Instructions { get; }
+        public ParserInstruction[] Instructions { get; }
 
         public ITable<int>    StartTable   { get; }
     }

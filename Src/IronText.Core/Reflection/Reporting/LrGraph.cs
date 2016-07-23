@@ -45,7 +45,7 @@ namespace IronText.Framework
                 {
                     foreach (var action in transition.Actions)
                     {
-                        if (action.Kind == ParserActionKind.Shift)
+                        if (action.Operation == ParserOperation.Shift)
                         {
                             graph.AddEdge(state.Index, action.State, grammar.Symbols[transition.Token].Name);
                         }

@@ -91,22 +91,22 @@ namespace IronText.Runtime
                 {
                     var action = grammar.Instructions[start];
 
-                    switch (action.Kind)
+                    switch (action.Operation)
                     {
-                        case ParserActionKind.Restart:
+                        case ParserOperation.Restart:
                             goto RESTART;
 
-                        case ParserActionKind.Exit:
+                        case ParserOperation.Exit:
                             return this;
 
-                        case ParserActionKind.Reduce:
+                        case ParserOperation.Reduce:
                             {
                                 var value = ReduceNoPush(ref action);
                                 PushNode(action.State, value);
                                 break;
                             }
 
-                        case ParserActionKind.Fail:
+                        case ParserOperation.Fail:
                             if (isVerifier)
                             {
                                 return null;
@@ -115,7 +115,7 @@ namespace IronText.Runtime
                             // ReportUnexpectedToken(msg, stateStack.PeekTag());
                             return RecoverFromError(envelope);
 
-                        case ParserActionKind.Resolve:
+                        case ParserOperation.Resolve:
                             id = action.ResolvedToken;
                             data = data.Alternatives()
                                        .ResolveFirst(x => x.Token == id);
@@ -123,13 +123,13 @@ namespace IronText.Runtime
                             if (data == null)
                             {
                                 // Desired token was not present in Msg
-                                goto case ParserActionKind.Fail;
+                                goto case ParserOperation.Fail;
                             }
 
                             break;
 
-                        case ParserActionKind.Fork:
-                        case ParserActionKind.Conflict:
+                        case ParserOperation.Fork:
+                        case ParserOperation.Conflict:
                             logging.Write(
                                 new LogEntry
                                 {
@@ -139,14 +139,14 @@ namespace IronText.Runtime
                                 });
                             return null;
 
-                        case ParserActionKind.Shift:
+                        case ParserOperation.Shift:
                             {
                                 var node = producer.CreateLeaf(envelope, data);
                                 PushNode(action.State, node);
                                 break;
                             }
 
-                        case ParserActionKind.Accept:
+                        case ParserOperation.Accept:
                             producer.Result = stateStack.Peek();
                             return FinalReceiver<Message>.Instance;
 
@@ -234,7 +234,7 @@ namespace IronText.Runtime
             for (int i = 0; i != tokenCount; ++i)
             {
                 var action = grammar.Instructions[actionTable(parserState, i)];
-                if (action != ParserAction.FailAction && grammar.IsTerminal(i))
+                if (action != ParserInstruction.FailAction && grammar.IsTerminal(i))
                 {
                     result.Add(i);
                 }
@@ -281,16 +281,16 @@ namespace IronText.Runtime
             return this;
         }
 
-        private ParserAction GetAction(int state, int token)
+        private ParserInstruction GetAction(int state, int token)
         {
             int start = actionTable(state, token);
             var result = grammar.Instructions[start];
             return result;
         }
 
-        private TNode ReduceNoPush(ref ParserAction action)
+        private TNode ReduceNoPush(ref ParserInstruction action)
         {
-            this.currentProd = grammar.Productions[action.ProductionId];
+            this.currentProd = grammar.Productions[action.Production];
 
             var result = producer.CreateBranch(currentProd, stateStack);
 
@@ -300,7 +300,7 @@ namespace IronText.Runtime
             return result;
         }
 
-        private ParserAction GetAction(int token)
+        private ParserInstruction GetAction(int token)
         {
             return GetAction(stateStack.PeekTag(), token);
         }

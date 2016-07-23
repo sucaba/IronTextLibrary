@@ -144,11 +144,11 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        private void DescribeAction(IndentedTextWriter message, ParserAction action)
+        private void DescribeAction(IndentedTextWriter message, ParserInstruction action)
         {
-            switch (action.Kind)
+            switch (action.Operation)
             {
-                case ParserActionKind.Shift:
+                case ParserOperation.Shift:
                     message.Write("Shift to state #");
                     message.Write(action.State + "");
                     message.WriteLine(":");
@@ -156,13 +156,13 @@ namespace IronText.MetadataCompiler
                     DescribeState(message, action.State);
                     --message.Indent;
                     break;
-                case ParserActionKind.Reduce:
+                case ParserOperation.Reduce:
                     message.WriteLine("Reduce on the rule:");
                     ++message.Indent;
-                    DescribeRule(message, action.ProductionId);
+                    DescribeRule(message, action.Production);
                     --message.Indent;
                     break;
-                case ParserActionKind.Accept:
+                case ParserOperation.Accept:
                     message.Write("Accept.");
                     break;
             }

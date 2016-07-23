@@ -1,6 +1,6 @@
 ﻿namespace IronText.Runtime
 {
-    public enum ParserActionKind : ushort
+    public enum ParserOperation : byte
     {
         // Unexpected token
         Fail        = 0,
@@ -17,7 +17,7 @@
         // Fork on allowed alternatives of a Shrodinger's token
         Fork        = 4,
 
-        // Multiple actions can happen in this state (0 or 1 shift + 0 or more reductions)
+        // Multiple actions can happen in this state.
         Conflict    = 5,
 
         // Success

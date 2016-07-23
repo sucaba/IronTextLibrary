@@ -200,7 +200,6 @@
     <Compile Include="Samples\CommandLineSampleTest.cs" />
     <Compile Include="Samples\DynamicLinqTest.cs" />
     <Compile Include="Samples\InheritanceGrammarRulesTest.cs" />
-    <Compile Include="MetadataCompiler\ParserActionEncodingTest.cs" />
     <Compile Include="Framework\ScannerTest.cs" />
     <Compile Include="Framework\MixedFeaturesTest.cs" />
     <Compile Include="Algorithm\DfaSimulationLexerTest.cs" />

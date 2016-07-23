@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using IronText.Runtime.Semantics;
 using IronText.Runtime.Inlining;
-using IronText.Runtime.Parsing;
 
 namespace IronText.Runtime
 {
@@ -26,7 +25,7 @@ namespace IronText.Runtime
             RuntimeProduction[] productions,
             RuntimeFormula[][]  stateToFormulas,
             RuntimeFormula[][]  productionToFormulas,
-            ParserAction[]      instructions)
+            ParserInstruction[]      instructions)
         {
             this.TokenCount           = tokenNames.Length;
             this.tokenIsNullable      = tokenIsNullable;
@@ -54,7 +53,7 @@ namespace IronText.Runtime
 
         public RuntimeProduction[] Productions          { get; }
 
-        public ParserAction[]      Instructions         { get; }
+        public ParserInstruction[]      Instructions         { get; }
 
         public bool IsNullable(int token) { return tokenIsNullable[token]; }
 

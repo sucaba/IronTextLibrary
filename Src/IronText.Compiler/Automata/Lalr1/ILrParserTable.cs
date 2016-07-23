@@ -8,7 +8,7 @@ namespace IronText.Automata.Lalr1
     {
         ParserRuntime        TargetRuntime     { get; }
 
-        ITable<ParserAction> ParserActionTable { get; }
+        ITable<ParserInstruction> ParserActionTable { get; }
 
         ParserConflictInfo[] Conflicts         { get; }
     }

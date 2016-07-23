@@ -29,7 +29,7 @@ namespace IronText.Automata.Lalr1
 
         public ParserRuntime TargetRuntime { get; }
 
-        public ITable<ParserAction> ParserActionTable => actualLrTable.ParserActionTable;
+        public ITable<ParserInstruction> ParserActionTable => actualLrTable.ParserActionTable;
 
         public ParserConflictInfo[] Conflicts => actualLrTable.Conflicts;
 

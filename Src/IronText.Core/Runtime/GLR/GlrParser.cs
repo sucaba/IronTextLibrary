@@ -236,22 +236,22 @@ namespace IronText.Runtime
             {
                 var action = grammar.Instructions[pos];
 
-                switch (action.Kind)
+                switch (action.Operation)
                 {
-                    case ParserActionKind.Accept:
+                    case ParserOperation.Accept:
                         accepted = true;
                         return;
-                    case ParserActionKind.Fork:
-                        Process(node, token, newLinkOnly, action.Value1);
+                    case ParserOperation.Fork:
+                        Process(node, token, newLinkOnly, action.Argument);
                         break;
-                    case ParserActionKind.Reduce:
-                        var prod = grammar.Productions[action.ProductionId];
+                    case ParserOperation.Reduce:
+                        var prod = grammar.Productions[action.Production];
                         if (!newLinkOnly || prod.InputLength != 0)
                         {
                             R.Enqueue(node, prod);
                         }
                         break;
-                    case ParserActionKind.Shift:
+                    case ParserOperation.Shift:
                         if (!newLinkOnly)
                         {
                             gss.PushShift(
@@ -260,18 +260,18 @@ namespace IronText.Runtime
                                 currentTermValue);
                         }
                         break;
-                    case ParserActionKind.Resolve:
+                    case ParserOperation.Resolve:
                         // Instead of resolving Shrodinger's term, GLR has a more powerful approach.
                         // It processes all possibilities by creating alternative GSS nodes for
                         // each term alternative.
                         break;
-                    case ParserActionKind.Fail:
-                    case ParserActionKind.Restart:
-                    case ParserActionKind.Exit:
+                    case ParserOperation.Fail:
+                    case ParserOperation.Restart:
+                    case ParserOperation.Exit:
                         return;
                     default:
                         throw new NotSupportedException(
-                            $"Instruction '{action.Kind}' is not supported by GLR parser.");
+                            $"Instruction '{action.Operation}' is not supported by GLR parser.");
                 }
 
                 ++pos;
@@ -281,7 +281,7 @@ namespace IronText.Runtime
         private int GoTo(int fromState, int token)
         {
             var action = GetAction(fromState, token);
-            Debug.Assert(action.Kind == ParserActionKind.Shift);
+            Debug.Assert(action.Operation == ParserOperation.Shift);
 
             return action.State;
         }
@@ -289,10 +289,10 @@ namespace IronText.Runtime
         private bool IsAccepting(State s)
         {
             var action = GetAction(s, PredefinedTokens.Eoi);
-            return action.Kind == ParserActionKind.Accept;
+            return action.Operation == ParserOperation.Accept;
         }
 
-        private ParserAction GetAction(State state, int token)
+        private ParserInstruction GetAction(State state, int token)
         {
             int start = transition(state, token);
             return grammar.Instructions[start];

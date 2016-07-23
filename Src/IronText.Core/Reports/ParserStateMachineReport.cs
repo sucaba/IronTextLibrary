@@ -90,13 +90,11 @@ namespace IronText.Reports
 
                 output.WriteLine();
             }
-
-            //foreach (var semBinding in data.)
         }
 
-        private void PrintAction(IReportData data, Symbol symbol, StreamWriter output, ParserAction action)
+        private void PrintAction(IReportData data, Symbol symbol, StreamWriter output, ParserInstruction action)
         {
-            if (action == null || action.Kind == ParserActionKind.Fail)
+            if (action == null || action.Operation == ParserOperation.Fail)
             {
                 return;
             }
@@ -104,17 +102,17 @@ namespace IronText.Reports
             output.Write(Indent);
             output.Write(symbol.Name);
             output.Write("             ");
-            switch (action.Kind)
+            switch (action.Operation)
             {
-                case ParserActionKind.Shift:
+                case ParserOperation.Shift:
                     output.Write("shift and go to state ");
                     output.Write(action.State);
                     break;
-                case ParserActionKind.Reduce:
+                case ParserOperation.Reduce:
                     output.Write("reduce using rule ");
-                    output.Write(action.ProductionId);
+                    output.Write(action.Production);
                     break;
-                case ParserActionKind.Accept:
+                case ParserOperation.Accept:
                     output.WriteLine("accept");
                     break;
             }
@@ -146,27 +144,27 @@ namespace IronText.Reports
 
         private StreamWriter DescribeAction(
             IReportData data,
-            ParserAction action,
+            ParserInstruction action,
             StreamWriter output,
             string indent)
         {
-            switch (action.Kind)
+            switch (action.Operation)
             {
-                case ParserActionKind.Shift:
+                case ParserOperation.Shift:
                     output.Write(indent);
                     output.Write("Shift to the state I");
                     output.Write(action.State + "");
                     output.WriteLine(":");
                     DescribeState(data, action.State, output, indent + indent);
                     break;
-                case ParserActionKind.Reduce:
+                case ParserOperation.Reduce:
                     output.Write(indent);
                     output.WriteLine("Reduce on the rule:");
                     output.Write(indent + indent);
-                    DescribeRule(data, action.ProductionId, output);
+                    DescribeRule(data, action.Production, output);
                     output.WriteLine();
                     break;
-                case ParserActionKind.Accept:
+                case ParserOperation.Accept:
                     output.Write(indent);
                     output.WriteLine("Accept.");
                     break;

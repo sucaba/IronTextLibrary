@@ -8,22 +8,22 @@ namespace IronText.Reflection.Reporting
     [Serializable]
     public class ParserConflictInfo
     {
-        private readonly List<ParserAction> actions = new List<ParserAction>();
+        private readonly List<ParserInstruction> actions = new List<ParserInstruction>();
 
         internal ParserConflictInfo(int state, int token)
         {
             this.State = state;
             this.Token = token;
-            this.Actions = new ReadOnlyCollection<ParserAction>(this.actions);
+            this.Actions = new ReadOnlyCollection<ParserInstruction>(this.actions);
         }
 
         public int State { get; private set; }
 
         public int Token { get; private set; }
 
-        public ReadOnlyCollection<ParserAction> Actions { get; private set; }
+        public ReadOnlyCollection<ParserInstruction> Actions { get; private set; }
 
-        internal void AddAction(ParserAction action)
+        internal void AddAction(ParserInstruction action)
         {
             actions.Add(action);
         }

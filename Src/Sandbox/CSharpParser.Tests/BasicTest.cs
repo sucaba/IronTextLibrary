@@ -84,7 +84,6 @@ namespace CSharpParser.Tests
                 Console.WriteLine("{ " + string.Join(", ", category) + "}");
             }
         }
-#endif
 
         private static bool AreCompatibleStates(LanguageData data, int[] terms, ITable<int> table, int p, int q)
         {
@@ -167,6 +166,7 @@ namespace CSharpParser.Tests
 
             return ParserAction.FailAction;
         }
+#endif
 
 #if false
         // Merging similar tokens (token equivalence classes) makes sense only 
@@ -255,7 +255,6 @@ namespace CSharpParser.Tests
                     {
                         continue;
                     }
-#endif
 
         private static bool IsTermShiftAction(LanguageData data, int cell)
         {
@@ -281,6 +280,7 @@ namespace CSharpParser.Tests
                     return false;
             }
         }
+#endif
 
         [Test]
         public void BigRecognizerTest()

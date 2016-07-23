@@ -5,7 +5,7 @@ namespace IronText.Reflection.Reporting
 {
     class ParserTransition : IParserTransition
     {
-        public ParserTransition(int token, IEnumerable<ParserAction> actions)
+        public ParserTransition(int token, IEnumerable<ParserInstruction> actions)
         {
             this.Token = token;
             this.Actions = actions;
@@ -13,6 +13,6 @@ namespace IronText.Reflection.Reporting
 
         public int Token { get; private set; }
 
-        public IEnumerable<ParserAction> Actions { get; private set; }
+        public IEnumerable<ParserInstruction> Actions { get; private set; }
     }
 }
