@@ -42,13 +42,13 @@ namespace IronText.Tests.Freezing
             public object Outcome { get; set; }
 
             [Produce(null, "^", null)]
-            public object Pow(object x, object y) { return string.Format("({0}^{1})", x, y); }
+            public object Pow(object x, object y) => $"({x}^{y})";
 
             [Produce(null, "|", null, "|", null)]
-            public object Tuple(object x, object y, object z) { return string.Format("({0}|{1}|{2})", x, y, z); }
+            public object Tuple(object x, object y, object z) => $"({x}|{y}|{z})";
 
             [Match("digit")]
-            public object Digit(string text) { return text; }
+            public object Digit(string text) => text;
         }
     }
 }

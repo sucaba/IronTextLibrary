@@ -68,7 +68,7 @@ namespace IronText.Runtime
                 foreach (var backLink in followingNode.BackLink.Alternatives())
                 {
                     var priorNode = backLink.PriorNode;
-                    if (priorNode.Layer == (CurrentLayer - 1))
+                    if (priorNode.Layer == CurrentLayer)
                     {
                         outcome.AddDistinct(priorNode);
                     }

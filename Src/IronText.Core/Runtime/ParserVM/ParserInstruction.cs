@@ -49,7 +49,7 @@ namespace IronText.Runtime
             this.State         = 0;
             this.Production    = 0;
 
-            this.Operation          = op;
+            this.Operation     = op;
             this.Argument      = argument;
         }
 

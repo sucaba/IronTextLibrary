@@ -9,17 +9,17 @@ namespace IronText.MetadataCompiler
     class LanguageDataInstanceProvider
     {
         public LanguageDataInstanceProvider(
-            Grammar grammar,
-            GrammarAnalysis analysis,
-            ITdfaData scannerTdfa,
+            Grammar                         grammar,
+            GrammarAnalysis                 analysis,
+            ITdfaData                       scannerTdfa,
             MatchActionToTokenTableProvider actionToTokenProvider,
-            ILrDfa parserDfa,
-            ILrParserTable lrTable,
-            RuntimeGrammar runtimeGrammar,
-            SemanticBindingProvider semanticBindingsProvider,
-            ParserBytecodeProvider instructionProvider)
+            ILrDfa                          parserDfa,
+            ILrParserTable                  lrTable,
+            RuntimeGrammar                  runtimeGrammar,
+            SemanticBindingProvider         semanticBindingsProvider,
+            ParserBytecodeProvider          instructionProvider)
         {
-            this.Data = new LanguageData
+            Data = new LanguageData
             {
                 TargetParserRuntime       = lrTable.TargetRuntime,
                 Grammar                   = grammar,

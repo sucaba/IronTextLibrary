@@ -126,8 +126,6 @@ namespace IronText.Tests.Framework
         {
             var lang = Language.Get(langDef);
 
-            var context = new RecoveryLang();
-
             Assert.IsTrue(lang.GetGrammar().Symbols[lang.Identify("beacon")].Categories.Has(SymbolCategory.Beacon));
             Assert.IsTrue(lang.GetGrammar().Symbols[lang.Identify("{")].Categories.Has(SymbolCategory.DoNotInsert));
             Assert.IsTrue(lang.GetGrammar().Symbols[lang.Identify("{")].Categories.Has(SymbolCategory.DoNotDelete));
