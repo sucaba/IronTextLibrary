@@ -16,7 +16,6 @@ namespace IronText.Automata.Lalr1
         private readonly Dictionary<TransitionKey, ParserConflictInfo> transitionToConflict 
             = new Dictionary<TransitionKey, ParserConflictInfo>();
         private readonly IMutableTable<ParserDecision> actionTable;
-        private bool hasTerminalAmbiguities;
 
         public CanonicalLrDfaTable(
             ILrDfa          dfa,
@@ -30,16 +29,13 @@ namespace IronText.Automata.Lalr1
                                 grammar.TotalSymbolCount);
 
             FillDfaTable(dfa.States);
-            FillAmbiguousTerminalActions(dfa.States);
+            HasUnresolvedTerminalAmbiguities = FillAmbiguousTerminalActions(dfa.States);
             Conflicts = FillConflictActions();
         }
 
-        public ParserRuntime TargetRuntime =>
-            (Conflicts.Length != 0 || hasTerminalAmbiguities)
-            ? ParserRuntime.Glr
-            : ParserRuntime.Deterministic;
-
         public ParserConflictInfo[] Conflicts { get; }
+
+        public bool HasUnresolvedTerminalAmbiguities { get;  }
 
         public ITable<ParserDecision> ParserActionTable => actionTable;
 
@@ -151,8 +147,10 @@ namespace IronText.Automata.Lalr1
             actionTable.Set(state, token, resolved);
         }
 
-        private void FillAmbiguousTerminalActions(DotState[] states)
+        private bool FillAmbiguousTerminalActions(DotState[] states)
         {
+            bool result = false;
+
             for (int i = 0; i != states.Length; ++i)
             {
                 var state = states[i];
@@ -206,7 +204,7 @@ namespace IronText.Automata.Lalr1
                             break;
                         default:
                             // GLR parser is required to handle terminal token alternatives.
-                            this.hasTerminalAmbiguities = true;
+                            result = true;
 
                             // No needed for GLR but but for the sake of explicitness
                             actionTable.Set(
@@ -217,6 +215,8 @@ namespace IronText.Automata.Lalr1
                     }
                 }
             }
+
+            return result;
         }
     }
 }

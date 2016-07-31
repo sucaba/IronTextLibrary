@@ -8,6 +8,6 @@ namespace IronText.Automata.Lalr1
     {
         ITable<ParserDecision> ParserActionTable { get; }
 
-        ParserConflictInfo[] Conflicts         { get; }
+        ParserConflictInfo[]   Conflicts         { get; }
     }
 }

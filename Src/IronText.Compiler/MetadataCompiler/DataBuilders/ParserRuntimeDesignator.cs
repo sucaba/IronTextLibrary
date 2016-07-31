@@ -10,11 +10,16 @@ namespace IronText.MetadataCompiler
         {
             var relevantOptions = options & RuntimeOptions.ParserAlgorithmMask;
 
-            ActualRuntime = GetRuntime(options, table.TargetRuntime);
+            var minimalRuntime = 
+                (table.Conflicts.Length != 0 || table.HasUnresolvedTerminalAmbiguities)
+                ? ParserRuntime.Glr
+                : ParserRuntime.Deterministic;
+
+            ActualRuntime = GetRuntime(options, minimalRuntime);
 
             ComplyWithConfiguration
                 = relevantOptions != RuntimeOptions.ForceDeterministic
-                || ActualRuntime == table.TargetRuntime;
+                || ActualRuntime == minimalRuntime;
         }
 
         public ParserRuntime ActualRuntime          { get; }

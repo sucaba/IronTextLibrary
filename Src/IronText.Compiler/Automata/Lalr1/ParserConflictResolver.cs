@@ -22,7 +22,7 @@ namespace IronText.Automata.Lalr1
             if (decisionX.Instructions.Count != 1
                 || decisionY.Instructions.Count != 1)
             {
-                output = new ParserDecision(ParserInstruction.FailAction);
+                output = null;
                 return false;
             }
 
