@@ -381,7 +381,6 @@
     <Compile Include="Runtime\Producers\ReductionOrder.cs" />
     <Compile Include="Runtime\ErrorRecovery\LocalCorrectionErrorRecovery.cs" />
     <Compile Include="Runtime\GLR\ReductionQueueing\ReductionPathPriorityQueue.cs" />
-    <Compile Include="Runtime\GLR\ReductionQueueing\Reduction.cs" />
     <Compile Include="Runtime\GLR\ReductionQueueing\IReductionQueue.cs" />
     <Compile Include="Runtime\IStackLookback.cs" />
     <Compile Include="Runtime\Message.cs" />
