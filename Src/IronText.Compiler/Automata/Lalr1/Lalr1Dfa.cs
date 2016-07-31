@@ -5,6 +5,7 @@ using IronText.Algorithm;
 using IronText.Compiler.Analysis;
 using IronText.Reflection;
 using IronText.Runtime;
+using System.Linq;
 
 namespace IronText.Automata.Lalr1
 {
@@ -179,36 +180,33 @@ namespace IronText.Automata.Lalr1
 
                     foreach (var closedItem in J)
                     {
-                        if (closedItem.IsReduce)
+                        foreach (var X in closedItem.NextTokens)
                         {
-                            continue;
-                        }
+                            var gotoXstate = fromState.GetNext(X);
+                            var gotoX = gotoXstate == null ? -1 : gotoXstate.Index;
+                            Debug.Assert(gotoX >= 0, "Internal error. Non-existing state.");
 
-                        var X = closedItem.NextToken;
-                        var gotoXstate = fromState.GetNext(X);
-                        var gotoX = gotoXstate == null ? -1 : gotoXstate.Index;
-                        Debug.Assert(gotoX >= 0, "Internal error. Non-existing state.");
+                            var nextItemIds = Tuple.Create(gotoX, closedItem.ProductionId, closedItem.Position + 1);
 
-                        var nextItemIds = Tuple.Create(gotoX, closedItem.ProductionId, closedItem.Position + 1);
-
-                        foreach (var lookahead in closedItem.LA)
-                        {
-                            if (lookahead == PredefinedTokens.Propagated)
+                            foreach (var lookahead in closedItem.LA)
                             {
-                                List<Tuple<int, int, int>> propogatedItems;
-                                var key = Tuple.Create(from, fromItem.ProductionId, fromItem.Position);
-                                if (!result.TryGetValue(key, out propogatedItems))
+                                if (lookahead == PredefinedTokens.Propagated)
                                 {
-                                    propogatedItems = new List<Tuple<int, int, int>>();
-                                    result[key] = propogatedItems;
-                                }
+                                    List<Tuple<int, int, int>> propogatedItems;
+                                    var key = Tuple.Create(from, fromItem.ProductionId, fromItem.Position);
+                                    if (!result.TryGetValue(key, out propogatedItems))
+                                    {
+                                        propogatedItems = new List<Tuple<int, int, int>>();
+                                        result[key] = propogatedItems;
+                                    }
 
-                                propogatedItems.Add(nextItemIds);
-                            }
-                            else
-                            {
-                                var nextItem = gotoXstate.GetItem(nextItemIds.Item2, nextItemIds.Item3);
-                                nextItem.LA.Add(lookahead);
+                                    propogatedItems.Add(nextItemIds);
+                                }
+                                else
+                                {
+                                    var nextItem = gotoXstate.GetItem(nextItemIds.Item2, nextItemIds.Item3);
+                                    nextItem.LA.Add(lookahead);
+                                }
                             }
                         }
                     }
@@ -279,16 +277,8 @@ namespace IronText.Automata.Lalr1
             return result.ToArray();
         }
 
-        private IEnumerable<int> GetOutTokens(IDotItemSet itemSet)
-        {
-            foreach (var item in itemSet)
-            {
-                if (!item.IsReduce)
-                {
-                    yield return item.NextToken;
-                }
-            }
-        }
+        private IEnumerable<int> GetOutTokens(IDotItemSet itemSet) =>
+            itemSet.SelectMany(item => item.NextTokens);
 
         private MutableDotItemSet GoTo(IEnumerable<DotItem> itemSet, int token)
         {
@@ -296,9 +286,10 @@ namespace IronText.Automata.Lalr1
 
             foreach (var item in itemSet)
             {
-                if (item.NextToken == token)
+                DotItem nextItem;
+                if (item.TryCreateNext(token, out nextItem))
                 {
-                    result.Add(item.CreateNextItem());
+                    result.Add(nextItem);
                 }
             }
 
@@ -322,9 +313,12 @@ namespace IronText.Automata.Lalr1
                 {
                     var item = result[i];
 
-                    if (!item.IsReduce && !grammar.IsTerminal(item.NextToken))
+                    foreach (int X in item.NextTokens)
                     {
-                        int X = item.NextToken;
+                        if (grammar.IsTerminal(X))
+                        {
+                            continue;
+                        }
 
                         foreach (var childProd in grammar.GetProductions(X))
                         {
@@ -374,13 +368,13 @@ namespace IronText.Automata.Lalr1
                 for (int i = 0; i != count; ++i)
                 {
                     var fromItem = result[i];
-                    if (!fromItem.IsReduce)
+                    foreach (int fromItemNextToken in fromItem.NextTokens)
                     {
                         for (int j = 0; j != count; ++j)
                         {
                             var toItem = result[j];
 
-                            if (fromItem.NextToken == toItem.Outcome)
+                            if (fromItemNextToken == toItem.Outcome)
                             {
                                 int countBefore = 0;
                                 if (!modified)
@@ -388,7 +382,7 @@ namespace IronText.Automata.Lalr1
                                     countBefore = toItem.LA.Count;
                                 }
 
-                                grammar.AddFirst(fromItem.CreateNextItem(), toItem.LA);
+                                grammar.AddFirst(fromItem.CreateNextItem(fromItemNextToken), toItem.LA);
 
                                 if (!modified)
                                 {

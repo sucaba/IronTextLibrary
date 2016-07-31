@@ -68,19 +68,22 @@ namespace IronText.MetadataCompiler
 
         private void Check(DotState state, DotItem item, List<RuntimeFormula> es)
         {
-            if (item.IsReduce || item.ProductionId == grammar.AugmentedProduction.Index)
+            if (item.IsAugmented)
             {
                 return;
             }
 
-            var A = grammar.Symbols[item.NextToken];
-            foreach (var inhProperty in grammar.InheritedProperties)
+            foreach (var nextToken in item.NextTokens)
             {
-                if (inhProperty.Symbol == A)
+                var A = grammar.Symbols[nextToken];
+                foreach (var inhProperty in grammar.InheritedProperties)
                 {
-                    var formula = GetDefiningFormula(inhProperty, item);
-                    RuntimeFormula rf = ToRuntimeFormula(formula, inhProperty.Index, item);
-                    es.Add(rf);
+                    if (inhProperty.Symbol == A)
+                    {
+                        var formula = GetDefiningFormula(inhProperty, item);
+                        RuntimeFormula rf = ToRuntimeFormula(formula, inhProperty.Index, item);
+                        es.Add(rf);
+                    }
                 }
             }
         }

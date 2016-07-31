@@ -1,5 +1,8 @@
 ﻿using IronText.Algorithm;
 using IronText.Runtime;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IronText.Compiler.Analysis
 {
@@ -19,44 +22,34 @@ namespace IronText.Compiler.Analysis
             this.LA         = null;
         }
 
-        public int Outcome { get { return production.Outcome; } }
-
-        public int this[int index] { get { return production.Input[index]; } }
-
-        public int[] GetInputTokens() { return production.Input; }
-
-        public bool IsAugmented { get { return PredefinedTokens.AugmentedStart == production.Outcome; } }
-
-        public int Size { get { return production.Input.Length; } }
-
-        public int Position { get; private set; }
+        public int Position { get; }
 
         public MutableIntSet LA { get; set; }
 
-        public bool IsKernel
-        {
-            get { return Position != 0 || IsAugmented; }
-        }
+        public int PreviousToken =>
+            Position == 0
+            ? -1
+            : production.Input[Position - 1];
 
-        public int ProductionId { get { return production.Index; } }
+        public int Outcome => production.Outcome;
 
-        public bool IsReduce { get { return Position == production.Input.Length; } }
+        public bool IsAugmented => PredefinedTokens.AugmentedStart == production.Outcome;
 
-        public bool IsShiftReduce { get { return (production.Input.Length - Position) == 1; } }
+        public bool IsKernel => Position != 0 || IsAugmented;
 
-        public int NextToken
-        {
-            get
-            { 
-                return Position == production.Input.Length 
-                     ? -1
-                     : production.Input[Position];
-            }
-        }
+        public int ProductionId => production.Index;
+
+        public bool IsReduce => Position == production.Input.Length;
+
+        public IEnumerable<int> NextTokens =>
+                Position == production.Input.Length
+                     ? new int[0] 
+                     : new[] { production.Input[Position] };
 
         public static bool operator ==(DotItem x, DotItem y) 
         { 
-            return x.ProductionId == y.ProductionId && x.Position == y.Position; 
+            return x.ProductionId == y.ProductionId
+                && x.Position == y.Position; 
         }
 
         public static bool operator !=(DotItem x, DotItem y) 
@@ -68,17 +61,34 @@ namespace IronText.Compiler.Analysis
 
         public override int GetHashCode() { return unchecked(production.Index + Position); }
 
-        public override string ToString()
+        public override string ToString() =>
+            $"(ProdId={production.Index} Pos={Position} LAs={LA})";
+
+        public bool TryCreateNext(int nextToken, out DotItem outcome)
         {
-            return string.Format("(ProdId={0} Pos={1} LAs={2})", production.Index, Position, LA);
+            if (NextTokens.Contains(nextToken))
+            {
+                outcome = new DotItem(production, Position + 1)
+                {
+                    LA = LA.EditCopy()
+                };
+
+                return true;
+            }
+
+            outcome = null;
+            return false;
         }
 
-        public DotItem CreateNextItem()
+        public DotItem CreateNextItem(int token)
         {
-            return new DotItem(production, Position + 1)
-                        {
-                            LA = LA.EditCopy()
-                        };
+            DotItem result;
+            if (!TryCreateNext(token, out result))
+            {
+                throw new InvalidOperationException("internal error: Unexpected token");
+            }
+
+            return result;
         }
     }
 }

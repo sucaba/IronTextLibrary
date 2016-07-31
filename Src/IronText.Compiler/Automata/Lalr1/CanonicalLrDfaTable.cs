@@ -40,11 +40,14 @@ namespace IronText.Automata.Lalr1
                 {
                     if (!item.IsReduce)
                     {
-                        AssignAction(
-                            state.Index,
-                            item.NextToken, 
-                            ParserInstruction.Shift(
-                                state.GetNextIndex(item.NextToken)));
+                        foreach (var nextToken in item.NextTokens)
+                        {
+                            AssignAction(
+                                state.Index,
+                                nextToken,
+                                ParserInstruction.Shift(
+                                    state.GetNextIndex(nextToken)));
+                        }
                     }
                     else if (item.IsAugmented)
                     {

@@ -30,7 +30,7 @@ namespace IronText.Collections
 
                 return this._index; 
             }
-            set
+            private set
             {
                 this._index    = value;
                 this.hasIndex  = true;

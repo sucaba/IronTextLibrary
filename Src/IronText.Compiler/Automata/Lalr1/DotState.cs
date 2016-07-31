@@ -63,9 +63,10 @@ namespace IronText.Automata.Lalr1
         {
             foreach (var item in Items)
             {
-                if (item.Position != 0)
+                int token = item.PreviousToken;
+                if (token != -1)
                 {
-                    return item[item.Position - 1];
+                    return token;
                 }
             }
 

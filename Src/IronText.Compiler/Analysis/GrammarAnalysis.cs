@@ -50,6 +50,11 @@ namespace IronText.Compiler.Analysis
             return grammar.Symbols[leftToken].Productions.Select(ToRt);
         }
 
+        public RuntimeProduction GetProduction(int index)
+        {
+            return ToRt(grammar.Productions[index]);
+        }
+
         public int TotalSymbolCount
         {
             get {  return grammar.Symbols.Count + ambiguities.Length; }
@@ -84,7 +89,8 @@ namespace IronText.Compiler.Analysis
 
         public void AddFirst(DotItem item, MutableIntSet output)
         {
-            bool isNullable = tables.AddFirst(item.GetInputTokens(), item.Position, output);
+            int[] inputTokens = GetProduction(item.ProductionId).Input;
+            bool isNullable = tables.AddFirst(inputTokens, item.Position, output);
 
             if (isNullable)
             {
@@ -94,7 +100,8 @@ namespace IronText.Compiler.Analysis
 
         public bool HasFirst(DotItem item, int token)
         {
-            return tables.HasFirst(item.GetInputTokens(), item.Position, token);
+            int[] inputTokens = GetProduction(item.ProductionId).Input;
+            return tables.HasFirst(inputTokens, item.Position, token);
         }
 
         private RuntimeProduction ToRt(Production production)
