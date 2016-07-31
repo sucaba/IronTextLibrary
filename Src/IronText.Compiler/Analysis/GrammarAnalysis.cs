@@ -97,11 +97,6 @@ namespace IronText.Compiler.Analysis
             return tables.HasFirst(item.GetInputTokens(), item.Position, token);
         }
 
-        public bool IsTailNullable(DotItem item)
-        {
-            return tables.IsTailNullable(item.GetInputTokens(), item.Position);
-        }
-
         private RuntimeProduction ToRt(Production production)
         {
             return new RuntimeProduction(

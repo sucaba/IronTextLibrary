@@ -12,7 +12,6 @@ namespace IronText.MetadataCompiler
 
         bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output);
         bool HasFirst(int[] tokenChain, int startIndex, int token);
-        bool IsTailNullable(int[] tokens, int startIndex);
     }
 
     internal interface IRuntimeNullableFirstTables
@@ -171,24 +170,6 @@ namespace IronText.MetadataCompiler
             }
 
             return false;
-        }
-
-        public bool IsTailNullable(int[] tokens, int startIndex)
-        {
-            bool result = true;
-
-            while (startIndex != tokens.Length)
-            {
-                if (!isNullable[tokens[startIndex]])
-                {
-                    result = false;
-                    break;
-                }
-
-                ++startIndex;
-            }
-
-            return result;
         }
 
         /// <summary>

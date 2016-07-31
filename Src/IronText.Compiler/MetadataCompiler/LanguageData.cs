@@ -1,12 +1,9 @@
 ﻿using IronText.Algorithm;
-using IronText.Automata.Lalr1;
 using IronText.Automata.Regular;
-using IronText.Compiler.Analysis;
 using IronText.Extensibility;
 using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Runtime;
-using IronText.Runtime.Semantics;
 
 namespace IronText.MetadataCompiler
 {
@@ -24,8 +21,6 @@ namespace IronText.MetadataCompiler
         public ITable<ParserDecision> ParserDecisionTable   { get; set; }
 
         public ITable<int>      ParserStartTable   { get; set; }
-
-        public ParserConflictInfo[] ParserConflicts { get; set; }
 
         public int[]            StateToToken        { get; set; }
 

@@ -19,22 +19,20 @@ namespace IronText.MetadataCompiler
             RuntimeGrammar                  runtimeGrammar,
             SemanticBindingProvider         semanticBindingsProvider,
             ParserBytecodeProvider          instructionProvider,
-            ParserRuntimeDesignator         runtimeDesignator,
-            ParserConflictInfo[]            parserConflicts)
+            ParserRuntimeDesignator         runtimeDesignator)
         {
             Data = new LanguageData
             {
-                TargetParserRuntime       = runtimeDesignator.ActualRuntime,
-                Grammar                   = grammar,
-                RuntimeGrammar            = runtimeGrammar,
-                TokenComplexity           = analysis.GetTokenComplexity(),
-                StateToToken              = parserDfa.GetStateToSymbolTable(),
-                ParserDecisionTable         = lrTable.DecisionTable,
-                ParserStartTable    = instructionProvider.StartTable,
-                ParserConflicts           = parserConflicts,
-                MatchActionToToken        = actionToTokenProvider.ActionToToken,
-                ScannerTdfa               = scannerTdfa,
-                SemanticBindings          = semanticBindingsProvider.Bindings.ToArray(),
+                TargetParserRuntime  = runtimeDesignator.ActualRuntime,
+                Grammar              = grammar,
+                RuntimeGrammar       = runtimeGrammar,
+                TokenComplexity      = analysis.GetTokenComplexity(),
+                StateToToken         = parserDfa.GetStateToSymbolTable(),
+                ParserDecisionTable  = lrTable.DecisionTable,
+                ParserStartTable     = instructionProvider.StartTable,
+                MatchActionToToken   = actionToTokenProvider.ActionToToken,
+                ScannerTdfa          = scannerTdfa,
+                SemanticBindings     = semanticBindingsProvider.Bindings.ToArray(),
             };
         }
 
