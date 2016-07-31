@@ -1,15 +1,32 @@
 ﻿namespace IronText.Collections
 {
-    public abstract class Ambiguous<T>
-        where T : Ambiguous<T>
+    public static class AmbiguousAlternativesExtensions
     {
-        protected Ambiguous(T alternative = null)
+        public static AmbiguousAlternatives<T> Alternatives<T>(this T @this)
+            where T : Ambiguous<T>
         {
-            Alternative = alternative;
+            return new AmbiguousAlternatives<T>(@this);
         }
 
-        public T Alternative { get; set; }
+        public static T Alternate<T>(this T @this, T other)
+            where T : Ambiguous<T>
+        {
+            var last = other.Last();
+            last.Alternative = @this;
 
-        public bool IsDeterminisic => Alternative == null;
+            return other;
+        }
+
+        private static T Last<T>(this T @this)
+            where T : Ambiguous<T>
+        {
+            var result = @this;
+            while (result.Alternative != null)
+            {
+                result = result.Alternative;
+            }
+
+            return result;
+        }
     }
 }

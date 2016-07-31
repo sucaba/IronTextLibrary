@@ -115,9 +115,9 @@
     <Compile Include="Algorithm\IntegerSets\SetOrthohonator.cs" />
     <Compile Include="Algorithm\IntegerSets\SparseIntSetType.cs" />
     <Compile Include="Algorithm\IntInterval.cs" />
-    <Compile Include="Collections\Ambiguous.cs" />
-    <Compile Include="Collections\AmbiguousAlternatives.cs" />
+    <Compile Include="Collections\AmbiguousT.cs" />
     <Compile Include="Collections\AmbiguousAlternativesExtensions.cs" />
+    <Compile Include="Collections\Ambiguous.cs" />
     <Compile Include="Collections\IIndexableImpl.cs" />
     <Compile Include="Collections\ImmutableArray.cs" />
     <Compile Include="Collections\MutableArray.cs" />
@@ -211,6 +211,7 @@
     <Compile Include="Runtime\Parallel\GenericStack.cs" />
     <Compile Include="Runtime\Parallel\ParserThread.cs" />
     <Compile Include="Runtime\ParserRuntime.cs" />
+    <Compile Include="Runtime\ParserVM\ParserDecision.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeFormula.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeValue.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeVariable.cs" />

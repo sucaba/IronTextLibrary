@@ -1,4 +1,5 @@
-﻿using IronText.Reflection;
+﻿using IronText.Collections;
+using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Runtime;
 using System.IO;
@@ -61,21 +62,26 @@ namespace IronText.Reports
 
                 foreach (var transition in state.Transitions)
                 {
-                    var actions = transition.Actions;
-                    int count = actions.Count();
-
                     var symbol = data.Grammar.Symbols[transition.Token];
 
-                    if (count == 0)
+                    var decision = transition.Decisions;
+
+                    if (decision ==null)
                     {
+                        continue;
                     }
-                    else if (count > 1)
+
+                    output.Write(Indent);
+                    output.Write(symbol.Name);
+                    output.Write("             ");
+
+                    if (decision.IsAmbiguous)
                     {
                         output.Write(Indent);
                         output.WriteLine("conflict {");
-                        foreach (var action in actions)
+                        foreach (var alternative in decision.Alternatives())
                         {
-                            PrintAction(data, symbol, output, action);
+                            PrintDecision(data, symbol, output, alternative);
                         }
 
                         output.Write(Indent);
@@ -84,7 +90,7 @@ namespace IronText.Reports
                     }
                     else
                     {
-                        PrintAction(data, symbol, output, actions.Single());
+                        PrintDecision(data, symbol, output, decision);
                     }
                 }
 
@@ -92,18 +98,25 @@ namespace IronText.Reports
             }
         }
 
-        private void PrintAction(IReportData data, Symbol symbol, StreamWriter output, ParserInstruction action)
+        private void PrintDecision(
+            IReportData    data,
+            Symbol         symbol,
+            StreamWriter   output,
+            ParserDecision decision)
         {
-            if (action == null || action.Operation == ParserOperation.Fail)
+            foreach (var instruction in decision.Instructions)
             {
-                return;
+                PrintInstruction(output, instruction);
             }
+        }
 
-            output.Write(Indent);
-            output.Write(symbol.Name);
-            output.Write("             ");
+        private void PrintInstruction(StreamWriter output, ParserInstruction action)
+        {
             switch (action.Operation)
             {
+                case ParserOperation.Fail:
+                    output.Write("fail");
+                    break;
                 case ParserOperation.Shift:
                     output.Write("shift and go to state ");
                     output.Write(action.State);

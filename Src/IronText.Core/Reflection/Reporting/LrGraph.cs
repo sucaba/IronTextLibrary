@@ -1,4 +1,5 @@
-﻿using IronText.Diagnostics;
+﻿using IronText.Collections;
+using IronText.Diagnostics;
 using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Runtime;
@@ -43,11 +44,17 @@ namespace IronText.Framework
             {
                 foreach (var transition in state.Transitions)
                 {
-                    foreach (var action in transition.Actions)
+                    foreach (var alternative in transition.Decisions.Alternatives())
                     {
-                        if (action.Operation == ParserOperation.Shift)
+                        if (alternative.Instructions.Count != 1)
                         {
-                            graph.AddEdge(state.Index, action.State, grammar.Symbols[transition.Token].Name);
+                            continue;
+                        }
+
+                        var instruction = alternative.Instructions[0];
+                        if (instruction.Operation == ParserOperation.Shift)
+                        {
+                            graph.AddEdge(state.Index, instruction.State, grammar.Symbols[transition.Token].Name);
                         }
                     }
                 }

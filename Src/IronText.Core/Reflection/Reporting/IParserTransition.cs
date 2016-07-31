@@ -7,6 +7,6 @@ namespace IronText.Reflection.Reporting
     {
         int Token { get; }
 
-        IEnumerable<ParserInstruction> Actions { get; }
+        ParserDecision Decisions { get; }
     }
 }

@@ -171,9 +171,6 @@ namespace IronText.Runtime
                         Fork(thread, envelope, data, action.Argument);
                         break;
 
-                    case ParserOperation.Conflict:
-                        throw new InvalidOperationException("Parser conflict error.");
-
                     case ParserOperation.Shift:
                         {
                             var node = producer.CreateLeaf(envelope, data);

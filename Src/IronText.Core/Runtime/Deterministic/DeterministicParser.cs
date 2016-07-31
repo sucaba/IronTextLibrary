@@ -129,7 +129,6 @@ namespace IronText.Runtime
                             break;
 
                         case ParserOperation.Fork:
-                        case ParserOperation.Conflict:
                             logging.Write(
                                 new LogEntry
                                 {

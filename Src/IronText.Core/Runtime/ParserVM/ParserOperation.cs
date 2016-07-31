@@ -17,18 +17,15 @@
         // Fork on allowed alternatives of a Shrodinger's token
         Fork        = 4,
 
-        // Multiple actions can happen in this state.
-        Conflict    = 5,
-
         // Success
-        Accept      = 6,
+        Accept      = 5,
 
         // Return control to the parser
-        Exit        = 7,
+        Exit        = 6,
 
         // Continue parser loop
-        Restart    = 8,
+        Restart     = 7,
 
-        InternalError = 9
+        InternalError = 8
     }
 }

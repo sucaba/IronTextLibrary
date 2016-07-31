@@ -6,7 +6,7 @@ namespace IronText.Automata.Lalr1
 {
     interface ILrParserTable
     {
-        ITable<ParserInstruction> ParserActionTable { get; }
+        ITable<ParserDecision> ParserActionTable { get; }
 
         ParserConflictInfo[] Conflicts         { get; }
     }

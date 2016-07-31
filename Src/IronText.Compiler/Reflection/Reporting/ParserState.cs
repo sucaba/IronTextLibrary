@@ -5,6 +5,7 @@ using IronText.Automata.Lalr1;
 using IronText.MetadataCompiler;
 using IronText.Reflection;
 using IronText.Runtime;
+using IronText.Collections;
 
 namespace IronText.Reflection.Reporting
 {
@@ -46,21 +47,15 @@ namespace IronText.Reflection.Reporting
             {
                 if (transitions == null)
                 {
-                    var list = new List<IParserTransition>();
-                    int first = data.Grammar.Symbols.StartIndex;
-                    int last  = data.Grammar.Symbols.Count;
-
-                    for (int token = first; token != last; ++token)
-                    {
-                        var actions = GetAllParserActions(dotState.Index, token);
-                        if (actions.Count() != 0)
-                        {
-                            list.Add(
-                                new ParserTransition(
-                                    token,
-                                    actions));
-                        }
-                    }
+                    var list = data.Grammar
+                        .Symbols
+                        .Select(symbol => (IParserTransition)
+                            new ParserTransition(
+                                symbol.Index,
+                                data.ParserActionTable.Get(
+                                    dotState.Index,
+                                    symbol.Index)))
+                        .ToList();
 
                     transitions = new ReadOnlyCollection<IParserTransition>(list);
                 }
@@ -69,21 +64,10 @@ namespace IronText.Reflection.Reporting
             }
         }
 
-        private IEnumerable<ParserInstruction> GetAllParserActions(int state, int token)
+        private IEnumerable<ParserDecision> GetAllParserActions(int state, int token)
         {
-            var action = data.ParserActionTable.Get(state, token);
-            if (action == null || action.Operation == ParserOperation.Fail)
-            {
-                return Enumerable.Empty<ParserInstruction>();
-            }
-            else if (action.Operation == ParserOperation.Conflict)
-            {
-                return data.ParserConflicts[action.Argument].Actions;
-            }
-            else
-            {
-                return new[] { action };
-            }
+            var decision = data.ParserActionTable.Get(state, token);
+            return decision.Alternatives();
         }
     }
 }

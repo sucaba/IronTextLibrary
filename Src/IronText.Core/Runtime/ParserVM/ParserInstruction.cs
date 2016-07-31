@@ -25,9 +25,6 @@ namespace IronText.Runtime
         public static ParserInstruction Fork(int instructionPosition) =>
             new ParserInstruction(ParserOperation.Fork, instructionPosition);
 
-        public static ParserInstruction Conflict(int conflict) =>
-            new ParserInstruction(ParserOperation.Conflict, conflict);
-
         [FieldOffset(0)]
         public ParserOperation  Operation;
 

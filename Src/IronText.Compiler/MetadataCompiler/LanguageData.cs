@@ -21,7 +21,7 @@ namespace IronText.MetadataCompiler
 
         public ParserRuntime    TargetParserRuntime { get; set; }
 
-        public ITable<ParserInstruction> ParserActionTable   { get; set; }
+        public ITable<ParserDecision> ParserActionTable   { get; set; }
 
         public ITable<int>      ParserActionStartTable   { get; set; }
 

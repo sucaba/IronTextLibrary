@@ -14,6 +14,31 @@ namespace IronText.Automata.Lalr1
         }
 
         public bool TryResolve(
+            ParserDecision decisionX,
+            ParserDecision decisionY,
+            int incomingToken,
+            out ParserDecision output)
+        {
+            if (decisionX.Instructions.Count != 1
+                || decisionY.Instructions.Count != 1)
+            {
+                output = new ParserDecision(ParserInstruction.FailAction);
+                return false;
+            }
+
+            ParserInstruction instruction;
+
+            bool result = TryResolveShiftReduce(
+                decisionX.Instructions[0],
+                decisionY.Instructions[0],
+                incomingToken,
+                out instruction);
+            output = new ParserDecision(instruction);
+
+            return result;
+        }
+
+        private bool TryResolve(
             ParserInstruction actionX,
             ParserInstruction actionY,
             int incomingToken,

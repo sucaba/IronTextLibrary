@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using IronText.Algorithm;
 using IronText.Compiler.Analysis;
-using IronText.Reflection;
 using IronText.Reflection.Reporting;
 using IronText.Runtime;
+using IronText.Collections;
 using System;
 
 namespace IronText.Automata.Lalr1
@@ -16,7 +15,7 @@ namespace IronText.Automata.Lalr1
         private readonly ParserConflictResolver conflictResolver;
         private readonly Dictionary<TransitionKey, ParserConflictInfo> transitionToConflict 
             = new Dictionary<TransitionKey, ParserConflictInfo>();
-        private readonly IMutableTable<ParserInstruction> actionTable;
+        private readonly IMutableTable<ParserDecision> actionTable;
         private bool hasTerminalAmbiguities;
 
         public CanonicalLrDfaTable(
@@ -26,34 +25,62 @@ namespace IronText.Automata.Lalr1
         {
             this.grammar = grammar;
             this.conflictResolver = conflictResolver;
-            this.actionTable = new MutableTable<ParserInstruction>(
+            this.actionTable = new MutableTable<ParserDecision>(
                                 dfa.States.Length,
                                 grammar.TotalSymbolCount);
 
             FillDfaTable(dfa.States);
-            FillConflictActions();
             FillAmbiguousTerminalActions(dfa.States);
+            Conflicts = FillConflictActions();
         }
 
         public ParserRuntime TargetRuntime =>
-            (transitionToConflict.Count != 0 || hasTerminalAmbiguities)
+            (Conflicts.Length != 0 || hasTerminalAmbiguities)
             ? ParserRuntime.Glr
             : ParserRuntime.Deterministic;
 
-        public ParserConflictInfo[] Conflicts => transitionToConflict.Values.ToArray();
+        public ParserConflictInfo[] Conflicts { get; }
 
-        public ITable<ParserInstruction> ParserActionTable => actionTable;
+        public ITable<ParserDecision> ParserActionTable => actionTable;
 
-        private void FillConflictActions()
+        private ParserConflictInfo[] FillConflictActions()
         {
-            int i = 0;
-            foreach (var conflict in transitionToConflict.Values)
+            var result = new List<ParserConflictInfo>();
+
+            for (int state = 0; state != actionTable.RowCount; ++state)
+            for (int token = 0; token != actionTable.ColumnCount; ++token)
+                {
+                    var decision = actionTable.Get(state, token);
+                    if (decision == ParserDecision.NoAlternatives || decision.IsDeterminisic)
+                    {
+                        continue;
+                    }
+
+                    var conflict = ToConflict(state, token, decision);
+                    int conflictIndex = result.Count;
+
+                    result.Add(conflict);
+                }
+
+            return result.ToArray();
+        }
+
+        private static ParserConflictInfo ToConflict(int row, int column, ParserDecision decision)
+        {
+            var result = new ParserConflictInfo(row, column);
+
+            foreach (var alternative in decision.Alternatives())
             {
-                actionTable.Set(
-                    conflict.State,
-                    conflict.Token,
-                    ParserInstruction.Conflict(i++));
+                if (decision.Instructions.Count != 1)
+                {
+                    throw new InvalidOperationException(
+                        "Internal error: reafctoring of parser actions towards bytecode.");
+                }
+
+                result.AddAction(decision.Instructions[0]);
             }
+
+            return result;
         }
 
         private void FillDfaTable(DotState[] states)
@@ -95,37 +122,33 @@ namespace IronText.Automata.Lalr1
 
         private void AssignAction(int state, int token, ParserInstruction action)
         {
-            ParserInstruction currentAction = actionTable.Get(state, token);
-            ParserInstruction resolvedAction;
+            AssignAction(state, token, new ParserDecision(action));
+        }
 
-            if (currentAction == default(ParserInstruction))
+        private void AssignAction(int state, int token, ParserDecision decision)
+        {
+            ParserDecision current = actionTable.Get(state, token);
+            ParserDecision resolved;
+
+            if (current == ParserDecision.NoAlternatives)
             {
-                actionTable.Set(state, token, action);
+                resolved = decision;
             }
-            else if (currentAction == action)
+            else if (current.Equals(decision))
             {
-                // Nothing to resolve
+                resolved = current;
             }
-            else if (conflictResolver.TryResolve(currentAction, action, token, out resolvedAction))
+            else if (
+                current.Instructions.Count == 1
+                && conflictResolver.TryResolve(current, decision, token, out resolved))
             {
-                actionTable.Set(state, token, resolvedAction);
             }
             else
             {
-                ParserConflictInfo conflict;
-                var key = new TransitionKey(state, token);
-                if (!transitionToConflict.TryGetValue(key, out conflict))
-                {
-                    conflict = new ParserConflictInfo(state, token);
-                    transitionToConflict[key] = conflict;
-                    conflict.AddAction(currentAction);
-                }
-
-                if (!conflict.Actions.Contains(action))
-                {
-                    conflict.AddAction(action);
-                }
+                resolved = current.Alternate(decision);
             }
+
+            actionTable.Set(state, token, resolved);
         }
 
         private void FillAmbiguousTerminalActions(DotState[] states)
@@ -134,33 +157,37 @@ namespace IronText.Automata.Lalr1
             {
                 var state = states[i];
 
-                foreach (var ambToken in grammar.AmbiguousSymbols)
+                foreach (var ambiguousTerm in grammar.AmbiguousSymbols)
                 {
-                    var validTokenActions = new Dictionary<int,ParserInstruction>();
-                    foreach (int token in ambToken.Alternatives)
+                    var tokenToDecision = new Dictionary<int,ParserDecision>();
+                    foreach (int token in ambiguousTerm.Alternatives)
                     {
-                        var action = actionTable.Get(i, token);
-                        if (action == default(ParserInstruction))
+                        var decision = actionTable.Get(i, token);
+                        if (decision != ParserDecision.NoAlternatives)
                         {
-                            continue;
+                            tokenToDecision.Add(token, decision);
                         }
-
-                        validTokenActions.Add(token, action);
                     }
 
-                    switch (validTokenActions.Values.Distinct().Count())
+                    switch (tokenToDecision.Values.Distinct().Count())
                     {
                         case 0:
                             // AmbToken is entirely non-acceptable for this state
-                            actionTable.Set(i, ambToken.EnvelopeIndex, ParserInstruction.FailAction);
+                            actionTable.Set(
+                                i,
+                                ambiguousTerm.EnvelopeIndex,
+                                ParserDecision.NoAlternatives);
                             break;
                         case 1:
                             {
-                                var pair = validTokenActions.First();
-                                if (pair.Key == ambToken.MainToken)
+                                var pair = tokenToDecision.First();
+                                if (pair.Key == ambiguousTerm.MainToken)
                                 {
-                                    // ambToken action is the same as for the main token
-                                    actionTable.Set(i, ambToken.EnvelopeIndex, pair.Value);
+                                    // ambiguousToken action is the same as for the main token
+                                    actionTable.Set(
+                                        i,
+                                        ambiguousTerm.EnvelopeIndex,
+                                        pair.Value);
                                 }
                                 else
                                 {
@@ -168,8 +195,11 @@ namespace IronText.Automata.Lalr1
                                     // In runtime transition will be acceptable when this token
                                     // is in Msg and non-acceptable when this particular token
                                     // is not in Msg.
-                                    var action = new ParserInstruction { Operation = ParserOperation.Resolve, Argument = pair.Key };
-                                    actionTable.Set(i, ambToken.EnvelopeIndex, action);
+                                    var action = ParserInstruction.Resolve(pair.Key);
+                                    actionTable.Set(
+                                        i,
+                                        ambiguousTerm.EnvelopeIndex,
+                                        new ParserDecision(action));
                                 }
                             }
 
@@ -177,6 +207,12 @@ namespace IronText.Automata.Lalr1
                         default:
                             // GLR parser is required to handle terminal token alternatives.
                             this.hasTerminalAmbiguities = true;
+
+                            // No needed for GLR but but for the sake of explicitness
+                            actionTable.Set(
+                                i,
+                                ambiguousTerm.EnvelopeIndex,
+                                ParserDecision.NoAlternatives);
                             break;
                     }
                 }

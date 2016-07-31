@@ -1,5 +1,6 @@
 ﻿using IronText.Algorithm;
 using IronText.Automata.Lalr1;
+using IronText.Collections;
 using IronText.Runtime;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,16 @@ namespace IronText.MetadataCompiler
 {
     class ParserBytecodeProvider
     {
-        public ParserBytecodeProvider(ILrParserTable parserTable)
+        private const int SharedFailurePos = 0;
+
+        public ParserBytecodeProvider(CanonicalLrDfaTable parserTable)
         {
             var instructions = new List<ParserInstruction>();
 
-            var table       = parserTable.ParserActionTable;
-            int rowCount    = table.RowCount;
+            CompileSharedFailureAction(instructions);
+
+            var table = parserTable.ParserActionTable;
+            int rowCount = table.RowCount;
             int columnCount = table.ColumnCount;
 
             var startTable = new MutableTable<int>(rowCount, columnCount);
@@ -21,57 +26,68 @@ namespace IronText.MetadataCompiler
             for (int r = 0; r != rowCount; ++r)
                 for (int c = 0; c != columnCount; ++c)
                 {
+                    var decision = table.Get(r, c);
+                    if (decision == ParserDecision.NoAlternatives)
+                    {
+                        startTable.Set(r, c, SharedFailurePos);
+                        continue;
+                    }
+
                     startTable.Set(r, c, instructions.Count);
 
-                    var action = table.Get(r, c);
-                    if (action.Operation == ParserOperation.Conflict)
-                    {
-                        var conflict = parserTable.Conflicts[action.Argument];
-                        int forkPos = instructions.Count;
-
-                        foreach (var conflictAction in conflict.Actions.Skip(1))
-                        {
-                            AddForkInstructionPlaceholder(instructions);
-                        }
-
-                        bool first = true;
-                        foreach (var conflictAction in conflict.Actions)
-                        {
-                            if (first)
-                            {
-                                first = false;
-                            }
-                            else
-                            {
-                                instructions[forkPos++] = new ParserInstruction
-                                {
-                                    Operation   = ParserOperation.Fork,
-                                    Argument = instructions.Count
-                                };
-                            }
-
-                            CompileTransition(instructions, conflictAction);
-                        }
-                    }
-                    else
-                    {
-                        CompileTransition(instructions, action);
-                    }
+                    CompileAmbiguous(instructions, decision);
                 }
 
             this.Instructions = instructions.ToArray();
-            this.StartTable   = startTable;
+            this.StartTable = startTable;
         }
 
-        private static void AddForkInstructionPlaceholder(List<ParserInstruction> instructions)
+        private static void CompileSharedFailureAction(List<ParserInstruction> instructions)
         {
-            instructions.Add(ParserInstruction.InternalErrorAction);
+            instructions.Add(ParserInstruction.FailAction);
+            CompileBranchEnd(instructions);
         }
 
-        private static void CompileTransition(List<ParserInstruction> instructions, ParserInstruction action)
+        private static void CompileAmbiguous(List<ParserInstruction> instructions, ParserDecision decision)
         {
-            instructions.Add(action);
-            switch (action.Operation)
+            int forkPos = instructions.Count;
+
+            foreach (var alternative in decision.Alternatives().Skip(1))
+            {
+                instructions.Add(ForkStub);
+            }
+
+            bool first = true;
+            foreach (var alternative in decision.Alternatives())
+            {
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    instructions[forkPos++] = ParserInstruction.Fork(instructions.Count);
+                }
+
+                Compile(instructions, alternative);
+            }
+        }
+
+        private static ParserInstruction ForkStub => ParserInstruction.InternalErrorAction;
+
+        private static void Compile(List<ParserInstruction> instructions, ParserDecision decision)
+        {
+            foreach (var instruction in decision.Instructions)
+            {
+                instructions.Add(instruction);
+            }
+
+            CompileBranchEnd(instructions);
+        }
+
+        private static void CompileBranchEnd(List<ParserInstruction> instructions)
+        {
+            switch (instructions.Last().Operation)
             {
                 case ParserOperation.Resolve:
                 case ParserOperation.Reduce:
@@ -89,6 +105,6 @@ namespace IronText.MetadataCompiler
 
         public ParserInstruction[] Instructions { get; }
 
-        public ITable<int>    StartTable   { get; }
+        public ITable<int>         StartTable   { get; }
     }
 }
