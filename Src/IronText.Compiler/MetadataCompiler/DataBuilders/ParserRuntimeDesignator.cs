@@ -1,4 +1,5 @@
 ﻿using IronText.Automata.Lalr1;
+using IronText.Reflection.Reporting;
 using IronText.Runtime;
 using System;
 
@@ -6,12 +7,15 @@ namespace IronText.MetadataCompiler
 {
     class ParserRuntimeDesignator
     {
-        public ParserRuntimeDesignator(RuntimeOptions options, CanonicalLrDfaTable table)
+        public ParserRuntimeDesignator(
+            RuntimeOptions       options,
+            CanonicalLrDfaTable  table,
+            ParserConflictInfo[] parserConflicts)
         {
             var relevantOptions = options & RuntimeOptions.ParserAlgorithmMask;
 
             var minimalRuntime = 
-                (table.Conflicts.Length != 0 || table.HasUnresolvedTerminalAmbiguities)
+                (parserConflicts.Length != 0 || table.HasUnresolvedTerminalAmbiguities)
                 ? ParserRuntime.Glr
                 : ParserRuntime.Deterministic;
 

@@ -84,7 +84,7 @@ namespace IronText.MetadataCompiler
 
         private int GetParserAction(int state, int token)
         {
-            int start = data.ParserActionStartTable.Get(state, token);
+            int start = data.ParserStartTable.Get(state, token);
             return start;
         }
 

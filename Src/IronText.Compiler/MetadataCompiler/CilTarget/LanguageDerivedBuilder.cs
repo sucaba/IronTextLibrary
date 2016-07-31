@@ -188,7 +188,7 @@ namespace IronText.MetadataCompiler
         private ClassSyntax BuildMethod_GetParserAction(ClassSyntax context)
         {
             var generator = new ReadOnlyTableGenerator(
-                                    data.ParserActionStartTable,
+                                    data.ParserStartTable,
                                     il => il.Ldarg(0),
                                     il => il.Ldarg(1));
 

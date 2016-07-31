@@ -71,6 +71,7 @@
     <Compile Include="MetadataCompiler\DataBuilders\MatchActionToTokenTableProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserBytecodeProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserAutomataProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\ParserConflictProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserRuntimeDesignator.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserTableProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\LanguageBuildReports.cs" />

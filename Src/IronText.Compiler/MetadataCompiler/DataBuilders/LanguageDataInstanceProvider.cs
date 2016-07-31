@@ -2,6 +2,7 @@
 using IronText.Automata.Regular;
 using IronText.Compiler.Analysis;
 using IronText.Reflection;
+using IronText.Reflection.Reporting;
 using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
@@ -18,7 +19,8 @@ namespace IronText.MetadataCompiler
             RuntimeGrammar                  runtimeGrammar,
             SemanticBindingProvider         semanticBindingsProvider,
             ParserBytecodeProvider          instructionProvider,
-            ParserRuntimeDesignator         runtimeDesignator)
+            ParserRuntimeDesignator         runtimeDesignator,
+            ParserConflictInfo[]            parserConflicts)
         {
             Data = new LanguageData
             {
@@ -27,9 +29,9 @@ namespace IronText.MetadataCompiler
                 RuntimeGrammar            = runtimeGrammar,
                 TokenComplexity           = analysis.GetTokenComplexity(),
                 StateToToken              = parserDfa.GetStateToSymbolTable(),
-                ParserActionTable         = lrTable.ParserActionTable,
-                ParserActionStartTable    = instructionProvider.StartTable,
-                ParserConflicts           = lrTable.Conflicts,
+                ParserDecisionTable         = lrTable.DecisionTable,
+                ParserStartTable    = instructionProvider.StartTable,
+                ParserConflicts           = parserConflicts,
                 MatchActionToToken        = actionToTokenProvider.ActionToToken,
                 ScannerTdfa               = scannerTdfa,
                 SemanticBindings          = semanticBindingsProvider.Bindings.ToArray(),

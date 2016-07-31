@@ -2,20 +2,16 @@
 using System.Linq;
 using IronText.Algorithm;
 using IronText.Compiler.Analysis;
-using IronText.Reflection.Reporting;
 using IronText.Runtime;
 using IronText.Collections;
-using System;
 
 namespace IronText.Automata.Lalr1
 {
     class CanonicalLrDfaTable : ILrParserTable
     {
-        private readonly GrammarAnalysis grammar;
-        private readonly ParserConflictResolver conflictResolver;
-        private readonly Dictionary<TransitionKey, ParserConflictInfo> transitionToConflict 
-            = new Dictionary<TransitionKey, ParserConflictInfo>();
-        private readonly IMutableTable<ParserDecision> actionTable;
+        private readonly GrammarAnalysis               grammar;
+        private readonly ParserConflictResolver        conflictResolver;
+        private readonly IMutableTable<ParserDecision> decisionTable;
 
         public CanonicalLrDfaTable(
             ILrDfa          dfa,
@@ -24,60 +20,17 @@ namespace IronText.Automata.Lalr1
         {
             this.grammar = grammar;
             this.conflictResolver = conflictResolver;
-            this.actionTable = new MutableTable<ParserDecision>(
-                                dfa.States.Length,
-                                grammar.TotalSymbolCount);
+            this.decisionTable = new MutableTable<ParserDecision>(
+                                    dfa.States.Length,
+                                    grammar.TotalSymbolCount);
 
             FillDfaTable(dfa.States);
             HasUnresolvedTerminalAmbiguities = FillAmbiguousTerminalActions(dfa.States);
-            Conflicts = FillConflictActions();
         }
 
-        public ParserConflictInfo[] Conflicts { get; }
+        public bool HasUnresolvedTerminalAmbiguities { get; }
 
-        public bool HasUnresolvedTerminalAmbiguities { get;  }
-
-        public ITable<ParserDecision> ParserActionTable => actionTable;
-
-        private ParserConflictInfo[] FillConflictActions()
-        {
-            var result = new List<ParserConflictInfo>();
-
-            for (int state = 0; state != actionTable.RowCount; ++state)
-            for (int token = 0; token != actionTable.ColumnCount; ++token)
-                {
-                    var decision = actionTable.Get(state, token);
-                    if (decision == ParserDecision.NoAlternatives || decision.IsDeterminisic)
-                    {
-                        continue;
-                    }
-
-                    var conflict = ToConflict(state, token, decision);
-                    int conflictIndex = result.Count;
-
-                    result.Add(conflict);
-                }
-
-            return result.ToArray();
-        }
-
-        private static ParserConflictInfo ToConflict(int row, int column, ParserDecision decision)
-        {
-            var result = new ParserConflictInfo(row, column);
-
-            foreach (var alternative in decision.Alternatives())
-            {
-                if (decision.Instructions.Count != 1)
-                {
-                    throw new InvalidOperationException(
-                        "Internal error: reafctoring of parser actions towards bytecode.");
-                }
-
-                result.AddAction(decision.Instructions[0]);
-            }
-
-            return result;
-        }
+        public ITable<ParserDecision> DecisionTable => decisionTable;
 
         private void FillDfaTable(DotState[] states)
         {
@@ -123,7 +76,7 @@ namespace IronText.Automata.Lalr1
 
         private void AssignAction(int state, int token, ParserDecision decision)
         {
-            ParserDecision current = actionTable.Get(state, token);
+            ParserDecision current = decisionTable.Get(state, token);
             ParserDecision resolved;
 
             if (current == ParserDecision.NoAlternatives)
@@ -144,7 +97,7 @@ namespace IronText.Automata.Lalr1
                 resolved = current.Alternate(decision);
             }
 
-            actionTable.Set(state, token, resolved);
+            decisionTable.Set(state, token, resolved);
         }
 
         private bool FillAmbiguousTerminalActions(DotState[] states)
@@ -160,7 +113,7 @@ namespace IronText.Automata.Lalr1
                     var tokenToDecision = new Dictionary<int,ParserDecision>();
                     foreach (int token in ambiguousTerm.Alternatives)
                     {
-                        var decision = actionTable.Get(i, token);
+                        var decision = decisionTable.Get(i, token);
                         if (decision != ParserDecision.NoAlternatives)
                         {
                             tokenToDecision.Add(token, decision);
@@ -171,7 +124,7 @@ namespace IronText.Automata.Lalr1
                     {
                         case 0:
                             // AmbToken is entirely non-acceptable for this state
-                            actionTable.Set(
+                            decisionTable.Set(
                                 i,
                                 ambiguousTerm.EnvelopeIndex,
                                 ParserDecision.NoAlternatives);
@@ -182,7 +135,7 @@ namespace IronText.Automata.Lalr1
                                 if (pair.Key == ambiguousTerm.MainToken)
                                 {
                                     // ambiguousToken action is the same as for the main token
-                                    actionTable.Set(
+                                    decisionTable.Set(
                                         i,
                                         ambiguousTerm.EnvelopeIndex,
                                         pair.Value);
@@ -194,7 +147,7 @@ namespace IronText.Automata.Lalr1
                                     // is in Msg and non-acceptable when this particular token
                                     // is not in Msg.
                                     var action = ParserInstruction.Resolve(pair.Key);
-                                    actionTable.Set(
+                                    decisionTable.Set(
                                         i,
                                         ambiguousTerm.EnvelopeIndex,
                                         new ParserDecision(action));
@@ -207,7 +160,7 @@ namespace IronText.Automata.Lalr1
                             result = true;
 
                             // No needed for GLR but but for the sake of explicitness
-                            actionTable.Set(
+                            decisionTable.Set(
                                 i,
                                 ambiguousTerm.EnvelopeIndex,
                                 ParserDecision.NoAlternatives);

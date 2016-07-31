@@ -145,7 +145,7 @@ namespace IronText.Tests.TestUtils
 
         private int Transition(int state, int token)
         {
-            int result = data.ParserActionStartTable.Get(state, token);
+            int result = data.ParserStartTable.Get(state, token);
             return result;
         }
 

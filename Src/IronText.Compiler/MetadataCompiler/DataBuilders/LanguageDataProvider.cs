@@ -35,6 +35,7 @@ namespace IronText.MetadataCompiler
                 (ScannerAutomataProvider p) => p.Tdfa,
                 (ScannerAmbiguityProvider p) => p.Ambiguities,
                 (ParserAutomataProvider p) => p.Dfa,
+                (ParserConflictProvider p) => p.Conflicts,
                 (ParserTableProvider p) => p.LrParserTable,
                 (RuntimeGrammarProvider p) => p.Outcome,
                 (LanguageDataInstanceProvider p) => p.Data

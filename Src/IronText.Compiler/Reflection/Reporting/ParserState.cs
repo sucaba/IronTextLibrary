@@ -52,7 +52,7 @@ namespace IronText.Reflection.Reporting
                         .Select(symbol => (IParserTransition)
                             new ParserTransition(
                                 symbol.Index,
-                                data.ParserActionTable.Get(
+                                data.ParserDecisionTable.Get(
                                     dotState.Index,
                                     symbol.Index)))
                         .ToList();
@@ -66,7 +66,7 @@ namespace IronText.Reflection.Reporting
 
         private IEnumerable<ParserDecision> GetAllParserActions(int state, int token)
         {
-            var decision = data.ParserActionTable.Get(state, token);
+            var decision = data.ParserDecisionTable.Get(state, token);
             return decision.Alternatives();
         }
     }

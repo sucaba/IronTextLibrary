@@ -17,7 +17,7 @@ namespace IronText.MetadataCompiler
 
             CompileSharedFailureAction(instructions);
 
-            var table = parserTable.ParserActionTable;
+            var table = parserTable.DecisionTable;
             int rowCount = table.RowCount;
             int columnCount = table.ColumnCount;
 
