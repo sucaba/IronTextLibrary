@@ -67,7 +67,7 @@ namespace IronText.Runtime
             this == (ParserInstruction)obj;
 
         public override int GetHashCode() =>
-            unchecked((int)Operation + (int)Argument);
+            unchecked(((int)Operation + Argument));
 
         public override string ToString() => $"{Operation}-{Argument}";
     }

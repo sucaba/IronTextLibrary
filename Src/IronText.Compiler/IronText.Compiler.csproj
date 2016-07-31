@@ -71,6 +71,7 @@
     <Compile Include="MetadataCompiler\DataBuilders\MatchActionToTokenTableProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserBytecodeProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserAutomataProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\ParserRuntimeDesignator.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserTableProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\LanguageBuildReports.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\RuntimeSematicsProvider.cs" />
@@ -101,7 +102,6 @@
     <Compile Include="Algorithm\Unicode\UnicodeIntSetType.Disp.cs" />
     <Compile Include="Analysis\AmbTokenInfo.cs" />
     <Compile Include="Automata\Lalr1\CanonicalLrDfaTable.cs" />
-    <Compile Include="Automata\Lalr1\ConfigurableLrTable.cs" />
     <Compile Include="Analysis\DotItem.cs" />
     <Compile Include="Automata\Lalr1\DotState.cs" />
     <Compile Include="Automata\Lalr1\DotTransition.cs" />

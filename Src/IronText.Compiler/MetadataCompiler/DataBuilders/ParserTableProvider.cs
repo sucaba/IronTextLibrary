@@ -6,13 +6,14 @@ namespace IronText.MetadataCompiler
     class ParserTableProvider
     {
         public ParserTableProvider(
-            ReportCollection       reports,
-            ConfigurableLrTable    lrTable,
-            ConflictMessageBuilder conflictMessageBuilder)
+            ReportCollection        reports,
+            ParserRuntimeDesignator runtimeDesignator,
+            CanonicalLrDfaTable     lrTable,
+            ConflictMessageBuilder  conflictMessageBuilder)
         {
             this.LrParserTable = lrTable;
 
-            if (!lrTable.ComplyWithConfiguration)
+            if (!runtimeDesignator.ComplyWithConfiguration)
             {
                 reports.Add(conflictMessageBuilder);
             }

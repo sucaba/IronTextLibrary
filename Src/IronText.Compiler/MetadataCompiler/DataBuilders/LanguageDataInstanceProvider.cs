@@ -17,11 +17,12 @@ namespace IronText.MetadataCompiler
             ILrParserTable                  lrTable,
             RuntimeGrammar                  runtimeGrammar,
             SemanticBindingProvider         semanticBindingsProvider,
-            ParserBytecodeProvider          instructionProvider)
+            ParserBytecodeProvider          instructionProvider,
+            ParserRuntimeDesignator         runtimeDesignator)
         {
             Data = new LanguageData
             {
-                TargetParserRuntime       = lrTable.TargetRuntime,
+                TargetParserRuntime       = runtimeDesignator.ActualRuntime,
                 Grammar                   = grammar,
                 RuntimeGrammar            = runtimeGrammar,
                 TokenComplexity           = analysis.GetTokenComplexity(),
