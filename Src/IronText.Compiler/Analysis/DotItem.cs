@@ -46,49 +46,27 @@ namespace IronText.Compiler.Analysis
                      ? new int[0] 
                      : new[] { production.Input[Position] };
 
-        public static bool operator ==(DotItem x, DotItem y) 
-        { 
-            return x.ProductionId == y.ProductionId
-                && x.Position == y.Position; 
-        }
+        public static bool operator ==(DotItem x, DotItem y) =>
+            x.ProductionId == y.ProductionId
+            && x.Position == y.Position;
 
-        public static bool operator !=(DotItem x, DotItem y) 
-        {
-            return x.ProductionId != y.ProductionId || x.Position != y.Position; 
-        }
+        public static bool operator !=(DotItem x, DotItem y) =>
+            !(x == y);
 
-        public override bool Equals(object obj) { return this == (DotItem)obj; }
+        public override bool Equals(object obj) => this == (DotItem)obj;
 
-        public override int GetHashCode() { return unchecked(production.Index + Position); }
+        public override int GetHashCode() => unchecked(production.Index + Position);
 
         public override string ToString() =>
             $"(ProdId={production.Index} Pos={Position} LAs={LA})";
 
-        public bool TryCreateNext(int nextToken, out DotItem outcome)
-        {
-            if (NextTokens.Contains(nextToken))
+        public IEnumerable<DotItemTransition> Transitions =>
+            NextTokens.Select(t => new DotItemTransition(t, this));
+
+        internal DotItem CreateNextItem(int token) =>
+            new DotItem(production, Position + 1)
             {
-                outcome = new DotItem(production, Position + 1)
-                {
-                    LA = LA.EditCopy()
-                };
-
-                return true;
-            }
-
-            outcome = null;
-            return false;
-        }
-
-        public DotItem CreateNextItem(int token)
-        {
-            DotItem result;
-            if (!TryCreateNext(token, out result))
-            {
-                throw new InvalidOperationException("internal error: Unexpected token");
-            }
-
-            return result;
-        }
+                LA = LA.EditCopy()
+            };
     }
 }

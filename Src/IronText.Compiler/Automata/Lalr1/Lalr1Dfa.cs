@@ -245,9 +245,15 @@ namespace IronText.Automata.Lalr1
                 {
                     var itemSet = result[i].Items;
 
-                    foreach (var token in GetOutTokens(itemSet))
+                    var nextItemsByToken = itemSet
+                        .SelectMany(item => item.Transitions)
+                        .GroupBy(x => x.Token, x => x.GetNextItem());
+
+                    foreach (var group in nextItemsByToken)
                     {
-                        var nextStateItems = GoTo(itemSet, token);
+                        int token = group.Key;
+
+                        var nextStateItems = ClosureLr0(new MutableDotItemSet(group));
 
                         CollectClosureLookaheads(nextStateItems, grammar);
                         if (nextStateItems.Count == 0)
@@ -275,25 +281,6 @@ namespace IronText.Automata.Lalr1
             StateSet = new BitSetType(result.Count);
 
             return result.ToArray();
-        }
-
-        private IEnumerable<int> GetOutTokens(IDotItemSet itemSet) =>
-            itemSet.SelectMany(item => item.NextTokens);
-
-        private MutableDotItemSet GoTo(IEnumerable<DotItem> itemSet, int token)
-        {
-            var result = new MutableDotItemSet();
-
-            foreach (var item in itemSet)
-            {
-                DotItem nextItem;
-                if (item.TryCreateNext(token, out nextItem))
-                {
-                    result.Add(nextItem);
-                }
-            }
-
-            return ClosureLr0(result);
         }
 
         // TODO: Separate Closure from the lookahead closuring to get cached closure item sets
@@ -368,8 +355,10 @@ namespace IronText.Automata.Lalr1
                 for (int i = 0; i != count; ++i)
                 {
                     var fromItem = result[i];
-                    foreach (int fromItemNextToken in fromItem.NextTokens)
+                    foreach (var transition in fromItem.Transitions)
                     {
+                        int fromItemNextToken = transition.Token;
+
                         for (int j = 0; j != count; ++j)
                         {
                             var toItem = result[j];
@@ -382,7 +371,7 @@ namespace IronText.Automata.Lalr1
                                     countBefore = toItem.LA.Count;
                                 }
 
-                                grammar.AddFirst(fromItem.CreateNextItem(fromItemNextToken), toItem.LA);
+                                grammar.AddFirst(transition.GetNextItem(), toItem.LA);
 
                                 if (!modified)
                                 {
