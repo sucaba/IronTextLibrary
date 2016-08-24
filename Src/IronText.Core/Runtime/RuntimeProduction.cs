@@ -12,7 +12,7 @@ namespace IronText.Runtime
         {
         }
 
-        public RuntimeProduction(int index, int outcome, int[] input)
+        private RuntimeProduction(int index, int outcome, int[] input)
         {
             this.Index       = index;
             this.Outcome     = outcome;

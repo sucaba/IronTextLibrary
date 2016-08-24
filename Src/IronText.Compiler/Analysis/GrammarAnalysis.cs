@@ -47,12 +47,12 @@ namespace IronText.Compiler.Analysis
 
         public IEnumerable<RuntimeProduction> GetProductions(int leftToken)
         {
-            return grammar.Symbols[leftToken].Productions.Select(ToRt);
+            return grammar.Symbols[leftToken].Productions.Select(ProductionExtensions.ToRuntime);
         }
 
         public RuntimeProduction GetProduction(int index)
         {
-            return ToRt(grammar.Productions[index]);
+            return grammar.Productions[index].ToRuntime();
         }
 
         public int TotalSymbolCount
@@ -67,7 +67,7 @@ namespace IronText.Compiler.Analysis
 
         public RuntimeProduction AugmentedProduction
         {
-            get { return ToRt(grammar.AugmentedProduction); }
+            get { return grammar.AugmentedProduction.ToRuntime(); }
         }
 
         public Precedence GetProductionPrecedence(int prodId)
@@ -102,14 +102,6 @@ namespace IronText.Compiler.Analysis
         {
             int[] inputTokens = GetProduction(item.ProductionId).Input;
             return tables.HasFirst(inputTokens, item.Position, token);
-        }
-
-        private RuntimeProduction ToRt(Production production)
-        {
-            return new RuntimeProduction(
-                production.Index,
-                production.Outcome.Index,
-                production.Input.Select(sym => sym.Index));
         }
 
         private static int[] BuildTokenComplexity(Grammar grammar)

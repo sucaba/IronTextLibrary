@@ -17,7 +17,7 @@ namespace IronText.MetadataCompiler
             var tokenIsTerminal    = grammar.Symbols.CreateCompatibleArray(s => s.IsTerminal);
             var tokenCategories    = grammar.Symbols.CreateCompatibleArray(s => s.Categories);
             var tokenNames         = grammar.Symbols.CreateCompatibleArray(s => s.Name);
-            var runtimeProductions = grammar.Productions.CreateCompatibleArray(ToRuntime);
+            var runtimeProductions = grammar.Productions.CreateCompatibleArray(ProductionExtensions.ToRuntime);
 
             this.Outcome = new RuntimeGrammar(
                         tokenNames,
@@ -31,13 +31,5 @@ namespace IronText.MetadataCompiler
         }
 
         public RuntimeGrammar Outcome { get; }
-
-        private static RuntimeProduction ToRuntime(Production prod)
-        {
-            return new RuntimeProduction(
-                    prod.Index,
-                    prod.OutcomeToken,
-                    prod.InputTokens.ToArray());
-        }
     }
 }
