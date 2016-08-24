@@ -73,9 +73,9 @@ namespace IronText.MetadataCompiler
                 return;
             }
 
-            foreach (var nextToken in item.NextTokens)
+            foreach (var transition in item.Transitions)
             {
-                var A = grammar.Symbols[nextToken];
+                var A = grammar.Symbols[transition.Token];
                 foreach (var inhProperty in grammar.InheritedProperties)
                 {
                     if (inhProperty.Symbol == A)

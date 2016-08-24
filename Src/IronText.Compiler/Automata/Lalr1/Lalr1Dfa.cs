@@ -180,8 +180,9 @@ namespace IronText.Automata.Lalr1
 
                     foreach (var closedItem in J)
                     {
-                        foreach (var X in closedItem.NextTokens)
+                        foreach (var transition in closedItem.Transitions)
                         {
+                            int X = transition.Token;
                             var gotoXstate = fromState.GetNext(X);
                             var gotoX = gotoXstate == null ? -1 : gotoXstate.Index;
                             Debug.Assert(gotoX >= 0, "Internal error. Non-existing state.");
@@ -300,8 +301,9 @@ namespace IronText.Automata.Lalr1
                 {
                     var item = result[i];
 
-                    foreach (int X in item.NextTokens)
+                    foreach (var transition in item.Transitions)
                     {
+                        int X = transition.Token;
                         if (grammar.IsTerminal(X))
                         {
                             continue;

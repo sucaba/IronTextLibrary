@@ -24,6 +24,11 @@ namespace IronText.Compiler.Analysis
 
         public int Position { get; }
 
+        public IEnumerable<DotItemTransition> Transitions =>
+            Position == production.Input.Length
+                 ? new DotItemTransition[0] 
+                 : new[] { new DotItemTransition(production.Input[Position], this) };
+
         public MutableIntSet LA { get; set; }
 
         public int PreviousToken =>
@@ -41,11 +46,6 @@ namespace IronText.Compiler.Analysis
 
         public bool IsReduce => Position == production.Input.Length;
 
-        public IEnumerable<int> NextTokens =>
-                Position == production.Input.Length
-                     ? new int[0] 
-                     : new[] { production.Input[Position] };
-
         public static bool operator ==(DotItem x, DotItem y) =>
             x.ProductionId == y.ProductionId
             && x.Position == y.Position;
@@ -59,9 +59,6 @@ namespace IronText.Compiler.Analysis
 
         public override string ToString() =>
             $"(ProdId={production.Index} Pos={Position} LAs={LA})";
-
-        public IEnumerable<DotItemTransition> Transitions =>
-            NextTokens.Select(t => new DotItemTransition(t, this));
 
         internal DotItem CreateNextItem(int token) =>
             new DotItem(production, Position + 1)
