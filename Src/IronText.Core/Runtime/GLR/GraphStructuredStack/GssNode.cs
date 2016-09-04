@@ -97,7 +97,7 @@ namespace IronText.Runtime
         public GssBackLink<T> ResolveBackLink(GssNode<T> priorNode)
         {
             return BackLink
-                .Alternatives()
+                .AllAlternatives()
                 .ResolveFirst(l => l.PriorNode == priorNode);
         }
 

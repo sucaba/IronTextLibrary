@@ -44,7 +44,7 @@ namespace IronText.Reports
             {
                 foreach (var transition in state.Transitions)
                 {
-                    foreach (var alternative in transition.Decisions.Alternatives())
+                    foreach (var alternative in transition.Decisions.AllAlternatives())
                     {
                         if (alternative.Instructions.Count == 1)
                         {

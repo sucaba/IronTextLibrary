@@ -2,10 +2,16 @@
 {
     public static class AmbiguousAlternativesExtensions
     {
-        public static AmbiguousAlternatives<T> Alternatives<T>(this T @this)
+        public static AmbiguousAlternatives<T> AllAlternatives<T>(this T @this)
             where T : Ambiguous<T>
         {
             return new AmbiguousAlternatives<T>(@this);
+        }
+
+        public static AmbiguousAlternatives<T> OtherAlternatives<T>(this T @this)
+            where T : Ambiguous<T>
+        {
+            return new AmbiguousAlternatives<T>(@this.Alternative);
         }
 
         public static T Alternate<T>(this T @this, T other)

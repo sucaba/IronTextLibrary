@@ -65,7 +65,7 @@ namespace IronText.Runtime
             MutableArray<GssNode<T>>   outcome)
         {
             foreach (var followingNode in followingNodes)
-                foreach (var backLink in followingNode.BackLink.Alternatives())
+                foreach (var backLink in followingNode.BackLink.AllAlternatives())
                 {
                     var priorNode = backLink.PriorNode;
                     if (priorNode.Layer == CurrentLayer)
@@ -246,7 +246,7 @@ namespace IronText.Runtime
                 var item = result[i];
                 var f = item
                     .BackLink
-                    .Alternatives()
+                    .AllAlternatives()
                     .Select(l => l.PriorNode)
                     .Except(result);
                 result.AddRange(f);

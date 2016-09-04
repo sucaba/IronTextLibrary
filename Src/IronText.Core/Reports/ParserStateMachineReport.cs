@@ -79,7 +79,7 @@ namespace IronText.Reports
                     {
                         output.Write(Indent);
                         output.WriteLine("conflict {");
-                        foreach (var alternative in decision.Alternatives())
+                        foreach (var alternative in decision.AllAlternatives())
                         {
                             PrintDecision(data, symbol, output, alternative);
                         }

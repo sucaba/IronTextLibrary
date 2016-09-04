@@ -146,7 +146,6 @@ namespace IronText.MetadataCompiler
             var compiler = new ProductionCompiler(emitCoder, varsStack, globals);
             compiler.Execute(prod);
 
-
             var coder = Fluent.Create<IActionCode>(new ProductionCode(
                     emitCoder,
                     locals,

@@ -80,7 +80,7 @@ namespace IronText.Runtime
         {
             gss.BeginEdit();
 
-            foreach (var data in message.Data.Alternatives())
+            foreach (var data in message.Data.AllAlternatives())
             {
                 ProcessTerm(message, data);
             }

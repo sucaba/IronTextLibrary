@@ -156,7 +156,7 @@ namespace IronText.Runtime
 
                     case ParserOperation.Resolve:
                         id = action.ResolvedToken;
-                        data = data.Alternatives()
+                        data = data.AllAlternatives()
                                    .ResolveFirst(x => x.Token == id);
 
                         if (data == null)

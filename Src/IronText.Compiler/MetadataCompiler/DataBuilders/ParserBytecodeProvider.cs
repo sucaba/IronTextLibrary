@@ -10,12 +10,13 @@ namespace IronText.MetadataCompiler
     class ParserBytecodeProvider
     {
         private const int SharedFailurePos = 0;
+        private readonly List<ParserInstruction> instructions;
 
         public ParserBytecodeProvider(CanonicalLrDfaTable parserTable)
         {
-            var instructions = new List<ParserInstruction>();
+            this.instructions = new List<ParserInstruction>();
 
-            CompileSharedFailureAction(instructions);
+            CompileSharedFailureAction();
 
             var table = parserTable.DecisionTable;
             int rowCount = table.RowCount;
@@ -30,62 +31,56 @@ namespace IronText.MetadataCompiler
                     if (decision == ParserDecision.NoAlternatives)
                     {
                         startTable.Set(r, c, SharedFailurePos);
-                        continue;
                     }
-
-                    startTable.Set(r, c, instructions.Count);
-
-                    CompileAmbiguous(instructions, decision);
+                    else
+                    {
+                        startTable.Set(r, c, instructions.Count);
+                        CompileAmbiguousDecision(instructions, decision);
+                    }
                 }
 
             this.Instructions = instructions.ToArray();
             this.StartTable = startTable;
         }
 
-        private static void CompileSharedFailureAction(List<ParserInstruction> instructions)
+        public ParserInstruction[] Instructions { get; }
+
+        public ITable<int>         StartTable   { get; }
+
+        private void CompileSharedFailureAction()
         {
             instructions.Add(ParserInstruction.FailAction);
-            CompileBranchEnd(instructions);
+            CompileBranchEnd();
         }
 
-        private static void CompileAmbiguous(List<ParserInstruction> instructions, ParserDecision decision)
+        private void CompileAmbiguousDecision(List<ParserInstruction> instructions, ParserDecision decision)
         {
             int forkPos = instructions.Count;
 
-            foreach (var alternative in decision.Alternatives().Skip(1))
+            foreach (var alternative in decision.OtherAlternatives())
             {
                 instructions.Add(ForkStub);
             }
 
-            bool first = true;
-            foreach (var alternative in decision.Alternatives())
-            {
-                if (first)
-                {
-                    first = false;
-                }
-                else
-                {
-                    instructions[forkPos++] = ParserInstruction.Fork(instructions.Count);
-                }
+            CompileDecision(decision);
 
-                Compile(instructions, alternative);
+            foreach (var alternative in decision.OtherAlternatives())
+            {
+                instructions[forkPos++] = ParserInstruction.Fork(instructions.Count);
+                CompileDecision(alternative);
             }
         }
 
         private static ParserInstruction ForkStub => ParserInstruction.InternalErrorAction;
 
-        private static void Compile(List<ParserInstruction> instructions, ParserDecision decision)
+        private void CompileDecision(ParserDecision decision)
         {
-            foreach (var instruction in decision.Instructions)
-            {
-                instructions.Add(instruction);
-            }
+            instructions.AddRange(decision.Instructions);
 
-            CompileBranchEnd(instructions);
+            CompileBranchEnd();
         }
 
-        private static void CompileBranchEnd(List<ParserInstruction> instructions)
+        private void CompileBranchEnd()
         {
             switch (instructions.Last().Operation)
             {
@@ -102,9 +97,5 @@ namespace IronText.MetadataCompiler
                     break;
             }
         }
-
-        public ParserInstruction[] Instructions { get; }
-
-        public ITable<int>         StartTable   { get; }
     }
 }

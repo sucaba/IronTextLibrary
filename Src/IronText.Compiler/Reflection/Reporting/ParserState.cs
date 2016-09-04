@@ -67,7 +67,7 @@ namespace IronText.Reflection.Reporting
         private IEnumerable<ParserDecision> GetAllParserActions(int state, int token)
         {
             var decision = data.ParserDecisionTable.Get(state, token);
-            return decision.Alternatives();
+            return decision.AllAlternatives();
         }
     }
 }

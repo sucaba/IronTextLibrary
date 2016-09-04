@@ -43,7 +43,7 @@ namespace IronText.MetadataCompiler
         {
             var result = new ParserConflictInfo(row, column);
 
-            foreach (var alternative in decision.Alternatives())
+            foreach (var alternative in decision.AllAlternatives())
             {
                 if (decision.Instructions.Count != 1)
                 {
