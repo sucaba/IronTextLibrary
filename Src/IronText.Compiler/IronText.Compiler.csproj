@@ -66,14 +66,17 @@
     <Compile Include="Analysis\IDotItem.cs" />
     <Compile Include="Automata\Lalr1\ParserConflictResolver.cs" />
     <Compile Include="Automata\Lalr1\EncodedLrParserTable.cs" />
+    <Compile Include="Automata\Lalr1\TableBuilders\LrAlternateTermsTableFiller.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\GrammarProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\GrammarReaderProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\LanguageBuildConfig.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\LanguageDataInstanceProvider.cs" />
+    <Compile Include="Automata\Lalr1\TableBuilders\LrMainTableFiller.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\MatchActionToTokenTableProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserBytecodeProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserAutomataProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserConflictProvider.cs" />
+    <Compile Include="Automata\Lalr1\TableBuilders\LrTableBuilder.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserRuntimeDesignator.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserTableProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\LanguageBuildReports.cs" />

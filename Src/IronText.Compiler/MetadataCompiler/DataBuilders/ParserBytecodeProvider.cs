@@ -34,12 +34,13 @@ namespace IronText.MetadataCompiler
                     }
                     else
                     {
-                        startTable.Set(r, c, instructions.Count);
-                        CompileAmbiguousDecision(instructions, decision);
+                        startTable.Set(r, c, NextInstructionPos);
+                        CompileAmbiguousDecision(decision);
                     }
                 }
 
             this.Instructions = instructions.ToArray();
+            instructions.Clear();
             this.StartTable = startTable;
         }
 
@@ -47,31 +48,33 @@ namespace IronText.MetadataCompiler
 
         public ITable<int>         StartTable   { get; }
 
+        private int NextInstructionPos => instructions.Count;
+
+        private static ParserInstruction ForkStub => ParserInstruction.InternalErrorAction;
+
         private void CompileSharedFailureAction()
         {
             instructions.Add(ParserInstruction.FailAction);
             CompileBranchEnd();
         }
 
-        private void CompileAmbiguousDecision(List<ParserInstruction> instructions, ParserDecision decision)
+        private void CompileAmbiguousDecision(ParserDecision decision)
         {
-            int forkPos = instructions.Count;
+            int forkInstructionPos = NextInstructionPos;
 
-            foreach (var alternative in decision.OtherAlternatives())
+            foreach (var other in decision.OtherAlternatives())
             {
                 instructions.Add(ForkStub);
             }
 
             CompileDecision(decision);
 
-            foreach (var alternative in decision.OtherAlternatives())
+            foreach (var other in decision.OtherAlternatives())
             {
-                instructions[forkPos++] = ParserInstruction.Fork(instructions.Count);
-                CompileDecision(alternative);
+                instructions[forkInstructionPos++] = ParserInstruction.Fork(NextInstructionPos);
+                CompileDecision(other);
             }
         }
-
-        private static ParserInstruction ForkStub => ParserInstruction.InternalErrorAction;
 
         private void CompileDecision(ParserDecision decision)
         {
