@@ -1,4 +1,5 @@
-﻿using IronText.Runtime;
+﻿using IronText.Compiler.Analysis;
+using IronText.Runtime;
 
 namespace IronText.Automata.Lalr1
 {
@@ -17,36 +18,32 @@ namespace IronText.Automata.Lalr1
             {
                 foreach (var item in state.Items)
                 {
-                    if (!item.IsReduce)
-                    {
-                        foreach (var transition in item.Transitions)
-                        {
-                            builder.AssignAction(
-                                state.Index,
-                                transition.Token,
-                                ParserInstruction.Shift(
-                                    state.GetNextIndex(transition.Token)));
-                        }
-                    }
-                    else if (item.IsAugmented)
-                    {
-                        builder.AssignAction(
-                            state.Index,
-                            PredefinedTokens.Eoi,
-                            ParserInstruction.AcceptAction);
-                    }
-                    else
-                    {
-                        var action = ParserInstruction.Reduce(item.ProductionId);
+                    AssignItemActions(builder, state, item);
+                }
+            }
+        }
 
-                        foreach (var lookahead in item.LA)
-                        {
-                            builder.AssignAction(
-                                state.Index,
-                                lookahead,
-                                action);
-                        }
-                    }
+        private static void AssignItemActions(
+            LrTableBuilder builder,
+            DotState state,
+            DotItem item)
+        {
+            if (!item.IsReduce)
+            {
+                foreach (var itemTransition in item.Transitions)
+                {
+                    builder.AssignShift(state, itemTransition);
+                }
+            }
+            else if (item.IsAugmented)
+            {
+                builder.AssignAccept(state);
+            }
+            else
+            {
+                foreach (var lookahead in item.LA)
+                {
+                    builder.AssignReduce(state, item, lookahead);
                 }
             }
         }

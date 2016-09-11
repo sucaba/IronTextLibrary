@@ -26,7 +26,7 @@ namespace IronText.Automata.Lalr1
 
             fillMainTable.Apply(builder);
 
-            HasUnresolvedTerminalAmbiguities = alternateTerms.Apply(builder);
+            HasUnresolvedTerminalAmbiguities = !alternateTerms.Apply(builder);
         }
 
         public bool HasUnresolvedTerminalAmbiguities { get; }

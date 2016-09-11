@@ -15,8 +15,6 @@ namespace IronText.Compiler.Analysis
 
         public int   EnvelopeIndex { get; private set; }
 
-        public int   MainToken     { get { return Alternatives[0]; } }
-
         public int[] Alternatives  { get; private set; }
     }
 }
