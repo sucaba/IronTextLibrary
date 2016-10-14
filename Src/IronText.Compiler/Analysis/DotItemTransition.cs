@@ -12,6 +12,6 @@
 
         public int Token { get; }
 
-        public DotItem GetNextItem() => priorItem.CreateNextItem(Token);
+        public DotItem CreateNextItem() => priorItem.CreateNextItem(Token);
     }
 }

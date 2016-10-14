@@ -121,7 +121,7 @@ namespace IronText.Automata.Lalr1
                 state,
                 transition.Token,
                 ParserInstruction.Shift(
-                    state.GetNext(transition.Token).Index));
+                    state.Goto(transition.Token).Index));
         }
 
         public void AssignAccept(DotState state)

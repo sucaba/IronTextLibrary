@@ -58,23 +58,26 @@ namespace IronText.Automata.Lalr1
         }
 
         [Conditional("DEBUG")]
-        private void PrintPropogation(List<DotState> lr0states, Tuple<int, int, int> sourceItemId, Tuple<int, int, int> destinationItemId)
+        private void PrintPropogation(
+            List<DotState>    lr0states,
+            DotPoint sourceItemId,
+            DotPoint destinationItemId)
         {
-            var sourceItem = GetItem(lr0states, sourceItemId);
-            var destItem = GetItem(lr0states, destinationItemId);
+            var sourceItem = sourceItemId.Item;
+            var destItem = destinationItemId.Item;
             var lookaheads = sourceItem.LA.Except(destItem.LA).Select(grammar.GetTokenName);
 
             var output = new StringBuilder();
-            output.Append(">>> I").Append(sourceItemId.Item1).Append(": ");
+            output.Append(">>> I").Append(sourceItemId.State).Append(": ");
             DescribeItem(sourceItem, output, showLookaheads:false);
             output.Append(" ==[").Append(string.Join(" ", lookaheads)).Append("]==>    ");
-            output.Append("I").Append(destinationItemId.Item1).Append(": ");
+            output.Append("I").Append(destinationItemId.State).Append(": ");
             DescribeItem(destItem, output, showLookaheads:true);
             Debug.WriteLine(output);
         }
 
         [Conditional("DEBUG")]
-        private void PrintPropogationTable(List<DotState> lr0states, Dictionary<Tuple<int, int, int>, List<Tuple<int, int, int>>> propogation)
+        private void PrintPropogationTable(List<DotState> lr0states, Dictionary<DotPoint, List<DotPoint>> propogation)
         {
             var output = new StringBuilder();
             output.AppendLine(new string('-', 50));
@@ -82,12 +85,12 @@ namespace IronText.Automata.Lalr1
 
             foreach (var pair in propogation)
             {
-                output.Append("I").Append(pair.Key.Item1).Append(": ");
-                DescribeItem(GetItem(lr0states, pair.Key), output).AppendLine(" -> ");
+                output.Append("I").Append(pair.Key.State).Append(": ");
+                DescribeItem(pair.Key.Item, output).AppendLine(" -> ");
                 foreach (var destId in pair.Value)
                 {
-                    output.Append("  I").Append(destId.Item1).Append(": ");
-                    DescribeItem(GetItem(lr0states, destId), output).AppendLine();
+                    output.Append("  I").Append(destId.State).Append(": ");
+                    DescribeItem(destId.Item, output).AppendLine();
                 }
             }
             Debug.Write(output);

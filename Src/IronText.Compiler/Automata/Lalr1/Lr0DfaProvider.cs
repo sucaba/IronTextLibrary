@@ -40,7 +40,7 @@ namespace IronText.Automata.Lalr1
 
                     var nextItemsByToken = itemSet
                         .SelectMany(item => item.Transitions)
-                        .GroupBy(x => x.Token, x => x.GetNextItem());
+                        .GroupBy(x => x.Token, x => x.CreateNextItem());
 
                     foreach (var group in nextItemsByToken)
                     {
@@ -61,7 +61,7 @@ namespace IronText.Automata.Lalr1
                             result.Add(nextState);
                         }
 
-                        if (result[i].AddTransition(token, nextState))
+                        if (result[i].AddGoto(token, nextState))
                         {
                             addedStatesInRound = true;
                         }
@@ -73,7 +73,7 @@ namespace IronText.Automata.Lalr1
             return result.ToArray();
         }
 
-        public MutableDotItemSet Closure(MutableDotItemSet itemSet)
+        public MutableDotItemSet Closure(IDotItemSet itemSet)
         {
             var result = new MutableDotItemSet();
             result.AddRange(itemSet);

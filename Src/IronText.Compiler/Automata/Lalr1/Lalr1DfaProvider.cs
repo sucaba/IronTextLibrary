@@ -37,146 +37,119 @@ namespace IronText.Automata.Lalr1
 
         public DotState[] States { get; }
 
-        /// <summary>
-        /// Optimized algorithm for building LALR(1) states
-        /// </summary>
         private DotState[] Build()
         {
-            // 1. Construct the kernels of the sets of LR(0) items for G.
             var result = lr0.States;
 
             FillLookaheads(result);
 
-            return result;
-
 #if VERBOSE
-            PrintStates("Final LALR(1) states:", states);
+            PrintStates("Final LALR(1) states:", result);
 #endif
+            return result;
         }
 
-        private void FillLookaheads(DotState[] result)
+        private void FillLookaheads(DotState[] states)
         {
-            foreach (var state in result)
+            foreach (var state in states)
                 foreach (var item in state.Items)
                     item.LA = TokenSet.Mutable();
 
 #if VERBOSE
-            PrintStates("LR(0) Kernels:", lr0states);
+            PrintStates("LR(0) Kernels:", states);
 #endif
 
-            // 2. Apply Algorithm 4.62 to the kernel of each set of LR(0) items and grammar
+            // Apply Algorithm 4.62 to the kernel of each set of LR(0) items and grammar
             // symbol X to determine which lookaheads are spontaneously generated
             // for kernel items in GOTO(I, X), and from which items in I lookaheads
             // are propagated to kernel items in GOTO(I, X).
-            result[0].KernelItems[0].LA.Add(PredefinedTokens.Eoi);
+            states[0].KernelItems[0].LA.Add(PredefinedTokens.Eoi);
 
-            var propogation = DetermineLookaheads(result);
+            var propagation = BuildSponaneousLookaheadTable(states);
 
 #if VERBOSE
-            PrintPropogationTable(lr0states, propogation);
-            PrintStates("INIT: Before lookahead propogation", lr0states);
+            PrintPropogationTable(states, propogation);
+            PrintStates("INIT: Before lookahead propogation", states);
             int pass = 0;
 #endif
 
-            bool lookaheadsPropogated;
+            bool modified;
             do
             {
-                lookaheadsPropogated = false;
-                for (int from = 0; from != result.Length; ++from)
+                modified = false;
+                foreach (var fromPoint in KernelPoints(states))
                 {
-                    var kernelSet = result[from].KernelItems;
-                    foreach (var item in kernelSet)
-                    {
-                        List<Tuple<int, int, int>> propogatedItems;
-                        var itemId = Tuple.Create(from, item.ProductionId, item.Position);
-                        if (propogation.TryGetValue(itemId, out propogatedItems))
-                        {
-                            foreach (var propogatedItemId in propogatedItems)
-                            {
-                                var propogatedItem = result[propogatedItemId.Item1].GetItem(propogatedItemId.Item2, propogatedItemId.Item3);
+                    var fromLA = fromPoint.Item.LA;
 
-                                // TODO: Optimize algorithm by introducing some modification timestamps on items
-                                if (!item.LA.IsSubsetOf(propogatedItem.LA))
-                                {
+                    foreach (var toPoint in propagation.Get(fromPoint))
+                    {
+                        var toLA = toPoint.Item.LA;
+
+                        // TODO: Optimize algorithm by introducing some modification timestamps on items
+                        if (!fromLA.IsSubsetOf(toLA))
+                        {
 #if VERBOSE
-                                    PrintPropogation(lr0states, itemId, propogatedItemId);
+                            PrintPropogation(states, itemId, propogatedItemId);
 #endif
 
-                                    propogatedItem.LA.AddAll(item.LA);
-                                    lookaheadsPropogated = true;
-                                }
-                            }
+                            toLA.AddAll(fromLA);
+                            modified = true;
                         }
                     }
                 }
 
 #if VERBOSE
-                PrintStates("PASS #" + ++pass + ": ", lr0states);
+                PrintStates("PASS #" + ++pass + ": ", states);
 #endif
             }
-            while (lookaheadsPropogated);
+            while (modified);
 
             // Copy lookaheads from the kernel items to non-kernels
-            foreach (var state in result)
+            foreach (var state in states)
             {
                 CollectClosureLookaheads(state.Items);
             }
         }
 
-        /// <summary>
-        /// Fills kernel items with "spontaneous" lookaheads and returns table for
-        /// lookahead propogation.
-        /// </summary>
-        private Dictionary<Tuple<int, int, int>, List<Tuple<int, int, int>>> 
-            DetermineLookaheads(DotState[] lr0states)
-        {
-            var result = new Dictionary<Tuple<int, int, int>, List<Tuple<int, int, int>>>();
-            for (int from = 0; from != lr0states.Length; ++from)
-            {
-                var fromState = lr0states[from];
-                var fromKernel = fromState.KernelItems;
+        private static IEnumerable<DotPoint> KernelPoints(DotState[] states) =>
+            states
+            .SelectMany(state =>
+                state
+                .KernelItems
+                .Select(item =>
+                    new DotPoint(state, item)));
 
-                foreach (var fromItem in fromKernel)
-                {
-                    var J = Closure(
-                        new MutableDotItemSet 
-                        {
-                            new DotItem(fromItem)
+
+        private PropagationTable BuildSponaneousLookaheadTable(DotState[] states)
+        {
+            var result = new PropagationTable();
+
+            foreach (var fromPoint in KernelPoints(states))
+            {
+                var J = Closure(
+                    new MutableDotItemSet
+                    {
+                            new DotItem(fromPoint.Item)
                             {
                                 LA = TokenSet.Of(PredefinedTokens.Propagated).EditCopy()
                             }
-                        });
+                    });
 
-                    foreach (var closedItem in J)
+                foreach (var closedItem in J)
+                {
+                    foreach (var transition in closedItem.Transitions)
                     {
-                        foreach (var transition in closedItem.Transitions)
+                        var toPoint = fromPoint.Goto(transition);
+
+                        foreach (var lookahead in closedItem.LA)
                         {
-                            int X = transition.Token;
-                            var gotoXstate = fromState.GetNext(X);
-                            var gotoX = gotoXstate.Index;
-                            Debug.Assert(gotoX >= 0, "Internal error. Non-existing state.");
-
-                            var nextItemIds = Tuple.Create(gotoX, closedItem.ProductionId, closedItem.Position + 1);
-
-                            foreach (var lookahead in closedItem.LA)
+                            if (lookahead == PredefinedTokens.Propagated)
                             {
-                                if (lookahead == PredefinedTokens.Propagated)
-                                {
-                                    List<Tuple<int, int, int>> propogatedItems;
-                                    var key = Tuple.Create(from, fromItem.ProductionId, fromItem.Position);
-                                    if (!result.TryGetValue(key, out propogatedItems))
-                                    {
-                                        propogatedItems = new List<Tuple<int, int, int>>();
-                                        result[key] = propogatedItems;
-                                    }
-
-                                    propogatedItems.Add(nextItemIds);
-                                }
-                                else
-                                {
-                                    var nextItem = gotoXstate.GetItem(nextItemIds.Item2, nextItemIds.Item3);
-                                    nextItem.LA.Add(lookahead);
-                                }
+                                result.Add(fromPoint, toPoint);
+                            }
+                            else
+                            {
+                                toPoint.Item.LA.Add(lookahead);
                             }
                         }
                     }
@@ -186,9 +159,9 @@ namespace IronText.Automata.Lalr1
             return result;
         }
 
-        private MutableDotItemSet Closure(MutableDotItemSet mutableDotItemSet)
+        private MutableDotItemSet Closure(IDotItemSet itemSet)
         {
-            var result = lr0.Closure(mutableDotItemSet);
+            var result = lr0.Closure(itemSet);
             foreach (var item in result)
             {
                 if (item.LA == null)
@@ -199,13 +172,6 @@ namespace IronText.Automata.Lalr1
 
             return result;
         }
-
-        private static DotItem GetItem(List<DotState> lr0states, Tuple<int, int, int> stateRulePos)
-        {
-            var state = lr0states[stateRulePos.Item1];
-            return state.GetItem(stateRulePos.Item2, stateRulePos.Item3);
-        }
-
 
         private void CollectClosureLookaheads(IDotItemSet result)
         {
@@ -233,7 +199,7 @@ namespace IronText.Automata.Lalr1
                                     countBefore = toItem.LA.Count;
                                 }
 
-                                grammar.AddFirst(transition.GetNextItem(), toItem.LA);
+                                grammar.AddFirst(transition.CreateNextItem(), toItem.LA);
 
                                 if (!modified)
                                 {
@@ -250,6 +216,46 @@ namespace IronText.Automata.Lalr1
                 }
             }
             while (modified);
+        }
+
+        struct DotPoint
+        {
+            public DotState State;
+            public DotItem  Item;
+
+            public DotPoint(DotState state, DotItem item)
+            {
+                this.State = state;
+                this.Item  = state.GetItem(item.ProductionId, item.Position);
+            }
+
+            public DotPoint Goto(DotItemTransition transition) =>
+                new DotPoint(
+                    State.Goto(transition.Token),
+                    transition.CreateNextItem());
+        }
+
+        class PropagationTable : Dictionary<DotPoint, List<DotPoint>>
+        {
+            public void Add(DotPoint from, DotPoint to)
+            {
+                List<DotPoint> tos;
+                if (!TryGetValue(from, out tos))
+                {
+                    tos = new List<DotPoint>();
+                    this.Add(from, tos);
+                }
+
+                tos.Add(to);
+            }
+
+            public IEnumerable<DotPoint> Get(DotPoint from)
+            {
+                List<DotPoint> result;
+                return TryGetValue(from, out result)
+                    ? result
+                    : Enumerable.Empty<DotPoint>();
+            }
         }
     }
 }

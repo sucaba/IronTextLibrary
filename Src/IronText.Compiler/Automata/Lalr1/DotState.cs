@@ -55,7 +55,7 @@ namespace IronText.Automata.Lalr1
             }
         }
 
-        public DotState GetNext(int token)
+        public DotState Goto(int token)
         {
             foreach (var t in Transitions)
             {
@@ -68,7 +68,7 @@ namespace IronText.Automata.Lalr1
             return FailState;
         }
 
-        public bool AddTransition(int token, DotState to)
+        public bool AddGoto(int token, DotState to)
         {
             if (Transitions.Any(t => t.Token == token))
             {
