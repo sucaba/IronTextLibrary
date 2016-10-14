@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace IronText.Automata.Lalr1
 {
-    class LrTableBuilder
+    class LrTableBuilder : ILrTableBuilder
     {
         private readonly ParserConflictResolver conflictResolver;
         private MutableTable<ParserDecision> decisionTable;
@@ -45,13 +45,13 @@ namespace IronText.Automata.Lalr1
                 return false;
             }
 
-            // We need to pick proper term data from <see cref="Message" />
-            // and for a main token scanner should pass a data as a first
-            // (=default) item.
-            // This way resolution (=picking proper item from term-data 
-            // list alternatives) is needed only for non-main terms.
+            // We need to pick proper term data from <see cref="Message" />.
             if (resolvedToken == alternateTokens[0])
             {
+                // For a main token scanner should pass a data as a first
+                // (=default) item. This way resolution (=picking proper item 
+                // from term-data list alternatives) is needed only for 
+                // non-main terms.
                 AssignAction(
                     state,
                     ambiguousToken,
@@ -80,7 +80,7 @@ namespace IronText.Automata.Lalr1
             switch (count)
             {
                 case 0:
-                    // Resolve as a failure for a first token
+                    // Resolve as a failure for a main token
                     resolvedToken = alternateTokens[0];
                     resolvedDecision = ParserDecision.NoAlternatives;
                     break;
@@ -121,7 +121,7 @@ namespace IronText.Automata.Lalr1
                 state,
                 transition.Token,
                 ParserInstruction.Shift(
-                    state.GetNextIndex(transition.Token)));
+                    state.GetNext(transition.Token).Index));
         }
 
         public void AssignAccept(DotState state)

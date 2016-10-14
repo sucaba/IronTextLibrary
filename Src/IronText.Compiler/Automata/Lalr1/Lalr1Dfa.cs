@@ -27,53 +27,15 @@ namespace IronText.Automata.Lalr1
 
         private DotState[] states;
 
-        public Lalr1Dfa(GrammarAnalysis grammar, LrTableOptimizations optimizations)
+        public Lalr1Dfa(GrammarAnalysis grammar)
         {
-            this.grammar       = grammar;
-            this.Optimizations = optimizations;
-            this.TokenSet      = grammar.TokenSet;
+            this.grammar  = grammar;
+            this.TokenSet = grammar.TokenSet;
 
             BuildLalr1States();
-
-            if ((Optimizations & LrTableOptimizations.EliminateLr0ReduceStates) != 0)
-            {
-                EliminateLr0ReduceStates();
-            }
         }
 
-        public LrTableOptimizations Optimizations { get; private set; }
-
-        private void EliminateLr0ReduceStates()
-        {
-            var newStates = new List<DotState>();
-            var removed = new List<DotState>();
-
-            int index = 0;
-            foreach (var state in this.states)
-            {
-                if (!state.IsReduceState)
-                {
-                    state.Reindex(index++);
-                    newStates.Add(state);
-                }
-                else
-                {
-                    removed.Add(state);
-                }
-            }
-
-#if false
-            Debug.WriteLine("Removed {0} LR0-reduce states.", removed.Count);
-#endif
-            this.states = newStates.ToArray();
-
-            foreach (var state in this.states)
-            {
-                state.Transitions.RemoveAll(t => removed.Contains(t.To));
-            }
-        }
-
-        public DotState[] States { get { return this.states; } }
+        public DotState[] States => states;
 
         /// <summary>
         /// Optimized algorithm for building LALR(1) states
@@ -184,7 +146,7 @@ namespace IronText.Automata.Lalr1
                         {
                             int X = transition.Token;
                             var gotoXstate = fromState.GetNext(X);
-                            var gotoX = gotoXstate == null ? -1 : gotoXstate.Index;
+                            var gotoX = gotoXstate.Index;
                             Debug.Assert(gotoX >= 0, "Internal error. Non-existing state.");
 
                             var nextItemIds = Tuple.Create(gotoX, closedItem.ProductionId, closedItem.Position + 1);
@@ -270,7 +232,7 @@ namespace IronText.Automata.Lalr1
                             result.Add(nextState);
                         }
 
-                        if (result[i].AddTransition(token, nextState, TokenSet))
+                        if (result[i].AddTransition(token, nextState))
                         {
                             addedStatesInRound = true;
                         }

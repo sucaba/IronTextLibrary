@@ -66,6 +66,7 @@
     <Compile Include="Analysis\IDotItem.cs" />
     <Compile Include="Automata\Lalr1\ParserConflictResolver.cs" />
     <Compile Include="Automata\Lalr1\EncodedLrParserTable.cs" />
+    <Compile Include="Automata\Lalr1\TableBuilders\ILrTableBuilder.cs" />
     <Compile Include="Automata\Lalr1\TableBuilders\LrAlternateTermsTableFiller.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\GrammarProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\GrammarReaderProvider.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="MetadataCompiler\DataBuilders\RuntimeSematicsProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ScannerAutomataProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\SemanticBindingProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\StateToSymbolTableProvider.cs" />
     <Compile Include="Semantics\InheritedPropertyECCollection.cs" />
     <Compile Include="Semantics\InheritedPropertyEC.cs" />
     <None Include="Algorithm\Graphs\TarjanSccAlgorithm.cs" />
@@ -117,7 +119,6 @@
     <Compile Include="Automata\Lalr1\IMutableDotItemSet.cs" />
     <Compile Include="Automata\Lalr1\Lalr1Dfa.cs" />
     <Compile Include="Automata\Lalr1\Lalr1Dfa.Diagnostics.cs" />
-    <Compile Include="Automata\Lalr1\LrTableOptimizations.cs" />
     <Compile Include="Automata\Lalr1\MutableDotItemSet.cs" />
     <Compile Include="Automata\Lalr1\TransitionKey.cs" />
     <Compile Include="Automata\Regular\Alphabets\EquivalenceClassesAlphabet.cs" />

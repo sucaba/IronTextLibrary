@@ -8,17 +8,13 @@ namespace IronText.Automata.Lalr1
 {
     public sealed class DotState
     {
+        public static readonly DotState FailState = new DotState(-1, new DotItem[0]);
+
         public readonly IDotItemSet Items;
         public readonly List<DotTransition> Transitions = new List<DotTransition>();
 
         private MutableDotItemSet cachedKernel;
         private int index;
-
-        public DotState(int index)
-        {
-            this.index = index;
-            this.Items = new MutableDotItemSet();
-        }
 
         public DotState(int index, IEnumerable<DotItem> dotItems)
         {
@@ -26,9 +22,9 @@ namespace IronText.Automata.Lalr1
             this.Items = new MutableDotItemSet(dotItems);
         }
 
-        public int Index { get { return this.index; } }
+        public int Index => index;
 
-        public bool IsReduceState
+        public bool IsDeterministicReduce
         {
             get
             {
@@ -44,7 +40,7 @@ namespace IronText.Automata.Lalr1
             this.index = newIndex;
         }
 
-        public MutableDotItemSet KernelItems
+        public IDotItemSet KernelItems
         {
             get
             {
@@ -59,58 +55,28 @@ namespace IronText.Automata.Lalr1
             }
         }
 
-        public int GetStateToken()
-        {
-            foreach (var item in Items)
-            {
-                int token = item.PreviousToken;
-                if (token != -1)
-                {
-                    return token;
-                }
-            }
-
-            return -1;
-        }
-
-        public int GetNextIndex(int token)
-        {
-            var next = GetNext(token);
-            return next == null ? -1 : next.Index;
-        }
-
         public DotState GetNext(int token)
         {
             foreach (var t in Transitions)
             {
-                if (t.Tokens.Contains(token))
+                if (t.Token == token)
                 {
                     return t.To;
                 }
             }
 
-            return null;
+            return FailState;
         }
 
-        public bool AddTransition(int token, DotState to, IntSetType tokenSetType)
+        public bool AddTransition(int token, DotState to)
         {
-            bool result;
-
-            var existing = Transitions.FirstOrDefault(t => t.To == to);
-            if (existing == null)
+            if (Transitions.Any(t => t.Token == token))
             {
-                existing = new DotTransition(tokenSetType.Mutable(), to);
-                Transitions.Add(existing);
-                result = true;
-            }
-            else
-            {
-                result = !existing.Tokens.Contains(token);
+                return false;
             }
 
-            existing.Tokens.Add(token);
-
-            return result;
+            Transitions.Add(new DotTransition(token, to));
+            return true;
         }
 
         public DotItem GetItem(int prodId, int dotPos)

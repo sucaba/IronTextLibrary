@@ -43,8 +43,7 @@ namespace IronText.Tests.Framework.Performance
             var target = new Lalr1Dfa(
                 new GrammarAnalysis(
                     grammar,
-                    new AmbTokenInfo[0]),
-                LrTableOptimizations.Default);
+                    new AmbTokenInfo[0]));
         }
     }
 }

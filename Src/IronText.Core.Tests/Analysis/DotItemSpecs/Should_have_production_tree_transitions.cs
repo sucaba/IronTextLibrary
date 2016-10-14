@@ -25,7 +25,6 @@ namespace IronText.Tests.Analysis.DotItemSpecs
                 new[] { X },
                 new RuntimeProductionNode(
                     S,
-                    
                     )); 
             var sut = new DotItem();
         }

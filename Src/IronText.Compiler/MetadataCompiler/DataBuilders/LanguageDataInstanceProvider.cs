@@ -19,7 +19,8 @@ namespace IronText.MetadataCompiler
             RuntimeGrammar                  runtimeGrammar,
             SemanticBindingProvider         semanticBindingsProvider,
             ParserBytecodeProvider          instructionProvider,
-            ParserRuntimeDesignator         runtimeDesignator)
+            ParserRuntimeDesignator         runtimeDesignator,
+            StateToSymbolTableProvider      stateToSymbolTableProvider)
         {
             Data = new LanguageData
             {
@@ -27,7 +28,7 @@ namespace IronText.MetadataCompiler
                 Grammar              = grammar,
                 RuntimeGrammar       = runtimeGrammar,
                 TokenComplexity      = analysis.GetTokenComplexity(),
-                StateToToken         = parserDfa.GetStateToSymbolTable(),
+                StateToToken         = stateToSymbolTableProvider.Table,
                 ParserDecisionTable  = lrTable.DecisionTable,
                 ParserStartTable     = instructionProvider.StartTable,
                 MatchActionToToken   = actionToTokenProvider.ActionToToken,

@@ -4,12 +4,12 @@ namespace IronText.Automata.Lalr1
 {
     public class DotTransition
     {
-        public readonly MutableIntSet Tokens;
+        public readonly int Token;
         public readonly DotState To;
 
-        public DotTransition(MutableIntSet tokens, DotState to)
+        public DotTransition(int token, DotState to)
         {
-            this.Tokens = tokens;
+            this.Token = token;
             this.To = to;
         }
     }
