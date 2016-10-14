@@ -18,32 +18,47 @@ namespace IronText.Automata.Lalr1
     /// 3. By closure (for non-kernel items only):
     ///     A : C . X D [S] ==> X : . E [+firsts(D [S])]
     /// </summary>
-    partial class Lalr1Dfa : ILrDfa
+    partial class Lalr1DfaProvider : ILrDfa
     {
         private readonly BitSetType TokenSet;
-        private BitSetType StateSet;
 
         private readonly GrammarAnalysis grammar;
 
-        private DotState[] states;
+        private readonly Lr0DfaProvider lr0;
 
-        public Lalr1Dfa(GrammarAnalysis grammar)
+        public Lalr1DfaProvider(GrammarAnalysis grammar)
         {
             this.grammar  = grammar;
             this.TokenSet = grammar.TokenSet;
+            this.lr0 = new Lr0DfaProvider(grammar);
 
-            BuildLalr1States();
+            this.States = Build();
         }
 
-        public DotState[] States => states;
+        public DotState[] States { get; }
 
         /// <summary>
         /// Optimized algorithm for building LALR(1) states
         /// </summary>
-        private void BuildLalr1States()
+        private DotState[] Build()
         {
             // 1. Construct the kernels of the sets of LR(0) items for G.
-            var lr0states = BuildLr0ItemSets();
+            var result = lr0.States;
+
+            FillLookaheads(result);
+
+            return result;
+
+#if VERBOSE
+            PrintStates("Final LALR(1) states:", states);
+#endif
+        }
+
+        private void FillLookaheads(DotState[] result)
+        {
+            foreach (var state in result)
+                foreach (var item in state.Items)
+                    item.LA = TokenSet.Mutable();
 
 #if VERBOSE
             PrintStates("LR(0) Kernels:", lr0states);
@@ -53,9 +68,9 @@ namespace IronText.Automata.Lalr1
             // symbol X to determine which lookaheads are spontaneously generated
             // for kernel items in GOTO(I, X), and from which items in I lookaheads
             // are propagated to kernel items in GOTO(I, X).
-            lr0states[0].KernelItems[0].LA.Add(PredefinedTokens.Eoi);
+            result[0].KernelItems[0].LA.Add(PredefinedTokens.Eoi);
 
-            var propogation = DetermineLookaheads(lr0states);
+            var propogation = DetermineLookaheads(result);
 
 #if VERBOSE
             PrintPropogationTable(lr0states, propogation);
@@ -67,9 +82,9 @@ namespace IronText.Automata.Lalr1
             do
             {
                 lookaheadsPropogated = false;
-                for (int from = 0; from != lr0states.Length; ++from)
+                for (int from = 0; from != result.Length; ++from)
                 {
-                    var kernelSet = lr0states[from].KernelItems;
+                    var kernelSet = result[from].KernelItems;
                     foreach (var item in kernelSet)
                     {
                         List<Tuple<int, int, int>> propogatedItems;
@@ -78,7 +93,7 @@ namespace IronText.Automata.Lalr1
                         {
                             foreach (var propogatedItemId in propogatedItems)
                             {
-                                var propogatedItem = lr0states[propogatedItemId.Item1].GetItem(propogatedItemId.Item2, propogatedItemId.Item3);
+                                var propogatedItem = result[propogatedItemId.Item1].GetItem(propogatedItemId.Item2, propogatedItemId.Item3);
 
                                 // TODO: Optimize algorithm by introducing some modification timestamps on items
                                 if (!item.LA.IsSubsetOf(propogatedItem.LA))
@@ -102,16 +117,10 @@ namespace IronText.Automata.Lalr1
             while (lookaheadsPropogated);
 
             // Copy lookaheads from the kernel items to non-kernels
-            foreach (var state in lr0states)
+            foreach (var state in result)
             {
-                CollectClosureLookaheads(state.Items, grammar);
+                CollectClosureLookaheads(state.Items);
             }
-
-            this.states = lr0states;
-
-#if VERBOSE
-            PrintStates("Final LALR(1) states:", states);
-#endif
         }
 
         /// <summary>
@@ -129,7 +138,7 @@ namespace IronText.Automata.Lalr1
 
                 foreach (var fromItem in fromKernel)
                 {
-                    var J = ClosureLr0(
+                    var J = Closure(
                         new MutableDotItemSet 
                         {
                             new DotItem(fromItem)
@@ -137,8 +146,6 @@ namespace IronText.Automata.Lalr1
                                 LA = TokenSet.Of(PredefinedTokens.Propagated).EditCopy()
                             }
                         });
-
-                    CollectClosureLookaheads(J, grammar);
 
                     foreach (var closedItem in J)
                     {
@@ -179,135 +186,29 @@ namespace IronText.Automata.Lalr1
             return result;
         }
 
+        private MutableDotItemSet Closure(MutableDotItemSet mutableDotItemSet)
+        {
+            var result = lr0.Closure(mutableDotItemSet);
+            foreach (var item in result)
+            {
+                if (item.LA == null)
+                    item.LA = TokenSet.Mutable();
+            }
+
+            CollectClosureLookaheads(result);
+
+            return result;
+        }
+
         private static DotItem GetItem(List<DotState> lr0states, Tuple<int, int, int> stateRulePos)
         {
             var state = lr0states[stateRulePos.Item1];
             return state.GetItem(stateRulePos.Item2, stateRulePos.Item3);
         }
 
-        private DotState[] BuildLr0ItemSets()
+
+        private void CollectClosureLookaheads(IDotItemSet result)
         {
-            var result = new List<DotState>();
-
-            var initialItemSet = ClosureLr0(new MutableDotItemSet
-                { 
-                    new DotItem(grammar.AugmentedProduction, 0)
-                    { 
-                        LA = TokenSet.Mutable() 
-                    }
-                });
-            result.Add(new DotState(0, initialItemSet));
-
-            bool addedStatesInRound;
-
-            do
-            {
-                addedStatesInRound = false;
-
-                for (int i = 0; i != result.Count; ++i)
-                {
-                    var itemSet = result[i].Items;
-
-                    var nextItemsByToken = itemSet
-                        .SelectMany(item => item.Transitions)
-                        .GroupBy(x => x.Token, x => x.GetNextItem());
-
-                    foreach (var group in nextItemsByToken)
-                    {
-                        int token = group.Key;
-
-                        var nextStateItems = ClosureLr0(new MutableDotItemSet(group));
-
-                        CollectClosureLookaheads(nextStateItems, grammar);
-                        if (nextStateItems.Count == 0)
-                        {
-                            throw new InvalidOperationException("Internal error: next state cannot be empty");
-                        }
-
-                        var nextState = result.Find(state => state.Items.Equals(nextStateItems));
-                        if (nextState == null)
-                        {
-                            addedStatesInRound = true;
-                            nextState = new DotState(result.Count, nextStateItems);
-                            result.Add(nextState);
-                        }
-
-                        if (result[i].AddTransition(token, nextState))
-                        {
-                            addedStatesInRound = true;
-                        }
-                    }
-                }
-            }
-            while (addedStatesInRound);
-
-            StateSet = new BitSetType(result.Count);
-
-            return result.ToArray();
-        }
-
-        // TODO: Separate Closure from the lookahead closuring to get cached closure item sets
-        private MutableDotItemSet ClosureLr0(MutableDotItemSet itemSet)
-        {
-            var result = new MutableDotItemSet();
-            result.AddRange(itemSet);
-
-            bool modified;
-
-            do
-            {
-                modified = false;
-
-                // result may grow during iterations
-                for (int i = 0; i != result.Count; ++i)
-                {
-                    var item = result[i];
-
-                    foreach (var transition in item.Transitions)
-                    {
-                        int X = transition.Token;
-                        if (grammar.IsTerminal(X))
-                        {
-                            continue;
-                        }
-
-                        foreach (var childProd in grammar.GetProductions(X))
-                        {
-                            var newItem = new DotItem(childProd, 0)
-                            { 
-                                LA = TokenSet.Mutable()
-                            };
-
-                            var index = result.IndexOf(newItem);
-                            if (index < 0)
-                            {
-                                result.Add(newItem);
-                                modified = true;
-                            }
-                            else
-                            {
-                                var existing = result[index];
-                                existing.LA.AddAll(newItem.LA);
-                            }
-                        }
-                    }
-                }
-            }
-            while (modified);
-
-            return result;
-        }
-
-        // TODO: Performance
-        private static void CollectClosureLookaheads(IDotItemSet result, GrammarAnalysis grammar)
-        {
-            int count = result.Count;
-            if (count == 0)
-            {
-                return;
-            }
-
-            
             bool modified;
 
             // Debug.WriteLine("closured lookeads: item count = {0}", result.Count);
@@ -316,17 +217,14 @@ namespace IronText.Automata.Lalr1
             {
                 modified = false;
 
-                for (int i = 0; i != count; ++i)
+                foreach (var fromItem in result)
                 {
-                    var fromItem = result[i];
                     foreach (var transition in fromItem.Transitions)
                     {
                         int fromItemNextToken = transition.Token;
 
-                        for (int j = 0; j != count; ++j)
+                        foreach (var toItem in result)
                         {
-                            var toItem = result[j];
-
                             if (fromItemNextToken == toItem.Outcome)
                             {
                                 int countBefore = 0;

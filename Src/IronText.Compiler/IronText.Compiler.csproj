@@ -64,6 +64,7 @@
     <Compile Include="Algorithm\Functions.cs" />
     <Compile Include="Analysis\DotItemTransition.cs" />
     <Compile Include="Analysis\IDotItem.cs" />
+    <Compile Include="Automata\Lalr1\Lr0Dfa.cs" />
     <Compile Include="Automata\Lalr1\ParserConflictResolver.cs" />
     <Compile Include="Automata\Lalr1\EncodedLrParserTable.cs" />
     <Compile Include="Automata\Lalr1\TableBuilders\ILrTableBuilder.cs" />
@@ -117,8 +118,8 @@
     <Compile Include="Automata\Lalr1\ILrDfa.cs" />
     <Compile Include="Automata\Lalr1\ILrParserTable.cs" />
     <Compile Include="Automata\Lalr1\IMutableDotItemSet.cs" />
-    <Compile Include="Automata\Lalr1\Lalr1Dfa.cs" />
-    <Compile Include="Automata\Lalr1\Lalr1Dfa.Diagnostics.cs" />
+    <Compile Include="Automata\Lalr1\Lalr1DfaProvider.cs" />
+    <Compile Include="Automata\Lalr1\Lalr1DfaProvider.Diagnostics.cs" />
     <Compile Include="Automata\Lalr1\MutableDotItemSet.cs" />
     <Compile Include="Automata\Lalr1\TransitionKey.cs" />
     <Compile Include="Automata\Regular\Alphabets\EquivalenceClassesAlphabet.cs" />

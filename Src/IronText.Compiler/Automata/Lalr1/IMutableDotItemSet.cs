@@ -8,7 +8,7 @@ namespace IronText.Automata.Lalr1
     {
         new DotItem this[int index] { get; set; }
 
-        void Add(DotItem item);
+        bool Add(DotItem item);
 
         void AddRange(IEnumerable<DotItem> items);
     }

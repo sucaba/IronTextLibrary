@@ -8,7 +8,7 @@ using IronText.Runtime;
 
 namespace IronText.Automata.Lalr1
 {
-    partial class Lalr1Dfa
+    partial class Lalr1DfaProvider
 	{
         private StringBuilder DescribeState(MutableDotItemSet state, StringBuilder output, string indent)
         {

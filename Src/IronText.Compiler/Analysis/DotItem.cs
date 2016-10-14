@@ -63,7 +63,7 @@ namespace IronText.Compiler.Analysis
         internal DotItem CreateNextItem(int token) =>
             new DotItem(production, Position + 1)
             {
-                LA = LA.EditCopy()
+                LA = LA?.EditCopy()
             };
     }
 }

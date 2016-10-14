@@ -40,7 +40,7 @@ namespace IronText.Tests.Framework.Performance
             grammar.Start = symbols[0];
             grammar.BuildIndexes();
 
-            var target = new Lalr1Dfa(
+            var target = new Lalr1DfaProvider(
                 new GrammarAnalysis(
                     grammar,
                     new AmbTokenInfo[0]));

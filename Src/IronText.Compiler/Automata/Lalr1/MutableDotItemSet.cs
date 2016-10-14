@@ -17,9 +17,23 @@ namespace IronText.Automata.Lalr1
             this.items = new List<DotItem>(items);
         }
 
-        public void Add(DotItem item)
+        public bool Add(DotItem item)
         {
+            if (items.Contains(item))
+            {
+                return false;
+            }
+
             items.Add(item);
+            return true;
+        }
+
+        public IEnumerable<DotItem> EnumerateGrowable()
+        {
+            for (int i = 0; i != Count; ++i)
+            {
+                yield return items[i];
+            }
         }
 
         public override bool Equals(object other)

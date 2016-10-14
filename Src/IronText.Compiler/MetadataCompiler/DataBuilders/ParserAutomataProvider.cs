@@ -17,7 +17,7 @@ namespace IronText.MetadataCompiler
                 source.GrammarOrigin,
                 () =>
                 {
-                    Dfa = new Lalr1Dfa(analysis);
+                    Dfa = new Lalr1DfaProvider(analysis);
                 },
                 "building LALR1 DFA");
         }
