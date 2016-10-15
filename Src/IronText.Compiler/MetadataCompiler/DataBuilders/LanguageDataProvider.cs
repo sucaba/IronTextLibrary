@@ -6,6 +6,7 @@ using IronText.Reflection.Reporting;
 using IronText.Runtime;
 using IronText.DI;
 using IronText.Automata.Regular;
+using IronText.MetadataCompiler.DataBuilders.Infrastsructure;
 
 namespace IronText.MetadataCompiler
 {
@@ -28,13 +29,14 @@ namespace IronText.MetadataCompiler
                 logging,
                 source,
                 config,
+                typeof(LoggingIstantiator),
                 (GrammarReaderProvider p) => p.Reader,
                 (GrammarProvider p) => p.Grammar,
                 (Grammar g) => g.Options,
                 (Grammar g) => g.Reports,
                 (ScannerAutomataProvider p) => p.Tdfa,
                 (ScannerAmbiguityProvider p) => p.Ambiguities,
-                (ParserAutomataProvider p) => p.Dfa,
+                (Lalr1DfaProvider p) => (ILrDfa)p,
                 (ParserConflictProvider p) => p.Conflicts,
                 (ParserTableProvider p) => p.LrParserTable,
                 (RuntimeGrammarProvider p) => p.Outcome,

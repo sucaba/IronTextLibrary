@@ -135,11 +135,14 @@ namespace IronText.DI
 
         public void Add(Type contract, Func<object> getter)
         {
-            if (typeToGetter.ContainsKey(contract))
+            if (typeToGetter.ContainsKey(contract) 
+                && !TryCombineGetters(contract, ref getter))
             {
                 throw new InvalidOperationException(
                     $"Dependency {contract.FullName} is already defined");
             }
+
+            Decorate(contract, ref getter);
 
             if (contract is IHasSideEffects)
             {
@@ -160,6 +163,47 @@ namespace IronText.DI
                     return memoized;
                 };
             }
+        }
+
+        private void Decorate(Type contract, ref Func<object> getter)
+        {
+            if (typeof(IInstantiator).IsAssignableFrom(contract))
+            {
+                return;
+            }
+
+            var inner = getter;
+            var instantiator = GetInstantiator();
+            getter = () => instantiator.Execute(contract, inner);
+        }
+
+        private IInstantiator GetInstantiator()
+        {
+            Func<object> getter;
+            if (typeToGetter.TryGetValue(typeof(IInstantiator), out getter))
+            {
+                return (IInstantiator)getter();
+            }
+
+            return TrivialInstantiator.Instance;
+        }
+
+        private bool TryCombineGetters(
+            Type contract,
+            ref Func<object> getter)
+        {
+            if (contract == typeof(IInstantiator))
+            {
+                var outer = getter;
+                var inner = typeToGetter[contract];
+
+                getter = () => new CombinedFactoryInstantiator(
+                            (IInstantiator)outer(),
+                            (IInstantiator)inner());
+                return true;
+            }
+
+            return false;
         }
 
         private Func<object> ResolveGetter(Type type)
@@ -231,6 +275,25 @@ namespace IronText.DI
         IEnumerator IEnumerable.GetEnumerator()
         {
             return typeToGetter.Keys.GetEnumerator();
+        }
+
+        class CombinedFactoryInstantiator : IInstantiator
+        {
+            private readonly IInstantiator outer;
+            private readonly IInstantiator inner;
+
+            public CombinedFactoryInstantiator(
+                IInstantiator outer,
+                IInstantiator inner)
+            {
+                this.outer = outer;
+                this.inner = inner;
+            }
+
+            public object Execute(Type type, Func<object> factory)
+            {
+                return outer.Execute(() => inner.Execute(factory));
+            }
         }
     }
 }

@@ -23,11 +23,11 @@ namespace IronText.Automata.Lalr1
 
         private readonly Lr0DfaProvider lr0;
 
-        public Lalr1DfaProvider(GrammarAnalysis grammar)
+        public Lalr1DfaProvider(Lr0DfaProvider lr0, GrammarAnalysis grammar)
         {
             this.grammar  = grammar;
             this.TokenSet = grammar.TokenSet;
-            this.lr0 = new Lr0DfaProvider(grammar);
+            this.lr0      = lr0;
 
             this.States = Build();
         }

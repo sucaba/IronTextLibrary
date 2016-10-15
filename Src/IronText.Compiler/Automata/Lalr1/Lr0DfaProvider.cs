@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace IronText.Automata.Lalr1
 {
-    class Lr0DfaProvider : ILrDfa
+    class Lr0DfaProvider
     {
         private readonly GrammarAnalysis grammar;
 
