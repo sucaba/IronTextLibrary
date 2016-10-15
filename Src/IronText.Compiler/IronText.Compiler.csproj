@@ -64,7 +64,7 @@
     <Compile Include="Algorithm\Functions.cs" />
     <Compile Include="Analysis\DotItemTransition.cs" />
     <Compile Include="Analysis\IDotItem.cs" />
-    <Compile Include="Automata\Lalr1\Lr0Dfa.cs" />
+    <Compile Include="Automata\Lalr1\Lr0DfaProvider.cs" />
     <Compile Include="Automata\Lalr1\ParserConflictResolver.cs" />
     <Compile Include="Automata\Lalr1\EncodedLrParserTable.cs" />
     <Compile Include="Automata\Lalr1\TableBuilders\ILrTableBuilder.cs" />
