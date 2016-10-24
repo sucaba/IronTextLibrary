@@ -6,15 +6,15 @@ using System.Linq;
 
 namespace IronText.Automata.Lalr1
 {
-    /// <summary>
+    /// <remarks>
     /// Lookahead sources:
-    /// 1. Spontaneously (for kernels):
+    /// 1. Spontaneously between kernels:
     ///     A : C . X D [S] ==> A : C X . D [S]
-    /// 2. Propagate (for kernels):
+    /// 2. Propagate between kernels:
     ///     A : C . X D [#] ==> A : C X . D [#]
     /// 3. By closure (for non-kernel items only):
     ///     A : C . X D [S] ==> X : . E [+firsts(D [S])]
-    /// </summary>
+    /// </remarks>
     partial class Lalr1DfaProvider : ILrDfa
     {
         private readonly BitSetType TokenSet;
@@ -60,9 +60,9 @@ namespace IronText.Automata.Lalr1
             // symbol X to determine which lookaheads are spontaneously generated
             // for kernel items in GOTO(I, X), and from which items in I lookaheads
             // are propagated to kernel items in GOTO(I, X).
-            states[0].KernelItems[0].LA.Add(PredefinedTokens.Eoi);
+            states[0].KernelItems.First().LA.Add(PredefinedTokens.Eoi);
 
-            var propagation = BuildSponaneousLookaheadTable(states);
+            var propagation = BuildPropagationTableAndSpontaneousLookaheads(states);
 
 #if VERBOSE
             PrintPropogationTable(states, propogation);
@@ -117,7 +117,7 @@ namespace IronText.Automata.Lalr1
                     new DotPoint(state, item)));
 
 
-        private PropagationTable BuildSponaneousLookaheadTable(DotState[] states)
+        private PropagationTable BuildPropagationTableAndSpontaneousLookaheads(DotState[] states)
         {
             var result = new PropagationTable();
 
@@ -134,18 +134,20 @@ namespace IronText.Automata.Lalr1
 
                 foreach (var closedItem in J)
                 {
-                    foreach (var transition in closedItem.Transitions)
+                    foreach (var transition in closedItem.GotoTransitions)
                     {
-                        var toPoint = fromPoint.Goto(transition);
+                        var toPoint = fromPoint.Next(transition);
 
                         foreach (var lookahead in closedItem.LA)
                         {
                             if (lookahead == PredefinedTokens.Propagated)
                             {
+                                // Lookahead propagation channel
                                 result.Add(fromPoint, toPoint);
                             }
                             else
                             {
+                                // Spontaneous lookahead
                                 toPoint.Item.LA.Add(lookahead);
                             }
                         }
@@ -182,7 +184,7 @@ namespace IronText.Automata.Lalr1
 
                 foreach (var fromItem in result)
                 {
-                    foreach (var transition in fromItem.Transitions)
+                    foreach (var transition in fromItem.GotoTransitions)
                     {
                         int fromItemNextToken = transition.Token;
 
@@ -196,6 +198,8 @@ namespace IronText.Automata.Lalr1
                                     countBefore = toItem.LA.Count;
                                 }
 
+                                // 1. For [SHIFT token] following transition add FIRST tokens.
+                                // 2. If token was nullable non-term then continue with 1
                                 grammar.AddFirst(transition.CreateNextItem(), toItem.LA);
 
                                 if (!modified)
@@ -223,10 +227,10 @@ namespace IronText.Automata.Lalr1
             public DotPoint(DotState state, DotItem item)
             {
                 this.State = state;
-                this.Item  = state.GetItem(item.ProductionId, item.Position);
+                this.Item  = state.GetItem(item);
             }
 
-            public DotPoint Goto(DotItemTransition transition) =>
+            public DotPoint Next(DotItemTransition transition) =>
                 new DotPoint(
                     State.Goto(transition.Token),
                     transition.CreateNextItem());

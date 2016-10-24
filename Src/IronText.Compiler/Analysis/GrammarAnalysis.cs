@@ -6,7 +6,6 @@ using IronText.Runtime;
 using System;
 using IronText.Misc;
 using IronText.MetadataCompiler;
-using IronText.Compiler.Analysis;
 
 namespace IronText.Compiler.Analysis
 {
@@ -16,16 +15,20 @@ namespace IronText.Compiler.Analysis
     sealed class GrammarAnalysis
     {
         private readonly Grammar grammar;
-        private readonly IBuildtimeNullableFirstTables tables;
+        private readonly NullableFirstTables tables;
         private int[]    tokenComplexity;
         private AmbTokenInfo[] ambiguities;
 
-        public GrammarAnalysis(Grammar grammar, AmbTokenInfo[] ambiguities)
+        public GrammarAnalysis(
+            Grammar         grammar,
+            AmbTokenInfo[]  ambiguities,
+            NullableFirstTables tables,
+            TokenComplexityProvider tokenComplexity)
         {
             this.grammar         = grammar;
             this.ambiguities     = ambiguities;
-            this.tables          = new NullableFirstTables(grammar);
-            this.tokenComplexity = BuildTokenComplexity(grammar);
+            this.tables          = tables;
+            this.tokenComplexity = tokenComplexity.Table;
         }
 
         /// <summary>
@@ -96,33 +99,6 @@ namespace IronText.Compiler.Analysis
             {
                 output.AddAll(item.LA);
             }
-        }
-
-        public bool HasFirst(DotItem item, int token)
-        {
-            int[] inputTokens = GetProduction(item.ProductionId).Input;
-            return tables.HasFirst(inputTokens, item.Position, token);
-        }
-
-        private static int[] BuildTokenComplexity(Grammar grammar)
-        {
-            var result =  grammar.Symbols.CreateCompatibleArray(IndexingConstants.NoIndex);
-
-            var sortedTokens = Graph.TopologicalSort(
-                                new [] { PredefinedTokens.AugmentedStart },
-                                t => GetDependantTokens(grammar, t))
-                                .ToArray();
-            for (int i = 0; i != sortedTokens.Length; ++i)
-            {
-                result[sortedTokens[i]] = i;
-            }
-
-            return result;
-        }
-
-        private static IEnumerable<int> GetDependantTokens(Grammar grammar, int token)
-        {
-            return grammar.Symbols[token].Productions.SelectMany(rule => rule.InputTokens);
         }
     }
 }

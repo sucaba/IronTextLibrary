@@ -33,7 +33,10 @@ namespace IronText.Reflection.Reporting
                     items = new ReadOnlyCollection<IParserDotItem>(
                                     dotState.Items
                                         .Select(it => 
-                                            new ParserDotItem(data.Grammar.Productions[it.ProductionId], it.Position, it.LA))
+                                            new ParserDotItem(
+                                                data.Grammar.Productions[it.ProductionId],
+                                                it.Position,
+                                                it.LA))
                                         .ToArray());
                 }
 

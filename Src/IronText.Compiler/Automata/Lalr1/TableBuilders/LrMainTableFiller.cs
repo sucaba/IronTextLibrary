@@ -1,4 +1,6 @@
-﻿using IronText.Compiler.Analysis;
+﻿using System;
+using IronText.Compiler.Analysis;
+using IronText.Runtime;
 
 namespace IronText.Automata.Lalr1
 {
@@ -17,34 +19,39 @@ namespace IronText.Automata.Lalr1
             {
                 foreach (var item in state.Items)
                 {
-                    AssignItemActions(builder, state, item);
+                    foreach (var transition in item.AllTransitions)
+                    {
+                        AssignAction(builder, state, (dynamic)transition);
+                    }
                 }
             }
         }
 
-        private static void AssignItemActions(
+        private static void AssignAction(
             LrTableBuilder builder,
             DotState state,
-            DotItem item)
+            DotItemGotoTransition transition)
         {
-            if (!item.IsReduce)
-            {
-                foreach (var itemTransition in item.Transitions)
-                {
-                    builder.AssignShift(state, itemTransition);
-                }
-            }
-            else if (item.IsAugmented)
-            {
-                builder.AssignAccept(state);
-            }
-            else
-            {
-                foreach (var lookahead in item.LA)
-                {
-                    builder.AssignReduce(state, item, lookahead);
-                }
-            }
+            builder.AssignShift(
+                state.Index,
+                transition.Token,
+                state.Goto(transition.Token).Index);
+        }
+
+        private static void AssignAction(
+            LrTableBuilder builder,
+            DotState state,
+            DotItemAcceptTransition transition)
+        {
+            builder.AssignAccept(state.Index);
+        }
+
+        private static void AssignAction(
+            LrTableBuilder builder,
+            DotState state,
+            DotItemReduceTransition transition)
+        {
+            builder.AssignReduce(state.Index, transition.Token, transition.ProductionId);
         }
     }
 }

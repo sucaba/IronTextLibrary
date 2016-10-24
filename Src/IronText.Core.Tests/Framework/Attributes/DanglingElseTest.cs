@@ -2,6 +2,7 @@
 using IronText.Reflection;
 using IronText.Runtime;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace IronText.Core.Tests.Framework.Attributes
 {

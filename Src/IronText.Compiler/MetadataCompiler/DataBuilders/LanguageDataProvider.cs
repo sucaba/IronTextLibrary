@@ -29,7 +29,7 @@ namespace IronText.MetadataCompiler
                 logging,
                 source,
                 config,
-                typeof(LoggingIstantiator),
+                typeof(LoggingInstantiator),
                 (GrammarReaderProvider p) => p.Reader,
                 (GrammarProvider p) => p.Grammar,
                 (Grammar g) => g.Options,

@@ -6,20 +6,7 @@ using System.Linq;
 
 namespace IronText.MetadataCompiler
 {
-    internal interface IBuildtimeNullableFirstTables
-    {
-        BitSetType TokenSet { get; }
-
-        bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output);
-        bool HasFirst(int[] tokenChain, int startIndex, int token);
-    }
-
-    internal interface IRuntimeNullableFirstTables
-    {
-        bool[] TokenToNullable { get; }
-    }
-
-    internal class NullableFirstTables : IBuildtimeNullableFirstTables, IRuntimeNullableFirstTables
+    class NullableFirstTables
     {
         private BitSetType      tokenSet;
         private MutableIntSet[] firsts;
@@ -148,28 +135,6 @@ namespace IronText.MetadataCompiler
             }
 
             return changed;
-        }
-
-        public bool HasFirst(int[] tokenChain, int startIndex, int token)
-        {
-            while (startIndex != tokenChain.Length)
-            {
-                int t = tokenChain[startIndex];
-
-                if (firsts[t].Contains(token))
-                {
-                    return true;
-                }
-
-                if (!isNullable[t])
-                {
-                    return false;
-                }
-
-                ++startIndex;
-            }
-
-            return false;
         }
 
         /// <summary>

@@ -9,9 +9,9 @@ namespace IronText.MetadataCompiler
         public RuntimeGrammarProvider(
             Grammar                  grammar,
             RuntimeSemanticsProvider semanticsProvider,
-            ParserBytecodeProvider   bytecodeProvider)
+            ParserBytecodeProvider   bytecodeProvider,
+            NullableFirstTables      tables)
         {
-            IRuntimeNullableFirstTables tables = new NullableFirstTables(grammar);
             var tokenIsNullable     = tables.TokenToNullable;
 
             var tokenIsTerminal    = grammar.Symbols.CreateCompatibleArray(s => s.IsTerminal);
@@ -19,7 +19,7 @@ namespace IronText.MetadataCompiler
             var tokenNames         = grammar.Symbols.CreateCompatibleArray(s => s.Name);
             var runtimeProductions = grammar.Productions.CreateCompatibleArray(ProductionExtensions.ToRuntime);
 
-            this.Outcome = new RuntimeGrammar(
+            Outcome = new RuntimeGrammar(
                         tokenNames,
                         tokenCategories,
                         tokenIsNullable,

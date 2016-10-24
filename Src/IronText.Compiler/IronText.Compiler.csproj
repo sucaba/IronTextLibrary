@@ -68,6 +68,7 @@
     <Compile Include="Algorithm\Functions.cs" />
     <Compile Include="Analysis\DotItemTransition.cs" />
     <Compile Include="Analysis\IDotItem.cs" />
+    <Compile Include="Analysis\TokenComplexityProvider.cs" />
     <Compile Include="Automata\Lalr1\Lr0DfaProvider.cs" />
     <Compile Include="Automata\Lalr1\ParserConflictResolver.cs" />
     <Compile Include="Automata\Lalr1\EncodedLrParserTable.cs" />
@@ -75,7 +76,7 @@
     <Compile Include="Automata\Lalr1\TableBuilders\LrAlternateTermsTableFiller.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\GrammarProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\GrammarReaderProvider.cs" />
-    <Compile Include="MetadataCompiler\DataBuilders\Infrastsructure\LoggingIstantiator.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Infrastsructure\LoggingInstantiator.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\LanguageBuildConfig.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\LanguageDataInstanceProvider.cs" />
     <Compile Include="Automata\Lalr1\TableBuilders\LrMainTableFiller.cs" />

@@ -39,7 +39,7 @@ namespace IronText.Automata.Lalr1
                     var itemSet = result[i].Items;
 
                     var nextItemsByToken = itemSet
-                        .SelectMany(item => item.Transitions)
+                        .SelectMany(item => item.GotoTransitions)
                         .GroupBy(x => x.Token, x => x.CreateNextItem());
 
                     foreach (var group in nextItemsByToken)
@@ -86,7 +86,7 @@ namespace IronText.Automata.Lalr1
 
                 foreach (var item in result.EnumerateGrowable())
                 {
-                    foreach (var transition in item.Transitions)
+                    foreach (var transition in item.GotoTransitions)
                     {
                         foreach (var childProd in grammar.GetProductions(transition.Token))
                         {

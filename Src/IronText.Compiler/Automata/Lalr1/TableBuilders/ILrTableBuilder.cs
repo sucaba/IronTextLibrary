@@ -1,5 +1,4 @@
 ﻿using IronText.Algorithm;
-using IronText.Compiler.Analysis;
 using IronText.Runtime;
 
 namespace IronText.Automata.Lalr1
@@ -8,9 +7,9 @@ namespace IronText.Automata.Lalr1
     {
         ITable<ParserDecision> GetResult();
 
-        void AssignAccept(DotState state);
-        void AssignReduce(DotState state, DotItem item, int token);
-        void AssignShift(DotState state, DotItemTransition transition);
-        bool TryAssignResolution(DotState state, int ambiguousToken, int[] alternateTokens);
+        void AssignAccept(int state);
+        void AssignReduce(int state, int token, int productionId);
+        void AssignShift(int state, int token, int nexState);
+        bool TryAssignResolution(int state, int ambiguousToken, int[] alternateTokens);
     }
 }

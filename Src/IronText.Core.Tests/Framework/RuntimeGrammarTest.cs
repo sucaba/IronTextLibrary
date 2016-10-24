@@ -28,7 +28,7 @@ namespace IronText.Tests.Framework
 
             grammar.BuildIndexes();
 
-            var provider = new RuntimeGrammarProvider(grammar, null, null);
+            var provider = new RuntimeGrammarProvider(grammar, null, null, new NullableFirstTables(grammar));
             var target = provider.Outcome;
 
             Assert.IsTrue(target.IsNullable(A.Index));

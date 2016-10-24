@@ -24,10 +24,33 @@ namespace IronText.Compiler.Analysis
 
         public int Position { get; }
 
-        public IEnumerable<DotItemTransition> Transitions =>
+        public IEnumerable<DotItemGotoTransition> GotoTransitions =>
             Position == production.Input.Length
-                 ? new DotItemTransition[0] 
-                 : new[] { new DotItemTransition(production.Input[Position], this) };
+                 ? new DotItemGotoTransition[0] 
+                 : new[] { new DotItemGotoTransition(production.Input[Position], this) };
+
+        public IEnumerable<DotItemTransition> AllTransitions
+        {
+            get
+            {
+                if (!IsReduce)
+                {
+                    return GotoTransitions;
+                }
+                else if (IsAugmented)
+                {
+                    return new [] {
+                        new DotItemAcceptTransition(PredefinedTokens.Eoi)
+                    };
+                }
+                else
+                {
+                    return LA.Select(
+                        token =>
+                        new DotItemReduceTransition(token, ProductionId));
+                }
+            }
+        }
 
         public MutableIntSet LA { get; set; }
 
@@ -60,7 +83,7 @@ namespace IronText.Compiler.Analysis
         public override string ToString() =>
             $"(ProdId={production.Index} Pos={Position} LAs={LA})";
 
-        internal DotItem CreateNextItem(int token) =>
+        internal DotItem Goto(int token) =>
             new DotItem(production, Position + 1)
             {
                 LA = LA?.EditCopy()

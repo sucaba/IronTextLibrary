@@ -2,7 +2,6 @@
 using IronText.Runtime;
 using IronText.Collections;
 using System.Collections.Generic;
-using IronText.Compiler.Analysis;
 using System.Linq;
 
 namespace IronText.Automata.Lalr1
@@ -29,9 +28,9 @@ namespace IronText.Automata.Lalr1
         }
 
         public bool TryAssignResolution(
-            DotState       state,
-            int            ambiguousToken,
-            int[]          alternateTokens)
+            int   state,
+            int   ambiguousToken,
+            int[] alternateTokens)
         {
             int            resolvedToken;
             ParserDecision resolvedDecision;
@@ -69,7 +68,7 @@ namespace IronText.Automata.Lalr1
         }
     
         private bool TryResolve(
-            DotState state,
+            int state,
             int[] alternateTokens,
             out int resolvedToken,
             out ParserDecision resolvedDecision)
@@ -97,15 +96,13 @@ namespace IronText.Automata.Lalr1
             return count <= 1;
         }
 
-        private Dictionary<int, ParserDecision> GetMultiple(DotState state, int[] tokens)
+        private Dictionary<int, ParserDecision> GetMultiple(int state, int[] tokens)
         {
-            int stateIndex = state.Index;
-
             var result = new Dictionary<int, ParserDecision>();
 
             foreach (int token in tokens)
             {
-                var decision = decisionTable.Get(stateIndex, token);
+                var decision = decisionTable.Get(state, token);
                 if (decision != ParserDecision.NoAlternatives)
                 {
                     result.Add(token, decision);
@@ -115,16 +112,18 @@ namespace IronText.Automata.Lalr1
             return result;
         }
 
-        public void AssignShift(DotState state, DotItemTransition transition)
+        public void AssignShift(
+            int state,
+            int      token,
+            int nextState)
         {
             AssignAction(
                 state,
-                transition.Token,
-                ParserInstruction.Shift(
-                    state.Goto(transition.Token).Index));
+                token,
+                ParserInstruction.Shift(nextState));
         }
 
-        public void AssignAccept(DotState state)
+        public void AssignAccept(int state)
         {
             AssignAction(
                 state,
@@ -132,22 +131,12 @@ namespace IronText.Automata.Lalr1
                 ParserInstruction.AcceptAction);
         }
 
-        public void AssignReduce(DotState state, DotItem item, int token)
+        public void AssignReduce(int state, int token, int productionId)
         {
             AssignAction(
                 state,
                 token,
-                ParserInstruction.Reduce(item.ProductionId));
-        }
-
-        private void AssignAction(DotState state, int token, ParserDecision action)
-        {
-            AssignAction(state.Index, token, action);
-        }
-
-        private void AssignAction(DotState state, int token, ParserInstruction action)
-        {
-            AssignAction(state.Index, token, action);
+                ParserInstruction.Reduce(productionId));
         }
 
         private void AssignAction(int state, int token, ParserInstruction action)

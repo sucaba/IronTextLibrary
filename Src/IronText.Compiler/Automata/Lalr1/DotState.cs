@@ -13,7 +13,7 @@ namespace IronText.Automata.Lalr1
         public readonly IDotItemSet Items;
         public readonly List<DotTransition> Transitions = new List<DotTransition>();
 
-        private MutableDotItemSet cachedKernel;
+        private IEnumerable<DotItem> cachedKernel;
         private int index;
 
         public DotState(int index, IEnumerable<DotItem> dotItems)
@@ -24,36 +24,10 @@ namespace IronText.Automata.Lalr1
 
         public int Index => index;
 
-        public bool IsDeterministicReduce
-        {
-            get
-            {
-                return Transitions.Count == 0
-                    && Items.Count == 1
-                    && Items[0].IsReduce
-                    && !Items[0].IsAugmented;
-            }
-        }
-
-        public void Reindex(int newIndex)
-        {
-            this.index = newIndex;
-        }
-
-        public IDotItemSet KernelItems
-        {
-            get
-            {
-                if (cachedKernel == null)
-                {
-                    cachedKernel =
-                        new MutableDotItemSet(
-                            from item in Items where item.IsKernel select item);
-                }
-
-                return cachedKernel;
-            }
-        }
+        public IEnumerable<DotItem> KernelItems =>
+            cachedKernel
+            ?? (cachedKernel =
+                    Items.Where(item => item.IsKernel));
 
         public DotState Goto(int token)
         {
@@ -79,17 +53,6 @@ namespace IronText.Automata.Lalr1
             return true;
         }
 
-        public DotItem GetItem(int prodId, int dotPos)
-        {
-            foreach (var item in Items)
-            {
-                if (item.ProductionId == prodId && item.Position == dotPos)
-                {
-                    return item;
-                }
-            }
-
-            throw new InvalidOperationException("Internal error: dotitem not found");
-        }
+        public DotItem GetItem(DotItem item) => Items.First(item.Equals);
     }
 }

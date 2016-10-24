@@ -22,7 +22,7 @@ namespace IronText.Automata.Lalr1
                 foreach (var ambiguousTerm in ambiguities)
                 {
                     if (!builder.TryAssignResolution(
-                            state,
+                            state.Index,
                             ambiguousTerm.EnvelopeIndex,
                             ambiguousTerm.Alternatives))
                     {

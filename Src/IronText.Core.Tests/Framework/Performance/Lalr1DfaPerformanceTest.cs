@@ -6,6 +6,7 @@ using IronText.Compiler.Analysis;
 using IronText.Framework;
 using IronText.Reflection;
 using NUnit.Framework;
+using IronText.MetadataCompiler;
 
 namespace IronText.Tests.Framework.Performance
 {
@@ -40,7 +41,11 @@ namespace IronText.Tests.Framework.Performance
             grammar.Start = symbols[0];
             grammar.BuildIndexes();
 
-            var analysis = new GrammarAnalysis(grammar, new AmbTokenInfo[0]);
+            var analysis = new GrammarAnalysis(
+                grammar,
+                new AmbTokenInfo[0],
+                new NullableFirstTables(grammar),
+                new TokenComplexityProvider(grammar));
             var target = new Lalr1DfaProvider(new Lr0DfaProvider(analysis), analysis);
         }
     }
