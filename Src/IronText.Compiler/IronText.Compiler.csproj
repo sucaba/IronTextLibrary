@@ -69,6 +69,7 @@
     <Compile Include="Analysis\DotItemTransition.cs" />
     <Compile Include="Analysis\IDotItem.cs" />
     <Compile Include="Analysis\TokenComplexityProvider.cs" />
+    <Compile Include="Analysis\TokenSetProvider.cs" />
     <Compile Include="Automata\Lalr1\Lalr1ClosureAlgorithm.cs" />
     <Compile Include="Automata\Lalr1\Lr0ClosureAlgorithm.cs" />
     <Compile Include="Automata\Lalr1\Lr0DfaProvider.cs" />

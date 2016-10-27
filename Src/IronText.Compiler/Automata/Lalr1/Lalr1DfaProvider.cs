@@ -25,10 +25,11 @@ namespace IronText.Automata.Lalr1
         public Lalr1DfaProvider(
             Lr0DfaProvider  lr0,
             GrammarAnalysis grammar,
-            Lalr1ClosureAlgorithm lalr1Closure)
+            Lalr1ClosureAlgorithm lalr1Closure,
+            TokenSetProvider tokenSetProvider)
         {
             this.grammar  = grammar;
-            this.TokenSet = grammar.TokenSet;
+            this.TokenSet = tokenSetProvider.TokenSet;
             this.lr0      = lr0;
             this.lalr1Closure = lalr1Closure;
 

@@ -41,17 +41,20 @@ namespace IronText.Tests.Framework.Performance
             grammar.Start = symbols[0];
             grammar.BuildIndexes();
 
-            var analysis = new GrammarAnalysis(
-                grammar,
-                new AmbTokenInfo[0],
-                new NullableFirstTables(grammar),
-                new TokenComplexityProvider(grammar));
+            var tokenSetProvider = new TokenSetProvider(grammar);
+            var nullableFirstTables = new NullableFirstTables(grammar, tokenSetProvider);
+            var analysis = new GrammarAnalysis(grammar);
             var lr0closure = new Lr0ClosureAlgorithm(analysis);
-            var lalr1closure = new Lalr1ClosureAlgorithm(analysis, lr0closure);
+            var lalr1closure = new Lalr1ClosureAlgorithm(
+                analysis,
+                lr0closure,
+                nullableFirstTables,
+                tokenSetProvider);
             var target = new Lalr1DfaProvider(
                 new Lr0DfaProvider(analysis, lr0closure),
                 analysis,
-                lalr1closure);
+                lalr1closure,
+                tokenSetProvider);
         }
     }
 }

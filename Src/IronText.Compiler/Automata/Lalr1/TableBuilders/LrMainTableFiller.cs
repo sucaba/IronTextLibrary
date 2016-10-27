@@ -8,10 +8,13 @@ namespace IronText.Automata.Lalr1
     {
         private readonly DotState[] states;
 
-        public LrMainTableFiller(ILrDfa dfa)
+        public LrMainTableFiller(ILrDfa dfa, GrammarAnalysis grammar)
         {
             this.states = dfa.States;
+            this.SymbolColumnCount = grammar.SymbolCount;
         }
+
+        public int SymbolColumnCount { get; }
 
         public void Apply(LrTableBuilder builder)
         {

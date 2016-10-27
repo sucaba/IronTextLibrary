@@ -1,4 +1,5 @@
 ﻿using IronText.Algorithm;
+using IronText.Compiler.Analysis;
 using IronText.Reflection;
 using IronText.Runtime;
 using System.Collections.Generic;
@@ -14,11 +15,11 @@ namespace IronText.MetadataCompiler
 
         protected Grammar grammar;
 
-        public NullableFirstTables(Grammar grammar)
+        public NullableFirstTables(Grammar grammar, TokenSetProvider tokenSetProvider)
         {
             this.grammar    = grammar;
+            this.tokenSet   = tokenSetProvider.TokenSet;
             int count       = grammar.Symbols.Count;
-            this.tokenSet   = new BitSetType(count);
             this.firsts     = new MutableIntSet[count];
             this.isNullable = new bool[count];
 
@@ -26,13 +27,6 @@ namespace IronText.MetadataCompiler
         }
 
         public bool[] TokenToNullable { get { return isNullable; } }
-
-        public BitSetType TokenSet 
-        { 
-            get { return this.tokenSet; } 
-        }
-
-        public bool IsNullable(int token) { return isNullable[token]; }
 
         private void Build()
         {
@@ -142,26 +136,26 @@ namespace IronText.MetadataCompiler
         /// </summary>
         /// <param name="tokenChain"></param>
         /// <param name="output"></param>
+        /// <param name="tailFirsts"></param>
         /// <returns><c>true</c> if chain is nullable, <c>false</c> otherwise</returns>
-        public bool AddFirst(int[] tokenChain, int startIndex, MutableIntSet output)
+        public void AddFirst(IEnumerable<int> tokenChain, IntSet tailFirsts, MutableIntSet output)
         {
-            bool result = true;
+            bool nullable = true;
 
-            while (startIndex != tokenChain.Length)
+            foreach (int token in tokenChain)
             {
-                int token = tokenChain[startIndex];
-
                 output.AddAll(firsts[token]);
                 if (!isNullable[token])
                 {
-                    result = false;
+                    nullable = false;
                     break;
                 }
-
-                ++startIndex;
             }
 
-            return result;
+            if (nullable)
+            {
+                output.AddAll(tailFirsts);
+            }
         }
     }
 }

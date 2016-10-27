@@ -25,7 +25,7 @@ namespace IronText.Runtime
             RuntimeProduction[] productions,
             RuntimeFormula[][]  stateToFormulas,
             RuntimeFormula[][]  productionToFormulas,
-            ParserInstruction[]      instructions)
+            ParserInstruction[] instructions)
         {
             this.TokenCount           = tokenNames.Length;
             this.tokenIsNullable      = tokenIsNullable;
@@ -37,7 +37,7 @@ namespace IronText.Runtime
             this.Productions          = productions;
             this.stateToFormulas      = stateToFormulas;
             this.productionToFormulas = productionToFormulas;
-            this.MaxProductionLength  = productions.Select(r => r.InputLength).Max();
+            this.MaxProductionLength  = productions.Max(r => r.InputLength);
 
             this.Instructions         = instructions;
         }

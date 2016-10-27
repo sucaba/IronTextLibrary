@@ -5,22 +5,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IronText.Algorithm;
+using IronText.MetadataCompiler;
 
 namespace IronText.Automata.Lalr1
 {
     class Lalr1ClosureAlgorithm
     {
-        private readonly GrammarAnalysis     grammar;
+        private readonly GrammarAnalysis     analysis;
         private readonly Lr0ClosureAlgorithm lr0closure;
         private readonly BitSetType          TokenSet;
+        private readonly NullableFirstTables tables;
 
         public Lalr1ClosureAlgorithm(
             GrammarAnalysis     analysis,
-            Lr0ClosureAlgorithm lr0closure)
+            Lr0ClosureAlgorithm lr0closure,
+            NullableFirstTables tables,
+            TokenSetProvider    tokenSetProvider)
         {
-            this.grammar    = analysis;
-            this.TokenSet   = grammar.TokenSet;
+            this.analysis   = analysis;
+            this.TokenSet   = tokenSetProvider.TokenSet;
             this.lr0closure = lr0closure;
+            this.tables     = tables;
         }
 
         public MutableDotItemSet Apply(IDotItemSet itemSet)
@@ -65,7 +70,9 @@ namespace IronText.Automata.Lalr1
 
                                 // 1. For [SHIFT token] following transition add FIRST tokens.
                                 // 2. If token was nullable non-term then continue with 1
-                                grammar.AddFirst(transition.CreateNextItem(), toItem.LA);
+                                var nextItem = transition.CreateNextItem();
+                                int[] inputTokens = analysis.GetProduction(nextItem.ProductionId).Input;
+                                tables.AddFirst(inputTokens.Skip(nextItem.Position), nextItem.LA, toItem.LA);
 
                                 if (!modified)
                                 {

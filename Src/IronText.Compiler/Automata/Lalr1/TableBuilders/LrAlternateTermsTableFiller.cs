@@ -13,6 +13,8 @@ namespace IronText.Automata.Lalr1
             this.ambiguities = ambiguities;
         }
 
+        public int SymbolColumnCount => ambiguities.Length;
+
         public bool Apply(LrTableBuilder builder)
         {
             bool result = true;

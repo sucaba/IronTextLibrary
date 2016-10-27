@@ -15,18 +15,19 @@ namespace IronText.Automata.Lalr1
             GrammarAnalysis grammar,
             ParserConflictResolver conflictResolver,
             LrMainTableFiller fillMainTable,
-            LrAlternateTermsTableFiller alternateTerms)
+            LrAlternateTermsTableFiller fillAlternateTermsTable)
         {
             this.grammar = grammar;
             this.conflictResolver = conflictResolver;
             this.builder = new LrTableBuilder(
                                 conflictResolver,
                                 dfa.States.Length,
-                                grammar.TotalSymbolCount);
+                                fillMainTable.SymbolColumnCount 
+                                + fillAlternateTermsTable.SymbolColumnCount);
 
             fillMainTable.Apply(builder);
 
-            HasUnresolvedTerminalAmbiguities = !alternateTerms.Apply(builder);
+            HasUnresolvedTerminalAmbiguities = !fillAlternateTermsTable.Apply(builder);
         }
 
         public bool HasUnresolvedTerminalAmbiguities { get; }
