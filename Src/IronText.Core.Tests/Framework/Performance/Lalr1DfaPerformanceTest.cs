@@ -46,7 +46,12 @@ namespace IronText.Tests.Framework.Performance
                 new AmbTokenInfo[0],
                 new NullableFirstTables(grammar),
                 new TokenComplexityProvider(grammar));
-            var target = new Lalr1DfaProvider(new Lr0DfaProvider(analysis), analysis);
+            var lr0closure = new Lr0ClosureAlgorithm(analysis);
+            var lalr1closure = new Lalr1ClosureAlgorithm(analysis, lr0closure);
+            var target = new Lalr1DfaProvider(
+                new Lr0DfaProvider(analysis, lr0closure),
+                analysis,
+                lalr1closure);
         }
     }
 }

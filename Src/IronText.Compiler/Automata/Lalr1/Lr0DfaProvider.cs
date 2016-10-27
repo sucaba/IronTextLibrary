@@ -8,10 +8,14 @@ namespace IronText.Automata.Lalr1
     class Lr0DfaProvider
     {
         private readonly GrammarAnalysis grammar;
+        private readonly Lr0ClosureAlgorithm closure;
 
-        public Lr0DfaProvider(GrammarAnalysis grammar)
+        public Lr0DfaProvider(
+            GrammarAnalysis grammar,
+            Lr0ClosureAlgorithm closure)
         {
             this.grammar = grammar;
+            this.closure = closure;
 
             this.States = Build();
         }
@@ -22,7 +26,7 @@ namespace IronText.Automata.Lalr1
         {
             var result = new List<DotState>();
 
-            var initialItemSet = Closure(new MutableDotItemSet
+            var initialItemSet = closure.Apply(new MutableDotItemSet
                 {
                     new DotItem(grammar.AugmentedProduction, 0)
                 });
@@ -46,7 +50,7 @@ namespace IronText.Automata.Lalr1
                     {
                         int token = group.Key;
 
-                        var nextStateItems = Closure(new MutableDotItemSet(group));
+                        var nextStateItems = closure.Apply(new MutableDotItemSet(group));
 
                         if (nextStateItems.Count == 0)
                         {
@@ -71,36 +75,6 @@ namespace IronText.Automata.Lalr1
             while (addedStatesInRound);
 
             return result.ToArray();
-        }
-
-        public MutableDotItemSet Closure(IDotItemSet itemSet)
-        {
-            var result = new MutableDotItemSet();
-            result.AddRange(itemSet);
-
-            bool modified;
-
-            do
-            {
-                modified = false;
-
-                foreach (var item in result.EnumerateGrowable())
-                {
-                    foreach (var transition in item.GotoTransitions)
-                    {
-                        foreach (var childProd in grammar.GetProductions(transition.Token))
-                        {
-                            if (result.Add(new DotItem(childProd, 0)))
-                            {
-                                modified = true;
-                            }
-                        }
-                    }
-                }
-            }
-            while (modified);
-
-            return result;
         }
     }
 }

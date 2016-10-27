@@ -18,16 +18,19 @@ namespace IronText.Automata.Lalr1
     partial class Lalr1DfaProvider : ILrDfa
     {
         private readonly BitSetType TokenSet;
-
         private readonly GrammarAnalysis grammar;
-
         private readonly Lr0DfaProvider lr0;
+        private readonly Lalr1ClosureAlgorithm lalr1Closure;
 
-        public Lalr1DfaProvider(Lr0DfaProvider lr0, GrammarAnalysis grammar)
+        public Lalr1DfaProvider(
+            Lr0DfaProvider  lr0,
+            GrammarAnalysis grammar,
+            Lalr1ClosureAlgorithm lalr1Closure)
         {
             this.grammar  = grammar;
             this.TokenSet = grammar.TokenSet;
             this.lr0      = lr0;
+            this.lalr1Closure = lalr1Closure;
 
             this.States = Build();
         }
@@ -104,7 +107,7 @@ namespace IronText.Automata.Lalr1
             // Copy lookaheads from the kernel items to non-kernels
             foreach (var state in states)
             {
-                CollectClosureLookaheads(state.Items);
+                lalr1Closure.CollectClosureLookaheads(state.Items);
             }
         }
 
@@ -123,7 +126,7 @@ namespace IronText.Automata.Lalr1
 
             foreach (var fromPoint in KernelPoints(states))
             {
-                var J = Closure(
+                var J = lalr1Closure.Apply(
                     new MutableDotItemSet
                     {
                             new DotItem(fromPoint.Item)
@@ -156,67 +159,6 @@ namespace IronText.Automata.Lalr1
             }
 
             return result;
-        }
-
-        private MutableDotItemSet Closure(IDotItemSet itemSet)
-        {
-            var result = lr0.Closure(itemSet);
-            foreach (var item in result)
-            {
-                if (item.LA == null)
-                    item.LA = TokenSet.Mutable();
-            }
-
-            CollectClosureLookaheads(result);
-
-            return result;
-        }
-
-        private void CollectClosureLookaheads(IDotItemSet result)
-        {
-            bool modified;
-
-            // Debug.WriteLine("closured lookeads: item count = {0}", result.Count);
-
-            do
-            {
-                modified = false;
-
-                foreach (var fromItem in result)
-                {
-                    foreach (var transition in fromItem.GotoTransitions)
-                    {
-                        int fromItemNextToken = transition.Token;
-
-                        foreach (var toItem in result)
-                        {
-                            if (fromItemNextToken == toItem.Outcome)
-                            {
-                                int countBefore = 0;
-                                if (!modified)
-                                {
-                                    countBefore = toItem.LA.Count;
-                                }
-
-                                // 1. For [SHIFT token] following transition add FIRST tokens.
-                                // 2. If token was nullable non-term then continue with 1
-                                grammar.AddFirst(transition.CreateNextItem(), toItem.LA);
-
-                                if (!modified)
-                                {
-                                    modified = toItem.LA.Count != countBefore;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (modified)
-                {
-                    // Debug.WriteLine("closured lookaheads: extra pass");
-                }
-            }
-            while (modified);
         }
 
         struct DotPoint
