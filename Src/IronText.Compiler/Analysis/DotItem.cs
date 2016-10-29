@@ -24,6 +24,9 @@ namespace IronText.Compiler.Analysis
 
         public int Position { get; }
 
+        public IEnumerable<int> RemainingInput =>
+            production.Input.Skip(Position);
+
         public IEnumerable<DotItemGotoTransition> GotoTransitions =>
             Position == production.Input.Length
                  ? new DotItemGotoTransition[0] 

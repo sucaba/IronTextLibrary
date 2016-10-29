@@ -138,8 +138,13 @@ namespace IronText.MetadataCompiler
         /// <param name="output"></param>
         /// <param name="tailFirsts"></param>
         /// <returns><c>true</c> if chain is nullable, <c>false</c> otherwise</returns>
-        public void AddFirst(IEnumerable<int> tokenChain, IntSet tailFirsts, MutableIntSet output)
+        public int FillFirsts(
+            IEnumerable<int> tokenChain,
+            IntSet           tailFirsts,
+            MutableIntSet    output)
         {
+            int countBefore = output.Count;
+
             bool nullable = true;
 
             foreach (int token in tokenChain)
@@ -156,6 +161,8 @@ namespace IronText.MetadataCompiler
             {
                 output.AddAll(tailFirsts);
             }
+
+            return output.Count - countBefore;
         }
     }
 }
