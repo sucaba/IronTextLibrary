@@ -4,14 +4,14 @@ using IronText.MetadataCompiler;
 
 namespace IronText.Automata.Lalr1
 {
-    class Lalr1ClosureAlgorithm
+    class Lr1ClosureAlgorithm
     {
         private readonly GrammarAnalysis     analysis;
         private readonly Lr0ClosureAlgorithm lr0closure;
         private readonly BitSetType          TokenSet;
         private readonly NullableFirstTables tables;
 
-        public Lalr1ClosureAlgorithm(
+        public Lr1ClosureAlgorithm(
             GrammarAnalysis     analysis,
             Lr0ClosureAlgorithm lr0closure,
             NullableFirstTables tables,

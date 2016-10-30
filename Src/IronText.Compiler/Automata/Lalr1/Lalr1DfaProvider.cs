@@ -20,18 +20,18 @@ namespace IronText.Automata.Lalr1
         private readonly BitSetType TokenSet;
         private readonly GrammarAnalysis grammar;
         private readonly Lr0DfaProvider lr0;
-        private readonly Lalr1ClosureAlgorithm lalr1Closure;
+        private readonly Lr1ClosureAlgorithm lr1closure;
 
         public Lalr1DfaProvider(
             Lr0DfaProvider  lr0,
             GrammarAnalysis grammar,
-            Lalr1ClosureAlgorithm lalr1Closure,
+            Lr1ClosureAlgorithm lr1Closure,
             TokenSetProvider tokenSetProvider)
         {
             this.grammar  = grammar;
             this.TokenSet = tokenSetProvider.TokenSet;
             this.lr0      = lr0;
-            this.lalr1Closure = lalr1Closure;
+            this.lr1closure = lr1Closure;
 
             this.States = Build();
         }
@@ -108,7 +108,7 @@ namespace IronText.Automata.Lalr1
             // Copy lookaheads from the kernel items to non-kernels
             foreach (var state in states)
             {
-                lalr1Closure.CollectClosureLookaheads(state.Items);
+                lr1closure.CollectClosureLookaheads(state.Items);
             }
         }
 
@@ -127,7 +127,7 @@ namespace IronText.Automata.Lalr1
 
             foreach (var fromPoint in KernelPoints(states))
             {
-                var J = lalr1Closure.Apply(
+                var J = lr1closure.Apply(
                     new MutableDotItemSet
                     {
                             new DotItem(fromPoint.Item)

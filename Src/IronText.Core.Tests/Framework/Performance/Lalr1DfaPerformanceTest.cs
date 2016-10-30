@@ -45,7 +45,7 @@ namespace IronText.Tests.Framework.Performance
             var nullableFirstTables = new NullableFirstTables(grammar, tokenSetProvider);
             var analysis = new GrammarAnalysis(grammar);
             var lr0closure = new Lr0ClosureAlgorithm(analysis);
-            var lalr1closure = new Lalr1ClosureAlgorithm(
+            var lr1closure = new Lr1ClosureAlgorithm(
                 analysis,
                 lr0closure,
                 nullableFirstTables,
@@ -53,7 +53,7 @@ namespace IronText.Tests.Framework.Performance
             var target = new Lalr1DfaProvider(
                 new Lr0DfaProvider(analysis, lr0closure),
                 analysis,
-                lalr1closure,
+                lr1closure,
                 tokenSetProvider);
         }
     }
