@@ -19,25 +19,20 @@ namespace IronText.Reflection
         [NonSerialized]
         private readonly Joint _joint = new Joint();
 
-        /// <summary>
-        /// Create identity production
-        /// </summary>
-        /// <param name="outcome"></param>
-        /// <param name="input"></param>
-        public Production(Symbol outcome, Symbol input)
-            : this(outcome, new [] { input })
+        public Production(Symbol outcome, Symbol identityInput)
+            : this(outcome, new [] { identityInput })
         {
             this.HasIdentityAction = true;
         }
 
         public Production(
-            Production                        roof,
-            IEnumerable<IProductionComponent> roofInput)
+            Production                        top,
+            IEnumerable<IProductionComponent> topInput)
             : this(
-                  roof.Outcome,
-                  roofInput,
-                  roof.ContextRef,
-                  roof.Flags)
+                  top.Outcome,
+                  topInput,
+                  top.ContextRef,
+                  top.Flags)
         {
         }
 
