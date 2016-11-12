@@ -8,9 +8,9 @@ namespace IronText.Automata
 {
     class NullableFirstTables
     {
-        private BitSetType      tokenSet;
-        private MutableIntSet[] firsts;
-        private bool[]          isNullable;
+        private readonly BitSetType      tokenSet;
+        private readonly MutableIntSet[] firsts;
+        private readonly bool[]          isNullable;
 
         protected IBuildtimeGrammar grammar;
 

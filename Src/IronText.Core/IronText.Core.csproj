@@ -162,6 +162,7 @@
     <Compile Include="Collections\Validation\DuplicateResolver.cs" />
     <Compile Include="Reflection\Conversions\GrammarRuntimeExtensions.cs" />
     <Compile Include="Reflection\GrammarEntityCollection.cs" />
+    <Compile Include="Reflection\GrammarExtensions.cs" />
     <Compile Include="Reflection\InheritedProperty.cs" />
     <Compile Include="Reflection\InheritedPropertyCollection.cs" />
     <Compile Include="Reflection\InjectedActionParameter.cs" />
