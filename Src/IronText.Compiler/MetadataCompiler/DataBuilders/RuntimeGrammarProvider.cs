@@ -1,6 +1,8 @@
 ﻿using IronText.Reflection;
 using IronText.Runtime;
 using System.Linq;
+using System;
+using IronText.Automata;
 
 namespace IronText.MetadataCompiler
 {
@@ -17,7 +19,7 @@ namespace IronText.MetadataCompiler
             var tokenIsTerminal    = grammar.Symbols.CreateCompatibleArray(s => s.IsTerminal);
             var tokenCategories    = grammar.Symbols.CreateCompatibleArray(s => s.Categories);
             var tokenNames         = grammar.Symbols.CreateCompatibleArray(s => s.Name);
-            var runtimeProductions = grammar.Productions.CreateCompatibleArray(ProductionExtensions.ToRuntime);
+            var runtimeProductions = grammar.Productions.CreateCompatibleArray(ToRuntime);
 
             Outcome = new RuntimeGrammar(
                         tokenNames,
@@ -31,5 +33,11 @@ namespace IronText.MetadataCompiler
         }
 
         public RuntimeGrammar Outcome { get; }
+
+        RuntimeProduction ToRuntime(Production production) =>
+            new RuntimeProduction(
+                production.Index,
+                production.Outcome.Index,
+                production.InputTokens);
     }
 }

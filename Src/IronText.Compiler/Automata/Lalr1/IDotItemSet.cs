@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using IronText.Compiler.Analysis;
+using IronText.Automata.DotNfa;
 
 namespace IronText.Automata.Lalr1
 {

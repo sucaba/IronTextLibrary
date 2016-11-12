@@ -1,6 +1,4 @@
-﻿using System;
-using IronText.Compiler.Analysis;
-using IronText.Runtime;
+﻿using IronText.Automata.DotNfa;
 
 namespace IronText.Automata.Lalr1
 {
@@ -8,7 +6,7 @@ namespace IronText.Automata.Lalr1
     {
         private readonly DotState[] states;
 
-        public LrMainTableFiller(ILrDfa dfa, GrammarAnalysis grammar)
+        public LrMainTableFiller(ILrDfa dfa, IBuildtimeGrammar grammar)
         {
             this.states = dfa.States;
             this.SymbolColumnCount = grammar.SymbolCount;

@@ -1,4 +1,4 @@
-﻿using IronText.Compiler.Analysis;
+﻿using IronText.Automata.DotNfa;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +7,11 @@ namespace IronText.Automata.Lalr1
 {
     class Lr0DfaProvider
     {
-        private readonly GrammarAnalysis grammar;
+        private readonly IBuildtimeGrammar grammar;
         private readonly Lr0ClosureAlgorithm closure;
 
         public Lr0DfaProvider(
-            GrammarAnalysis grammar,
+            IBuildtimeGrammar grammar,
             Lr0ClosureAlgorithm closure)
         {
             this.grammar = grammar;
@@ -51,7 +51,6 @@ namespace IronText.Automata.Lalr1
                         int token = group.Key;
 
                         var nextStateItems = closure.Apply(new MutableDotItemSet(group));
-
                         if (nextStateItems.Count == 0)
                         {
                             throw new InvalidOperationException("Internal error: next state cannot be empty");

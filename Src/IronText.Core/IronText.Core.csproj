@@ -166,7 +166,6 @@
     <Compile Include="Reflection\InheritedPropertyCollection.cs" />
     <Compile Include="Reflection\InjectedActionParameter.cs" />
     <Compile Include="Reflection\ISymbolProperty.cs" />
-    <Compile Include="Reflection\ProductionExtensions.cs" />
     <Compile Include="Reflection\Semantics\IProductionSemanticScope.cs" />
     <Compile Include="Reflection\Semantics\IProductionSemanticElement.cs" />
     <Compile Include="Reflection\Semantics\ISemanticValue.cs" />

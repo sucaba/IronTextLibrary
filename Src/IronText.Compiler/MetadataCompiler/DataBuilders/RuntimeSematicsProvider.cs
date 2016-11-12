@@ -4,8 +4,7 @@ using IronText.Runtime.Semantics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using IronText.Compiler.Analysis;
+using IronText.Automata.DotNfa;
 
 namespace IronText.MetadataCompiler
 {

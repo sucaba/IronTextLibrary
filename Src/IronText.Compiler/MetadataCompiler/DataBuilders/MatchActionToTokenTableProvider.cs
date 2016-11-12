@@ -1,4 +1,4 @@
-﻿using IronText.Compiler.Analysis;
+﻿using IronText.Automata;
 using IronText.Misc;
 using IronText.Reflection;
 using System.Linq;

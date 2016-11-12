@@ -1,8 +1,7 @@
 ﻿using IronText.Automata.Lalr1;
 using IronText.Automata.Regular;
-using IronText.Compiler.Analysis;
+using IronText.MetadataCompiler.Analysis;
 using IronText.Reflection;
-using IronText.Reflection.Reporting;
 using IronText.Runtime;
 
 namespace IronText.MetadataCompiler
@@ -11,7 +10,6 @@ namespace IronText.MetadataCompiler
     {
         public LanguageDataInstanceProvider(
             Grammar                         grammar,
-            GrammarAnalysis                 analysis,
             ITdfaData                       scannerTdfa,
             MatchActionToTokenTableProvider actionToTokenProvider,
             ILrDfa                          parserDfa,

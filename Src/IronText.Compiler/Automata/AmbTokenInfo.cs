@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace IronText.Compiler.Analysis
+namespace IronText.Automata
 {
     internal class AmbTokenInfo
     {

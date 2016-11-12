@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using IronText.Automata.Lalr1;
-using IronText.Compiler;
-using IronText.Compiler.Analysis;
-using IronText.Framework;
 using IronText.Reflection;
 using NUnit.Framework;
 using IronText.MetadataCompiler;
+using IronText.MetadataCompiler.Analysis;
+using IronText.Automata;
 
 namespace IronText.Tests.Framework.Performance
 {
@@ -41,9 +39,9 @@ namespace IronText.Tests.Framework.Performance
             grammar.Start = symbols[0];
             grammar.BuildIndexes();
 
-            var tokenSetProvider = new TokenSetProvider(grammar);
-            var nullableFirstTables = new NullableFirstTables(grammar, tokenSetProvider);
-            var analysis = new GrammarAnalysis(grammar);
+            var analysis = new BuildtimeGrammar(grammar);
+            var tokenSetProvider = new TokenSetProvider(analysis);
+            var nullableFirstTables = new NullableFirstTables(analysis, tokenSetProvider);
             var lr0closure = new Lr0ClosureAlgorithm(analysis);
             var lr1closure = new Lr1ClosureAlgorithm(
                 analysis,

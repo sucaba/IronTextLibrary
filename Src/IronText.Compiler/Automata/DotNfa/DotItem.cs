@@ -4,18 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IronText.Compiler.Analysis
+
+namespace IronText.Automata.DotNfa
 {
     public class DotItem
     {
-        private readonly RuntimeProduction production;
+        private readonly BuildtimeProduction production;
 
         public DotItem(DotItem other)
             : this(other.production, other.Position)
         {
         }
 
-        internal DotItem(RuntimeProduction production, int pos)
+        internal DotItem(BuildtimeProduction production, int pos)
         {
             this.production = production;
             this.Position   = pos;

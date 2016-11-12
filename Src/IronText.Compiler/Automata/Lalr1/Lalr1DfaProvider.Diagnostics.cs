@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using IronText.Compiler.Analysis;
 using IronText.Runtime;
+using IronText.Automata.DotNfa;
 
 namespace IronText.Automata.Lalr1
 {
@@ -23,7 +22,7 @@ namespace IronText.Automata.Lalr1
 
         private StringBuilder DescribeItem(DotItem item, StringBuilder output, bool showLookaheads = true)
         {
-            RuntimeProduction production = grammar.GetProduction(item.ProductionId);
+            var production = grammar.GetProduction(item.ProductionId);
 
             int start = output.Length;
             output.Append(grammar.GetTokenName(item.Outcome)).Append(" ->");

@@ -1,6 +1,4 @@
-﻿using IronText.Compiler.Analysis;
-
-namespace IronText.Automata.Lalr1
+﻿namespace IronText.Automata.Lalr1
 {
     class LrAlternateTermsTableFiller
     {

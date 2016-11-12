@@ -1,18 +1,18 @@
-﻿using IronText.Compiler.Analysis;
-using IronText.Algorithm;
+﻿using IronText.Algorithm;
 using IronText.MetadataCompiler;
+using IronText.MetadataCompiler.Analysis;
 
 namespace IronText.Automata.Lalr1
 {
     class Lr1ClosureAlgorithm
     {
-        private readonly GrammarAnalysis     analysis;
+        private readonly IBuildtimeGrammar     analysis;
         private readonly Lr0ClosureAlgorithm lr0closure;
         private readonly BitSetType          TokenSet;
         private readonly NullableFirstTables tables;
 
         public Lr1ClosureAlgorithm(
-            GrammarAnalysis     analysis,
+            IBuildtimeGrammar     analysis,
             Lr0ClosureAlgorithm lr0closure,
             NullableFirstTables tables,
             TokenSetProvider    tokenSetProvider)

@@ -7,6 +7,7 @@ using IronText.Runtime;
 using IronText.DI;
 using IronText.Automata.Regular;
 using IronText.MetadataCompiler.DataBuilders.Infrastsructure;
+using IronText.MetadataCompiler.Analysis;
 
 namespace IronText.MetadataCompiler
 {
@@ -34,6 +35,7 @@ namespace IronText.MetadataCompiler
                 (GrammarProvider p) => p.Grammar,
                 (Grammar g) => g.Options,
                 (Grammar g) => g.Reports,
+                typeof(BuildtimeGrammar),
                 (ScannerAutomataProvider p) => p.Tdfa,
                 (ScannerAmbiguityProvider p) => p.Ambiguities,
                 (Lalr1DfaProvider p) => (ILrDfa)p,

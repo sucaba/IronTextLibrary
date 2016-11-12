@@ -1,18 +1,17 @@
 ﻿using IronText.Algorithm;
-using IronText.Compiler.Analysis;
 using IronText.Runtime;
 
 namespace IronText.Automata.Lalr1
 {
     class CanonicalLrDfaTable : ILrParserTable
     {
-        private readonly GrammarAnalysis        grammar;
+        private readonly IBuildtimeGrammar        grammar;
         private readonly ParserConflictResolver conflictResolver;
         private readonly LrTableBuilder         builder;
 
         public CanonicalLrDfaTable(
             ILrDfa          dfa,
-            GrammarAnalysis grammar,
+            IBuildtimeGrammar grammar,
             ParserConflictResolver conflictResolver,
             LrMainTableFiller fillMainTable,
             LrAlternateTermsTableFiller fillAlternateTermsTable)

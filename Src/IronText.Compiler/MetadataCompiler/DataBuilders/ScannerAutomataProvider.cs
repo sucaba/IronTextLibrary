@@ -1,12 +1,8 @@
 ﻿using IronText.Automata.Regular;
-using IronText.Compiler.Analysis;
 using IronText.Logging;
 using IronText.Reflection;
 using IronText.Runtime;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace IronText.MetadataCompiler
 {

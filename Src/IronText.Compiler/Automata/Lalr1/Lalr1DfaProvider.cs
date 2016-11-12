@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using IronText.Algorithm;
-using IronText.Compiler.Analysis;
 using IronText.Runtime;
 using System.Linq;
+using IronText.MetadataCompiler.Analysis;
+using IronText.Automata.DotNfa;
 
 namespace IronText.Automata.Lalr1
 {
@@ -18,13 +19,13 @@ namespace IronText.Automata.Lalr1
     partial class Lalr1DfaProvider : ILrDfa
     {
         private readonly BitSetType TokenSet;
-        private readonly GrammarAnalysis grammar;
+        private readonly IBuildtimeGrammar grammar;
         private readonly Lr0DfaProvider lr0;
         private readonly Lr1ClosureAlgorithm lr1closure;
 
         public Lalr1DfaProvider(
             Lr0DfaProvider  lr0,
-            GrammarAnalysis grammar,
+            IBuildtimeGrammar grammar,
             Lr1ClosureAlgorithm lr1Closure,
             TokenSetProvider tokenSetProvider)
         {

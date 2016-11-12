@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using IronText.Algorithm;
 using IronText.Automata.Regular;
 using IronText.Reflection;
-using IronText.Compiler.Analysis;
+using IronText.Automata;
 
 namespace IronText.MetadataCompiler
 {

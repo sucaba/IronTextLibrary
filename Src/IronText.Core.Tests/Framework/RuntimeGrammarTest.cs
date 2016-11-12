@@ -1,8 +1,7 @@
-﻿using IronText.Compiler.Analysis;
-using IronText.Framework;
+﻿using IronText.Automata;
 using IronText.MetadataCompiler;
+using IronText.MetadataCompiler.Analysis;
 using IronText.Reflection;
-using IronText.Runtime;
 using NUnit.Framework;
 
 namespace IronText.Tests.Framework
@@ -29,12 +28,13 @@ namespace IronText.Tests.Framework
 
             grammar.BuildIndexes();
 
-            var tokenSetProvider = new TokenSetProvider(grammar);
+            var analysis = new BuildtimeGrammar(grammar);
+            var tokenSetProvider = new TokenSetProvider(analysis);
             var provider = new RuntimeGrammarProvider(
                 grammar,
                 null,
                 null,
-                new NullableFirstTables(grammar, tokenSetProvider));
+                new NullableFirstTables(analysis, tokenSetProvider));
             var target = provider.Outcome;
 
             Assert.IsTrue(target.IsNullable(A.Index));

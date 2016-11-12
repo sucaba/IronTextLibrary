@@ -5,7 +5,7 @@ using IronText.Runtime;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IronText.Compiler.Analysis
+namespace IronText.MetadataCompiler.Analysis
 {
     class TokenComplexityProvider
     {

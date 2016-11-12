@@ -1,14 +1,13 @@
-﻿using IronText.Compiler.Analysis;
-using IronText.Reflection;
+﻿using IronText.Reflection;
 using IronText.Runtime;
 
 namespace IronText.Automata.Lalr1
 {
     class ParserConflictResolver
     {
-        private readonly GrammarAnalysis grammar;
+        private readonly IBuildtimeGrammar grammar;
 
-        public ParserConflictResolver(GrammarAnalysis grammar)
+        public ParserConflictResolver(IBuildtimeGrammar grammar)
         {
             this.grammar = grammar;
         }

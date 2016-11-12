@@ -1,12 +1,12 @@
-﻿using IronText.Compiler.Analysis;
+﻿using IronText.Automata.DotNfa;
 
 namespace IronText.Automata.Lalr1
 {
     class Lr0ClosureAlgorithm
     {
-        private readonly GrammarAnalysis analysis;
+        private readonly IBuildtimeGrammar analysis;
 
-        public Lr0ClosureAlgorithm(GrammarAnalysis analysis)
+        public Lr0ClosureAlgorithm(IBuildtimeGrammar analysis)
         {
             this.analysis = analysis;
         }

@@ -1,6 +1,5 @@
 ﻿using IronText.Build;
 using IronText.MetadataCompiler;
-using IronText.Reflection;
 
 namespace IronText.Runtime
 {

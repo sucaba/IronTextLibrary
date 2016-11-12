@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IronText.Compiler.Analysis
+namespace IronText.Automata.DotNfa
 {
     public abstract class DotItemTransition
     {
@@ -10,8 +10,6 @@ namespace IronText.Compiler.Analysis
         }
 
         public int Token { get; }
-
-        public abstract bool HasKnownFollowingState { get; }
 
         public abstract DotItem CreateNextItem();
     }
@@ -26,8 +24,6 @@ namespace IronText.Compiler.Analysis
             this.priorItem = priorItem;
         }
 
-        public override bool HasKnownFollowingState => true;
-
         public override DotItem CreateNextItem() => priorItem.Goto(Token);
     }
 
@@ -37,8 +33,6 @@ namespace IronText.Compiler.Analysis
             : base(token)
         {
         }
-
-        public override bool HasKnownFollowingState => false;
 
         public override DotItem CreateNextItem()
         {
@@ -53,8 +47,6 @@ namespace IronText.Compiler.Analysis
         {
             this.ProductionId = productionId;
         }
-
-        public override bool HasKnownFollowingState => false;
 
         public int ProductionId { get; }
 

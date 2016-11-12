@@ -3,28 +3,30 @@ using System.Linq;
 using System.Collections.Generic;
 using IronText.Reflection;
 
-namespace IronText.Runtime
+namespace IronText.Automata
 {
-    [Serializable]
-    public class RuntimeProduction
+    public class BuildtimeProduction
     {
-        public RuntimeProduction(
+        public BuildtimeProduction(
             int index,
             int outcome,
-            IEnumerable<int> input)
-            : this(index, outcome, input.ToArray())
+            IEnumerable<int> input,
+            BuildtimeProductionNode tree)
+            : this(index, outcome, input.ToArray(), tree)
         {
         }
 
-        private RuntimeProduction(
+        private BuildtimeProduction(
             int index,
             int outcome,
-            int[] input)
+            int[] input,
+            BuildtimeProductionNode tree)
         {
             this.Index       = index;
             this.Outcome     = outcome;
             this.Input       = input;
             this.InputLength = input.Length;
+            this.Tree        = tree;
         }
 
         public int   Index        { get; }
@@ -34,5 +36,7 @@ namespace IronText.Runtime
         public int[] Input        { get; }
 
         public int   InputLength  { get; }
+
+        public BuildtimeProductionNode Tree { get; }
     }
 }

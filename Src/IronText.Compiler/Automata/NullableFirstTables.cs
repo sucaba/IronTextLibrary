@@ -1,11 +1,10 @@
 ﻿using IronText.Algorithm;
-using IronText.Compiler.Analysis;
-using IronText.Reflection;
+using IronText.Automata;
 using IronText.Runtime;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IronText.MetadataCompiler
+namespace IronText.Automata
 {
     class NullableFirstTables
     {
@@ -13,13 +12,13 @@ namespace IronText.MetadataCompiler
         private MutableIntSet[] firsts;
         private bool[]          isNullable;
 
-        protected Grammar grammar;
+        protected IBuildtimeGrammar grammar;
 
-        public NullableFirstTables(Grammar grammar, TokenSetProvider tokenSetProvider)
+        public NullableFirstTables(IBuildtimeGrammar grammar, TokenSetProvider tokenSetProvider)
         {
             this.grammar    = grammar;
             this.tokenSet   = tokenSetProvider.TokenSet;
-            int count       = grammar.Symbols.Count;
+            int count       = grammar.SymbolCount;
             this.firsts     = new MutableIntSet[count];
             this.isNullable = new bool[count];
 
@@ -30,32 +29,29 @@ namespace IronText.MetadataCompiler
 
         private void Build()
         {
-            int first = grammar.Symbols.StartIndex;
-            int last  = grammar.Symbols.Count;
-            this.firsts     = grammar.Symbols.CreateCompatibleArray<MutableIntSet>();
-            this.isNullable = grammar.Symbols.CreateCompatibleArray<bool>(false);
+            int count  = grammar.SymbolCount;
 
-            for (int i = first; i != last; ++i)
+            for (int i = 0; i != count; ++i)
             {
                 firsts[i] = tokenSet.Mutable();
-                if (grammar.Symbols[i].IsTerminal)
+                if (grammar.IsTerminal(i))
                 {
                     firsts[i].Add(i);
                 }
             }
 
-            var recursiveProds = new List<Production>();
+            var recursiveProds = new List<BuildtimeProduction>();
 
             // Init FIRST using rules without recursion in first part
             foreach (var prod in grammar.Productions)
             {
                 if (prod.Input.Length == 0)
                 {
-                    firsts[prod.OutcomeToken].Add(PredefinedTokens.Epsilon);
+                    firsts[prod.Outcome].Add(PredefinedTokens.Epsilon);
                 }
-                else if (prod.Input[0].IsTerminal)
+                else if (grammar.IsTerminal(prod.Input[0]))
                 {
-                    firsts[prod.OutcomeToken].Add(prod.Input[0].Index);
+                    firsts[prod.Outcome].Add(prod.Input[0]);
                 }
                 else
                 {
@@ -71,7 +67,7 @@ namespace IronText.MetadataCompiler
 
                 foreach (var prod in recursiveProds)
                 {
-                    if (InternalAddFirsts(prod.InputTokens, firsts[prod.Outcome.Index]))
+                    if (InternalAddFirsts(prod.Input, firsts[prod.Outcome]))
                     {
                         changed = true;
                     }
@@ -79,7 +75,7 @@ namespace IronText.MetadataCompiler
             }
             while (changed);
 
-            for (int i = first; i != last; ++i)
+            for (int i = 0; i != count; ++i)
             {
                 bool hasEpsilon = firsts[i].Contains(PredefinedTokens.Epsilon);
                 if (hasEpsilon)
