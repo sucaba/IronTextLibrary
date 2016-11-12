@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace IronText.Reflection
+namespace IronText.Reflection.Transformations
 {
     class ProductionInliner : IProductionComponentVisitor<IProductionComponent>
     {
@@ -47,11 +47,7 @@ namespace IronText.Reflection
                 inlinedComponents[i] = production.ChildComponents[i].Accept(this);
             }
 
-            var result = new Production(
-                production.Outcome,
-                inlinedComponents,
-                production.ContextRef,
-                flags: production.Flags);
+            var result = new Production(production, inlinedComponents);
             result.Joint.AddAll(production.Joint);
             return result;
         }

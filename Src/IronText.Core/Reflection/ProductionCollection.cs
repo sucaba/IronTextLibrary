@@ -32,7 +32,7 @@ namespace IronText.Reflection
             return result;
         }
 
-        public Production Add(Symbol outcome, IEnumerable<IProductionComponent> pattern, SemanticRef contextRef = null)
+        public Production Add(Symbol outcome, Symbol[] pattern, SemanticRef contextRef = null)
         {
             var result = new Production(outcome, pattern, contextRef);
             return Add(result);

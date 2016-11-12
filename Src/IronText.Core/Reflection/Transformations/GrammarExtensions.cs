@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IronText.Reflection
+namespace IronText.Reflection.Transformations
 {
     static class GrammarExtensions
     {
@@ -178,11 +176,7 @@ namespace IronText.Reflection
                 if (criteria(prod))
                 {
                     var newProd = @this.Productions.Add(
-                        new Production(
-                            newSymbol,
-                            prod.ChildComponents,
-                            contextRef: prod.ContextRef,
-                            flags: prod.Flags));
+                        new Production(newSymbol, prod));
                     newProd.ExplicitPrecedence = prod.ExplicitPrecedence;
 
                     newProd.Joint.AddAll(prod.Joint);

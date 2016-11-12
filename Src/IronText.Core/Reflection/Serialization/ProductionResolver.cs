@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IronText.Reflection
@@ -73,17 +74,14 @@ namespace IronText.Reflection
             return new InjectedActionParameter(name);
         }
 
-        public Production Resolve(string outcome, IEnumerable<string> pattern)
+        public Production Resolve(string outcome, string[] pattern)
         {
             var sketch = new ProductionSketch(outcome, pattern);
             Symbol outcomeSymbol = ResolveSymbol(outcome);
 
-            var result = new Production(
+            return new Production(
                 outcomeSymbol,
-                pattern.Select(ResolveSymbol),
-                null);
-
-            return result;
+                Array.ConvertAll(pattern, ResolveSymbol));
         }
     }
 }

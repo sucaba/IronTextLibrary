@@ -31,6 +31,41 @@ namespace IronText.Reflection
         }
 
         public Production(
+            Production                        roof,
+            IEnumerable<IProductionComponent> roofInput)
+            : this(
+                  roof.Outcome,
+                  roofInput,
+                  roof.ContextRef,
+                  roof.Flags)
+        {
+        }
+
+        public Production(
+            Symbol           outcome,
+            Symbol[]         input,
+            SemanticRef      contextRef = null,
+            ProductionFlags  flags = ProductionFlags.None)
+            : this(
+                  outcome,
+                  (IEnumerable<IProductionComponent>)input,
+                  contextRef,
+                  flags)
+        {
+        }
+
+        public Production(
+            Symbol     newOutcome,
+            Production original)
+            : this(
+                newOutcome,
+                original.ChildComponents,
+                original.ContextRef,
+                original.Flags)
+        {
+        }
+
+        internal Production(
             Symbol           outcome,
             IEnumerable<IProductionComponent> components,
             SemanticRef      contextRef = null,
