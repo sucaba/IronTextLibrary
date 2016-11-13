@@ -46,10 +46,9 @@ namespace IronText.Reflection
         private Production CreateInstance(ProductionSketch sketch)
         {
             Symbol outcomeSymbol = ResolveSymbol(sketch.Outcome);
-            var components = sketch.Components.Select(CreateComponent).ToArray();
+            var components = Array.ConvertAll(sketch.Components, CreateComponent);
 
-            var result = new Production(outcomeSymbol, components, null);
-            return result;
+            return new Production(outcomeSymbol, components, null);
         }
 
         private IProductionComponent CreateComponent(object sketchOrText)

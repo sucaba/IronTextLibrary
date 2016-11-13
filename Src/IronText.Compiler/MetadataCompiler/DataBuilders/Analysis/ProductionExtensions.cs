@@ -10,21 +10,21 @@ namespace IronText.MetadataCompiler.Analysis
             new BuildtimeProduction(
                 production.Index,
                 production.Outcome.Index,
-                production.InputTokens,
-                MakeNode(production));
+                production.InputTokens);
 
-        static BuildtimeProductionNode MakeTree(IProductionComponent component) =>
+        static TreeNode MakeTree(IProductionComponent component) =>
             MakeNode((dynamic)component);
 
-        static BuildtimeProductionNode MakeNode(Production production) =>
-            new BuildtimeProductionNode(
+        static TreeNode MakeNode(Production production) =>
+            new TreeNode(
+                production.Original.Index,
                 production.Outcome.Index,
                 Array.ConvertAll(production.ChildComponents, MakeTree));
 
-        static BuildtimeProductionNode MakeNode(Symbol symbol) =>
-            new BuildtimeProductionNode(symbol.Index);
+        static TreeNode MakeNode(Symbol symbol) =>
+            new TreeNode(symbol.Index);
 
-        static BuildtimeProductionNode MakeNode(IProductionComponent other)
+        static TreeNode MakeNode(IProductionComponent other)
         {
             throw new InvalidOperationException($"Unknown component type '{other.GetType().FullName}'");
         }

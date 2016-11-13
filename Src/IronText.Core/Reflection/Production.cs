@@ -29,6 +29,7 @@ namespace IronText.Reflection
             Production                        top,
             IEnumerable<IProductionComponent> topInput)
             : this(
+                  top,
                   top.Outcome,
                   topInput,
                   top.ContextRef,
@@ -53,6 +54,7 @@ namespace IronText.Reflection
             Symbol     newOutcome,
             Production original)
             : this(
+                original,
                 newOutcome,
                 original.ChildComponents,
                 original.ContextRef,
@@ -65,17 +67,33 @@ namespace IronText.Reflection
             IEnumerable<IProductionComponent> components,
             SemanticRef      contextRef = null,
             ProductionFlags  flags = ProductionFlags.None)
+            : this(
+                  null,
+                  outcome,
+                  components,
+                  contextRef,
+                  flags)
+        {
+        }
+
+        private Production(
+            Production       topComponentProduction,
+            Symbol           outcome,
+            IEnumerable<IProductionComponent> components,
+            SemanticRef      contextRef,
+            ProductionFlags  flags)
         {
             if (outcome == null)
             {
-                throw new ArgumentNullException("outcome");
+                throw new ArgumentNullException(nameof(outcome));
             }
 
             if (components == null)
             {
-                throw new ArgumentNullException("components");
+                throw new ArgumentNullException(nameof(components));
             }
 
+            Original = topComponentProduction ?? this;
             Outcome       = outcome;
             ChildComponents    = components.ToArray();
             ContextRef    = contextRef ?? SemanticRef.None;
@@ -87,6 +105,8 @@ namespace IronText.Reflection
 
             Semantics     = new ProductionSemantics(this);
         }
+
+        public Production         Original       { get; }
 
         public int                OutcomeToken   { get { return Outcome.Index; } }
 

@@ -66,11 +66,13 @@
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalBranchDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalOperator.cs" />
     <Compile Include="Algorithm\Functions.cs" />
-    <Compile Include="Automata\BuildtimeProductionNode.cs" />
+    <Compile Include="Automata\TreeNfa\TreeNode.cs" />
     <Compile Include="Automata\IBuildtimeGrammar.cs" />
     <Compile Include="Automata\DotNfa\DotAction.cs" />
     <Compile Include="Automata\DotNfa\DotItemTransition.cs" />
     <Compile Include="Automata\BuildtimeProduction.cs" />
+    <Compile Include="Automata\TreeNfa\TreeItem.cs" />
+    <Compile Include="Automata\TreeNfa\TreeTransition.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\Analysis\ProductionExtensions.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\Analysis\TokenComplexityProvider.cs" />
     <Compile Include="Automata\TokenSetProvider.cs" />

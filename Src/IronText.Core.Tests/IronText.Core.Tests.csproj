@@ -95,7 +95,7 @@
     <Compile Include="Algorithm\TdfaSimulationLexerTest.cs" />
     <Compile Include="Algorithm\TopologicalSortTest.cs" />
     <Compile Include="Algorithm\UnicodeFrequencyTest.cs" />
-    <Compile Include="Analysis\DotItemSpecs\Should_have_production_tree_transitions.cs" />
+    <Compile Include="Analysis\DotItemSpecs\DotItem_has_reduce_transition.cs" />
     <Compile Include="Collections\IndexedCollectionTest.cs" />
     <Compile Include="Framework\Generic\GenericParserTest.cs" />
     <Compile Include="Lib\IL\Plugins\DataStorageTest.cs" />

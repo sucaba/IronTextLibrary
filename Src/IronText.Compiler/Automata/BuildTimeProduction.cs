@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
-using IronText.Reflection;
 
 namespace IronText.Automata
 {
@@ -10,23 +8,20 @@ namespace IronText.Automata
         public BuildtimeProduction(
             int index,
             int outcome,
-            IEnumerable<int> input,
-            BuildtimeProductionNode tree)
-            : this(index, outcome, input.ToArray(), tree)
+            IEnumerable<int> input)
+            : this(index, outcome, input.ToArray())
         {
         }
 
         private BuildtimeProduction(
             int index,
             int outcome,
-            int[] input,
-            BuildtimeProductionNode tree)
+            int[] input)
         {
             this.Index       = index;
             this.Outcome     = outcome;
             this.Input       = input;
             this.InputLength = input.Length;
-            this.Tree        = tree;
         }
 
         public int   Index        { get; }
@@ -36,7 +31,5 @@ namespace IronText.Automata
         public int[] Input        { get; }
 
         public int   InputLength  { get; }
-
-        public BuildtimeProductionNode Tree { get; }
     }
 }

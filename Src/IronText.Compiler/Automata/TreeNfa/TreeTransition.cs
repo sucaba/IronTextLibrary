@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IronText.Automata.DotNfa
+namespace IronText.Automata.TreeNfa
 {
-    class DotAction
+    class TreeTransition
     {
-        public DotAction()
-        {
-        }
     }
 }
