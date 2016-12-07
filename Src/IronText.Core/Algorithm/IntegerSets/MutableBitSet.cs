@@ -24,14 +24,14 @@ namespace IronText.Algorithm
             get { return this.impl; }
         }
 
-        public override void Add(int value)
+        public override bool Add(int value)
         {
-            impl.Add(value);
+            return impl.Add(value);
         }
 
-        public override void Add(IntInterval interval)
+        public override int Add(IntInterval interval)
         {
-            impl.Add(interval);
+            return impl.Add(interval);
         }
 
         public override int PopAny()
@@ -44,9 +44,9 @@ namespace IronText.Algorithm
             impl.Remove(value);
         }
 
-        public override void AddAll(IntSet other)
+        public override int AddAll(IntSet other)
         {
-            impl.AddAll(ImplOf(other));
+            return impl.AddAll(ImplOf(other));
         }
 
         public override void RemoveAll(IntSet other)

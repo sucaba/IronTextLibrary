@@ -1,7 +1,15 @@
-﻿namespace IronText.Collections
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace IronText.Collections
 {
     public static class AmbiguousAlternativesExtensions
     {
+        public static T AsAmbiguous<T>(this IEnumerable<T> @this)
+            where T : Ambiguous<T> =>
+            @this.Aggregate((T)null, Alternate);
+
         public static AmbiguousAlternatives<T> AllAlternatives<T>(this T @this)
             where T : Ambiguous<T>
         {

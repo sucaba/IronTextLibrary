@@ -7,15 +7,15 @@ namespace IronText.Algorithm.IntegerSets.Impl
 {
     interface IMutableBitSet<TDerived>  : IBitSet<TDerived>
     {
-        void Add(IntInterval interval);
+        int Add(IntInterval interval);
 
-        void Add(int value);
+        bool Add(int value);
 
         int PopAny();
 
         void Remove(int value);
 
-        void AddAll(TDerived other);
+        int AddAll(TDerived other);
 
         void RemoveAll(TDerived other);
     }

@@ -5,7 +5,7 @@ namespace IronText.Automata.Lalr1
 {
     class CanonicalLrDfaTable : ILrParserTable
     {
-        private readonly IBuildtimeGrammar        grammar;
+        private readonly IBuildtimeGrammar      grammar;
         private readonly ParserConflictResolver conflictResolver;
         private readonly LrTableBuilder         builder;
 

@@ -98,6 +98,8 @@ namespace IronText.Reflection
 
         public SymbolCollection     Symbols             { get; private set; }
 
+        public IEnumerable<Symbol> NonTerms => Symbols.Where(s => !s.IsTerminal);
+
         public ProductionCollection Productions         { get; private set; }
 
         public MatcherCollection    Matchers            { get; private set; }

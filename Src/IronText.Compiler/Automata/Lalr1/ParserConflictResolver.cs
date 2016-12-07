@@ -18,18 +18,11 @@ namespace IronText.Automata.Lalr1
             int incomingToken,
             out ParserDecision output)
         {
-            if (decisionX.Instructions.Count != 1
-                || decisionY.Instructions.Count != 1)
-            {
-                output = null;
-                return false;
-            }
-
             ParserInstruction instruction;
 
             bool result = TryResolveShiftReduce(
-                decisionX.Instructions[0],
-                decisionY.Instructions[0],
+                decisionX.Instruction,
+                decisionY.Instruction,
                 incomingToken,
                 out instruction);
             output = new ParserDecision(instruction);

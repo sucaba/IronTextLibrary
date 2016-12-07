@@ -104,10 +104,7 @@ namespace IronText.Reports
             StreamWriter   output,
             ParserDecision decision)
         {
-            foreach (var instruction in decision.Instructions)
-            {
-                PrintInstruction(output, instruction);
-            }
+            PrintInstruction(output, decision.Instruction);
         }
 
         private void PrintInstruction(StreamWriter output, ParserInstruction action)

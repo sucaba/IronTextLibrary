@@ -4,36 +4,37 @@ using IronText.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IronText.Automata.Lalr1
+namespace IronText.Automata.TurnPlanning
 {
-    class LrTableBuilder : ILrTableBuilder
+    class TurnTableBuilder
     {
-        private readonly ParserConflictResolver conflictResolver;
-        private MutableTable<ParserDecision> decisionTable;
+        private readonly TurnConflictResolver conflictResolver;
+        private readonly MutableTable<Turn>   turnTable;
 
-        public LrTableBuilder(
-            ParserConflictResolver conflictResolver,
+        public TurnTableBuilder(
+            TurnConflictResolver precedenceProvider,
             int stateCount,
             int tokenCount)
         {
-            this.conflictResolver = conflictResolver;
-            this.decisionTable = new MutableTable<ParserDecision>(
+            this.conflictResolver = precedenceProvider;
+            this.turnTable = new MutableTable<Turn>(
                                     stateCount,
                                     tokenCount);
         }
 
-        public ITable<ParserDecision> GetResult()
+        public ITable<Turn> GetResult()
         {
-            return decisionTable;
+            return turnTable;
         }
 
+#if false
         public bool TryAssignResolution(
             int   state,
             int   ambiguousToken,
             int[] alternateTokens)
         {
-            int            resolvedToken;
-            ParserDecision resolvedDecision;
+            int  resolvedToken;
+            Turn resolvedDecision;
 
             if (!TryResolve(
                 state,
@@ -68,10 +69,10 @@ namespace IronText.Automata.Lalr1
         }
     
         private bool TryResolve(
-            int state,
-            int[] alternateTokens,
-            out int resolvedToken,
-            out ParserDecision resolvedDecision)
+            int      state,
+            int[]    alternateTokens,
+            out int  resolvedToken,
+            out Turn resolvedDecision)
         {
             var tokenToDecision = GetMultiple(state, alternateTokens);
 
@@ -81,7 +82,7 @@ namespace IronText.Automata.Lalr1
                 case 0:
                     // Resolve as a failure for a main token
                     resolvedToken = alternateTokens[0];
-                    resolvedDecision = ParserDecision.NoAlternatives;
+                    resolvedDecision = Turn.NoAlternatives;
                     break;
                 case 1:
                     resolvedToken = tokenToDecision.First().Key;
@@ -89,21 +90,21 @@ namespace IronText.Automata.Lalr1
                     break;
                 default:
                     resolvedToken = -1;
-                    resolvedDecision = ParserDecision.NoAlternatives;
+                    resolvedDecision = Turn.NoAlternatives;
                     break;
             }
 
             return count <= 1;
         }
 
-        private Dictionary<int, ParserDecision> GetMultiple(int state, int[] tokens)
+        private Dictionary<int, Turn> GetMultiple(int state, int[] tokens)
         {
-            var result = new Dictionary<int, ParserDecision>();
+            var result = new Dictionary<int, Turn>();
 
             foreach (int token in tokens)
             {
-                var decision = decisionTable.Get(state, token);
-                if (decision != ParserDecision.NoAlternatives)
+                var decision = turnTable.Get(state, token);
+                if (decision != Turn.NoAlternatives)
                 {
                     result.Add(token, decision);
                 }
@@ -111,10 +112,11 @@ namespace IronText.Automata.Lalr1
 
             return result;
         }
+#endif
 
         public void AssignShift(
             int state,
-            int      token,
+            int token,
             int nextState)
         {
             AssignAction(
@@ -131,7 +133,15 @@ namespace IronText.Automata.Lalr1
                 ParserInstruction.AcceptAction);
         }
 
-        public void AssignReduce(int state, int token, int productionId)
+        public void AssignReturn(int state, int token, int producedToken)
+        {
+            AssignAction(
+                state,
+                token,
+                ParserInstruction.Return(producedToken));
+        }
+
+        public void AssignReduce(int state, int token, int productionId, int nextState)
         {
             AssignAction(
                 state,
@@ -139,33 +149,9 @@ namespace IronText.Automata.Lalr1
                 ParserInstruction.Reduce(productionId));
         }
 
-        private void AssignAction(int state, int token, ParserInstruction action)
+        private void AssignAction(int state, int token, ParserInstruction instruction)
         {
-            AssignAction(state, token, new ParserDecision(action));
-        }
-
-        private void AssignAction(int state, int token, ParserDecision decision)
-        {
-            ParserDecision current = decisionTable.Get(state, token);
-            ParserDecision resolved;
-
-            if (current == ParserDecision.NoAlternatives)
-            {
-                resolved = decision;
-            }
-            else if (current.Equals(decision))
-            {
-                resolved = current;
-            }
-            else if (conflictResolver.TryResolve(current, decision, token, out resolved))
-            {
-            }
-            else
-            {
-                resolved = current.Alternate(decision);
-            }
-
-            decisionTable.Set(state, token, resolved);
+            AssignAction(state, token, instruction);
         }
     }
 }

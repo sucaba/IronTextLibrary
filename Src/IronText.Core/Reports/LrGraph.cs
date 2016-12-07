@@ -46,12 +46,7 @@ namespace IronText.Reports
                 {
                     foreach (var alternative in transition.Decisions.AllAlternatives())
                     {
-                        if (alternative.Instructions.Count == 1)
-                        {
-                            continue;
-                        }
-
-                        var instruction = alternative.Instructions[0];
+                        var instruction = alternative.Instruction;
                         if (instruction.Operation == ParserOperation.Shift)
                         {
                             graph.AddEdge(state.Index, instruction.State, grammar.Symbols[transition.Token].Name);

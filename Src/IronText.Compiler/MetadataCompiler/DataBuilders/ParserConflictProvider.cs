@@ -45,13 +45,7 @@ namespace IronText.MetadataCompiler
 
             foreach (var alternative in decision.AllAlternatives())
             {
-                if (decision.Instructions.Count != 1)
-                {
-                    throw new InvalidOperationException(
-                        "Internal error: reafctoring of parser actions towards bytecode.");
-                }
-
-                result.AddAction(decision.Instructions[0]);
+                result.AddAction(decision.Instruction);
             }
 
             return result;

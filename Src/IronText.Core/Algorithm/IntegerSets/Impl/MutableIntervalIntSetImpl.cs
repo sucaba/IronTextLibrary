@@ -198,14 +198,18 @@ namespace IronText.Algorithm.IntegerSets.Impl
             return result;
         }
 
-        public void AddAll(MutableIntervalIntSetImpl other)
+        public int AddAll(MutableIntervalIntSetImpl other)
         {
+            int countBefore = this.Count;
+
             foreach (var interval in other.intervals)
             {
                 Add(interval);
             }
 
             UpdateHash();
+
+            return Count - countBefore;
         }
 
         public void RemoveAll(MutableIntervalIntSetImpl other)
@@ -216,9 +220,9 @@ namespace IronText.Algorithm.IntegerSets.Impl
             this.hash = complemented.hash;
         }
 
-        public void Add(Int value)
+        public bool Add(Int value)
         {
-            Add(new IntInterval(value, value));
+            return Add(new IntInterval(value, value)) > 0;
         }
 
         public Int PopAny()
@@ -311,12 +315,14 @@ namespace IronText.Algorithm.IntegerSets.Impl
         }
 #endif
 
-        public void Add(IntInterval newInterval)
+        public int Add(IntInterval newInterval)
         {
             if (newInterval.First > newInterval.Last)
             {
-                return;
+                return 0;
             }
+
+            int countBefore = Count;
 
             bool changed = false;
             var oldBounds = bounds;
@@ -391,6 +397,8 @@ namespace IronText.Algorithm.IntegerSets.Impl
             {
                 UpdateHash();
             }
+
+            return Count - countBefore;
         }
 
         public IEnumerator<Int> GetEnumerator() { return All().GetEnumerator(); }

@@ -30,19 +30,27 @@ namespace IronText.Algorithm.IntegerSets.Impl
             this.words = words;
         }
 
-        public void Add(int value)
+        public bool Add(int value)
         {
+            bool result = Contains(value);
+
             words[value / BitsInWord] |= (1u << (value % BitsInWord));
+
+            return result;
         }
 
-        public void Add(IntInterval interval)
+        public int Add(IntInterval interval)
         {
+            int countBefore = Count;
+
             int first = interval.First;
             int last = interval.Last;
             while (first <= last)
             {
                 Add(first++);
             }
+
+            return Count - countBefore;
         }
 
         public int PopAny()
@@ -70,8 +78,10 @@ namespace IronText.Algorithm.IntegerSets.Impl
             words[value / BitsInWord] &= ~(1u << (value % BitsInWord));
         }
 
-        public void AddAll(MutableBitSetImpl other)
+        public int AddAll(MutableBitSetImpl other)
         {
+            int countBefore = Count;
+
             var otherWords = other.words;
             int otherLength = otherWords.Length;
             int len = words.Length;
@@ -84,6 +94,8 @@ namespace IronText.Algorithm.IntegerSets.Impl
             {
                 words[i] |= otherWords[i];
             }
+
+            return Count - countBefore;
         }
 
         public void RemoveAll(MutableBitSetImpl other)

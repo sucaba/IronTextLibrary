@@ -78,7 +78,7 @@ namespace IronText.MetadataCompiler
 
         private void CompileDecision(ParserDecision decision)
         {
-            instructions.AddRange(decision.Instructions);
+            instructions.Add(decision.Instruction);
 
             CompileBranchEnd();
         }

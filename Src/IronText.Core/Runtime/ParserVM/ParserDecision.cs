@@ -1,7 +1,5 @@
 ﻿using IronText.Collections;
-using System.Collections.Generic;
 using System;
-using System.Linq;
 
 namespace IronText.Runtime
 {
@@ -9,20 +7,20 @@ namespace IronText.Runtime
         : Ambiguous<ParserDecision>
         , IEquatable<ParserDecision>
     {
-        public ParserDecision()
-        {
-        }
-
         public ParserDecision(ParserInstruction instruction)
         {
-            Instructions.Add(instruction);
+            Instruction = instruction;
         }
 
-        public List<ParserInstruction> Instructions { get; } = new List<ParserInstruction>();
+        public ParserInstruction Instruction { get; }
 
         public bool Equals(ParserDecision other) =>
             other != null
-            && Alternative == other.Alternative
-            && Enumerable.SequenceEqual(Instructions, other.Instructions);
+            && Equals(Instruction, other.Instruction)
+            && Alternative == (object)other.Alternative;
+
+        public override bool Equals(object obj) => Equals(obj as ParserDecision);
+
+        public override int GetHashCode() => Instruction.GetHashCode();
     }
 }

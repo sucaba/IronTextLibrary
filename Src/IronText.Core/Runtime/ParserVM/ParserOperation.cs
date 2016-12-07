@@ -11,21 +11,27 @@
         // Reduce rule and invoke rule action
         Reduce      = 2,
 
+        // Return from processing production tree
+        Return      = 3,
+
         // Resolve Shrodinger's token
-        Resolve     = 3,
+        Resolve     = 4,
 
         // Fork on allowed alternatives of a Shrodinger's token
-        Fork        = 4,
+        Fork        = 5,
 
         // Success
-        Accept      = 5,
+        Accept      = 6,
 
         // Return control to the parser
-        Exit        = 6,
+        Exit        = 7,
 
         // Continue parser loop
-        Restart     = 7,
+        Restart     = 8,
 
-        InternalError = 8
+        // Sets already known current state
+        ForceState  = 9,
+
+        InternalError = 10 
     }
 }

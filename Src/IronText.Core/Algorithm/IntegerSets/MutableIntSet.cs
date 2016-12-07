@@ -8,10 +8,10 @@ namespace IronText.Algorithm
     {
         protected MutableIntSet(IntSetType setType) : base(setType) { }
 
-        public abstract void Add(Int value);
-        public abstract void Add(IntInterval interval);
+        public abstract bool Add(Int value);
+        public abstract int Add(IntInterval interval);
         public abstract void Remove(Int value);
-        public abstract void AddAll(IntSet other);
+        public abstract int AddAll(IntSet other);
         public abstract void RemoveAll(IntSet other);
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿#if false
+using NUnit.Framework;
 using IronText.Automata;
 using IronText.Automata.DotNfa;
 using IronText.Algorithm;
@@ -27,16 +28,17 @@ namespace IronText.Tests.Analysis.DotItemSpecs
         {
             // X = (Y = Z .) E [<any>] 
 
-            var y = new TreeNode(
-                        Child2InlinedProductionId,
-                        Y,
-                        new TreeNode(Z));
+            var y = TreeNode.Reduction(
+                    Child2InlinedProductionId,
+                    Y,
+                    TreeNode.ReadInput(Z));
+
             var root = 
-                new TreeNode(
+                TreeNode.Reduction(
                     TopInlinedProductionId,
                     X,
                     y,
-                    new TreeNode(E)); 
+                    TreeNode.ReadInput(E)); 
 
             var sut = new TreeItem(root);
 
@@ -54,3 +56,4 @@ namespace IronText.Tests.Analysis.DotItemSpecs
         }
     }
 }
+#endif

@@ -18,6 +18,12 @@ namespace IronText.Runtime
 
         public static ParserInstruction Reduce(int production) =>
             new ParserInstruction(ParserOperation.Reduce, production);
+        
+        public static ParserInstruction Return(int producedToken) =>
+            new ParserInstruction(ParserOperation.Return, producedToken);
+
+        public static ParserInstruction ForceState(int state) =>
+            new ParserInstruction(ParserOperation.ForceState, state);
 
         public static ParserInstruction Resolve(int token) =>
             new ParserInstruction(ParserOperation.Resolve, token);
