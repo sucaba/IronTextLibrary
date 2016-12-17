@@ -66,6 +66,7 @@
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalBranchDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalOperator.cs" />
     <Compile Include="Algorithm\Functions.cs" />
+    <Compile Include="Automata\TurnPlanning\TableBuilders\MainTurnTableFiller.cs" />
     <Compile Include="Automata\TurnPlanning\TokenDfaDecision.cs" />
     <Compile Include="Automata\TurnPlanning\TokenDfaProvider.cs" />
     <Compile Include="Automata\TurnPlanning\TokenDfaState.cs" />
@@ -79,12 +80,11 @@
     <Compile Include="Automata\TurnPlanning\TurnNfaTransition.cs" />
     <Compile Include="Automata\TurnPlanning\TokenSetsRelation.cs" />
     <Compile Include="Automata\TurnPlanning\TurnDfaSubstate.cs" />
-    <Compile Include="Automata\TurnPlanning\TableBuilders\PlanDfa1StateIndexer.cs" />
+    <Compile Include="Common\Indexer.cs" />
     <Compile Include="Automata\TurnPlanning\TurnConflictResolver.cs" />
     <Compile Include="Automata\TurnPlanning\TurnPrecedenceProvider.cs" />
     <Compile Include="Automata\TurnPlanning\Turns\InnerReductionTurn.cs" />
     <Compile Include="Automata\TurnPlanning\Turns\InputConsumptionTurn.cs" />
-    <Compile Include="Automata\TurnPlanning\TableBuilders\MainTurnTableFiller.cs" />
     <Compile Include="Automata\TurnPlanning\Turns\ReturnReductionTurn.cs" />
     <Compile Include="Automata\TurnPlanning\TableBuilders\TurnTableBuilder.cs" />
     <Compile Include="Automata\TurnPlanning\TransitionLookaheadProvider.cs" />

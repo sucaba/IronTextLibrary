@@ -1,20 +1,19 @@
-﻿namespace IronText.Automata.TurnPlanning
+﻿using IronText.Common;
+
+namespace IronText.Automata.TurnPlanning
 {
     class MainTurnTableFiller
     {
-        private readonly TurnDfaState[]                  states;
-        private readonly PlanDfa1StateIndexer            stateIndexer;
-        private readonly TurnConflictResolver            conflictResolver;
-        private readonly TokenSetsRelation<TurnDfaState> firsts;
+        private readonly TokenDfaState[]        states;
+        private readonly Indexer<TokenDfaState> stateIndexer;
+        private readonly TurnConflictResolver   conflictResolver;
 
         public MainTurnTableFiller(
-            TurnDfa1Provider       dfa, 
-            PlanDfa1StateIndexer   stateIndexer,
-            TurnConflictResolver   conflictResolver,
-            TurnDfa1FirstsProvider firstsProvider)
+            TokenDfaProvider       dfa, 
+            Indexer<TokenDfaState> stateIndexer,
+            TurnConflictResolver   conflictResolver)
         {
             this.states            = dfa.States;
-            this.firsts            = firstsProvider.Firsts;
             this.stateIndexer      = stateIndexer;
             this.conflictResolver  = conflictResolver;
         }
@@ -23,64 +22,56 @@
         {
             foreach (var state in states)
             {
-                var lookaheads = firsts.Of(state);
-
-                foreach (var turn in conflictResolver.Prioritize(state.Turns))
+                var transitions = conflictResolver.PrioritizeBy(state.Transitions, x => x.Value.Turn);
+                foreach (var t in transitions)
                 {
-                    foreach (var lookahead in lookaheads)
-                    {
-                        AssignAction(
-                            builder,
-                            state,
-                            (dynamic)turn,
-                            lookahead);
-                    }
+                    AssignAction(builder, state, (dynamic)t.Value.Turn, t.Key);
                 }
             }
         }
 
         private void AssignAction(
             TurnTableBuilder     builder,
-            TurnDfaState         state,
+            TokenDfaState        state,
             InputConsumptionTurn turn,
             int                  lookahead)
         {
             builder.AssignShift(
-                stateIndexer.Get(state),
+                stateIndexer[state],
                 turn.Token,
-                stateIndexer.Get(state.GetNext(turn)));
+                stateIndexer[state.GetNext(turn)]);
         }
 
         private void AssignAction(
             TurnTableBuilder builder,
-            TurnDfaState     state,
+            TokenDfaState    state,
             AcceptanceTurn   turn,
             int              lookahead)
         {
-            builder.AssignAccept(stateIndexer.Get(state));
+            builder.AssignAccept(stateIndexer[state]);
         }
 
         private void AssignAction(
             TurnTableBuilder   builder,
-            TurnDfaState       state,
+            TokenDfaState      state,
             InnerReductionTurn turn,
             int                lookahead)
         {
             builder.AssignReduce(
-                stateIndexer.Get(state),
+                stateIndexer[state],
                 lookahead,
                 turn.ProductionId,
-                stateIndexer.Get(state.GetNext(turn)));
+                stateIndexer[state.GetNext(turn)]);
         }
 
         private void AssignReturn(
             TurnTableBuilder    builder,
-            TurnDfaState        state,
+            TokenDfaState       state,
             ReturnTurn          turn,
             int                 lookahead)
         {
             builder.AssignReturn(
-                stateIndexer.Get(state),
+                stateIndexer[state],
                 lookahead,
                 turn.ProducedToken);
         }

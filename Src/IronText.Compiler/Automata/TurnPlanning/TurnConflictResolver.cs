@@ -25,10 +25,10 @@ namespace IronText.Automata.TurnPlanning
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Turn> Prioritize(IEnumerable<Turn> turns)
+        public IEnumerable<T> PrioritizeBy<T>(IEnumerable<T> items, Func<T,Turn> getTurn)
         {
             // TODO: Handle non-associative operators
-            return turns.OrderByDescending(GetWeight);
+            return items.OrderByDescending(x => GetWeight(getTurn(x)));
         }
 
         private int GetWeight(Turn turn)

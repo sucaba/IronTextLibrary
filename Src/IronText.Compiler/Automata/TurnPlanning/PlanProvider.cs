@@ -38,7 +38,7 @@ namespace IronText.Automata.TurnPlanning
             return tokens
                 .Where(nonTermPlans.ContainsKey)
                 .SelectMany(token => nonTermPlans[token]);
-        }        
+        }
 
         private Plan Build(Production root)
         {
@@ -61,23 +61,19 @@ namespace IronText.Automata.TurnPlanning
                 Compile((dynamic)component, outcome);
             }
 
-            outcome.Add(Turn.InnerReduction(production.Index));
+            if (production.Original.IsAugmented)
+            {
+                outcome.Add(Turn.Acceptance());
+            }
+            else
+            {
+                outcome.Add(Turn.InnerReduction(production.Index));
+            }
         }
 
         private void Compile(Symbol symbol, Plan outcome)
         {
-            Turn turn;
-
-            if (symbol.Index == PredefinedTokens.Eoi)
-            {
-                turn = Turn.Acceptance();
-            }
-            else
-            {
-                turn = Turn.InputConsumption(symbol.Index);
-            }
-
-            outcome.Add(turn);
+            outcome.Add(Turn.InputConsumption(symbol.Index));
         }
     }
 }

@@ -39,10 +39,10 @@ namespace IronText.Automata.TurnPlanning
 
             ReturnLookaheads = new TokenSetsRelation<TurnDfaState>(tokenSet);
 
-            FillPerTransitionLookaheads(tokenSetProvider.TokenSet);
+            FillReturnStatesLookaheads(tokenSetProvider.TokenSet);
         }
 
-        private void FillPerTransitionLookaheads(BitSetType tokenSet)
+        private void FillReturnStatesLookaheads(BitSetType tokenSet)
         {
             var groups = substateLookaheads
                 .Where(s => s.Key.PlanPosition.NextTurn is ReturnTurn)

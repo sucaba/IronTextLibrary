@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace IronText.Automata.TurnPlanning
 {
@@ -6,5 +7,10 @@ namespace IronText.Automata.TurnPlanning
     {
         public Dictionary<int, TokenDfaDecision> Transitions { get; }
             = new Dictionary<int, TokenDfaDecision>();
+
+        public TokenDfaState GetNext(Turn turn)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
