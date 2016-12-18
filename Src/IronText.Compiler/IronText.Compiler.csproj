@@ -71,7 +71,6 @@
     <Compile Include="Automata\TurnPlanning\ShrodingerTokenDfaConverter.cs" />
     <Compile Include="Automata\TurnPlanning\ShrodingerTokenDfaProvider.cs" />
     <Compile Include="Automata\TurnPlanning\ShrodingerTokenDfaState.cs" />
-    <Compile Include="Automata\TurnPlanning\TableBuilders\MainTurnTableFiller.cs" />
     <Compile Include="Automata\TurnPlanning\TokenDecision.cs" />
     <Compile Include="Automata\TurnPlanning\TokenDfaProvider.cs" />
     <Compile Include="Automata\TurnPlanning\TokenDfaState.cs" />
@@ -93,7 +92,6 @@
     <Compile Include="Automata\TurnPlanning\Turns\InnerReductionTurn.cs" />
     <Compile Include="Automata\TurnPlanning\Turns\InputConsumptionTurn.cs" />
     <Compile Include="Automata\TurnPlanning\Turns\ReturnReductionTurn.cs" />
-    <Compile Include="Automata\TurnPlanning\TableBuilders\TurnTableBuilder.cs" />
     <Compile Include="Automata\TurnPlanning\TransitionLookaheadProvider.cs" />
     <Compile Include="Automata\TurnPlanning\SubcallLookaheadsAlgorithm.cs" />
     <Compile Include="Automata\TurnPlanning\Turns\AcceptanceTurn.cs" />
