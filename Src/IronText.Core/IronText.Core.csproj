@@ -120,8 +120,8 @@
     <Compile Include="Algorithm\IntegerSets\SparseIntSetType.cs" />
     <Compile Include="Algorithm\IntInterval.cs" />
     <Compile Include="Collections\AmbiguousT.cs" />
+    <Compile Include="Collections\AmbiguousAlternatives.cs" />
     <Compile Include="Collections\AmbiguousAlternativesExtensions.cs" />
-    <Compile Include="Collections\Ambiguous.cs" />
     <Compile Include="Collections\IIndexableImpl.cs" />
     <Compile Include="Collections\ImmutableArray.cs" />
     <Compile Include="Collections\MutableArray.cs" />

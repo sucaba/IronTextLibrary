@@ -15,7 +15,7 @@ namespace IronText.Automata.TurnPlanning
         {
         }
 
-        private ShrodingerTokenDfaState(Dictionary<int, ShrodingerTokenDecision> transitions)
+        public ShrodingerTokenDfaState(Dictionary<int, ShrodingerTokenDecision> transitions)
         {
             this.Transitions = transitions;
         }

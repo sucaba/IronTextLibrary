@@ -1,7 +1,6 @@
 ﻿using IronText.Common;
 using IronText.Runtime;
 using System.Linq;
-using System;
 using IronText.Algorithm;
 
 namespace IronText.Automata.TurnPlanning

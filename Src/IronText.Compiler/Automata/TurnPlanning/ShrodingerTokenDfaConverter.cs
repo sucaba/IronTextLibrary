@@ -23,17 +23,10 @@ namespace IronText.Automata.TurnPlanning
                         src.Turn,
                         StateMap[src.NextState]));
 
-        private ShrodingerTokenDfaState Convert(TokenDfaState srcState)
-        {
-            var result = new ShrodingerTokenDfaState();
-            foreach (var transition in srcState.Transitions)
-            {
-                result.Transitions.Add(
-                    transition.Key,
-                    Convert(transition.Key, transition.Value));
-            }
-
-            return result;
-        }
+        private ShrodingerTokenDfaState Convert(TokenDfaState src) =>
+            new ShrodingerTokenDfaState(
+                src.Transitions.ToDictionary(
+                    x => x.Key,
+                    x => Convert(x.Key, x.Value)));
     }
 }

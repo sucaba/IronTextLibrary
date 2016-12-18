@@ -4,14 +4,14 @@ namespace IronText.Automata.TurnPlanning
 {
     class MainTurnTableFiller
     {
-        private readonly TokenDfaState[]        states;
-        private readonly Indexer<TokenDfaState> stateIndexer;
+        private readonly ShrodingerTokenDfaState[]        states;
+        private readonly Indexer<ShrodingerTokenDfaState> stateIndexer;
         private readonly TurnConflictResolver   conflictResolver;
 
         public MainTurnTableFiller(
-            TokenDfaProvider       dfa, 
-            Indexer<TokenDfaState> stateIndexer,
-            TurnConflictResolver   conflictResolver)
+            ShrodingerTokenDfaProvider dfa, 
+            Indexer<ShrodingerTokenDfaState>     stateIndexer,
+            TurnConflictResolver       conflictResolver)
         {
             this.states            = dfa.States;
             this.stateIndexer      = stateIndexer;
@@ -31,10 +31,10 @@ namespace IronText.Automata.TurnPlanning
         }
 
         private void AssignAction(
-            TurnTableBuilder     builder,
-            TokenDfaState        state,
-            InputConsumptionTurn turn,
-            int                  lookahead)
+            TurnTableBuilder        builder,
+            ShrodingerTokenDfaState state,
+            InputConsumptionTurn    turn,
+            int                     lookahead)
         {
             builder.AssignShift(
                 stateIndexer[state],
@@ -44,7 +44,7 @@ namespace IronText.Automata.TurnPlanning
 
         private void AssignAction(
             TurnTableBuilder builder,
-            TokenDfaState    state,
+            ShrodingerTokenDfaState    state,
             AcceptanceTurn   turn,
             int              lookahead)
         {
@@ -53,7 +53,7 @@ namespace IronText.Automata.TurnPlanning
 
         private void AssignAction(
             TurnTableBuilder   builder,
-            TokenDfaState      state,
+            ShrodingerTokenDfaState      state,
             InnerReductionTurn turn,
             int                lookahead)
         {
@@ -66,7 +66,7 @@ namespace IronText.Automata.TurnPlanning
 
         private void AssignReturn(
             TurnTableBuilder    builder,
-            TokenDfaState       state,
+            ShrodingerTokenDfaState       state,
             ReturnTurn          turn,
             int                 lookahead)
         {

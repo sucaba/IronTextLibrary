@@ -66,8 +66,11 @@
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalBranchDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalOperator.cs" />
     <Compile Include="Algorithm\Functions.cs" />
+    <Compile Include="Automata\TurnPlanning\ParserTurnBytecodeProvider.cs" />
     <Compile Include="Automata\TurnPlanning\ShrodingerTokenDecision.cs" />
+    <Compile Include="Automata\TurnPlanning\ShrodingerTokenDfaConverter.cs" />
     <Compile Include="Automata\TurnPlanning\ShrodingerTokenDfaProvider.cs" />
+    <Compile Include="Automata\TurnPlanning\ShrodingerTokenDfaState.cs" />
     <Compile Include="Automata\TurnPlanning\TableBuilders\MainTurnTableFiller.cs" />
     <Compile Include="Automata\TurnPlanning\TokenDecision.cs" />
     <Compile Include="Automata\TurnPlanning\TokenDfaProvider.cs" />
