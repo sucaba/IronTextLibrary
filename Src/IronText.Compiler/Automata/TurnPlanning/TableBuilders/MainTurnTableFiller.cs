@@ -39,7 +39,7 @@ namespace IronText.Automata.TurnPlanning
             builder.AssignShift(
                 stateIndexer[state],
                 turn.Token,
-                stateIndexer[state.GetNext(turn)]);
+                stateIndexer[state.GetNext(lookahead)]);
         }
 
         private void AssignAction(
@@ -61,7 +61,7 @@ namespace IronText.Automata.TurnPlanning
                 stateIndexer[state],
                 lookahead,
                 turn.ProductionId,
-                stateIndexer[state.GetNext(turn)]);
+                stateIndexer[state.GetNext(lookahead)]);
         }
 
         private void AssignReturn(

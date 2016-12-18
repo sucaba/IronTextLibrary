@@ -2,9 +2,9 @@
 
 namespace IronText.Automata.TurnPlanning
 {
-    class TokenDfaDecision : Ambiguous<TokenDfaDecision>
+    class TokenDecision : Ambiguous<TokenDecision>
     {
-        public TokenDfaDecision(Turn turn, TokenDfaState nextState)
+        public TokenDecision(Turn turn, TokenDfaState nextState)
         {
             this.Turn      = turn;
             this.NextState = nextState;

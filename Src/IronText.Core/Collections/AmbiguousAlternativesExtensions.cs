@@ -1,86 +1,54 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IronText.Collections
 {
-    public struct AmbiguousAlternatives<T> : IEnumerable<T>
-        where T : Ambiguous<T>
+    public static class AmbiguousAlternativesExtensions
     {
-        private readonly T first;
+        public static U MapAltenatives<T, U>(this T @this, Func<T, U> convert)
+            where T : Ambiguous<T>
+            where U : Ambiguous<U> =>
+            @this
+                .AllAlternatives()
+                .Select(convert)
+                .AsAmbiguous();
 
-        public AmbiguousAlternatives(T first)
+        public static T AsAmbiguous<T>(this IEnumerable<T> @this)
+            where T : Ambiguous<T> =>
+            @this.Aggregate(Ambiguous<T>.NoAlternatives, Alternate);
+
+        public static AmbiguousAlternatives<T> AllAlternatives<T>(this T @this)
+            where T : Ambiguous<T>
         {
-            this.first = first;
+            return new AmbiguousAlternatives<T>(@this);
         }
 
-        public Enumerator GetEnumerator() =>
-            new Enumerator(first);
-
-        public T ResolveFirst(Func<T, bool> predicate)
+        public static AmbiguousAlternatives<T> OtherAlternatives<T>(this T @this)
+            where T : Ambiguous<T>
         {
-            foreach (var alternative in this)
-            {
-                if (predicate(alternative))
-                {
-                    return alternative;
-                }
-            }
-
-            return null;
+            return new AmbiguousAlternatives<T>(@this.Alternative);
         }
 
-        public T SingleOrDefault()
+        public static T Alternate<T>(this T @this, T other)
+            where T : Ambiguous<T>
         {
-            if (first == null || first.Alternative != null)
-            {
-                return default(T);
-            }
+            var last = other.Last();
+            last.Alternative = @this;
 
-            return first;
+            return other;
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
-
-        public class Enumerator : IEnumerator<T>
+        private static T Last<T>(this T @this)
+            where T : Ambiguous<T>
         {
-            private readonly T first;
-            private T next;
-
-            public Enumerator(T current)
+            var result = @this;
+            while (result.Alternative != null)
             {
-                this.first   = current;
-                this.Current = null;
-                this.next    = current;
+                result = result.Alternative;
             }
 
-            public T Current { get; private set; }
-
-            object IEnumerator.Current => Current;
-
-            public bool MoveNext()
-            {
-                Current = next;
-                if (next != null)
-                {
-                    next = next.Alternative;
-                    return true;
-                }
-
-                return false;
-            }
-
-            public void Reset()
-            {
-                Current = null;
-                next    = first;
-            }
-
-            public void Dispose()
-            {
-            }
-        } 
+            return result;
+        }
     }
 }

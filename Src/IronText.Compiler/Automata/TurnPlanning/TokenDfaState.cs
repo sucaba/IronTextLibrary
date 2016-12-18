@@ -1,16 +1,29 @@
-﻿using System;
+﻿using IronText.Common;
 using System.Collections.Generic;
+using System;
 
 namespace IronText.Automata.TurnPlanning
 {
     class TokenDfaState
     {
-        public Dictionary<int, TokenDfaDecision> Transitions { get; }
-            = new Dictionary<int, TokenDfaDecision>();
+        public static TokenDfaState FailState { get; } = new TokenDfaState();
 
-        public TokenDfaState GetNext(Turn turn)
+        public Dictionary<int, TokenDecision> Transitions { get; }
+
+        public TokenDfaState()
+            : this(new Dictionary<int, TokenDecision>())
         {
-            throw new NotImplementedException();
         }
+
+        private TokenDfaState(Dictionary<int, TokenDecision> transitions)
+        {
+            this.Transitions = transitions;
+        }
+
+        public TokenDecision GetDecision(int token) =>
+            Transitions.GetOrDefault(token);
+
+        public TokenDfaState GetNext(int token) =>
+            Transitions.GetOrDefault(token)?.NextState ?? FailState;
     }
 }

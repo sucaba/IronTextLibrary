@@ -29,21 +29,21 @@ namespace IronText.Automata.TurnPlanning
                                  || firsts.Of(t.Value).Contains(token))
                         .Select(t => t.Key);
 
-                    var decision = TokenDfaDecision.NoAlternatives;
+                    var decision = TokenDecision.NoAlternatives;
 
                     foreach (var turn in tokenTurns)
                     {
                         var nextTurnState = turnState.Transitions[turn];
                         var nextState = tokenStates.Of(nextTurnState);
                         decision = decision.Alternate(
-                                    new TokenDfaDecision(turn, nextState));
+                                    new TokenDecision(turn, nextState));
                     }
 
                     state.Transitions.Add(token, decision);
                 }
             }
 
-            this.States = tokenStates.Implementations.ToArray();
+            this.States = tokenStates.Destinations.ToArray();
         }
     }
 }

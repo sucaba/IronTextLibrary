@@ -12,9 +12,21 @@ namespace IronText.Common
             this.factory = factory;
         }
 
-        public IReadOnlyCollection<TImpl> Implementations => Values;
+        public IEnumerable<T> Sources => Keys;
+
+        public IReadOnlyCollection<TImpl> Destinations => Values;
 
         public TImpl Of(T main) =>
             this.GetOrDefault(main, () => factory(main));
+
+        public void EnsureMapped(T source)
+        {
+            Of(source);
+        }
+
+        public void EnsureMapped(T[] sources)
+        {
+            Array.ForEach(sources, EnsureMapped);
+        }
     }
 }

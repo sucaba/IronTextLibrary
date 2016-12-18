@@ -2,12 +2,12 @@
 {
     class LrAlternateTermsTableFiller
     {
-        private readonly DotState[] states;
+        private readonly DotState[]     states;
         private readonly AmbTokenInfo[] ambiguities;
 
         public LrAlternateTermsTableFiller(ILrDfa lrDfa, AmbTokenInfo[] ambiguities)
         {
-            this.states = lrDfa.States;
+            this.states      = lrDfa.States;
             this.ambiguities = ambiguities;
         }
 
