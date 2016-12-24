@@ -10,7 +10,6 @@ namespace IronText.Runtime
         public static readonly ParserInstruction AcceptAction        = new ParserInstruction(ParserOperation.Accept);
         public static readonly ParserInstruction FailAction          = new ParserInstruction();
         public static readonly ParserInstruction ExitAction          = new ParserInstruction(ParserOperation.Exit);
-        public static readonly ParserInstruction RestartAction       = new ParserInstruction(ParserOperation.Restart);
         public static readonly ParserInstruction InternalErrorAction = new ParserInstruction(ParserOperation.InternalError);
 
         public static ParserInstruction Shift(int state) =>

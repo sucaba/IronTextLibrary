@@ -128,10 +128,6 @@ namespace IronText.Runtime
 
                 switch (action.Operation)
                 {
-                    case ParserOperation.Restart:
-                        pos = actionTable(thread.State, id);
-                        continue;
-
                     case ParserOperation.Exit:
                         return;
 
@@ -147,7 +143,10 @@ namespace IronText.Runtime
                             */
 
                             PushNode(ref thread, action.State, value);
-                            break;
+
+                            // Restart
+                            pos = actionTable(thread.State, id);
+                            break; ;
                         }
 
                     case ParserOperation.Fail:
@@ -165,6 +164,8 @@ namespace IronText.Runtime
                             goto case ParserOperation.Fail;
                         }
 
+                        // Restart
+                        pos = actionTable(thread.State, id);
                         break;
 
                     case ParserOperation.Fork:

@@ -93,9 +93,6 @@ namespace IronText.Runtime
 
                     switch (action.Operation)
                     {
-                        case ParserOperation.Restart:
-                            goto RESTART;
-
                         case ParserOperation.Exit:
                             return this;
 
@@ -106,7 +103,7 @@ namespace IronText.Runtime
                                 action = GetAction(currentProd.Outcome);
                                 PushState(action.State);
 
-                                break;
+                                goto RESTART;
                             }
 
                         case ParserOperation.Fail:
@@ -119,7 +116,9 @@ namespace IronText.Runtime
                             return RecoverFromError(envelope);
 
                         case ParserOperation.Resolve:
+                            // TODO: not needed because envolope-token can be used for accessing transition table
                             id = action.ResolvedToken;
+
                             data = data.AllAlternatives()
                                        .ResolveFirst(x => x.Token == id);
 
@@ -129,7 +128,7 @@ namespace IronText.Runtime
                                 goto case ParserOperation.Fail;
                             }
 
-                            break;
+                            goto RESTART;
 
                         case ParserOperation.Fork:
                             logging.Write(

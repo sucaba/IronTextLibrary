@@ -121,10 +121,6 @@ namespace IronText.Automata.TurnPlanning
         {
             switch (instructions.Last().Operation)
             {
-                case ParserOperation.Resolve:
-                case ParserOperation.Reduce:
-                    instructions.Add(ParserInstruction.RestartAction);
-                    break;
                 case ParserOperation.Shift:
                     instructions.Add(ParserInstruction.ExitAction);
                     break;

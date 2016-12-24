@@ -27,12 +27,9 @@
         // Return control to the parser
         Exit        = 7,
 
-        // Continue parser loop
-        Restart     = 8,
-
         // Sets already known current state
-        ForceState  = 9,
+        ForceState  = 8,
 
-        InternalError = 10 
+        InternalError = 9 
     }
 }

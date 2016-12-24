@@ -250,7 +250,7 @@ namespace IronText.Runtime
                         {
                             R.Enqueue(node, prod);
                         }
-                        break;
+                        return;
                     case ParserOperation.Shift:
                         if (!newLinkOnly)
                         {
@@ -264,9 +264,8 @@ namespace IronText.Runtime
                         // Instead of resolving Shrodinger's term, GLR has a more powerful approach.
                         // It processes all possibilities by creating alternative GSS nodes for
                         // each term alternative.
-                        break;
+                        return;
                     case ParserOperation.Fail:
-                    case ParserOperation.Restart:
                     case ParserOperation.Exit:
                         return;
                     default:
