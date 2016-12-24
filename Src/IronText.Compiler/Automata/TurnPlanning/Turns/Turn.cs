@@ -7,7 +7,7 @@ namespace IronText.Automata.TurnPlanning
         public virtual int? TokenToConsume => null;
 
         public static Turn InnerReduction(int productionId) =>
-            new InnerReductionTurn(productionId);
+            new ReductionTurn(productionId);
 
         public static Turn Return(int token) =>
             new ReturnTurn(token);

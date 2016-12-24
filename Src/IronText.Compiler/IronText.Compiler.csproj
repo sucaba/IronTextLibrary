@@ -89,9 +89,9 @@
     <Compile Include="Common\Indexer.cs" />
     <Compile Include="Automata\TurnPlanning\TurnConflictResolver.cs" />
     <Compile Include="Automata\TurnPlanning\TurnPrecedenceProvider.cs" />
-    <Compile Include="Automata\TurnPlanning\Turns\InnerReductionTurn.cs" />
+    <Compile Include="Automata\TurnPlanning\Turns\ReductionTurn.cs" />
     <Compile Include="Automata\TurnPlanning\Turns\InputConsumptionTurn.cs" />
-    <Compile Include="Automata\TurnPlanning\Turns\ReturnReductionTurn.cs" />
+    <Compile Include="Automata\TurnPlanning\Turns\ReturnTurn.cs" />
     <Compile Include="Automata\TurnPlanning\TransitionLookaheadProvider.cs" />
     <Compile Include="Automata\TurnPlanning\SubcallLookaheadsAlgorithm.cs" />
     <Compile Include="Automata\TurnPlanning\Turns\AcceptanceTurn.cs" />

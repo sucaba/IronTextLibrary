@@ -101,8 +101,11 @@ namespace IronText.Runtime
 
                         case ParserOperation.Reduce:
                             {
-                                var value = ReduceNoPush(ref action);
-                                PushNode(action.State, value);
+                                Reduce(action.Production);
+
+                                action = GetAction(currentProd.Outcome);
+                                PushState(action.State);
+
                                 break;
                             }
 
@@ -287,16 +290,15 @@ namespace IronText.Runtime
             return result;
         }
 
-        private TNode ReduceNoPush(ref ParserInstruction action)
+        private void Reduce(int production)
         {
-            this.currentProd = grammar.Productions[action.Production];
+            this.currentProd = grammar.Productions[production];
 
             var result = producer.CreateBranch(currentProd, stateStack);
 
             stateStack.Pop(currentProd.InputLength);
-            action = GetAction(currentProd.Outcome);
 
-            return result;
+            PushValue(result);
         }
 
         private ParserInstruction GetAction(int token)
@@ -306,7 +308,19 @@ namespace IronText.Runtime
 
         private void PushNode(int state, TNode value)
         {
-            stateStack.Push(state, value);
+            PushValue(value);
+
+            PushState(state);
+        }
+
+        private void PushValue(TNode value)
+        {
+            stateStack.PushValue(value);
+        }
+
+        private void PushState(int state)
+        {
+            stateStack.PushTag(state);
 
             if (state >= 0)
             {

@@ -14,7 +14,8 @@
         // Return from processing production tree
         Return      = 3,
 
-        // Resolve Shrodinger's token
+        // Resolve Shrodinger's token.
+        // Determines corresponding match-action ID or external-value.
         Resolve     = 4,
 
         // Fork on allowed alternatives of a Shrodinger's token

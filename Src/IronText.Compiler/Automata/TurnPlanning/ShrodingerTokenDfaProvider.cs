@@ -24,7 +24,7 @@ namespace IronText.Automata.TurnPlanning
                         ambiguousTerm.EnvelopeIndex,
                         ambiguousTerm
                             .Alternatives
-                            .Select(token => converter.Convert(token, srcState.GetDecision(token)))
+                            .Select(token => converter.Convert(srcState.GetDecision(token), token))
                             .Where(x => x != ShrodingerTokenDecision.NoAlternatives)
                             .AsAmbiguous());
                 }

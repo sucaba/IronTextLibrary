@@ -20,7 +20,7 @@ namespace IronText.Automata.TurnPlanning
             this.Transitions = transitions;
         }
 
-        public void AddTransition(int token, ShrodingerTokenDecision decision)
+        public void AddDecision(int token, ShrodingerTokenDecision decision)
         {
             if (decision != ShrodingerTokenDecision.NoAlternatives)
             {

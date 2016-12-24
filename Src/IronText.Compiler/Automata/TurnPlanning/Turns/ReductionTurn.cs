@@ -1,8 +1,8 @@
 ﻿namespace IronText.Automata.TurnPlanning
 {
-    class InnerReductionTurn : Turn
+    class ReductionTurn : Turn
     {
-        public InnerReductionTurn(int productionId)
+        public ReductionTurn(int productionId)
         {
             this.ProductionId = productionId;
         }
@@ -11,7 +11,7 @@
 
         public override bool Equals(Turn other)
         {
-            var similar = other as InnerReductionTurn;
+            var similar = other as ReductionTurn;
             return similar != null
                 && similar.ProductionId == ProductionId;
         }

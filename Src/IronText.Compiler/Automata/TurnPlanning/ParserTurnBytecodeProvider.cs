@@ -96,7 +96,7 @@ namespace IronText.Automata.TurnPlanning
             CompileBranchEnd();
         }
 
-        private void CompileTurn(InnerReductionTurn turn, int nextState)
+        private void CompileTurn(ReductionTurn turn, int nextState)
         {
             instructions.Add(ParserInstruction.Reduce(turn.ProductionId));
             instructions.Add(ParserInstruction.ForceState(nextState));

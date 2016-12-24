@@ -213,8 +213,6 @@ namespace IronText.Runtime
 
         private void OnNewNode(GssNode<T> frontNode, int lookahead, Message message, MessageData data)
         {
-            Debug.Assert(frontNode == gss.GetFrontNode(frontNode.State, lookahead));
-
             Process(frontNode, lookahead, newLinkOnly: false);
         }
 
@@ -231,6 +229,8 @@ namespace IronText.Runtime
 
         private void Process(GssNode<T> node, int token, bool newLinkOnly, int start)
         {
+            Debug.Assert(node == gss.GetFrontNode(node.State, lookahead: token));
+
             int pos = start;
             while (true)
             {

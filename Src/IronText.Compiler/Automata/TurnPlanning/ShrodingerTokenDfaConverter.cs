@@ -15,7 +15,7 @@ namespace IronText.Automata.TurnPlanning
             StateMap.EnsureMapped(tokenDfa.States);
         }
 
-        public ShrodingerTokenDecision Convert(int resolvedToken, TokenDecision decision) =>
+        public ShrodingerTokenDecision Convert(TokenDecision decision, int resolvedToken) =>
             decision
                 .MapAltenatives(
                     src => new ShrodingerTokenDecision(
@@ -27,6 +27,6 @@ namespace IronText.Automata.TurnPlanning
             new ShrodingerTokenDfaState(
                 src.Transitions.ToDictionary(
                     x => x.Key,
-                    x => Convert(x.Key, x.Value)));
+                    x => Convert(x.Value, x.Key)));
     }
 }

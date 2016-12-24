@@ -11,7 +11,9 @@ namespace IronText.Runtime
         private int[]   tags;
         private T[]     data;
         private int     Capacity;
-        public int      Count;
+        private int      ValueCount;
+        private int      TagCount;
+
         // TODO: Get rid of this because it overcomplicates stack access and causes perf issues.
         //       Planning to remove it after introducing ECLR semantics.
         public int currentRecoveryStart;
@@ -32,33 +34,57 @@ namespace IronText.Runtime
             this.tags = tags;
             this.data = new T[tags.Length];
             this.Capacity = tags.Length;
-            this.Count = count;
+            this.TagCount = this.ValueCount = count;
         }
 
-        public T Peek() { return data[Count - 1]; }
+        public int Count
+        {
+            get
+            {
+                if (ValueCount != TagCount)
+                {
+                    throw new InvalidOperationException();
+                }
 
-        public int PeekTag() { return tags[Count - 1]; }
+                return ValueCount;
+            }
+        }
+
+        public T Peek() { return data[ValueCount - 1]; }
+
+        public int PeekTag() { return tags[TagCount - 1]; }
 
         public void Push(int tag, T msg)
         {
-            if (Count == Capacity)
+            PushValue(msg);
+            PushTag(tag);
+        }
+
+        public void PushTag(int tag)
+        {
+            tags[TagCount++] = tag;
+        }
+
+        public void PushValue(T msg)
+        {
+            if (ValueCount == Capacity)
             {
                 Grow();
             }
 
-            tags[Count] = tag;
-            data[Count] = msg;
-            ++Count;
+            data[ValueCount++] = msg;
         }
 
         public void Pop(int count)
         {
-            int newCount = Count - count;
+            RequireStacksSynchronized();
+
+            int newCount = ValueCount - count;
 
             while (currentRecoveryStart > newCount)
             {
                 --currentRecoveryStart;
-                ++currentRecoveryCount; 
+                ++currentRecoveryCount;
                 savedTags.Push(tags[currentRecoveryStart]);
                 savedData.Push(data[currentRecoveryStart]);
             }
@@ -66,35 +92,48 @@ namespace IronText.Runtime
             InternalPop(count);
         }
 
+        private void RequireStacksSynchronized()
+        {
+            if (TagCount != ValueCount)
+            {
+                throw new InvalidOperationException();
+            }
+        }
+
         private void InternalPop(int count)
         {
-            Count -= count;
+            RequireStacksSynchronized();
+
+            ValueCount -= count;
+            TagCount = ValueCount;
+
             switch (count)
             {
                 case 0:
                     break;
                 case 1:
-                    data[Count]     = default(T);
+                    data[ValueCount]     = default(T);
                     break;
                 case 2:
-                    data[Count]     = default(T);
-                    data[Count + 1] = default(T);
+                    data[ValueCount]     = default(T);
+                    data[ValueCount + 1] = default(T);
                     break;
                 case 3:
-                    data[Count]     = default(T);
-                    data[Count + 1] = default(T);
-                    data[Count + 2] = default(T);
+                    data[ValueCount]     = default(T);
+                    data[ValueCount + 1] = default(T);
+                    data[ValueCount + 2] = default(T);
                     break;
                 default:
-                    Array.Clear(data, Count, count);
+                    Array.Clear(data, ValueCount, count);
                     break;
             }
         }
 
         public void Clear()
         {
-            Array.Clear(data, 0, Count);
-            Count = 0;
+            Array.Clear(data, 0, ValueCount);
+            ValueCount = 0;
+            TagCount = 0;
         }
 
         private void Grow()
@@ -112,7 +151,7 @@ namespace IronText.Runtime
                 throw new ArgumentException(nameof(backoffset));
             }
 
-            return tags[Count - backoffset];
+            return tags[TagCount - backoffset];
         }
 
         public T GetNodeAt(int backoffset)
@@ -122,12 +161,14 @@ namespace IronText.Runtime
                 throw new ArgumentException(nameof(backoffset));
             }
 
-            return data[Count - backoffset];
+            return data[ValueCount - backoffset];
         }
 
         public void BeginEdit()
         {
-            currentRecoveryStart = Count;
+            RequireStacksSynchronized();
+
+            currentRecoveryStart = ValueCount;
             currentRecoveryCount = 0;
         }
 
@@ -148,8 +189,10 @@ namespace IronText.Runtime
                 throw new ArgumentOutOfRangeException("Incorrect recovery point count.");
             }
 
+            RequireStacksSynchronized();
+
             // Cancel current input save
-            InternalPop(Count - currentRecoveryStart);
+            InternalPop(ValueCount - currentRecoveryStart);
             int i = currentRecoveryCount;
             while (i-- != 0)
             {
@@ -160,7 +203,7 @@ namespace IronText.Runtime
             while (inputCount-- != 0)
             {
                 var interval = recoveryIntervals.Pop();
-                InternalPop(Count - interval.Start);
+                InternalPop(ValueCount - interval.Start);
                 i = interval.Count;
                 while (i-- != 0)
                 {
@@ -177,7 +220,7 @@ namespace IronText.Runtime
 
         public TaggedStack<object> CloneWithoutData()
         {
-            return new TaggedStack<object>((int[])tags.Clone(), Count);
+            return new TaggedStack<object>((int[])tags.Clone(), TagCount);
         }
     }
 }

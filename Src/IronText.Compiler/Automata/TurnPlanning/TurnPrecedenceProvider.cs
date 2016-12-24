@@ -16,7 +16,7 @@ namespace IronText.Automata.TurnPlanning
             return InternalGetWeight((dynamic)turn);
         }
 
-        private Precedence InternalGetPecedence(InnerReductionTurn turn)
+        private Precedence InternalGetPecedence(ReductionTurn turn)
         {
             return grammar.Productions[turn.ProductionId].EffectivePrecedence;
         }
