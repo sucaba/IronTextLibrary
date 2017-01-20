@@ -99,7 +99,13 @@ namespace IronText.Runtime
                         case ParserOperation.Reduce:
                             {
                                 Reduce(action.Production);
+                                PushState(-1);
+                                break;
+                            }
 
+                        case ParserOperation.Return:
+                            {
+                                PopState();
                                 action = GetAction(currentProd.Outcome);
                                 PushState(action.State);
 
@@ -315,6 +321,11 @@ namespace IronText.Runtime
         private void PushValue(TNode value)
         {
             stateStack.PushValue(value);
+        }
+
+        private void PopState()
+        {
+            stateStack.PopTag();
         }
 
         private void PushState(int state)

@@ -75,11 +75,14 @@ namespace IronText.Runtime
             data[ValueCount++] = msg;
         }
 
+        public void PopTag()
+        {
+            --TagCount;
+        }
+
         public void Pop(int count)
         {
-            RequireStacksSynchronized();
-
-            int newCount = ValueCount - count;
+            int newCount = Count - count;
 
             while (currentRecoveryStart > newCount)
             {

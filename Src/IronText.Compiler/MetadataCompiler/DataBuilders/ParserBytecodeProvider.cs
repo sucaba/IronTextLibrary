@@ -87,6 +87,9 @@ namespace IronText.MetadataCompiler
         {
             switch (instructions.Last().Operation)
             {
+                case ParserOperation.Reduce:
+                    instructions.Add(ParserInstruction.Return(instructions.Last().Production));
+                    break;
                 case ParserOperation.Shift:
                     instructions.Add(ParserInstruction.ExitAction);
                     break;
