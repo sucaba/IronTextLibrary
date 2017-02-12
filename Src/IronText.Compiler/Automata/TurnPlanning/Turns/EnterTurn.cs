@@ -1,8 +1,8 @@
 ﻿namespace IronText.Automata.TurnPlanning
 {
-    class ReturnTurn : Turn
+    class EnterTurn : Turn
     {
-        public ReturnTurn(int token)
+        public EnterTurn(int token)
         {
             this.ProducedToken = token;
         }
@@ -11,11 +11,11 @@
 
         public override bool Equals(Turn other)
         {
-            var similar = other as ReturnTurn;
+            var similar = other as EnterTurn;
             return similar != null
                 && similar.ProducedToken == ProducedToken;
         }
 
-        public override int GetHashCode() => ProducedToken;
+        public override int GetHashCode() => ~ProducedToken;
     }
 }

@@ -16,6 +16,6 @@
                 && similar.ProductionId == ProductionId;
         }
 
-        public override int GetHashCode() => ~ProductionId;
+        public override int GetHashCode() => ProductionId << 16;
     }
 }

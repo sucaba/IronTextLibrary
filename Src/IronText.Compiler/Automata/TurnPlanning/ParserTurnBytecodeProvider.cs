@@ -31,13 +31,13 @@ namespace IronText.Automata.TurnPlanning
 
             var startTable = new MutableTable<int>(stateCount, tokenCount);
 
-            foreach (var state in dfa.States)
+            foreach (var fromState in dfa.States)
             {
-                int stateIndex = indexer.Get(state);
+                int stateIndex = indexer.Get(fromState);
 
                 for (int token = 0; token != tokenCount; ++token)
                 {
-                    var decision = state.GetDecision(token);
+                    var decision = fromState.GetDecision(token);
                     if (decision == ShrodingerTokenDecision.NoAlternatives)
                     {
                         startTable.Set(stateIndex, token, SharedFailurePos);
@@ -45,7 +45,7 @@ namespace IronText.Automata.TurnPlanning
                     else
                     {
                         startTable.Set(stateIndex, token, NextInstructionPos);
-                        CompileAmbiguousDecision(decision);
+                        CompileAmbiguousDecision(fromState, decision);
                     }
                 }
             }
@@ -69,7 +69,9 @@ namespace IronText.Automata.TurnPlanning
             CompileBranchEnd();
         }
 
-        private void CompileAmbiguousDecision(ShrodingerTokenDecision decision)
+        private void CompileAmbiguousDecision(
+            ShrodingerTokenDfaState fromState,
+            ShrodingerTokenDecision decision)
         {
             int forkInstructionPos = NextInstructionPos;
 
@@ -78,41 +80,51 @@ namespace IronText.Automata.TurnPlanning
                 instructions.Add(ForkStub);
             }
 
-            CompileDecision(decision);
+            CompileDecision(fromState, decision);
 
             foreach (var other in decision.OtherAlternatives())
             {
                 instructions[forkInstructionPos++] = ParserInstruction.Fork(NextInstructionPos);
-                CompileDecision(other);
+                CompileDecision(fromState, other);
             }
         }
 
-        private void CompileDecision(ShrodingerTokenDecision decision)
+        private void CompileDecision(
+            ShrodingerTokenDfaState fromState,
+            ShrodingerTokenDecision decision)
         {
             CompileTurn(
+                fromState,
                 (dynamic)decision.Turn,
                 indexer.Get(decision.NextState));
 
             CompileBranchEnd();
         }
 
-        private void CompileTurn(ReductionTurn turn, int nextState)
+        private void CompileTurn(ShrodingerTokenDfaState fromState, ReductionTurn turn, int nextState)
         {
             instructions.Add(ParserInstruction.Reduce(turn.ProductionId));
             instructions.Add(ParserInstruction.ForceState(nextState));
         }
 
-        private void CompileTurn(ReturnTurn turn, int nextState)
+        private void CompileTurn(ShrodingerTokenDfaState fromState, EnterTurn turn, int nextState)
+        {
+            var returnState = fromState.GetNext(turn.ProducedToken);
+
+            instructions.Add(ParserInstruction.PushGoto(indexer.Get(returnState), nextState));
+        }
+
+        private void CompileTurn(ShrodingerTokenDfaState fromState, ReturnTurn turn, int nextState)
         {
             instructions.Add(ParserInstruction.Return(turn.ProducedToken));
         }
 
-        private void CompileTurn(InputConsumptionTurn turn, int nextState)
+        private void CompileTurn(ShrodingerTokenDfaState fromState, InputConsumptionTurn turn, int nextState)
         {
             instructions.Add(ParserInstruction.Shift(nextState));
         }
 
-        private void CompileTurn(AcceptanceTurn turn, int nextState)
+        private void CompileTurn(ShrodingerTokenDfaState fromState, AcceptanceTurn turn, int nextState)
         {
             instructions.Add(ParserInstruction.AcceptAction);
         }

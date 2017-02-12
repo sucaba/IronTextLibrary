@@ -27,9 +27,17 @@
         // Return control to the parser
         Exit        = 7,
 
-        // Sets already known current state
-        ForceState  = 8,
+        // New actions:
 
-        InternalError = 9 
+        ReduceGoto  = 8,
+
+        PushGoto    = 9,        
+
+        Pop         = 10,
+
+        // Sets already known current state
+        ForceState  = 11,
+
+        InternalError = 12 
     }
 }

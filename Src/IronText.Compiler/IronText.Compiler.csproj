@@ -84,6 +84,7 @@
     <Compile Include="Automata\TurnPlanning\TurnNfaTransition.cs" />
     <Compile Include="Automata\TurnPlanning\TokenSetsRelation.cs" />
     <Compile Include="Automata\TurnPlanning\TurnDfaSubstate.cs" />
+    <Compile Include="Automata\TurnPlanning\Turns\EnterTurn.cs" />
     <Compile Include="Common\ClonningExtensions.cs" />
     <Compile Include="Common\IDeepCloneable.cs" />
     <Compile Include="Common\Indexer.cs" />
@@ -106,7 +107,6 @@
     <Compile Include="Common\DictionaryExtensions.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
     <Compile Include="Common\ImplMap.cs" />
-    <Compile Include="Common\ListExtensions.cs" />
     <Compile Include="Common\ManyToMany.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\Analysis\ProductionExtensions.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\Analysis\TokenComplexityProvider.cs" />

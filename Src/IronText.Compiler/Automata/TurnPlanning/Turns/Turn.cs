@@ -9,11 +9,15 @@ namespace IronText.Automata.TurnPlanning
         public static Turn InnerReduction(int productionId) =>
             new ReductionTurn(productionId);
 
+        public static Turn Enter(int token) =>
+            new EnterTurn(token);
+
         public static Turn Return(int token) =>
             new ReturnTurn(token);
 
         public static Turn InputConsumption(int token) =>
             new InputConsumptionTurn(token);
+
         public static Turn Acceptance() =>
             new AcceptanceTurn();
 

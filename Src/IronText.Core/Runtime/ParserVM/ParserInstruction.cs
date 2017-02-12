@@ -18,6 +18,9 @@ namespace IronText.Runtime
         public static ParserInstruction Reduce(int production) =>
             new ParserInstruction(ParserOperation.Reduce, production);
         
+        public static ParserInstruction PushGoto(int pushState, int nextState) =>
+            new ParserInstruction(ParserOperation.PushGoto, nextState, pushState);
+
         public static ParserInstruction Return(int producedToken) =>
             new ParserInstruction(ParserOperation.Return, producedToken);
 
@@ -45,7 +48,13 @@ namespace IronText.Runtime
         [FieldOffset(sizeof(ParserOperation))]
         public int              Production;
 
-        public ParserInstruction(ParserOperation op, int argument = 0)
+        [FieldOffset(sizeof(ParserOperation) + sizeof(int))]
+        public int              Argument2;
+
+        [FieldOffset(sizeof(ParserOperation) + sizeof(int))]
+        public int              PushState;
+
+        public ParserInstruction(ParserOperation op, int argument = 0, int argument2 = 0)
         {
             this.ResolvedToken = 0;
             this.State         = 0;
@@ -53,6 +62,8 @@ namespace IronText.Runtime
 
             this.Operation     = op;
             this.Argument      = argument;
+            this.Argument2     = argument2;
+            this.PushState     = argument2;
         }
 
         public static bool operator ==(ParserInstruction x, ParserInstruction y) =>

@@ -44,10 +44,14 @@ namespace IronText.Automata.TurnPlanning
         {
             var result = new Plan(root.Outcome.Index);
 
-            Compile(root, result);
-
-            if (root.Original.OutcomeToken != PredefinedTokens.AugmentedStart)
+            if (root.Original.OutcomeToken == PredefinedTokens.AugmentedStart)
             {
+                Compile(root, result);
+            }
+            else
+            {
+                result.Add(Turn.Enter(root.OutcomeToken));
+                Compile(root, result);
                 result.Add(Turn.Return(root.OutcomeToken));
             }
 

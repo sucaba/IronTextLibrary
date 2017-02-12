@@ -126,6 +126,7 @@
     <Compile Include="Collections\ImmutableArray.cs" />
     <Compile Include="Collections\MutableArray.cs" />
     <Compile Include="Collections\SListNode.cs" />
+    <Compile Include="Common\ListExtensions.cs" />
     <Compile Include="Diagnostics\DiagnosticExtensions.cs" />
     <Compile Include="DI\DependencyScope.cs" />
     <Compile Include="DI\IInstantiator.cs" />
@@ -219,6 +220,7 @@
     <Compile Include="Runtime\Parallel\ParserThread.cs" />
     <Compile Include="Runtime\ParserRuntime.cs" />
     <Compile Include="Runtime\ParserVM\ParserDecision.cs" />
+    <Compile Include="Runtime\Parallel\GraphStructuredStack\Gss.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeFormula.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeValue.cs" />
     <Compile Include="Runtime\Semantics\IRuntimeVariable.cs" />
