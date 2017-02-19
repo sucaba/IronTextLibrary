@@ -1,5 +1,7 @@
-﻿using IronText.Automata.Lalr1;
+﻿using IronText.Automata;
+using IronText.Automata.Lalr1;
 using IronText.Automata.Regular;
+using IronText.Automata.TurnPlanning;
 using IronText.MetadataCompiler.Analysis;
 using IronText.Reflection;
 using IronText.Runtime;
@@ -16,7 +18,7 @@ namespace IronText.MetadataCompiler
             ILrParserTable                  lrTable,
             RuntimeGrammar                  runtimeGrammar,
             SemanticBindingProvider         semanticBindingsProvider,
-            ParserBytecodeProvider          instructionProvider,
+            IParserBytecodeProvider         instructionProvider,
             ParserRuntimeDesignator         runtimeDesignator,
             StateToSymbolTableProvider      stateToSymbolTableProvider,
             TokenComplexityProvider         tokenComplexityProvider)

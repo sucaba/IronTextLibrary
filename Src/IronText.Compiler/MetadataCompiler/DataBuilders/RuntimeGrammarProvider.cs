@@ -1,7 +1,5 @@
 ﻿using IronText.Reflection;
 using IronText.Runtime;
-using System.Linq;
-using System;
 using IronText.Automata;
 
 namespace IronText.MetadataCompiler
@@ -11,7 +9,7 @@ namespace IronText.MetadataCompiler
         public RuntimeGrammarProvider(
             Grammar                  grammar,
             RuntimeSemanticsProvider semanticsProvider,
-            ParserBytecodeProvider   bytecodeProvider,
+            IParserBytecodeProvider  bytecodeProvider,
             NullableFirstTables      tables)
         {
             var tokenIsNullable     = tables.TokenToNullable;

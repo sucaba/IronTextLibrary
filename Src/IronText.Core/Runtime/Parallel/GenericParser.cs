@@ -32,6 +32,8 @@ namespace IronText.Runtime
             this.producer    = producer;
             this.actionTable = actionTable;
             this.logging     = logging;
+
+            this.stack.Current.Add(new Process<T>(0, null, null));
         }
 
         public IReceiver<Message> Next(Message message)
@@ -53,6 +55,17 @@ namespace IronText.Runtime
 
                 switch (instruction.Operation)
                 {
+                    case ParserOperation.Accept:
+                        return FinalReceiver<Message>.Instance;
+                    case ParserOperation.Fail:
+                        logging.Write(
+                            new LogEntry
+                            {
+                                Severity = Severity.Error,
+                                Message = "Invalid syntax.",
+                                Location = message.Location,
+                            });
+                        break;
                     case ParserOperation.Shift:
                         stack.Pending.Add(
                             new Process<T>(
@@ -94,7 +107,7 @@ namespace IronText.Runtime
                                                                     process.Pending);
                                 if (newBackLink != null)
                                 {
-                                    // Fork Re-popped along the new link
+                                    // Fork re-popped along the new link
                                     foreach (var pop in poppedPending)
                                     {
                                         // Schedule pop again with different top-part of pending

@@ -9,6 +9,7 @@ namespace IronText.Automata.TurnPlanning
     {
         public static IEnumerable<PlanPosition> Nexts(IEnumerable<PlanPosition> positions)
             => positions
+                .Where(p => !p.IsDone)
                 .Select(Next)
                 .Where(p => !p.IsDone);
 

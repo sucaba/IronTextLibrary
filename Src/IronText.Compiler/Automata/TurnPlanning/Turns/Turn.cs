@@ -6,6 +6,8 @@ namespace IronText.Automata.TurnPlanning
     {
         public virtual int? TokenToConsume => null;
 
+        public bool IsConsuming => TokenToConsume.HasValue;
+
         public static Turn InnerReduction(int productionId) =>
             new ReductionTurn(productionId);
 
@@ -31,6 +33,6 @@ namespace IronText.Automata.TurnPlanning
 
         public override int GetHashCode() => base.GetHashCode();
 
-        public virtual bool Consumes(int token) => false;
+        public bool Consumes(int token) => TokenToConsume == token;
     }
 }

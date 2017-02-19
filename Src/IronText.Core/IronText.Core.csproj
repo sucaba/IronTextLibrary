@@ -129,6 +129,7 @@
     <Compile Include="Common\ListExtensions.cs" />
     <Compile Include="Diagnostics\DiagnosticExtensions.cs" />
     <Compile Include="DI\DependencyScope.cs" />
+    <Compile Include="DI\IDynamicDependency.cs" />
     <Compile Include="DI\IInstantiator.cs" />
     <Compile Include="DI\IHasSideEffects.cs" />
     <Compile Include="DI\IDependencyResolver.cs" />

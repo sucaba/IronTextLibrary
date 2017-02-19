@@ -9,6 +9,20 @@ using IronText.Common;
 
 namespace IronText.Runtime.RIGLR.GraphStructuredStack
 {
+    static class ReductionNodeExtensions
+    {
+        public static ReductionNode<T> GetAtDepth<T>(this ReductionNode<T> @this, int depth)
+        {
+            var result = @this;
+            while (0 != depth--)
+            {
+                result = result.Prior;
+            }
+
+            return result;
+        }
+    }
+
     class ReductionNode<T> : IStackLookback<T>
     {
         public static ReductionNode<T> Null => null;
@@ -27,23 +41,12 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
         public ReductionNode<T> Prior    { get; }
 
-        public ReductionNode<T> GetAtDepth(int depth)
-        {
-            var result = this;
-            while (0 != depth--)
-            {
-                result = result.Prior;
-            }
-
-            return result;
-        }
-
         public int GetState(int backOffset)
         {
             throw new NotImplementedException("TODO: remove");
         }
 
-        T IStackLookback<T>.GetNodeAt(int depth) => GetAtDepth(depth).Value;
+        T IStackLookback<T>.GetNodeAt(int depth) => this.GetAtDepth(depth).Value;
 
         public ReductionNode<T> DeepClone(ReductionNode<T> tail = null)
             => DeepClone(this, tail);
@@ -91,10 +94,9 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             items[destinationNode.State].Popped.Add(popPending);
         }
 
-        public void RegisterPush(ProcessNode<T> destinationNode)
+        public void RegisterPush(ProcessNode<T> node)
         {
-            int state = destinationNode.State;
-            var node = items[state].Node;
+            int state = node.State;
             items.Add(node.State, new Record(node));
         }
 

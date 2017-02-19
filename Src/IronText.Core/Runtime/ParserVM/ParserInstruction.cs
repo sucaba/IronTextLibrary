@@ -11,18 +11,22 @@ namespace IronText.Runtime
         public static readonly ParserInstruction FailAction          = new ParserInstruction();
         public static readonly ParserInstruction ExitAction          = new ParserInstruction(ParserOperation.Exit);
         public static readonly ParserInstruction InternalErrorAction = new ParserInstruction(ParserOperation.InternalError);
+        public static readonly ParserInstruction Pop                 = new ParserInstruction(ParserOperation.Pop);
 
         public static ParserInstruction Shift(int state) =>
             new ParserInstruction(ParserOperation.Shift, state);
 
         public static ParserInstruction Reduce(int production) =>
             new ParserInstruction(ParserOperation.Reduce, production);
+
+        public static ParserInstruction ReduceGoto(int production, int nextState) =>
+            new ParserInstruction(ParserOperation.ReduceGoto, production, nextState);
         
         public static ParserInstruction PushGoto(int pushState, int nextState) =>
             new ParserInstruction(ParserOperation.PushGoto, nextState, pushState);
 
         public static ParserInstruction Return(int producedToken) =>
-            new ParserInstruction(ParserOperation.Return, producedToken);
+            new ParserInstruction(ParserOperation.Pop, producedToken);
 
         public static ParserInstruction ForceState(int state) =>
             new ParserInstruction(ParserOperation.ForceState, state);

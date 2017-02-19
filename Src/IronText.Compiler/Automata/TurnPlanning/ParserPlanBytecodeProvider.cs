@@ -9,11 +9,16 @@ using System.Linq;
 
 namespace IronText.Automata.TurnPlanning
 {
-    class ParserPlanBytecodeProvider
+    class ParserPlanBytecodeProvider : IParserBytecodeProvider
     {
         private const int SharedFailurePos = 0;
         private readonly List<ParserInstruction> instructions;
         private readonly Indexer<ShrodingerTokenDfaState> indexer;
+
+        public ParserInstruction[] Instructions { get; }
+
+        public ITable<int>         StartTable   { get; }
+
 
         public ParserPlanBytecodeProvider(
             ShrodingerTokenDfaProvider       dfa,
@@ -54,10 +59,6 @@ namespace IronText.Automata.TurnPlanning
             instructions.Clear();
             this.StartTable = startTable;
         }
-
-        public ParserInstruction[] Instructions { get; }
-
-        public ITable<int>         StartTable   { get; }
 
         private int NextInstructionPos => instructions.Count;
 
@@ -103,8 +104,7 @@ namespace IronText.Automata.TurnPlanning
 
         private void CompileTurn(ShrodingerTokenDfaState fromState, ReductionTurn turn, int nextState)
         {
-            instructions.Add(ParserInstruction.Reduce(turn.ProductionId));
-            instructions.Add(ParserInstruction.ForceState(nextState));
+            instructions.Add(ParserInstruction.ReduceGoto(turn.ProductionId, nextState));
         }
 
         private void CompileTurn(ShrodingerTokenDfaState fromState, EnterTurn turn, int nextState)
@@ -116,7 +116,7 @@ namespace IronText.Automata.TurnPlanning
 
         private void CompileTurn(ShrodingerTokenDfaState fromState, ReturnTurn turn, int nextState)
         {
-            instructions.Add(ParserInstruction.Return(turn.ProducedToken));
+            instructions.Add(ParserInstruction.Pop);
         }
 
         private void CompileTurn(ShrodingerTokenDfaState fromState, InputConsumptionTurn turn, int nextState)

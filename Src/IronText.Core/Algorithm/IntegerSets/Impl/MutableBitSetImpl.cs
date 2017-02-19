@@ -32,7 +32,7 @@ namespace IronText.Algorithm.IntegerSets.Impl
 
         public bool Add(int value)
         {
-            bool result = Contains(value);
+            bool result = !Contains(value);
 
             words[value / BitsInWord] |= (1u << (value % BitsInWord));
 

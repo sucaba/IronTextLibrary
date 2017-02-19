@@ -88,7 +88,14 @@ namespace IronText.Algorithm
                 lastParent = node;
             }
 
-            lastParent.Right = DefaultActionDecision;
+            if (lastParent == null)
+            {
+                result = DefaultActionDecision;
+            }
+            else
+            {
+                lastParent.Right = DefaultActionDecision;
+            }
 
             return true;
         }

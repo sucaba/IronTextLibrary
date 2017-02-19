@@ -34,6 +34,10 @@ namespace IronText.Automata.TurnPlanning
                     {
                         var fromSubstate = new TurnDfaSubstate(fromState, fromPosition);
                         var toSubstate = fromSubstate.Next();
+                        if (toSubstate.PlanPosition.IsDone)
+                        {
+                            continue;
+                        }
 
                         foreach (var lookahead in temporaryLookaheads.Of(fromPosition))
                         {

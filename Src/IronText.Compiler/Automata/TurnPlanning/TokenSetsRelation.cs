@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using IronText.Common;
 
 namespace IronText.Automata.TurnPlanning
 {
@@ -72,17 +73,8 @@ namespace IronText.Automata.TurnPlanning
             return result;
         }
 
-        public MutableIntSet GetMutable(T position)
-        {
-            MutableIntSet la;
-            if (positionToLA.TryGetValue(position, out la))
-            {
-                la = tokenSet.Mutable();
-                positionToLA.Add(position, la);
-            }
-
-            return la;
-        }
+        public MutableIntSet GetMutable(T position) =>
+            positionToLA.GetOrAdd(position, tokenSet.Mutable);
 
         IEnumerator<KeyValuePair<T, MutableIntSet>> IEnumerable<KeyValuePair<T, MutableIntSet>>.GetEnumerator()
         {

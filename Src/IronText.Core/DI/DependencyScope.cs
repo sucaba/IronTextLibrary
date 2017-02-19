@@ -144,25 +144,36 @@ namespace IronText.DI
 
             Decorate(contract, ref getter);
 
-            if (contract is IHasSideEffects)
+            if (contract.IsGenericType
+                && contract.GetGenericTypeDefinition() == typeof(IDynamicDependency<>))
             {
-                typeToGetter[contract] = getter;
+                var selector = (IDynamicDependency)getter();
+                var dependencyContract = contract.GetGenericArguments()[0];
+
+                Add(dependencyContract, selector.Implementation);
             }
             else
             {
-                bool isMemoized = false;
-                object memoized = null;
-                typeToGetter[contract] = () =>
-                {
-                    if (!isMemoized)
-                    {
-                        isMemoized = true;
-                        memoized = getter();
-                    }
-
-                    return memoized;
-                };
+                typeToGetter[contract] = contract is IHasSideEffects 
+                                        ? getter
+                                        : Memoize(getter);
             }
+        }
+
+        static Func<object> Memoize(Func<object> getter)
+        {
+            bool isMemoized = false;
+            object memoized = null;
+            return () =>
+            {
+                if (!isMemoized)
+                {
+                    isMemoized = true;
+                    memoized = getter();
+                }
+
+                return memoized;
+            };
         }
 
         private void Decorate(Type contract, ref Func<object> getter)

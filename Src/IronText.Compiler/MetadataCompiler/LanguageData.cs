@@ -14,6 +14,8 @@ namespace IronText.MetadataCompiler
     {
         public Grammar          Grammar             { get; set; }
 
+        public ParserInstruction[] Instructions     { get; set; }
+
         public RuntimeGrammar   RuntimeGrammar      { get; set; }
 
         public ParserRuntime    TargetParserRuntime { get; set; }

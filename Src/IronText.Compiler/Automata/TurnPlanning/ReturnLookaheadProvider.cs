@@ -47,7 +47,8 @@ namespace IronText.Automata.TurnPlanning
                 .Where(s => s.Key.PlanPosition.NextTurn is ReturnTurn)
                 .GroupBy(
                     s => s.Key.Next().Owner,
-                    pair => pair.Value);
+                    pair => pair.Value)
+                .ToArray();
             foreach (var g in groups)
             {
                 ReturnLookaheads.Add(

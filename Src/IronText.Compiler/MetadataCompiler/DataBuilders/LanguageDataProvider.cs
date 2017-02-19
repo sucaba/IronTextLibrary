@@ -41,7 +41,9 @@ namespace IronText.MetadataCompiler
                 (Lalr1DfaProvider p) => (ILrDfa)p,
                 (ParserConflictProvider p) => p.Conflicts,
                 (ParserTableProvider p) => p.LrParserTable,
+                (ParserRuntimeDesignator d) => d.ActualRuntime,
                 (RuntimeGrammarProvider p) => p.Outcome,
+                typeof(ParserBytecodeProviderSelector),
                 (LanguageDataInstanceProvider p) => p.Data
             })
             {

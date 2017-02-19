@@ -6,11 +6,11 @@ namespace IronText.Automata.TurnPlanning
 {
     class ShrodingerTokenDfaConverter
     {
-        public ImplMap<TokenDfaState, ShrodingerTokenDfaState> StateMap { get; }
+        public GraphImplMap<TokenDfaState, ShrodingerTokenDfaState> StateMap { get; }
 
         public ShrodingerTokenDfaConverter(TokenDfaProvider tokenDfa)
         {
-            this.StateMap = new ImplMap<TokenDfaState, ShrodingerTokenDfaState>(Convert);
+            this.StateMap = new GraphImplMap<TokenDfaState, ShrodingerTokenDfaState>(Init);
 
             StateMap.EnsureMapped(tokenDfa.States);
         }
@@ -21,12 +21,14 @@ namespace IronText.Automata.TurnPlanning
                     src => new ShrodingerTokenDecision(
                         resolvedToken,
                         src.Turn,
-                        StateMap[src.NextState]));
+                        StateMap.Of(src.NextState)));
 
-        private ShrodingerTokenDfaState Convert(TokenDfaState src) =>
-            new ShrodingerTokenDfaState(
+        private void Init(TokenDfaState src, ShrodingerTokenDfaState impl)
+        {
+            impl.Init(
                 src.Transitions.ToDictionary(
                     x => x.Key,
                     x => Convert(x.Value, x.Key)));
+        }
     }
 }

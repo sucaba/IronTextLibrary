@@ -1,4 +1,5 @@
 ﻿using IronText.Algorithm;
+using IronText.Automata;
 using IronText.Automata.Lalr1;
 using IronText.Collections;
 using IronText.Runtime;
@@ -7,7 +8,7 @@ using System.Linq;
 
 namespace IronText.MetadataCompiler
 {
-    class ParserBytecodeProvider
+    class ParserBytecodeProvider : IParserBytecodeProvider
     {
         private const int SharedFailurePos = 0;
         private readonly List<ParserInstruction> instructions;

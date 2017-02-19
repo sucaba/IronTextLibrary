@@ -66,7 +66,8 @@
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalBranchDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalOperator.cs" />
     <Compile Include="Algorithm\Functions.cs" />
-    <Compile Include="Automata\TurnPlanning\ParserTurnBytecodeProvider.cs" />
+    <Compile Include="Automata\IParserBytecodeProvider.cs" />
+    <Compile Include="Automata\TurnPlanning\ParserPlanBytecodeProvider.cs" />
     <Compile Include="Automata\TurnPlanning\ShrodingerTokenDecision.cs" />
     <Compile Include="Automata\TurnPlanning\ShrodingerTokenDfaConverter.cs" />
     <Compile Include="Automata\TurnPlanning\ShrodingerTokenDfaProvider.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Automata\Lalr1\TableBuilders\LrMainTableFiller.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\MatchActionToTokenTableProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserBytecodeProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\ParserBytecodeProviderSelector.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserConflictProvider.cs" />
     <Compile Include="Automata\Lalr1\TableBuilders\LrTableBuilder.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserRuntimeDesignator.cs" />

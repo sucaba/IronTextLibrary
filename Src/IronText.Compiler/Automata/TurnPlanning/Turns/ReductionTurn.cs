@@ -12,7 +12,7 @@
         public override bool Equals(Turn other)
         {
             var similar = other as ReductionTurn;
-            return similar != null
+            return (object)similar != null
                 && similar.ProductionId == ProductionId;
         }
 

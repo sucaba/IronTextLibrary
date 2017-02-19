@@ -15,11 +15,12 @@ namespace IronText.Automata.TurnPlanning
         }
 
         public IEnumerable<PlanPosition> Start =>
-            WithSubcalls(new[] {
-                new PlanPosition(
-                    plans.ForProduction(PredefinedTokens.AugmentedStart),
-                    0)
-                });
+            WithSubcalls(
+                plans
+                .ForTokens(PredefinedTokens.AugmentedStart)
+                .Select(plan => new PlanPosition(plan, 0))
+                .ToArray()
+            );
 
         public IEnumerable<TurnNfaTransition> Transitions(IEnumerable<PlanPosition> state) =>
             state
@@ -44,7 +45,7 @@ namespace IronText.Automata.TurnPlanning
         }
 
         public IEnumerable<PlanPosition> WithSubcalls(params PlanPosition[] kernel) =>
-            WithSubcalls(kernel);
+            WithSubcalls((IEnumerable<PlanPosition>)kernel);
 
         public IEnumerable<PlanPosition> WithSubcalls(IEnumerable<PlanPosition> kernel)
         {

@@ -3,28 +3,27 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using IronText.Runtime;
+using IronText.Common;
 
 namespace IronText.Automata.TurnPlanning
 {
     class PlanProvider
     {
-        readonly Dictionary<int, Plan> productionPlans = new Dictionary<int, Plan>();
-        readonly Dictionary<int, List<Plan>> nonTermPlans = new Dictionary<int, List<Plan>>();
+        readonly Dictionary<int, Plan>       productionPlans = new Dictionary<int, Plan>();
+        readonly Dictionary<int, List<Plan>> nonTermPlans    = new Dictionary<int, List<Plan>>();
 
         public PlanProvider(Grammar grammar)
         {
             foreach (var production in grammar.Productions)
             {
-                Plan productionPlan = Build(production);
-                productionPlans.Add(production.Index, productionPlan);
+                var plan = Build(production);
 
-                List<Plan> outcomePlans;
-                if (!nonTermPlans.TryGetValue(production.Outcome.Index, out outcomePlans))
-                {
-                    outcomePlans = new List<Plan>();
-                }
+                productionPlans
+                    .Add(production.Index, plan);
 
-                outcomePlans.Add(productionPlan);
+                 nonTermPlans
+                    .GetOrAdd(production.Outcome.Index, () => new List<Plan>())
+                    .Add(plan);
             }
         }
 
@@ -33,7 +32,7 @@ namespace IronText.Automata.TurnPlanning
             return productionPlans[productionId];
         }
 
-        public IEnumerable<Plan> ForTokens(int[] tokens)
+        public IEnumerable<Plan> ForTokens(params int[] tokens)
         {
             return tokens
                 .Where(nonTermPlans.ContainsKey)

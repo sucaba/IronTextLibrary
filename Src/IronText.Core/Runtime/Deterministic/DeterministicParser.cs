@@ -103,7 +103,7 @@ namespace IronText.Runtime
                                 break;
                             }
 
-                        case ParserOperation.Return:
+                        case ParserOperation.Pop:
                             {
                                 PopState();
                                 action = GetAction(currentProd.Outcome);

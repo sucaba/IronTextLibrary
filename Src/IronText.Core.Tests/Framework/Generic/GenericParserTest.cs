@@ -10,7 +10,6 @@ using NUnit.Framework;
 namespace IronText.Tests.Framework
 {
     [TestFixture]
-    [Explicit]
     public class GenericParserTest
     {
         [Test]
@@ -20,6 +19,15 @@ namespace IronText.Tests.Framework
             Assert.IsFalse(GlrParse<Trivial>("a"));
         }
 
+        [Language(RuntimeOptions.ForceGeneric)]
+        [DescribeParserStateMachine("Trivial.info")]
+        public interface Trivial
+        {
+            [Produce]
+            void All();
+        }
+
+        /*
         [Test]
         public void NullableStartLanguage()
         {
@@ -88,6 +96,7 @@ namespace IronText.Tests.Framework
 
             Assert.IsFalse(GlrParse<SimpleAmbiguousGrammar>("aa"));
         }
+        */
 
         private bool GlrParse<T>(string input)
             where T : class
@@ -104,13 +113,14 @@ namespace IronText.Tests.Framework
                 ParserRuntime.Generic,
                 lang.TargetParserRuntime);
 
-            using (var interpreter = new Interpreter<T>(context) { LoggingKind = LoggingKind.Console })
+            using (var interpreter = new Interpreter<T>(context) { LoggingKind = LoggingKind.Collect })
             using (var reader = new StringReader(input))
             {
                 return interpreter.Parse(reader, Loc.MemoryString);
             }
         }
 
+        /*
         [Language(RuntimeOptions.ForceGeneric)]
         [ParserGraph("NullableStart_Parser.gv")]
         [DescribeParserStateMachine("NullableStart.info")]
@@ -245,14 +255,6 @@ namespace IronText.Tests.Framework
         }
 
         [Language(RuntimeOptions.ForceGeneric)]
-        [DescribeParserStateMachine("Trivial.info")]
-        public interface Trivial
-        {
-            [Produce]
-            void All();
-        }
-
-        [Language(RuntimeOptions.ForceGeneric)]
         public interface NondeterministicReduce
         {
             [Produce]
@@ -280,6 +282,7 @@ namespace IronText.Tests.Framework
             [Produce("3")]
             public double Number() { return 3; }
         }
+        */
 
         public interface S {}
         public interface D {}

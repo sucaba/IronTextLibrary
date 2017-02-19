@@ -1,5 +1,6 @@
 ﻿using IronText.Common;
 using System.Collections.Generic;
+using System;
 
 namespace IronText.Automata.TurnPlanning
 {
@@ -8,14 +9,18 @@ namespace IronText.Automata.TurnPlanning
         public static ShrodingerTokenDfaState FailState { get; }
             = new ShrodingerTokenDfaState();
 
-        public Dictionary<int, ShrodingerTokenDecision> Transitions { get; }
-
+        public Dictionary<int, ShrodingerTokenDecision> Transitions { get; private set; }
+        
         public ShrodingerTokenDfaState()
-            : this(new Dictionary<int, ShrodingerTokenDecision>())
         {
         }
 
         public ShrodingerTokenDfaState(Dictionary<int, ShrodingerTokenDecision> transitions)
+        {
+            this.Transitions = transitions;
+        }
+
+        public void Init(Dictionary<int, ShrodingerTokenDecision> transitions)
         {
             this.Transitions = transitions;
         }

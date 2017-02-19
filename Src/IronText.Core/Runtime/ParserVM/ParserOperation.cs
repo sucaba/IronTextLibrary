@@ -12,7 +12,7 @@
         Reduce      = 2,
 
         // Return from processing production tree
-        Return      = 3,
+        Pop      = 3,
 
         // Resolve Shrodinger's token.
         // Determines corresponding match-action ID or external-value.
@@ -32,8 +32,6 @@
         ReduceGoto  = 8,
 
         PushGoto    = 9,        
-
-        Pop         = 10,
 
         // Sets already known current state
         ForceState  = 11,

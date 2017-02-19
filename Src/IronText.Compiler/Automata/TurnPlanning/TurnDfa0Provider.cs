@@ -1,4 +1,5 @@
 ﻿using IronText.Common;
+using IronText.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +13,7 @@ namespace IronText.Automata.TurnPlanning
 
         private readonly TurnNfa0Provider nfa;
 
-        public TurnDfa0Provider(TurnNfa0Provider nfa)
+        public TurnDfa0Provider(TurnNfa0Provider nfa, Grammar dbg_grammar)
         {
             this.nfa = nfa;
             this.Details = new ImplMap<TurnDfaState, TurnDfaStateDetails>(
@@ -40,7 +41,7 @@ namespace IronText.Automata.TurnPlanning
                             existing = new TurnDfaState();
                             result.Add(existing);
                             Details.Of(existing).SetPositions(transition.NextPostions);
-                            modified = true;
+                            //modified = true;
                         }
 
                         fromState.AddTransition(transition.Turn, existing);
