@@ -46,7 +46,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             throw new NotImplementedException("TODO: remove");
         }
 
-        T IStackLookback<T>.GetNodeAt(int depth) => this.GetAtDepth(depth).Value;
+        T IStackLookback<T>.GetNodeAt(int backOffset) => this.GetAtDepth(backOffset - 1).Value;
 
         public ReductionNode<T> DeepClone(ReductionNode<T> tail = null)
             => DeepClone(this, tail);

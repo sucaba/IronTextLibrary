@@ -27,6 +27,19 @@ namespace IronText.Tests.Framework
             void All();
         }
 
+        [Test]
+        public void ParserHandlesNonAmbiguousGrammar()
+        {
+            Assert.IsTrue(GlrParse<NonAmbiguous>("foobar"));
+        }
+
+        [Language(RuntimeOptions.ForceGeneric)]
+        public interface NonAmbiguous
+        {
+            [Produce("foo", "bar")]
+            void All();
+        }
+
         /*
         [Test]
         public void NullableStartLanguage()
@@ -37,12 +50,6 @@ namespace IronText.Tests.Framework
 
             Assert.IsFalse(GlrParse<NullableStart>("c"));
             Assert.IsFalse(GlrParse<NullableStart>("ab"));
-        }
-
-        [Test]
-        public void ParserHandlesNonAmbiguousGrammar()
-        {
-            Assert.IsTrue(GlrParse<NonAmbiguous>("foobar"));
         }
 
         [Test]
@@ -245,13 +252,6 @@ namespace IronText.Tests.Framework
 
             [Produce]
             A A();
-        }
-
-        [Language(RuntimeOptions.ForceGeneric)]
-        public interface NonAmbiguous
-        {
-            [Produce("foo", "bar")]
-            void All();
         }
 
         [Language(RuntimeOptions.ForceGeneric)]
