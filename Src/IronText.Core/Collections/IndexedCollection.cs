@@ -240,7 +240,7 @@ namespace IronText.Collections
 
         public U[] CreateCompatibleArray<U>(Func<T, U> convert)
         {
-            int last = Count;
+            int last = AllCount;
             var result = new U[last];
             for (int i = 0; i != last; ++i)
             {
@@ -252,12 +252,12 @@ namespace IronText.Collections
 
         public U[] CreateCompatibleArray<U>()
         {
-            return new U[Count];
+            return new U[AllCount];
         }
 
         public U[] CreateCompatibleArray<U>(U freeSlot)
         {
-            int last = Count;
+            int last = AllCount;
             var result = new U[last];
             while (last != 0)
             {

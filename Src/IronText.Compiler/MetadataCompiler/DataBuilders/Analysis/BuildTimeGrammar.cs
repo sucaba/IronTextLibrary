@@ -17,10 +17,10 @@ namespace IronText.MetadataCompiler.Analysis
             this.grammar  = grammar;
         }
 
-        public int SymbolCount => grammar.Symbols.Count;
+        public int SymbolCount => grammar.Symbols.AllCount;
 
         public IEnumerable<BuildtimeProduction> Productions =>
-            grammar.Productions.Select(ProductionExtensions.ToBuildtime);
+            grammar.Productions.All.Select(ProductionExtensions.ToBuildtime);
 
         public string GetTokenName(int token) => grammar.Symbols[token].Name;
 

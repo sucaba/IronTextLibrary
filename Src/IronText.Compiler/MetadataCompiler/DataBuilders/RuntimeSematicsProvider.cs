@@ -26,8 +26,8 @@ namespace IronText.MetadataCompiler
 
         private RuntimeFormula[][] BuildProductionFormulas()
         {
-            var result = new List<RuntimeFormula>[grammar.Productions.Count];
-            for (int i = grammar.Productions.Count; i != 0;)
+            var result = new List<RuntimeFormula>[grammar.Productions.AllCount];
+            for (int i = result.Length; i != 0;)
             {
                 result[--i] = new List<RuntimeFormula>();
             }
@@ -47,7 +47,7 @@ namespace IronText.MetadataCompiler
         private RuntimeFormula[][] BuildShiftFormulas(ILrDfa dfa)
         {
             var result = new List<RuntimeFormula>[dfa.States.Length];
-            for (int i = dfa.States.Length; i != 0;)
+            for (int i = result.Length; i != 0;)
             {
                 result[--i] = new List<RuntimeFormula>();
             }

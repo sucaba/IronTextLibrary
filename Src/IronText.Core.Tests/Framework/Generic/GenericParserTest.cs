@@ -40,7 +40,6 @@ namespace IronText.Tests.Framework
             void All();
         }
 
-        /*
         [Test]
         public void NullableStartLanguage()
         {
@@ -52,6 +51,31 @@ namespace IronText.Tests.Framework
             Assert.IsFalse(GlrParse<NullableStart>("ab"));
         }
 
+        [Language(RuntimeOptions.ForceGeneric)]
+        [ParserGraph("NullableStart_Parser.gv")]
+        [DescribeParserStateMachine("NullableStart.info")]
+        public interface NullableStart
+        {
+            [Produce]
+            void All(A a);
+    
+            [Produce]
+            void All(B s);
+
+            [Produce]
+            A Aempty();
+
+            [Produce("a")]
+            A A();
+
+            [Produce]
+            B Bempty();
+
+            [Produce("b")]
+            B B();
+        }
+
+        /*
         [Test]
         public void SupportsSimpleAmbiguousGrammar()
         {
@@ -128,30 +152,6 @@ namespace IronText.Tests.Framework
         }
 
         /*
-        [Language(RuntimeOptions.ForceGeneric)]
-        [ParserGraph("NullableStart_Parser.gv")]
-        [DescribeParserStateMachine("NullableStart.info")]
-        public interface NullableStart
-        {
-            [Produce]
-            void All(A a);
-    
-            [Produce]
-            void All(B s);
-
-            [Produce]
-            A Aempty();
-
-            [Produce("a")]
-            A A();
-
-            [Produce]
-            B Bempty();
-
-            [Produce("b")]
-            B B();
-        }
-
         /// <summary>
         /// Simple ambiguous grammar from 4.2
         /// </summary>
