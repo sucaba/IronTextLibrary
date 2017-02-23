@@ -43,6 +43,8 @@ namespace IronText.Runtime
         [FieldOffset(sizeof(ParserOperation))]
         public int              Argument;
 
+        public int              ForkPosition => Argument;
+
         [FieldOffset(sizeof(ParserOperation))]
         public int              ResolvedToken;
 

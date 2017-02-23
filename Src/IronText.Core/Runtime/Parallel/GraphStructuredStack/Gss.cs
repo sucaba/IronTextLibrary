@@ -214,7 +214,10 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
         public void Add(Process<T> process)
         {
-            items.Add(process);
+            if (!items.Contains(process))
+            {
+                items.Add(process);
+            }
         }
 
         public void AddRange(IEnumerable<Process<T>> processes)

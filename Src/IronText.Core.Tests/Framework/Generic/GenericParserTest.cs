@@ -75,13 +75,33 @@ namespace IronText.Tests.Framework
             B B();
         }
 
-        /*
         [Test]
         public void SupportsSimpleAmbiguousGrammar()
         {
             Assert.IsTrue(GlrParse<SimpleAmbiguousGrammar>("aaaaa"));
         }
 
+        /// <summary>
+        /// Simple ambiguous grammar from 4.2
+        /// </summary>
+        [Language(RuntimeOptions.ForceGeneric)]
+        [DescribeParserStateMachine("SimpleAmbiguousGrammar.info")]
+        public interface SimpleAmbiguousGrammar
+        {
+            [Produce("a", null, "a")]
+            void All(D s);
+
+            [Produce]
+            D D(B b);
+
+            [Produce("a")]
+            D D();
+
+            [Produce("a")]
+            B B(D d);
+        }
+
+        /*
         [Test]
         public void SupportsHiddenLeftRecursion()
         {
@@ -152,26 +172,6 @@ namespace IronText.Tests.Framework
         }
 
         /*
-        /// <summary>
-        /// Simple ambiguous grammar from 4.2
-        /// </summary>
-        [Language(RuntimeOptions.ForceGeneric)]
-        [DescribeParserStateMachine("SimpleAmbiguousGrammar.info")]
-        public interface SimpleAmbiguousGrammar
-        {
-            [Produce("a", null, "a")]
-            void All(D s);
-
-            [Produce]
-            D D(B b);
-
-            [Produce("a")]
-            D D();
-
-            [Produce("a")]
-            B B(D d);
-        }
-
         /// <summary>
         /// An example with hidden left recursion
         /// </summary>

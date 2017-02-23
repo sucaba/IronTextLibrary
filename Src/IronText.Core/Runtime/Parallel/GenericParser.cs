@@ -44,19 +44,35 @@ namespace IronText.Runtime
                 throw new NotImplementedException();
             }
 
-            MessageData alernateInput = message;
+            MessageData alternateInput = message;
 
-            var term = producer.CreateLeaf(message, alernateInput);
+            var term = producer.CreateLeaf(message, alternateInput);
 
             foreach (var process in stack.Current)
             {
-                int start = actionTable(process.State, alernateInput.Token);
+                int start = actionTable(process.State, alternateInput.Token);
+
+                if (ProcessPosition(message, alternateInput, term, process, start))
+                {
+                    return FinalReceiver<Message>.Instance;
+                }
+            }
+
+            stack.Next();
+
+            return this;
+        }
+
+        bool ProcessPosition(Message message, MessageData alternateInput, T term, Process<T> process, int start)
+        {
+            while (true)
+            {
                 ParserInstruction instruction = grammar.Instructions[start];
 
                 switch (instruction.Operation)
                 {
                     case ParserOperation.Accept:
-                        return FinalReceiver<Message>.Instance;
+                        return true;
                     case ParserOperation.Fail:
                         logging.Write(
                             new LogEntry
@@ -70,7 +86,7 @@ namespace IronText.Runtime
                         stack.Pending.Add(
                             new Process<T>(
                                 instruction.State,
-                                new ReductionNode<T>(alernateInput.Token, term, process.Pending),
+                                new ReductionNode<T>(alternateInput.Token, term, process.Pending),
                                 process.CallStack));
                         break;
                     case ParserOperation.ReduceGoto:
@@ -136,14 +152,21 @@ namespace IronText.Runtime
                             }
                         }
                         break;
+                    case ParserOperation.Fork:
+                        if (ProcessPosition(message, alternateInput, term, process, instruction.ForkPosition))
+                        {
+                            return true;
+                        }
+                        ++start;
+                        continue;
                     default:
                         throw new NotSupportedException($"Invalid operation ${instruction.Operation}");
                 }
+
+                break;
             }
 
-            stack.Next();
-
-            return this;
+            return false;
         }
 
         public IPushParser CloneVerifier()
