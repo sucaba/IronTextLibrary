@@ -59,7 +59,7 @@ namespace IronText.MetadataCompiler
 
                 using (var reporting = new DependencyScope(parent: building)
                 {
-                    { typeof(IReportData), typeof(ReportData) }
+                    { typeof(IReportData), typeof(CanonicalReportData) }
                 })
                 {
                     reporting.Ensure<LanguageBuildReports>();

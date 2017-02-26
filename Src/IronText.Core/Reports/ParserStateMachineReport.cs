@@ -62,26 +62,24 @@ namespace IronText.Reports
 
                 foreach (var transition in state.Transitions)
                 {
-                    var symbol = data.Grammar.Symbols[transition.Token];
+                    var decision = transition.AlternateDecisions.ToArray();
 
-                    var decision = transition.Decisions;
-
-                    if (decision ==null)
+                    if (decision.Length == 0)
                     {
                         continue;
                     }
 
                     output.Write(Indent);
-                    output.Write(symbol.Name);
+                    output.Write(transition.Symbol);
                     output.Write("             ");
 
-                    if (decision.IsAmbiguous)
+                    if (decision.Length > 1)
                     {
                         output.Write(Indent);
                         output.WriteLine("conflict {");
-                        foreach (var alternative in decision.AllAlternatives())
+                        foreach (var alternative in decision)
                         {
-                            PrintDecision(data, symbol, output, alternative);
+                            PrintDecision(output, alternative);
                         }
 
                         output.Write(Indent);
@@ -90,7 +88,7 @@ namespace IronText.Reports
                     }
                     else
                     {
-                        PrintDecision(data, symbol, output, decision);
+                        PrintDecision(output, decision[0]);
                     }
                 }
 
@@ -99,35 +97,10 @@ namespace IronText.Reports
         }
 
         private void PrintDecision(
-            IReportData    data,
-            Symbol         symbol,
-            StreamWriter   output,
-            ParserDecision decision)
+            StreamWriter    output,
+            IParserDecision decision)
         {
-            PrintInstruction(output, decision.Instruction);
-        }
-
-        private void PrintInstruction(StreamWriter output, ParserInstruction action)
-        {
-            switch (action.Operation)
-            {
-                case ParserOperation.Fail:
-                    output.Write("fail");
-                    break;
-                case ParserOperation.Shift:
-                    output.Write("shift and go to state ");
-                    output.Write(action.State);
-                    break;
-                case ParserOperation.Reduce:
-                    output.Write("reduce using rule ");
-                    output.Write(action.Production);
-                    break;
-                case ParserOperation.Accept:
-                    output.WriteLine("accept");
-                    break;
-            }
-
-            output.WriteLine();
+            output.WriteLine(decision.ActionText);
         }
 
         private void ReportConflict(IReportData data, ParserConflictInfo conflict, StreamWriter message)
@@ -215,11 +188,10 @@ namespace IronText.Reports
             StreamWriter    output,
             bool showLookaheads = true)
         {
-            var production = item.Production;
-            output.Write(production.Outcome.Name);
+            output.Write(item.Outcome);
             output.Write(" ->");
             int i = 0;
-            foreach (var symbol in production.Input)
+            foreach (var symbol in item.Input)
             {
                 if (item.Position == i)
                 {
@@ -227,12 +199,12 @@ namespace IronText.Reports
                 }
 
                 output.Write(" ");
-                output.Write(symbol.Name);
+                output.Write(symbol);
 
                 ++i;
             }
 
-            if (item.Position == production.InputLength)
+            if (item.Position == item.InputLength)
             {
                 output.Write(" •");
             }
@@ -276,15 +248,15 @@ namespace IronText.Reports
                     
                 writer.WriteLine(
                     "    {{ {0} }}",
-                    semanticBinding.ProvidingProduction.DebugProductionText);
+                    semanticBinding.ProvidingProductionText);
 
                 writer.WriteLine(
                     "    =({0})=>",
-                    GetSemanticName(semanticBinding.Reference.UniqueName));
+                    GetSemanticName(semanticBinding.ReferenceName));
 
                 writer.WriteLine(
                     "    {{ {0} }}",
-                    semanticBinding.ConsumingProduction.DebugProductionText);
+                    semanticBinding.ConsumingProductionText);
             }
         }
 

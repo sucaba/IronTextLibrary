@@ -6,7 +6,7 @@ namespace IronText.Reflection.Reporting
     {
         int Index { get; }
 
-        ReadOnlyCollection<IParserDotItem> DotItems { get; }
+        ReadOnlyCollection<IParserDotItem>    DotItems { get; }
 
         ReadOnlyCollection<IParserTransition> Transitions { get; }
     }

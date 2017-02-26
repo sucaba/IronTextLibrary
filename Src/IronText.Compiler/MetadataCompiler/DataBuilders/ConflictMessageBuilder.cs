@@ -113,10 +113,10 @@ namespace IronText.MetadataCompiler
             IParserDotItem item,
             bool showLookaheads = true)
         {
-            var prod = item.Production;
-            output.Write(prod.Outcome.Name);
+            output.Write(item.Outcome);
             output.Write(" ->");
-            for (int i = 0; i != prod.Input.Length; ++i)
+            var input = item.Input;
+            for (int i = 0; i != input.Length; ++i)
             {
                 if (item.Position == i)
                 {
@@ -124,10 +124,10 @@ namespace IronText.MetadataCompiler
                 }
 
                 output.Write(" ");
-                output.Write(prod.Input[i].Name);
+                output.Write(input[i]);
             }
 
-            if (item.Position == prod.Input.Length)
+            if (item.Position == input.Length)
             {
                 output.Write(" .>");
             }
@@ -135,11 +135,7 @@ namespace IronText.MetadataCompiler
             if (showLookaheads)
             {
                 output.Write("  |LA = {");
-                output.Write(
-                    string.Join(
-                        ", ",
-                        from la in item.LA
-                        select data.Grammar.Symbols[la].Name));
+                output.Write(string.Join(", ", item.LA));
                 output.Write("}");
             }
         }

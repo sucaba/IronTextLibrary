@@ -9,15 +9,20 @@ using IronText.Collections;
 
 namespace IronText.Reflection.Reporting
 {
-    class ParserState : IParserState
+    class CanonicalParserState : IParserState
     {
         private readonly LanguageData data;
         private readonly DotState dotState;
-        private ReadOnlyCollection<IParserDotItem> items;
+        private ReadOnlyCollection<IParserDotItem>    items;
         private ReadOnlyCollection<IParserTransition> transitions;
+        private readonly CanonicalParserAutomata automata;
 
-        public ParserState(DotState dotState, LanguageData data)
+        public CanonicalParserState(
+            CanonicalParserAutomata automata,
+            DotState                dotState,
+            LanguageData            data)
         {
+            this.automata = automata;
             this.dotState = dotState;
             this.data     = data;
         }
@@ -36,7 +41,7 @@ namespace IronText.Reflection.Reporting
                                             new ParserDotItem(
                                                 data.Grammar.Productions[it.ProductionId],
                                                 it.Position,
-                                                it.LA))
+                                                it.LA.Select(t => data.Grammar.Symbols[t].Name)))
                                         .ToArray());
                 }
 
@@ -53,8 +58,9 @@ namespace IronText.Reflection.Reporting
                     var list = data.Grammar
                         .Symbols
                         .Select(symbol => (IParserTransition)
-                            new ParserTransition(
-                                symbol.Index,
+                            new CanonicalParserTransition(
+                                automata,
+                                symbol.Name,
                                 data.ParserDecisionTable.Get(
                                     dotState.Index,
                                     symbol.Index)))

@@ -6,7 +6,7 @@ using IronText.Runtime;
 
 namespace IronText.Reflection.Reporting
 {
-    class ReportData : IReportData
+    class CanonicalReportData : IReportData
     {
         private readonly ILanguageSource source;
         private IParserAutomata parserAutomata;
@@ -14,7 +14,7 @@ namespace IronText.Reflection.Reporting
         internal readonly ParserConflictInfo[] parserConflicts;
         internal readonly DotState[] parserStates;
 
-        public ReportData(
+        public CanonicalReportData(
             ILanguageSource      source,
             LanguageData         data,
             ILrParserTable       lrTable,
@@ -47,7 +47,7 @@ namespace IronText.Reflection.Reporting
 
         public IParserAutomata ParserAutomata
         {
-            get { return parserAutomata ?? (parserAutomata = new ParserAutomata(this)); }
+            get { return parserAutomata ?? (parserAutomata = new CanonicalParserAutomata(this)); }
         }
 
         public IScannerAutomata GetScannerAutomata()

@@ -4,14 +4,14 @@ using IronText.MetadataCompiler;
 
 namespace IronText.Reflection.Reporting
 {
-    class ParserAutomata : IParserAutomata
+    class CanonicalParserAutomata : IParserAutomata
     {
         private readonly LanguageData data;
         private ReadOnlyCollection<IParserState> states;
         private readonly ParserConflictInfo[] parserConflicts;
         private readonly DotState[] parserStates;
 
-        public ParserAutomata(ReportData reportData)
+        public CanonicalParserAutomata(CanonicalReportData reportData)
         {
             this.data            = reportData.data;
             this.parserConflicts = reportData.parserConflicts;
@@ -25,10 +25,10 @@ namespace IronText.Reflection.Reporting
                 if (states == null)
                 {
                     int count = parserStates.Length;
-                    var array = new ParserState[count];
+                    var array = new CanonicalParserState[count];
                     for (int i = 0; i != count; ++i)
                     {
-                        array[i] = new ParserState(parserStates[i], data);
+                        array[i] = new CanonicalParserState(this, parserStates[i], data);
                     }
 
                     states = new ReadOnlyCollection<IParserState>(array);

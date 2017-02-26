@@ -4,10 +4,16 @@ namespace IronText.Reflection.Reporting
 {
     public interface IParserDotItem
     {
-        Production Production { get; }
+        int         ProductionIndex { get; }
 
-        int Position { get; }
+        string      Outcome         { get; }
 
-        IEnumerable<int> LA { get; }
+        string[]    Input           { get; }
+
+        int         InputLength     { get; }
+
+        int         Position        { get; }
+
+        IEnumerable<string> LA      { get; }
     }
 }

@@ -44,12 +44,14 @@ namespace IronText.Reports
             {
                 foreach (var transition in state.Transitions)
                 {
-                    foreach (var alternative in transition.Decisions.AllAlternatives())
+                    foreach (var alternative in transition.AlternateDecisions)
                     {
-                        var instruction = alternative.Instruction;
-                        if (instruction.Operation == ParserOperation.Shift)
+                        if (alternative.NextState != null)
                         {
-                            graph.AddEdge(state.Index, instruction.State, grammar.Symbols[transition.Token].Name);
+                            graph.AddEdge(
+                                state.Index,
+                                alternative.NextState.Index,
+                                transition.Symbol);
                         }
                     }
                 }
@@ -77,28 +79,28 @@ namespace IronText.Reports
                     break;
                 }
 
-                var prod = item.Production;
                 output.AppendFormat(
                     @"<tr> <td align=""left"" port=""r0"">&#40;{0}&#41; {1} -&gt; ",
-                    item.Production.Index,
-                    SymbolToHtml(prod.Outcome));
+                    item.ProductionIndex,
+                    SymbolToHtml(item.Outcome));
 
-                for (int k = 0; k != prod.Input.Length; ++k)
+                var input = item.Input;
+                for (int k = 0; k != input.Length; ++k)
                 {
                     if (item.Position == k)
                     {
                         output.Append("&bull;");
                     }
 
-                    output.Append(" ").Append(SymbolToHtml(prod.Input[k]));
+                    output.Append(" ").Append(SymbolToHtml(input[k]));
                 }
 
-                if (item.Position == prod.Input.Length)
+                if (item.Position == input.Length)
                 {
                     output.Append("&bull;");
                 }
 
-                output.Append(" , ").Append(string.Join(" ", item.LA.Select(TokenToHtml)));
+                output.Append(" , ").Append(string.Join(" ", item.LA.Select(SymbolToHtml)));
                 output.Append("</td> </tr>");
             }
 
@@ -106,14 +108,9 @@ namespace IronText.Reports
             return output.ToString().Trim();
         }
 
-        private string TokenToHtml(int token)
+        private static string SymbolToHtml(string name)
         {
-            return SymbolToHtml(grammar.Symbols[token]);
-        }
-
-        private string SymbolToHtml(Symbol symbol)
-        {
-            var result = HttpUtility.HtmlEncode(symbol.Name);
+            var result = HttpUtility.HtmlEncode(name);
             result = result.Replace("{", "&#123;");
             result = result.Replace("}", "&#125;");
             return result;

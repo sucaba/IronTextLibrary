@@ -164,6 +164,7 @@
     <Compile Include="Collections\Validation\DuplicateResolver.cs" />
     <Compile Include="Reflection\Conversions\GrammarRuntimeExtensions.cs" />
     <Compile Include="Reflection\GrammarEntityCollection.cs" />
+    <Compile Include="Reflection\Reporting\IParserDecision.cs" />
     <Compile Include="Reflection\Transformations\GrammarExtensions.cs" />
     <Compile Include="Reflection\InheritedProperty.cs" />
     <Compile Include="Reflection\InheritedPropertyCollection.cs" />
@@ -184,7 +185,6 @@
     <Compile Include="Reflection\IProductionComponent.cs" />
     <Compile Include="Reflection\ProductionFlags.cs" />
     <Compile Include="Reflection\Comparers\ProductionIndexComparer.cs" />
-    <Compile Include="Reflection\Reporting\ParserDotItem.cs" />
     <Compile Include="Reflection\Reporting\ISemanticBinding.cs" />
     <Compile Include="Reflection\Serialization\DotExpression.cs" />
     <Compile Include="Reflection\Serialization\GrammarElementMatcher.cs" />
@@ -199,7 +199,6 @@
     <Compile Include="Reflection\SymbolPropertyCollection.cs" />
     <Compile Include="Reports\ParserStateMachineReport.cs" />
     <Compile Include="Reports\GrammarReport.cs" />
-    <Compile Include="Reflection\Reporting\LrGraph.cs" />
     <Compile Include="Reports\ParserGraphReport.cs" />
     <Compile Include="Reports\ScannerReport.cs" />
     <Compile Include="Reports\ScannerGraphReport.cs" />

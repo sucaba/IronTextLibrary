@@ -9,7 +9,7 @@ namespace IronText.Reflection.Reporting
     {
         string              DestinationDirectory { get; }
 
-        ILanguageSource      Source           { get; }
+        ILanguageSource     Source           { get; }
 
         Grammar             Grammar          { get; }
 

@@ -1,12 +1,11 @@
-﻿using IronText.Runtime;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace IronText.Reflection.Reporting
 {
     public interface IParserTransition
     {
-        int Token { get; }
+        string Symbol { get; }
 
-        ParserDecision Decisions { get; }
+        IEnumerable<IParserDecision> AlternateDecisions { get; }
     }
 }

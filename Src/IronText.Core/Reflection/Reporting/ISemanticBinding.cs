@@ -2,10 +2,10 @@
 {
     public interface ISemanticBinding
     {
-        Production  ProvidingProduction { get; }
+        string ProvidingProductionText { get; }
 
-        Production  ConsumingProduction { get; }
+        string ConsumingProductionText { get; }
 
-        SemanticRef Reference           { get; }
+        string ReferenceName           { get; }
     }
 }

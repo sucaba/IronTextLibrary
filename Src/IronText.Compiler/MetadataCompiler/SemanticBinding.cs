@@ -5,28 +5,34 @@ namespace IronText.Extensibility
 {
     internal class StackSemanticBinding : ISemanticBinding
     {
+        public string ProvidingProductionText => ProvidingProduction.DebugProductionText;
+
+        public string ConsumingProductionText => ConsumingProduction.DebugProductionText;
+
+        public string ReferenceName           => Reference.UniqueName;
+
         /// <summary>
         /// ID of the parent state
         /// </summary>
-        public int           StackState          { get; set; }
+        internal int           StackState          { get; set; }
 
         /// <summary>
         /// Production which contains providing scope
         /// </summary>
-        public Production    ProvidingProduction { get; set; }
+        internal Production    ProvidingProduction { get; set; }
 
         /// <summary>
         /// Tail relative position of the token with semantic scope instance in stack
         /// </summary>
-        public int           StackLookback       { get; set; }
+        internal int           StackLookback       { get; set; }
 
         /// <summary>
         /// Production which consumes semantic value
         /// </summary>
-        public Production    ConsumingProduction { get; set; }
+        internal Production    ConsumingProduction { get; set; }
 
-        public SemanticScope Scope               { get; set; }
+        public SemanticScope   Scope               { get; set; }
 
-        public SemanticRef   Reference           { get; set; }
+        internal SemanticRef   Reference           { get; set; }
     }
 }

@@ -133,6 +133,10 @@
     <Compile Include="MetadataCompiler\DataBuilders\ParserRuntimeDesignator.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ParserTableProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\LanguageBuildReports.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\Canonical\CanonicalParserDecision.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\Canonical\CanonicalParserDotItem.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\TurnPlanning\TurnDfaReportData.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\TurnPlanning\TurnParserAutomata.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\RuntimeSematicsProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ScannerAutomataProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\SemanticBindingProvider.cs" />
@@ -222,7 +226,7 @@
     <Compile Include="Misc\IndexingConstants.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\RuntimeGrammarProvider.cs" />
     <Compile Include="Reflection\Serialization\Managed\CilGrammarReader.cs" />
-    <Compile Include="Reflection\Reporting\ReportData.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\Canonical\CanonicalReportData.cs" />
     <Compile Include="Reflection\Managed\CilSymbolRefResolver.cs" />
     <Compile Include="Reflection\Managed\ICilSymbolResolver.cs" />
     <Compile Include="Reflection\Serialization\DefaultGrammarTextWriter.cs" />
@@ -265,9 +269,9 @@
     <Compile Include="MetadataCompiler\DataBuilders\LanguageDataProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ScannerAmbiguityProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ScannerDescriptor.cs" />
-    <Compile Include="Reflection\Reporting\ParserAutomata.cs" />
-    <Compile Include="Reflection\Reporting\ParserState.cs" />
-    <Compile Include="Reflection\Reporting\ParserTransition.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\Canonical\CanonicalParserAutomata.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\Canonical\CanonicalParserState.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\Canonical\CanonicalParserTransition.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\StackSemanticLoader.cs" />
     <Compile Include="MetadataCompiler\CilTarget\Code\ProductionCode.cs" />
     <Compile Include="MetadataCompiler\CilTarget\ProductionActionGenerator.cs" />
