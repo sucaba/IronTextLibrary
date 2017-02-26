@@ -1,34 +1,20 @@
-﻿using IronText.Collections;
-using IronText.Diagnostics;
-using IronText.Reflection;
-using IronText.Reporting;
-using IronText.Runtime;
+﻿using IronText.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Web;
 
-namespace IronText.Reports
+namespace IronText.Reporting.Rendering
 {
-    sealed class LrGraph
+    sealed class ParserAutomataGraphRenderer : IParserAutomataRenderer
     {
-        private readonly Grammar grammar;
-        private IParserAutomata automata;
+        private readonly IGraphView graph;
 
-        public LrGraph(IReportData data)
+        public ParserAutomataGraphRenderer(IGraphView graph)
         {
-            this.grammar  = data.Grammar;
-            this.automata = data.ParserAutomata;
+            this.graph = graph;
         }
 
-        public void WriteGv(string path)
-        {
-            using (var graph = new GvGraphView(path))
-            {
-                WriteGv(graph);
-            }
-        }
-
-        public void WriteGv(IGraphView graph)
+        public void Render(IParserAutomata automata)
         {
             graph.BeginDigraph("LRFSM");
             //graph.SetGraphProperties(RankDir.LeftToRight);
@@ -37,7 +23,7 @@ namespace IronText.Reports
 
             foreach (var state in automata.States)
             {
-                graph.AddNode(state.Index, shape: Shape.Mrecord, label: StateToHtml(state.Index));
+                graph.AddNode(state.Index, shape: Shape.Mrecord, label: StateToHtml(state));
             }
 
             foreach (var state in automata.States)
@@ -60,10 +46,11 @@ namespace IronText.Reports
             graph.EndDigraph();
         }
 
-        private string StateToHtml(int i)
+        private string StateToHtml(IParserState state)
         {
+            int i = state.Index;
+
             var output = new StringBuilder();
-            var state = automata.States[i];
             output.AppendFormat(
                 @"
 <table border=""0"" cellborder=""0"" cellpadding=""3"" bgcolor=""white"">

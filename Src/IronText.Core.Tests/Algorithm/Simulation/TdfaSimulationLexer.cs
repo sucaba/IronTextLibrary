@@ -42,7 +42,7 @@ namespace IronText.Tests.Algorithm
             using (IGraphView view = new GvGraphView("tdfa.gv"))
             {
                 var renderer = new ScannerAutomataGraphRenderer(view);
-                renderer.DescribeGraph(data);
+                renderer.Render(data);
             }
         }
 

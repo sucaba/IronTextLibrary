@@ -2,6 +2,6 @@
 {
     public interface IScannerAutomataRenderer
     {
-        void DescribeGraph(IScannerAutomata automata);
+        void Render(IScannerAutomata automata);
     }
 }

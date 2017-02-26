@@ -1,4 +1,6 @@
-﻿using IronText.Reporting;
+﻿using IronText.Diagnostics;
+using IronText.Reporting;
+using IronText.Reporting.Rendering;
 using System.IO;
 
 namespace IronText.Reports
@@ -16,8 +18,11 @@ namespace IronText.Reports
         {
             string path = Path.Combine(data.DestinationDirectory, fileName);
 
-            var graph = new LrGraph(data);
-            graph.WriteGv(path);
+            using (var graph = new GvGraphView(path))
+            {
+                var renderer = new ParserAutomataGraphRenderer(graph);
+                renderer.Render(data.ParserAutomata);
+            }
         }
     }
 }

@@ -166,6 +166,7 @@
     <Compile Include="Reflection\GrammarEntityCollection.cs" />
     <Compile Include="Reporting\IParserDecision.cs" />
     <Compile Include="Reporting\Rendering\Graph\ScannerAutomataGraphRenderer.cs" />
+    <Compile Include="Reporting\Rendering\IParserAutomataRenderer.cs" />
     <Compile Include="Reporting\Rendering\IScannerAutomataRenderer.cs" />
     <Compile Include="Reflection\Transformations\GrammarExtensions.cs" />
     <Compile Include="Reflection\InheritedProperty.cs" />
@@ -407,7 +408,7 @@
     <Compile Include="Runtime\GLR\GraphStructuredStack\GssBackLink.cs" />
     <Compile Include="Runtime\IPushParser.cs" />
     <Compile Include="Runtime\IScanner.cs" />
-    <Compile Include="Reports\LrGraph.cs" />
+    <Compile Include="Reporting\Rendering\Graph\ParserAutomataGraphRenderer.cs" />
     <Compile Include="Runtime\Producers\Sppf\ISppfNodeVisitor.cs" />
     <Compile Include="Runtime\Producers\Sppf\SppfEpsilonProducer.cs" />
     <Compile Include="Diagnostics\SppfGraphWriter.cs" />

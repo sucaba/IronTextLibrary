@@ -21,7 +21,7 @@ namespace IronText.Reports
             using (var graph = new GvGraphView(path))
             {
                 var renderer = new ScannerAutomataGraphRenderer(graph);
-                renderer.DescribeGraph(data.GetScannerAutomata());
+                renderer.Render(data.GetScannerAutomata());
             }
         }
     }

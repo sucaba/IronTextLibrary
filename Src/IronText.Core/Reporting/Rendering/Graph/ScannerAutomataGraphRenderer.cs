@@ -13,7 +13,7 @@ namespace IronText.Reporting.Rendering
             this.view = view;
         }
 
-        public void DescribeGraph(IScannerAutomata automata)
+        public void Render(IScannerAutomata automata)
         {
             view.BeginDigraph("tdfa");
 
