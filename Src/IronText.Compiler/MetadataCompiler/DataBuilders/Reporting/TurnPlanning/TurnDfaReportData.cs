@@ -1,6 +1,6 @@
 ﻿using IronText.Automata.TurnPlanning;
 using IronText.Reflection;
-using IronText.Reflection.Reporting;
+using IronText.Reporting;
 using IronText.Runtime;
 using System.IO;
 

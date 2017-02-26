@@ -2,7 +2,7 @@
 using IronText.Build;
 using IronText.Logging;
 using IronText.Reflection;
-using IronText.Reflection.Reporting;
+using IronText.Reporting;
 using IronText.Runtime;
 using IronText.DI;
 using IronText.Automata.Regular;

@@ -1,7 +1,8 @@
-﻿using System;
+﻿using IronText.Reflection;
+using System;
 using System.Collections.Generic;
 
-namespace IronText.Reflection.Reporting
+namespace IronText.Reporting
 {
     class ParserDotItem : IParserDotItem
     {

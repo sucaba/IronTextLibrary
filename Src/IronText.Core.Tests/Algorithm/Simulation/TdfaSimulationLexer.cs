@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Reflection.Emit;
 using IronText.Automata.Regular;
 using IronText.Diagnostics;
-using IronText.Extensibility;
-using IronText.Framework;
 using IronText.Reflection;
 using IronText.MetadataCompiler;
 using IronText.Runtime;
 using IronText.Logging;
-using IronText.Reflection.Reporting.Rendering;
+using IronText.Reporting.Rendering;
 
 namespace IronText.Tests.Algorithm
 {

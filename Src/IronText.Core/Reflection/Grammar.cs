@@ -1,7 +1,7 @@
 ﻿using IronText.Algorithm;
 using IronText.Collections;
 using IronText.DI;
-using IronText.Reflection.Reporting;
+using IronText.Reporting;
 using IronText.Reflection.Validation;
 using IronText.Runtime;
 using System;

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace IronText.Reflection.Reporting
+namespace IronText.Reporting
 {
     [Serializable]
     public class ParserConflictInfo

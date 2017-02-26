@@ -1,5 +1,5 @@
 ﻿using IronText.Automata.Lalr1;
-using IronText.Reflection.Reporting;
+using IronText.Reporting;
 
 namespace IronText.MetadataCompiler
 {

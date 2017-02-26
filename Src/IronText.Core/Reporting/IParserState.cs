@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace IronText.Reflection.Reporting
+namespace IronText.Reporting
 {
     public interface IParserState
     {

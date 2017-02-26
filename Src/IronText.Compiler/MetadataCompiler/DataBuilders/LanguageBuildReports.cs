@@ -1,5 +1,5 @@
 ﻿using IronText.DI;
-using IronText.Reflection.Reporting;
+using IronText.Reporting;
 using IronText.Runtime;
 
 namespace IronText.MetadataCompiler

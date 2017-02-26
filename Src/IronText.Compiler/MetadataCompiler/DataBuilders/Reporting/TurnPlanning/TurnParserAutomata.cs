@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using IronText.Automata.TurnPlanning;
-using IronText.Reflection.Reporting;
+using IronText.Reporting;
 using System.Linq;
 using IronText.Collections;
 

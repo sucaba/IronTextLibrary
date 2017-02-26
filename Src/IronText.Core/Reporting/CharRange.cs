@@ -1,4 +1,4 @@
-﻿namespace IronText.Reflection.Reporting
+﻿namespace IronText.Reporting
 {
     public struct CharRange
     {

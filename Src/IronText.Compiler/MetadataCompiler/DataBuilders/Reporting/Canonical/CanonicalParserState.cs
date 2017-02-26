@@ -7,7 +7,7 @@ using IronText.Reflection;
 using IronText.Runtime;
 using IronText.Collections;
 
-namespace IronText.Reflection.Reporting
+namespace IronText.Reporting
 {
     class CanonicalParserState : IParserState
     {

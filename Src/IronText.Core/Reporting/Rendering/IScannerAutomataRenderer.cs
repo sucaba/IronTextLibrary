@@ -1,4 +1,4 @@
-﻿namespace IronText.Reflection.Reporting.Rendering
+﻿namespace IronText.Reporting.Rendering
 {
     public interface IScannerAutomataRenderer
     {

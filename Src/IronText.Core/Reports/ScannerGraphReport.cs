@@ -1,6 +1,6 @@
 ﻿using IronText.Diagnostics;
-using IronText.Reflection.Reporting;
-using IronText.Reflection.Reporting.Rendering;
+using IronText.Reporting;
+using IronText.Reporting.Rendering;
 using System.IO;
 
 namespace IronText.Reports

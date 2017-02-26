@@ -2,7 +2,7 @@
 using System.Text;
 using IronText.Diagnostics;
 
-namespace IronText.Reflection.Reporting.Rendering
+namespace IronText.Reporting.Rendering
 {
     class ScannerAutomataGraphRenderer : IScannerAutomataRenderer
     {

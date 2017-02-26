@@ -5,7 +5,7 @@ using System;
 using IronText.Collections;
 using System.Linq;
 
-namespace IronText.Reflection.Reporting
+namespace IronText.Reporting
 {
     class CanonicalParserTransition : IParserTransition
     {

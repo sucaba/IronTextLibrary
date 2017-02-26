@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using IronText.Framework;
 using IronText.Logging;
-using IronText.Reflection.Reporting;
+using IronText.Reporting;
 using IronText.Runtime;
 
 namespace IronText.MetadataCompiler

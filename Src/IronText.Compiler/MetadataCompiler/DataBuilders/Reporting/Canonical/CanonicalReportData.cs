@@ -4,7 +4,7 @@ using IronText.MetadataCompiler;
 using IronText.Reflection;
 using IronText.Runtime;
 
-namespace IronText.Reflection.Reporting
+namespace IronText.Reporting
 {
     class CanonicalReportData : IReportData
     {

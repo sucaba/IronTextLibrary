@@ -3,7 +3,7 @@ using IronText.Extensibility;
 using IronText.Logging;
 using IronText.Reflection;
 using IronText.Reflection.Managed;
-using IronText.Reflection.Reporting;
+using IronText.Reporting;
 using IronText.Runtime;
 using System;
 using System.Collections.Generic;

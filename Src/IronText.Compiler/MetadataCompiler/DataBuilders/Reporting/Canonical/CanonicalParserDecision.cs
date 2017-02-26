@@ -1,6 +1,6 @@
 ﻿using IronText.Runtime;
 
-namespace IronText.Reflection.Reporting
+namespace IronText.Reporting
 {
     class CanonicalParserDecision : IParserDecision
     {

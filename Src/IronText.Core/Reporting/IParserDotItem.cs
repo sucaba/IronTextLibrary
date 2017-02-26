@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace IronText.Reflection.Reporting
+namespace IronText.Reporting
 {
     public interface IParserDotItem
     {

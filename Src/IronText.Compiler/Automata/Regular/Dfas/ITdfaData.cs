@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using IronText.Algorithm;
-using IronText.Reflection.Reporting;
+using IronText.Reporting;
 
 namespace IronText.Automata.Regular
 {

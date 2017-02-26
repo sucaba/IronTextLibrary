@@ -1,6 +1,7 @@
-﻿using IronText.Runtime;
+﻿using IronText.Reflection;
+using IronText.Runtime;
 
-namespace IronText.Reflection.Reporting
+namespace IronText.Reporting
 {
     /// <summary>
     /// Contract for a language report data source.

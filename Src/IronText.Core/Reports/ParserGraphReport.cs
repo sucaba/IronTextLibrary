@@ -1,4 +1,4 @@
-﻿using IronText.Reflection.Reporting;
+﻿using IronText.Reporting;
 using System.IO;
 
 namespace IronText.Reports

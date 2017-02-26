@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using IronText.Extensibility;
 using IronText.Logging;
-using IronText.Reflection.Reporting;
+using IronText.Reporting;
 using System.Collections.ObjectModel;
 using IronText.Runtime;
 

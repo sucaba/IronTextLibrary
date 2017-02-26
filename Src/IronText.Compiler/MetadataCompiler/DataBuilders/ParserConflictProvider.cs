@@ -1,7 +1,7 @@
 ﻿using IronText.Algorithm;
 using IronText.Automata.Lalr1;
 using IronText.Collections;
-using IronText.Reflection.Reporting;
+using IronText.Reporting;
 using IronText.Runtime;
 using System;
 using System.Collections.Generic;

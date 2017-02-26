@@ -1,7 +1,7 @@
 ﻿using IronText.Collections;
 using IronText.Diagnostics;
 using IronText.Reflection;
-using IronText.Reflection.Reporting;
+using IronText.Reporting;
 using IronText.Runtime;
 using System.Linq;
 using System.Text;

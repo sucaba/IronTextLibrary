@@ -2,7 +2,7 @@
 using IronText.Automata.Regular;
 using IronText.Extensibility;
 using IronText.Reflection;
-using IronText.Reflection.Reporting;
+using IronText.Reporting;
 using IronText.Runtime;
 
 namespace IronText.MetadataCompiler

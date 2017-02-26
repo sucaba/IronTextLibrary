@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using IronText.Algorithm;
-using IronText.Reflection.Reporting;
+using IronText.Reporting;
 
 namespace IronText.Automata.Regular
 {
