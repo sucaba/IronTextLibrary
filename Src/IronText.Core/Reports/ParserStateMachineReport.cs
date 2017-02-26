@@ -21,13 +21,13 @@ namespace IronText.Reports
         {
             string path = Path.Combine(data.DestinationDirectory, fileName);
 
-            var conflicts = data.ParserAutomata.Conflicts;
+            var conflicts = data.ParserAutomata.GetConflicts().ToArray();
 
             using (var writer = new StreamWriter(path, false, Encoding.UTF8))
             {
-                if (conflicts.Count != 0)
+                if (conflicts.Length != 0)
                 {
-                    writer.WriteLine("Found {0} conflicts", conflicts.Count);
+                    writer.WriteLine("Found {0} conflicts", conflicts.Length);
 
                     foreach (var conflict in conflicts)
                     {
@@ -100,26 +100,31 @@ namespace IronText.Reports
             StreamWriter    output,
             IParserDecision decision)
         {
+            output.Write(Indent);
+            output.Write(Indent);
             output.WriteLine(decision.ActionText);
         }
 
-        private void ReportConflict(IReportData data, ParserConflictInfo conflict, StreamWriter message)
+        private void ReportConflict(IReportData data, ParserConflict conflict, StreamWriter message)
         {
-            var symbol = data.Grammar.Symbols[conflict.Token];
+            var symbol = conflict.Transition.Symbol;
 
             const string Indent = "  ";
 
             message.WriteLine(new string('-', 50));
             message.Write("Conflict on token ");
-            message.Write(symbol.Name);
+            message.Write(symbol);
             message.Write(" between actions in state #");
-            message.Write(conflict.State + "");
+            message.Write(conflict.State.Index + "");
             message.WriteLine(":");
             DescribeState(data, conflict.State, message, Indent).WriteLine();
-            for (int i = 0; i != conflict.Actions.Count; ++i)
+            int i = 0;
+            foreach (var decision in conflict.Transition.AlternateDecisions)
             {
                 message.WriteLine("Action #{0}", i);
-                DescribeAction(data, conflict.Actions[i], message, Indent);
+                DescribeAction(data, decision, message, Indent);
+
+                ++i;
             }
 
             message.WriteLine(new string('-', 50));
@@ -127,43 +132,16 @@ namespace IronText.Reports
 
         private StreamWriter DescribeAction(
             IReportData data,
-            ParserInstruction action,
+            IParserDecision decision,
             StreamWriter output,
             string indent)
         {
-            switch (action.Operation)
-            {
-                case ParserOperation.Shift:
-                    output.Write(indent);
-                    output.Write("Shift to the state I");
-                    output.Write(action.State + "");
-                    output.WriteLine(":");
-                    DescribeState(data, action.State, output, indent + indent);
-                    break;
-                case ParserOperation.Reduce:
-                    output.Write(indent);
-                    output.WriteLine("Reduce on the rule:");
-                    output.Write(indent + indent);
-                    DescribeRule(data, action.Production, output);
-                    output.WriteLine();
-                    break;
-                case ParserOperation.Accept:
-                    output.Write(indent);
-                    output.WriteLine("Accept.");
-                    break;
-            }
+            output.Write(indent);
+            output.Write(decision.ActionText);
+            output.WriteLine(":");
+            DescribeState(data, decision.NextState, output, indent + indent);
 
             return output;
-        }
-
-        private static StreamWriter DescribeState(
-            IReportData data,
-            int state,
-            StreamWriter output,
-            string indent)
-        {
-            var automata = data.ParserAutomata;
-            return DescribeState(data, automata.States[state], output, indent);
         }
 
         private static StreamWriter DescribeState(

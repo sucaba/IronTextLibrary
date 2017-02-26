@@ -165,6 +165,7 @@
     <Compile Include="Reflection\Conversions\GrammarRuntimeExtensions.cs" />
     <Compile Include="Reflection\GrammarEntityCollection.cs" />
     <Compile Include="Reporting\IParserDecision.cs" />
+    <Compile Include="Reporting\ParserConflict.cs" />
     <Compile Include="Reporting\Rendering\Graph\ScannerAutomataGraphRenderer.cs" />
     <Compile Include="Reporting\Rendering\IParserAutomataRenderer.cs" />
     <Compile Include="Reporting\Rendering\IScannerAutomataRenderer.cs" />
@@ -261,7 +262,6 @@
     <Compile Include="Runtime\ISourceGrammarProvider.cs" />
     <Compile Include="Runtime\ParserVM\ParserInstruction.cs" />
     <Compile Include="Runtime\ParserVM\ParserOperation.cs" />
-    <Compile Include="Reporting\ParserConflictInfo.cs" />
     <Compile Include="Extensibility\CilMetadataAttribute.cs" />
     <Compile Include="Extensibility\ScannerUtils.cs" />
     <Compile Include="Reflection\Cil\CilMatcher.cs" />

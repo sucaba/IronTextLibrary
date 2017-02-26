@@ -16,7 +16,7 @@ namespace IronText.Reporting
             string                  symbol,
             ParserDecision          decision)
         {
-            this.Symbol    = symbol;
+            this.Symbol   = symbol;
             this.decision = decision;
             this.AlternateDecisions = decision
                     .AllAlternatives()

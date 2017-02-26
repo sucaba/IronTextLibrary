@@ -1,9 +1,8 @@
 ﻿using IronText.Algorithm;
 using IronText.Automata.Lalr1;
 using IronText.Collections;
-using IronText.Reporting;
+using IronText.MetadataCompiler.Analysis;
 using IronText.Runtime;
-using System;
 using System.Collections.Generic;
 
 namespace IronText.MetadataCompiler

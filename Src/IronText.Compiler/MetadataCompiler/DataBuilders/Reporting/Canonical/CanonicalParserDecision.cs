@@ -1,4 +1,6 @@
-﻿using IronText.Runtime;
+﻿using System;
+using System.Collections.ObjectModel;
+using IronText.Runtime;
 
 namespace IronText.Reporting
 {
@@ -30,11 +32,27 @@ namespace IronText.Reporting
             {
                 NextState = automata.States[decision.Instruction.State];
             }
+            else
+            {
+                NextState = ReductionState.Instance;
+            }
         }
 
         public string       ActionText { get; }
 
         public IParserState NextState  { get; }
-        
+
+        class ReductionState : IParserState
+        {
+            public static readonly IParserState Instance = new ReductionState();
+
+            public ReadOnlyCollection<IParserDotItem> DotItems =>
+                Array.AsReadOnly(new IParserDotItem[0]);
+
+            public int Index => -1;
+
+            public ReadOnlyCollection<IParserTransition> Transitions =>
+                Array.AsReadOnly(new IParserTransition[0]);
+        }
     }
 }

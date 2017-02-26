@@ -57,6 +57,12 @@ namespace IronText.Reporting
                 {
                     var list = data.Grammar
                         .Symbols
+                        .Where(symbol =>
+                            null
+                            !=
+                            data.ParserDecisionTable.Get(
+                                dotState.Index,
+                                symbol.Index))
                         .Select(symbol => (IParserTransition)
                             new CanonicalParserTransition(
                                 automata,

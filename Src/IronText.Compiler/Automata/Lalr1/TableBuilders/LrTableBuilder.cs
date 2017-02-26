@@ -160,6 +160,10 @@ namespace IronText.Automata.Lalr1
             else if (conflictResolver.TryResolve(current, decision, token, out resolved))
             {
             }
+            else if (current.AllAlternatives().Any(x => x.Instruction == decision.Instruction))
+            {
+                return;
+            }
             else
             {
                 resolved = current.Alternate(decision);

@@ -4,43 +4,21 @@ using IronText.Automata.TurnPlanning;
 using IronText.Reporting;
 using System.Linq;
 using IronText.Collections;
+using IronText.Common;
 
-/*
 namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
 {
     class TurnParserAutomata : IParserAutomata
     {
-        private ShrodingerTokenDfaProvider dfaProvider;
+        private readonly ShrodingerTokenDfaProvider       dfaProvider;
+        private readonly Indexer<ShrodingerTokenDfaState> stateIndexer;
 
-        public TurnParserAutomata(ShrodingerTokenDfaProvider dfaProvider)
+        public TurnParserAutomata(
+            ShrodingerTokenDfaProvider       dfaProvider,
+            Indexer<ShrodingerTokenDfaState> stateIndexer)
         {
-            this.dfaProvider = dfaProvider;
-        }
-
-        public ReadOnlyCollection<ParserConflictInfo> Conflicts
-        {
-            get
-            {
-                return dfaProvider.States
-                    .SelectMany(x => x
-                        .Transitions
-                        .Where(t => t.Value.IsAmbiguous)
-                        .SelectMany(t => t
-                            .Value.AllAlternatives()
-                            .Select(a => new
-                            {
-                                state = ToText(x),
-                                token = t.Key,
-                                turn = ToText(a.Turn),
-                                nextState = ToText(a.NextState)
-                            })))
-                           .ToList();
-            }
-        }
-
-        private object ToText(ShrodingerTokenDfaState x)
-        {
-            throw new NotImplementedException();
+            this.dfaProvider  = dfaProvider;
+            this.stateIndexer = stateIndexer;
         }
 
         public ReadOnlyCollection<IParserState> States
@@ -52,4 +30,3 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
         }
     }
 }
-*/

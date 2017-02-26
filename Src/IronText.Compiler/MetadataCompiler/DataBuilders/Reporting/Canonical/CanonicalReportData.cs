@@ -11,19 +11,15 @@ namespace IronText.Reporting
         private readonly ILanguageSource source;
         private IParserAutomata parserAutomata;
         internal readonly LanguageData data;
-        internal readonly ParserConflictInfo[] parserConflicts;
         internal readonly DotState[] parserStates;
 
         public CanonicalReportData(
             ILanguageSource      source,
             LanguageData         data,
-            ILrParserTable       lrTable,
-            ParserConflictInfo[] parserConflicts,
             ILrDfa               parserDfa)
         {
             this.source          = source;
             this.data            = data;
-            this.parserConflicts = parserConflicts;
             this.parserStates    = parserDfa.States;
         }
 

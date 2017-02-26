@@ -20,15 +20,15 @@ namespace IronText.MetadataCompiler
             this.logging = logging;
         }
 
-        public void Build(IReportData reportData)
+        public void Build(IReportData data)
         {
-            data = reportData;
+            this.data = data;
             Write();
         }
 
         private void Write()
         {
-            var conflicts = data.ParserAutomata.Conflicts;
+            var conflicts = data.ParserAutomata.GetConflicts().ToArray();
             logging.Write(
                 new LogEntry
                 {
@@ -36,8 +36,8 @@ namespace IronText.MetadataCompiler
                     Origin   = data.Source.GrammarOrigin,
                     Message  = string.Format(
                                     "Found {0} parser conflict{1}.",
-                                    conflicts.Count,
-                                    conflicts.Count == 1 ? "" : "s")
+                                    conflicts.Length,
+                                    conflicts.Length == 1 ? "" : "s")
                 });
 
             var output = new StringBuilder();
@@ -61,25 +61,26 @@ namespace IronText.MetadataCompiler
                 });
         }
 
-        private void WriteConflictEntry(ParserConflictInfo conflict, ILogging logging)
+        private void WriteConflictEntry(ParserConflict conflict, ILogging logging)
         {
             using (var writer = new StringWriter())
             using (var message = new IndentedTextWriter(writer, "  "))
             {
-                var symbol = data.Grammar.Symbols[conflict.Token];
+                var symbol = conflict.Transition.Symbol;
 
                 message.Write("Conflict on token ");
-                message.Write(symbol.Name);
+                message.Write(symbol);
                 message.Write(" between actions in state #");
-                message.Write(conflict.State + "");
+                message.Write(conflict.State.Index + "");
                 message.WriteLine(":");
 
                 ++message.Indent;
                 DescribeState(message, conflict.State);
-                for (int i = 0; i != conflict.Actions.Count; ++i)
+                int i = 0;
+                foreach (var decision in conflict.Transition.AlternateDecisions)
                 {
                     message.WriteLine("Action #{0}:", i + 1);
-                    DescribeAction(message, conflict.Actions[i]);
+                    DescribeAction(message, decision);
                 }
 
                 --message.Indent;
@@ -140,28 +141,14 @@ namespace IronText.MetadataCompiler
             }
         }
 
-        private void DescribeAction(IndentedTextWriter message, ParserInstruction action)
+        private void DescribeAction(IndentedTextWriter message, IParserDecision action)
         {
-            switch (action.Operation)
-            {
-                case ParserOperation.Shift:
-                    message.Write("Shift to state #");
-                    message.Write(action.State + "");
-                    message.WriteLine(":");
-                    ++message.Indent;
-                    DescribeState(message, action.State);
-                    --message.Indent;
-                    break;
-                case ParserOperation.Reduce:
-                    message.WriteLine("Reduce on the rule:");
-                    ++message.Indent;
-                    DescribeRule(message, action.Production);
-                    --message.Indent;
-                    break;
-                case ParserOperation.Accept:
-                    message.Write("Accept.");
-                    break;
-            }
+            message.Write(action.ActionText);
+            message.Write(action.NextState.Index + "");
+            message.WriteLine(":");
+            ++message.Indent;
+            DescribeState(message, action.NextState);
+            --message.Indent;
 
             message.WriteLine();
         }

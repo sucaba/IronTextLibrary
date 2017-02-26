@@ -8,13 +8,11 @@ namespace IronText.Reporting
     {
         private readonly LanguageData data;
         private ReadOnlyCollection<IParserState> states;
-        private readonly ParserConflictInfo[] parserConflicts;
         private readonly DotState[] parserStates;
 
         public CanonicalParserAutomata(CanonicalReportData reportData)
         {
             this.data            = reportData.data;
-            this.parserConflicts = reportData.parserConflicts;
             this.parserStates    = reportData.parserStates;
         }
 
@@ -36,11 +34,6 @@ namespace IronText.Reporting
 
                 return states;
             }
-        }
-
-        public ReadOnlyCollection<ParserConflictInfo> Conflicts
-        {
-            get { return new ReadOnlyCollection<ParserConflictInfo>(parserConflicts); }
         }
     }
 }
