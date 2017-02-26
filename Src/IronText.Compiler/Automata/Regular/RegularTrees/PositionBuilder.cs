@@ -27,7 +27,7 @@ namespace IronText.Automata.Regular
                 new RegularPositionInfo 
                 {
                     Action = node.Action,
-                    Characters = SparseIntSetType.Instance.Empty,
+                    Characters = UnicodeIntSetType.Instance.Empty,
                 });
             return this;
         }

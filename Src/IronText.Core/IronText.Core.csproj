@@ -165,6 +165,8 @@
     <Compile Include="Reflection\Conversions\GrammarRuntimeExtensions.cs" />
     <Compile Include="Reflection\GrammarEntityCollection.cs" />
     <Compile Include="Reflection\Reporting\IParserDecision.cs" />
+    <Compile Include="Reflection\Reporting\Rendering\Graph\ScannerAutomataGraphRenderer.cs" />
+    <Compile Include="Reflection\Reporting\Rendering\IScannerAutomataRenderer.cs" />
     <Compile Include="Reflection\Transformations\GrammarExtensions.cs" />
     <Compile Include="Reflection\InheritedProperty.cs" />
     <Compile Include="Reflection\InheritedPropertyCollection.cs" />

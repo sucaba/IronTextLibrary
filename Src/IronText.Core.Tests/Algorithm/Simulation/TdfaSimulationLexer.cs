@@ -11,6 +11,7 @@ using IronText.Reflection;
 using IronText.MetadataCompiler;
 using IronText.Runtime;
 using IronText.Logging;
+using IronText.Reflection.Reporting.Rendering;
 
 namespace IronText.Tests.Algorithm
 {
@@ -44,7 +45,8 @@ namespace IronText.Tests.Algorithm
         {
             using (IGraphView view = new GvGraphView("tdfa.gv"))
             {
-                data.DescribeGraph(view);
+                var renderer = new ScannerAutomataGraphRenderer(view);
+                renderer.DescribeGraph(data);
             }
         }
 

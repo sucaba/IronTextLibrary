@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Text;
 using IronText.Algorithm;
-using IronText.Diagnostics;
 using IronText.Reflection.Reporting;
+using System.Linq;
 
 namespace IronText.Automata.Regular
 {
@@ -98,15 +97,15 @@ namespace IronText.Automata.Regular
             }
         }
 
-        public int AddState(TdfaState dfaState)
+        public int AddState(TdfaState state)
         {
-            Debug.Assert(dfaState != null);
-            Debug.Assert(dfaState.Tunnel == 0);
+            Debug.Assert(state != null);
+            Debug.Assert(state.Tunnel == 0);
 
             int result = Dstates.Count;
-            dfaState.Index = result;
-            dfaState.Tunnel = -1;
-            Dstates.Add(dfaState);
+            state.Index = result;
+            state.Tunnel = -1;
+            Dstates.Add(state);
             return result;
         }
 
@@ -118,64 +117,13 @@ namespace IronText.Automata.Regular
             }
         }
 
-        public void DescribeGraph(IGraphView view)
-        {
-            var data = this;
+        private ReadOnlyCollection<IScannerState> reportStates;
 
-            view.BeginDigraph("tdfa");
-
-            view.SetGraphProperties(rankDir: RankDir.LeftToRight);
-            foreach (var S in data.EnumerateStates())
-            {
-                GraphColor color = S.IsNewline ? GraphColor.Green : GraphColor.Default;
-                if (S.IsAccepting)
-                {
-                    view.AddNode(S.Index, GetStateName(S), style: Style.Bold, color: color);
-                }
-                else
-                {
-                    view.AddNode(S.Index, GetStateName(S), color: color);
-                }
-            }
-
-            foreach (var S in data.EnumerateStates())
-            {
-                foreach (var t in S.Outgoing)
-                {
-                    var charSet = data.Alphabet.Decode(t.Symbols);
-                    view.AddEdge(t.From, t.To, charSet.ToCharSetString());
-                }
-
-                if (S.Tunnel >= 0)
-                {
-                    view.AddEdge(S.Index, S.Tunnel, style: Style.Dotted);
-                }
-            }
-
-            view.EndDigraph();
-        }
-
-        private static string GetStateName(TdfaState S)
-        {
-            var output = new StringBuilder();
-            output.Append(S.Index);
-            if (S.Actions.Count != 0)
-            {
-                output.Append(" [");
-                output.Append(string.Join(",", S.Actions));
-                output.Append("]");
-            }
-
-            return output.ToString();
-        }
-
-        ReadOnlyCollection<IScannerState> IScannerAutomata.States
-        {
-            get 
-            {
-                return new ReadOnlyCollection<IScannerState>(
-                            (IList<IScannerState>)(IList<TdfaState>)this.Dstates);
-            }
-        }
+        ReadOnlyCollection<IScannerState> IScannerAutomata.States =>
+            reportStates
+            ?? (reportStates = new ReadOnlyCollection<IScannerState>(
+                    Dstates
+                    .Cast<IScannerState>()
+                    .ToArray()));
     }
 }

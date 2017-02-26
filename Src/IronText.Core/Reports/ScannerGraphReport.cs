@@ -1,5 +1,6 @@
 ﻿using IronText.Diagnostics;
 using IronText.Reflection.Reporting;
+using IronText.Reflection.Reporting.Rendering;
 using System.IO;
 
 namespace IronText.Reports
@@ -19,8 +20,8 @@ namespace IronText.Reports
             string path = Path.Combine(data.DestinationDirectory, scanModeFileName);
             using (var graph = new GvGraphView(path))
             {
-                var dfa = data.GetScannerAutomata();
-                dfa.DescribeGraph(graph);
+                var renderer = new ScannerAutomataGraphRenderer(graph);
+                renderer.DescribeGraph(data.GetScannerAutomata());
             }
         }
     }

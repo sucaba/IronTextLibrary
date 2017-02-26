@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace IronText.Reflection.Reporting
 {
@@ -11,6 +12,8 @@ namespace IronText.Reflection.Reporting
         bool IsFinal { get; }
 
         bool IsNewline { get; }
+
+        IReadOnlyList<int> Actions { get; }
 
         IScannerState TunnelState { get; }
 

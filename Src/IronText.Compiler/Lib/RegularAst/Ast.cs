@@ -69,7 +69,7 @@ namespace IronText.Lib.RegularAst
         public static CharSetNode Create(IntSet cset) { return new CharSetNode(cset); }
         public static CharSetNode CreateRange(int from, int to) 
         { 
-            return new CharSetNode(SparseIntSetType.Instance.Range(from, to));
+            return new CharSetNode(UnicodeIntSetType.Instance.Range(from, to));
         }
 
         public static CharSetNode Union(IEnumerable<CharSetNode> nodes)
@@ -85,7 +85,7 @@ namespace IronText.Lib.RegularAst
 
         public CharSetNode Complement() { return new CharSetNode(Characters.Complement()); }
 
-        protected CharSetNode(int ch) : this(SparseIntSetType.Instance.Of(ch)) { }
+        protected CharSetNode(int ch) : this(UnicodeIntSetType.Instance.Of(ch)) { }
         protected CharSetNode(IntSet cset) { this.Characters = cset; }
 
         public override TResult Accept<TResult>(IAstNodeVisitor<TResult> visitor)

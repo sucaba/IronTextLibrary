@@ -45,6 +45,8 @@ namespace IronText.Automata.Regular
             get { return Outgoing.Count == 0 && Tunnel < 0; }
         }
 
+        IReadOnlyList<int> IScannerState.Actions => Actions;
+        
         IScannerState IScannerState.TunnelState
         {
             get { return container.GetState(Tunnel); }
@@ -76,7 +78,7 @@ namespace IronText.Automata.Regular
         {
             checked
             {
-                return new CharRange((char)interval.First, (char)interval.Last);
+                return new CharRange(interval.First, interval.Last);
             }
         }
     }
