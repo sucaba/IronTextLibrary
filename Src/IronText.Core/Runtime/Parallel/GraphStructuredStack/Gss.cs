@@ -89,9 +89,18 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
     {
         private readonly Dictionary<int, Record> items = new Dictionary<int, Record>();
 
+
+        public void Clear()
+        {
+            items.Clear();
+        }
+
         public void RegisterPop(ProcessNode<T> destinationNode, ReductionNode<T> popPending)
         {
-            items[destinationNode.State].Popped.Add(popPending);
+            if (items.ContainsKey(destinationNode.State))
+            {
+                items[destinationNode.State].Popped.Add(popPending);
+            }
         }
 
         public void RegisterPush(ProcessNode<T> node)
@@ -211,6 +220,8 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         public ProcessCollection()
         {
         }
+
+        public bool IsEmpty => items.Count == 0;
 
         public void Add(Process<T> process)
         {

@@ -44,6 +44,8 @@ namespace IronText.Runtime
                 throw new NotImplementedException();
             }
 
+            P.Clear();
+
             MessageData alternateInput = message;
 
             var term = producer.CreateLeaf(message, alternateInput);
@@ -56,6 +58,17 @@ namespace IronText.Runtime
                 {
                     return FinalReceiver<Message>.Instance;
                 }
+            }
+
+            if (stack.Pending.IsEmpty)
+            {
+                logging.Write(
+                    new LogEntry
+                    {
+                        Severity = Severity.Error,
+                        Message = "Invalid syntax.",
+                        Location = message.Location,
+                    });
             }
 
             stack.Next();
@@ -74,14 +87,7 @@ namespace IronText.Runtime
                     case ParserOperation.Accept:
                         return true;
                     case ParserOperation.Fail:
-                        logging.Write(
-                            new LogEntry
-                            {
-                                Severity = Severity.Error,
-                                Message = "Invalid syntax.",
-                                Location = message.Location,
-                            });
-                        break;
+                        return false;
                     case ParserOperation.Shift:
                         stack.Pending.Add(
                             new Process<T>(
