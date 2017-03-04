@@ -136,8 +136,14 @@
     <Compile Include="MetadataCompiler\DataBuilders\LanguageBuildReports.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\Reporting\Canonical\CanonicalParserDecision.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\Reporting\Canonical\CanonicalParserDotItem.cs" />
-    <Compile Include="MetadataCompiler\DataBuilders\Reporting\TurnPlanning\TurnDfaReportData.cs" />
-    <Compile Include="MetadataCompiler\DataBuilders\Reporting\TurnPlanning\TurnParserAutomata.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\ReportDataSelector.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\TurnPlanning\TurnBasedNameProvider.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\TurnPlanning\TurnBasedParserDecision.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\TurnPlanning\TurnBasedParserDotItem.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\TurnPlanning\TurnBasedParserTransition.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\TurnPlanning\TurnBasedReportData.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\TurnPlanning\TurnBasedParserAutomataState.cs" />
+    <Compile Include="MetadataCompiler\DataBuilders\Reporting\TurnPlanning\TurnBasedParserAutomata.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\RuntimeSematicsProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\ScannerAutomataProvider.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\SemanticBindingProvider.cs" />

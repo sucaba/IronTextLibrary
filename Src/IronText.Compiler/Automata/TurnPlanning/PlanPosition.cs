@@ -16,26 +16,28 @@ namespace IronText.Automata.TurnPlanning
         public static PlanPosition Next(PlanPosition position)
             => position.Next();
 
-        private readonly int  position;
+        private readonly int  _position;
 
         public PlanPosition(Plan plan, int position)
         {
             this.Plan     = plan;
-            this.position = position;
+            this._position = position;
         }
 
         public Plan Plan { get; }
 
-        public IEnumerable<int> TokensToConsume => Plan.GetTokensToConsume(position);
+        public int Position => _position;
 
-        public Turn NextTurn => Plan[position];
+        public IEnumerable<int> TokensToConsume => Plan.GetTokensToConsume(_position);
 
-        public bool IsKernel => position != 0 || Plan.IsAugmentedStart;
+        public Turn NextTurn => Plan[_position];
+
+        public bool IsKernel => _position != 0 || Plan.IsAugmentedStart;
 
         public bool IsSubcall => !IsKernel;
 
-        public bool IsDone => Plan.Count == position;
+        public bool IsDone => Plan.Count == _position;
 
-        public PlanPosition Next() => new PlanPosition(Plan, position + 1);
+        public PlanPosition Next() => new PlanPosition(Plan, _position + 1);
     }
 }

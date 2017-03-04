@@ -15,6 +15,8 @@ namespace IronText.Automata.TurnPlanning
             this.IsAugmentedStart = outcome == PredefinedTokens.AugmentedStart;
         }
 
+        public IEnumerable<Turn> KnownTurns => turns;
+
         public int Count => turns.Count;
 
         public bool IsAugmentedStart { get; }

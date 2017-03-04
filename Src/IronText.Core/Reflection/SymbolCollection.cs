@@ -30,6 +30,11 @@ namespace IronText.Reflection
             return ByName(symbolName, false);
         }
 
+        public string NameOf(int index)
+        {
+            return this[index].Name;
+        }
+
         public Symbol ByName(string symbolName, bool createMissing)
         {
             if (symbolName == null)

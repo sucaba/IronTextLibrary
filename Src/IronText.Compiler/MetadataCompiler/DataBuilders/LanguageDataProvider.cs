@@ -8,6 +8,7 @@ using IronText.DI;
 using IronText.Automata.Regular;
 using IronText.MetadataCompiler.DataBuilders.Infrastsructure;
 using IronText.MetadataCompiler.Analysis;
+using IronText.MetadataCompiler.DataBuilders.Reporting;
 
 namespace IronText.MetadataCompiler
 {
@@ -59,7 +60,7 @@ namespace IronText.MetadataCompiler
 
                 using (var reporting = new DependencyScope(parent: building)
                 {
-                    { typeof(IReportData), typeof(CanonicalReportData) }
+                    typeof(ReportDataSelector)
                 })
                 {
                     reporting.Ensure<LanguageBuildReports>();

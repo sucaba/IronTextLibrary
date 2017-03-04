@@ -1,5 +1,6 @@
 ﻿using IronText.Collections;
 using IronText.Common;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IronText.Automata.TurnPlanning
@@ -7,6 +8,8 @@ namespace IronText.Automata.TurnPlanning
     class TokenDfaProvider
     {
         public TokenDfaState[] States { get; }
+
+        public IReadOnlyDictionary<TokenDfaState,TurnDfaStateDetails> Details { get; }
 
         public TokenDfaProvider(
             TurnDfa1Provider       turnDfa1,
@@ -43,7 +46,8 @@ namespace IronText.Automata.TurnPlanning
                 }
             }
 
-            this.States = tokenStates.Destinations.ToArray();
+            this.States  = tokenStates.Destinations.ToArray();
+            this.Details = turnDfa1.States.ToDictionary(tokenStates.Of, turnDfa1.Details.Of);
         }
     }
 }

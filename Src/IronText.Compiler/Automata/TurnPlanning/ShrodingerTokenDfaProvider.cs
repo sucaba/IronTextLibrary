@@ -1,4 +1,5 @@
 ﻿using IronText.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IronText.Automata.TurnPlanning
@@ -7,11 +8,14 @@ namespace IronText.Automata.TurnPlanning
     {
         public ShrodingerTokenDfaState[] States { get; }
 
+        public IReadOnlyDictionary<ShrodingerTokenDfaState, TurnDfaStateDetails> Details { get; }
+
         public ShrodingerTokenDfaProvider(
             ShrodingerTokenDfaConverter converter,
             AmbTokenInfo[]              ambiguities)
         {
-            this.States = converter.StateMap.Destinations.ToArray();
+            this.States  = converter.StateMap.Destinations.ToArray();
+            this.Details = converter.Details;
 
             foreach (var mapping in converter.StateMap)
             {

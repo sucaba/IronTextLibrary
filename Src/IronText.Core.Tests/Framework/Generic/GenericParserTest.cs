@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using IronText.Framework;
 using IronText.Logging;
 using IronText.Runtime;
@@ -20,7 +18,7 @@ namespace IronText.Tests.Framework
         }
 
         [Language(RuntimeOptions.ForceGeneric)]
-        [DescribeParserStateMachine("Trivial.info")]
+        [DescribeParserStateMachine(nameof(Trivial) + "0.info")]
         public interface Trivial
         {
             [Produce]
@@ -85,7 +83,7 @@ namespace IronText.Tests.Framework
         /// Simple ambiguous grammar from 4.2
         /// </summary>
         [Language(RuntimeOptions.ForceGeneric)]
-        [DescribeParserStateMachine("SimpleAmbiguousGrammar.info")]
+        [DescribeParserStateMachine("SimpleAmbiguousGrammar0.info")]
         public interface SimpleAmbiguousGrammar
         {
             [Produce("a", null, "a")]

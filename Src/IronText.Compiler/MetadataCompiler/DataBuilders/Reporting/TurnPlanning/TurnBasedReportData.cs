@@ -7,23 +7,28 @@ using System.IO;
 
 namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
 {
-    class TurnDfaReportData : IReportData
+    class TurnBasedReportData : IReportData
     {
         private readonly LanguageData                     data;
         private readonly ShrodingerTokenDfaProvider       dfaProvider;
-        private TurnParserAutomata                        parserAutomata;
         private readonly Indexer<ShrodingerTokenDfaState> dfaStateIndexer;
 
-        public TurnDfaReportData(
+        public TurnBasedReportData(
             ILanguageSource            source,
             LanguageData               data,
             ShrodingerTokenDfaProvider dfaProvider,
-            Indexer<ShrodingerTokenDfaState> stateIndexer)
+            Indexer<ShrodingerTokenDfaState> stateIndexer,
+            TurnBasedNameProvider      turnNameProvider)
         {
             this.Source      = source;
             this.data        = data;
             this.dfaProvider = dfaProvider;
             this.dfaStateIndexer = stateIndexer;
+            this.ParserAutomata = new TurnBasedParserAutomata(
+                                    dfaProvider,
+                                    dfaStateIndexer,
+                                    data.Grammar,
+                                    turnNameProvider);
         }
 
         public string DestinationDirectory =>
@@ -35,8 +40,7 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
 
         public Grammar         Grammar => data.Grammar;
 
-        public IParserAutomata ParserAutomata =>
-            parserAutomata ?? (parserAutomata = new TurnParserAutomata(dfaProvider, dfaStateIndexer));
+        public IParserAutomata ParserAutomata { get; }
 
         public IScannerAutomata   GetScannerAutomata() => data.ScannerTdfa;
 

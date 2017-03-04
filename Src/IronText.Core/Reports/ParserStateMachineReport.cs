@@ -102,7 +102,13 @@ namespace IronText.Reports
         {
             output.Write(Indent);
             output.Write(Indent);
-            output.WriteLine(decision.ActionText);
+            output.Write(decision.ActionText);
+            if (decision.NextState != null)
+            {
+                output.Write(" -> state-");
+                output.Write(decision.NextState.Index);
+            }
+            output.WriteLine();
         }
 
         private void ReportConflict(IReportData data, ParserConflict conflict, StreamWriter message)
