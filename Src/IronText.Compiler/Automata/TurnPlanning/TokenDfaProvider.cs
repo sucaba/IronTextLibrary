@@ -31,7 +31,18 @@ namespace IronText.Automata.TurnPlanning
                         .Where(t => t.Key.Consumes(token)
                                  // Special handling for ReturnTurn because t.Value state 
                                  // is single per DFA and has no FIRSTS information.
-                                 || (t.Key is ReturnTurn && firsts.Of(turnState).Contains(token))
+                                 // TODO: Following is invalid because if in this (state, token) 
+                                 // situation:
+                                 // 1) alternative turn consumes token 
+                                 // and
+                                 // 2) return-turn contextual-lookaheads does not not contain
+                                 // token
+                                 // then return turn is incorrectly accepted by this token.
+                                 // However because return-turn is always preceded by reduce,
+                                 // this situations is possible only with grammar transformation
+                                 // and problem needs to be addressed after transformation is 
+                                 // enabled.
+                                 || (t.Key is ReturnTurn)
                                  || (!t.Key.IsConsuming && firsts.Of(t.Value).Contains(token)))
                         .Select(t => t.Key);
 

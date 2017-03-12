@@ -104,7 +104,9 @@ namespace IronText.Tests.Framework
         [Test]
         public void SupportsHiddenLeftRecursion()
         {
+            Assert.IsTrue(GlrParse<HiddenLeftRecursion>(""));
             Assert.IsTrue(GlrParse<HiddenLeftRecursion>("aa"));
+            Assert.IsTrue(GlrParse<HiddenLeftRecursion>("aaaaaaaa"));
         }
 
         [Language(RuntimeOptions.ForceGeneric)]
@@ -120,6 +122,52 @@ namespace IronText.Tests.Framework
 
             [Produce(null, null, "a")]
             S S(S s1, S s2);
+        }
+
+        [Test]
+        public void SupportsLeftRecursion()
+        {
+            Assert.IsTrue(GlrParse<LeftRecursion>(""));
+            Assert.IsTrue(GlrParse<LeftRecursion>("a"));
+            Assert.IsTrue(GlrParse<LeftRecursion>("aaaaaaa"));
+        }
+
+        [Language(RuntimeOptions.ForceGeneric)]
+        [ParserGraph("LeftRecursion0.gv")]
+        [DescribeParserStateMachine("LeftRecursion0.info")]
+        public interface LeftRecursion
+        {
+            [Produce]
+            void All(A s);
+
+            [Produce]
+            A S();
+
+            [Produce(null, "a")]
+            A S(A before);
+        }
+
+        [Test]
+        public void SupportsRightRecursion()
+        {
+            Assert.IsTrue(GlrParse<RightRecursion>(""));
+            Assert.IsTrue(GlrParse<RightRecursion>("a"));
+            Assert.IsTrue(GlrParse<RightRecursion>("aaaaaaa"));
+        }
+
+        [Language(RuntimeOptions.ForceGeneric)]
+        [ParserGraph("RightRecursion0.gv")]
+        [DescribeParserStateMachine("RightRecursion0.info")]
+        public interface RightRecursion
+        {
+            [Produce]
+            void All(A s);
+
+            [Produce]
+            A S();
+
+            [Produce("a", null)]
+            A S(A after);
         }
 
         private bool GlrParse<T>(string input)
