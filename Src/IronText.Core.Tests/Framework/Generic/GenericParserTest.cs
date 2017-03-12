@@ -78,7 +78,10 @@ namespace IronText.Tests.Framework
         [Test]
         public void SupportsSimpleAmbiguousGrammar()
         {
+            Assert.IsTrue(GlrParse<SimpleAmbiguousGrammar>("aaa"));
             Assert.IsTrue(GlrParse<SimpleAmbiguousGrammar>("aaaaa"));
+
+            Assert.IsFalse(GlrParse<SimpleAmbiguousGrammar>("aa"));
         }
 
         /// <summary>
@@ -201,62 +204,37 @@ namespace IronText.Tests.Framework
             B B();
         }
 
-        private bool GlrParse<T>(string input)
-            where T : class
-        {
-            var mock = new Mock<T>();
-            return GlrParse(mock.Object, input);
-        }
-
-        private bool GlrParse<T>(T context, string input)
-            where T : class
-        {
-            var lang = Language.Get(typeof(T));
-            Assert.AreEqual(
-                ParserRuntime.Generic,
-                lang.TargetParserRuntime);
-
-            using (var interpreter = new Interpreter<T>(context) { LoggingKind = LoggingKind.Collect })
-            using (var reader = new StringReader(input))
-            {
-                return interpreter.Parse(reader, Loc.MemoryString);
-            }
-        }
-
-        /*
-
         [Test]
         public void RightNullable0Test()
         {
             Assert.IsTrue(GlrParse<RightNullable0>("aa"));
         }
 
+        /// <summary>
+        /// An example with hidden right recursion 
+        /// </summary>
+        [Language(RuntimeOptions.ForceGeneric)]
+        [ParserGraph("RightNullable0.gv")]
+        [DescribeParserStateMachine("RightNullable0.gram")]
+        public interface RightNullable0
+        {
+            [Produce]
+            void All(S s);
+
+            [Produce]
+            S S();
+
+            [Produce("a")]
+            S S(S s, A a);
+
+            [Produce]
+            A A();
+        }
+
         [Test]
         public void SupportsRightNullableRules()
         {
             Assert.IsTrue(GlrParse<RightNullable>("aaab"));
-        }
-
-        [Test]
-        public void SupportsNondeterministicReduces()
-        {
-            Assert.IsTrue(GlrParse<NondeterministicReduce>("b+b+b"));
-        }
-
-        [Test]
-        public void CanProduceMultipleResults()
-        {
-            var context = new NondeterministicCalc();
-            Assert.IsTrue(GlrParse(context, "3^3^3"));
-            Assert.AreEqual(1, context.Results.Count, "Results should be merged");
-        }
-
-        [Test]
-        public void ParserThrowsExceptionOnError()
-        {
-            Assert.IsTrue(GlrParse<SimpleAmbiguousGrammar>("aaa"));
-
-            Assert.IsFalse(GlrParse<SimpleAmbiguousGrammar>("aa"));
         }
 
         [Language(RuntimeOptions.ForceGeneric)]
@@ -282,25 +260,10 @@ namespace IronText.Tests.Framework
             B B();
         }
 
-        /// <summary>
-        /// An example with hidden right recursion 
-        /// </summary>
-        [Language(RuntimeOptions.ForceGeneric)]
-        [ParserGraph("RightNullable0.gv")]
-        [DescribeParserStateMachine("RightNullable0.gram")]
-        public interface RightNullable0
+        [Test]
+        public void SupportsNondeterministicReduces()
         {
-            [Produce]
-            void All(S s);
-
-            [Produce]
-            S S();
-
-            [Produce("a")]
-            S S(S s, A a);
-
-            [Produce]
-            A A();
+            Assert.IsTrue(GlrParse<NondeterministicReduce>("b+b+b"));
         }
 
         [Language(RuntimeOptions.ForceGeneric)]
@@ -314,6 +277,14 @@ namespace IronText.Tests.Framework
 
             [Produce("b")]
             E B();
+        }
+
+        [Test]
+        public void CanProduceMultipleResults()
+        {
+            var context = new NondeterministicCalc();
+            Assert.IsTrue(GlrParse(context, "3^3^3"));
+            Assert.AreEqual(1, context.Results.Count, "Results should be merged");
         }
 
         [Language(RuntimeOptions.ForceGeneric)]
@@ -330,8 +301,39 @@ namespace IronText.Tests.Framework
 
             [Produce("3")]
             public double Number() { return 3; }
+
+            [Merge]
+            public double Merge(double x, double y)
+            {
+                return y;
+            }
         }
-        */
+
+        private bool GlrParse<T>(string input)
+            where T : class
+        {
+            var mock = new Mock<T>();
+            return GlrParse(mock.Object, input);
+        }
+
+        private bool GlrParse<T>(T context, string input)
+            where T : class
+        {
+            var lang = Language.Get(typeof(T));
+            Assert.AreEqual(
+                ParserRuntime.Generic,
+                lang.TargetParserRuntime);
+
+            using (var interpreter = new Interpreter<T>(context) { LoggingKind = LoggingKind.Collect })
+            using (var reader = new StringReader(input))
+            {
+                return interpreter.Parse(reader, Loc.MemoryString);
+            }
+        }
+
+      
+
+
 
         public interface S {}
         public interface D {}

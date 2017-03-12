@@ -50,14 +50,20 @@ namespace IronText.Runtime
 
             var term = producer.CreateLeaf(message, alternateInput);
 
+            bool accepted = false;
             foreach (var process in stack.Current)
             {
                 int start = actionTable(process.State, alternateInput.Token);
 
                 if (ProcessPosition(message, alternateInput, term, process, start))
                 {
-                    return FinalReceiver<Message>.Instance;
+                    accepted = true;
                 }
+            }
+
+            if (accepted)
+            {
+                return FinalReceiver<Message>.Instance;
             }
 
             if (stack.Pending.IsEmpty)
