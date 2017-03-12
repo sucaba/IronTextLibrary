@@ -13,7 +13,7 @@ namespace IronText.Tests.Framework
     public class GenericParserTest
     {
         [Test]
-        public void SupportsTrvialLanguage()
+        public void SupportsTrivialLanguage()
         {
             Assert.IsTrue(GlrParse<Trivial>(""));
             Assert.IsFalse(GlrParse<Trivial>("a"));
@@ -170,6 +170,37 @@ namespace IronText.Tests.Framework
             A S(A after);
         }
 
+        [Test]
+        public void SupportsHiddenRightRecursion()
+        {
+            Assert.IsTrue(GlrParse<HiddenRightRecursion>("b"));
+            Assert.IsTrue(GlrParse<HiddenRightRecursion>("ba"));
+            Assert.IsTrue(GlrParse<HiddenRightRecursion>("baa"));
+
+            Assert.IsFalse(GlrParse<HiddenRightRecursion>("a"));
+            Assert.IsFalse(GlrParse<HiddenRightRecursion>("bab"));
+        }
+
+        /// <summary>
+        /// An example with hidden right recursion
+        /// </summary>
+        [Language(RuntimeOptions.ForceGeneric)]
+        [DescribeParserStateMachine("LangForTomitaAlogirthm2.info")]
+        public interface HiddenRightRecursion
+        {
+            [Produce("b")]
+            void All(A s);
+
+            [Produce]
+            A A();
+
+            [Produce("a")]
+            A A(A a, B b);
+
+            [Produce]
+            B B();
+        }
+
         private bool GlrParse<T>(string input)
             where T : class
         {
@@ -193,11 +224,6 @@ namespace IronText.Tests.Framework
         }
 
         /*
-        [Test]
-        public void SupportsHiddenRightRecursion()
-        {
-            Assert.IsTrue(GlrParse<HiddenRightRecursion>("baa"));
-        }
 
         [Test]
         public void RightNullable0Test()
@@ -231,26 +257,6 @@ namespace IronText.Tests.Framework
             Assert.IsTrue(GlrParse<SimpleAmbiguousGrammar>("aaa"));
 
             Assert.IsFalse(GlrParse<SimpleAmbiguousGrammar>("aa"));
-        }
-
-        /// <summary>
-        /// An example with hidden right recursion
-        /// </summary>
-        [Language(RuntimeOptions.ForceGeneric)]
-        [DescribeParserStateMachine("LangForTomitaAlogirthm2.info")]
-        public interface HiddenRightRecursion
-        {
-            [Produce("b")]
-            void All(A s);
-
-            [Produce]
-            A A();
-
-            [Produce("a")]
-            A A(A a, B b);
-
-            [Produce]
-            B B();
         }
 
         [Language(RuntimeOptions.ForceGeneric)]
