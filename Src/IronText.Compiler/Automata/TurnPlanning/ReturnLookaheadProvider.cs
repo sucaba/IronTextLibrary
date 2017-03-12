@@ -7,7 +7,10 @@ namespace IronText.Automata.TurnPlanning
 {
     class ReturnLookaheadProvider
     {
-        public TokenSetsRelation<TurnDfaState> ReturnLookaheads { get; }
+        public TokenSetsRelation<TurnDfaState>     ReturnLookaheads { get; }
+
+        public ITokenSetsRelation<TurnDfaSubstate> ReturnSubstateLookaheads =>
+            substateLookaheads;
 
         private readonly TokenSetsRelation<TurnDfaSubstate> substateLookaheads;
         private readonly ImplMap<TurnDfaState, TurnDfaStateDetails> details;
@@ -46,7 +49,8 @@ namespace IronText.Automata.TurnPlanning
             var groups = substateLookaheads
                 .Where(s => s.Key.PlanPosition.NextTurn is ReturnTurn)
                 .GroupBy(
-                    s => s.Key.Next().Owner,
+					// Note: Logic is related to token DFA provider
+                    s => s.Key.Owner,
                     pair => pair.Value)
                 .ToArray();
             foreach (var g in groups)
@@ -59,14 +63,18 @@ namespace IronText.Automata.TurnPlanning
             }
         }
 
-        private void FillSubcallLookaheads(SubcallLookaheadsAlgorithm subcallLookaheads, BitSetType tokenSet)
+        private void FillSubcallLookaheads(SubcallLookaheadsAlgorithm algorithm, BitSetType tokenSet)
         {
             var temporaryLookaheads = new TokenSetsRelation<PlanPosition>(tokenSet);
 
             foreach (var state in dfaStates)
             {
-                subcallLookaheads.Fill(details.Of(state).Positions, temporaryLookaheads);
+                foreach (var substate in details.Of(state).Substates)
+                {
+                    temporaryLookaheads.Add(substate.PlanPosition, substateLookaheads.Of(substate));
+                }
 
+                algorithm.Fill(details.Of(state).Positions, temporaryLookaheads);
                 foreach (var substate in details.Of(state).Substates)
                 {
                     substateLookaheads.Add(substate, temporaryLookaheads.Of(substate.PlanPosition));

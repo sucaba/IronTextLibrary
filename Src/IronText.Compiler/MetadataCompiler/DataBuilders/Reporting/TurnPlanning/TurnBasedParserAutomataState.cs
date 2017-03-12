@@ -16,18 +16,25 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
             int                     index,
             ShrodingerTokenDfaState state,
             TurnDfaStateDetails     details,
+            ReturnLookaheadProvider returnLaProvider,
             Func<ShrodingerTokenDfaState,TurnBasedParserAutomataState> toReportState)
         {
             this.Index = index;
 
             DotItems = details
-                .Positions
-                .Select(p => (IParserDotItem)new TurnBasedParserDotItem(nameProvider, p))
+                .Substates
+                .Select(s => (IParserDotItem)new TurnBasedParserDotItem(
+                                                nameProvider,
+                                                s.PlanPosition,
+                                                returnLaProvider
+                                                    .ReturnSubstateLookaheads.Of(s)
+                                                    .Select(nameProvider.NameOfSymbol)))
                 .ToList()
                 .AsReadOnly();
 
             Transitions = state
                 .Transitions
+                .Where(t => grammar.Symbols[t.Key].IsTerminal)
                 .Select(t =>
                     new TurnBasedParserTransition(
                         grammar.Symbols.NameOf(t.Key),

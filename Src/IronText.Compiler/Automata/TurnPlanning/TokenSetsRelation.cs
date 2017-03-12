@@ -6,7 +6,9 @@ using IronText.Common;
 
 namespace IronText.Automata.TurnPlanning
 {
-    class TokenSetsRelation<T> : IEnumerable<KeyValuePair<T,MutableIntSet>>
+    class TokenSetsRelation<T>
+        : IEnumerable<KeyValuePair<T, MutableIntSet>>
+        , ITokenSetsRelation<T>
     {
         private Dictionary<T, MutableIntSet> positionToLA
             = new Dictionary<T, MutableIntSet>();

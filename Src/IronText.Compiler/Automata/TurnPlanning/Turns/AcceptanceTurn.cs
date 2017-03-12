@@ -1,4 +1,5 @@
 ﻿using IronText.Runtime;
+using System.Diagnostics;
 
 namespace IronText.Automata.TurnPlanning
 {
@@ -10,6 +11,7 @@ namespace IronText.Automata.TurnPlanning
             other is AcceptanceTurn;
 
         public override int GetHashCode() => PredefinedTokens.Eoi;
-    }
 
+        public override string ToString() => "accept";
+    }
 }

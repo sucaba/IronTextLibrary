@@ -1,4 +1,6 @@
-﻿namespace IronText.Automata.TurnPlanning
+﻿using System.Diagnostics;
+
+namespace IronText.Automata.TurnPlanning
 {
     class ReturnTurn : Turn
     {
@@ -17,5 +19,7 @@
         }
 
         public override int GetHashCode() => ProducedToken;
+
+        public override string ToString() => $"return-{ProducedToken}";
     }
 }

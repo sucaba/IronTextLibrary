@@ -42,7 +42,7 @@ namespace IronText.Automata.TurnPlanning
                                 ++modified;
                             }
                         }
-                        else
+                        else 
                         {
                             modified += Firsts.Add(state, Firsts.Of(next));
                         }

@@ -1,4 +1,6 @@
-﻿namespace IronText.Automata.TurnPlanning
+﻿using System.Diagnostics;
+
+namespace IronText.Automata.TurnPlanning
 {
     class InputConsumptionTurn : Turn
     {
@@ -19,5 +21,7 @@
         }
 
         public override int GetHashCode() => Token;
+
+        public override string ToString() => $"consume-{Token}";
     }
 }

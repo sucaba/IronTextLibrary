@@ -38,5 +38,8 @@ namespace IronText.Automata.TurnPlanning
         public IEnumerable<TurnDfaSubstate> Substates =>
             Positions
             .Select(p => new TurnDfaSubstate(State, p));
+
+        public override string ToString() =>
+            $"{State}: {string.Join(Environment.NewLine + " | ", Substates)}";
     }
 }

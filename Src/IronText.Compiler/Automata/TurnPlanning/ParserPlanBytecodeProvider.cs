@@ -109,7 +109,11 @@ namespace IronText.Automata.TurnPlanning
 
         private void CompileTurn(ShrodingerTokenDfaState fromState, EnterTurn turn, int nextState)
         {
-            var returnState = fromState.GetNext(turn.ProducedToken);
+            int nonTerm = turn.ProducedToken;
+
+            var returnState = fromState.GetDecision(nonTerm)
+                .Resolve(d => d.Turn.Consumes(nonTerm))
+                .NextState;
 
             instructions.Add(ParserInstruction.PushGoto(indexer.Get(returnState), nextState));
         }

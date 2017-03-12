@@ -1,4 +1,6 @@
-﻿namespace IronText.Automata.TurnPlanning
+﻿using System.Diagnostics;
+
+namespace IronText.Automata.TurnPlanning
 {
     class ReductionTurn : Turn
     {
@@ -17,5 +19,7 @@
         }
 
         public override int GetHashCode() => ProductionId << 16;
+
+        public override string ToString() => $"reduce-{ProductionId}";
     }
 }

@@ -18,5 +18,7 @@ namespace IronText.Automata.TurnPlanning
         {
             Transitions.Add(turn, next);
         }
+
+        public override string ToString() => GetHashCode().ToString();
     }
 }

@@ -8,7 +8,10 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
 {
     class TurnBasedParserDotItem : IParserDotItem
     {
-        public TurnBasedParserDotItem(TurnBasedNameProvider nameProvider, PlanPosition planPosition)
+        public TurnBasedParserDotItem(
+            TurnBasedNameProvider nameProvider,
+            PlanPosition planPosition,
+            IEnumerable<string> lookaheads)
         {
             Input = planPosition
                 .Plan
@@ -21,6 +24,8 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
             Outcome     = nameProvider.NameOfSymbol(planPosition.Plan.Outcome);
 
             Position    = planPosition.Position;
+
+            LA          = lookaheads.ToArray();
         }
 
         public string[] Input       { get; }
@@ -33,6 +38,6 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
 
         public int      ProductionIndex => 0;
 
-        public IEnumerable<string> LA => Enumerable.Empty<string>();
+        public IEnumerable<string> LA { get; }
     }
 }

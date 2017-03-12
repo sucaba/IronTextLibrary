@@ -29,6 +29,9 @@ namespace IronText.Automata.TurnPlanning
                     var tokenTurns = turnState
                         .Transitions
                         .Where(t => t.Key.Consumes(token)
+                                 // Special handling for ReturnTurn because t.Value state 
+                                 // is single per DFA and has no FIRSTS information.
+                                 || (t.Key is ReturnTurn && firsts.Of(turnState).Contains(token))
                                  || (!t.Key.IsConsuming && firsts.Of(t.Value).Contains(token)))
                         .Select(t => t.Key);
 

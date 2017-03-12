@@ -41,7 +41,7 @@ namespace IronText.Automata.TurnPlanning
                     {
                         int added = tables.FillFirsts(
                                         next.TokensToConsume,
-                                        lookaheads.Of(next),
+                                        lookaheads.Of(from),
                                         lookaheads.GetMutable(to));
                         modified += added;
                     }

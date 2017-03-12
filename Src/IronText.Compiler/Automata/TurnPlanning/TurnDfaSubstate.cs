@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace IronText.Automata.TurnPlanning
 {
@@ -13,11 +14,13 @@ namespace IronText.Automata.TurnPlanning
             this.PlanPosition = planPosition;
         }
 
-        public TurnDfaState Owner { get; }
+        public TurnDfaState Owner        { get; }
 
         public PlanPosition PlanPosition { get; }
 
         public TurnDfaSubstate Next() =>
             new TurnDfaSubstate(Owner.GetNext(PlanPosition.NextTurn), PlanPosition.Next());
+
+        public override string ToString() => $"{Owner}: {PlanPosition}";
     }
 }

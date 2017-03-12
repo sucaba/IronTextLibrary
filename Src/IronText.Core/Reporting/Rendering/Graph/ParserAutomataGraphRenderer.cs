@@ -37,7 +37,7 @@ namespace IronText.Reporting.Rendering
                             graph.AddEdge(
                                 state.Index,
                                 alternative.NextState.Index,
-                                transition.Symbol);
+                                $"{transition.Symbol}/{alternative.ActionText}");
                         }
                     }
                 }
@@ -87,8 +87,8 @@ namespace IronText.Reporting.Rendering
                     output.Append("&bull;");
                 }
 
-                output.Append(" , ").Append(string.Join(" ", item.LA.Select(SymbolToHtml)));
-                output.Append("</td> </tr>");
+                output.Append(" , [").Append(string.Join(" ", item.LA.Select(SymbolToHtml)));
+                output.Append("]</td> </tr>");
             }
 
             output.AppendLine("</table>");

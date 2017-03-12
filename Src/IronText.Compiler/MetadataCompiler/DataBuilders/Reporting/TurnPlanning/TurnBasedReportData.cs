@@ -17,6 +17,7 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
             ILanguageSource            source,
             LanguageData               data,
             ShrodingerTokenDfaProvider dfaProvider,
+            ReturnLookaheadProvider    returnLaProvider,
             Indexer<ShrodingerTokenDfaState> stateIndexer,
             TurnBasedNameProvider      turnNameProvider)
         {
@@ -26,6 +27,7 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
             this.dfaStateIndexer = stateIndexer;
             this.ParserAutomata = new TurnBasedParserAutomata(
                                     dfaProvider,
+                                    returnLaProvider,
                                     dfaStateIndexer,
                                     data.Grammar,
                                     turnNameProvider);

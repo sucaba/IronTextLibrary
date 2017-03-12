@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Diagnostics;
+using System.Text;
 
 namespace IronText.Automata.TurnPlanning
 {
@@ -39,5 +41,22 @@ namespace IronText.Automata.TurnPlanning
         public bool IsDone => Plan.Count == _position;
 
         public PlanPosition Next() => new PlanPosition(Plan, _position + 1);
+
+        public override string ToString()
+        {
+            var output = new StringBuilder();
+            int count = Plan.Count;
+            for (int i = 0; i != count; ++i)
+            {
+                if (i == _position)
+                {
+                    output.Append(" \u2022");
+                }
+
+                output.Append(' ').Append(Plan[i]);
+            }
+
+            return output.ToString();
+        }
     }
 }

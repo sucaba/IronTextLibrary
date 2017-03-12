@@ -4,6 +4,8 @@ using IronText.Logging;
 using IronText.Runtime;
 using Moq;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System;
 
 namespace IronText.Tests.Framework
 {
@@ -99,13 +101,50 @@ namespace IronText.Tests.Framework
             B B(D d);
         }
 
-        /*
         [Test]
         public void SupportsHiddenLeftRecursion()
         {
             Assert.IsTrue(GlrParse<HiddenLeftRecursion>("aa"));
         }
 
+        [Language(RuntimeOptions.ForceGeneric)]
+        [ParserGraph("HiddenLeftRecursion0.gv")]
+        [DescribeParserStateMachine("HiddenLeftRecursion0.info")]
+        public interface HiddenLeftRecursion
+        {
+            [Produce]
+            void All(S s);
+
+            [Produce]
+            S S();
+
+            [Produce(null, null, "a")]
+            S S(S s1, S s2);
+        }
+
+        private bool GlrParse<T>(string input)
+            where T : class
+        {
+            var mock = new Mock<T>();
+            return GlrParse(mock.Object, input);
+        }
+
+        private bool GlrParse<T>(T context, string input)
+            where T : class
+        {
+            var lang = Language.Get(typeof(T));
+            Assert.AreEqual(
+                ParserRuntime.Generic,
+                lang.TargetParserRuntime);
+
+            using (var interpreter = new Interpreter<T>(context) { LoggingKind = LoggingKind.Collect })
+            using (var reader = new StringReader(input))
+            {
+                return interpreter.Parse(reader, Loc.MemoryString);
+            }
+        }
+
+        /*
         [Test]
         public void SupportsHiddenRightRecursion()
         {
@@ -144,48 +183,6 @@ namespace IronText.Tests.Framework
             Assert.IsTrue(GlrParse<SimpleAmbiguousGrammar>("aaa"));
 
             Assert.IsFalse(GlrParse<SimpleAmbiguousGrammar>("aa"));
-        }
-        */
-
-        private bool GlrParse<T>(string input)
-            where T : class
-        {
-            var mock = new Mock<T>();
-            return GlrParse(mock.Object, input);
-        }
-
-        private bool GlrParse<T>(T context, string input)
-            where T : class
-        {
-            var lang = Language.Get(typeof(T));
-            Assert.AreEqual(
-                ParserRuntime.Generic,
-                lang.TargetParserRuntime);
-
-            using (var interpreter = new Interpreter<T>(context) { LoggingKind = LoggingKind.Collect })
-            using (var reader = new StringReader(input))
-            {
-                return interpreter.Parse(reader, Loc.MemoryString);
-            }
-        }
-
-        /*
-        /// <summary>
-        /// An example with hidden left recursion
-        /// </summary>
-        [Language(RuntimeOptions.ForceGeneric)]
-        [ParserGraph("HiddenLeftRecursion.gv")]
-        [DescribeParserStateMachine("HiddenLeftRecursion.info")]
-        public interface HiddenLeftRecursion
-        {
-            [Produce]
-            void All(S s);
-
-            [Produce]
-            S S();
-
-            [Produce(null, null, "a")]
-            S S(S s1, S s2);
         }
 
         /// <summary>

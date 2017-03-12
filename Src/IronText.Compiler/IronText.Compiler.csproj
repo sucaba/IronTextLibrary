@@ -66,6 +66,7 @@
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalBranchDecision.cs" />
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalOperator.cs" />
     <Compile Include="Algorithm\Functions.cs" />
+    <Compile Include="Automata\TurnPlanning\ITokenSetsRelation.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\Analysis\ParserConflictInfo.cs" />
     <Compile Include="Automata\IParserBytecodeProvider.cs" />
     <Compile Include="Automata\TurnPlanning\ParserPlanBytecodeProvider.cs" />

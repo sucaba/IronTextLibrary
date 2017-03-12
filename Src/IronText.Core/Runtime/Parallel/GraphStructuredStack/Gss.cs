@@ -21,6 +21,26 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
             return result;
         }
+
+        public static ReductionNode<T> ImmutableAppend<T>(this ReductionNode<T> @this, ReductionNode<T> nodes)
+        {
+            return @this.DeepClone(tail: nodes);
+        }
+
+        public static ReductionNode<T> DeepClone<T>(
+            this ReductionNode<T> @this,
+            ReductionNode<T> tail = null)
+        {
+            if (@this == null)
+            {
+                return tail;
+            }
+
+            return new ReductionNode<T>(
+                @this.Token,
+                @this.Value,
+                @this.Prior.DeepClone(tail));
+        }
     }
 
     class ReductionNode<T> : IStackLookback<T>
@@ -47,29 +67,6 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         }
 
         T IStackLookback<T>.GetNodeAt(int backOffset) => this.GetAtDepth(backOffset - 1).Value;
-
-        public ReductionNode<T> DeepClone(ReductionNode<T> tail = null)
-            => DeepClone(this, tail);
-
-        private static ReductionNode<T> DeepClone(
-            ReductionNode<T> source,
-            ReductionNode<T> tail = null)
-        {
-            if (source == null)
-            {
-                return tail;
-            }
-
-            return new ReductionNode<T>(
-                source.Token,
-                source.Value,
-                DeepClone(source.Prior, tail));
-        }
-
-        public ReductionNode<T> ImmutableAppend(ReductionNode<T> nodes)
-        {
-            return DeepClone(tail: nodes);
-        }
     }
 
     class ProcessBackLink<T> : Ambiguous<ProcessBackLink<T>>

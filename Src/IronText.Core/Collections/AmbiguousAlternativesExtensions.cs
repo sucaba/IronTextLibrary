@@ -14,6 +14,11 @@ namespace IronText.Collections
                 .Select(convert)
                 .AsAmbiguous();
 
+
+        public static T Resolve<T>(this T @this, Func<T, bool> criteria)
+            where T : Ambiguous<T>
+            => @this.AllAlternatives().Single(criteria);
+
         public static T AsAmbiguous<T>(this IEnumerable<T> @this)
             where T : Ambiguous<T> =>
             @this.Aggregate(Ambiguous<T>.NoAlternatives, Alternate);
