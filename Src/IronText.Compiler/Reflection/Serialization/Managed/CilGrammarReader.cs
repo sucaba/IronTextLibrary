@@ -117,9 +117,10 @@ namespace IronText.Reflection.Managed
 
                 // Try to find existing rules with s same signature
                 SemanticRef contextRef = CreateActionContextRef(cilProduction.Context);
-                Production production = new Production(outcome, pattern, contextRef, cilProduction.Flags);
-                if (result.Productions.Find(outcome, pattern) == null)
+                Production production = result.Productions.Find(outcome, pattern);
+                if (production == null)
                 {
+                    production = new Production(outcome, pattern, contextRef, cilProduction.Flags);
                     result.Productions.Add(production);
                 }
                 else
@@ -128,10 +129,9 @@ namespace IronText.Reflection.Managed
                         new LogEntry
                         {
                             Severity = Severity.Warning,
-                            Message = $"Duplicated production definition '${production}'",
+                            Message = $"Duplicated production definition '{production}'",
                             Origin = definition.Source.GrammarOrigin
                         });
-                    continue;
                 }
 
                 production.Joint.Add(cilProduction);
