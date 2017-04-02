@@ -19,6 +19,8 @@ namespace IronText.Reflection.Managed
 
         public CilGrammar(TypedLanguageSource source, ILogging logging)
         {
+            this.Source = source;
+
             Type definitionType = source.DefinitionType;
 
             Globals = new CilSemanticScope(definitionType);
@@ -138,6 +140,8 @@ namespace IronText.Reflection.Managed
         public IEnumerable<CilSymbolFeature<Precedence>> Precedence { get { return precedence; } }
 
         public IEnumerable<CilSymbolFeature<CilSemanticScope>> LocalSemanticScopes { get; private set; }
+
+        public TypedLanguageSource Source { get; }
 
         private static bool IsSpecialSymbol(CilSymbol symbol)
         {

@@ -288,7 +288,8 @@ namespace IronText.Tests.Framework
         }
 
         [Language(RuntimeOptions.ForceGeneric)]
-        [DescribeParserStateMachine("NondeterministicCalc.info")]
+        [ParserGraph("NondeterministicCalc0.gv")]
+        [DescribeParserStateMachine("NondeterministicCalc0.info")]
         public class NondeterministicCalc
         {
             public readonly List<double> Results = new List<double>();
@@ -330,10 +331,6 @@ namespace IronText.Tests.Framework
                 return interpreter.Parse(reader, Loc.MemoryString);
             }
         }
-
-      
-
-
 
         public interface S {}
         public interface D {}

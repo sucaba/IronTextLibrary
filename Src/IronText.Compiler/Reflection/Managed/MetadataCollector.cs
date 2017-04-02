@@ -4,6 +4,7 @@ using IronText.Extensibility;
 using IronText.Logging;
 using IronText.Misc;
 using IronText.Runtime;
+using System;
 
 namespace IronText.Reflection.Managed
 {
@@ -78,9 +79,15 @@ namespace IronText.Reflection.Managed
 
         public void AddProduction(ICilMetadata meta, CilProduction parseRule)
         {
-            if (parseRule.Owner == meta || productions.Any(r => r.Owner == meta && r.Equals(parseRule)))
+            if (parseRule.Owner == meta)
             {
                 return;
+            }
+
+            if (productions.Any(r => r.Owner == meta && r.Equals(parseRule)))
+            {
+                throw new InvalidOperationException(
+                    $"Same production already defined on member {meta.Member}");
             }
 
             parseRule.Owner = meta;

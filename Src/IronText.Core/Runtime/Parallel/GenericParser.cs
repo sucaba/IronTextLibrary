@@ -15,17 +15,19 @@ namespace IronText.Runtime
         private readonly RiGss<T> stack = new RiGss<T>();
         private readonly TransitionDelegate actionTable;
         private readonly RuntimeGrammar grammar;
-        private readonly Dictionary<ReductionNode<T>, int> N = new Dictionary<ReductionNode<T>, int>();
-        private readonly ProcessNodeLookup<T> P = new ProcessNodeLookup<T>();
+        private readonly MergeIndex<T> N = new MergeIndex<T>();
+        private readonly ReductionQueueWithPriority<T> reductionQueue;
         private readonly IProducer<T> producer;
         private readonly ILogging logging;
 
+        private int currentLayer = 0;
         private Loc lastLocation = new Loc(1, 1, 1, 1);
 
         public GenericParser(
             IProducer<T>       producer,
             RuntimeGrammar     grammar,
             TransitionDelegate actionTable,
+            int[]              tokenComplexity,
             ILogging           logging)
         {
             this.grammar     = grammar;
@@ -34,6 +36,8 @@ namespace IronText.Runtime
             this.logging     = logging;
 
             this.stack.Current.Add(new Process<T>(0, null, null));
+
+            this.reductionQueue = new ReductionQueueWithPriority<T>(tokenComplexity);
         }
 
         public IReceiver<Message> Next(Message message)
@@ -44,13 +48,14 @@ namespace IronText.Runtime
                 throw new NotImplementedException();
             }
 
-            P.Clear();
+            reductionQueue.Clear();
 
             MessageData alternateInput = message;
 
             var term = producer.CreateLeaf(message, alternateInput);
 
             bool accepted = false;
+
             foreach (var process in stack.Current)
             {
                 int start = actionTable(process.State, alternateInput.Token);
@@ -60,6 +65,37 @@ namespace IronText.Runtime
                     accepted = true;
                 }
             }
+
+            do
+            {
+                int countBefore = stack.Current.Count();
+
+                Reduction<T> r;
+                if (!reductionQueue.TryDequeue(out r))
+                {
+                    break;
+                }
+
+                ProcessReduction(r);
+
+                if (countBefore == stack.Current.Count)
+                {
+                    break;
+                }
+
+                for (int i = countBefore;  i != stack.Current.Count; ++i)
+                {
+                    Process<T> process = stack.Current[i];
+
+                    int start = actionTable(process.State, alternateInput.Token);
+
+                    if (ProcessPosition(message, alternateInput, term, process, start))
+                    {
+                        accepted = true;
+                    }
+                }
+            }
+            while (true);
 
             if (accepted)
             {
@@ -79,11 +115,14 @@ namespace IronText.Runtime
 
             stack.Next();
 
+            ++currentLayer;
             return this;
         }
 
         bool ProcessPosition(Message message, MessageData alternateInput, T term, Process<T> process, int start)
         {
+            bool result = false;
+
             while (true)
             {
                 ParserInstruction instruction = grammar.Instructions[start];
@@ -91,83 +130,46 @@ namespace IronText.Runtime
                 switch (instruction.Operation)
                 {
                     case ParserOperation.Accept:
-                        return true;
+                        result = true;
+                        break;
                     case ParserOperation.Fail:
-                        return false;
+                        break;
                     case ParserOperation.Shift:
                         stack.Pending.Add(
                             new Process<T>(
                                 instruction.State,
-                                new ReductionNode<T>(alternateInput.Token, term, process.Pending),
+                                new ReductionNode<T>(alternateInput.Token, term, process.Pending, currentLayer + 1),
                                 process.CallStack));
                         break;
                     case ParserOperation.ReduceGoto:
-                        {
-                            var production = grammar.Productions[instruction.Production];
-                            var value = producer.CreateBranch(production, process.Pending);
-                            var bottom = process.Pending.GetAtDepth(production.InputLength);
-                            int nextState = instruction.Argument2;
-                            stack.Current.Add(
-                                new Process<T>(
-                                    nextState,
-                                    new ReductionNode<T>(instruction.Production, value, bottom),
-                                    process.CallStack));
-                        }
+                        QueueReduction(
+                            process,
+                            grammar.Productions[instruction.Production],
+                            instruction.Argument2);
                         break;
                     case ParserOperation.Pop:
+                        foreach (var existing in stack.Current.Pop(process))
                         {
-                            P.RegisterPop(process.CallStack, process.Pending);
-                            stack.Current.AddRange(process.ImmutablePop());
+                            var bottom = existing.Pending.Prior;
+
+                            var merged = producer.Merge(
+                                existing.Pending.Value,
+                                process.Pending.Value,
+                                bottom);
+                            existing.Pending = new ReductionNode<T>(
+                                existing.Pending.Token,
+                                merged,
+                                bottom,
+                                currentLayer);
                         }
                         break;
                     case ParserOperation.PushGoto:
-                        {
-                            int pushState = instruction.PushState;
-                            int nextState = instruction.State;
-
-                            ProcessNode<T> pushNode;
-                            List<ReductionNode<T>> poppedPending;
-
-                            if (P.TryGetPopped(pushState, out pushNode, out poppedPending))
-                            {
-                                ProcessBackLink<T> newBackLink = pushNode.LinkPrior(
-                                                                    process.CallStack,
-                                                                    process.Pending);
-                                if (newBackLink != null)
-                                {
-                                    // Fork re-popped along the new link
-                                    foreach (var pop in poppedPending)
-                                    {
-                                        // Schedule pop again with different top-part of pending
-                                        stack.Current.Add(
-                                            new Process<T>(
-                                                pushNode.State,
-                                                process.Pending.ImmutableAppend(pop),
-                                                newBackLink.Prior));
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                pushNode = new ProcessNode<T>(
-                                            pushState,
-                                            process.CallStack,
-                                            process.Pending);
-
-                                P.RegisterPush(pushNode);
-
-                                stack.Current.Add(
-                                    new Process<T>(
-                                        nextState,
-                                        ReductionNode<T>.Null,
-                                        pushNode));
-                            }
-                        }
+                        stack.Current.PushGoto(process, instruction.PushState, instruction.State);
                         break;
                     case ParserOperation.Fork:
                         if (ProcessPosition(message, alternateInput, term, process, instruction.ForkPosition))
                         {
-                            return true;
+                            result = true;
                         }
                         ++start;
                         continue;
@@ -178,7 +180,29 @@ namespace IronText.Runtime
                 break;
             }
 
-            return false;
+            return result;
+        }
+
+        private void QueueReduction(
+            Process<T>        process,
+            RuntimeProduction production,
+            int               nextState)
+        {
+            int leftmostLayer = process.Pending.GetAtDepth(production.InputLength)?.Layer ?? 0;
+            reductionQueue.Enqueue(new Reduction<T>(process, production, nextState, leftmostLayer));
+        }
+
+        private void ProcessReduction(Reduction<T> reduction)
+        {
+            var value = producer.CreateBranch(reduction.Production, reduction.Process.Pending);
+            var bottom = reduction.Process.Pending.GetAtDepth(reduction.Production.InputLength);
+            var existing = stack.Current.Add(
+                new Process<T>(
+                    reduction.NextState,
+                    new ReductionNode<T>(reduction.Production.Outcome, value, bottom, currentLayer),
+                    reduction.Process.CallStack));
+
+            Debug.Assert(existing == null);
         }
 
         public IPushParser CloneVerifier()

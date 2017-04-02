@@ -39,7 +39,17 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             return new ReductionNode<T>(
                 @this.Token,
                 @this.Value,
-                @this.Prior.DeepClone(tail));
+                @this.Prior.DeepClone(tail),
+                @this.Layer);
+        }
+    }
+
+    class MergeIndex<T>
+    {
+        private readonly Dictionary<long, T> index = new Dictionary<long,T>();
+
+        public MergeIndex()
+        {
         }
     }
 
@@ -47,11 +57,12 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
     {
         public static ReductionNode<T> Null => null;
 
-        public ReductionNode(int token, T value, ReductionNode<T> prior)
+        public ReductionNode(int token, T value, ReductionNode<T> prior, int layer)
         {
             Token = token;
             Value = value;
             Prior = prior;
+            Layer = layer;
         }
 
         // TODO: Why it is needed?
@@ -60,6 +71,8 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         public T                Value    { get; }
 
         public ReductionNode<T> Prior    { get; }
+
+        public int              Layer    { get; }
 
         public int GetState(int backOffset)
         {
@@ -84,56 +97,6 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
     class ProcessNodeLookup<T>
     {
-        private readonly Dictionary<int, Record> items = new Dictionary<int, Record>();
-
-
-        public void Clear()
-        {
-            items.Clear();
-        }
-
-        public void RegisterPop(ProcessNode<T> destinationNode, ReductionNode<T> popPending)
-        {
-            if (items.ContainsKey(destinationNode.State))
-            {
-                items[destinationNode.State].Popped.Add(popPending);
-            }
-        }
-
-        public void RegisterPush(ProcessNode<T> node)
-        {
-            int state = node.State;
-            items.Add(node.State, new Record(node));
-        }
-
-        public bool TryGetPopped(int state, out ProcessNode<T> node, out List<ReductionNode<T>> popped)
-        {
-            Record record;
-
-            if (items.TryGetValue(state, out record))
-            {
-                node      = record.Node;
-                popped = record.Popped;
-                return true;
-            }
-
-            node   = null;
-            popped = null;
-
-            return false;
-        }
-
-        struct Record
-        {
-            public Record(ProcessNode<T> node)
-            {
-                Node   = node;
-                Popped = new List<ReductionNode<T>>();
-            }
-
-            public readonly ProcessNode<T>         Node;
-            public readonly List<ReductionNode<T>> Popped;
-        }
     }
 
     class ProcessNode<T> : IEquatable<ProcessNode<T>>
@@ -184,7 +147,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         }
 
         public int               State     { get; }
-        public ReductionNode<T>  Pending   { get; }
+        public ReductionNode<T>  Pending   { get; set; }
         public ProcessNode<T>    CallStack { get; }
 
         public IEnumerable<Process<T>> ImmutablePop()
@@ -210,9 +173,91 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         public override int GetHashCode() => State ^ CallStack.GetHashCode();
     }
 
+    /// <summary>
+    /// Graph of stacks AKA RCG.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    class ProcessStackGraph<T>
+    {
+        private readonly Dictionary<int, Record> lookupItems = new Dictionary<int, Record>();
+
+        public void Clear()
+        {
+            lookupItems.Clear();
+        }
+
+        public bool TryGetPopped(int state, out ProcessNode<T> node, out List<ReductionNode<T>> popped)
+        {
+            Record record;
+
+            if (lookupItems.TryGetValue(state, out record))
+            {
+                node      = record.Node;
+                popped = record.Popped;
+                return true;
+            }
+
+            node   = null;
+            popped = null;
+
+            return false;
+        }
+
+        public ProcessNode<T> Push(
+            int toState,
+            ProcessNode<T> prior,
+            ReductionNode<T> pending)
+        {
+            ProcessNode<T> result;
+            Record record;
+            if (lookupItems.TryGetValue(toState, out record))
+            {
+                result = record.Node;
+                result.LinkPrior(prior, pending);
+            }
+            else
+            {
+                result = new ProcessNode<T>(toState, prior, pending);
+                lookupItems.Add(result.State, new Record(result));
+            }
+
+            return result;
+        }
+
+        public IEnumerable<Process<T>> Pop(ProcessNode<T> callStack, ReductionNode<T> pending)
+        {
+            if (lookupItems.ContainsKey(callStack.State))
+            {
+                lookupItems[callStack.State].Popped.Add(pending);
+            }
+
+            return callStack.BackLink
+                .AllAlternatives()
+                .Select(backLink =>
+                    new Process<T>(
+                        callStack.State,
+                        pending.ImmutableAppend(backLink.Pending),
+                        backLink.Prior));
+        }
+
+        struct Record
+        {
+            public Record(ProcessNode<T> node)
+            {
+                Node   = node;
+                Popped = new List<ReductionNode<T>>();
+            }
+
+            public readonly ProcessNode<T>         Node;
+            public readonly List<ReductionNode<T>> Popped;
+        }
+    }
+
     class ProcessCollection<T> : IEnumerable<Process<T>>
     {
         private readonly List<Process<T>> items = new List<Process<T>>();
+
+        private readonly ProcessStackGraph<T> stackGraph = new ProcessStackGraph<T>();
 
         public ProcessCollection()
         {
@@ -220,23 +265,89 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
         public bool IsEmpty => items.Count == 0;
 
-        public void Add(Process<T> process)
+        public int Count => items.Count;
+
+        public Process<T> this[int index] => items[index];
+
+        public Process<T> Add(Process<T> process)
         {
-            if (!items.Contains(process))
+            var existing = Find(process);
+            if (existing == null)
             {
                 items.Add(process);
+                return null;
+            }
+
+            return existing;
+        }
+
+        private Process<T> Find(Process<T> process)
+        {
+            return items.Find(p => p.State == process.State && p.CallStack == process.CallStack);
+        }
+
+        private bool Contains(Process<T> process) => Find(process) != null;
+
+        private bool IsNew(Process<T> process) => Find(process) == null;
+
+        public void PushGoto(Process<T> process, int pushState, int nextState)
+        {
+            ProcessNode<T> pushNode;
+            List<ReductionNode<T>> poppedPending;
+
+            if (stackGraph.TryGetPopped(pushState, out pushNode, out poppedPending))
+            {
+                ProcessBackLink<T> newBackLink = pushNode.LinkPrior(
+                                                    process.CallStack,
+                                                    process.Pending);
+                if (newBackLink != null)
+                {
+                    // Fork re-popped along the new link
+                    foreach (var pop in poppedPending)
+                    {
+                        // Schedule pop again with different top-part of pending
+                        Add(new Process<T>(
+                                pushNode.State,
+                                process.Pending.ImmutableAppend(pop),
+                                newBackLink.Prior));
+                    }
+                }
+            }
+            else
+            {
+                pushNode = stackGraph.Push(pushState, process.CallStack, process.Pending);
+
+                Add(new Process<T>(
+                        nextState,
+                        ReductionNode<T>.Null,
+                        pushNode));
             }
         }
 
-        public void AddRange(IEnumerable<Process<T>> processes)
+        /// <summary>
+        /// Add popped-processes to stack for processing.
+        /// </summary>
+        /// <param name="process"></param>
+        /// <returns>popped-to processes which already exists</returns>
+        public IEnumerable<Process<T>> Pop(Process<T> process)
         {
-            foreach (var p in processes)
+            var byExistance = stackGraph
+                .Pop(process.CallStack, process.Pending)
+                .ToLookup(IsNew);
+
+            foreach (var p in byExistance[true])
             {
                 Add(p);
             }
+
+            return byExistance[false];
         }
 
-        public void Clear() { items.Clear(); }
+        public void Clear()
+        {
+            stackGraph.Clear();
+            items.Clear();
+        }
 
         public IEnumerator<Process<T>> GetEnumerator()
         {

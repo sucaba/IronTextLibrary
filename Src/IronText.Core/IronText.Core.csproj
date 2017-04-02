@@ -222,6 +222,8 @@
     <Compile Include="Runtime\Parallel\GenericParser.cs" />
     <Compile Include="Runtime\Parallel\GenericStack.cs" />
     <Compile Include="Runtime\Parallel\ParserThread.cs" />
+    <Compile Include="Runtime\Parallel\Reduction.cs" />
+    <Compile Include="Runtime\Parallel\ReductionQueueWithPriority.cs" />
     <Compile Include="Runtime\ParserRuntime.cs" />
     <Compile Include="Runtime\ParserVM\ParserDecision.cs" />
     <Compile Include="Runtime\Parallel\GraphStructuredStack\Gss.cs" />

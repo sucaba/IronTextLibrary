@@ -120,6 +120,7 @@ namespace IronText.Runtime
                         producer,
                         _runtimeGrammar,
                         getParserAction,
+                        tokenComplexity,
                         logging);
                 default:
                     throw new InvalidOperationException(
