@@ -135,16 +135,8 @@ namespace IronText.Automata.TurnPlanning
 
         private void CompileBranchEnd()
         {
-            switch (instructions.Last().Operation)
-            {
-                case ParserOperation.Shift:
-                    instructions.Add(ParserInstruction.ExitAction);
-                    break;
-                default:
-                    // safety instruction to avoid invalid instruction access
-                    instructions.Add(ParserInstruction.InternalErrorAction);
-                    break;
-            }
+            // safety instruction to avoid invalid instruction access
+            instructions.Add(ParserInstruction.InternalErrorAction);
         }
     }
 }

@@ -27,6 +27,20 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             return @this.DeepClone(tail: nodes);
         }
 
+        private static ReductionNode<T> Tail<T>(this ReductionNode<T> @this)
+        {
+            var result = @this;
+            if (result != null)
+            {
+                while (result.Prior != null)
+                {
+                    result = result.Prior;
+                }
+            }
+
+            return result;
+        }
+
         public static ReductionNode<T> DeepClone<T>(
             this ReductionNode<T> @this,
             ReductionNode<T> tail = null)
@@ -40,7 +54,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
                 @this.Token,
                 @this.Value,
                 @this.Prior.DeepClone(tail),
-                @this.Layer);
+                (tail ?? @this).Tail().LeftmostLayer);
         }
     }
 
@@ -51,18 +65,35 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         public MergeIndex()
         {
         }
+
+        public void Set(int leftmostLayer, int outcome, T value)
+        {
+            index[Key(leftmostLayer, outcome)] = value;
+        }
+
+        public bool TryGet(int leftmostLayer, int token, out T outcome)
+        {
+            return index.TryGetValue(Key(leftmostLayer, token), out outcome);
+        }
+
+        public void Clear()
+        {
+            index.Clear();
+        }
+
+        static long Key(int leftmostLayer, int token) => leftmostLayer << 16 | token;
     }
 
     class ReductionNode<T> : IStackLookback<T>
     {
         public static ReductionNode<T> Null => null;
 
-        public ReductionNode(int token, T value, ReductionNode<T> prior, int layer)
+        public ReductionNode(int token, T value, ReductionNode<T> prior, int leftmostLayer)
         {
             Token = token;
             Value = value;
             Prior = prior;
-            Layer = layer;
+            LeftmostLayer = leftmostLayer;
         }
 
         // TODO: Why it is needed?
@@ -72,7 +103,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
         public ReductionNode<T> Prior    { get; }
 
-        public int              Layer    { get; }
+        public int              LeftmostLayer    { get; }
 
         public int GetState(int backOffset)
         {
@@ -149,17 +180,6 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         public int               State     { get; }
         public ReductionNode<T>  Pending   { get; set; }
         public ProcessNode<T>    CallStack { get; }
-
-        public IEnumerable<Process<T>> ImmutablePop()
-        {
-            return CallStack.BackLink
-                .AllAlternatives()
-                .Select(backLink =>
-                    new Process<T>(
-                        CallStack.State,
-                        Pending.ImmutableAppend(backLink.Pending),
-                        backLink.Prior));
-        }
 
         public bool Equals(Process<T> other)
         {
@@ -283,7 +303,9 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
         private Process<T> Find(Process<T> process)
         {
-            return items.Find(p => p.State == process.State && p.CallStack == process.CallStack);
+            return items.Find(p => p.State == process.State
+                                && p.CallStack == process.CallStack
+                                && p.Pending == process.Pending);
         }
 
         private bool Contains(Process<T> process) => Find(process) != null;
@@ -329,18 +351,12 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         /// </summary>
         /// <param name="process"></param>
         /// <returns>popped-to processes which already exists</returns>
-        public IEnumerable<Process<T>> Pop(Process<T> process)
+        public void Pop(Process<T> process)
         {
-            var byExistance = stackGraph
-                .Pop(process.CallStack, process.Pending)
-                .ToLookup(IsNew);
-
-            foreach (var p in byExistance[true])
+            foreach (var p in stackGraph.Pop(process.CallStack, process.Pending))
             {
                 Add(p);
             }
-
-            return byExistance[false];
         }
 
         public void Clear()

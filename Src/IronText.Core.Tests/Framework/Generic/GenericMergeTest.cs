@@ -28,26 +28,22 @@ namespace IronText.Tests.Framework.Generic
             public List<string> Result { get; } = new List<string>();
 
             [Produce]
-            public void SetResult(string first, string second)
+            public void SetResult(string text)
             {
-                Result.Add(first + "," + second);
+                Result.Add(text);
             }
 
             [Produce]
-            public string X() => "";
-
-            [Produce("a")]
-            public string Xa() => "a";
+            public string Concat(bool first, bool second) => first + "," + second;
 
             [Merge]
-            public string Merge(string x, string y) => x + "|" + y;
-        }
+            public string Merge(string x, string y) => $"{x}|{y}";
 
-        [Test]
-        public void Debug()
-        {
-            var r = Language.Parse(new AmbiguousCalculator(), "2+8/2").Result.Value;
-            Assert.AreEqual(6, r);
+            [Produce]
+            public bool X() => false;
+
+            [Produce("a")]
+            public bool Xa() => true;
         }
 
         [Test]
@@ -71,22 +67,12 @@ namespace IronText.Tests.Framework.Generic
                 // A lot of ambiguities:
                 interp.Parse("1+-+6/3"); 
                 Assert.AreEqual(-1, interp.Context.Result.Value);
-#if false
-                using (var g = new GvGraphView("expr.tmp.gv"))
-                {
-                    interp.BuildTree("1+-+6/3").WriteGraph(g, interp.Grammar, true);
-                }
-#endif
             }
         }
 
         [Language(RuntimeOptions.ForceGeneric)]
         [ParserGraph(nameof(AmbiguousCalculator) + "0.gv")]
         [DescribeParserStateMachine(nameof(AmbiguousCalculator) + "0.info")]
-#if false
-        [ScannerDocument("NondeterministicCalc3.scan")]
-        [ScannerGraph("NondeterministicCalc3_Scanner.gv")]
-#endif
         public class AmbiguousCalculator
         {
             private Expr _result;
@@ -107,7 +93,6 @@ namespace IronText.Tests.Framework.Generic
                 return new Expr(x.Value + y.Value, precedence: 1, assoc: Associativity.Left);
             }
 
-            /*
             [Produce("+", null)]
             public Expr UnaryPlus(Expr x)
             {
@@ -126,7 +111,6 @@ namespace IronText.Tests.Framework.Generic
             {
                 return new Expr(x.Value * y.Value, precedence: 2, assoc: Associativity.Left);
             }
-            */
 
             [Produce(null, "/", null)]
             public Expr Div(Expr x, Expr y)

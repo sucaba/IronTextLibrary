@@ -7,6 +7,7 @@ namespace IronText.Reflection.Managed
     {
         public const string StartTokenName = "void";
         public const string StringTokenName = "$id";
+        public const string BoolTokenType = "bool";
 
         public static string GetTypeName(Type type)
         {
@@ -18,6 +19,11 @@ namespace IronText.Reflection.Managed
             if (typeof(string) == type)
             {
                 return StringTokenName;
+            }
+
+            if (typeof(bool) == type)
+            {
+                return BoolTokenType;
             }
 
             if (type.IsArray)

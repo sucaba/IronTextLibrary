@@ -220,6 +220,7 @@
     <Compile Include="Runtime\IReportDestinationHint.cs" />
     <Compile Include="Runtime\MessageData.cs" />
     <Compile Include="Runtime\Parallel\GenericParser.cs" />
+    <Compile Include="Runtime\Parallel\GenericParserDiagnostics.cs" />
     <Compile Include="Runtime\Parallel\GenericStack.cs" />
     <Compile Include="Runtime\Parallel\ParserThread.cs" />
     <Compile Include="Runtime\Parallel\Reduction.cs" />

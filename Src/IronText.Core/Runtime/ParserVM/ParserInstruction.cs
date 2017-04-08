@@ -88,6 +88,37 @@ namespace IronText.Runtime
         public override int GetHashCode() =>
             unchecked(((int)Operation + Argument));
 
-        public override string ToString() => $"{Operation}-{Argument}";
+        public override string ToString()
+        {
+            switch (Operation)
+            {
+                case ParserOperation.Accept:
+                    return "accept";
+                case ParserOperation.Exit:
+                    return "exit";
+                case ParserOperation.Fail:
+                    return "fail";
+                case ParserOperation.ForceState:
+                    return $"force S{State}";
+                case ParserOperation.Fork:
+                    return $"fork ${ForkPosition}";
+                case ParserOperation.InternalError:
+                    return "inernal-error";
+                case ParserOperation.Pop:
+                    return "pop";
+                case ParserOperation.PushGoto:
+                    return $"push S{PushState} goto S{State}";
+                case ParserOperation.Reduce:
+                    return $"reduce P{Production}";
+                case ParserOperation.ReduceGoto:
+                    return $"reduce P{Production}, goto S{Argument2}";
+                case ParserOperation.Resolve:
+                    return $"resolve T{ResolvedToken}";
+                case ParserOperation.Shift:
+                    return $"shift S{State}";
+                default:
+                    throw new NotSupportedException();
+            }
+        }
     }
 }
