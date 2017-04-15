@@ -131,9 +131,9 @@ namespace IronText.Tests.Framework.Generic
             [Merge]
             public Expr MergeExpr(Expr reduceFirst, Expr shiftFirst)
             {
-                // High precedence rule should be reduced first: left child in tree
-                // and low precedence rule should be reduced last: parent in tree.
-                // Merge method should return tree with a lowest precedence.
+                // Between two choose the one which has lower priority at the root
+                // because it means that higher priorirty was reduced first and is
+                // a child in reduction tree.
                 if (reduceFirst.Precedence < shiftFirst.Precedence)
                 {
                     return reduceFirst;
