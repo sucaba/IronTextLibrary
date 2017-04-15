@@ -81,13 +81,13 @@ namespace IronText.Runtime
             {
                 int countBefore = stack.Current.Count();
 
-                Reduction<T> r;
-                if (!reductionQueue.TryDequeue(out r))
+                var reductionsToMerge = new List<Reduction<T>>();
+                if (0 == reductionQueue.TryDequeue(reductionsToMerge))
                 {
                     break;
                 }
 
-                ProcessReduction(r);
+                ProcessReduction(reductionsToMerge);
 
                 if (countBefore == stack.Current.Count)
                 {
@@ -196,37 +196,48 @@ namespace IronText.Runtime
             reductionQueue.Enqueue(new Reduction<T>(process, production, nextState, leftmostLayer));
         }
 
-        private void ProcessReduction(Reduction<T> reduction)
+        private void ProcessReduction(List<Reduction<T>> reductions)
         {
+            var reduction = reductions.First();
+
+            // Debug.Assert(
+            //     N.Contains(reduction.LeftmostLayer, reduction.Production.Outcome),
+            //     "Assumption fails when same reduction has different calling states");
+
+
             diagnostics.ProcessReduction(reduction);
 
             var bottom = reduction.Process.Pending.GetAtDepth(reduction.Production.InputLength);
             var currentValue = producer.CreateBranch(reduction.Production, reduction.Process.Pending);
 
-            T mergedValue;
-            T existingValue;
-            if (N.TryGet(reduction.LeftmostLayer, reduction.Production.Outcome, out existingValue))
+            T mergedValue = currentValue;
+            foreach (var duplicate in reductions.Skip(1))
             {
-                mergedValue = producer.Merge(existingValue, currentValue, bottom);
-            }
-            else
-            {
-                mergedValue = currentValue;
+                diagnostics.ProcessReduction(duplicate);
+                var duplicateBottom = duplicate.Process.Pending.GetAtDepth(duplicate.Production.InputLength);
+                Debug.Assert(
+                    ReferenceEquals(bottom, duplicateBottom),
+                    "Assumption failed: different reduction alternatives have same bottom");
+                currentValue = producer.CreateBranch(duplicate.Production, duplicate.Process.Pending);
+
+                mergedValue = producer.Merge(mergedValue, currentValue, duplicateBottom);
             }
 
             N.Set(reduction.LeftmostLayer, reduction.Production.Outcome, mergedValue);
 
-            var existing = stack.Current.Add(
-                new Process<T>(
-                    reduction.NextState,
-                    new ReductionNode<T>(
-                        reduction.Production.Outcome,
-                        mergedValue,
-                        bottom,
-                        reduction.LeftmostLayer),
-                    reduction.Process.CallStack));
-
-            Debug.Assert(existing == null);
+            var pending = new ReductionNode<T>(
+                            reduction.Production.Outcome,
+                            mergedValue,
+                            bottom,
+                            reduction.LeftmostLayer);
+            foreach (var r in reductions)
+            {
+                stack.Current.Add(
+                    new Process<T>(
+                        r.NextState,
+                        pending,
+                        r.Process.CallStack));
+            }
         }
 
         public IPushParser CloneVerifier()

@@ -73,17 +73,26 @@ namespace IronText.Runtime
             paths.AddLast(path);
         }
 
-        public bool TryDequeue(out T item)
+        public int TryDequeue(ICollection<T> output)
         {
             if (IsEmpty)
             {
-                item = default(T);
-                return false;
+                return 0;
             }
 
-            item = paths.First.Value;
-            paths.RemoveFirst();
-            return true;
+            T prior;
+
+            int result = 0;
+            do
+            {
+                prior = paths.First.Value;
+                output.Add(prior);
+                ++result;
+                paths.RemoveFirst();
+            }
+            while (paths.Count != 0 && 0 == comparer.Compare(paths.First.Value, prior));
+
+            return result;
         }
 
         private bool GoesBefore(T x, T y)

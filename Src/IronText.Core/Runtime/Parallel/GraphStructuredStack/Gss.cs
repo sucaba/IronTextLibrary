@@ -71,6 +71,11 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             index[Key(leftmostLayer, outcome)] = value;
         }
 
+        public bool Contains(int leftmostLayer, int token)
+        {
+            return index.ContainsKey(Key(leftmostLayer, token));
+        }
+
         public bool TryGet(int leftmostLayer, int token, out T outcome)
         {
             return index.TryGetValue(Key(leftmostLayer, token), out outcome);

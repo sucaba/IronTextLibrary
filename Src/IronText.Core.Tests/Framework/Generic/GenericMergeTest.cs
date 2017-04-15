@@ -37,7 +37,10 @@ namespace IronText.Tests.Framework.Generic
             public string Concat(bool first, bool second) => first + "," + second;
 
             [Merge]
-            public string Merge(string x, string y) => $"{x}|{y}";
+            public string Merge(string x, string y) => x + "|" + y;
+
+            [Merge]
+            public bool Merge(bool x, bool y) => y;
 
             [Produce]
             public bool X() => false;
