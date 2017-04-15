@@ -17,7 +17,7 @@ namespace IronText.Tests.Framework.Generic
         public void TrivialMerge()
         {
             var r = Language.Parse(new TrivialMergeLanguage(), "a").Result;
-            Assert.That(r, Has.Count.EqualTo(2));
+            Assert.That(r, Has.Count.EqualTo(1));
         }
 
         [Language(RuntimeOptions.ForceGeneric)]

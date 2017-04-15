@@ -25,7 +25,7 @@ namespace IronText.Runtime
 
         public int Compare(Reduction<T> x, Reduction<T> y)
         {
-            int xNewerBy = y.LeftmostLayer - x.LeftmostLayer;
+            int xNewerBy = x.LeftmostLayer - y.LeftmostLayer;
             if (xNewerBy != 0)
             {
                 return xNewerBy;

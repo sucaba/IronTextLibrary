@@ -284,7 +284,7 @@ namespace IronText.Tests.Framework
         {
             var context = new NondeterministicCalc();
             Assert.IsTrue(GlrParse(context, "3^3^3"));
-            Assert.AreEqual(2, context.Results.Count, "Results should be merged");
+            Assert.AreEqual(1, context.Results.Count, "Results should be merged");
         }
 
         [Language(RuntimeOptions.ForceGeneric)]
