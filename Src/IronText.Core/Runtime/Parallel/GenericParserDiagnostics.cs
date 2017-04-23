@@ -54,6 +54,7 @@ namespace IronText.Runtime
 
             if (!visited.Contains(state))
             {
+                output.Append(": ");
                 visited.Add(state);
 
                 int count = 0;

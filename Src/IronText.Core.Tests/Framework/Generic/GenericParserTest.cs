@@ -6,6 +6,7 @@ using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System;
+using static IronText.Tests.Framework.Generic.GrammarsUnderTest;
 
 namespace IronText.Tests.Framework
 {
@@ -112,42 +113,12 @@ namespace IronText.Tests.Framework
             Assert.IsTrue(GlrParse<HiddenLeftRecursion>("aaaaaaaa"));
         }
 
-        [Language(RuntimeOptions.ForceGeneric)]
-        [ParserGraph("HiddenLeftRecursion0.gv")]
-        [DescribeParserStateMachine("HiddenLeftRecursion0.info")]
-        public interface HiddenLeftRecursion
-        {
-            [Produce]
-            void All(S s);
-
-            [Produce]
-            S S();
-
-            [Produce(null, null, "a")]
-            S S(S s1, S s2);
-        }
-
         [Test]
         public void SupportsLeftRecursion()
         {
             Assert.IsTrue(GlrParse<LeftRecursion>(""));
             Assert.IsTrue(GlrParse<LeftRecursion>("a"));
             Assert.IsTrue(GlrParse<LeftRecursion>("aaaaaaa"));
-        }
-
-        [Language(RuntimeOptions.ForceGeneric)]
-        [ParserGraph("LeftRecursion0.gv")]
-        [DescribeParserStateMachine("LeftRecursion0.info")]
-        public interface LeftRecursion
-        {
-            [Produce]
-            void All(A s);
-
-            [Produce]
-            A S();
-
-            [Produce(null, "a")]
-            A S(A before);
         }
 
         [Test]
@@ -332,9 +303,7 @@ namespace IronText.Tests.Framework
             }
         }
 
-        public interface S {}
         public interface D {}
-        public interface A {}
         public interface B {}
         public interface E {}
     }

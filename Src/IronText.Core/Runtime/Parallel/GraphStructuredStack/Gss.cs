@@ -6,6 +6,7 @@ using System.Linq;
 using static IronText.Misc.ObjectUtils;
 using System.Collections;
 using IronText.Common;
+using System.Diagnostics;
 
 namespace IronText.Runtime.RIGLR.GraphStructuredStack
 {
@@ -56,6 +57,19 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
                 @this.Prior.DeepClone(tail),
                 (tail ?? @this).Tail().LeftmostLayer);
         }
+
+        public static bool IsEquivalentTo<T>(
+            this ReductionNode<T> @this,
+            ReductionNode<T> other)
+        {
+            return ReferenceEquals(@this, other)
+                || (
+                    @this != null
+                    && other != null
+                    && @this.Token == other.Token
+                    && Equals(@this.Value, other.Value));
+        }
+
     }
 
     class MergeIndex<T>
@@ -135,7 +149,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
     {
     }
 
-    class ProcessNode<T> : IEquatable<ProcessNode<T>>
+    class ProcessNode<T>
     {
         public ProcessNode(int state, ProcessNode<T> prior, ReductionNode<T> pending)
             : this(state, new ProcessBackLink<T>(prior, pending))
@@ -152,17 +166,11 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
         public ProcessBackLink<T> BackLink { get; private set; }
 
-        public bool Equals(ProcessNode<T> other) => other != null && other.State == State;
-
-        public override bool Equals(object obj) => Equals(obj as ProcessNode<T>);
-
-        public override int GetHashCode() => State;
-
         public ProcessBackLink<T> LinkPrior(ProcessNode<T> node, ReductionNode<T> pending)
         {
             int priorState = node.State;
 
-            if (BackLink.AllAlternatives().Any(l => l.Prior.State == priorState))
+            if (BackLink.AllAlternatives().Any(l => l.Prior.State == priorState && l.Pending.IsEquivalentTo(pending)))
             {
                 return null;
             }
@@ -253,6 +261,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         {
             if (lookupItems.ContainsKey(callStack.State))
             {
+                Debug.Assert(!lookupItems[callStack.State].Popped.Contains(pending));
                 lookupItems[callStack.State].Popped.Add(pending);
             }
 
@@ -310,7 +319,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         {
             return items.Find(p => p.State == process.State
                                 && p.CallStack == process.CallStack
-                                && p.Pending == process.Pending);
+                                && p.Pending.IsEquivalentTo(process.Pending));
         }
 
         private bool Contains(Process<T> process) => Find(process) != null;

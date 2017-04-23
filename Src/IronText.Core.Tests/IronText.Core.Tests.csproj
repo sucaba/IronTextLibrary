@@ -99,6 +99,8 @@
     <Compile Include="Collections\IndexedCollectionTest.cs" />
     <Compile Include="Framework\Generic\GenericMergeTest.cs" />
     <Compile Include="Framework\Generic\GenericParserTest.cs" />
+    <Compile Include="Framework\Generic\GrammarsUnderTest.cs" />
+    <Compile Include="Framework\Generic\SppfProducerTest.cs" />
     <Compile Include="Lib\IL\Plugins\DataStorageTest.cs" />
     <Compile Include="Reflection\ResolutionOfProductionDuplicates.feature.cs">
       <AutoGen>True</AutoGen>

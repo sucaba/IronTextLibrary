@@ -3,10 +3,7 @@ using IronText.Reflection;
 using IronText.Runtime;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static IronText.Tests.Framework.Generic.GrammarsUnderTest;
 
 namespace IronText.Tests.Framework.Generic
 {
@@ -18,35 +15,6 @@ namespace IronText.Tests.Framework.Generic
         {
             var r = Language.Parse(new TrivialMergeLanguage(), "a").Result;
             Assert.That(r, Has.Count.EqualTo(1));
-        }
-
-        [Language(RuntimeOptions.ForceGeneric)]
-        [ParserGraph(nameof(TrivialMergeLanguage) + "0.gv")]
-        [DescribeParserStateMachine(nameof(TrivialMergeLanguage) + "0.info")]
-        public class TrivialMergeLanguage
-        {
-            public List<string> Result { get; } = new List<string>();
-
-            [Produce]
-            public void SetResult(string text)
-            {
-                Result.Add(text);
-            }
-
-            [Produce]
-            public string Concat(bool first, bool second) => first + "," + second;
-
-            [Merge]
-            public string Merge(string x, string y) => x + "|" + y;
-
-            [Merge]
-            public bool Merge(bool x, bool y) => y;
-
-            [Produce]
-            public bool X() => false;
-
-            [Produce("a")]
-            public bool Xa() => true;
         }
 
         [Test]
