@@ -287,9 +287,10 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         }
     }
 
-    class ProcessCollection<T> : IEnumerable<Process<T>>
+    class ProcessCollection<T>
     {
         private readonly List<Process<T>> items = new List<Process<T>>();
+        private int consumedCount;
 
         private readonly ProcessStackGraph<T> stackGraph = new ProcessStackGraph<T>();
 
@@ -299,9 +300,19 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
         public bool IsEmpty => items.Count == 0;
 
+        public bool HasItemsToConsume => consumedCount != Count;
+
         public int Count => items.Count;
 
         public Process<T> this[int index] => items[index];
+
+        public IEnumerable<Process<T>> Consume()
+        {
+            while (consumedCount != items.Count)
+            {
+                yield return items[consumedCount++];
+            }
+        }
 
         public Process<T> Add(Process<T> process)
         {
@@ -375,16 +386,10 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
         public void Clear()
         {
+            consumedCount = 0;
             stackGraph.Clear();
             items.Clear();
         }
-
-        public IEnumerator<Process<T>> GetEnumerator()
-        {
-            return items.EnumerateGrowable().GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     class RiGss<T>

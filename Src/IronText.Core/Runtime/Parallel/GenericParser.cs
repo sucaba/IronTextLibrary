@@ -65,21 +65,17 @@ namespace IronText.Runtime
 
             bool accepted = false;
 
-            foreach (var process in stack.Current)
-            {
-                diagnostics.SetCurrentProcess(process);
-
-                int start = GetActionStart(process.State, alternateInput.Token);
-
-                if (ProcessPosition(message, alternateInput, term, process, start))
-                {
-                    accepted = true;
-                }
-            }
-
             do
             {
-                int countBefore = stack.Current.Count();
+                foreach (var process in stack.Current.Consume())
+                {
+                    diagnostics.SetCurrentProcess(process);
+
+                    if (ProcessState(message, alternateInput, term, process))
+                    {
+                        accepted = true;
+                    }
+                }
 
                 var reductionsToMerge = new List<Reduction<T>>();
                 if (0 == reductionQueue.TryDequeue(reductionsToMerge))
@@ -88,27 +84,8 @@ namespace IronText.Runtime
                 }
 
                 ProcessReduction(reductionsToMerge);
-
-                if (countBefore == stack.Current.Count)
-                {
-                    break;
-                }
-
-                for (int i = countBefore;  i != stack.Current.Count; ++i)
-                {
-                    Process<T> process = stack.Current[i];
-
-                    diagnostics.SetCurrentProcess(process);
-
-                    int start = GetActionStart(process.State, alternateInput.Token);
-
-                    if (ProcessPosition(message, alternateInput, term, process, start))
-                    {
-                        accepted = true;
-                    }
-                }
             }
-            while (true);
+            while (stack.Current.HasItemsToConsume || !reductionQueue.IsEmpty);
 
             if (accepted)
             {
@@ -130,6 +107,12 @@ namespace IronText.Runtime
 
             ++currentLayer;
             return this;
+        }
+
+        bool ProcessState(Message message, MessageData alternateInput, T term, Process<T> process)
+        {
+            int start = GetActionStart(process.State, alternateInput.Token);
+            return ProcessPosition(message, alternateInput, term, process, start);
         }
 
         bool ProcessPosition(Message message, MessageData alternateInput, T term, Process<T> process, int start)
@@ -200,11 +183,6 @@ namespace IronText.Runtime
         private void ProcessReduction(List<Reduction<T>> reductions)
         {
             var reduction = reductions.First();
-
-            // Debug.Assert(
-            //     N.Contains(reduction.LeftmostLayer, reduction.Production.Outcome),
-            //     "Assumption fails when same reduction has different calling states");
-
 
             var bottom = reduction.Process.Pending.GetAtDepth(reduction.Production.InputLength);
             var currentValue = producer.CreateBranch(reduction.Production, reduction.Process.Pending);
