@@ -46,7 +46,7 @@ namespace IronText.Runtime
 
         private static void Describe(
             int                         state,
-            IEnumerable<ProcessNode<T>> callStacks,
+            IEnumerable<CallStackNode<T>> callStacks,
             StringBuilder               output,
             List<int>                   visited)
         {

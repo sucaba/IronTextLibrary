@@ -36,7 +36,7 @@ namespace IronText.Runtime
             this.actionTable = actionTable;
             this.logging     = logging;
 
-            this.stack.Current.Add(new Process<T>(0, null, null));
+            this.stack.Current.Add(new Process<T>(0, null));
 
             this.reductionQueue = new ReductionQueueWithPriority<T>(tokenComplexity);
         }
@@ -136,7 +136,9 @@ namespace IronText.Runtime
                         stack.Pending.Add(
                             new Process<T>(
                                 instruction.State,
-                                new ReductionNode<T>(term, process.Pending, currentLayer),
+                                term,
+                                process.Pending,
+                                currentLayer,
                                 process.CallStack));
                         break;
                     case ParserOperation.ReduceGoto:
@@ -216,18 +218,15 @@ namespace IronText.Runtime
 
             N.Set(reduction.LeftmostLayer, reduction.Production.Outcome, mergedValue);
 
-            var pending = new ReductionNode<T>(
-                            mergedValue,
-                            bottom,
-                            reduction.LeftmostLayer);
             foreach (var r in reductions)
             {
-                diagnostics.ProcessReduction(r);
 
                 stack.Current.Add(
                     new Process<T>(
                         r.NextState,
-                        pending,
+                        mergedValue,
+                        bottom,
+                        reduction.LeftmostLayer,
                         r.Process.CallStack));
             }
         }
