@@ -136,7 +136,7 @@ namespace IronText.Runtime
                         stack.Pending.Add(
                             new Process<T>(
                                 instruction.State,
-                                new ReductionNode<T>(alternateInput.Token, term, process.Pending, currentLayer),
+                                new ReductionNode<T>(term, process.Pending, currentLayer),
                                 process.CallStack));
                         break;
                     case ParserOperation.ReduceGoto:
@@ -217,7 +217,6 @@ namespace IronText.Runtime
             N.Set(reduction.LeftmostLayer, reduction.Production.Outcome, mergedValue);
 
             var pending = new ReductionNode<T>(
-                            reduction.Production.Outcome,
                             mergedValue,
                             bottom,
                             reduction.LeftmostLayer);

@@ -10,68 +10,6 @@ using System.Diagnostics;
 
 namespace IronText.Runtime.RIGLR.GraphStructuredStack
 {
-    static class ReductionNodeExtensions
-    {
-        public static ReductionNode<T> GetAtDepth<T>(this ReductionNode<T> @this, int depth)
-        {
-            var result = @this;
-            while (0 != depth--)
-            {
-                result = result.Prior;
-            }
-
-            return result;
-        }
-
-        public static ReductionNode<T> ImmutableAppend<T>(this ReductionNode<T> @this, ReductionNode<T> nodes)
-        {
-            return @this.DeepClone(tail: nodes);
-        }
-
-        private static ReductionNode<T> Tail<T>(this ReductionNode<T> @this)
-        {
-            var result = @this;
-            if (result != null)
-            {
-                while (result.Prior != null)
-                {
-                    result = result.Prior;
-                }
-            }
-
-            return result;
-        }
-
-        public static ReductionNode<T> DeepClone<T>(
-            this ReductionNode<T> @this,
-            ReductionNode<T> tail = null)
-        {
-            if (@this == null)
-            {
-                return tail;
-            }
-
-            return new ReductionNode<T>(
-                @this.Token,
-                @this.Value,
-                @this.Prior.DeepClone(tail),
-                (tail ?? @this).Tail().LeftmostLayer);
-        }
-
-        public static bool IsEquivalentTo<T>(
-            this ReductionNode<T> @this,
-            ReductionNode<T> other)
-        {
-            return ReferenceEquals(@this, other)
-                || (
-                    @this != null
-                    && other != null
-                    && @this.Token == other.Token
-                    && Equals(@this.Value, other.Value));
-        }
-
-    }
-
     class MergeIndex<T>
     {
         private readonly Dictionary<long, T> index = new Dictionary<long,T>();
@@ -101,35 +39,6 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         }
 
         static long Key(int leftmostLayer, int token) => leftmostLayer << 16 | token;
-    }
-
-    class ReductionNode<T> : IStackLookback<T>
-    {
-        public static ReductionNode<T> Null => null;
-
-        public ReductionNode(int token, T value, ReductionNode<T> prior, int leftmostLayer)
-        {
-            Token = token;
-            Value = value;
-            Prior = prior;
-            LeftmostLayer = leftmostLayer;
-        }
-
-        // TODO: Why it is needed?
-        public int              Token    { get; }
-
-        public T                Value    { get; }
-
-        public ReductionNode<T> Prior    { get; }
-
-        public int              LeftmostLayer    { get; }
-
-        public int GetState(int backOffset)
-        {
-            throw new NotImplementedException("TODO: remove");
-        }
-
-        T IStackLookback<T>.GetNodeAt(int backOffset) => this.GetAtDepth(backOffset - 1).Value;
     }
 
     class ProcessBackLink<T> : Ambiguous<ProcessBackLink<T>>
@@ -180,6 +89,92 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             return result;
         }
     }
+
+    static class ReductionNodeExtensions
+    {
+        public static ReductionNode<T> GetAtDepth<T>(this ReductionNode<T> @this, int depth)
+        {
+            var result = @this;
+            while (0 != depth--)
+            {
+                result = result.Prior;
+            }
+
+            return result;
+        }
+
+        public static ReductionNode<T> ImmutableAppend<T>(this ReductionNode<T> @this, ReductionNode<T> nodes)
+        {
+            return @this.DeepClone(tail: nodes);
+        }
+
+        private static ReductionNode<T> Tail<T>(this ReductionNode<T> @this)
+        {
+            var result = @this;
+            if (result != null)
+            {
+                while (result.Prior != null)
+                {
+                    result = result.Prior;
+                }
+            }
+
+            return result;
+        }
+
+        public static ReductionNode<T> DeepClone<T>(
+            this ReductionNode<T> @this,
+            ReductionNode<T> tail = null)
+        {
+            if (@this == null)
+            {
+                return tail;
+            }
+
+            return new ReductionNode<T>(
+                @this.Value,
+                @this.Prior.DeepClone(tail),
+                (tail ?? @this).Tail().LeftmostLayer);
+        }
+
+        public static bool IsEquivalentTo<T>(
+            this ReductionNode<T> @this,
+            ReductionNode<T> other)
+        {
+            return ReferenceEquals(@this, other)
+                || (
+                    @this != null
+                    && other != null
+                    && Equals(@this.Value, other.Value));
+        }
+
+    }
+
+    class ReductionNode<T> : IStackLookback<T>
+    {
+        public static ReductionNode<T> Null => null;
+
+        public ReductionNode(T value, ReductionNode<T> prior, int leftmostLayer)
+        {
+            Value = value;
+            Prior = prior;
+            LeftmostLayer = leftmostLayer;
+        }
+
+        public T                Value    { get; }
+
+        public ReductionNode<T> Prior    { get; }
+
+        public int              LeftmostLayer    { get; }
+
+        public int GetState(int backOffset)
+        {
+            throw new NotImplementedException("TODO: remove");
+        }
+
+        T IStackLookback<T>.GetNodeAt(int backOffset) => this.GetAtDepth(backOffset - 1).Value;
+    }
+
 
     class Process<T> : IEquatable<Process<T>>
     {
