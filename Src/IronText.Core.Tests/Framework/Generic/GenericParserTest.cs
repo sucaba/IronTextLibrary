@@ -258,6 +258,14 @@ namespace IronText.Tests.Framework
             Assert.AreEqual(1, context.Results.Count, "Results should be merged");
         }
 
+
+
+        [Test]
+        public void BottomUpLogic()
+        {
+            Assert.IsTrue(GlrParse<WithBottomUpToken>(""));
+        }
+
         [Language(RuntimeOptions.ForceGeneric)]
         [ParserGraph("NondeterministicCalc0.gv")]
         [DescribeParserStateMachine("NondeterministicCalc0.info")]

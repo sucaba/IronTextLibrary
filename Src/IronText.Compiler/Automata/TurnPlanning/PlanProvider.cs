@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using IronText.Runtime;
 using IronText.Common;
+using System.Diagnostics;
 
 namespace IronText.Automata.TurnPlanning
 {
@@ -16,7 +17,7 @@ namespace IronText.Automata.TurnPlanning
         {
             foreach (var production in grammar.Productions)
             {
-                var plan = Build(production);
+                var plan = CompileProductionTree(production);
 
                 productionPlans
                     .Add(production.Index, plan);
@@ -39,29 +40,27 @@ namespace IronText.Automata.TurnPlanning
                 .SelectMany(token => nonTermPlans[token]);
         }
 
-        private Plan Build(Production root)
+        private Plan CompileProductionTree(Production root)
         {
             var result = new Plan(root.Outcome.Index);
 
-            if (root.Original.OutcomeToken == PredefinedTokens.AugmentedStart)
-            {
-                Compile(root, result);
-            }
-            else
-            {
-                result.Add(Turn.Enter(root.OutcomeToken));
-                Compile(root, result);
-                result.Add(Turn.Return(root.OutcomeToken));
-            }
+            CompileComponent(root, result);
 
             return result;
         }
 
-        private void Compile(Production production, Plan outcome)
+        private void CompileComponent(Production production, Plan outcome)
         {
+            bool hasStackBoundaries =
+                production.Original.OutcomeToken != PredefinedTokens.AugmentedStart
+                && production.IsTopDown;
+
+            if (hasStackBoundaries)
+                outcome.Add(Turn.Enter(production.OutcomeToken));
+
             foreach (var component in production.ChildComponents)
             {
-                Compile((dynamic)component, outcome);
+                CompileComponent((dynamic)component, outcome);
             }
 
             if (production.Original.IsAugmented)
@@ -70,11 +69,17 @@ namespace IronText.Automata.TurnPlanning
             }
             else
             {
-                outcome.Add(Turn.InnerReduction(production.Index));
+                outcome.Add(
+                    hasStackBoundaries
+                    ? Turn.TopDownReduction(production.Index)
+                    : Turn.BottomUpReduction(production.Index));
             }
+
+            if (hasStackBoundaries)
+                outcome.Add(Turn.Return(production.OutcomeToken));
         }
 
-        private void Compile(Symbol symbol, Plan outcome)
+        private void CompileComponent(Symbol symbol, Plan outcome)
         {
             outcome.Add(Turn.InputConsumption(symbol.Index));
         }

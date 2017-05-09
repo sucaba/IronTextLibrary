@@ -64,6 +64,20 @@ namespace IronText.Tests.Framework.Generic
             public bool Xa() => true;
         }
 
+        [Language(RuntimeOptions.ForceGeneric)]
+        [ParserGraph(nameof(WithBottomUpToken) + "0.gv")]
+        [DescribeParserStateMachine(nameof(WithBottomUpToken) + "0.info")]
+        public interface WithBottomUpToken
+        {
+            [Produce]
+            void All(S s);
+
+            [ProduceBottomUp(null, "a")]
+            S Add(S s);
+
+            [ProduceBottomUp]
+            S Create();
+        }
 
         public interface A {}
         public interface S {}

@@ -17,7 +17,23 @@ namespace IronText.Framework
 
         public int Precedence { get; set; }
 
-        public bool HasSideEffect { get; set; }
+        internal protected virtual ProductionFlags Flags { get; set; }
+
+        public bool HasSideEffect
+        {
+            get { return Flags.HasFlag(ProductionFlags.HasSideEffects);  }
+            set
+            {
+                if (value)
+                {
+                    Flags |= ProductionFlags.HasSideEffects;
+                }
+                else
+                {
+                    Flags &= ~ProductionFlags.HasSideEffects;
+                }
+            }
+        }
 
         public Associativity Associativity { get; set; }
 
@@ -141,7 +157,7 @@ namespace IronText.Framework
                 pattern:    pattern,
                 precedence: GetPrecedence(),
                 context:    GetContext(method, thisSymbol != null),
-                flags:      HasSideEffect ? ProductionFlags.HasSideEffects : ProductionFlags.None,
+                flags:      Flags,
                 actionBuilder:
                     code =>
                     {

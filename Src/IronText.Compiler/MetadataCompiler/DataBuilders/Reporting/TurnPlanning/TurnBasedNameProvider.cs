@@ -43,9 +43,14 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
             return $"return-{grammar.Symbols.NameOf(turn.ProducedToken)}";
         }
 
-        private string TurnText(ReductionTurn turn)
+        private string TurnText(TopDownReductionTurn turn)
         {
-            return $"reduce-{turn.ProductionId}";
+            return $"ll-reduce-{turn.ProductionId}";
+        }
+
+        private string TurnText(BottomUpReductionTurn turn)
+        {
+            return $"lr-reduce-{turn.ProductionId}";
         }
 
         private string TurnText(AcceptanceTurn turn)

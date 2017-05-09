@@ -31,7 +31,7 @@ namespace IronText.Reflection.Managed
 
         public Precedence        Precedence    { get; private set; }
 
-        public ProductionFlags   Flags         { get; private set; }
+        internal ProductionFlags Flags         { get; private set; }
 
         internal object          Owner         { get; set; }
 

@@ -128,13 +128,17 @@ namespace IronText.Reflection
 
         public bool               IsExtended     { get { return ChildComponents.Any(c => c is Production); } }
 
+        public bool               IsBottomUp =>  Flags.HasFlag(ProductionFlags.BottomUpBehavior);
+
+        public bool               IsTopDown  => !IsBottomUp;
+
         public Joint              Joint          { get { return _joint; } }
 
         public ProductionSemantics Semantics     { get; private set; }
 
         public SemanticRef        ContextRef     { get; private set; }
 
-        public ProductionFlags    Flags          { get; private set; }
+        internal ProductionFlags  Flags          { get; private set; }
 
         public bool               HasIdentityAction { get; private set; }
 

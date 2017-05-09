@@ -102,9 +102,14 @@ namespace IronText.Automata.TurnPlanning
             CompileBranchEnd();
         }
 
-        private void CompileTurn(ShrodingerTokenDfaState fromState, ReductionTurn turn, int nextState)
+        private void CompileTurn(ShrodingerTokenDfaState fromState, TopDownReductionTurn turn, int nextState)
         {
             instructions.Add(ParserInstruction.ReduceGoto(turn.ProductionId, nextState));
+        }
+
+        private void CompileTurn(ShrodingerTokenDfaState fromState, BottomUpReductionTurn turn, int nextState)
+        {
+            instructions.Add(ParserInstruction.Reduce(turn.ProductionId));
         }
 
         private void CompileTurn(ShrodingerTokenDfaState fromState, EnterTurn turn, int nextState)

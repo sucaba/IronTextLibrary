@@ -21,6 +21,8 @@ namespace IronText.Runtime
             LeftmostLayer = leftmostLayer;
         }
 
+        public bool HasNextState => NextState >= 0;
+
         public Process<T>        Process       { get; }
 
         public RuntimeProduction Production    { get; }

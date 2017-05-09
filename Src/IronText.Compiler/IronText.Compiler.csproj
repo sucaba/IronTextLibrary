@@ -67,6 +67,8 @@
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalOperator.cs" />
     <Compile Include="Algorithm\Functions.cs" />
     <Compile Include="Automata\TurnPlanning\ITokenSetsRelation.cs" />
+    <Compile Include="Automata\TurnPlanning\Turns\ReductionTurnBase.cs" />
+    <Compile Include="Automata\TurnPlanning\Turns\BottomUpReductionTurn.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\Analysis\ParserConflictInfo.cs" />
     <Compile Include="Automata\IParserBytecodeProvider.cs" />
     <Compile Include="Automata\TurnPlanning\ParserPlanBytecodeProvider.cs" />
@@ -93,7 +95,7 @@
     <Compile Include="Common\Indexer.cs" />
     <Compile Include="Automata\TurnPlanning\TurnConflictResolver.cs" />
     <Compile Include="Automata\TurnPlanning\TurnPrecedenceProvider.cs" />
-    <Compile Include="Automata\TurnPlanning\Turns\ReductionTurn.cs" />
+    <Compile Include="Automata\TurnPlanning\Turns\TopDownReductionTurn.cs" />
     <Compile Include="Automata\TurnPlanning\Turns\InputConsumptionTurn.cs" />
     <Compile Include="Automata\TurnPlanning\Turns\ReturnTurn.cs" />
     <Compile Include="Automata\TurnPlanning\TransitionLookaheadProvider.cs" />

@@ -43,6 +43,12 @@ namespace IronText.Tests.Framework
         }
 
         [Test]
+        public void SupportsLeftRecursion()
+        {
+            Assert.IsTrue(GlrParse<LeftRecursion>("aa"));
+        }
+
+        [Test]
         public void SupportsHiddenLeftRecursion()
         {
             Assert.IsTrue(GlrParse<HiddenLeftRecursion>("aa"));
@@ -170,6 +176,21 @@ namespace IronText.Tests.Framework
 
             [Produce(null, null, "a")]
             S S(S s1, S s2);
+        }
+
+        [Language(RuntimeOptions.ForceNonDeterministic)]
+        [ParserGraph(nameof(LeftRecursion) + ".gv")]
+        [DescribeParserStateMachine(nameof(LeftRecursion) + ".info")]
+        public interface LeftRecursion
+        {
+            [Produce]
+            void All(S s);
+
+            [Produce]
+            S S();
+
+            [Produce(null, "a")]
+            S S(S s);
         }
 
         /// <summary>

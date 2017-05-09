@@ -134,6 +134,8 @@
     <Compile Include="DI\IHasSideEffects.cs" />
     <Compile Include="DI\IDependencyResolver.cs" />
     <Compile Include="DI\TrivialInstantiator.cs" />
+    <Compile Include="Framework\Attributes\ProduceAttributeBase.cs" />
+    <Compile Include="Framework\Attributes\ProduceBottomUpAttribute.cs" />
     <Compile Include="Framework\Attributes\ReportAttribute.cs" />
     <Compile Include="Framework\NullParsing.cs" />
     <Compile Include="Lib\IL\Grammar\ICilDocumentInfo.cs" />

@@ -8,8 +8,11 @@ namespace IronText.Automata.TurnPlanning
 
         public bool IsConsuming => TokenToConsume.HasValue;
 
-        public static Turn InnerReduction(int productionId) =>
-            new ReductionTurn(productionId);
+        public static Turn TopDownReduction(int productionId) =>
+            new TopDownReductionTurn(productionId);
+
+        public static Turn BottomUpReduction(int productionId) =>
+            new BottomUpReductionTurn(productionId);
 
         public static Turn Enter(int token) =>
             new EnterTurn(token);

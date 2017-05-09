@@ -145,6 +145,11 @@ namespace IronText.Runtime
                             grammar.Productions[instruction.Production],
                             instruction.Argument2);
                         break;
+                    case ParserOperation.Reduce:
+                        QueueReduction(
+                            process,
+                            grammar.Productions[instruction.Production]);
+                        break;
                     case ParserOperation.Pop:
                         stack.Current.Pop(process);
                         break;
@@ -171,7 +176,7 @@ namespace IronText.Runtime
         private void QueueReduction(
             Process<T>        process,
             RuntimeProduction production,
-            int               nextState)
+            int               nextState = -1)
         {
             int leftmostLayer = 
                 production.InputLength == 0
