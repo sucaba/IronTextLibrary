@@ -43,13 +43,13 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
     class ProcessBackLink<T> : Ambiguous<ProcessBackLink<T>>
     {
-        public ProcessBackLink(CallStackNode<T> prior, ReductionNode<T> pending)
+        public ProcessBackLink(CallStackNode<T> prior, Process<T> pending)
         {
             this.Prior   = prior;
             this.Pending = pending;
         }
 
-        public ReductionNode<T>  Pending { get; }
+        public Process<T>  Pending { get; }
 
         public CallStackNode<T>    Prior   { get; }
     }
@@ -60,7 +60,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
     class CallStackNode<T>
     {
-        public CallStackNode(int state, CallStackNode<T> prior, ReductionNode<T> pending)
+        public CallStackNode(int state, CallStackNode<T> prior, Process<T> pending)
             : this(state, new ProcessBackLink<T>(prior, pending))
         {
         }
@@ -75,7 +75,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
         public ProcessBackLink<T> BackLink { get; private set; }
 
-        public ProcessBackLink<T> LinkPrior(CallStackNode<T> node, ReductionNode<T> pending)
+        public ProcessBackLink<T> LinkPrior(CallStackNode<T> node, Process<T> pending)
         {
             int priorState = node.State;
 
@@ -88,68 +88,63 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             BackLink = BackLink.Alternate(result);
             return result;
         }
-
-        public Process<T> PopAlong(
-            ProcessBackLink<T> backLink,
-            ReductionNode<T>   pending)
-        {
-            return new Process<T>(
-                State,
-                pending.ImmutableAppend(backLink.Pending),
-                backLink.Prior);
-        }
     }
 
     static class ReductionNodeExtensions
     {
-        public static ReductionNode<T> GetAtDepth<T>(this ReductionNode<T> @this, int depth)
+        public static Process<T> GetAtDepth<T>(this Process<T> @this, int depth)
         {
             var result = @this;
             while (0 != depth--)
             {
-                result = result.Prior;
+                result = result.PriorData;
             }
 
             return result;
         }
 
-        public static ReductionNode<T> ImmutableAppend<T>(this ReductionNode<T> @this, ReductionNode<T> nodes)
+        public static Process<T> ImmutableAppend<T>(this Process<T> @this, Process<T> nodes)
         {
             return @this.DeepClone(tail: nodes);
         }
 
-        private static ReductionNode<T> Tail<T>(this ReductionNode<T> @this)
+        private static Process<T> Tail<T>(this Process<T> @this)
         {
             var result = @this;
             if (result != null)
             {
-                while (result.Prior != null)
+                while (result.PriorData != null)
                 {
-                    result = result.Prior;
+                    result = result.PriorData;
                 }
             }
 
             return result;
         }
 
-        public static ReductionNode<T> DeepClone<T>(
-            this ReductionNode<T> @this,
-            ReductionNode<T> tail = null)
+        public static Process<T> DeepClone<T>(
+            this Process<T> @this,
+            Process<T> tail = null)
         {
-            if (@this == null)
+            if (@this == null
+                // TODO: Following is a hack to avoid initially pushed process to be used 
+                // in concatenation of reduction chaining.
+                || @this.PriorData == null)
             {
                 return tail;
             }
 
-            return new ReductionNode<T>(
+            return new Process<T>(
+                @this.State,
                 @this.Value,
-                @this.Prior.DeepClone(tail),
-                (tail ?? @this).Tail().LeftmostLayer);
+                @this.PriorData.DeepClone(tail),
+                (tail ?? @this).Tail().LeftmostLayer,
+                @this.CallStack);
         }
 
         public static bool IsEquivalentTo<T>(
-            this ReductionNode<T> @this,
-            ReductionNode<T> other)
+            this Process<T> @this,
+            Process<T> other)
         {
             return ReferenceEquals(@this, other)
                 || (
@@ -160,22 +155,52 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
     }
 
-    class ReductionNode<T> : IStackLookback<T>
+    class Process<T> : IEquatable<Process<T>>, IStackLookback<T>
     {
-        public static ReductionNode<T> Null => null;
+        public static Process<T> Null => null;
 
-        public ReductionNode(T value, ReductionNode<T> prior, int leftmostLayer)
+        public Process(
+            int state,
+            T value,
+            Process<T> priorData,
+            int leftmostLayer,
+            CallStackNode<T> callStack)
         {
-            Value = value;
-            Prior = prior;
+            State         = state;
+            Value         = value;
             LeftmostLayer = leftmostLayer;
+            PriorData     = priorData;
+            CallStack     = callStack;
         }
 
-        public T                Value    { get; }
+        public Process<T> PopAlong(
+            int state, // TODO: Remove arg because: state == CallStack.State
+            ProcessBackLink<T> backLink)
+        {
+            var linkData = backLink.Pending;
+            return new Process<T>(
+                state,
+                this.Value,
+                linkData,
+                (linkData ?? this).LeftmostLayer,
+                backLink.Prior);
+        }
 
-        public ReductionNode<T> Prior    { get; }
+        public Process(int state, CallStackNode<T> callStack)
+            : this(
+                  state,
+                  default(T),
+                  null,
+                  0,
+                  callStack)
+        {
+        }
 
-        public int              LeftmostLayer    { get; }
+        public int              State         { get; }
+        public Process<T>       PriorData     { get; }
+        public int              LeftmostLayer { get; }
+        public CallStackNode<T> CallStack     { get; }
+        public T                Value         { get; }
 
         public int GetState(int backOffset)
         {
@@ -183,45 +208,13 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         }
 
         T IStackLookback<T>.GetNodeAt(int backOffset) => this.GetAtDepth(backOffset - 1).Value;
-    }
-
-
-    class Process<T> : IEquatable<Process<T>>
-    {
-        public Process(
-            int state,
-            T value,
-            ReductionNode<T> prior,
-            int leftmostLayer,
-            CallStackNode<T> callStack)
-            : this(state, new ReductionNode<T>(value, prior, leftmostLayer), callStack)
-        {
-        }
-
-        public Process(int state, CallStackNode<T> callStack)
-            : this(
-                  state,
-                  ReductionNode<T>.Null,
-                  callStack)
-        {
-        }
-
-        public Process(int state, ReductionNode<T> pending, CallStackNode<T> callStack)
-        {
-            State     = state;
-            Pending   = pending;
-            CallStack = callStack;
-        }
-
-        public int               State     { get; }
-        public ReductionNode<T>  Pending   { get; set; }
-        public CallStackNode<T>    CallStack { get; }
 
         public bool Equals(Process<T> other)
         {
             return other != null
                 && State == other.State
-                && Pending.IsEquivalentTo(other.Pending)
+                && Equals(Value, other.Value) // TODO: anything else?
+                && Equals(PriorData, other.PriorData)
                 && CallStack == other.CallStack;
         }
 
@@ -243,7 +236,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             lookupItems.Clear();
         }
 
-        public bool TryGetPushed(int state, out CallStackNode<T> node, out List<ReductionNode<T>> popped)
+        public bool TryGetPushed(int state, out CallStackNode<T> node, out List<Process<T>> popped)
         {
             Record record;
 
@@ -263,7 +256,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         public CallStackNode<T> Push(
             int toState,
             CallStackNode<T> prior,
-            ReductionNode<T> pending)
+            Process<T> pending)
         {
             CallStackNode<T> result;
             Record record;
@@ -281,8 +274,9 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             return result;
         }
 
-        public IEnumerable<Process<T>> Pop(CallStackNode<T> callStack, ReductionNode<T> pending)
+        public IEnumerable<Process<T>> Pop(Process<T> pending)
         {
+            CallStackNode<T> callStack = pending.CallStack;
             if (lookupItems.ContainsKey(callStack.State))
             {
                 Debug.Assert(!lookupItems[callStack.State].Popped.Contains(pending));
@@ -291,7 +285,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
             return callStack.BackLink
                 .AllAlternatives()
-                .Select(backLink => callStack.PopAlong(backLink, pending));
+                .Select(backLink => pending.PopAlong(callStack.State, backLink));
         }
 
         struct Record
@@ -299,11 +293,11 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             public Record(CallStackNode<T> node)
             {
                 Node   = node;
-                Popped = new List<ReductionNode<T>>();
+                Popped = new List<Process<T>>();
             }
 
             public readonly CallStackNode<T>         Node;
-            public readonly List<ReductionNode<T>> Popped;
+            public readonly List<Process<T>> Popped;
         }
     }
 
@@ -350,7 +344,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         {
             return items.Find(p => p.State == process.State
                                 && p.CallStack == process.CallStack
-                                && p.Pending.IsEquivalentTo(process.Pending));
+                                && Equals(p.Value, process.Value)); // TODO: verify all Prior values
         }
 
         private bool Contains(Process<T> process) => Find(process) != null;
@@ -360,7 +354,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         public void PushGoto(Process<T> process, int pushState, int nextState)
         {
             CallStackNode<T> pushNode;
-            List<ReductionNode<T>> pendingsPrefixingPushNode;
+            List<Process<T>> pendingsPrefixingPushNode;
 
             if (stackGraph.TryGetPushed(pushState, out pushNode, out pendingsPrefixingPushNode))
             {
@@ -378,23 +372,23 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
                 // subseqent popping along this back link in case when pop already have 
                 // been processed:
 
-                var newBackLink = pushNode.LinkPrior(process.CallStack, process.Pending);
+                var newBackLink = pushNode.LinkPrior(process.CallStack, process);
                 if (newBackLink != null)
                 {
                     // Fork re-popped along the new backlink
                     foreach (var popedPending in pendingsPrefixingPushNode)
                     {
                         // Schedule pop again with different top-part of pending
-                        Add(pushNode.PopAlong(newBackLink, popedPending));
+                        Add(popedPending.PopAlong(pushNode.State, newBackLink));
                     }
                 }
             }
             else
             {
                 // Pushing `pushState` for the first time means that we haven't started to 
-                // parse particular LL non-term before. Doing it now:
+                // parse particular LL non-term before.
 
-                pushNode = stackGraph.Push(pushState, process.CallStack, process.Pending);
+                pushNode = stackGraph.Push(pushState, process.CallStack, process);
 
                 Add(new Process<T>(nextState, pushNode));
             }
@@ -407,7 +401,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         /// <returns>popped-to processes which already exists</returns>
         public void Pop(Process<T> process)
         {
-            foreach (var p in stackGraph.Pop(process.CallStack, process.Pending))
+            foreach (var p in stackGraph.Pop(process))
             {
                 Add(p);
             }

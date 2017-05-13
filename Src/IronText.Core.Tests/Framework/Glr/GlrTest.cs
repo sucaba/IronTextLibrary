@@ -61,9 +61,9 @@ namespace IronText.Tests.Framework
         }
 
         [Test]
-        public void RightNullable0Test()
+        public void RightNullableSimpleTest()
         {
-            Assert.IsTrue(GlrParse<RightNullable0>("aa"));
+            Assert.IsTrue(GlrParse<RightNullableSimple>("aa"));
         }
 
         [Test]
@@ -240,9 +240,9 @@ namespace IronText.Tests.Framework
         /// An example with hidden right recursion 
         /// </summary>
         [Language(RuntimeOptions.ForceNonDeterministic)]
-        [ParserGraph("RightNullable0.gv")]
-        [DescribeParserStateMachine("RightNullable0.gram")]
-        public interface RightNullable0
+        [ParserGraph(nameof(RightNullableSimple) + ".gv")]
+        [DescribeParserStateMachine(nameof(RightNullableSimple) + ".gram")]
+        public interface RightNullableSimple
         {
             [Produce]
             void All(S s);

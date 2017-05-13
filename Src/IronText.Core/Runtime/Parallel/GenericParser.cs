@@ -128,7 +128,7 @@ namespace IronText.Runtime
                 {
                     case ParserOperation.Accept:
                         result = true;
-                        producer.Result = process.Pending.Value;
+                        producer.Result = process.Value;
                         break;
                     case ParserOperation.Fail:
                         break;
@@ -137,7 +137,7 @@ namespace IronText.Runtime
                             new Process<T>(
                                 instruction.State,
                                 term,
-                                process.Pending,
+                                process,
                                 currentLayer,
                                 process.CallStack));
                         break;
@@ -183,7 +183,7 @@ namespace IronText.Runtime
             int leftmostLayer = 
                 production.InputLength == 0
                 ? currentLayer
-                : process.Pending.GetAtDepth(production.InputLength - 1).LeftmostLayer;
+                : process.GetAtDepth(production.InputLength - 1).LeftmostLayer;
             reductionQueue.Enqueue(new Reduction<T>(process, production, nextState, leftmostLayer));
         }
 
@@ -191,8 +191,8 @@ namespace IronText.Runtime
         {
             var reduction = reductions.First();
 
-            var bottom = reduction.Process.Pending.GetAtDepth(reduction.Production.InputLength);
-            var currentValue = producer.CreateBranch(reduction.Production, reduction.Process.Pending);
+            var bottom = reduction.Process.GetAtDepth(reduction.Production.InputLength);
+            var currentValue = producer.CreateBranch(reduction.Production, reduction.Process);
 
             T mergedValue;
             if (N.TryGet(reduction.LeftmostLayer, reduction.Production.Outcome, out mergedValue))
@@ -207,11 +207,12 @@ namespace IronText.Runtime
             foreach (var duplicate in reductions.Skip(1))
             {
                 diagnostics.ProcessReduction(duplicate);
-                var duplicateBottom = duplicate.Process.Pending.GetAtDepth(duplicate.Production.InputLength);
-                Debug.Assert(
-                    ReferenceEquals(bottom, duplicateBottom),
-                    "Assumption failed: different reduction alternatives have same bottom");
-                currentValue = producer.CreateBranch(duplicate.Production, duplicate.Process.Pending);
+                var duplicateBottom = duplicate.Process.GetAtDepth(duplicate.Production.InputLength);
+                // Note: following does not work after joining Process and ReductionNode
+                // Debug.Assert(
+                //     ReferenceEquals(bottom, duplicateBottom),
+                //     "Assumption failed: different reduction alternatives have same bottom");
+                currentValue = producer.CreateBranch(duplicate.Production, duplicate.Process);
 
                 mergedValue = producer.Merge(mergedValue, currentValue, duplicateBottom);
             }
@@ -220,12 +221,13 @@ namespace IronText.Runtime
 
             foreach (var r in reductions)
             {
+                var duplicateBottom = r.Process.GetAtDepth(r.Production.InputLength);
 
                 stack.Current.Add(
                     new Process<T>(
                         r.NextState,
                         mergedValue,
-                        bottom,
+                        duplicateBottom,
                         reduction.LeftmostLayer,
                         r.Process.CallStack));
             }
