@@ -92,7 +92,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
     static class ReductionNodeExtensions
     {
-        public static Process<T> GetAtDepth<T>(this Process<T> @this, int depth)
+        public static ProcessData<T> GetAtDepth<T>(this ProcessData<T> @this, int depth)
         {
             var result = @this;
             while (0 != depth--)
@@ -103,12 +103,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             return result;
         }
 
-        public static Process<T> ImmutableAppend<T>(this Process<T> @this, Process<T> nodes)
-        {
-            return @this.DeepClone(tail: nodes);
-        }
-
-        private static Process<T> Tail<T>(this Process<T> @this)
+        private static ProcessData<T> Tail<T>(this ProcessData<T> @this)
         {
             var result = @this;
             if (result != null)
@@ -120,26 +115,6 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             }
 
             return result;
-        }
-
-        public static Process<T> DeepClone<T>(
-            this Process<T> @this,
-            Process<T> tail = null)
-        {
-            if (@this == null
-                // TODO: Following is a hack to avoid initially pushed process to be used 
-                // in concatenation of reduction chaining.
-                || @this.PriorData == null)
-            {
-                return tail;
-            }
-
-            return new Process<T>(
-                @this.State,
-                @this.Value,
-                @this.PriorData.DeepClone(tail),
-                (tail ?? @this).Tail().LeftmostLayer,
-                @this.CallStack);
         }
 
         public static bool IsEquivalentTo<T>(
@@ -155,21 +130,47 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
     }
 
-    class Process<T> : IEquatable<Process<T>>, IStackLookback<T>
+    class ProcessData<T> : IStackLookback<T>
+    {
+        public ProcessData(
+            int state,
+            T value,
+            ProcessData<T> priorData,
+            int leftmostLayer)
+        {
+            State         = state;
+            Value         = value;
+            LeftmostLayer = leftmostLayer;
+            PriorData     = priorData;
+        }
+
+        public int              State         { get; }
+        public ProcessData<T>   PriorData     { get; }
+        public int              LeftmostLayer { get; }
+        public T                Value         { get; }
+
+        public int GetState(int backOffset)
+        {
+            throw new NotImplementedException("TODO: remove");
+        }
+
+        T IStackLookback<T>.GetNodeAt(int backOffset) => this.GetAtDepth(backOffset - 1).Value;
+    }
+
+    class Process<T>
+        : ProcessData<T>
+        , IEquatable<Process<T>>
     {
         public static Process<T> Null => null;
 
         public Process(
             int state,
             T value,
-            Process<T> priorData,
+            ProcessData<T> priorData,
             int leftmostLayer,
             CallStackNode<T> callStack)
+            : base(state, value, priorData, leftmostLayer)
         {
-            State         = state;
-            Value         = value;
-            LeftmostLayer = leftmostLayer;
-            PriorData     = priorData;
             CallStack     = callStack;
         }
 
@@ -196,18 +197,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         {
         }
 
-        public int              State         { get; }
-        public Process<T>       PriorData     { get; }
-        public int              LeftmostLayer { get; }
         public CallStackNode<T> CallStack     { get; }
-        public T                Value         { get; }
-
-        public int GetState(int backOffset)
-        {
-            throw new NotImplementedException("TODO: remove");
-        }
-
-        T IStackLookback<T>.GetNodeAt(int backOffset) => this.GetAtDepth(backOffset - 1).Value;
 
         public bool Equals(Process<T> other)
         {

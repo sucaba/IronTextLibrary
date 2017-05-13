@@ -28,7 +28,7 @@ namespace IronText.Reflection.Managed
             this.IsValid = true;
 
             var startMeta = MetadataParser.EnumerateAndBind(definitionType);
-            if (startMeta.Count() == 0)
+            if (!startMeta.Any())
             {
                 throw new InvalidOperationException(
                     string.Format(
@@ -167,7 +167,7 @@ namespace IronText.Reflection.Managed
             string                 origin,
             ILogging               logging)
         {
-            if (undefinedTerminals.Count() == 0)
+            if (!undefinedTerminals.Any())
             {
                 return;
             }
