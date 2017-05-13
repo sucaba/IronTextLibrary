@@ -157,6 +157,24 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         }
 
         T IStackLookback<T>.GetNodeAt(int backOffset) => this.GetAtDepth(backOffset - 1).Value;
+
+        public bool Equals(ProcessData<T> other)
+        {
+            return other != null
+                && Equals(Value, other.Value)
+                && Equals(PriorData, other.PriorData);
+        }
+
+        private static bool Equals(ProcessData<T> x, ProcessData<T> y)
+        {
+            return x == null ? y == null : x.Equals(y);
+        }
+
+        public override bool Equals(object obj) =>
+            Equals(obj as ProcessData<T>);
+
+        public override int GetHashCode() =>
+            Value?.GetHashCode() ?? 0;
     }
 
     class Process<T>
@@ -201,8 +219,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         {
             return other != null
                 && State == other.State
-                && Equals(Value, other.Value)
-                && Equals(PriorData, other.PriorData)
+                && base.Equals(other)
                 && CallStack == other.CallStack;
         }
 
