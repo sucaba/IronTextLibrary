@@ -182,7 +182,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
                 state,
                 this.Value,
                 linkData,
-                (linkData ?? this).LeftmostLayer,
+                this.LeftmostLayer,
                 backLink.Prior);
         }
 
