@@ -24,6 +24,7 @@ namespace IronText.Automata.TurnPlanning
 
         public IEnumerable<TurnNfaTransition> Transitions(IEnumerable<PlanPosition> state) =>
             state
+                .Where(s => !s.IsDone)
                 .GroupBy(
                     position => position.NextTurn,
                     (turn, from) =>
@@ -33,7 +34,7 @@ namespace IronText.Automata.TurnPlanning
 
         public IEnumerable<PlanPosition> Subcalls(IEnumerable<PlanPosition> kernel)
         {
-            int[] tokensToConsume = kernel
+            int[] tokensToConsume = PlanPosition.NotDone(kernel)
                 .Select(p => p.NextTurn.TokenToConsume)
                 .NonNull()
                 .Distinct()

@@ -26,6 +26,8 @@ namespace IronText.Automata.TurnPlanning
         public static Turn Acceptance() =>
             new AcceptanceTurn();
 
+        public static Turn Unknown() => UnknownTurn.Instance;
+
         public static bool operator ==(Turn x, Turn y) => x.Equals(y);
         public static bool operator !=(Turn x, Turn y) => !(x == y);
 

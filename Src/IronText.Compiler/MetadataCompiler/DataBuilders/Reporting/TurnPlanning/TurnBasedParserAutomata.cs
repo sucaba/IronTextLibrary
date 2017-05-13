@@ -17,7 +17,7 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
 
         public TurnBasedParserAutomata(
             ShrodingerTokenDfaProvider       dfaProvider,
-            ReturnLookaheadProvider          returnLaProvider,
+            DonePositionLookaheadProvider    donePositionLaProvider,
             Indexer<ShrodingerTokenDfaState> stateIndexer,
             Grammar                          grammar,
             TurnBasedNameProvider            turnNameProvider)
@@ -36,7 +36,7 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
                         stateIndexer[state],
                         state,
                         dfaProvider.Details[state],
-                        returnLaProvider,
+                        donePositionLaProvider,
                         mapping.Of));
 
             mapping.EnsureMapped(dfaProvider.States);

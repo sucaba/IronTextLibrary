@@ -12,11 +12,11 @@ namespace IronText.Automata.TurnPlanning
 
         public TurnDfa1Provider(
             TurnDfa0Provider        dfa0,
-            ReturnLookaheadProvider returnLookaheadProvider)
+            DonePositionLookaheadProvider returnLookaheadProvider)
         {
             this.States           = dfa0.States;
             this.Details          = dfa0.Details;
-            this.ReturnLookaheads = returnLookaheadProvider.ReturnLookaheads;
+            this.ReturnLookaheads = returnLookaheadProvider.StateLookaheads;
         }
     }
 }

@@ -111,7 +111,16 @@ namespace IronText.Runtime
 
         bool ProcessState(Message message, MessageData alternateInput, T term, Process<T> process)
         {
-            int start = GetActionStart(process.State, alternateInput.Token);
+            int start;
+            if (process.State < 0)
+            {
+                start = -process.State;
+            }
+            else
+            {
+                start = GetActionStart(process.State, alternateInput.Token);
+            }
+
             return ProcessPosition(message, alternateInput, term, process, start);
         }
 
@@ -184,7 +193,12 @@ namespace IronText.Runtime
                 production.InputLength == 0
                 ? currentLayer
                 : process.GetAtDepth(production.InputLength - 1).LeftmostLayer;
-            reductionQueue.Enqueue(new Reduction<T>(process, production, nextState, leftmostLayer));
+            reductionQueue.Enqueue(
+                new Reduction<T>(
+                    process,
+                    production,
+                    nextState,
+                    leftmostLayer));
         }
 
         private void ProcessReduction(List<Reduction<T>> reductions)
@@ -223,9 +237,15 @@ namespace IronText.Runtime
             {
                 var duplicateBottom = r.Process.GetAtDepth(r.Production.InputLength);
 
+                var nextState = r.NextState;
+                if (nextState < 0)
+                {
+                    nextState = -actionTable(r.Process.State, r.Production.Outcome);
+                }
+
                 stack.Current.Add(
                     new Process<T>(
-                        r.NextState,
+                        nextState,
                         mergedValue,
                         duplicateBottom,
                         reduction.LeftmostLayer,

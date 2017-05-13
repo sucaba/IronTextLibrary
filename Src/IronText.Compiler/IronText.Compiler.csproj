@@ -67,6 +67,7 @@
     <Compile Include="Algorithm\DecisionTree\Nodes\RelationalOperator.cs" />
     <Compile Include="Algorithm\Functions.cs" />
     <Compile Include="Automata\TurnPlanning\ITokenSetsRelation.cs" />
+    <Compile Include="Automata\TurnPlanning\Turns\FailTurn.cs" />
     <Compile Include="Automata\TurnPlanning\Turns\ReductionTurnBase.cs" />
     <Compile Include="Automata\TurnPlanning\Turns\BottomUpReductionTurn.cs" />
     <Compile Include="MetadataCompiler\DataBuilders\Analysis\ParserConflictInfo.cs" />
@@ -81,7 +82,7 @@
     <Compile Include="Automata\TurnPlanning\TokenDfaState.cs" />
     <Compile Include="Automata\TurnPlanning\TurnDfa0Provider.cs" />
     <Compile Include="Automata\TurnPlanning\TurnDfa1FirstsProvider.cs" />
-    <Compile Include="Automata\TurnPlanning\ReturnLookaheadProvider.cs" />
+    <Compile Include="Automata\TurnPlanning\DonePositionLookaheadProvider.cs" />
     <Compile Include="Automata\TurnPlanning\TurnDfa1Provider.cs" />
     <Compile Include="Automata\TurnPlanning\TurnDfaStateDetails.cs" />
     <Compile Include="Automata\TurnPlanning\TurnDfaState.cs" />

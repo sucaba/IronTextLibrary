@@ -259,9 +259,13 @@ namespace IronText.Tests.Framework
         }
 
         [Test]
-        public void BottomUpLogic()
+        [TestCase("")]
+        [TestCase("a")]
+        [TestCase("aa")]
+        [TestCase("aaaaaaaaaa")]
+        public void BottomUpLogic(string input)
         {
-            Assert.IsTrue(GlrParse<WithBottomUpToken>(""));
+            Assert.IsTrue(GlrParse<WithBottomUpToken>(input));
         }
 
         [Language(RuntimeOptions.ForceGeneric)]

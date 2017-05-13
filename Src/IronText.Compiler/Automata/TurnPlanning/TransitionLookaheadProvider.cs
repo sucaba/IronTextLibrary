@@ -25,6 +25,11 @@ namespace IronText.Automata.TurnPlanning
             foreach (TurnDfaState fromState in dfa.States)
                 foreach (TurnDfaSubstate fromKernel in dfa.Details.Of(fromState).KernelSubstates)
                 {
+                    if (fromKernel.PlanPosition.IsDone)
+                    {
+                        continue;
+                    }
+
                     temporaryLookaheads.Add(fromKernel.PlanPosition, PredefinedTokens.Propagated);
 
                     var fromPositions = nfa.WithSubcalls(fromKernel.PlanPosition);
@@ -34,11 +39,6 @@ namespace IronText.Automata.TurnPlanning
                     {
                         var fromSubstate = new TurnDfaSubstate(fromState, fromPosition);
                         var toSubstate = fromSubstate.Next();
-                        if (toSubstate.PlanPosition.IsDone)
-                        {
-                            continue;
-                        }
-
                         foreach (var lookahead in temporaryLookaheads.Of(fromPosition))
                         {
                             if (lookahead == PredefinedTokens.Propagated)

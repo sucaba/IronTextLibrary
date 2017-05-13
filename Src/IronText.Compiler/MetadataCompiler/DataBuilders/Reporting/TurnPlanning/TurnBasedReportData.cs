@@ -14,23 +14,24 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
         private readonly Indexer<ShrodingerTokenDfaState> dfaStateIndexer;
 
         public TurnBasedReportData(
-            ILanguageSource            source,
-            LanguageData               data,
-            ShrodingerTokenDfaProvider dfaProvider,
-            ReturnLookaheadProvider    returnLaProvider,
+            ILanguageSource                  source,
+            LanguageData                     data,
+            ShrodingerTokenDfaProvider       dfaProvider,
+            DonePositionLookaheadProvider    donePositionLaProvider,
             Indexer<ShrodingerTokenDfaState> stateIndexer,
-            TurnBasedNameProvider      turnNameProvider)
+            TurnBasedNameProvider            turnNameProvider)
         {
             this.Source      = source;
             this.data        = data;
             this.dfaProvider = dfaProvider;
             this.dfaStateIndexer = stateIndexer;
-            this.ParserAutomata = new TurnBasedParserAutomata(
-                                    dfaProvider,
-                                    returnLaProvider,
-                                    dfaStateIndexer,
-                                    data.Grammar,
-                                    turnNameProvider);
+            this.ParserAutomata =
+                new TurnBasedParserAutomata(
+                    dfaProvider,
+                    donePositionLaProvider,
+                    dfaStateIndexer,
+                    data.Grammar,
+                    turnNameProvider);
         }
 
         public string DestinationDirectory =>

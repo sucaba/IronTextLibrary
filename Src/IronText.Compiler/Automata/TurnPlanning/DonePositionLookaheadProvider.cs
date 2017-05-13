@@ -5,18 +5,18 @@ using IronText.Algorithm;
 
 namespace IronText.Automata.TurnPlanning
 {
-    class ReturnLookaheadProvider
+    class DonePositionLookaheadProvider
     {
-        public TokenSetsRelation<TurnDfaState>     ReturnLookaheads { get; }
+        public TokenSetsRelation<TurnDfaState>     StateLookaheads { get; }
 
-        public ITokenSetsRelation<TurnDfaSubstate> ReturnSubstateLookaheads =>
+        public ITokenSetsRelation<TurnDfaSubstate> SubstateLookaheads =>
             substateLookaheads;
 
         private readonly TokenSetsRelation<TurnDfaSubstate> substateLookaheads;
         private readonly ImplMap<TurnDfaState, TurnDfaStateDetails> details;
         private readonly TurnDfaState[] dfaStates;
 
-        public ReturnLookaheadProvider(
+        public DonePositionLookaheadProvider(
             TurnDfa0Provider            dfa0,
             TransitionLookaheadProvider transitionLookaheads,
             SubcallLookaheadsAlgorithm  subcallLookaheads,
@@ -39,7 +39,7 @@ namespace IronText.Automata.TurnPlanning
 
             FillSubcallLookaheads(subcallLookaheads, tokenSet);
 
-            ReturnLookaheads = new TokenSetsRelation<TurnDfaState>(tokenSet);
+            StateLookaheads = new TokenSetsRelation<TurnDfaState>(tokenSet);
 
             FillReturnStatesLookaheads(tokenSetProvider.TokenSet);
         }
@@ -47,7 +47,7 @@ namespace IronText.Automata.TurnPlanning
         private void FillReturnStatesLookaheads(BitSetType tokenSet)
         {
             var groups = substateLookaheads
-                .Where(s => s.Key.PlanPosition.NextTurn is ReturnTurn)
+                .Where(s => s.Key.PlanPosition.IsDone)
                 .GroupBy(
 					// Note: Logic is related to token DFA provider
                     s => s.Key.Owner,
@@ -55,7 +55,7 @@ namespace IronText.Automata.TurnPlanning
                 .ToArray();
             foreach (var g in groups)
             {
-                ReturnLookaheads.Add(
+                StateLookaheads.Add(
                     g.Key,
                     g.Aggregate(
                         tokenSet.Empty,

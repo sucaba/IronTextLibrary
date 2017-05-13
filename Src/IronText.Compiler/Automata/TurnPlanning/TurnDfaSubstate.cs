@@ -18,8 +18,16 @@ namespace IronText.Automata.TurnPlanning
 
         public PlanPosition PlanPosition { get; }
 
-        public TurnDfaSubstate Next() =>
-            new TurnDfaSubstate(Owner.GetNext(PlanPosition.NextTurn), PlanPosition.Next());
+        public TurnDfaSubstate Next()
+        {
+            if (PlanPosition.IsDone)
+            {
+                throw new InvalidOperationException(
+                    "Nothing beyond done position.");
+            }
+
+            return new TurnDfaSubstate(Owner.GetNext(PlanPosition.NextTurn), PlanPosition.Next());
+        }
 
         public override string ToString() => $"{Owner}: {PlanPosition}";
     }

@@ -16,7 +16,7 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
             int                     index,
             ShrodingerTokenDfaState state,
             TurnDfaStateDetails     details,
-            ReturnLookaheadProvider returnLaProvider,
+            DonePositionLookaheadProvider donePositionLaProvider,
             Func<ShrodingerTokenDfaState,TurnBasedParserAutomataState> toReportState)
         {
             this.Index = index;
@@ -26,8 +26,8 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
                 .Select(s => (IParserDotItem)new TurnBasedParserDotItem(
                                                 nameProvider,
                                                 s.PlanPosition,
-                                                returnLaProvider
-                                                    .ReturnSubstateLookaheads.Of(s)
+                                                donePositionLaProvider
+                                                    .SubstateLookaheads.Of(s)
                                                     .Select(nameProvider.NameOfSymbol)))
                 .ToList()
                 .AsReadOnly();
