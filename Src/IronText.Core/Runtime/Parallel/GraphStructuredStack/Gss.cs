@@ -132,6 +132,8 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
     class ProcessData<T> : IStackLookback<T>
     {
+        public static ProcessData<T> Null => null;
+
         public ProcessData(
             int state,
             T value,
@@ -161,8 +163,6 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         : ProcessData<T>
         , IEquatable<Process<T>>
     {
-        public static Process<T> Null => null;
-
         public Process(
             int state,
             T value,
@@ -174,27 +174,25 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             CallStack     = callStack;
         }
 
-        public Process<T> PopAlong(
-            int state, // TODO: Remove arg because: state == CallStack.State
-            ProcessBackLink<T> backLink)
-        {
-            var linkData = backLink.Pending;
-            return new Process<T>(
-                state,
-                this.Value,
-                linkData,
-                this.LeftmostLayer,
-                backLink.Prior);
-        }
-
         public Process(int state, CallStackNode<T> callStack)
             : this(
                   state,
                   default(T),
-                  null,
+                  ProcessData<T>.Null,
                   0,
                   callStack)
         {
+        }
+
+        public Process<T> PopAlong(ProcessBackLink<T> backLink)
+        {
+            var linkData = backLink.Pending;
+            return new Process<T>(
+                CallStack.State,
+                this.Value,
+                linkData,
+                this.LeftmostLayer,
+                backLink.Prior);
         }
 
         public CallStackNode<T> CallStack     { get; }
@@ -275,7 +273,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
             return callStack.BackLink
                 .AllAlternatives()
-                .Select(backLink => pending.PopAlong(callStack.State, backLink));
+                .Select(pending.PopAlong);
         }
 
         struct Record
@@ -369,7 +367,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
                     foreach (var popedPending in pendingsPrefixingPushNode)
                     {
                         // Schedule pop again with different top-part of pending
-                        Add(popedPending.PopAlong(pushNode.State, newBackLink));
+                        Add(popedPending.PopAlong(newBackLink));
                     }
                 }
             }
