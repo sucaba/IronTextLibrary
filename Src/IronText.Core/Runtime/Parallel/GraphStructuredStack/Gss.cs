@@ -201,7 +201,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         {
             return other != null
                 && State == other.State
-                && Equals(Value, other.Value) // TODO: anything else?
+                && Equals(Value, other.Value)
                 && Equals(PriorData, other.PriorData)
                 && CallStack == other.CallStack;
         }
