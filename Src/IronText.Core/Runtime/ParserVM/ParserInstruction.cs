@@ -28,14 +28,14 @@ namespace IronText.Runtime
         public static ParserInstruction Return(int producedToken) =>
             new ParserInstruction(ParserOperation.Pop, producedToken);
 
-        public static ParserInstruction ForceState(int state) =>
-            new ParserInstruction(ParserOperation.ForceState, state);
-
         public static ParserInstruction Resolve(int token) =>
             new ParserInstruction(ParserOperation.Resolve, token);
 
         public static ParserInstruction Fork(int instructionPosition) =>
             new ParserInstruction(ParserOperation.Fork, instructionPosition);
+
+        public static ParserInstruction Dispatch(int state) =>
+            new ParserInstruction(ParserOperation.Dispatch, state);
 
         [FieldOffset(0)]
         public ParserOperation  Operation;
@@ -92,14 +92,14 @@ namespace IronText.Runtime
         {
             switch (Operation)
             {
+                case ParserOperation.Dispatch:
+                    return $"dispatch-{State}";
                 case ParserOperation.Accept:
                     return "accept";
                 case ParserOperation.Exit:
                     return "exit";
                 case ParserOperation.Fail:
                     return "fail";
-                case ParserOperation.ForceState:
-                    return $"force S{State}";
                 case ParserOperation.Fork:
                     return $"fork ${ForkPosition}";
                 case ParserOperation.InternalError:

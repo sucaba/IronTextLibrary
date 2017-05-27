@@ -33,8 +33,10 @@
 
         PushGoto    = 9,        
 
-        // Sets already known current state
-        ForceState  = 11,
+        /// <summary>
+        /// Jump's to position which corresponds to State and current input token
+        /// </summary>
+        Dispatch    = 10,
 
         InternalError = 12 
     }

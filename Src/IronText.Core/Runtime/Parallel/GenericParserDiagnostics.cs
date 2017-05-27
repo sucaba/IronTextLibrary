@@ -29,6 +29,11 @@ namespace IronText.Runtime
             Debug.WriteLine($"  -> {instruction}");
         }
 
+        [Conditional("DIAGNOSTICS")]
+        public void GotoPos(int pos)
+        {
+            Debug.WriteLine($"  ...  -> {pos}");
+        }
 
         [Conditional("DIAGNOSTICS")]
         public void ProcessReduction(Reduction<T> reduction)
@@ -40,7 +45,7 @@ namespace IronText.Runtime
         private static string Describe(Process<T> process)
         {
             var output = new StringBuilder();
-            Describe(process.State, new[] { process.CallStack }, output, new List<int>());
+            Describe(process.InstructionState, new[] { process.CallStack }, output, new List<int>());
             return output.ToString();
         }
 

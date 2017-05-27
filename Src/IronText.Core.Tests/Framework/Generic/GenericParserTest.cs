@@ -262,6 +262,10 @@ namespace IronText.Tests.Framework
         [TestCase("")]
         [TestCase("a")]
         [TestCase("aa")]
+        [TestCase("aaa")]
+        [TestCase("aaaa")]
+        [TestCase("aaaaa")]
+        [TestCase("aaaaaa")]
         [TestCase("aaaaaaaaaa")]
         public void BottomUpLogic(string input)
         {

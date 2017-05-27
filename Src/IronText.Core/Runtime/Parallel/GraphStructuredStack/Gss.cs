@@ -43,13 +43,13 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
     class ProcessBackLink<T> : Ambiguous<ProcessBackLink<T>>
     {
-        public ProcessBackLink(CallStackNode<T> prior, Process<T> pending)
+        public ProcessBackLink(CallStackNode<T> prior, ProcessData<T> pending)
         {
             this.Prior   = prior;
             this.Pending = pending;
         }
 
-        public Process<T>  Pending { get; }
+        public ProcessData<T>  Pending { get; }
 
         public CallStackNode<T>    Prior   { get; }
     }
@@ -61,7 +61,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
     class CallStackNode<T>
     {
         public CallStackNode(int state, CallStackNode<T> prior, Process<T> pending)
-            : this(state, new ProcessBackLink<T>(prior, pending))
+            : this(state, new ProcessBackLink<T>(prior, pending.ReductionData))
         {
         }
 
@@ -75,7 +75,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
         public ProcessBackLink<T> BackLink { get; private set; }
 
-        public ProcessBackLink<T> LinkPrior(CallStackNode<T> node, Process<T> pending)
+        public ProcessBackLink<T> LinkPrior(CallStackNode<T> node, ProcessData<T> pending)
         {
             int priorState = node.State;
 
@@ -118,8 +118,8 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         }
 
         public static bool IsEquivalentTo<T>(
-            this Process<T> @this,
-            Process<T> other)
+            this ProcessData<T> @this,
+            ProcessData<T> other)
         {
             return ReferenceEquals(@this, other)
                 || (
@@ -147,7 +147,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         }
 
         public int              State         { get; }
-        public ProcessData<T>   PriorData     { get; }
+        public ProcessData<T>   PriorData     { get; protected set; }
         public int              LeftmostLayer { get; }
         public T                Value         { get; }
 
@@ -177,18 +177,28 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             Value?.GetHashCode() ?? 0;
     }
 
-    class Process<T>
-        : ProcessData<T>
-        , IEquatable<Process<T>>
+    class Process<T> : IEquatable<Process<T>>
     {
         public Process(
             int state,
             T value,
-            ProcessData<T> priorData,
+            ProcessData<T> priorReductionData,
             int leftmostLayer,
             CallStackNode<T> callStack)
-            : base(state, value, priorData, leftmostLayer)
+            : this(
+                state,
+                new ProcessData<T>(state, value, priorReductionData, leftmostLayer),
+                callStack)
         {
+        }
+
+        public Process(
+            int state,
+            ProcessData<T> reductionData,
+            CallStackNode<T> callStack)
+        {
+            InstructionState = state;
+            ReductionData = reductionData;
             CallStack     = callStack;
         }
 
@@ -202,30 +212,33 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         {
         }
 
+        public int              InstructionState { get; }
+
+        public ProcessData<T>   ReductionData    { get; }
+
+        public CallStackNode<T> CallStack        { get; }
+
         public Process<T> PopAlong(ProcessBackLink<T> backLink)
         {
-            var linkData = backLink.Pending;
             return new Process<T>(
                 CallStack.State,
-                this.Value,
-                linkData,
-                this.LeftmostLayer,
+                ReductionData.Value,
+                backLink.Pending,
+                ReductionData.LeftmostLayer, 
                 backLink.Prior);
         }
-
-        public CallStackNode<T> CallStack     { get; }
 
         public bool Equals(Process<T> other)
         {
             return other != null
-                && State == other.State
+                && InstructionState == other.InstructionState
                 && base.Equals(other)
                 && CallStack == other.CallStack;
         }
 
         public override bool Equals(object obj) => Equals(obj as Process<T>);
 
-        public override int GetHashCode() => State ^ CallStack.GetHashCode();
+        public override int GetHashCode() => InstructionState ^ CallStack.GetHashCode();
     }
 
     /// <summary>
@@ -268,7 +281,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
             if (lookupItems.TryGetValue(toState, out record))
             {
                 result = record.Node;
-                result.LinkPrior(prior, pending);
+                result.LinkPrior(prior, pending.ReductionData);
             }
             else
             {
@@ -347,9 +360,9 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
 
         private Process<T> Find(Process<T> process)
         {
-            return items.Find(p => p.State == process.State
+            return items.Find(p => p.InstructionState == process.InstructionState
                                 && p.CallStack == process.CallStack
-                                && Equals(p.Value, process.Value)); // TODO: verify all Prior values
+                                && Equals(p.ReductionData, process.ReductionData));
         }
 
         private bool Contains(Process<T> process) => Find(process) != null;
@@ -377,7 +390,7 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
                 // subseqent popping along this back link in case when pop already have 
                 // been processed:
 
-                var newBackLink = pushNode.LinkPrior(process.CallStack, process);
+                var newBackLink = pushNode.LinkPrior(process.CallStack, process.ReductionData);
                 if (newBackLink != null)
                 {
                     // Fork re-popped along the new backlink

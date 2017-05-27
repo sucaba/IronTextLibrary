@@ -6,63 +6,83 @@ using IronText.Runtime;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Diagnostics;
 
 namespace IronText.Automata.TurnPlanning
 {
     class ParserPlanBytecodeProvider : IParserBytecodeProvider
     {
+        public const int DispatchOffset = 2;
+
         private const int SharedFailurePos = 0;
+        private static ParserInstruction InstructionStub => ParserInstruction.InternalErrorAction;
+
         private readonly List<ParserInstruction> instructions;
-        private readonly Indexer<ShrodingerTokenDfaState> indexer;
+        private readonly StateToPos stateToPos;
 
-        public ParserInstruction[] Instructions { get; }
+        public ParserInstruction[] Instructions   { get; }
 
-        public ITable<int>         StartTable   { get; }
+        public ITable<int>         StartTable     { get; }
 
 
         public ParserPlanBytecodeProvider(
-            ShrodingerTokenDfaProvider       dfa,
-            Indexer<ShrodingerTokenDfaState> indexer,
-            TokenSetProvider                 tokenSetProvider)
+            ShrodingerTokenDfaProvider  dfa,
+            StateToPos                  stateToPos,
+            TokenSetProvider            tokenSetProvider)
         {
-            this.indexer = indexer;
+            this.stateToPos = stateToPos;
 
             this.instructions = new List<ParserInstruction>();
 
             CompileSharedFailureAction();
 
+            Debug.Assert(DispatchOffset == NextInstructionPos);
+
+            instructions.AddRange(
+                Enumerable
+                .Repeat(InstructionStub, dfa.States.Length));
+            foreach (var state in dfa.States)
+            {
+                int pos = stateToPos.Get(state);
+                instructions[pos] = ParserInstruction.Dispatch(pos);
+            }
+
+            this.StartTable = CompileInputProcessing(dfa, tokenSetProvider);
+
+            this.Instructions = instructions.ToArray();
+            instructions.Clear();
+        }
+
+        private MutableTable<int> CompileInputProcessing(ShrodingerTokenDfaProvider dfa, TokenSetProvider tokenSetProvider)
+        {
             int stateCount = dfa.States.Length;
             int tokenCount = tokenSetProvider.TokenSet.MaxValue + 1;
 
-            var startTable = new MutableTable<int>(stateCount, tokenCount);
+            var startTable = new MutableTable<int>(stateCount + DispatchOffset, tokenCount);
 
             foreach (var fromState in dfa.States)
             {
-                int stateIndex = indexer.Get(fromState);
+                int statePos = stateToPos.Get(fromState);
 
                 for (int token = 0; token != tokenCount; ++token)
                 {
                     var decision = fromState.GetDecision(token);
                     if (decision == ShrodingerTokenDecision.NoAlternatives)
                     {
-                        startTable.Set(stateIndex, token, SharedFailurePos);
+                        startTable.Set(statePos, token, SharedFailurePos);
                     }
                     else
                     {
-                        startTable.Set(stateIndex, token, NextInstructionPos);
+                        startTable.Set(statePos, token, NextInstructionPos);
                         CompileAmbiguousDecision(fromState, decision);
                     }
                 }
             }
 
-            this.Instructions = instructions.ToArray();
-            instructions.Clear();
-            this.StartTable = startTable;
+            return startTable;
         }
 
         private int NextInstructionPos => instructions.Count;
-
-        private static ParserInstruction ForkStub => ParserInstruction.InternalErrorAction;
 
         private void CompileSharedFailureAction()
         {
@@ -78,7 +98,7 @@ namespace IronText.Automata.TurnPlanning
 
             foreach (var other in decision.OtherAlternatives())
             {
-                instructions.Add(ForkStub);
+                instructions.Add(InstructionStub);
             }
 
             CompileDecision(fromState, decision);
@@ -97,22 +117,22 @@ namespace IronText.Automata.TurnPlanning
             CompileTurn(
                 fromState,
                 (dynamic)decision.Turn,
-                indexer.Get(decision.NextState));
+                stateToPos.Get(decision.NextState));
 
             CompileBranchEnd();
         }
 
-        private void CompileTurn(ShrodingerTokenDfaState fromState, TopDownReductionTurn turn, int nextState)
+        private void CompileTurn(ShrodingerTokenDfaState fromState, TopDownReductionTurn turn, int nextPos)
         {
-            instructions.Add(ParserInstruction.ReduceGoto(turn.ProductionId, nextState));
+            instructions.Add(ParserInstruction.ReduceGoto(turn.ProductionId, nextPos));
         }
 
-        private void CompileTurn(ShrodingerTokenDfaState fromState, BottomUpReductionTurn turn, int nextState)
+        private void CompileTurn(ShrodingerTokenDfaState fromState, BottomUpReductionTurn turn, int nextPos)
         {
             instructions.Add(ParserInstruction.Reduce(turn.ProductionId));
         }
 
-        private void CompileTurn(ShrodingerTokenDfaState fromState, EnterTurn turn, int nextState)
+        private void CompileTurn(ShrodingerTokenDfaState fromState, EnterTurn turn, int nextPos)
         {
             int nonTerm = turn.ProducedToken;
 
@@ -120,20 +140,23 @@ namespace IronText.Automata.TurnPlanning
                 .Resolve(d => d.Turn.Consumes(nonTerm))
                 .NextState;
 
-            instructions.Add(ParserInstruction.PushGoto(indexer.Get(returnState), nextState));
+            instructions.Add(
+                ParserInstruction.PushGoto(
+                    stateToPos.Get(returnState),
+                    nextPos));
         }
 
-        private void CompileTurn(ShrodingerTokenDfaState fromState, ReturnTurn turn, int nextState)
+        private void CompileTurn(ShrodingerTokenDfaState fromState, ReturnTurn turn, int nextPos)
         {
             instructions.Add(ParserInstruction.Pop);
         }
 
-        private void CompileTurn(ShrodingerTokenDfaState fromState, InputConsumptionTurn turn, int nextState)
+        private void CompileTurn(ShrodingerTokenDfaState fromState, InputConsumptionTurn turn, int nextPos)
         {
-            instructions.Add(ParserInstruction.Shift(nextState));
+            instructions.Add(ParserInstruction.Shift(nextPos));
         }
 
-        private void CompileTurn(ShrodingerTokenDfaState fromState, AcceptanceTurn turn, int nextState)
+        private void CompileTurn(ShrodingerTokenDfaState fromState, AcceptanceTurn turn, int nextPos)
         {
             instructions.Add(ParserInstruction.AcceptAction);
         }
@@ -142,6 +165,21 @@ namespace IronText.Automata.TurnPlanning
         {
             // safety instruction to avoid invalid instruction access
             instructions.Add(ParserInstruction.InternalErrorAction);
+        }
+
+        internal class StateToPos
+        {
+            private readonly Indexer<ShrodingerTokenDfaState> indexer;
+
+            public StateToPos(Indexer<ShrodingerTokenDfaState> indexer)
+            {
+                this.indexer = indexer;
+            }
+
+            public int Get(ShrodingerTokenDfaState state)
+            {
+                return DispatchOffset + indexer.Get(state);
+            }
         }
     }
 }

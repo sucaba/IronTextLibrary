@@ -31,12 +31,12 @@ namespace IronText.Runtime
             int[]              tokenComplexity,
             ILogging           logging)
         {
-            this.grammar     = grammar;
-            this.producer    = producer;
-            this.actionTable = actionTable;
-            this.logging     = logging;
+            this.grammar        = grammar;
+            this.producer       = producer;
+            this.actionTable    = actionTable;
+            this.logging        = logging;;
 
-            this.stack.Current.Add(new Process<T>(0, null));
+            this.stack.Current.Add(new Process<T>(2, null));
 
             this.reductionQueue = new ReductionQueueWithPriority<T>(tokenComplexity);
         }
@@ -111,17 +111,7 @@ namespace IronText.Runtime
 
         bool ProcessState(Message message, MessageData alternateInput, T term, Process<T> process)
         {
-            int start;
-            if (process.State < 0)
-            {
-                start = -process.State;
-            }
-            else
-            {
-                start = GetActionStart(process.State, alternateInput.Token);
-            }
-
-            return ProcessPosition(message, alternateInput, term, process, start);
+            return ProcessPosition(message, alternateInput, term, process, process.InstructionState);
         }
 
         bool ProcessPosition(Message message, MessageData alternateInput, T term, Process<T> process, int start)
@@ -135,9 +125,14 @@ namespace IronText.Runtime
 
                 switch (instruction.Operation)
                 {
+                    case ParserOperation.Dispatch:
+                        Debug.Assert(start == instruction.State);
+                        start = actionTable(instruction.State, alternateInput.Token);
+                        diagnostics.GotoPos(start);
+                        continue;
                     case ParserOperation.Accept:
                         result = true;
-                        producer.Result = process.Value;
+                        producer.Result = process.ReductionData.Value;
                         break;
                     case ParserOperation.Fail:
                         break;
@@ -146,7 +141,7 @@ namespace IronText.Runtime
                             new Process<T>(
                                 instruction.State,
                                 term,
-                                process,
+                                process.ReductionData,
                                 currentLayer,
                                 process.CallStack));
                         break;
@@ -189,10 +184,10 @@ namespace IronText.Runtime
             RuntimeProduction production,
             int               nextState = -1)
         {
-            int leftmostLayer = 
+            int leftmostLayer =
                 production.InputLength == 0
                 ? currentLayer
-                : process.GetAtDepth(production.InputLength - 1).LeftmostLayer;
+                : process.ReductionData.GetAtDepth(production.InputLength - 1).LeftmostLayer;
             reductionQueue.Enqueue(
                 new Reduction<T>(
                     process,
@@ -205,13 +200,14 @@ namespace IronText.Runtime
         {
             var reduction = reductions.First();
 
-            var bottom = reduction.Process.GetAtDepth(reduction.Production.InputLength);
-            var currentValue = producer.CreateBranch(reduction.Production, reduction.Process);
+            var firstBottom = reduction.Process.ReductionData.GetAtDepth(reduction.Production.InputLength);
+            diagnostics.ProcessReduction(reduction);
+            var currentValue = producer.CreateBranch(reduction.Production, reduction.Process.ReductionData);
 
             T mergedValue;
             if (N.TryGet(reduction.LeftmostLayer, reduction.Production.Outcome, out mergedValue))
             {
-                mergedValue = producer.Merge(mergedValue, currentValue, bottom);
+                mergedValue = producer.Merge(mergedValue, currentValue, firstBottom);
             }
             else
             {
@@ -221,12 +217,12 @@ namespace IronText.Runtime
             foreach (var duplicate in reductions.Skip(1))
             {
                 diagnostics.ProcessReduction(duplicate);
-                var duplicateBottom = duplicate.Process.GetAtDepth(duplicate.Production.InputLength);
+                var duplicateBottom = duplicate.Process.ReductionData.GetAtDepth(duplicate.Production.InputLength);
                 // Note: following does not work after joining Process and ReductionNode
                 // Debug.Assert(
                 //     ReferenceEquals(bottom, duplicateBottom),
                 //     "Assumption failed: different reduction alternatives have same bottom");
-                currentValue = producer.CreateBranch(duplicate.Production, duplicate.Process);
+                currentValue = producer.CreateBranch(duplicate.Production, duplicate.Process.ReductionData);
 
                 mergedValue = producer.Merge(mergedValue, currentValue, duplicateBottom);
             }
@@ -235,21 +231,25 @@ namespace IronText.Runtime
 
             foreach (var r in reductions)
             {
-                var duplicateBottom = r.Process.GetAtDepth(r.Production.InputLength);
+                var bottom = r.Process.ReductionData.GetAtDepth(r.Production.InputLength);
 
                 var nextState = r.NextState;
                 if (nextState < 0)
                 {
-                    nextState = -actionTable(r.Process.State, r.Production.Outcome);
+                    var input = new Message(r.Production.Outcome, null, mergedValue, Loc.Unknown);
+                    var p = new Process<T>(bottom.State, bottom, r.Process.CallStack);
+                    ProcessState(input, input, mergedValue, p);
                 }
-
-                stack.Current.Add(
-                    new Process<T>(
-                        nextState,
-                        mergedValue,
-                        duplicateBottom,
-                        reduction.LeftmostLayer,
-                        r.Process.CallStack));
+                else
+                {
+                    stack.Current.Add(
+                        new Process<T>(
+                            nextState,
+                            mergedValue,
+                            bottom,
+                            reduction.LeftmostLayer,
+                            r.Process.CallStack));
+                }
             }
         }
 
