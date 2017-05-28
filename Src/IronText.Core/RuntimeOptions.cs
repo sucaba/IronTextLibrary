@@ -25,6 +25,8 @@
 
         ForceGeneric          = 0x04,
 
-        ParserAlgorithmMask   = 0x07,
+        ForceGenericLR        = 0x08,
+
+        ParserAlgorithmMask   = 0x0f,
     }
 }

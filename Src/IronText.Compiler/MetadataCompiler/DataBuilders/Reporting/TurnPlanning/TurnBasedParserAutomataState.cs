@@ -34,7 +34,6 @@ namespace IronText.MetadataCompiler.DataBuilders.Reporting.TurnPlanning
 
             Transitions = state
                 .Transitions
-                .Where(t => grammar.Symbols[t.Key].IsTerminal)
                 .Select(t =>
                     new TurnBasedParserTransition(
                         grammar.Symbols.NameOf(t.Key),

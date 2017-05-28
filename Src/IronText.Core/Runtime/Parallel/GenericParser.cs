@@ -109,12 +109,27 @@ namespace IronText.Runtime
             return this;
         }
 
-        bool ProcessState(Message message, MessageData alternateInput, T term, Process<T> process)
+        bool ProcessState(
+            Message message,
+            MessageData alternateInput,
+            T term,
+            Process<T> process)
         {
-            return ProcessPosition(message, alternateInput, term, process, process.InstructionState);
+            return ProcessPosition(
+                message,
+                alternateInput,
+                term,
+                process,
+                process.InstructionState);
         }
 
-        bool ProcessPosition(Message message, MessageData alternateInput, T term, Process<T> process, int start)
+        bool ProcessPosition(
+            Message message,
+            MessageData alternateInput,
+            T term,
+            Process<T> process,
+            int start,
+            bool isShift = true)
         {
             bool result = false;
 
@@ -137,7 +152,8 @@ namespace IronText.Runtime
                     case ParserOperation.Fail:
                         break;
                     case ParserOperation.Shift:
-                        stack.Pending.Add(
+                        var stage = isShift ? stack.Pending : stack.Current;
+                        stage.Add(
                             new Process<T>(
                                 instruction.State,
                                 term,
@@ -238,7 +254,7 @@ namespace IronText.Runtime
                 {
                     var input = new Message(r.Production.Outcome, null, mergedValue, Loc.Unknown);
                     var p = new Process<T>(bottom.State, bottom, r.Process.CallStack);
-                    ProcessState(input, input, mergedValue, p);
+                    ProcessPosition(input, input, mergedValue, p, p.InstructionState, isShift: false);
                 }
                 else
                 {

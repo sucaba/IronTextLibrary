@@ -33,6 +33,9 @@ namespace IronText.Automata.TurnPlanning
             return productionPlans[productionId];
         }
 
+        public IEnumerable<Plan> ForTokens(IEnumerable<int> tokens)
+            => ForTokens(tokens.ToArray());
+
         public IEnumerable<Plan> ForTokens(params int[] tokens)
         {
             return tokens

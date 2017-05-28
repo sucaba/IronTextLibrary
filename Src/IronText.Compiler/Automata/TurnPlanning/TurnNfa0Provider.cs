@@ -32,17 +32,35 @@ namespace IronText.Automata.TurnPlanning
                             turn,
                             WithSubcalls(PlanPosition.Nexts(from))));
 
-        public IEnumerable<PlanPosition> Subcalls(IEnumerable<PlanPosition> kernel)
+        private IEnumerable<PlanPosition> Subcalls(IEnumerable<PlanPosition> kernel)
+        {
+            return Subcalls(kernel, excludedTokens: new int[0]);
+        }
+
+        private IEnumerable<PlanPosition> Subcalls(IEnumerable<PlanPosition> kernel, IEnumerable<int> excludedTokens)
         {
             int[] tokensToConsume = PlanPosition.NotDone(kernel)
                 .Select(p => p.NextTurn.TokenToConsume)
                 .NonNull()
                 .Distinct()
+                .Except(excludedTokens)
                 .ToArray();
 
-            return plans
-                .ForTokens(tokensToConsume)
+            return Subcalls(tokensToConsume, excludedTokens);
+        }
+
+        private IEnumerable<PlanPosition> Subcalls(int[] tokensToConsume, IEnumerable<int> excludedTokens)
+        {
+            var positions = plans
+                .ForTokens(tokensToConsume.Except(excludedTokens))
                 .Select(plan => new PlanPosition(plan, 0));
+            if (positions.Any())
+            {
+                return positions.Concat(
+                    Subcalls(positions, excludedTokens: tokensToConsume.Union(excludedTokens)));
+            }
+
+            return positions;
         }
 
         public IEnumerable<PlanPosition> WithSubcalls(params PlanPosition[] kernel) =>

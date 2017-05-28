@@ -72,6 +72,9 @@ namespace IronText.Reflection
 
         public RuntimeOptions Options { get; set; }
 
+        public bool AreNonTermsBottomUpByDefault =>
+            !Options.HasFlag(RuntimeOptions.ForceGeneric);
+
         public Joint Joint { get { return _joint; } }
 
         public string StartName

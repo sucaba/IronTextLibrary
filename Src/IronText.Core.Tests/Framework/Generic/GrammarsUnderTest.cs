@@ -1,4 +1,5 @@
 ﻿using IronText.Framework;
+using IronText.Reflection;
 using System;
 using System.Collections.Generic;
 
@@ -66,9 +67,9 @@ namespace IronText.Tests.Framework.Generic
         }
 
         [Language(RuntimeOptions.ForceGeneric)]
-        [ParserGraph(nameof(WithBottomUpToken) + "0.gv")]
-        [DescribeParserStateMachine(nameof(WithBottomUpToken) + "0.info")]
-        public interface WithBottomUpToken
+        [ParserGraph(nameof(LeftRecursionWithBottomUpToken) + "0.gv")]
+        [DescribeParserStateMachine(nameof(LeftRecursionWithBottomUpToken) + "0.info")]
+        public interface LeftRecursionWithBottomUpToken
         {
             [Produce]
             void All(S s);
@@ -81,8 +82,8 @@ namespace IronText.Tests.Framework.Generic
         }
 
         [Language(RuntimeOptions.ForceGeneric)]
-        [ParserGraph("NondeterministicCalc0.gv")]
-        [DescribeParserStateMachine("NondeterministicCalc0.info")]
+        [ParserGraph(nameof(NondeterministicCalc) + "0.gv")]
+        [DescribeParserStateMachine(nameof(NondeterministicCalc) + "0.info")]
         public class NondeterministicCalc
         {
             public readonly List<double> Results = new List<double>();
@@ -103,6 +104,129 @@ namespace IronText.Tests.Framework.Generic
             }
         }
 
+        [Language(RuntimeOptions.ForceGenericLR)]
+        [ParserGraph(nameof(NondeterministicCalcWithAutoBottomUp) + "0.gv")]
+        [DescribeParserStateMachine(nameof(NondeterministicCalcWithAutoBottomUp) + "0.info")]
+        public class NondeterministicCalcWithAutoBottomUp
+        {
+            public readonly List<double> Results = new List<double>();
+
+            [Produce]
+            public void AddResult(double e) { Results.Add(e); }
+
+            [Produce(null, "^", null)]
+            public double Pow(double e1, double e2) { return Math.Pow(e1, e2); }
+
+            [Produce("3")]
+            public double Number() { return 3; }
+
+            [Merge]
+            public double Merge(double x, double y)
+            {
+                return y;
+            }
+        }
+
+        [Language(RuntimeOptions.ForceGeneric)]
+        [ParserGraph(nameof(AmbiguousCalculator) + "0.gv")]
+        [DescribeParserStateMachine(nameof(AmbiguousCalculator) + "0.info")]
+        public class AmbiguousCalculator
+        {
+            [Outcome]
+            public Expr Result { get; set; }
+            
+
+            [Produce(null, "+", null)]
+            public Expr Plus(Expr x, Expr y)
+            {
+                return new Expr(x.Value + y.Value, precedence: 1, assoc: Associativity.Left);
+            }
+
+            [Produce("+", null)]
+            public Expr UnaryPlus(Expr x)
+            {
+                return new Expr(x.Value, precedence: 3, assoc: Associativity.Left);
+            }
+
+            [Produce("-", null)]
+            public Expr UnaryMinus(Expr x)
+            {
+                return new Expr(-x.Value, precedence: 3, assoc: Associativity.Right);
+            }
+
+            [Produce(null, "*", null)]    // explicit multiplication
+            [Produce]                     // implicit multiplication
+            public Expr Mult(Expr x, Expr y)
+            {
+                return new Expr(x.Value * y.Value, precedence: 2, assoc: Associativity.Left);
+            }
+
+            [Produce(null, "/", null)]
+            public Expr Div(Expr x, Expr y)
+            {
+                return new Expr(x.Value / y.Value, precedence: 2, assoc: Associativity.Left);
+            }
+
+            [Produce]
+            public Expr Constant(double value)
+            {
+                return new Expr(value, precedence: 10);
+            }
+            
+            // Resolve operator precedence problems in runtime
+            [Merge]
+            public Expr MergeExpr(Expr reduceFirst, Expr shiftFirst)
+            {
+                // Between two choose the one which has lower priority at the root
+                // because it means that higher priorirty was reduced first and is
+                // a child in reduction tree.
+                if (reduceFirst.Precedence < shiftFirst.Precedence)
+                {
+                    return reduceFirst;
+                }
+                if (reduceFirst.Precedence > shiftFirst.Precedence)
+                {
+                    return shiftFirst;
+                }
+
+                switch (reduceFirst.Associativity)
+                {
+                    case Associativity.Left: return reduceFirst;
+                    case Associativity.Right: return shiftFirst;
+                    default:
+                        throw new InvalidOperationException("Unable to resolve ambiguity.");
+                }
+            }
+
+            [Match("digit+ ('.' digit*)? | '.' digit+")]
+            public double Real(string text) { return double.Parse(text); }
+
+            [Match("blank+")]
+            public void Blank() {}
+        }
+
+        public class Expr
+        {
+            public readonly int Precedence;
+            public readonly double Value;
+            public readonly Associativity Associativity;
+
+            public Expr(double value, int precedence, Associativity assoc = Associativity.Left)
+            {
+                this.Value = value;
+                this.Precedence = precedence;
+                this.Associativity = assoc;
+            }
+
+            public override string ToString()
+            {
+                return string.Format(
+                    "Expr(value={0}, prec={1}, assoc={2})",
+                    Value,
+                    Precedence,
+                    Enum.GetName(typeof(Associativity), Associativity));
+            }
+        }
 
         public interface A {}
         public interface S {}

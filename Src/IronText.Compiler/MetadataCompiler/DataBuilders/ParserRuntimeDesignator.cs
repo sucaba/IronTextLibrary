@@ -35,6 +35,7 @@ namespace IronText.MetadataCompiler
             switch (flags)
             {
                 case RuntimeOptions.ForceGeneric:
+                case RuntimeOptions.ForceGenericLR:
                     return ParserRuntime.Generic;
                 case RuntimeOptions.ForceNonDeterministic:
                     return ParserRuntime.Glr;

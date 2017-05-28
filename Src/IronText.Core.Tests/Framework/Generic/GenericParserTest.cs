@@ -258,20 +258,6 @@ namespace IronText.Tests.Framework
             Assert.AreEqual(1, context.Results.Count, "Results should be merged");
         }
 
-        [Test]
-        [TestCase("")]
-        [TestCase("a")]
-        [TestCase("aa")]
-        [TestCase("aaa")]
-        [TestCase("aaaa")]
-        [TestCase("aaaaa")]
-        [TestCase("aaaaaa")]
-        [TestCase("aaaaaaaaaa")]
-        public void BottomUpLogic(string input)
-        {
-            Assert.IsTrue(GlrParse<WithBottomUpToken>(input));
-        }
-
         private bool GlrParse<T>(string input)
             where T : class
         {

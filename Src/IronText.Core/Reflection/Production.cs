@@ -126,9 +126,10 @@ namespace IronText.Reflection
 
         public bool               IsAugmented    { get { return this == (object)Scope.AugmentedProduction; } }
 
-        public bool               IsExtended     { get { return ChildComponents.Any(c => c is Production); } }
-
-        public bool               IsBottomUp =>  Flags.HasFlag(ProductionFlags.BottomUpBehavior);
+        public bool               IsBottomUp =>
+            Flags.HasFlag(ProductionFlags.AutoBehavior)
+            ? Scope.AreNonTermsBottomUpByDefault
+            : Flags.HasFlag(ProductionFlags.BottomUpBehavior);
 
         public bool               IsTopDown  => !IsBottomUp;
 
@@ -142,7 +143,7 @@ namespace IronText.Reflection
 
         public bool               HasIdentityAction { get; private set; }
 
-        public bool               HasSideEffects 
+        public bool               HasSideEffects
         { 
             get 
             { 

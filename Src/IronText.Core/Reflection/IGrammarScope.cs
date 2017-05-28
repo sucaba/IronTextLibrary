@@ -3,6 +3,8 @@ namespace IronText.Reflection
 {
     public interface IGrammarScope
     {
+        bool                 AreNonTermsBottomUpByDefault { get; }
+
         Symbol               Start       { get; }
 
         Production           AugmentedProduction { get; }

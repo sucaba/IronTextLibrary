@@ -14,7 +14,8 @@ namespace IronText.MetadataCompiler
         {
             Grammar = reader.Read(source, logging);
             Grammar.Joint.Add(source);
-            if (Grammar.Options != RuntimeOptions.ForceGeneric)
+            if (Grammar.Options != RuntimeOptions.ForceGeneric
+                && Grammar.Options != RuntimeOptions.ForceGenericLR)
             {
                 new EliminateRightNulls(Grammar).Apply();
             }

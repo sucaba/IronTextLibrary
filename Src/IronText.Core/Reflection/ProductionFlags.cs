@@ -15,6 +15,6 @@
         /// <summary>
         /// 1 for bottom-up, 0 for top-down
         /// </summary>
-        BottomUpBehavior    = 0x4, 
+        BottomUpBehavior    = 0x4
     }
 }
