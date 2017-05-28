@@ -1,4 +1,5 @@
 ﻿using IronText.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace IronText.Tests.Framework.Generic
@@ -78,6 +79,30 @@ namespace IronText.Tests.Framework.Generic
             [ProduceBottomUp]
             S Create();
         }
+
+        [Language(RuntimeOptions.ForceGeneric)]
+        [ParserGraph("NondeterministicCalc0.gv")]
+        [DescribeParserStateMachine("NondeterministicCalc0.info")]
+        public class NondeterministicCalc
+        {
+            public readonly List<double> Results = new List<double>();
+
+            [Produce]
+            public void AddResult(double e) { Results.Add(e); }
+
+            [Produce(null, "^", null)]
+            public double Pow(double e1, double e2) { return Math.Pow(e1, e2); }
+
+            [Produce("3")]
+            public double Number() { return 3; }
+
+            [Merge]
+            public double Merge(double x, double y)
+            {
+                return y;
+            }
+        }
+
 
         public interface A {}
         public interface S {}

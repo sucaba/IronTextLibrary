@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronText.Core", "IronText.Core\IronText.Core.csproj", "{97CFB776-52DE-40B1-854C-912C93A32AFA}"
 EndProject
@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E910A8
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CecilSample", "CecilSample\CecilSample.csproj", "{AC4D3023-28F8-45E4-9278-9A75CF0C5970}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronText.Testing", "IronText.Testing\IronText.Testing.csproj", "{CA1755AD-EE98-409F-BE76-D70E01FEE34C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -277,6 +279,24 @@ Global
 		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{AC4D3023-28F8-45E4-9278-9A75CF0C5970}.Release|x86.ActiveCfg = Release|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Debug|x86.Build.0 = Debug|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Deploy|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Deploy|Mixed Platforms.Build.0 = Debug|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Deploy|x86.ActiveCfg = Debug|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Deploy|x86.Build.0 = Debug|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Release|x86.ActiveCfg = Release|Any CPU
+		{CA1755AD-EE98-409F-BE76-D70E01FEE34C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

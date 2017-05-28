@@ -97,6 +97,7 @@
     <Compile Include="Algorithm\UnicodeFrequencyTest.cs" />
     <Compile Include="Analysis\DotItemSpecs\DotItem_has_reduce_transition.cs" />
     <Compile Include="Collections\IndexedCollectionTest.cs" />
+    <Compile Include="Framework\Generic\BottomUpTest.cs" />
     <Compile Include="Framework\Generic\GenericMergeTest.cs" />
     <Compile Include="Framework\Generic\GenericParserTest.cs" />
     <Compile Include="Framework\Generic\GrammarsUnderTest.cs" />
@@ -251,6 +252,10 @@
     <ProjectReference Include="..\IronText.Core\IronText.Core.csproj">
       <Project>{97CFB776-52DE-40B1-854C-912C93A32AFA}</Project>
       <Name>IronText.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IronText.Testing\IronText.Testing.csproj">
+      <Project>{ca1755ad-ee98-409f-be76-d70e01fee34c}</Project>
+      <Name>IronText.Testing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
