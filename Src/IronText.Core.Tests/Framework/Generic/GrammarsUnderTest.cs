@@ -81,10 +81,8 @@ namespace IronText.Tests.Framework.Generic
             S Create();
         }
 
-        [Language(RuntimeOptions.ForceGeneric)]
-        [ParserGraph(nameof(NondeterministicCalc) + "0.gv")]
-        [DescribeParserStateMachine(nameof(NondeterministicCalc) + "0.info")]
-        public class NondeterministicCalc
+        [Vocabulary]
+        public abstract class NondeterministicCalcBase
         {
             public readonly List<double> Results = new List<double>();
 
@@ -104,27 +102,18 @@ namespace IronText.Tests.Framework.Generic
             }
         }
 
+        [Language(RuntimeOptions.ForceGeneric)]
+        [ParserGraph(nameof(NondeterministicCalc) + "0.gv")]
+        [DescribeParserStateMachine(nameof(NondeterministicCalc) + "0.info")]
+        public class NondeterministicCalc : NondeterministicCalcBase
+        {
+        }
+
         [Language(RuntimeOptions.ForceGenericLR)]
         [ParserGraph(nameof(NondeterministicCalcWithAutoBottomUp) + "0.gv")]
         [DescribeParserStateMachine(nameof(NondeterministicCalcWithAutoBottomUp) + "0.info")]
-        public class NondeterministicCalcWithAutoBottomUp
+        public class NondeterministicCalcWithAutoBottomUp : NondeterministicCalcBase
         {
-            public readonly List<double> Results = new List<double>();
-
-            [Produce]
-            public void AddResult(double e) { Results.Add(e); }
-
-            [Produce(null, "^", null)]
-            public double Pow(double e1, double e2) { return Math.Pow(e1, e2); }
-
-            [Produce("3")]
-            public double Number() { return 3; }
-
-            [Merge]
-            public double Merge(double x, double y)
-            {
-                return y;
-            }
         }
 
         [Language(RuntimeOptions.ForceGeneric)]

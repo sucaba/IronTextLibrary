@@ -29,7 +29,7 @@ namespace IronText.Misc
 
         public static IEnumerable<T> All<T>(this ICustomAttributeProvider provider)
         {
-            return provider.GetCustomAttributes(typeof(T), true).Cast<T>().ToArray();
+            return provider.GetCustomAttributes(typeof(T), false).Cast<T>().ToArray();
         }
     }
 }

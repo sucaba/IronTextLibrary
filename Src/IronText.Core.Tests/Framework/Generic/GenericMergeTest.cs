@@ -32,11 +32,11 @@ namespace IronText.Tests.Framework.Generic
                 Assert.AreEqual(5, interp.Context.Result.Value);
 
                 // Check that implicit multiplication works
-                interp.Parse("2 3"); 
+                interp.Parse("2 3");
                 Assert.AreEqual(6, interp.Context.Result.Value);
 
                 // A lot of ambiguities:
-                interp.Parse("1+-+6/3"); 
+                interp.Parse("1+-+6/3");
                 Assert.AreEqual(-1, interp.Context.Result.Value);
             }
         }
