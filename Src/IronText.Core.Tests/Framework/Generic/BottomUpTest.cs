@@ -1,4 +1,5 @@
-﻿using IronText.Testing;
+﻿using IronText.Runtime;
+using IronText.Testing;
 using NUnit.Framework;
 using static IronText.Tests.Framework.Generic.GrammarsUnderTest;
 
@@ -18,14 +19,14 @@ namespace IronText.Tests.Framework.Generic
         [TestCase("aaaaaaaaaa")]
         public void PositiveTest(string input)
         {
-            Assert.That(input, StructuredText.Is.ParsableBy<LeftRecursionWithBottomUpToken>());
+            Assert.That(input, Dsl.ParsableBy<LeftRecursionWithBottomUpToken>());
         }
 
         [Test]
         [TestCase("aabaa")]
         public void NegativeTest(string input)
         {
-            Assert.That(input, StructuredText.Is.Not.ParsableBy<LeftRecursionWithBottomUpToken>());
+            Assert.That(input, Dsl.Not.ParsableBy<LeftRecursionWithBottomUpToken>());
         }
 
         [Test]
@@ -34,7 +35,7 @@ namespace IronText.Tests.Framework.Generic
         [TestCase("3^3^3")]
         public void AutoBottomUp(string input)
         {
-            Assert.That(input, StructuredText.Is.ParsableBy<NondeterministicCalcWithAutoBottomUp>());
+            Assert.That(input, Dsl.ParsableBy<NondeterministicCalcWithAutoBottomUp>());
         }
     }
 }

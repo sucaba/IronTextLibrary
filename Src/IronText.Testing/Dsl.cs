@@ -2,9 +2,13 @@
 
 namespace IronText.Testing
 {
-    public static class StructuredText
+    public static class Dsl
     {
-        public static IsSyntax Is => new IsSyntax();
+        public static Constraint ParsableBy<T>()
+            where T : class
+            => new IsSyntax().ParsableBy<T>();
+
+        public static IsSyntax Not => new IsSyntax(negated: true);
 
         public class IsSyntax
         {

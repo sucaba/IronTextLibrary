@@ -59,7 +59,7 @@
   <ItemGroup>
     <Compile Include="ParsableByLanguageConstraint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StructuredTextIs.cs" />
+    <Compile Include="Dsl.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IronText.Core\IronText.Core.csproj">
