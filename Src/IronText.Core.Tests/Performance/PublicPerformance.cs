@@ -39,6 +39,20 @@ namespace IronText.Tests.Performance
         }
 
         [Test]
+        public void _2_TestGeneric()
+        {
+            int count = 1000000;
+            TestGeneric(typeof(GenericPerfLang), "Generic", count, 3);
+        }
+
+        [Test]
+        public void _3_TestGenericLR()
+        {
+            int count = 1000000;
+            TestGeneric(typeof(GenericLRPerfLang), "GenericLR", count, 3);
+        }
+
+        [Test]
         [Explicit]
         public void TestLalr1AsGlrProfilable()
         {
@@ -52,6 +66,22 @@ namespace IronText.Tests.Performance
         {
             int count = 10;
             TestLalr1(typeof(Lalr1PerfLangAsGlr), "Profilable2 LALR1(forceGlr)", count, 1);
+        }
+
+        private static void TestGeneric(Type langDef, string title, int count, int trialCount = 1)
+        {
+            const string path = "EFa.test";
+            using (var testFile = new StreamWriter(path))
+            {
+                testFile.Write("a");
+
+                while (count-- != 0)
+                {
+                    testFile.Write("+a");
+                }
+            }
+
+            Benchmarks(path, title, langDef, trialCount);
         }
 
         private static void TestLalr1(string title, int count, int trialCount = 1)
@@ -76,7 +106,7 @@ namespace IronText.Tests.Performance
         }
 
         [Test]
-        public void _2_TestGlr()
+        public void _4_TestGlr()
         {
             int count = 200;
             TestGlr("GLR ambiguous", count, 3);
@@ -221,8 +251,24 @@ namespace IronText.Tests.Performance
             }
         }
 
-        [Language]
-        public class Lalr1PerfLang
+        [Language(RuntimeOptions.ForceDeterministic)]
+        public class Lalr1PerfLang : PerfLangBase
+        {
+        }
+
+
+        [Language(RuntimeOptions.ForceGeneric)]
+        public class GenericPerfLang : PerfLangBase
+        {
+        }
+
+        [Language(RuntimeOptions.ForceGenericLR)]
+        public class GenericLRPerfLang : PerfLangBase
+        {
+        }
+
+        [Vocabulary]
+        public class PerfLangBase
         {
             [Produce]
             public void Start(E e) { }
