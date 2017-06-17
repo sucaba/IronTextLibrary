@@ -1,4 +1,5 @@
-﻿using NUnit.Framework.Constraints;
+﻿using System;
+using NUnit.Framework.Constraints;
 
 namespace IronText.Testing
 {
@@ -7,6 +8,10 @@ namespace IronText.Testing
         public static Constraint ParsableBy<T>()
             where T : class
             => new IsSyntax().ParsableBy<T>();
+
+        public static Constraint ParsableWithTreeBy<T>()
+            where T : class
+            => new IsSyntax().ParsableWithTreeBy<T>();
 
         public static IsSyntax Not => new IsSyntax(negated: true);
 
@@ -25,6 +30,12 @@ namespace IronText.Testing
                 where T : class
             {
                 return new ParsableByLanguageConstraint<T>(negated);
+            }
+
+            public Constraint ParsableWithTreeBy<T>()
+                where T : class
+            {
+                return new ParsableWithTreeByLanguageConstraint<T>(negated);
             }
         }
     }

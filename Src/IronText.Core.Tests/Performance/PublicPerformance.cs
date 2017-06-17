@@ -1,4 +1,4 @@
-﻿#if !DEBUG
+﻿#if true 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +8,8 @@ using IronText.Framework;
 using System.IO;
 using System.Diagnostics;
 using IronText.Runtime;
+using IronText.Testing;
+using IronText.Tests.Extensions;
 
 namespace IronText.Tests.Performance
 {
@@ -96,17 +98,48 @@ namespace IronText.Tests.Performance
             TestGlr("Profilable GLR (tree)", count, 1, BenchFlags.ParseTree);
         }
 
+        [Test]
+        [Explicit]
+        public void TestGlr()
+        {
+            Assert.That("a" + "+a".Times(40), Dsl.ParsableBy<GlrPerfLang>());
+        }
+
+        [Test]
+        [Explicit]
+        public void TestGlrTree()
+        {
+            Assert.That("a" + "+a".Times(40), Dsl.ParsableWithTreeBy<GlrPerfLang>());
+        }
+
+        [Test]
+        [Explicit]
+        public void TestGlrTime()
+        {
+            double elapsed = 1, priorElapsed = 0;
+
+            for (int size = 1; size < 100; size += 5)
+            {
+                priorElapsed = elapsed;
+                var timer = new Stopwatch();
+                timer.Start();
+                Assert.That("a" + "+a".Times(size), Dsl.ParsableBy<GlrPerfLang>());
+                timer.Stop();
+
+                elapsed = timer.Elapsed.TotalSeconds;
+                var grow = elapsed / priorElapsed;
+
+                Log($"GLR (size={size}): {elapsed} sec, log={Math.Log(elapsed)}, predict={elapsed * grow}");
+            }
+        }
+
         private static void TestGlr(string title, int count, int trialCount, BenchFlags flags = BenchFlags.All)
         {
             const string path = "EEa.test";
             using (var testFile = new StreamWriter(path))
             {
                 testFile.Write("a");
-
-                while (count-- != 0)
-                {
-                    testFile.Write("+a");
-                }
+                "+a".Times(count, testFile);
             }
 
             Benchmarks(path, title, typeof(GlrPerfLang), trialCount, flags: flags);
@@ -242,13 +275,15 @@ namespace IronText.Tests.Performance
             public F FE(E e) { return null; }
         }
 
-        [Language(LanguageFlags.ForceNonDeterministic)]
+        [Language(RuntimeOptions.ForceNonDeterministic)]
         [DescribeParserStateMachine("Lalr1PerfLangAsGlr.gram")]
         public class Lalr1PerfLangAsGlr : Lalr1PerfLang
         {
         }
 
-        [Language(LanguageFlags.AllowNonDeterministic)]
+        [Language(RuntimeOptions.AllowNonDeterministic)]
+        [ParserGraph(nameof(GlrPerfLang) + ".gv")]
+        [DescribeParserStateMachine(nameof(GlrPerfLang) + ".info")]
         public class GlrPerfLang
         {
             [Produce]
@@ -263,6 +298,24 @@ namespace IronText.Tests.Performance
 
         public interface E {}
         public interface F {}
+
+        private static string TextTimes(string pattern, int times)
+        {
+            using (var writer = new StringWriter())
+            {
+                TextTimes(writer, pattern, times);
+
+                return writer.ToString();
+            }
+        }
+
+        private static void TextTimes(StringWriter writer, string pattern, int times)
+        {
+            for (int count = times; count-- != 0;)
+            {
+                writer.Write(pattern);
+            }
+        }
     }
 }
 
