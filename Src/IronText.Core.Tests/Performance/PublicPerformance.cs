@@ -98,41 +98,6 @@ namespace IronText.Tests.Performance
             TestGlr("Profilable GLR (tree)", count, 1, BenchFlags.ParseTree);
         }
 
-        [Test]
-        [Explicit]
-        public void TestGlr()
-        {
-            Assert.That("a" + "+a".Times(40), Dsl.ParsableBy<GlrPerfLang>());
-        }
-
-        [Test]
-        [Explicit]
-        public void TestGlrTree()
-        {
-            Assert.That("a" + "+a".Times(40), Dsl.ParsableWithTreeBy<GlrPerfLang>());
-        }
-
-        [Test]
-        [Explicit]
-        public void TestGlrTime()
-        {
-            double elapsed = 1, priorElapsed = 0;
-
-            for (int size = 1; size < 100; size += 5)
-            {
-                priorElapsed = elapsed;
-                var timer = new Stopwatch();
-                timer.Start();
-                Assert.That("a" + "+a".Times(size), Dsl.ParsableBy<GlrPerfLang>());
-                timer.Stop();
-
-                elapsed = timer.Elapsed.TotalSeconds;
-                var grow = elapsed / priorElapsed;
-
-                Log($"GLR (size={size}): {elapsed} sec, log={Math.Log(elapsed)}, predict={elapsed * grow}");
-            }
-        }
-
         private static void TestGlr(string title, int count, int trialCount, BenchFlags flags = BenchFlags.All)
         {
             const string path = "EEa.test";
