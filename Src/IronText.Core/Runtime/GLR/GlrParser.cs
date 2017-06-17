@@ -213,21 +213,21 @@ namespace IronText.Runtime
 
         private void OnNewNode(GssNode<T> frontNode, int lookahead, Message message, MessageData data)
         {
-            Process(frontNode, lookahead, newLinkOnly: false);
+            Process(frontNode, lookahead, newLink: null);
         }
 
         private void OnNewLink(GssNode<T> existingToNode, GssBackLink<T> newLink, int lookahead)
         {
-            Process(existingToNode, lookahead, newLinkOnly: true);
+            Process(existingToNode, lookahead, newLink: newLink);
         }
 
-        private void Process(GssNode<T> node, int token, bool newLinkOnly)
+        private void Process(GssNode<T> node, int token, GssBackLink<T> newLink)
         {
             int start = transition(node.State, token);
-            Process(node, token, newLinkOnly, start);
+            Process(node, token, newLink, start);
         }
 
-        private void Process(GssNode<T> node, int token, bool newLinkOnly, int start)
+        private void Process(GssNode<T> node, int token, GssBackLink<T> newLink, int start)
         {
             Debug.Assert(node == gss.GetFrontNode(node.State, lookahead: token));
 
@@ -242,17 +242,21 @@ namespace IronText.Runtime
                         accepted = true;
                         return;
                     case ParserOperation.Fork:
-                        Process(node, token, newLinkOnly, action.Argument);
+                        Process(node, token, newLink, action.Argument);
                         break;
                     case ParserOperation.Reduce:
                         var prod = grammar.Productions[action.Production];
-                        if (!newLinkOnly || prod.InputLength != 0)
+                        if (newLink == null)
                         {
                             R.Enqueue(node, prod);
                         }
+                        else if (prod.InputLength != 0)
+                        {
+                            R.Enqueue(newLink, prod);
+                        }
                         return;
                     case ParserOperation.Shift:
-                        if (!newLinkOnly)
+                        if (newLink == null)
                         {
                             gss.PushShift(
                                 node,
