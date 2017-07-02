@@ -239,12 +239,12 @@ namespace IronText.DI
 
         private Func<object> ResolveGetter(Type type)
         {
-            var unstafeGetter = InternalGetter(type);
+            var getter = InternalGetter(type);
             return () =>
             {
                 try
                 {
-                    return unstafeGetter();
+                    return getter();
                 }
                 catch (InvalidDependencyException)
                 {

@@ -232,7 +232,6 @@ namespace IronText.Runtime.RIGLR.GraphStructuredStack
         {
             return other != null
                 && InstructionState == other.InstructionState
-                && base.Equals(other)
                 && CallStack == other.CallStack;
         }
 
