@@ -252,18 +252,26 @@ namespace IronText.Tests.Performance
         }
 
         [Language(RuntimeOptions.ForceDeterministic)]
+        [DescribeParserStateMachine(nameof(Lalr1PerfLang) + ".info")]
         public class Lalr1PerfLang : PerfLangBase
         {
         }
 
-
         [Language(RuntimeOptions.ForceGeneric)]
+        [DescribeParserStateMachine(nameof(GenericPerfLang) + ".info")]
         public class GenericPerfLang : PerfLangBase
         {
         }
 
         [Language(RuntimeOptions.ForceGenericLR)]
+        [DescribeParserStateMachine(nameof(GenericLRPerfLang) + ".info")]
         public class GenericLRPerfLang : PerfLangBase
+        {
+        }
+
+        [Language(RuntimeOptions.ForceNonDeterministic)]
+        [DescribeParserStateMachine(nameof(Lalr1PerfLangAsGlr) + ".info")]
+        public class Lalr1PerfLangAsGlr : PerfLangBase
         {
         }
 
@@ -284,12 +292,6 @@ namespace IronText.Tests.Performance
 
             [Produce("(", null, ")")]
             public F FE(E e) { return null; }
-        }
-
-        [Language(RuntimeOptions.ForceNonDeterministic)]
-        [DescribeParserStateMachine("Lalr1PerfLangAsGlr.gram")]
-        public class Lalr1PerfLangAsGlr : Lalr1PerfLang
-        {
         }
 
         [Language(RuntimeOptions.AllowNonDeterministic)]
