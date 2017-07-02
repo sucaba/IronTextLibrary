@@ -74,9 +74,7 @@ namespace IronText.Reflection.Managed
             if (productions.Count == 0)
             {
                 throw new InvalidOperationException(
-                    string.Format(
-                        "Language definition '{0}' should have at least one parse production",
-                        definitionType.FullName));
+                    $"Language should have public start production.");
             }
 
             this.mergers 

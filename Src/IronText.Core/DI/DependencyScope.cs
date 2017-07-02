@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace IronText.DI
 {
@@ -41,6 +42,12 @@ namespace IronText.DI
             return getter();
         }
 
+        private object InternalGet(Type type)
+        {
+            var getter = InternalGetter(type);
+            return getter();
+        }
+
         public void Add<TImpl>()
         {
             Add(typeof(TImpl));
@@ -65,7 +72,12 @@ namespace IronText.DI
 
         public void Add(Type contract, Type impl)
         {
-            var cs = impl.GetConstructors(); 
+            Add(contract, CreateGetter(impl));
+        }
+
+        private Func<object> CreateGetter(Type impl)
+        {
+            var cs = impl.GetConstructors();
             if (cs.Length != 1)
             {
                 throw new InvalidOperationException(
@@ -75,9 +87,8 @@ namespace IronText.DI
             var c = cs[0];
             var ps = Array.ConvertAll(c.GetParameters(), p => p.ParameterType);
 
-            Add(
-                contract,
-                () => c.Invoke(Array.ConvertAll(ps, Get)));
+            Func<object> getter = () => c.Invoke(Array.ConvertAll(ps, InternalGet));
+            return getter;
         }
 
         public void Add<T>(T instance)
@@ -130,7 +141,7 @@ namespace IronText.DI
             Add(
                 contract,
                 () => parameterizedGetter.DynamicInvoke(
-                        Array.ConvertAll(ps, Get)));
+                        Array.ConvertAll(ps, InternalGet)));
         }
 
         public void Add(Type contract, Func<object> getter)
@@ -147,10 +158,19 @@ namespace IronText.DI
             if (contract.IsGenericType
                 && contract.GetGenericTypeDefinition() == typeof(IDynamicDependency<>))
             {
-                var selector = (IDynamicDependency)getter();
-                var dependencyContract = contract.GetGenericArguments()[0];
+                if (contract is IHasSideEffects)
+                {
+                    throw new InvalidOperationException(
+                        $"{nameof(IDynamicDependency)} implementation cannot implement {nameof(IHasSideEffects)}.");
+                }
 
-                Add(dependencyContract, selector.Implementation);
+                var dependencyContract = contract.GetGenericArguments()[0];
+                Add(dependencyContract, 
+                    () =>
+                    {
+                        var selector = (IDynamicDependency)getter();
+                        return InternalGet(selector.Implementation);
+                    });
             }
             else
             {
@@ -218,6 +238,26 @@ namespace IronText.DI
         }
 
         private Func<object> ResolveGetter(Type type)
+        {
+            var unstafeGetter = InternalGetter(type);
+            return () =>
+            {
+                try
+                {
+                    return unstafeGetter();
+                }
+                catch (InvalidDependencyException)
+                {
+                    return null;
+                }
+                catch (TargetInvocationException e) when (e.InnerException is InvalidDependencyException)
+                {
+                    return null;
+                }
+            };
+        }
+
+        private Func<object> InternalGetter(Type type)
         {
             Func<object> result;
             if (!typeToGetter.TryGetValue(type, out result)

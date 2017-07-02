@@ -1,4 +1,6 @@
-﻿using System;
+﻿using IronText.DI;
+using System;
+using System.Reflection;
 
 namespace IronText.Logging
 {
@@ -32,20 +34,37 @@ namespace IronText.Logging
             {
                 action();
             }
+            catch (InvalidDependencyException e)
+            {
+                throw;
+            }
+            catch (TargetInvocationException e) when (e.InnerException is InvalidDependencyException)
+            {
+                throw;
+            }
+            catch (TargetInvocationException e)
+            {
+                LogException(logging, origin, e.InnerException);
+            }
             catch (Exception e)
             {
-                logging.Write(
-                    new LogEntry
-                    {
-                        Severity = Severity.Error,
-                        Origin   = origin,
-                        Message  = e.Message
-                    });
+                LogException(logging, origin, e);
             }
             finally
             {
                 logging.Verbose(origin, "Done {0} for {1}", activityName, contextName);
             }
+        }
+
+        private static void LogException(ILogging logging, string origin, Exception e)
+        {
+            logging.Write(
+                new LogEntry
+                {
+                    Severity = Severity.Error,
+                    Origin = origin,
+                    Message = e.Message
+                });
         }
     }
 }

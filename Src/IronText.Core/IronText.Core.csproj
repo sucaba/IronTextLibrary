@@ -133,8 +133,11 @@
     <Compile Include="DI\IInstantiator.cs" />
     <Compile Include="DI\IHasSideEffects.cs" />
     <Compile Include="DI\IDependencyResolver.cs" />
+    <Compile Include="DI\InvalidDependencyException.cs" />
+    <Compile Include="DI\ObjectExtensions.cs" />
     <Compile Include="DI\TrivialInstantiator.cs" />
     <Compile Include="Framework\Attributes\ProduceAttributeBase.cs" />
+    <Compile Include="Framework\Attributes\ProduceTopDownAttribute.cs" />
     <Compile Include="Framework\Attributes\ProduceBottomUpAttribute.cs" />
     <Compile Include="Framework\Attributes\ReportAttribute.cs" />
     <Compile Include="Framework\NullParsing.cs" />

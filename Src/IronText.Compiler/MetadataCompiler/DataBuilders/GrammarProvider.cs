@@ -13,6 +13,9 @@ namespace IronText.MetadataCompiler
             ILogging        logging)
         {
             Grammar = reader.Read(source, logging);
+            if (Grammar == null)
+                return;
+
             Grammar.Joint.Add(source);
             if (Grammar.Options != RuntimeOptions.ForceGeneric
                 && Grammar.Options != RuntimeOptions.ForceGenericLR)

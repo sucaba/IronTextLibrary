@@ -32,14 +32,14 @@ namespace IronText.MetadataCompiler
                 source,
                 config,
                 typeof(LoggingInstantiator),
-                (GrammarReaderProvider p) => p.Reader,
-                (GrammarProvider p) => p.Grammar,
+                (GrammarReaderProvider p) => p.Reader           .RequireNonNull(),
+                (GrammarProvider p) => p.Grammar                .RequireNonNull(),
                 (Grammar g) => g.Options,
                 (Grammar g) => g.Reports,
                 typeof(BuildtimeGrammar),
-                (ScannerAutomataProvider p) => p.Tdfa,
+                (ScannerAutomataProvider p) => p.Tdfa           .RequireNonNull(),
                 (ScannerAmbiguityProvider p) => p.Ambiguities,
-                (Lalr1DfaProvider p) => (ILrDfa)p,
+                (Lalr1DfaProvider p) => (ILrDfa)p               .RequireNonNull(),
                 (ParserConflictProvider p) => p.Conflicts,
                 (ParserTableProvider p) => p.LrParserTable,
                 (ParserRuntimeDesignator d) => d.ActualRuntime,
@@ -48,15 +48,12 @@ namespace IronText.MetadataCompiler
                 (LanguageDataInstanceProvider p) => p.Data
             })
             {
-                if (building.HasNo<IGrammarReader>()
-                 || building.HasNo<ITdfaData>()
-                 || building.HasNo<ILrDfa>())
+                result = building.Get<LanguageData>();
+                if (result == null)
                 {
                     result = null;
                     return false;
                 }
-
-                result = building.Get<LanguageData>();
 
                 using (var reporting = new DependencyScope(parent: building)
                 {

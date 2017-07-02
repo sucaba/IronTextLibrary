@@ -217,6 +217,32 @@ namespace IronText.Tests.Framework.Generic
             }
         }
 
+        [Language(RuntimeOptions.ForceGeneric)]
+        public class TopDownConsumesBottomUpLanguage
+        {
+            [Produce]
+            public void Result(S s) { }
+
+            [Produce("b", null, "e")]
+            public S TopDown(A a) => null;
+
+            [ProduceBottomUp("a")]
+            public A BottomUp() => null;
+        }
+
+        [Language(RuntimeOptions.ForceGeneric)]
+        public class BottomUpConsumesTopDownLanguage
+        {
+            [Produce]
+            public void Result(S s) { }
+
+            [ProduceBottomUp("b", null, "e")]
+            public S BottomUp(A a) => null;
+
+            [ProduceTopDown("a")]
+            public A BottomUp() => null;
+        }
+
         public interface A {}
         public interface S {}
     }
