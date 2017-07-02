@@ -1,5 +1,4 @@
-﻿using IronText.DI;
-using System;
+﻿using System;
 using System.Reflection;
 
 namespace IronText.Logging
@@ -34,11 +33,11 @@ namespace IronText.Logging
             {
                 action();
             }
-            catch (InvalidDependencyException e)
+            catch (Exception e) when (e is INonLoggable)
             {
                 throw;
             }
-            catch (TargetInvocationException e) when (e.InnerException is InvalidDependencyException)
+            catch (TargetInvocationException e) when (e.InnerException is INonLoggable)
             {
                 throw;
             }

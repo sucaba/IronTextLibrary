@@ -1,10 +1,11 @@
-﻿using System;
+﻿using IronText.Logging;
+using System;
 using System.Runtime.Serialization;
 
 namespace IronText.DI
 {
     [Serializable]
-    class InvalidDependencyException : Exception
+    class InvalidDependencyException : Exception, INonLoggable
     {
         public InvalidDependencyException()
         {
