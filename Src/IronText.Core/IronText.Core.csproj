@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;ENABLE_SEM0;DIAGNOSTICS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ENABLE_SEM0</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>default</LangVersion>
@@ -228,6 +228,7 @@
     <Compile Include="Runtime\Parallel\GenericParser.cs" />
     <Compile Include="Runtime\Parallel\GenericParserDiagnostics.cs" />
     <Compile Include="Runtime\Parallel\GenericStack.cs" />
+    <Compile Include="Runtime\Parallel\GraphStructuredStack\IProcessScheduler.cs" />
     <Compile Include="Runtime\Parallel\ParserThread.cs" />
     <Compile Include="Runtime\Parallel\Reduction.cs" />
     <Compile Include="Runtime\Parallel\ReductionQueueWithPriority.cs" />

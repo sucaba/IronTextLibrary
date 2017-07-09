@@ -102,6 +102,7 @@
     <Compile Include="Analysis\DotItemSpecs\DotItem_has_reduce_transition.cs" />
     <Compile Include="Collections\IndexedCollectionTest.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Framework\Generic\BottomUpReductions\LRMergeTest.cs" />
     <Compile Include="Framework\Generic\BottomUpReductions\RecursiveBottomUpTest.cs" />
     <Compile Include="Framework\Generic\BottomUpReductions\TopDownConsumesBottomUpResultTest.cs" />
     <Compile Include="Framework\Generic\BottomUpReductions\BottomUpConsumesTopDownResultTest.cs" />

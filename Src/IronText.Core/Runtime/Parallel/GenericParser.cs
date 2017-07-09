@@ -34,9 +34,9 @@ namespace IronText.Runtime
             this.grammar        = grammar;
             this.producer       = producer;
             this.actionTable    = actionTable;
-            this.logging        = logging;;
+            this.logging        = logging;
 
-            this.stack.Current.Add(new Process<T>(2, null));
+            this.stack.Current.Init(2);
 
             this.reductionQueue = new ReductionQueueWithPriority<T>(tokenComplexity);
         }
@@ -92,7 +92,7 @@ namespace IronText.Runtime
                 return FinalReceiver<Message>.Instance;
             }
 
-            if (stack.Pending.IsEmpty)
+            if (!stack.Future.HasItemsToConsume)
             {
                 logging.Write(
                     new LogEntry
@@ -152,14 +152,8 @@ namespace IronText.Runtime
                     case ParserOperation.Fail:
                         break;
                     case ParserOperation.Shift:
-                        var stage = isShift ? stack.Pending : stack.Current;
-                        stage.Add(
-                            new Process<T>(
-                                instruction.State,
-                                term,
-                                process.ReductionData,
-                                currentLayer,
-                                process.CallStack));
+                        var stage = isShift ? stack.Future : stack.Current;
+                        stage.EnqueueShift(process, instruction.State, term, currentLayer);
                         break;
                     case ParserOperation.ReduceGoto:
                         QueueReduction(
@@ -173,10 +167,10 @@ namespace IronText.Runtime
                             grammar.Productions[instruction.Production]);
                         break;
                     case ParserOperation.Pop:
-                        stack.Current.Pop(process);
+                        stack.Current.EnqueuePop(process);
                         break;
                     case ParserOperation.PushGoto:
-                        stack.Current.PushGoto(process, instruction.PushState, instruction.State);
+                        stack.Current.EnqueuePushGoto(process, instruction.PushState, instruction.State);
                         break;
                     case ParserOperation.Fork:
                         if (ProcessPosition(message, alternateInput, term, process, instruction.ForkPosition))
@@ -253,18 +247,23 @@ namespace IronText.Runtime
                 if (nextState < 0)
                 {
                     var input = new Message(r.Production.Outcome, null, mergedValue, Loc.Unknown);
-                    var p = new Process<T>(bottom.State, bottom, r.Process.CallStack);
-                    ProcessPosition(input, input, mergedValue, p, p.InstructionState, isShift: false);
+                    var p = new Process<T>(bottom, r.Process.CallStack);
+                    ProcessPosition(
+                        input,
+                        input,
+                        mergedValue,
+                        p,
+                        p.InstructionState,
+                        isShift: false);
                 }
                 else
                 {
-                    stack.Current.Add(
-                        new Process<T>(
-                            nextState,
-                            mergedValue,
-                            bottom,
-                            reduction.LeftmostLayer,
-                            r.Process.CallStack));
+                    stack.Current.EnqueueShift(
+                        r.Process.CallStack,
+                        bottom,
+                        nextState,
+                        mergedValue,
+                        reduction.LeftmostLayer);
                 }
             }
         }

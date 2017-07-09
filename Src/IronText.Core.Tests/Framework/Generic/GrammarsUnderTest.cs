@@ -223,7 +223,7 @@ namespace IronText.Tests.Framework.Generic
             [Produce]
             public void Result(S s) { }
 
-            [Produce("b", null, "e")]
+            [ProduceTopDown("b", null, "e")]
             public S TopDown(A a) => null;
 
             [ProduceBottomUp("a")]
@@ -231,6 +231,8 @@ namespace IronText.Tests.Framework.Generic
         }
 
         [Language(RuntimeOptions.ForceGeneric)]
+        [DescribeParserStateMachine(nameof(BottomUpConsumesTopDownLanguage) + ".info")]
+        [ParserGraph(nameof(BottomUpConsumesTopDownLanguage) + ".gv")]
         public class BottomUpConsumesTopDownLanguage
         {
             [Produce]
@@ -240,10 +242,26 @@ namespace IronText.Tests.Framework.Generic
             public S BottomUp(A a) => null;
 
             [ProduceTopDown("a")]
-            public A BottomUp() => null;
+            public A TopDown() => null;
+        }
+
+        [Language(RuntimeOptions.ForceGenericLR)]
+        [ParserGraph(nameof(HighlyAmbiguousLanguage) + ".gv")]
+        [DescribeParserStateMachine(nameof(HighlyAmbiguousLanguage) + ".info")]
+        public class HighlyAmbiguousLanguage
+        {
+            [Produce]
+            public void Start(E e) { }
+
+            [Produce(null, "+", null)]
+            public E Sum(E e1, E e2) => null;
+
+            [Produce("a")]
+            public E Ea() => null;
         }
 
         public interface A {}
         public interface S {}
+        public interface E {}
     }
 }

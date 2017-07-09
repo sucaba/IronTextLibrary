@@ -50,6 +50,11 @@ namespace IronText.Runtime
         {
             InheritedStateProperties = new PropertyValueNode(inhIndex, value).SetNext(InheritedStateProperties);
         }
+
+        public override string ToString()
+        {
+            return $"{{Token={Token}, At={Location}, Value={Value}}}";
+        }
     }
 
     public class PropertyValueNode : SListNode<PropertyValueNode>
